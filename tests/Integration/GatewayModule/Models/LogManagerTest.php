@@ -74,13 +74,13 @@ final class LogManagerTest extends TestCase {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);
-		$this->manager = new LogManager($controllerLogDir . '/', $logDir . '/daemon', $commandManager);
+		$this->manager = new LogManager($controllerLogDir . '/', $logDir . '/daemon/', $commandManager);
 		$modifyDates = [
-			'2018-08-13T13:37:13.107090' => '2018-08-13-13-37-496-iqrf-gateway-daemon.log',
-			'2018-08-13T13:37:18.262028' => '2018-08-13-13-37-834-iqrf-gateway-daemon.log',
+			'2018-08-13T13:37:13.107090' => 'daemon/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
+			'2018-08-13T13:37:18.262028' => 'daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
 		];
 		foreach ($modifyDates as $date => $fileName) {
-			$commandManager->run('touch -m -d ' . $date . ' ' . $logDir . 'daemon/' . $fileName);
+			$commandManager->run('touch -m -d ' . $date . ' ' . $logDir . '/' . $fileName);
 		}
 	}
 
