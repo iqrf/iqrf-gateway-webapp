@@ -60,6 +60,10 @@ class TimeManager {
 		return $array;
 	}
 
+	/**
+	 * Checks if NTP is active
+	 * @return bool true if NTP is active, false otherwise
+	 */
 	private function getNtp(): bool {
 		$command = $this->commandManager->run('timedatectl | grep "NTP service"');
 		$ntpSync = explode(': ', ltrim($command->getStdout()))[1];

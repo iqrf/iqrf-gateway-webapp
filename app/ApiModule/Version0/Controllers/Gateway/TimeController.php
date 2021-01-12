@@ -93,11 +93,11 @@ class TimeController extends GatewayController {
 		$this->validator->validateRequest('timeSet', $request);
 		$body = $request->getJsonBody();
 		if ($body['sync']) {
-			$result = $this->manager->setTime($body['sync']);
+			$this->manager->setTime($body['sync']);
 		} else {
-			$result = $this->manager->setTime($body['sync'], $body['timestamp']);
+			$this->manager->setTime($body['sync'], $body['timestamp']);
 		}
-		return $response->writeBody($result);
+		return $response->writeBody('Workaround');
 	}
 
 	/**
