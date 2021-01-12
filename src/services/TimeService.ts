@@ -17,10 +17,10 @@ class TimeService {
 
 	/**
 	 * Sets new time
-	 * @param data Timestamp
+	 * @param {Dictionary<boolean|number} data Timestamp
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
-	setTime(data: Dictionary<number>): Promise<AxiosResponse> {
+	setTime(data: Dictionary<boolean|number>): Promise<AxiosResponse> {
 		return axios.put('gateway/time', data, {headers: authorizationHeader()});
 	}
 

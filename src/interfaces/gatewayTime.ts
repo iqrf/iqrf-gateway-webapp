@@ -23,7 +23,12 @@ export interface ITimezone {
  */
 export interface ITime extends ITimezone {
 	/**
-	 * Gateway timestamp in seconds
+	 * Timestamp in seconds
 	 */
 	timestamp: number
+
+	/**
+	 * Sync time with NTP
+	 */
+	sync: boolean
 }

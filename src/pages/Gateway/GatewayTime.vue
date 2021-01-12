@@ -12,7 +12,11 @@
 						{{ timeDisplay }}
 					</p>
 					<CForm @submit.prevent='setTime'>
-						<div class='form-group'>
+						<CInputCheckbox
+							:checked.sync='syncTime'
+							:label='$t("gateway.datetime.form.sync")'
+						/>
+						<div v-if='!syncTime' class='form-group'>
 							<label for='datePicker' style='font-weight:bold'>
 								{{ $t('gateway.datetime.form.time') }}
 							</label>
@@ -30,7 +34,7 @@
 						<CButton
 							type='submit'
 							color='primary'
-							:disabled='timeToSet === ""'
+							:disabled='!syncTime && timeToSet === ""'
 						>
 							{{ $t('forms.save') }}
 						</CButton>
@@ -80,7 +84,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CRow, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
@@ -97,6 +101,7 @@ import {Datetime} from 'vue-datetime';
 		CCardBody,
 		CCol,
 		CForm,
+		CInputCheckbox,
 		CRow,
 		CSelect,
 		Datetime,
@@ -114,12 +119,17 @@ import {Datetime} from 'vue-datetime';
 export default class GatewayTime extends Vue {
 
 	/**
+	 * @var {boolean} syncTime Sync time or set own time
+	 */
+	private syncTime = false;
+
+	/**
 	 * @var {ITime|null} gatewayTime Gateway timezone information
 	 */
 	private gatewayTime: ITime|null = null
 
 	/**
-	 * 
+	 * @var {string} timeToSet Datetime picker output
 	 */
 	private timeToSet = ''
 
@@ -184,6 +194,7 @@ export default class GatewayTime extends Vue {
 			.then((response: AxiosResponse) => {
 				this.gatewayTime = response.data.time;
 				this.timezone = this.gatewayTime!.name;
+				this.syncTime = this.gatewayTime!.sync;
 				this.timeToSet = '';
 				this.timeRefreshInterval = setInterval(() => {
 					this.gatewayTime!.timestamp++;
@@ -233,7 +244,13 @@ export default class GatewayTime extends Vue {
 		const date = new Date(this.timeToSet);
 		date.setSeconds(this.gatewayTime!.timestamp % 60);
 		this.$store.commit('spinner/SHOW');
-		TimeService.setTime({timestamp: date.getTime()/1000})
+		let time = {
+			sync: this.syncTime,
+		};
+		if (!this.syncTime) {
+			Object.assign(time, {timestamp: date.getTime()/1000});
+		}
+		TimeService.setTime(time)
 			.then(() => {
 				ToastClear.success('gateway.datetime.messages.timeSuccess');
 				this.clearActiveInterval();
