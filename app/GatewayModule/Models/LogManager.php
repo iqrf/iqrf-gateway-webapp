@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use Nette\Utils\FileSystem;
@@ -32,30 +33,66 @@ use SplFileInfo;
 class LogManager {
 
 	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
+
+	/**
+	 * IQRF Gateway Controller log file name
+	 */
+	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
+
+	/**
+	 * @var string Path to a directory with log of IQRF Gateway Controller
+	 */
+	private $controllerLogDir;
+
+	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $logDir;
+	private $daemonLogDir;
 
 	/**
 	 * @var string Path to ZIP archive
 	 */
-	private $path = '/tmp/iqrf-daemon-gateway-logs.zip';
+	private $path = '/tmp/iqrf-gateway-logs.zip';
 
 	/**
 	 * Constructor
-	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
+	 * @param string $controllerLogDir Path to latest IQRF Gateway Controller log file
+	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $logDir) {
-		$this->logDir = $logDir;
+	public function __construct(string $controllerLogDir, string $daemonLogDir, CommandManager $commandManager) {
+		$this->controllerLogDir = $controllerLogDir;
+		$this->daemonLogDir = $daemonLogDir;
+		$this->commandManager = $commandManager;
 	}
 
 	/**
-	 * Loads the latest log of IQRF Gateway Daemon
-	 * @return string IQRF Gateway Daemon's log
+	 * Loads the latest log of IQRF Gateway Controller and Daemon
+	 * @return array<string, string> IQRF Gateway Controller's and Daemon's logs
 	 * @throws LogNotFoundException
 	 */
-	public function load(): string {
-		return FileSystem::read($this->getLatestLog());
+	public function load(): array {
+		$logs = [
+			'daemon' => FileSystem::read($this->getLatestDaemonLog()),
+		];
+		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
+			$logs['controller'] = FileSystem::read($this->getLatestControllerLog());
+		}
+		return $logs;
+	}
+
+	/**
+	 * Returns IQRF Gateway Controller's latest log file path
+	 */
+	public function getLatestControllerLog(): string {
+		$logFile = $this->controllerLogDir . self::CONTROLLER_LOG;
+		if (!file_exists($logFile) || filesize($logFile) === 0) {
+			throw new LogNotFoundException('Controller log file not found');
+		}
+		return $logFile;
 	}
 
 	/**
@@ -63,19 +100,19 @@ class LogManager {
 	 * @return string IQRF Gateway Daemon's latest log file path
 	 * @throws LogNotFoundException
 	 */
-	public function getLatestLog(): string {
+	public function getLatestDaemonLog(): string {
 		$logFiles = [];
 		/**
 		 * @var SplFileInfo $file File info object
 		 */
-		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
+		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->daemonLogDir) as $file) {
 			if ($file->getSize() === 0) {
 				continue;
 			}
 			$logFiles[$file->getMTime()] = $file->getRealPath();
 		}
 		if ($logFiles === []) {
-			throw new LogNotFoundException();
+			throw new LogNotFoundException('Daemon log files not found');
 		}
 		krsort($logFiles);
 		return reset($logFiles);
@@ -87,7 +124,11 @@ class LogManager {
 	 */
 	public function createArchive(): string {
 		$zipManager = new ZipArchiveManager($this->path);
-		$zipManager->addFolder($this->logDir, '');
+		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
+			$zipManager->addFolder($this->controllerLogDir . 'iqrf-gateway-controller', 'controller');
+			$zipManager->addFile($this->controllerLogDir . self::CONTROLLER_LOG, 'controller/iqrf-gateway-controller.log');
+		}
+		$zipManager->addFolder($this->daemonLogDir, 'daemon');
 		$zipManager->close();
 		return $this->path;
 	}
