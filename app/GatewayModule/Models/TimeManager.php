@@ -50,23 +50,35 @@ class TimeManager {
 	public function currentTime(): array {
 		$array = [];
 		$command = $this->commandManager->run('date +%s');
-		$timestamp = ['timestamp' => $command->getStdout()];
+		$timestamp = [
+			'timestamp' => $command->getStdout(),
+			'sync' => $this->getNtp(),
+		];
 		$command = $this->commandManager->run('cat /etc/timezone');
 		$timezone = $this->timezoneInfo($command->getStdout());
 		$array['time'] = array_merge($timestamp, $timezone);
 		return $array;
 	}
 
+	private function getNtp(): bool {
+		$command = $this->commandManager->run('timedatectl | grep "NTP service"');
+		$ntpSync = explode(': ', ltrim($command->getStdout()))[1];
+		return $ntpSync === 'active';
+	}
+
 	/**
 	 * Sets new gateway time
-	 * @param int $timestamp Unix timestamp
+	 * @param bool $sync Sync time with NTP or set own time
+	 * @param int|null $timestamp Unix timestamp
 	 */
-	public function setTime(int $timestamp): void {
-		//TODO disable NTP?
-		$command = ('sudo date +%s -s @' . strval($timestamp));
-		$env = ['LANG' => 'C.UTF-8'];
-		$process = Process::fromShellCommandline($command, null, $env, null, null);
-		$process->run();
+	public function setTime(bool $sync, ?int $timestamp = null): void {
+		$this->commandManager->run('timedatectl set-ntp ' . ($sync ? 'true' : 'false'));
+		if (!$sync) {
+			$command = ('sudo date +%s -s @' . strval($timestamp));
+			$env = ['LANG' => 'C.UTF-8'];
+			$process = Process::fromShellCommandline($command, null, $env, null, null);
+			$process->run();
+		}
 	}
 
 	/**

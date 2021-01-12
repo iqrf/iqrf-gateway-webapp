@@ -92,8 +92,12 @@ class TimeController extends GatewayController {
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('timeSet', $request);
 		$body = $request->getJsonBody();
-		$this->manager->setTime($body['timestamp']);
-		return $response->writeBody('Workaround');
+		if ($body['sync']) {
+			$result = $this->manager->setTime($body['sync']);
+		} else {
+			$result = $this->manager->setTime($body['sync'], $body['timestamp']);
+		}
+		return $response->writeBody($result);
 	}
 
 	/**

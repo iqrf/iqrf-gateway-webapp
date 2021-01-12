@@ -4,15 +4,36 @@
 	"type": "object",
 	"title": "Set new gateway time",
 	"required": [
-		"timestamp"
+		"sync"
 	],
+	"example": {
+		"sync": false,
+		"timestamp": 1609506000
+	},
 	"additionalProperties": false,
 	"properties": {
+		"sync": {
+			"$id": "#/properties/custom",
+			"type": "boolean",
+			"title": "Sync time with NTP",
+			"example": false
+		},
 		"timestamp": {
 			"$id": "#/properties/timestamp",
 			"type": "integer",
 			"title": "Timestamp",
 			"example": 1609506000
 		}
+	},
+	"if": {
+		"properties": {
+			"sync": {"const": false}
+		}
+	},
+	"then": {
+		"required": [
+			"sync",
+			"timestamp"
+		]
 	}
 }
