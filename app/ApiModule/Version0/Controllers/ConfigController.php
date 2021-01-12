@@ -497,9 +497,9 @@ class ConfigController extends BaseConfigController {
 		$this->validator->validateRequest('daemonChangeInterface', $request);
 		try {
 			$reqData = $request->getJsonBody(true);
-			$config = (array) $this->mainManager->load();
+			$config = $this->mainManager->load();
 			foreach ($reqData as $component) {
-				$index = array_search($component['name'], array_column($config['components'], 'name'));
+				$index = array_search($component['name'], array_column($config['components'], 'name'), true);
 				if (!$index) {
 					throw new ServerErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 				}
