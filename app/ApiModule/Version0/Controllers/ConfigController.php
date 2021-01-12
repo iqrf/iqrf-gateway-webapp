@@ -474,4 +474,42 @@ class ConfigController extends BaseConfigController {
 		return $response->writeJsonBody($configuration);
 	}
 
+	/**
+	 * @Path("/interface")
+	 * @Method("PATCH")
+	 * @OpenApi("
+	 *  summary: Changes IQRF Interface in configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DaemonChangeInterface'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function changeInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('daemonChangeInterface', $request);
+		try {
+			$reqData = $request->getJsonBody(true);
+			$config = (array) $this->mainManager->load();
+			foreach ($reqData as $component) {
+				$index = array_search($component['name'], array_column($config['components'], 'name'));
+				if (!$index) {
+					throw new ServerErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+				}
+				$config['components'][$index]['enabled'] = $component['enabled'];
+			}
+			$this->mainManager->save($config);
+			return $response->writeBody('Workaround');
+		} catch (IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

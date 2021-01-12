@@ -30,7 +30,7 @@ import IqrfDpa from '../../components/Config/IqrfDpa.vue';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
-import {IComponent} from '../../interfaces/daemonComponent';
+import {IChangeInterface, IComponent} from '../../interfaces/daemonComponent';
 import { IOption } from '../../interfaces/coreui';
 
 @Component({
@@ -149,44 +149,31 @@ export default class Interfaces extends Vue {
 	/**
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
-	private async changeInterface(): Promise<void> {
-		let updateError = false;
+	private changeInterface(): void {
+		let updateInterfaces: Array<IChangeInterface> = [];
 		for (let component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
-				component.enabled = false;
-				await DaemonConfigurationService.updateComponent(component.name, component)
-					.catch(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.error(
-							this.$t('config.daemon.interfaces.messages.updateFailed').toString()
-						);
-						updateError = true;
-					});
-			}
-			if (updateError) {
-				break;
+				updateInterfaces.push({name: component.name, enabled: false});
+			} else if (component.name === this.iqrfInterface && !component.enabled) {
+				updateInterfaces.push({name: component.name, enabled: true});
 			}
 		}
-		if (!updateError) {
-			for (let component of this.iqrfInterfaces) {
-				if (component.name === this.iqrfInterface && !component.enabled) {
-					component.enabled = true;
-					await DaemonConfigurationService.updateComponent(component.name, component)
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.getConfig().then(() => 
-								this.$toast.success(this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString())
-							);
-						})
-						.catch(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.error(
-								this.$t('config.daemon.interfaces.messages.updateFailed').toString()
-							);
-						});
-				}
-			}
-		}
+		this.$store.commit('spinner/SHOW');
+		DaemonConfigurationService.changeInterface(updateInterfaces)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.getConfig().then(() => 
+					this.$toast.success(
+						this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()
+					)
+				);
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('config.daemon.interfaces.messages.updateFailed').toString()
+				);
+			});
 	}
 
 	/**

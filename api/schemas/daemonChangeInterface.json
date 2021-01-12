@@ -1,0 +1,41 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonChangeInterface.json",
+	"type": "array",
+	"title": "IQRF Gateway Daemon interface change",
+	"items": [
+		{
+			"$id": "#/items",
+			"type": "object",
+			"title": "Daemon interface component",
+			"required": [
+				"name",
+				"enabled"
+			],
+			"example": {
+				"name": "iqrf::IqrfCdc",
+				"enabled": true
+			},
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"$id": "#/items/properties/name",
+					"type": "string",
+					"title": "Interface component name",
+					"enum": [
+						"iqrf::IqrfCdc",
+						"iqrf::IqrtSpi",
+						"iqrf::IqrfUart"
+					],
+					"example": "iqrf::IqrfCdc"
+				},
+				"enabled": {
+					"$id": "#/items/properties/enabled",
+					"type": "boolean",
+					"title": "Interface enabled",
+					"example": true
+				}
+			}
+		}
+	]
+}
