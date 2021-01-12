@@ -61,7 +61,7 @@ class TimeController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/CurrentTime'
+	 *                      $ref: '#/components/schemas/TimeGet'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
