@@ -11,6 +11,14 @@
 						{{ $t('gateway.info.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/gateway/date-time/'>
+					<header class='list-group-item-heading'>
+						{{ $t('gateway.datetime.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('gateway.datetime.description') }}
+					</p>
+				</CListGroupItem>
 				<CListGroupItem to='/gateway/log/'>
 					<header class='list-group-item-heading'>
 						{{ $t('gateway.log.title') }}
