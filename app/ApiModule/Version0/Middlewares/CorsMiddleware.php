@@ -33,7 +33,7 @@ class CorsMiddleware implements IMiddleware {
 		// Add CORS headers
 		if ($request->getMethod() === 'OPTIONS') {
 			return $response->withHeader('Access-Control-Allow-Origin', '*')
-				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS, DELETE')
+				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, OPTIONS, DELETE')
 				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization')
 				->withHeader('Access-Control-Expose-Headers', '*');
 		}

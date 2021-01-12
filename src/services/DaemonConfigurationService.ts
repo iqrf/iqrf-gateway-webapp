@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import { IChangeInterface } from '../interfaces/daemonComponent';
 
 /**
  * Daemon configuration service
@@ -103,6 +104,14 @@ class DaemonConfigurationService {
 	updateInstance(component: string, instance: string, configuration: any): Promise<AxiosResponse> {
 		const url = 'config/daemon/' + encodeURIComponent(component) + '/' + encodeURIComponent(instance);
 		return axios.put(url, configuration, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Changes IQRF interfaces
+	 * @param data Interface configuration
+	 */
+	changeInterface(data: Array<IChangeInterface>): Promise<AxiosResponse> {
+		return axios.patch('config/daemon/interface', data, {headers: authorizationHeader()});
 	}
 
 }

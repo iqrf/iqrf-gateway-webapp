@@ -8,3 +8,18 @@ export interface IComponent {
 	name: string
 	startLevel: number
 }
+
+/**
+ * Daemon IQRF interface state change interface
+ */
+export interface IChangeInterface {
+	/**
+	 * Interface name
+	 */
+	name: string
+
+	/**
+	 * Interface state
+	 */
+	enabled: boolean
+}
