@@ -3,7 +3,7 @@ services:
 	certificateManager: App\GatewayModule\Models\CertificateManager
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
-	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
+	- App\GatewayModule\Models\LogManager(%controller.logDir%, %daemon.logDir%)
 	mender.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
 		autowired: false

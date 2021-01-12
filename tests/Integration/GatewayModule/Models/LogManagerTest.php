@@ -41,7 +41,9 @@ final class LogManagerTest extends TestCase {
 	 */
 	public function testLoad(): void {
 		$fileName = '2018-08-13-13-37-834-iqrf-gateway-daemon.log';
-		$expected = $this->fileManager->read($fileName);
+		$expected = [
+			'daemon' => $this->fileManager->read('daemon/' . $fileName),
+		];
 		Assert::same($expected, $this->manager->load());
 	}
 
@@ -50,12 +52,12 @@ final class LogManagerTest extends TestCase {
 	 */
 	public function testCreateArchive(): void {
 		$actual = $this->manager->createArchive();
-		$expected = '/tmp/iqrf-daemon-gateway-logs.zip';
+		$expected = '/tmp/iqrf-gateway-logs.zip';
 		Assert::equal($expected, $actual);
 		$zipManager = new ZipArchiveManager($expected, ZipArchive::CREATE);
 		$logs = [
-			'2018-08-13-13-37-834-iqrf-gateway-daemon.log',
-			'2018-08-13-13-37-496-iqrf-gateway-daemon.log',
+			'daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
+			'daemon/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
 		];
 		foreach ($logs as $log) {
 			$expectedLog = $this->fileManager->read($log);
@@ -67,17 +69,18 @@ final class LogManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		$controllerLogDir = realpath(__DIR__ . '/../../../data/logs/controller/');
 		$logDir = realpath(__DIR__ . '/../../../data/logs/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);
-		$this->manager = new LogManager($logDir);
+		$this->manager = new LogManager($controllerLogDir . '/', $logDir . '/daemon', $commandManager);
 		$modifyDates = [
 			'2018-08-13T13:37:13.107090' => '2018-08-13-13-37-496-iqrf-gateway-daemon.log',
 			'2018-08-13T13:37:18.262028' => '2018-08-13-13-37-834-iqrf-gateway-daemon.log',
 		];
 		foreach ($modifyDates as $date => $fileName) {
-			$commandManager->run('touch -m -d ' . $date . ' ' . $logDir . '/' . $fileName);
+			$commandManager->run('touch -m -d ' . $date . ' ' . $logDir . 'daemon/' . $fileName);
 		}
 	}
 

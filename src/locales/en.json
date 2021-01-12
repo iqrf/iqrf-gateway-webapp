@@ -1027,13 +1027,13 @@
 			}
 		},
 		"log": {
-			"title": "Log file",
-			"description": "Shows log of IQRF Gateway Daemon.",
+			"title": "Log files",
+			"description": "Shows log of IQRF Gateway Controller and Daemon.",
 			"download": "Download",
 			"messages": {
-				"nonExistingDir": "IQRF Gateway Daemon's log directory does not exist.",
-				"readError": "Cannot read IQRF Gateway Daemon's log file.",
-				"notFound": "IQRF Gateway Daemon log file cannot be found."
+				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
+				"readError": "Cannot read IQRF Gateway's log file.",
+				"notFound": "IQRF Gateway log file cannot be found."
 			}
 		},
 		"mode": {

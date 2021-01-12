@@ -60,14 +60,19 @@ class LogController extends GatewayController {
 	 * @Path("/log")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: 'Returns latest IQRF Gateway Daemon log'
+	 *  summary: 'Returns latest IQRF Gateway Controller Daemon logs'
 	 *  responses:
 	 *      '200':
 	 *          description: 'Success'
 	 *          content:
-	 *              text/plain:
+	 *              application/json:
 	 *                  schema:
-	 *                      type: string
+	 *                      type: object
+	 *                      properties:
+	 *                          controller:
+	 *                              type: string
+	 *                          daemon:
+	 *                              type: string
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -77,12 +82,12 @@ class LogController extends GatewayController {
 	 */
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$response->writeBody($this->logManager->load());
-			$fileName = 'iqrf-gateway-daemon.log';
-			$contentType = 'text/plain; charset=utf-8';
+			$response->writeJsonBody($this->logManager->load());
+			$fileName = 'iqrf-gateway.log';
+			$contentType = 'application/json; charset=utf-8';
 			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, $contentType);
 		} catch (LogNotFoundException $e) {
-			throw new ServerErrorException('Log file not found', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -90,7 +95,7 @@ class LogController extends GatewayController {
 	 * @Path("/logs")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns archive with IQRF Gateway Daemon logs
+	 *   summary: Returns archive with IQRF Gateway logs
 	 *   responses:
 	 *     '200':
 	 *       description: 'Success'
@@ -108,9 +113,9 @@ class LogController extends GatewayController {
 		$path = $this->logManager->createArchive();
 		try {
 			$now = new DateTime();
-			$fileName = 'iqrf-gateway-daemon-logs_' . $now->format('c') . '.zip';
+			$fileName = 'iqrf-gateway-logs_' . $now->format('c') . '.zip';
 		} catch (Throwable $e) {
-			$fileName = 'iqrf-gateway-daemon-logs.zip';
+			$fileName = 'iqrf-gateway-logs.zip';
 		}
 		$response->writeBody(FileSystem::read($path));
 		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
