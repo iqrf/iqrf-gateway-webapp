@@ -6,7 +6,7 @@
 			</CCardHeader>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='upgradeOs'>
+					<CForm @submit.prevent='upgradeOs()'>
 						<p>
 							<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
 								<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
@@ -290,7 +290,7 @@ export default class OsUpdater extends Vue {
 				this.$toast.success(
 					this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
 				);
-				this.$emit('update-os');
+				this.$emit('os-upload');
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 		this.uploadMessage = '';

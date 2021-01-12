@@ -2,8 +2,8 @@
 	<div>
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
 		<HexUpload />
-		<DpaUpdater ref='dpaUpdater' @update-dpa='refreshOsInfo' />
-		<OsUpdater ref='osUpdater' @update-os='refreshOsInfo' />
+		<DpaUpdater ref='dpaUpdater' />
+		<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />
 	</div>
 </template>
 
@@ -130,19 +130,10 @@ export default class TrUpload extends Vue {
 		}
 	}
 
-	/**
-	 * Re-enables socket state watch after TR upload
-	 */
-	private refreshOsInfo(): void {
-		this.unwatch = this.$store.watch(
-			(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
-			(newVal: boolean, oldVal: boolean) => {
-				if (!oldVal && newVal) {
-					this.getOsInfo();
-					this.unwatch();
-				}
-			}
-		);
+	private osInfoUpload(): void {
+		this.$store.commit('spinner/SHOW');
+		setTimeout(() => this.getOsInfo(), 5000);
 	}
+
 }
 </script>
