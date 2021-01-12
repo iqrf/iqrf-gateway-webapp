@@ -290,6 +290,7 @@ export default class OsUpdater extends Vue {
 				this.$toast.success(
 					this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
 				);
+				this.$emit('update-os');
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 		this.uploadMessage = '';
