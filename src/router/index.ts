@@ -73,6 +73,7 @@ const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
+const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetInterfaces.vue');
 
@@ -737,7 +738,7 @@ const routes: Array<RouteConfig> = [
 						path: 'ethernet',
 					},
 					{
-						component: ConnectionForm,
+						component: ConnectionFormBasic,
 						path: 'edit/:uuid',
 						props: true,
 					},
