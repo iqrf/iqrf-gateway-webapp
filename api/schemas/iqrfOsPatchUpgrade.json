@@ -1,0 +1,37 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsPatchUpgrade.json",
+	"type": "object",
+	"title": "IQRF OS upgrade options",
+	"additionalProperties": false,
+	"required": [
+		"build",
+		"version",
+		"mcuType"
+	],
+	"example": {
+		"build": "08C8",
+		"version": "403",
+		"mcuType": 4
+	},
+	"properties": {
+		"build": {
+			"$id": "#/properties/build",
+			"type": "string",
+			"title": "IQRF OS build",
+			"example": "08C8"
+		},
+		"version": {
+			"$id": "#/properties/version",
+			"type": "string",
+			"title": "IQRF OS version",
+			"example": "403"
+		},
+		"mcuType": {
+			"$id": "#/properties/mcuType",
+			"type": "integer",
+			"title": "MCU type",
+			"example": 4
+		}
+	}
+}

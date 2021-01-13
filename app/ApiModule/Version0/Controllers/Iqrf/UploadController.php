@@ -132,6 +132,15 @@ class UploadController extends IqrfController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      type: object
+	 *                      example:
+	 *                          fileName: DPA-Coordinator-SPI-7xD-V414-200403.iqrf
+	 *                      properties:
+	 *                          fileName:
+	 *                              type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '404':
@@ -143,7 +152,7 @@ class UploadController extends IqrfController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function getFile(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBody(false);

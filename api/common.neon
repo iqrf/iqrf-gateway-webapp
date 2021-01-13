@@ -83,6 +83,16 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfInterfaces.json
+		IqrfOsDpaUpgrade:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsDpaUpgrade.json
+		IqrfOsPatchDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsPatchDetail.json
+		IqrfOsPatchUpgrade:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsPatchUpgrade.json
+		IqrfOsUpgradeFiles:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeFiles.json
+		IqrfOsUpgradeList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
 		MainConfiguration:
@@ -129,6 +139,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneSet.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
+		UploaderFile:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/uploaderFile.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:

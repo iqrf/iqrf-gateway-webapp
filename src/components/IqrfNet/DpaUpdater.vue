@@ -1,23 +1,29 @@
 <template>
 	<div>
 		<CCard>
-			<CCardHeader>{{ $t('iqrfnet.dpaUpload.title') }}</CCardHeader>
+			<CCardHeader>{{ $t('iqrfnet.trUpload.dpaUpload.title') }}</CCardHeader>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<CAlert 
+					v-if='currentDpa === null || versions.length === 0'
+					color='danger'
+				>
+					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFailure') }}
+				</CAlert>
+				<ValidationObserver v-else v-slot='{ invalid }'>
 					<CForm @submit.prevent='compareUploadedVersion'>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
 							:custom-messages='{
-								required: "iqrfnet.dpaUpload.errors.version",
+								required: "iqrfnet.trUpload.dpaUpload.errors.version",
 							}'
 						>
 							<CSelect
 								:value.sync='version'
-								:label='$t("iqrfnet.dpaUpload.version")'
+								:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-								:placeholder='$t("iqrfnet.dpaUpload.errors.version")'
+								:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
 								:options='versions'
 							/>
 						</ValidationProvider>
@@ -34,10 +40,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('iqrfnet.dpaUpload.messages.modalTitle') }}
+					{{ $t('iqrfnet.trUpload.dpaUpload.messages.modalTitle') }}
 				</h5>
 			</template>
-			{{ $t('iqrfnet.dpaUpload.messages.modalPrompt', {version: prettyVersion(currentDpa)}) }}
+			{{ $t('iqrfnet.trUpload.dpaUpload.messages.modalPrompt', {version: prettyVersion(currentDpa)}) }}
 			<template #footer>
 				<CButton
 					color='secondary'
@@ -46,7 +52,7 @@
 					{{ $t('forms.no') }}
 				</CButton> <CButton
 					color='warning'
-					@click='{{showModal = false; upload()}}'
+					@click='{{showModal = false; stopDaemon()}}'
 				>
 					{{ $t('forms.yes') }}
 				</CButton>
@@ -57,17 +63,16 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import {FileFormat} from '../../iqrfNet/fileFormat';
-import DpaService, { RFMode } from '../../services/IqrfRepository/DpaService';
-import OsService from '../../services/DaemonApi/OsService';
+import DpaService, {RFMode} from '../../services/IqrfRepository/DpaService';
 import IqrfNetService from '../../services/IqrfNetService';
-import NativeUploadService from '../../services/NativeUploadService';
 import {MutationPayload} from 'vuex';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { AxiosError, AxiosResponse } from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
+import IqrfService from '../../services/IqrfService';
+import ServiceService from '../../services/ServiceService';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 interface DpaVersions {
 	label: string
@@ -76,6 +81,7 @@ interface DpaVersions {
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -96,14 +102,6 @@ export default class DpaUpdater extends Vue {
 	 * @constant {number} address Network address of device
 	 */
 	private address = 0
-
-	/**
-	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
-	 */
-	private allowedMTypes: Array<string> = [
-		'iqrfEmbedOs_Read',
-		'mngDaemon_Upload'
-	]
 
 	/**
 	 * @var {string|null} currentDpa Current version of DPA
@@ -136,6 +134,11 @@ export default class DpaUpdater extends Vue {
 	private showModal = false
 
 	/**
+	 * @var {string} uploadMessage Spinner upload status message
+	 */
+	private uploadMessage = ''
+
+	/**
 	 * @var {string|null} version Currently selected version of DPA
 	 */
 	private version: string|null = null
@@ -151,15 +154,11 @@ export default class DpaUpdater extends Vue {
 	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
-	 * Component unwatch function
-	 */
-	private unwatch: CallableFunction = () => {return;}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('required', required);
+
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
@@ -169,27 +168,7 @@ export default class DpaUpdater extends Vue {
 			}
 			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('removeMessage', this.msgId);
-			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
-				if (mutation.payload.data.status === 0) {
-					this.handleOsInfoResponse(mutation.payload);
-				} else {
-					this.$toast.error(
-						this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
-					);
-					console.error(mutation.payload);
-				}
-			} else if (mutation.payload.mType === 'mngDaemon_Upload') {
-				if (mutation.payload.data.status === 0) {
-					this.$toast.success(
-						this.$t('iqrfnet.trUpload.messages.success').toString()
-					);
-					this.updateVersions();
-				} else {
-					this.$toast.error(
-						this.$t('iqrfnet.trUpload.messages.failure').toString()
-					);
-				}
-			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				if (mutation.payload.data.status === 0) {
 					this.interfaceType = mutation.payload.data.rsp.osRead.flags.interfaceType;
 				} else {
@@ -199,19 +178,6 @@ export default class DpaUpdater extends Vue {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
-			this.getOsInfo();
-		} else {
-			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
-				(newVal: boolean, oldVal: boolean) => {
-					if (!oldVal && newVal) {
-						this.getOsInfo();
-						this.unwatch();
-					}
-				}
-			);
-		}
 	}
 
 	/**
@@ -219,7 +185,6 @@ export default class DpaUpdater extends Vue {
 	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		this.unwatch();
 		this.unsubscribe();
 	}
 
@@ -248,15 +213,6 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
-	 * Retrieves OS information (EmbedOs DPA request)
-	 */
-	private getOsInfo(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
 	 * Performs device enumeration
 	 */
 	private getDeviceEnumeration(): void {
@@ -268,7 +224,7 @@ export default class DpaUpdater extends Vue {
 	/**
 	 * EmbedOs info response handler
 	 */
-	private handleOsInfoResponse(response: any): void {
+	public handleOsInfoResponse(response: any): void {
 		const result = response.data.rsp.result;
 		this.osBuild = this.convertVersion(result.osBuild);
 		this.trType = result.trMcuType;
@@ -325,6 +281,9 @@ export default class DpaUpdater extends Vue {
 		this.currentDpa = this.version;
 	}
 
+	/**
+	 * Displays a modal window if new version is the same as current version, otherwise executes upload
+	 */
 	private compareUploadedVersion(): void {
 		if (this.version === null) {
 			return;
@@ -332,7 +291,7 @@ export default class DpaUpdater extends Vue {
 		if (this.currentDpa === this.version) {
 			this.showModal = true;
 		} else {
-			this.upload();
+			this.stopDaemon();
 		}
 	}
 
@@ -344,6 +303,8 @@ export default class DpaUpdater extends Vue {
 		if (this.version === null) {
 			return;
 		}
+
+		// build dpa file fetch metadata
 		const request = {
 			'interfaceType': this.interfaceType,
 			'osBuild': this.osBuild,
@@ -358,52 +319,68 @@ export default class DpaUpdater extends Vue {
 		} else {
 			Object.assign(request, {'dpa': this.version});
 		}
+
+		// fetch dpa file
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
-				this.$store.dispatch('spinner/show', {timeout: 30000});
-				NativeUploadService.upload(response.data.fileName, FileFormat.IQRF, 30000, 'iqrfnet.trUpload.messagess.genericError', () => this.msgId = null)
-					.then((msgId: string) => this.msgId = msgId);
+				// update spinner message
+				this.uploadMessage += '\n' + this.$t(
+					'iqrfnet.trUpload.dpaUpload.messages.dpaFileDownloaded',
+					{file: response.data.fileName}
+				).toString();
+				this.uploadMessage += '\n' + this.$t(
+					'iqrfnet.trUpload.osUpload.messages.fileUploading',
+					{file: response.data.fileName}
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				
+				// upload downloaded file to TR
+				IqrfService.uploader({name: response.data.fileName, type: 'DPA'})
+					.then(() => {
+						this.uploadMessage += '\n' + this.$t(
+							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
+							{file: response.data.fileName}
+						).toString();
+						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+						this.startDaemon();
+					})
+					.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				if (error.response) {
-					switch (error.response.status) {
-						case 400:
-							this.$toast.error(
-								this.$t('iqrfnet.trUpload.messagess.badRequest').toString()
-							);
-							break;
-						case 404:
-							this.$toast.error(
-								this.$t('iqrfnet.trUpload.messages.notFound').toString()
-							);
-							break;
-						case 500: {
-							const msg = error.response.data.message;
-							if (msg === 'Filesystem failure') {
-								this.$toast.error(
-									this.$t('iqrfnet.trUpload.messagess.moveFailure').toString()
-								);
-							} else if (msg === 'Download failure') {
-								this.$toast.error(
-									this.$t('iqrfnet.trUpload.messagess.downloadFailure').toString()
-								);
-							} else {
-								this.$toast.error(
-									this.$t('iqrfnet.trUpload.messagess.genericError').toString()
-								);
-							}
-							break;
-						}	
-					}
-				} else {
-					this.$toast.error(
-						this.$t('iqrfnet.trUpload.messagess.genericError').toString()
-					);
-				}
-			});
+			.catch((error: AxiosError) => FormErrorHandler.fileFetchError(error));
 	}
 
+	/**
+	 * Stops the IQRF Daemon service before upgrading OS
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private stopDaemon(): Promise<void> {
+		this.uploadMessage = '';
+		this.$store.commit('spinner/SHOW');
+		return ServiceService.stop('iqrf-gateway-daemon')
+			.then(() => {
+				this.uploadMessage = this.$t(
+					'service.iqrf-gateway-daemon.messages.stop'
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.upload();
+			})
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+	}
+
+	/**
+	 * Starts the IQRF Daemon service upon successful OS upgrade
+	 */
+	private startDaemon(): void {
+		ServiceService.start('iqrf-gateway-daemon')
+			.then(() => {
+				this.updateVersions();
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('iqrfnet.trUpload.dpaUpload.messages.uploadSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+	}
 }
 </script>
 

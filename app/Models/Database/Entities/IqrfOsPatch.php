@@ -167,4 +167,22 @@ class IqrfOsPatch {
 		return $this->fileName;
 	}
 
+	/**
+	 * Returns JSON serialized IQRF OS patch metadata
+	 * @return array<string, int|string> JSON serialized IQRF OS patch data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->getId(),
+			'moduleType' => $this->getModuleType(),
+			'fromOsVersion' => $this->getFromVersion(),
+			'fromOsBuild' => $this->getFromBuild(),
+			'toOsVersion' => $this->getToVersion(),
+			'toOsBuild' => $this->getToBuild(),
+			'partNumber' => $this->getPart(),
+			'parts' => $this->getParts(),
+			'fileName' => $this->getFileName(),
+		];
+	}
+
 }
