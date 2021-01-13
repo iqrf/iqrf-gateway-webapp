@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.enumeration.title') }}</h1>
-		<div v-if='response !== undefined'>
+		<div v-if='response !== null'>
 			<CCard>
 				<CCardHeader>{{ $t('iqrfnet.enumeration.deviceInfo') }}</CCardHeader>
 				<CCardBody>
@@ -19,11 +19,11 @@
 								<th>{{ $t('iqrfnet.enumeration.manufacturer') }}</th>
 								<td>{{ response.manufacturer }}</td>
 							</tr>
-							<tr v-if='product !== undefined'>
+							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.product') }}</th>
 								<td><a :href='product.homePage'>{{ product.name }}</a></td>
 							</tr>
-							<tr v-if='product !== undefined'>
+							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.picture') }}</th>
 								<td>
 									<img

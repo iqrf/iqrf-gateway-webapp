@@ -101,6 +101,10 @@
 			"video": "Video guide"
 		}
 	},
+	"daemonMode": {
+		"title": "Daemon mode notice",
+		"prompt": "IQRF GW Daemon is not operational or forwarding mode. Change Daemon mode to operational or forwarding before using this feature."
+	},
 	"states": {
 		"disabled": "Disabled",
 		"enabled": "Enabled"
@@ -139,6 +143,7 @@
 		"export": "Export",
 		"ok": "OK",
 		"add": "Add",
+		"close": "Close",
 		"cancel": "Cancel",
 		"edit": "Edit",
 		"pingNodes": "Ping nodes",

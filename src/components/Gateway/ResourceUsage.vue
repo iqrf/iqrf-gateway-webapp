@@ -54,7 +54,6 @@ export default class ResourceUsage extends Vue {
 	 */
 	get className(): string {
 		const usage = Number.parseFloat(this.usage.usage.replace('%', ''));
-		console.warn(usage);
 		let className = 'progress-bar usage-progress-bar';
 		if (usage >= 90) {
 			className += ' bg-danger';

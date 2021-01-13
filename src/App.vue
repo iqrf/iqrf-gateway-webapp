@@ -1,13 +1,21 @@
 <template>
-	<router-view />
+	<div>
+		<router-view />
+		<DaemonModeModal />
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
 import {AxiosError} from 'axios';
+import DaemonModeModal from './components/DamonModeModal.vue';
 
-@Component({})
+@Component({
+	components: {
+		DaemonModeModal,
+	},
+})
 
 export default class App extends Vue {
 	/**
@@ -51,6 +59,9 @@ export default class App extends Vue {
 				}
 			}
 		);
+		setInterval(() => {
+			this.$store.dispatch('getMode');
+		}, 10000);
 	}
 }
 </script>
