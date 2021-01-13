@@ -75,12 +75,41 @@ export interface WebSocketClientState {
 	messages: Array<WebSocketMessage>;
 
 	/**
+	 * Daemon mode for IQMESH services
+	 */
+	mode: DaemonModeCheck;
+
+	/**
 	 * IQRF Gateway Daemon version object
 	 */
 	version: DaemonVersion;
 
 }
 
+/**
+ * Daemon mode interface
+ */
+export interface DaemonModeCheck {
+
+	/**
+	 * Mode check 
+	 */
+	check: boolean;
+
+	/**
+	 * Daemon mode suitable for IQMESH services
+	 */
+	ready: boolean;
+
+	/**
+	 * Show Daemon mode modal
+	 */
+	modal: boolean;
+}
+
+/**
+ * Daemon version interface
+ */
 export interface DaemonVersion {
 
 	/**
@@ -103,11 +132,29 @@ const state: WebSocketClientState = {
 	requests: {},
 	responses: {},
 	messages: [],
+	mode: {
+		check: false,
+		ready: false,
+		modal: false,
+	},
 	version: {
 		daemonVersion: '',
 		msgId: '',
-	}
+	},
 };
+
+const iqmeshRequests = [
+	'iqmeshNetwork_AutoNetwork',
+	'iqmeshNetwork_Backup',
+	'iqmeshNetwork_BondNodeLocal',
+	'iqmeshNetwork_EnumerateDevice',
+	'iqmeshNetwork_ReadTrConf',
+	'iqmeshNetwork_RemoveBond',
+	'iqmeshNetwork_RemoveBondOnlyInC',
+	'iqmeshNetwork_Restore',
+	'iqmeshNetwork_SmartConnect',
+	'iqmeshNetwork_WriteTrConf',
+];
 
 const actions: ActionTree<WebSocketClientState, any> = {
 	sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string>|undefined {
@@ -116,6 +163,11 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			console.error('Request is null');
 			return undefined;
 		}
+		if (iqmeshRequests.includes(request.mType) && !state.mode.ready) {
+			commit('spinner/HIDE');
+			state.mode.modal = true;
+			return;
+		} 
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
@@ -163,7 +215,29 @@ const actions: ActionTree<WebSocketClientState, any> = {
 		};
 		Vue.prototype.$socket.sendObj(options.request);
 		commit('SOCKET_ONSEND', options.request);
-	}
+	},
+	getMode({state, commit}): void {
+		if (!state.socket.isConnected) {
+			return;
+		}
+		const options = new WebSocketOptions(null, 10000);
+		options.request = {
+			'mType': 'mngDaemon_Mode',
+			'data': {
+				'msgId': uuidv4(),
+				'req': {
+					'operMode': '',
+				},
+				'returnVerbose': true,
+			},
+		};
+		state.mode.check = true;
+		Vue.prototype.$socket.sendObj(options.request);
+		commit('SOCKET_ONSEND', options.request);
+	},
+	hideDaemonModal({commit}): void {
+		commit('HIDE_MODE_MODAL');
+	},
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
@@ -172,6 +246,9 @@ const getters: GetterTree<WebSocketClientState, any> = {
 	},
 	daemonVersion(state: WebSocketClientState) {
 		return state.version.daemonVersion;
+	},
+	daemonModeModal(state: WebSocketClientState) {
+		return state.mode.modal;
 	},
 };
 
@@ -196,6 +273,14 @@ const mutations: MutationTree<WebSocketClientState> = {
 	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
 		if (message.mType === 'mngDaemon_Version' && message.data.msgId === state.version.msgId) {
 			state.version.daemonVersion = message.data.rsp.version.substr(0, 6);
+		} else if (message.mType === 'mngDaemon_Mode' && state.mode.check) {
+			state.mode.check = false;
+			const mode = message.data.rsp.operMode;
+			if (mode === 'operational' || mode === 'forwarding') {
+				state.mode.ready = true;
+			} else {
+				state.mode.ready = false;
+			}
 		}
 		state.responses[message.data.msgId] = message;
 	},
@@ -215,7 +300,10 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	REMOVE_MESSAGE(state: WebSocketClientState, message: number) {
 		state.messages.splice(message, 1);
-	}
+	},
+	HIDE_MODE_MODAL(state: WebSocketClientState) {
+		state.mode.modal = false;
+	},
 };
 
 export default {
