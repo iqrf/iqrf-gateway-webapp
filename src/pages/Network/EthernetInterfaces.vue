@@ -4,7 +4,10 @@
 		<CCard v-for='iface of interfaces' :key='iface.name'>
 			<CCardHeader class='d-flex'>
 				{{ iface.name }}
-				<CBadge :color='getStatusBadgeColor(iface.state)' class='ml-auto'>
+				<CBadge 
+					:color='getStatusBadgeColor(iface.state)' 
+					class='ml-auto'
+				>
 					{{ iface.state }}
 				</CBadge>
 			</CCardHeader>

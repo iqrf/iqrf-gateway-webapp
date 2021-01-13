@@ -1780,6 +1780,7 @@
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Controls the Ethernet connections.",
+			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection"
 		},
 		"connection": {
@@ -1789,7 +1790,7 @@
 				"method": "Connection method",
 				"methods": {
 					"null": "Please select IPv4 connection method",
-					"auto": "DHCP",
+					"auto": "Automatic (DHCP)",
 					"manual": "Manual",
 					"link-local": "Link-local",
 					"shared": "Shared with other computers"
@@ -1799,8 +1800,8 @@
 					"add": "Add IPv4 address",
 					"remove": "Remove IPv4 address"
 				},
-				"mask": "IPv4 subnet mask",
-				"gateway": "IPv4 gateway address",
+				"mask": "Subnet mask",
+				"gateway": "Gateway address",
 				"dns": {
 					"title": "IPv4 DNS servers",
 					"address": "DNS server IPv4 address",
@@ -1821,8 +1822,8 @@
 				"method": "Connection method",
 				"methods": {
 					"null": "Please select IPv6 connection method",
-					"auto": "SLAAC",
-					"dhcp": "DHCPv6",
+					"auto": "Automatic (SLAAC)",
+					"dhcp": "Automatic, DHCPv6 only",
 					"ignore": "Ignore",
 					"link-local": "Link-local",
 					"manual": "Manual",
@@ -1833,8 +1834,8 @@
 					"add": "Add IPv6 address",
 					"remove": "Remove IPv6 address"
 				},
-				"prefix": "IPv6 prefix",
-				"gateway": "IPv6 gateway address",
+				"prefix": "Prefix",
+				"gateway": "Gateway address",
 				"dns": {
 					"title": "IPv6 DNS servers",
 					"address": "DNS server IPv6 address",
@@ -1846,6 +1847,7 @@
 					"address": "Please enter a valid IPv6 address.",
 					"addresses": "Please enter at least one valid IPv6 address.",
 					"dns": "Please enter at least one IPv6 DNS server address.",
+					"gateway": "Please enter a valid IPv6 gateway address.",
 					"prefix": "Please enter a valid IPv6 prefix.",
 					"edit": {
 						"failure": "An error occurred while the network connection configuration saving.",
@@ -1858,6 +1860,7 @@
 				"connected": "Connected"
 			},
 			"messages": {
+				"loadFailed": "Failed to retrieve connection details.",
 				"edit": {
 					"failure": "An error occurred while saving the network connection settings.",
 					"success": "Network connection {connection} has been edited."

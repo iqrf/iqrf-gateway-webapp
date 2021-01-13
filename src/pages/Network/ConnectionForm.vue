@@ -256,7 +256,7 @@ import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import { IOption } from '../../interfaces/coreui';
+import {IOption} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 
 interface IpConfigAddress {
