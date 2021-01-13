@@ -134,7 +134,7 @@ export default class DpaUpdater extends Vue {
 	private showModal = false
 
 	/**
-	 * 
+	 * @var {string} uploadMessage Spinner upload status message
 	 */
 	private uploadMessage = ''
 
