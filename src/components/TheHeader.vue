@@ -10,6 +10,19 @@
 			class='ml-3 d-md-down-none'
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
+		<div class='align-badge'>
+			<CBadge
+				tag='p'
+				:color='daemonModeReady ? "success": "danger"'
+			>
+				{{ $t('daemonStatus.mode') }}
+			</CBadge> <CBadge
+				tag='p'
+				:color='isSocketConnected ? "success": "danger"'
+			>
+				{{ $t('daemonStatus.websocket') }}
+			</CBadge>
+		</div>
 		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
 			<LogoBig :alt='$t("core.title")' />
 		</CHeaderBrand>
@@ -38,6 +51,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {
+	CBadge,
 	CDropdown,
 	CHeader,
 	CHeaderBrand,
@@ -49,9 +63,11 @@ import {
 import LogoBig from '../assets/logo-big.svg';
 import {cilLockLocked} from '@coreui/icons';
 import { Dictionary } from 'vue-router/types/router';
+import { mapGetters } from 'vuex';
 
 @Component({
 	components: {
+		CBadge,
 		CDropdown,
 		CHeader,
 		CHeaderBrand,
@@ -60,7 +76,13 @@ import { Dictionary } from 'vue-router/types/router';
 		CIcon,
 		CToggler,
 		LogoBig,
-	}
+	},
+	computed: {
+		...mapGetters({
+			daemonModeReady: 'daemonModeReady',
+			isSocketConnected: 'isSocketConnected',
+		}),
+	},
 })
 
 /**
@@ -86,3 +108,10 @@ export default class TheHeader extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+.align-badge {
+	position: relative;
+	transform: translateY(30%);
+}
+</style>

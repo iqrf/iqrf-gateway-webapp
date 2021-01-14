@@ -132,7 +132,15 @@ export default class TrUpload extends Vue {
 
 	private osInfoUpload(): void {
 		this.$store.commit('spinner/SHOW');
-		setTimeout(() => this.getOsInfo(), 5000);
+		this.unwatch = this.$store.watch(
+			(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+			(newVal: boolean, oldVal: boolean) => {
+				if (!oldVal && newVal) {
+					setTimeout(() => this.getOsInfo(), 5000);
+					this.unwatch();
+				}
+			}
+		);
 	}
 
 }
