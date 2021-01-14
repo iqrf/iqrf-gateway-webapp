@@ -14,7 +14,6 @@
 			"title": "Gateway time",
 			"required": [
 				"timestamp",
-				"sync",
 				"name",
 				"code",
 				"offset"
@@ -26,12 +25,6 @@
 					"type": "integer",
 					"title": "Timestamp",
 					"example": 1609506000
-				},
-				"sync": {
-					"$id": "#/properties/time/properties/timestamp",
-					"type": "boolean",
-					"title": "Synchronized",
-					"example": true
 				},
 				"name": {
 					"$id": "#/properties/timezone/properties/name",

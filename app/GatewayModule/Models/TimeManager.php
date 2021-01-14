@@ -23,7 +23,6 @@ namespace App\GatewayModule\Models;
 use App\CoreModule\Models\CommandManager;
 use DateTime;
 use DateTimeZone;
-use Symfony\Component\Process\Process;
 
 /**
  * Time manager
@@ -52,37 +51,11 @@ class TimeManager {
 		$command = $this->commandManager->run('date +%s');
 		$timestamp = [
 			'timestamp' => $command->getStdout(),
-			'sync' => $this->getNtp(),
 		];
 		$command = $this->commandManager->run('cat /etc/timezone');
 		$timezone = $this->timezoneInfo($command->getStdout());
 		$array['time'] = array_merge($timestamp, $timezone);
 		return $array;
-	}
-
-	/**
-	 * Checks if NTP is active
-	 * @return bool true if NTP is active, false otherwise
-	 */
-	private function getNtp(): bool {
-		$command = $this->commandManager->run('timedatectl | grep "NTP service"');
-		$ntpSync = explode(': ', ltrim($command->getStdout()))[1];
-		return $ntpSync === 'active';
-	}
-
-	/**
-	 * Sets new gateway time
-	 * @param bool $sync Sync time with NTP or set own time
-	 * @param int|null $timestamp Unix timestamp
-	 */
-	public function setTime(bool $sync, ?int $timestamp = null): void {
-		$this->commandManager->run('timedatectl set-ntp ' . ($sync ? 'true' : 'false'));
-		if (!$sync) {
-			$command = ('sudo date +%s -s @' . strval($timestamp));
-			$env = ['LANG' => 'C.UTF-8'];
-			$process = Process::fromShellCommandline($command, null, $env, null, null);
-			$process->run();
-		}
 	}
 
 	/**

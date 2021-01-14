@@ -73,34 +73,6 @@ class TimeController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Sets new time from timestamp
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimeSet'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('timeSet', $request);
-		$body = $request->getJsonBody();
-		if ($body['sync']) {
-			$this->manager->setTime($body['sync']);
-		} else {
-			$this->manager->setTime($body['sync'], $body['timestamp']);
-		}
-		return $response->writeBody('Workaround');
-	}
-
-	/**
 	 * @Path("/timezones")
 	 * @Method("GET")
 	 * @OpenApi("

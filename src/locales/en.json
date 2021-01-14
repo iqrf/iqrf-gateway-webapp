@@ -1019,8 +1019,6 @@
 			"currentTime": "Current gateway time",
 			"currentTimezone": "Current gateway timezone",
 			"form": {
-				"sync": "Synchronize time automatically",
-				"time": "Change date and time",
 				"timezone": "Change timezone",
 				"timezonePlaceholder": "Select a timezone"
 			},
