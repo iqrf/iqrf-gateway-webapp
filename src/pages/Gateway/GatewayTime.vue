@@ -1,50 +1,18 @@
 <template>
-	<CRow>
-		<CCol>
-			<CCard v-if='gatewayTime !== null'>
-				<CCardBody>
-					<p>
+	<CCard>
+		<CCardBody>
+			<CRow>
+				<CCol>
+					<p v-if='gatewayTime !== null'>
 						<b>
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
 					</p>
-					<p>
+					<p style='font-size: 3em'>
 						{{ timeDisplay }}
 					</p>
-					<CForm @submit.prevent='setTime'>
-						<CInputCheckbox
-							:checked.sync='syncTime'
-							:label='$t("gateway.datetime.form.sync")'
-						/>
-						<div v-if='!syncTime' class='form-group'>
-							<label for='datePicker' style='font-weight:bold'>
-								{{ $t('gateway.datetime.form.time') }}
-							</label>
-							<Datetime
-								id='datePicker'
-								v-model='timeToSet'
-								type='datetime'
-								input-class='form-control'
-								:use12-hour='true'
-								format='dd/LL/yyyy, t ZZZZZ'
-								:value-zone='gatewayTime.name'
-								:zone='gatewayTime.name'
-							/>
-						</div>
-						<CButton
-							type='submit'
-							color='primary'
-							:disabled='!syncTime && timeToSet === ""'
-						>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</CCardBody>
-			</CCard>
-		</CCol>
-		<CCol>
-			<CCard v-if='gatewayTime !== null'>
-				<CCardBody>
+				</CCol>
+				<CCol>
 					<p>
 						<b>
 							{{ $t('gateway.datetime.currentTimezone') }}
@@ -76,10 +44,10 @@
 							</CButton>
 						</CForm>
 					</ValidationObserver>
-				</CCardBody>
-			</CCard>
-		</CCol>
-	</CRow>
+				</CCol>
+			</CRow>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -92,7 +60,6 @@ import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {AxiosError, AxiosResponse} from 'axios';
 import ToastClear from '../../helpers/ToastClear';
 import {IOption} from '../../interfaces/coreui';
-import {Datetime} from 'vue-datetime';
 
 @Component({
 	components: {
@@ -104,7 +71,6 @@ import {Datetime} from 'vue-datetime';
 		CInputCheckbox,
 		CRow,
 		CSelect,
-		Datetime,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -119,19 +85,9 @@ import {Datetime} from 'vue-datetime';
 export default class GatewayTime extends Vue {
 
 	/**
-	 * @var {boolean} syncTime Sync time or set own time
-	 */
-	private syncTime = false;
-
-	/**
 	 * @var {ITime|null} gatewayTime Gateway timezone information
 	 */
 	private gatewayTime: ITime|null = null
-
-	/**
-	 * @var {string} timeToSet Datetime picker output
-	 */
-	private timeToSet = ''
 
 	/**
 	 * @var {string} timezone Currently selected timezone
@@ -143,6 +99,9 @@ export default class GatewayTime extends Vue {
 	 */
 	private timezoneOptions: Array<IOption> = []
 
+	/**
+	 * @var {ReturnType<typeof setInterval>} timeRefreshInterval Timestamp refresh interval
+	 */
 	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null; 
 	
 	/**
@@ -159,10 +118,17 @@ export default class GatewayTime extends Vue {
 		this.getTime();
 	}
 
+	/**
+	 * Clears time refresh interval
+	 */
 	beforeDestroy(): void {
 		this.clearActiveInterval();
 	}
 
+	/**
+	 * Computes time string from timestamp
+	 * @returns {string} Date/Time string
+	 */
 	get timeDisplay(): string {
 		if (this.gatewayTime === null) {
 			return '';
@@ -194,8 +160,6 @@ export default class GatewayTime extends Vue {
 			.then((response: AxiosResponse) => {
 				this.gatewayTime = response.data.time;
 				this.timezone = this.gatewayTime!.name;
-				this.syncTime = this.gatewayTime!.sync;
-				this.timeToSet = '';
 				this.timeRefreshInterval = setInterval(() => {
 					this.gatewayTime!.timestamp++;
 				}, 1000);
@@ -235,31 +199,6 @@ export default class GatewayTime extends Vue {
 			});
 		}
 		this.timezoneOptions = timezoneArray;
-	}
-
-	/**
-	 * Calculates new timestamp with seconds
-	 */
-	private setTime(): void {
-		const date = new Date(this.timeToSet);
-		date.setSeconds(this.gatewayTime!.timestamp % 60);
-		this.$store.commit('spinner/SHOW');
-		let time = {
-			sync: this.syncTime,
-		};
-		if (!this.syncTime) {
-			Object.assign(time, {timestamp: date.getTime()/1000});
-		}
-		TimeService.setTime(time)
-			.then(() => {
-				ToastClear.success('gateway.datetime.messages.timeSuccess');
-				this.clearActiveInterval();
-				this.getTime();
-			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				console.error(error);
-			});
 	}
 
 	/**
