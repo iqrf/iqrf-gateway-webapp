@@ -75,36 +75,20 @@ export interface WebSocketClientState {
 	messages: Array<WebSocketMessage>;
 
 	/**
+	 * State of modal window
+	 */
+	modeModal: boolean
+
+	/**
 	 * Daemon mode for IQMESH services
 	 */
-	mode: DaemonModeCheck;
+	modeReady: boolean
 
 	/**
 	 * IQRF Gateway Daemon version object
 	 */
 	version: DaemonVersion;
 
-}
-
-/**
- * Daemon mode interface
- */
-export interface DaemonModeCheck {
-
-	/**
-	 * Mode check 
-	 */
-	check: boolean;
-
-	/**
-	 * Daemon mode suitable for IQMESH services
-	 */
-	ready: boolean;
-
-	/**
-	 * Show Daemon mode modal
-	 */
-	modal: boolean;
 }
 
 /**
@@ -132,28 +116,25 @@ const state: WebSocketClientState = {
 	requests: {},
 	responses: {},
 	messages: [],
-	mode: {
-		check: false,
-		ready: false,
-		modal: false,
-	},
+	modeModal: false,
+	modeReady: false,
 	version: {
 		daemonVersion: '',
 		msgId: '',
 	},
 };
 
-const iqmeshRequests = [
-	'iqmeshNetwork_AutoNetwork',
-	'iqmeshNetwork_Backup',
-	'iqmeshNetwork_BondNodeLocal',
-	'iqmeshNetwork_EnumerateDevice',
-	'iqmeshNetwork_ReadTrConf',
-	'iqmeshNetwork_RemoveBond',
-	'iqmeshNetwork_RemoveBondOnlyInC',
-	'iqmeshNetwork_Restore',
-	'iqmeshNetwork_SmartConnect',
-	'iqmeshNetwork_WriteTrConf',
+const serviceModeWhitelist = [
+	'mngDaemon_Exit',
+	'mngDaemon_Mode',
+	'mngDaemon_Version',
+	'mngDaemon_Upload',
+	'cfgDaemon_Component',
+	'mngScheduler_AddTask',
+	'mngScheduler_GetTask',
+	'mngScheduler_List',
+	'mngScheduler_RemoveAll',
+	'mngScheduler_RemoveTask',
 ];
 
 const actions: ActionTree<WebSocketClientState, any> = {
@@ -163,9 +144,9 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			console.error('Request is null');
 			return undefined;
 		}
-		if (iqmeshRequests.includes(request.mType) && !state.mode.ready) {
+		if (!serviceModeWhitelist.includes(request.mType) && !state.modeReady) {
 			commit('spinner/HIDE');
-			state.mode.modal = true;
+			state.modeModal = true;
 			return;
 		} 
 		if (request.data !== undefined && request.data.msgId === undefined) {
@@ -216,28 +197,15 @@ const actions: ActionTree<WebSocketClientState, any> = {
 		Vue.prototype.$socket.sendObj(options.request);
 		commit('SOCKET_ONSEND', options.request);
 	},
-	getMode({state, commit}): void {
-		if (!state.socket.isConnected) {
-			return;
-		}
-		const options = new WebSocketOptions(null, 10000);
-		options.request = {
-			'mType': 'mngDaemon_Mode',
-			'data': {
-				'msgId': uuidv4(),
-				'req': {
-					'operMode': '',
-				},
-				'returnVerbose': true,
-			},
-		};
-		state.mode.check = true;
-		Vue.prototype.$socket.sendObj(options.request);
-		commit('SOCKET_ONSEND', options.request);
-	},
 	hideDaemonModal({commit}): void {
 		commit('HIDE_MODE_MODAL');
 	},
+	daemonModeReady({commit}): void {
+		commit('DAEMON_MODE_READY');
+	},
+	daemonModeNotReady({commit}): void {
+		commit('DAEMON_MODE_NOT_READY');
+	}
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
@@ -248,8 +216,11 @@ const getters: GetterTree<WebSocketClientState, any> = {
 		return state.version.daemonVersion;
 	},
 	daemonModeModal(state: WebSocketClientState) {
-		return state.mode.modal;
+		return state.modeModal;
 	},
+	daemonModeReady(state: WebSocketClientState) {
+		return state.modeReady;
+	}
 };
 
 const mutations: MutationTree<WebSocketClientState> = {
@@ -273,14 +244,6 @@ const mutations: MutationTree<WebSocketClientState> = {
 	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
 		if (message.mType === 'mngDaemon_Version' && message.data.msgId === state.version.msgId) {
 			state.version.daemonVersion = message.data.rsp.version.substr(0, 6);
-		} else if (message.mType === 'mngDaemon_Mode' && state.mode.check) {
-			state.mode.check = false;
-			const mode = message.data.rsp.operMode;
-			if (mode === 'operational' || mode === 'forwarding') {
-				state.mode.ready = true;
-			} else {
-				state.mode.ready = false;
-			}
 		}
 		state.responses[message.data.msgId] = message;
 	},
@@ -302,8 +265,14 @@ const mutations: MutationTree<WebSocketClientState> = {
 		state.messages.splice(message, 1);
 	},
 	HIDE_MODE_MODAL(state: WebSocketClientState) {
-		state.mode.modal = false;
+		state.modeModal = false;
 	},
+	DAEMON_MODE_READY(state: WebSocketClientState) {
+		state.modeReady = true;
+	},
+	DAEMON_MODE_NOT_READY(state: WebSocketClientState) {
+		state.modeReady = false;
+	}
 };
 
 export default {

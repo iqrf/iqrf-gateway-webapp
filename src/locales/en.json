@@ -101,9 +101,11 @@
 			"video": "Video guide"
 		}
 	},
-	"daemonMode": {
-		"title": "Daemon mode notice",
-		"prompt": "IQRF GW Daemon is not operational or forwarding mode. Change Daemon mode to operational or forwarding before using this feature."
+	"daemonStatus": {
+		"mode": "Daemon mode",
+		"websocket": "Websocket status",
+		"modalTitle": "Daemon mode notice",
+		"modalPrompt": "IQRF GW Daemon is not service mode. Change Daemon mode to operational or forwarding before using this feature."
 	},
 	"states": {
 		"disabled": "Disabled",

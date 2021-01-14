@@ -59,9 +59,6 @@ export default class App extends Vue {
 				}
 			}
 		);
-		setInterval(() => {
-			this.$store.dispatch('getMode');
-		}, 10000);
 	}
 }
 </script>
