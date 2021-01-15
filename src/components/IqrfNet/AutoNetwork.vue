@@ -190,7 +190,7 @@
 							}'
 						>
 							<CInput
-								v-model.number='stopConditions.numberOfTotalNodes'
+								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
 								max='239'
@@ -211,7 +211,7 @@
 							}'
 						>
 							<CInput
-								v-model.number='stopConditions.numberOfNewNodes'
+								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
 								max='239'
@@ -326,9 +326,8 @@ export default class AutoNetwork extends Vue {
 	private stopConditions: AutoNetworkStopConditions = {
 		abortOnTooManyNodesFound: false,
 		emptyWaves: 2,
-		numberOfNewNodes: 1,
-		numberOfTotalNodes: 1,
-		waves: 10
+		waves: 10,
+		nodeCount: 1
 	}
 
 	/**
@@ -470,9 +469,9 @@ export default class AutoNetwork extends Vue {
 		if (this.useNodes) { // node count stop conditions are used
 			stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
 			if (this.nodeCondition === 'total') {
-				stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
+				stopConditions['numberOfTotalNodes'] = this.stopConditions.nodeCount;
 			} else {
-				stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
+				stopConditions['numberOfNewNodes'] = this.stopConditions.nodeCount;
 			}
 		}
 		if (Object.keys(stopConditions).length > 0) { // local stop conditions are added to the request if they exist

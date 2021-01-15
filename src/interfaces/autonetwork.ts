@@ -22,8 +22,7 @@ export interface AutoNetworkOverlappingNetworks {
 export interface AutoNetworkStopConditions {
 	abortOnTooManyNodesFound: boolean
 	emptyWaves: number
-	numberOfNewNodes: number
-	numberOfTotalNodes: number
+	nodeCount: number
 	waves: number
 }
 
