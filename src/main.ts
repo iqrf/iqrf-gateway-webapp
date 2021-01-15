@@ -73,6 +73,7 @@ Vue.use(VueNativeSock, wsApi, {
 	format: 'json',
 	reconnection: true,
 });
+
 Vue.use(CoreuiVue);
 Vue.use(VueMeta);
 Vue.use(VueToast,{
