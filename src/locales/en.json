@@ -1785,13 +1785,16 @@
 		},
 		"connection": {
 			"name": "Connection name",
+			"errors": {
+				"name": "Please enter a connection name."
+			},
 			"ipv4": {
 				"title": "IPv4 configuration",
 				"method": "Connection method",
 				"methods": {
 					"null": "Please select IPv4 connection method",
 					"auto": "Automatic (DHCP)",
-					"manual": "Manual",
+					"manual": "Static",
 					"link-local": "Link-local",
 					"shared": "Shared with other computers"
 				},
@@ -1805,16 +1808,17 @@
 				"dns": {
 					"title": "IPv4 DNS servers",
 					"address": "DNS server IPv4 address",
-					"add": "Add DNS server",
+					"add": "Add another DNS server",
 					"remove": "Remove DNS server"
 				},
-				"messages": {
+				"errors": {
 					"method": "Please select the IPv4 connection method.",
 					"address": "Please enter a valid IPv4 address.",
-					"addresses": "Please enter at least one valid IPv4 address.",
-					"dns": "Please enter at least one IPv4 DNS server address.",
+					"addressInvalid": "Invalid IPv4 address format.",
+					"dns": "Please enter a valid IPv4 DNS server address.",
 					"gateway": "Please enter a valid IPv4 gateway address.",
-					"mask": "Please enter a valid IPv4 subnet mask."
+					"mask": "Please enter a valid IPv4 subnet mask.",
+					"maskInvalid": "Invalid subnet mask."
 				}
 			},
 			"ipv6": {
@@ -1826,7 +1830,7 @@
 					"dhcp": "Automatic, DHCPv6 only",
 					"ignore": "Ignore",
 					"link-local": "Link-local",
-					"manual": "Manual",
+					"manual": "Static",
 					"shared": "Shared with other computers"
 				},
 				"address": "IPv6 address",
@@ -1839,20 +1843,15 @@
 				"dns": {
 					"title": "IPv6 DNS servers",
 					"address": "DNS server IPv6 address",
-					"add": "Add DNS server",
+					"add": "Add another DNS server",
 					"remove": "Remove DNS server"
 				},
-				"messages": {
+				"errors": {
 					"method": "Please select the IPv6 connection method",
 					"address": "Please enter a valid IPv6 address.",
-					"addresses": "Please enter at least one valid IPv6 address.",
 					"dns": "Please enter at least one IPv6 DNS server address.",
 					"gateway": "Please enter a valid IPv6 gateway address.",
-					"prefix": "Please enter a valid IPv6 prefix.",
-					"edit": {
-						"failure": "An error occurred while the network connection configuration saving.",
-						"success": "The network connection configuration has been saved successfully."
-					}
+					"prefix": "Please enter a valid IPv6 prefix."
 				}
 			},
 			"state": "Connection state",

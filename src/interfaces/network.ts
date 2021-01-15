@@ -25,12 +25,18 @@ export interface IConnection {
     interface?: string
     ipv4: IConnectionIPv4
     ipv6: IConnectionIPv6
+    current?: IConnectionCurrent
+}
+
+export interface IConnectionCurrent {
+    ipv4: IConnectionIPv4
+    ipv6: IConnectionIPv6
 }
 
 export interface IConnectionIPv4 {
 	addresses: Array<IConnectionIPv4Addrs>
 	dns: Array<IConnectionIPDns>
-	gateway?: string
+	gateway: string|null
 	method: string
 }
 
