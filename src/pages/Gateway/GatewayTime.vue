@@ -8,8 +8,11 @@
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
 					</p>
-					<p style='font-size: 3em'>
+					<p style='font-size: 3.5em'>
 						{{ timeDisplay }}
+					</p>
+					<p style='font-size: 2.5em'>
+						{{ timezoneDisplay }}
 					</p>
 				</CCol>
 				<CCol>
@@ -19,7 +22,7 @@
 						</b>
 					</p>
 					<p>
-						{{ timezoneDisplay }}
+						{{ currentTimezone }}
 					</p>
 					<ValidationObserver v-slot='{invalid}'>
 						<CForm @submit.prevent='setTimezone'>
@@ -60,6 +63,7 @@ import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {AxiosError, AxiosResponse} from 'axios';
 import ToastClear from '../../helpers/ToastClear';
 import {IOption} from '../../interfaces/coreui';
+import {DateTime} from 'luxon';
 
 @Component({
 	components: {
@@ -133,18 +137,27 @@ export default class GatewayTime extends Vue {
 		if (this.gatewayTime === null) {
 			return '';
 		}
-		return new Date(this.gatewayTime.timestamp * 1000).toLocaleString('en-GB', {
-			timeZone: this.gatewayTime.name,
-			timeZoneName: 'long',
-			hour12: true,
-		});
+		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
+			{zone: this.gatewayTime.name}).toFormat('ccc dd.LL.yyyy hh:mm:ss a');
+	}
+
+	/**
+	 * Computes timezone string from timestamp
+	 * @returns {string} Timezone string
+	 */
+	get timezoneDisplay(): string {
+		if (this.gatewayTime === null) {
+			return '';
+		}
+		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000,
+			{zone: this.gatewayTime.name}).toFormat('ZZZZZ (ZZZZ)');
 	}
 
 	/**
 	 * Computes current timezone string
 	 * @returns {string} Gateway timezone string
 	 */
-	get timezoneDisplay(): string {
+	get currentTimezone(): string {
 		if (this.gatewayTime === null) {
 			return '';
 		}
