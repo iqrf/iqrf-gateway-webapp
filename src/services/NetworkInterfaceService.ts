@@ -34,6 +34,7 @@ export enum InterfaceType {
 	VLAN = 'vlan',
 	WIFI = 'wifi',
 	WIFI_P2P = 'wifi-p2p',
+	WIREGUARD = 'wireguard',
 }
 
 /**
