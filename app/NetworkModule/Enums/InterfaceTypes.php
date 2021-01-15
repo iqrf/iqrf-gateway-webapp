@@ -34,6 +34,7 @@ use Grifart\Enum\Enum;
  * @method static InterfaceTypes VLAN()
  * @method static InterfaceTypes WIFI()
  * @method static InterfaceTypes WIFI_P2P()
+ * @method static InterfaceTypes WIREGUARD()
  */
 final class InterfaceTypes extends Enum {
 
@@ -83,5 +84,10 @@ final class InterfaceTypes extends Enum {
 	 * WiFi P2P interface
 	 */
 	private const WIFI_P2P = 'wifi-p2p';
+
+	/**
+	 * WireGuard
+	 */
+	private const WIREGUARD = 'wireguard';
 
 }
