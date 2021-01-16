@@ -76,6 +76,7 @@ const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/
 const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetInterfaces.vue');
+const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 
 import store from '../store';
 
@@ -736,6 +737,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: EthernetInterfaces,
 						path: 'ethernet',
+					},
+					{
+						component: WifiConnections,
+						path: 'wireless',
 					},
 					{
 						component: ConnectionFormBasic,

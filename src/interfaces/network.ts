@@ -61,3 +61,15 @@ export interface IConnectionIPv6Addrs {
 export interface IConnectionIPDns {
     address: string
 }
+
+export interface IAccessPoint {
+    inUse: boolean
+    bssid: string
+    ssid: string
+    mode: string
+    channel: number
+    rate: string
+    signal: number
+    security: string
+    uuid?: string
+}

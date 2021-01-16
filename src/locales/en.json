@@ -1795,9 +1795,27 @@
 		"description": "Controls the network.",
 		"ethernet": {
 			"title": "Ethernet connections",
-			"description": "Controls the Ethernet connections.",
+			"description": "Ethernet connections management.",
 			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection"
+		},
+		"wireless": {
+			"title": "Wireless connections",
+			"description": "Wireless connections management.",
+			"table": {
+				"accessPoints": "Available access points",
+				"noAccessPoints": "No available access points.",
+				"ssid": "Access point name",
+				"signal": "Signal strength",
+				"security": "Network security"
+			},
+			"modal": {
+				"title": "Connect to {accessPoint}"
+			},
+			"messages": {
+				"listFailed": "Failed to retrieve list of available access points.",
+				"connectionsFailed": "Failed to retrieve access point connection details."
+			}
 		},
 		"connection": {
 			"name": "Connection name",
@@ -1828,7 +1846,6 @@
 					"remove": "Remove DNS server"
 				},
 				"errors": {
-					"method": "Please select the IPv4 connection method.",
 					"address": "Please enter a valid IPv4 address.",
 					"addressInvalid": "Invalid IPv4 address.",
 					"dns": "Please enter a valid IPv4 DNS server address.",
