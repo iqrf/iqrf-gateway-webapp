@@ -11,6 +11,14 @@
 						{{ $t('network.ethernet.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/network/wireless'>
+					<header class='list-group-item-heading'>
+						{{ $t('network.wireless.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('network.wireless.description') }}
+					</p>
+				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>

@@ -74,6 +74,13 @@ class NetworkConnectionService {
 		return axios.get('network/connections', config);
 	}
 
+	/**
+	 * Lists available wifi access points
+	 */
+	public listWifiAccessPoints(): Promise<AxiosResponse> {
+		return axios.get('network/wifi/list', {headers: authorizationHeader()});
+	}
+
 }
 
 export default new NetworkConnectionService();
