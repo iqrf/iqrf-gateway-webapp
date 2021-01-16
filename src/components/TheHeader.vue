@@ -13,7 +13,7 @@
 		<div class='align-badge'>
 			<CBadge
 				tag='p'
-				:color='daemonModeReady ? "success": "danger"'
+				:color='isSocketConnected ? daemonModeReady ? "success": "danger" : "secondary"'
 			>
 				{{ $t('daemonStatus.mode') }}
 			</CBadge> <CBadge
