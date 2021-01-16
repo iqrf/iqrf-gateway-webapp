@@ -6,7 +6,7 @@
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConnection'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
 								required: "network.connection.errors.name"
@@ -38,7 +38,8 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<fieldset v-if='connection.ipv4.method === "manual"'>
+								<div v-if='connection.ipv4.method === "manual"'>
+									<hr>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
@@ -85,7 +86,11 @@
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<div v-for='(dns, index) in connection.ipv4.dns' :key='index'>
+									<hr>
+									<div 
+										v-for='(address, index) in connection.ipv4.dns'
+										:key='index'
+									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
@@ -95,7 +100,7 @@
 											}'
 										>
 											<CInput
-												v-model='dns.address'
+												v-model='address.address'
 												:label='$t("network.connection.ipv4.dns.address")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='$t(errors[0])'
@@ -103,7 +108,7 @@
 										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
-												v-if='index !== 0'
+												v-if='index > 0'
 												color='danger'
 												@click='deleteIpv4Dns(index)'
 											>
@@ -117,7 +122,7 @@
 											</CButton>
 										</div>
 									</div>
-								</fieldset>
+								</div>
 							</CCol>
 							<CCol>
 								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
@@ -137,59 +142,90 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<fieldset v-if='connection.ipv6.method === "manual"'>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv6.method === "manual" ? "required":""'
-										:custom-messages='{
-											required: "network.connection.ipv6.errors.address"
-										}'
+								<div v-if='connection.ipv6.method === "manual"'>
+									<div 
+										v-for='(address, index) in connection.ipv6.addresses'
+										:key='index'
 									>
-										<CInput
-											v-model='connection.ipv6.addresses[0].address'
-											:label='$t("network.connection.ipv6.address")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										/>
-									</ValidationProvider>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv6.method === "manual" ? "required":""'
-										:custom-messages='{
-											required: "network.connection.ipv6.errors.prefix"
-										}'
-									>
-										<CInput
-											v-model.number='connection.ipv6.addresses[0].prefix'
-											:label='$t("network.connection.ipv6.prefix")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										/>
-									</ValidationProvider>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv6.method === "manual" ? "required":""'
-										:custom-messages='{
-											required: "network.connection.ipv6.errors.gateway"
-										}'
-									>
-										<CInput
-											v-model='connection.ipv6.addresses[0].gateway'
-											:label='$t("network.connection.ipv6.gateway")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										/>
-									</ValidationProvider>
-									<div v-for='(dns, index) in connection.ipv6.dns' :key='index'>
+										<hr>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
-											rules='required'
+											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
 											:custom-messages='{
-												required: "network.connection.ipv6.errors.dns"
+												required: "network.connection.ipv6.errors.address",
+												ipv6: "network.connection.ipv6.errors.addressInvalid"
 											}'
 										>
 											<CInput
-												v-model='dns.address'
+												v-model='address.address'
+												:label='$t("network.connection.ipv6.address")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											:rules='connection.ipv6.method === "manual" ? "required|between:48,128":""'
+											:custom-messages='{
+												required: "network.connection.ipv6.errors.prefix",
+												between: "network.connection.ipv6.errors.prefixInvalid"
+											}'
+										>
+											<CInput
+												v-model.number='address.prefix'
+												type='number'
+												min='48'
+												max='128'
+												:label='$t("network.connection.ipv6.prefix")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
+											:custom-messages='{
+												required: "network.connection.ipv6.errors.gateway",
+												ipv6: "network.connection.ipv6.errors.addressInvalid"
+											}'
+										>
+											<CInput
+												v-model='address.gateway'
+												:label='$t("network.connection.ipv6.gateway")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<div class='form-group'>
+											<CButton
+												v-if='index > 0'
+												color='danger'
+												@click='deleteIpv6Address(index)'
+											>
+												{{ $t('network.connection.ipv6.addresses.remove') }}
+											</CButton> <CButton
+												v-if='index === (connection.ipv6.addresses.length - 1)'
+												color='success'
+												@click='addIpv6Address'
+											>
+												{{ $t('network.connection.ipv6.addresses.add') }}
+											</CButton>
+										</div>
+									</div><hr>
+									<div
+										v-for='(address, index) in connection.ipv6.dns'
+										:key='index'
+									>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
+											:custom-messages='{
+												required: "network.connection.ipv6.errors.dns",
+												ipv6: "network.connection.ipv6.errors.addressInvalid"
+											}'
+										>
+											<CInput
+												v-model='address.address'
 												:label='$t("network.connection.ipv6.dns.address")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='$t(errors[0])'
@@ -197,7 +233,7 @@
 										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
-												v-if='index !== 0'
+												v-if='index > 0'
 												color='danger'
 												@click='deleteIpv6Dns(index)'
 											>
@@ -211,7 +247,7 @@
 											</CButton>
 										</div>
 									</div>
-								</fieldset>
+								</div>
 							</CCol>
 						</CRow>
 						<CButton
@@ -232,7 +268,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+import {required, between} from 'vee-validate/dist/rules';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import {IConnection} from '../../interfaces/network';
 import {AxiosResponse} from 'axios';
@@ -289,16 +325,16 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+		extend('between', between);
 		extend('ipv4', (address: string) => {
 			return ip.v4({exact: true}).test(address);
 		});
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
-			let binaryMask = '';
-			maskTokens.forEach((token: string) => {
-				binaryMask += parseInt(token).toString(2).padEnd(8, '0');
-			});
-			return new RegExp(/^1{8,30}0{2,24}$/).test(binaryMask);
+			let binaryMask = maskTokens.map((token: string) => {
+				return parseInt(token).toString(2).padStart(8, '0');
+			}).join('');
+			return new RegExp(/^1{8,32}0{0,24}$/).test(binaryMask);
 		});
 		extend('ipv6', (address: string) => {
 			return ip.v6({exact: true}).test(address);
@@ -390,6 +426,21 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
+	 * Adds a new IPv6 address object to configuration
+	 */
+	private addIpv6Address(): void {
+		this.connection.ipv6.addresses.push({address: '', prefix: 64, gateway: ''});
+	}
+
+	/**
+	 * Removes an IPv6 address object specified by index
+	 * @param {number} index Index of address object
+	 */
+	private deleteIpv6Address(index: number): void {
+		this.connection.ipv6.addresses.splice(index, 1);
+	}
+
+	/**
 	 * Adds a new IPv6 dns object to configuraiton
 	 */
 	private addIpv6Dns(): void {
@@ -457,7 +508,12 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
-		if (connection.ipv4.method === 'auto') {
+		if (connection.ipv4.method === 'manual') {
+			const binaryMask = connection.ipv4.addresses[0].mask.split('.').map((token: string) => {
+				return parseInt(token).toString(2).padStart(8, '0');
+			}).join('');
+			connection.ipv4.addresses[0].prefix = (binaryMask.match(/1/g)||[]).length;
+		} else if (connection.ipv4.method === 'auto') {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}

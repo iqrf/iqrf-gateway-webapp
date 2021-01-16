@@ -1814,7 +1814,7 @@
 				"errors": {
 					"method": "Please select the IPv4 connection method.",
 					"address": "Please enter a valid IPv4 address.",
-					"addressInvalid": "Invalid IPv4 address format.",
+					"addressInvalid": "Invalid IPv4 address.",
 					"dns": "Please enter a valid IPv4 DNS server address.",
 					"gateway": "Please enter a valid IPv4 gateway address.",
 					"mask": "Please enter a valid IPv4 subnet mask.",
@@ -1835,7 +1835,7 @@
 				},
 				"address": "IPv6 address",
 				"addresses": {
-					"add": "Add IPv6 address",
+					"add": "Add another IPv6 address",
 					"remove": "Remove IPv6 address"
 				},
 				"prefix": "Prefix",
@@ -1849,9 +1849,11 @@
 				"errors": {
 					"method": "Please select the IPv6 connection method",
 					"address": "Please enter a valid IPv6 address.",
+					"addressInvalid": "Invalid IPv6 address.",
 					"dns": "Please enter at least one IPv6 DNS server address.",
 					"gateway": "Please enter a valid IPv6 gateway address.",
-					"prefix": "Please enter a valid IPv6 prefix."
+					"prefix": "Please enter a valid IPv6 prefix.",
+					"prefixInvalid": "IPv6 prefix should be between 48 and 128 bits."
 				}
 			},
 			"state": "Connection state",
