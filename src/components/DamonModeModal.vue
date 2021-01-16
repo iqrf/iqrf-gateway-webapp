@@ -75,7 +75,7 @@ export default class DaemonModeModal extends Vue {
 		this.webSocket = new WebSocket(
 			(window.location.protocol === 'https' ? 'wss://' : 'ws://')
 			+ window.location.hostname
-			+ (window.location.port === '8081' ? ':1438' : '/ws'));
+			+ (window.location.port === '8081' ? ':1438' : ':' + window.location.port + '/wsMonitor'));
 		this.webSocket.onmessage = (event) => {
 			this.parseMonitor(JSON.parse(event.data));
 		};
@@ -90,7 +90,6 @@ export default class DaemonModeModal extends Vue {
 				}, 5000);
 			};
 		};
-		
 	}
 
 	/**
