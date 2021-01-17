@@ -1,6 +1,6 @@
 <template>
 	<CModal
-		:show.sync='daemonModeModal'
+		:show.sync='daemonStatus.modal'
 		color='warning'
 	>
 		<template #header>
@@ -47,7 +47,7 @@ interface IMonitorMsg {
 	},
 	computed: {
 		...mapGetters({
-			daemonModeModal: 'daemonModeModal',
+			daemonStatus: 'daemonStatus',
 		}),
 	},
 })
@@ -57,8 +57,14 @@ interface IMonitorMsg {
  */
 export default class DaemonModeModal extends Vue {
 
+	/**
+	 * @var {number} reconnectInterval WebSocket reconnect interval ID
+	 */
 	private reconnectInterval = 0
 
+	/**
+	 * @var {WebSocket} webSocket WebSocket object
+	 */
 	private webSocket: WebSocket|null = null
 
 	/**
@@ -98,12 +104,13 @@ export default class DaemonModeModal extends Vue {
 	 */
 	private parseMonitor(message: IMonitorMsg): void {
 		let mode = message.data.operMode;
-		let daemonReady = this.$store.getters.daemonModeReady;
+		let daemonReady = this.$store.getters.daemonStatus.ready;
 		if (daemonReady && mode === 'service') {
-			this.$store.dispatch('daemonModeNotReady');
+			this.$store.dispatch('daemonStatusNotReady');
 		} else if (!daemonReady && (mode === 'operational' || mode === 'forwarding')) {
-			this.$store.dispatch('daemonModeReady');
+			this.$store.dispatch('daemonStatusReady');
 		}
+		this.$store.dispatch('daemonStatusMode', mode);
 	}
 
 	/**

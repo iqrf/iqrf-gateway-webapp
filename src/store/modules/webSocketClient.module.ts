@@ -75,20 +75,21 @@ export interface WebSocketClientState {
 	messages: Array<WebSocketMessage>;
 
 	/**
-	 * State of modal window
+	 * Daemon status object
 	 */
-	modeModal: boolean
-
-	/**
-	 * Daemon mode for IQMESH services
-	 */
-	modeReady: boolean
+	daemonStatus: DaemonStatus;
 
 	/**
 	 * IQRF Gateway Daemon version object
 	 */
 	version: DaemonVersion;
 
+}
+
+export interface DaemonStatus {
+	mode: string;
+	modal: boolean;
+	ready: boolean;
 }
 
 /**
@@ -116,8 +117,11 @@ const state: WebSocketClientState = {
 	requests: {},
 	responses: {},
 	messages: [],
-	modeModal: false,
-	modeReady: false,
+	daemonStatus: {
+		mode: 'unknown',
+		modal: false,
+		ready: false,
+	},
 	version: {
 		daemonVersion: '',
 		msgId: '',
@@ -144,9 +148,9 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			console.error('Request is null');
 			return undefined;
 		}
-		if (!serviceModeWhitelist.includes(request.mType) && !state.modeReady) {
+		if (!serviceModeWhitelist.includes(request.mType) && !state.daemonStatus.ready) {
 			commit('spinner/HIDE');
-			state.modeModal = true;
+			state.daemonStatus.modal = true;
 			return;
 		} 
 		if (request.data !== undefined && request.data.msgId === undefined) {
@@ -200,11 +204,14 @@ const actions: ActionTree<WebSocketClientState, any> = {
 	hideDaemonModal({commit}): void {
 		commit('HIDE_MODE_MODAL');
 	},
-	daemonModeReady({commit}): void {
-		commit('DAEMON_MODE_READY');
+	daemonStatusReady({commit}): void {
+		commit('DAEMON_STATUS_READY');
 	},
-	daemonModeNotReady({commit}): void {
-		commit('DAEMON_MODE_NOT_READY');
+	daemonStatusNotReady({commit}): void {
+		commit('DAEMON_STATUS_NOT_READY');
+	},
+	daemonStatusMode({commit}, mode: string): void {
+		commit('DAEMON_STATUS_MODE', mode);
 	}
 };
 
@@ -215,12 +222,9 @@ const getters: GetterTree<WebSocketClientState, any> = {
 	daemonVersion(state: WebSocketClientState) {
 		return state.version.daemonVersion;
 	},
-	daemonModeModal(state: WebSocketClientState) {
-		return state.modeModal;
+	daemonStatus(state: WebSocketClientState) {
+		return state.daemonStatus;
 	},
-	daemonModeReady(state: WebSocketClientState) {
-		return state.modeReady;
-	}
 };
 
 const mutations: MutationTree<WebSocketClientState> = {
@@ -265,13 +269,16 @@ const mutations: MutationTree<WebSocketClientState> = {
 		state.messages.splice(message, 1);
 	},
 	HIDE_MODE_MODAL(state: WebSocketClientState) {
-		state.modeModal = false;
+		state.daemonStatus.modal = false;
 	},
-	DAEMON_MODE_READY(state: WebSocketClientState) {
-		state.modeReady = true;
+	DAEMON_STATUS_READY(state: WebSocketClientState) {
+		state.daemonStatus.ready = true;
 	},
-	DAEMON_MODE_NOT_READY(state: WebSocketClientState) {
-		state.modeReady = false;
+	DAEMON_STATUS_NOT_READY(state: WebSocketClientState) {
+		state.daemonStatus.ready = false;
+	},
+	DAEMON_STATUS_MODE(state: WebSocketClientState, mode: string) {
+		state.daemonStatus.mode = mode;
 	}
 };
 
