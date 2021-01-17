@@ -63,6 +63,14 @@ class NetworkConnectionService {
 	}
 
 	/**
+	 * Removes an existing network connection configuration
+	 * @param uuid Network connection UUID
+	 */
+	public remove(uuid: string): Promise<AxiosResponse> {
+		return axios.delete('network/connections/' + uuid, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Lists available network connections
 	 * @param type Network connection type
 	 */

@@ -28,54 +28,43 @@
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								size='sm'
 								:color='item.inUse ? "danger" : "success"'
-								@click='item.uuid ? connect(item.uuid) : modalAccessPoint = item'
+								@click='item.inUse ? disconnect(item.uuid) : item.uuid ? connect(item.uuid) : showModal(item)'
 							>
-								<CIcon :content='item.inUse ? icons.disconnect : icons.connect' />
+								<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
 								{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
 							</CButton> <CButton
 								v-if='item.uuid'
+								size='sm'
 								color='primary'
 								:to='"/network/edit/" + item.uuid'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
+							</CButton> <CButton
+								v-if='item.uuid'
+								size='sm'
+								color='danger'
+								@click='removeConnection(item.uuid)'
+							>
+								<CIcon :content='icons.remove' size='sm' />
+								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='primary'
-			:show='modalAccessPoint !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.wireless.modal.title', {accessPoint: modalAccessPoint.name}) }}
-				</h5>
-			</template>
-			<template #footer>
-				<CButton
-					color='secondary'
-					@click='modalAccessPoint = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton> <CButton
-					color='primary'
-					@click='connect(modalAccessPoint.uuid)'
-				>
-					{{ $t('network.table.connect') }}
-				</CButton>
-			</template>
-		</CModal>
+		<WifiForm v-if='modalAccessPoint !== null' :ap='modalAccessPoint' @hide-modal='hideModal' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress} from '@coreui/vue/src';
-import {cilPencil, cilLink, cilLinkBroken} from '@coreui/icons';
+import {CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import {cilPencil, cilLink, cilLinkBroken, cilTrash} from '@coreui/icons';
+import WifiForm from '../../components/Network/WifiForm.vue';
 
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 
@@ -91,8 +80,8 @@ import {IAccessPoint, NetworkConnection} from '../../interfaces/network';
 		CCardHeader,
 		CDataTable,
 		CIcon,
-		CModal,
 		CProgress,
+		WifiForm,
 	},
 	metaInfo: {
 		title: 'network.wireless.title'
@@ -126,6 +115,7 @@ export default class WifiConnections extends Vue {
 		connect: cilLink,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
+		remove: cilTrash,
 	}
 
 	/**
@@ -159,6 +149,20 @@ export default class WifiConnections extends Vue {
 	 */
 	mounted(): void {
 		this.getAccessPoints();
+	}
+
+	/**
+	 * Show wifi access point connection modal window
+	 */
+	private showModal(item: IAccessPoint): void {
+		this.modalAccessPoint = item;
+	}
+
+	/**
+	 * Hides wifi access point connection modal window
+	 */
+	private hideModal(): void {
+		this.modalAccessPoint = null;
 	}
 
 	/**
@@ -214,8 +218,77 @@ export default class WifiConnections extends Vue {
 			});
 	}
 
+	/**
+	 * Connects to wifi access point
+	 * @param {string} uuid Network connection UUID
+	 */
 	private connect(uuid: string): void {
-		this.modalAccessPoint = null;
+		let connection = this.connections.find((item: NetworkConnection) => {
+			return item.uuid === uuid;
+		});
+		if (!connection) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.connect.success',
+						{interface: connection?.interfaceName, connection: connection?.interfaceName}
+					).toString());
+				this.getAccessPoints();
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}
+
+	/**
+	 * Disconnects from wifi access point
+	 * @param {string} uuid Network connection UUID
+	 */
+	private disconnect(uuid: string): void {
+		let connection = this.connections.find((item: NetworkConnection) => {
+			return item.uuid === uuid;
+		});
+		if (!connection) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.disconnect(connection.uuid)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.disconnect.success',
+						{interface: connection?.interfaceName, connection: connection?.name}
+					).toString());
+				this.getAccessPoints();
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}
+
+	/**
+	 * Removes wifi access point connection
+	 * @param {string} uuid Network connection UUID
+	 */
+	private removeConnection(uuid: string): void {
+		let connection = this.connections.find((item: NetworkConnection) => {
+			return item.uuid === uuid;
+		});
+		if (!connection) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.remove(uuid)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('network.connection.messages.removeSuccess', {connection: connection?.name}).toString()
+				);
+				this.getAccessPoints();
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 }
 </script>

@@ -23,6 +23,7 @@ namespace App\NetworkModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\WifiNetwork;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use stdClass;
 
 /**
  * WiFI network manager
@@ -59,6 +60,14 @@ class WifiManager {
 			$networks[] = WifiNetwork::nmCliDeserialize($network);
 		}
 		return $networks;
+	}
+
+	/**
+	 * Creates a connection to existing WiFI access point
+	 * @param stdClass $values WiFi access point connection information
+	 */
+	public function createConnection(stdClass $values): string {
+		return 'Workaround';
 	}
 
 }
