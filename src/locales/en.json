@@ -1820,6 +1820,7 @@
 				}
 			},
 			"messages": {
+				"interfacesFailed": "Failed to retrieve list of interfaces",
 				"listFailed": "Failed to retrieve list of available access points.",
 				"connectionsFailed": "Failed to retrieve access point connection details."
 			}

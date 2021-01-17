@@ -408,7 +408,7 @@
 					"type": "object",
 					"title": "WiFi connection security",
 					"example": {
-						"keyManagement": "wpa-psk",
+						"type": "wpa-psk",
 						"psk": "password"
 					},
 					"additionalProperties": false,
@@ -416,7 +416,7 @@
 						"type"
 					],
 					"properties": {
-						"keyManagement": {
+						"type": {
 							"$id": "#/properties/wifi/properties/security/properties/type",
 							"type": "string",
 							"title": "Security type",

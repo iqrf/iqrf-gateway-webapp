@@ -123,6 +123,10 @@ class ConnectionDetail implements INetworkManagerEntity {
 		return $this->type;
 	}
 
+	public function setType(ConnectionTypes $type): void {
+		$this->type = $type;
+	}
+
 	/**
 	 * Returns the network connection name
 	 * @return string Network connection name
@@ -191,6 +195,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	public function nmCliSerialize(): string {
 		$array = [
 			'id' => $this->name,
+			'type' => $this->type,
 		];
 		$nmcli = NmCliConnection::encode($array, self::NMCLI_PREFIX);
 		$nmcli .= $this->autoConnect->nmCliSerialize();
