@@ -103,7 +103,17 @@
 	},
 	"daemonStatus": {
 		"mode": "Daemon mode",
-		"websocket": "Websocket status",
+		"modes": {
+			"operational": "Operational",
+			"forwarding": "Forwaring",
+			"service": "Service",
+			"unknown": "Unknown"
+		},
+		"websocket": {
+			"title": "Websocket status",
+			"connected": "Connected",
+			"notConnected": "Not connected"
+		},
 		"modalTitle": "Daemon mode notice",
 		"modalPrompt": "IQRF GW Daemon is not service mode. Change Daemon mode to operational or forwarding before using this feature."
 	},
@@ -166,6 +176,8 @@
 		"update": "Update",
 		"backup": "Backup",
 		"restore": "Restore",
+		"on": "On",
+		"off": "Off",
 		"downloadBackup": "Download backup",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
@@ -1018,6 +1030,7 @@
 			"description": "Gateway date and time settings.",
 			"currentTime": "Current gateway time",
 			"currentTimezone": "Current gateway timezone",
+			"clockFormat": "Use 12-hour clock format",
 			"form": {
 				"timezone": "Change timezone",
 				"timezonePlaceholder": "Select a timezone"

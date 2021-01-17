@@ -10,10 +10,24 @@
 					</p>
 					<p style='font-size: 3.5em'>
 						{{ timeDisplay }}
-					</p>
+					</p> 
 					<p style='font-size: 2.5em'>
 						{{ timezoneDisplay }}
 					</p>
+					<div class='form-group'>
+						<label for='clockFormatSwitch'>
+							{{ $t('gateway.datetime.clockFormat') }}
+						</label><br>
+						<CSwitch
+							id='clockFormatSwitch'
+							:checked.sync='hour12'
+							color='primary'
+							shape='pill'
+							size='lg'
+							:label-on='$t("forms.on")'
+							:label-off='$t("forms.off")'
+						/>
+					</div>
 				</CCol>
 				<CCol>
 					<p>
@@ -55,7 +69,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
@@ -75,6 +89,7 @@ import {DateTime} from 'luxon';
 		CInputCheckbox,
 		CRow,
 		CSelect,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -92,6 +107,11 @@ export default class GatewayTime extends Vue {
 	 * @var {ITime|null} gatewayTime Gateway timezone information
 	 */
 	private gatewayTime: ITime|null = null
+
+	/**
+	 * @var {boolean} hour12 Use 12-hour clock to display time
+	 */
+	private hour12 = false
 
 	/**
 	 * @var {string} timezone Currently selected timezone
@@ -138,7 +158,9 @@ export default class GatewayTime extends Vue {
 			return '';
 		}
 		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
-			{zone: this.gatewayTime.name}).toFormat('ccc dd.LL.yyyy hh:mm:ss a');
+			{zone: this.gatewayTime.name}).toFormat(
+			'ccc dd.LL.yyyy ' + (this.hour12 ? 'hh:mm:ss a': 'HH:mm:ss')
+		);
 	}
 
 	/**

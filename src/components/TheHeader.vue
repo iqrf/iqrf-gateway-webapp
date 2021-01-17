@@ -10,18 +10,23 @@
 			class='ml-3 d-md-down-none'
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
-		<div class='align-badge'>
-			<CBadge
-				tag='p'
-				:color='isSocketConnected ? daemonModeReady ? "success": "danger" : "secondary"'
-			>
+		<div class='badge-group'>
+			<span style='color: white;'>
 				{{ $t('daemonStatus.mode') }}
-			</CBadge> <CBadge
-				tag='p'
-				:color='isSocketConnected ? "success": "danger"'
-			>
-				{{ $t('daemonStatus.websocket') }}
-			</CBadge>
+				<CBadge
+					:color='isSocketConnected ? daemonStatus.ready ? "success": "danger" : "secondary"'
+				>
+					{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonStatus.mode : 'unknown')) }}
+				</CBadge>
+			</span>
+			<span style='color: white;'>
+				{{ $t('daemonStatus.websocket.title') }}
+				<CBadge
+					:color='isSocketConnected ? "success": "danger"'
+				>
+					{{ $t('daemonStatus.websocket.' + (isSocketConnected ? 'connected' : 'notConnected')) }}
+				</CBadge>
+			</span> 
 		</div>
 		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
 			<LogoBig :alt='$t("core.title")' />
@@ -79,7 +84,7 @@ import { mapGetters } from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonModeReady: 'daemonModeReady',
+			daemonStatus: 'daemonStatus',
 			isSocketConnected: 'isSocketConnected',
 		}),
 	},
@@ -110,8 +115,11 @@ export default class TheHeader extends Vue {
 </script>
 
 <style scoped>
-.align-badge {
+.badge-group {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
 	position: relative;
-	transform: translateY(30%);
+	align-self: center;
 }
 </style>
