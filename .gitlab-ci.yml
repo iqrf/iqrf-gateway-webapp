@@ -167,7 +167,7 @@ coverage:jest:
   before_script:
     - npm install
   script:
-    - jest --ci --reporters=default --reporters=jest-junit
+    - npm run coverage:unit-ci
   allow_failure: true
   artifacts:
     when: always
