@@ -169,6 +169,7 @@ coverage:jest:
   script:
     - npm run coverage:unit-ci
   allow_failure: true
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
   artifacts:
     when: always
     reports:

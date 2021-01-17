@@ -21,7 +21,7 @@
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"coverage:unit": "vue-cli-service test:unit --coverage",
-		"coverage:unit-ci": "vue-cli-service test:unit --ci --reporters=default --reporters=jest-junit",
+		"coverage:unit-ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit",
 		"test:unit": "vue-cli-service test:unit",
 		"lint": "vue-cli-service lint",
 		"lint:css": "stylelint \"src/**/*.{css,scss,sass}\"",
