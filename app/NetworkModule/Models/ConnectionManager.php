@@ -199,6 +199,21 @@ class ConnectionManager {
 		return $connections;
 	}
 
+	public function add(stdClass $values): string {
+		$newConnection = ConnectionDetail::jsonDeserialize($values);
+		$newConnection->setType(ConnectionTypes::fromScalar($values->type));
+		$configuration = $newConnection->nmCliSerialize();
+		$command = sprintf('nmcli -t connection add %s', $configuration);
+		$output = $this->commandManager->run($command, true);
+		$exitCode = $output->getExitCode();
+		if ($exitCode !== 0) {
+			$this->handleError($exitCode, $output->getStderr());
+		}
+		$pattern = '/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/';
+		preg_match($pattern, $output->getStdout(), $matches);
+		return $matches[0];
+	}
+
 	/**
 	 * Edits the network connection's configuration
 	 * @param UuidInterface $uuid Network connection UUID

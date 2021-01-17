@@ -56,7 +56,13 @@
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<WifiForm v-if='modalAccessPoint !== null' :ap='modalAccessPoint' @hide-modal='hideModal' />
+		<WifiForm
+			v-if='modalAccessPoint !== null'
+			:ap='modalAccessPoint'
+			:ifname='ifname'
+			@hide-modal='hideModal'
+			@create-connection='createConnection'
+		/>
 	</div>
 </template>
 
@@ -67,6 +73,7 @@ import {cilPencil, cilLink, cilLinkBroken, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
+import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
 import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
@@ -102,6 +109,11 @@ export default class WifiConnections extends Vue {
 	 * @var {Array<NetworkConnection>} connections Array of existing connections
 	 */
 	private connections: Array<NetworkConnection> = []
+
+	/**
+	 * @var {string} ifname Interface name
+	 */
+	private ifname = ''
 
 	/**
 	 * @var {IAccessPoint} modalAccessPoint Access point for modal window
@@ -148,7 +160,7 @@ export default class WifiConnections extends Vue {
 	 * Retrieves data for table
 	 */
 	mounted(): void {
-		this.getAccessPoints();
+		this.getInterfaces();
 	}
 
 	/**
@@ -176,6 +188,24 @@ export default class WifiConnections extends Vue {
 		} else {
 			return 'danger';
 		}
+	}
+
+	/**
+	 * Retrieves wifi interfaces
+	 */
+	private getInterfaces(): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkInterfaceService.list(InterfaceType.WIFI)
+			.then((response: AxiosResponse) => {
+				this.ifname = response.data[0].name;
+				this.getAccessPoints();
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('network.wireless.messages.interfacesFailed').toString()
+				);
+			});
 	}
 
 	/**
@@ -216,6 +246,10 @@ export default class WifiConnections extends Vue {
 					this.$t('network.wireless.messages.connectionsFailed').toString()
 				);
 			});
+	}
+
+	private createConnection(connection: any): void {
+		NetworkConnectionService.add(connection);
 	}
 
 	/**
