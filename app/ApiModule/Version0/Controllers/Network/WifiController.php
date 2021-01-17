@@ -79,4 +79,39 @@ class WifiController extends NetworkController {
 		}
 	}
 
+	/**
+	 * @Path("/connection")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Creates a connection to WiFi access point
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/NetworkWifiConnection'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('networkWifiConnection', $request);
+		try {
+			$json = $request->getJsonBody(false);
+			$uuid = $this->wifiManager->createConnection($json);
+			return $response->writeBody($uuid);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

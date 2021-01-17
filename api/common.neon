@@ -111,6 +111,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkInterfaces.json
 		NetworkConnectivityState:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectivityState.json
+		NetworkWifiConnection:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/NetworkWifiConnection.json
 		NetworkWifiList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWifiList.json
 		OpenApiSpecification:

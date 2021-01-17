@@ -1794,7 +1794,14 @@
 				"security": "Network security"
 			},
 			"modal": {
-				"title": "Connect to {accessPoint}"
+				"title": "Connect to {accessPoint}",
+				"form": {
+					"security": "Security",
+					"password": "Password"
+				},
+				"errors": {
+					"password": "Please enter the password."
+				}
 			},
 			"messages": {
 				"listFailed": "Failed to retrieve list of available access points.",
@@ -1888,7 +1895,9 @@
 				},
 				"disconnect": {
 					"success": "Network connection {connection} has been disconnected at network interface {interface}."
-				}
+				},
+				"removeSuccess": "Network connection {connection} has been removed.",
+				"removeFailed": "Failed to delete network connection {connection}."
 			}
 		},
 		"table": {
