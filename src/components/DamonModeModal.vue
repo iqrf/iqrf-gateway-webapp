@@ -110,7 +110,9 @@ export default class DaemonModeModal extends Vue {
 		} else if (!daemonReady && (mode === 'operational' || mode === 'forwarding')) {
 			this.$store.dispatch('daemonStatusReady');
 		}
-		this.$store.dispatch('daemonStatusMode', mode);
+		if (mode !== this.$store.getters.daemonStatus.mode) {
+			this.$store.dispatch('daemonStatusMode', mode);
+		}
 	}
 
 	/**
