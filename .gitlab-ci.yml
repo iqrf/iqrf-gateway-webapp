@@ -162,6 +162,20 @@ coverage:
     expire_in: 2 weeks
   <<: *test_template
 
+coverage:jest:
+  image: node:10-buster
+  before_script:
+    - npm install
+  script:
+    - jest --ci --reporters=default --reporters=jest-junit
+  allow_failure: true
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+  <<: *test_template
+
 coding-style:
   stage: coding-style
   needs: []
