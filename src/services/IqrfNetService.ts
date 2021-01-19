@@ -1,3 +1,4 @@
+import {OtaUploadAction} from '../iqrfNet/otaUploadAction';
 import store from '../store';
 import {WebSocketOptions} from '../store/modules/webSocketClient.module';
 
@@ -207,6 +208,32 @@ class IqrfNetService {
 					'param': {},
 				},
 				'returnVerbose': true,
+			},
+		};
+		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Sends request to execute OTA upload action
+	 * @param deviceAddr Target device address
+	 * @param file Full name of file to upload
+	 * @param eeepromAddr External EEPROM address
+	 * @param action OTA upload action
+	 * @param options WebSocket request options
+	 * @returns Message ID
+	 */
+	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, action: OtaUploadAction, options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_OtaUpload',
+			'data': {
+				'repeat': 1,
+				'req': {
+					'deviceAddr': deviceAddr,
+					'hwpid': hwpid,
+					'fileName': file,
+					'startMemAddr': eeepromAddr,
+					'loadingAction': action,
+				},
 			},
 		};
 		return store.dispatch('sendRequest', options);

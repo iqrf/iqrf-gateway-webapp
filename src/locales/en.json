@@ -176,6 +176,9 @@
 		"update": "Update",
 		"backup": "Backup",
 		"restore": "Restore",
+		"verify": "Verify",
+		"load": "Load",
+		"allSteps": "Run All Steps",
 		"on": "On",
 		"off": "Off",
 		"downloadBackup": "Download backup",
@@ -1142,6 +1145,8 @@
 		"networkManager": {
 			"title": "Network manager",
 			"description": "Network manager.",
+			"iqmesh": "IQMESH",
+			"backupRestore": "Backup/Restore",
 			"autoNetwork": {
 				"title": "AutoNetwork",
 				"form": {
@@ -1282,7 +1287,46 @@
 				}
 			},
 			"otaUpload": {
-				"title": "OTA upload"
+				"title": "OTA upload",
+				"form": {
+					"file": "File",
+					"fileType": "File type",
+					"fileTypes": {
+						"hex": "Custom DPA handler"
+					},
+					"target": "Upload target",
+					"targets": {
+						"coordinator": "Coordinator",
+						"node": "Node",
+						"network": "Network"
+					},
+					"hwpidFilter": "Filter nodes by HWPID*",
+					"nodeAddress": "Node address",
+					"eeepromAddress": "External EEPROM address",
+					"manualUpload": "Manual upload",
+					"automaticUpload": "Automatic upload",
+					"uploadSteps": {
+						"uploadEeeprom": "Step 1: Upload to external EEPROM",
+						"verifyEeeprom": "Step 2: Verify data in external EEPROM",
+						"loadFlash": "Step 3: Load from to external EEPROM to Flash"
+					}
+				},
+				"errors": {
+					"file": "Please select a file to upload.",
+					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
+					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
+					"eeepromAddress": "Please enter an integer between 0 and 16383 for external EEPROM start address."
+				},
+				"messages": {
+					"hwpid": "* HWPID 65535 includes all devices.",
+					"gwUploadFail": "Failed to upload file to gateway.",
+					"uploadStepFail": "An error has occured during the upload step.",
+					"uploadStepSucces": "Upload step has been successfully completed.",
+					"verifyStepFail": "An error has occured during the verification step.",
+					"verifyStepSuccess": "Verification step has been successfully completed.",
+					"loadStepFail": "An error has occured during the flash load step.",
+					"loadStepSuccess": "Flash load step has been successfully completed."
+				}
 			},
 			"messages": {
 				"submit": {
