@@ -40,7 +40,7 @@
 								type='submit'
 								:disabled='invalid'
 							>
-								{{ $t('forms.upload') }}
+								{{ $t('forms.update') }}
 							</CButton>
 						</div>
 						<CAlert 
@@ -239,16 +239,16 @@ export default class OsUpdater extends Vue {
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
 			for (let file of files) {
-				this.uploadMessage += '\n' + this.$t(
+				this.uploadMessage = this.$t(
 					'iqrfnet.trUpload.osUpload.messages.fileUploading', 
-					{file: this.getFileName(file.name)}
+					{file: file.type}
 				).toString();
 				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 				await IqrfService.uploader(file)
 					.then(() => {
-						this.uploadMessage += '\n' + this.$t(
+						this.uploadMessage = this.$t(
 							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
-							{file: this.getFileName(file.name)}
+							{file: file.type}
 						).toString();
 						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 					})
@@ -274,7 +274,7 @@ export default class OsUpdater extends Vue {
 	private stopDaemon(): Promise<void> {
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.uploadMessage += this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
+				this.uploadMessage = this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
 				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));

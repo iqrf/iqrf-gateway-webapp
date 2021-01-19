@@ -28,7 +28,7 @@
 							/>
 						</ValidationProvider>
 						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.upload') }}
+							{{ $t('forms.update') }}
 						</CButton>
 					</CForm>
 				</ValidationObserver>

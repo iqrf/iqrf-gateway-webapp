@@ -113,7 +113,7 @@ export default class HexUpload extends Vue {
 		// REST API upload
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
-				this.uploadMessage += '\n' + this.$t(
+				this.uploadMessage = this.$t(
 					'iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess',
 					{file: files[0].name}
 				).toString();
@@ -132,9 +132,9 @@ export default class HexUpload extends Vue {
 	 * Sends IQRF Gateway Uploader REST API request to upload Custom DPA handler
 	 * @param {FileUpload} response REST API response containing uploaded file metadata
 	 */
-	private uploadFile(response: FileUpload): void {
+	private uploadTr(response: FileUpload): void {
 		// update spinner status
-		this.uploadMessage += '\n' + this.$t(
+		this.uploadMessage = this.$t(
 			'iqrfnet.trUpload.osUpload.messages.fileUploading',
 			{file: response.fileName}
 		).toString();
@@ -143,9 +143,8 @@ export default class HexUpload extends Vue {
 		// run uploader
 		IqrfService.uploader({name: response.fileName, type: 'HEX'})
 			.then(() => {
-				this.uploadMessage += '\n' + this.$t(
-					'iqrfnet.trUpload.osUpload.messages.fileUploaded',
-					{file: response.fileName}
+				this.uploadMessage = this.$t(
+					'iqrfnet.trUpload.hexUpload.messages.uploadSuccessTr'
 				).toString();
 				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 				this.startDaemon();
@@ -160,11 +159,9 @@ export default class HexUpload extends Vue {
 	private stopDaemon(response: FileUpload): void {
 		ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.uploadMessage += '\n' + this.$t(
-					'service.iqrf-gateway-daemon.messages.stop'
-				).toString();
+				this.uploadMessage = this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
 				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-				this.uploadFile(response);
+				this.uploadTr(response);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
@@ -177,7 +174,7 @@ export default class HexUpload extends Vue {
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('iqrfnet.trUpload.hexUpload.uploadSuccess').toString()
+					this.$t('iqrfnet.trUpload.hexUpload.messages.uploadSuccess').toString()
 				);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
