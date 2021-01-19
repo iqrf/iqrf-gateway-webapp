@@ -105,7 +105,7 @@
 		"mode": "Daemon mode",
 		"modes": {
 			"operational": "Operational",
-			"forwarding": "Forwaring",
+			"forwarding": "Forwarding",
 			"service": "Service",
 			"unknown": "Unknown"
 		},
@@ -115,7 +115,7 @@
 			"notConnected": "Not connected"
 		},
 		"modalTitle": "Daemon mode notice",
-		"modalPrompt": "IQRF GW Daemon is not service mode. Change Daemon mode to operational or forwarding before using this feature."
+		"modalPrompt": "IQRF GW Daemon is in service mode. Change Daemon mode to operational or forwarding before using this feature."
 	},
 	"states": {
 		"disabled": "Disabled",

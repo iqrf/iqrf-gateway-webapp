@@ -89,7 +89,6 @@ export interface WebSocketClientState {
 export interface DaemonStatus {
 	mode: string;
 	modal: boolean;
-	ready: boolean;
 }
 
 /**
@@ -120,7 +119,6 @@ const state: WebSocketClientState = {
 	daemonStatus: {
 		mode: 'unknown',
 		modal: false,
-		ready: false,
 	},
 	version: {
 		daemonVersion: '',
@@ -148,7 +146,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			console.error('Request is null');
 			return undefined;
 		}
-		if (!serviceModeWhitelist.includes(request.mType) && !state.daemonStatus.ready) {
+		if (!serviceModeWhitelist.includes(request.mType) && state.daemonStatus.mode === 'service') {
 			commit('spinner/HIDE');
 			state.daemonStatus.modal = true;
 			return;
@@ -203,12 +201,6 @@ const actions: ActionTree<WebSocketClientState, any> = {
 	},
 	hideDaemonModal({commit}): void {
 		commit('HIDE_MODE_MODAL');
-	},
-	daemonStatusReady({commit}): void {
-		commit('DAEMON_STATUS_READY');
-	},
-	daemonStatusNotReady({commit}): void {
-		commit('DAEMON_STATUS_NOT_READY');
 	},
 	daemonStatusMode({commit}, mode: string): void {
 		commit('DAEMON_STATUS_MODE', mode);
@@ -270,12 +262,6 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	HIDE_MODE_MODAL(state: WebSocketClientState) {
 		state.daemonStatus.modal = false;
-	},
-	DAEMON_STATUS_READY(state: WebSocketClientState) {
-		state.daemonStatus.ready = true;
-	},
-	DAEMON_STATUS_NOT_READY(state: WebSocketClientState) {
-		state.daemonStatus.ready = false;
 	},
 	DAEMON_STATUS_MODE(state: WebSocketClientState, mode: string) {
 		state.daemonStatus.mode = mode;

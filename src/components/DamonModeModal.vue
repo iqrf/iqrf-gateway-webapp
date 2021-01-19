@@ -104,12 +104,6 @@ export default class DaemonModeModal extends Vue {
 	 */
 	private parseMonitor(message: IMonitorMsg): void {
 		let mode = message.data.operMode;
-		let daemonReady = this.$store.getters.daemonStatus.ready;
-		if (daemonReady && mode === 'service') {
-			this.$store.dispatch('daemonStatusNotReady');
-		} else if (!daemonReady && (mode === 'operational' || mode === 'forwarding')) {
-			this.$store.dispatch('daemonStatusReady');
-		}
 		if (mode !== this.$store.getters.daemonStatus.mode) {
 			this.$store.dispatch('daemonStatusMode', mode);
 		}
