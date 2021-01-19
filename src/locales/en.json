@@ -1281,6 +1281,9 @@
 					"timeout": "The Discovery request has timed out."
 				}
 			},
+			"otaUpload": {
+				"title": "OTA upload"
+			},
 			"messages": {
 				"submit": {
 					"autoNetwork": {
