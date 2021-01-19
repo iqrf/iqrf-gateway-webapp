@@ -234,6 +234,7 @@ class IqrfNetService {
 					'startMemAddr': eeepromAddr,
 					'loadingAction': action,
 				},
+				'returnVerbose': true,
 			},
 		};
 		return store.dispatch('sendRequest', options);

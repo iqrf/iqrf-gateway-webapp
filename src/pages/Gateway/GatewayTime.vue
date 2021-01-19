@@ -8,7 +8,7 @@
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
 					</p>
-					<p style='font-size: 3.5em'>
+					<p style='font-size: 2.5em'>
 						{{ timeDisplay }}
 					</p> 
 					<p style='font-size: 2.5em'>
@@ -159,7 +159,7 @@ export default class GatewayTime extends Vue {
 		}
 		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
 			{zone: this.gatewayTime.name}).toFormat(
-			'ccc dd.LL.yyyy ' + (this.hour12 ? 'hh:mm:ss a': 'HH:mm:ss')
+			'cccc dd.LL.yyyy ' + (this.hour12 ? 'hh:mm:ss a': 'HH:mm:ss')
 		);
 	}
 

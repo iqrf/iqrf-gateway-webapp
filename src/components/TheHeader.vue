@@ -14,7 +14,7 @@
 			<span style='color: white;'>
 				{{ $t('daemonStatus.mode') }}
 				<CBadge
-					:color='isSocketConnected ? daemonStatus.ready ? "success": "danger" : "secondary"'
+					:color='isSocketConnected ? daemonStatus.mode !== "service" ? "success": "danger" : "secondary"'
 				>
 					{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonStatus.mode : 'unknown')) }}
 				</CBadge>
@@ -99,6 +99,26 @@ export default class TheHeader extends Vue {
 	 */
 	private icons: Dictionary<Array<string>> = {
 		logout: cilLockLocked
+	}
+
+	/**
+	 * Computes Daemon mode badge color
+	 * @returns {string} Daemon mode badge color
+	 */
+	get daemonBadgeColor(): string {
+		const daemonStatus = this.$store.getters.daemonStatus;
+		const socketConnected = this.$store.getters.isSocketConnected;
+		if (!socketConnected) {
+			return 'seconday';
+		}
+		if (daemonStatus.mode === 'unknown') {
+			return 'secondary';
+		} else if (daemonStatus.mode === 'operational' ||
+			daemonStatus.mode === 'forwarding') {
+			return 'success';
+		} else {
+			return 'danger';
+		}
 	}
 	
 	/**
