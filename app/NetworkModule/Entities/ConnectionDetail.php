@@ -123,10 +123,6 @@ class ConnectionDetail implements INetworkManagerEntity {
 		return $this->type;
 	}
 
-	public function setType(ConnectionTypes $type): void {
-		$this->type = $type;
-	}
-
 	/**
 	 * Returns the network connection name
 	 * @return string Network connection name

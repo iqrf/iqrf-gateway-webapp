@@ -201,7 +201,6 @@ class ConnectionManager {
 
 	public function add(stdClass $values): string {
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
-		$newConnection->setType(ConnectionTypes::fromScalar($values->type));
 		$configuration = $newConnection->nmCliSerialize();
 		$command = sprintf('nmcli -t connection add %s', $configuration);
 		$output = $this->commandManager->run($command, true);
