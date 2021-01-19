@@ -1621,7 +1621,7 @@
 			"title": "Coordinator upload",
 			"description": "IQRF Coordinator upload.",
 			"dpaUpload": {
-				"title": "DPA plug-in update",
+				"title": "DPA plug-in",
 				"form": {
 					"version": "DPA version"
 				},
@@ -1642,7 +1642,7 @@
 				}
 			},
 			"hexUpload": {
-				"title": "Custom DPA handler upload",
+				"title": "Custom DPA handler",
 				"form": {
 					"file":"File to upload"
 				},
@@ -1654,11 +1654,12 @@
 					"gatewayUploadFailure": "An error has occured during upload to gateway.",
 					"gatewayUploadSuccess": "File {file} has been successfully uploaded to gateway.",
 					"invalidFormat": "The uploaded file is not a .hex file.",
-					"uploadSuccess": "Custom DPA handler has been successfully uploaded."
+					"uploadSuccess": "Custom DPA handler has been successfully uploaded.",
+					"uploadSuccessTr": "Custom DPA handler has been successfully uploaded to TR."
 				}
 			},
 			"osUpload": {
-				"title": "IQRF OS and DPA update",
+				"title": "IQRF OS and DPA",
 				"form": {
 					"current": "Current OS version:",
 					"version": "Target OS version"
@@ -1670,8 +1671,8 @@
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFail": "Failed to retrieve current version of IQRF OS.",
 					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
-					"fileUploading": "Uploading file {file} to TR ...",
-					"fileUploaded": "File {file} has been successfully uploaded to TR."
+					"fileUploading": "Uploading {file} file to TR ...",
+					"fileUploaded": "{file} file has been successfully uploaded to TR."
 				}
 			},
 			"messages": {
