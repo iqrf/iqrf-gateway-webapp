@@ -5,20 +5,23 @@
 			<CCol lg='6'>
 				<CCard>
 					<CTabs variant='tabs' :active-tab='activeTab'>
-						<CTab title='IQMESH'>
+						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
 							<BondingManager @update-devices='updateDevices' />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
-						<CTab title='AutoNetwork'>
+						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
 							<AutoNetwork v-if='daemonHigher230' ref='autonetwork' @update-devices='updateDevices' />
 							<VersionAlert v-else />
 						</CTab>
-						<CTab title='Backup/Restore'>
+						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
 							<div v-if='daemonHigher230'>
 								<Backup />
 								<Restore />
 							</div>
 							<VersionAlert v-else />
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
+							<OtaUpload />
 						</CTab>
 					</CTabs>
 				</CCard>
@@ -41,6 +44,7 @@ import BondingManager from '../../components/IqrfNet/BondingManager.vue';
 import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
 import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
 import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
+import OtaUpload from '../../components/IqrfNet/OtaUpload.vue';
 import VersionAlert from '../../components/IqrfNet/VersionAlert.vue';
 
 @Component({
@@ -53,6 +57,7 @@ import VersionAlert from '../../components/IqrfNet/VersionAlert.vue';
 		BondingManager,
 		DevicesInfo,
 		DiscoveryManager,
+		OtaUpload,
 		Restore,
 		VersionAlert,
 	},
