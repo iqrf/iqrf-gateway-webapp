@@ -1321,6 +1321,8 @@
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
 					"gwUploadFail": "Failed to upload file to gateway.",
+					"invalidFile": "Uploaded file is not HEX or IQRF file.",
+					"invalidContent": "Invalid file content.",
 					"coordinator": {
 						"uploadStepSuccess": "Upload step has been successfully completed for coordinator.",
 						"verifyStepSuccess": "Verification step has been successfully completed for coordinator.",
