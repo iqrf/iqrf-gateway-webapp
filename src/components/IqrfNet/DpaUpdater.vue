@@ -134,11 +134,6 @@ export default class DpaUpdater extends Vue {
 	private showModal = false
 
 	/**
-	 * @var {string} uploadMessage Spinner upload status message
-	 */
-	private uploadMessage = ''
-
-	/**
 	 * @var {string|null} version Currently selected version of DPA
 	 */
 	private version: string|null = null
@@ -324,24 +319,22 @@ export default class DpaUpdater extends Vue {
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
 				// update spinner message
-				this.uploadMessage += '\n' + this.$t(
-					'iqrfnet.trUpload.dpaUpload.messages.dpaFileDownloaded',
-					{file: response.data.fileName}
-				).toString();
-				this.uploadMessage += '\n' + this.$t(
-					'iqrfnet.trUpload.osUpload.messages.fileUploading',
-					{file: response.data.fileName}
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-				
+				this.$store.commit(
+					'spinner/UPDATE_TEXT', 
+					this.$t(
+						'iqrfnet.trUpload.osUpload.messages.fileUploading',
+						{file: 'DPA'}
+					).toString()
+				);
 				// upload downloaded file to TR
 				IqrfService.uploader({name: response.data.fileName, type: 'DPA'})
 					.then(() => {
-						this.uploadMessage += '\n' + this.$t(
-							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
-							{file: response.data.fileName}
-						).toString();
-						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+						this.$store.commit('spinner/UPDATE_TEXT',  
+							this.$t(
+								'iqrfnet.trUpload.osUpload.messages.fileUploaded',
+								{file: 'DPA'}
+							).toString()
+						);
 						this.startDaemon();
 					})
 					.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
@@ -354,14 +347,13 @@ export default class DpaUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(): Promise<void> {
-		this.uploadMessage = '';
 		this.$store.commit('spinner/SHOW');
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.uploadMessage = this.$t(
-					'service.iqrf-gateway-daemon.messages.stop'
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.$store.commit('spinner/UPDATE_TEXT', 
+					this.$t(
+						'service.iqrf-gateway-daemon.messages.stop').toString()
+				);
 				this.upload();
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
