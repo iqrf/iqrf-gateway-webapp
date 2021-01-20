@@ -32,3 +32,6 @@ docs/build/
 .vscode/
 # Vue.js build
 www/dist/
+# Cypress
+cypress/videos
+cypress/screenshots

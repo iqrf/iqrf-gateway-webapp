@@ -95,7 +95,7 @@ axios.interceptors.response.use(
 	}
 );
 
-new Vue({
+const app = new Vue({
 	router,
 	store,
 	i18n: i18n,
@@ -107,3 +107,7 @@ new Vue({
 		}
 	},
 }).$mount('#app');
+
+if (process.env.VUE_APP_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
+	window['app'] = app;
+}

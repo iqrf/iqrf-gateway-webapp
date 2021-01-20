@@ -15,6 +15,7 @@
  */
 
 import sendPacket from '../../iqrfNet/sendPacket';
+import {expect, test} from '@jest/globals';
 
 test('Update Network address in DPA packet', () => {
 	const expected = '01.00.02.00.ff.ff';

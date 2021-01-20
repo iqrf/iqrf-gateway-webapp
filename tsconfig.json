@@ -6,6 +6,9 @@
 		"moduleResolution": "node",
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
-		"experimentalDecorators": true
-	}
+		"experimentalDecorators": true,
+		"types": ["jest", "node"],
+		"lib": ["ES2020", "DOM"]
+	},
+	"exclude": ["cypress"]
 }
