@@ -103,7 +103,7 @@
 						<CButton
 							color='primary'
 							:disabled='invalid || fileEmpty'
-							@click='uploadFile'
+							@click='uploadFile(false)'
 						>
 							{{ $t('forms.upload') }}
 						</CButton>
@@ -117,6 +117,7 @@
 						<CButton
 							color='primary'
 							:disabled='invalid || fileEmpty'
+							@click='verifyStep'
 						>
 							{{ $t('forms.verify') }}
 						</CButton>
@@ -130,6 +131,7 @@
 						<CButton
 							color='primary'
 							:disabled='invalid || fileEmpty'
+							@click='flashLoadStep'
 						>
 							{{ $t('forms.load') }}
 						</CButton>
@@ -138,6 +140,7 @@
 					<CButton
 						color='primary'
 						:disabled='invalid || fileEmpty'
+						@click='uploadFile(true)'
 					>
 						{{ $t('forms.allSteps') }}
 					</CButton>
@@ -162,8 +165,8 @@ import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
 
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import { AxiosResponse } from 'axios';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import {AxiosResponse} from 'axios';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -287,8 +290,14 @@ export default class OtaUpload extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			if (mutation.payload.mType !== 'iqmeshNetwork_OtaUpload') {
-				return;
+			this.$store.dispatch('removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqmeshNetwork_OtaUpload') {
+				this.handleOtaUploadResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+				);
 			}
 		});
 	}
@@ -314,8 +323,10 @@ export default class OtaUpload extends Vue {
 
 	/**
 	 * Uploads file from file input to gateway filesystem
+	 * @param {boolean} autoUpload Run all steps automatically
 	 */
-	private uploadFile(): void {
+	private uploadFile(autoUpload: boolean): void {
+		this.autoUpload = autoUpload;
 		this.fileName = '';
 		const formData = new FormData();
 		formData.append('format', FileFormat.HEX);
@@ -375,6 +386,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API rquest to execute specified step
 	 */
 	private executeStep(action: OtaUploadAction, message: string): void {
+		this.$store.commit('spinner/SHOW');
 		IqrfNetService.otaUpload(
 			this.getAddress(),
 			this.hwpid,
@@ -383,6 +395,141 @@ export default class OtaUpload extends Vue {
 			action,
 			new WebSocketOptions(null, null, message, () => this.msgId = null)
 		).then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Daemon API OTA upload responses
+	 * @param response Daemon API response
+	 */
+	private handleOtaUploadResponse(response: any): void {
+		if (this.target === NetworkTarget.COORDINATOR ||
+			this.target === NetworkTarget.NODE) {
+			this.deviceResponse(response.rsp.deviceAddr, response.status, response.statusStr, response.rsp.loadingAction);
+			return;
+		}
+		const action = response.rsp.loadingAction;
+		if (action === OtaUploadAction.UPLOAD) {
+			if (this.autoUpload) {
+				this.verifyStep();
+			} else {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.info(
+					this.$t('iqrfnet.networkManager.otaUpload.messages.network.uploadStepSuccess').toString()
+				);
+			}
+		} else if (action === OtaUploadAction.VERIFY) {
+			if (this.autoUpload) {
+				this.flashLoadStep();
+			} else {
+				this.$store.commit('spinner/HIDE');
+				const devices = response.rsp.verifyResult.map((item) => {
+					if (!item.result) {
+						return item.address;
+					}
+				}).join(', ');
+				this.$toast.info(
+					this.$t(
+						'iqrfnet.networkManager.otaUpload.messages.network.verifyStepSuccess',
+						{devices: devices.trim() === ',' ? 'None' : devices}
+					).toString()
+				);
+			}
+		} else {
+			let devices = response.rsp.loadResult.map((item) => {
+				if (!item.result) {
+					return item.address;
+				}
+			}).join(', ');
+			this.$store.commit('spinner/HIDE');
+			if (this.autoUpload) {
+				this.$toast.info(
+					this.$t(
+						'iqrfnet.networkManager.otaUpload.messages.network.runAllSuccess',
+						{devices: devices.trim() === ',' ? 'None' : devices}
+					).toString()
+				);
+			} else {
+				this.$toast.info(
+					this.$t(
+						'iqrfnet.networkManager.otaUpload.messages.network.loadStepSuccess',
+						{devices: devices.trim() === ',' ? 'None' : devices}
+					).toString()
+				);
+			}
+		}
+	}
+
+	/**
+	 * Handles OTa upload response for coordinator and node devices
+	 * @param {number} address Device address
+	 * @param {number} status OTA upload status code
+	 * @param {string} statusMessage OTA upload status message
+	 * @param {OtaUploadAction} action OTA upload step
+	 */
+	private deviceResponse(address: number, status: number, statusMessage: string, action: OtaUploadAction): void {
+		if (status === 0) {
+			if (action === OtaUploadAction.UPLOAD) {
+				if (this.autoUpload) {
+					this.verifyStep();
+				} else {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t(address === 0 ?
+							'iqrfnet.networkManager.otaUpload.messages.coordinator.uploadStepSuccess':
+							'iqrfnet.networkManager.otaUpload.messages.node.uploadStepSuccess', {address: address}
+						).toString()
+					);
+				}
+			} else if (action === OtaUploadAction.VERIFY) {
+				if (this.autoUpload) {
+					this.flashLoadStep();
+				} else {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t(address === 0 ?
+							'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
+							'iqrfnet.networkManager.otaUpload.messages.node.verifyStepSuccess', {address: address}
+						).toString()
+					);
+				}
+			} else {
+				this.$store.commit('spinner/HIDE');
+				if (this.autoUpload) {
+					this.$toast.success(
+						this.$t(address === 0 ?
+							'iqrfnet.networkManager.otaUpload.messages.coordinator.runAllSuccess':
+							'iqrfnet.networkManager.otaUpload.messages.node.runAllSuccess', {address: address}
+						).toString()
+					);
+				} else {
+					this.$toast.success(
+						this.$t(address === 0 ?
+							'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
+							'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address} 
+						).toString()
+					);
+				}
+			}
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		// device offline
+		if (statusMessage.includes('Transaction error')) {
+			this.$toast.error(
+				this.$t(address === 0 ?
+					'forms.messages.coordinatorOffline':
+					'forms.messages.deviceOffline', {address: address}
+				).toString()
+			);
+		} else if (statusMessage.includes('Dpa error')) {
+			this.$toast.error(
+				this.$t('forms.messages.noDevice', {address: address}).toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+			);
+		}
 	}
 }
 </script>
