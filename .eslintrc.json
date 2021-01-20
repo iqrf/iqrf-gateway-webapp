@@ -2,7 +2,7 @@
 	"env": {
 		"browser": true,
 		"commonjs": true,
-		"jquery": true,
+		"jest": true,
 		"es6": true
 	},
 	"extends": [

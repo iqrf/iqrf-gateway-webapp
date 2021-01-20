@@ -19,6 +19,7 @@
 										:custom-messages='{required: "core.sign.in.messages.username"}'
 									>
 										<CInput
+											id='username'
 											v-model='username'
 											:label='$t("forms.fields.username")'
 											:placeholder='$t("forms.fields.username")'
@@ -37,6 +38,7 @@
 										:custom-messages='{required: "core.sign.in.messages.password"}'
 									>
 										<CInput
+											id='password'
 											v-model='password'
 											:label='$t("forms.fields.password")'
 											:placeholder='$t("forms.fields.password")'
