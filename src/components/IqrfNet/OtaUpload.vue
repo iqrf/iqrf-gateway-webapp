@@ -407,6 +407,20 @@ export default class OtaUpload extends Vue {
 			this.deviceResponse(response.rsp.deviceAddr, response.status, response.statusStr, response.rsp.loadingAction);
 			return;
 		}
+		if (response.status === 1002) {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidFile').toString()
+			);
+			return;
+		}
+		if (response.status === 1003) {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidContent').toString()
+			);
+			return;
+		}
 		const action = response.rsp.loadingAction;
 		if (action === OtaUploadAction.UPLOAD) {
 			if (this.autoUpload) {
@@ -513,23 +527,43 @@ export default class OtaUpload extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/HIDE');
-		// device offline
-		if (statusMessage.includes('Transaction error')) {
+		// invalid uploaded file
+		if (status === 1002) {
 			this.$toast.error(
-				this.$t(address === 0 ?
-					'forms.messages.coordinatorOffline':
-					'forms.messages.deviceOffline', {address: address}
-				).toString()
+				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidFile').toString()
 			);
-		} else if (statusMessage.includes('Dpa error')) {
-			this.$toast.error(
-				this.$t('forms.messages.noDevice', {address: address}).toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
-			);
+			return;
 		}
+		// invalid file content
+		if (status === 1003) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidContent').toString()
+			);
+			return;
+		}
+		if (status === 1005) {
+			// device offline
+			if (statusMessage.includes('Transaction error')) {
+				this.$toast.error(
+					this.$t(address === 0 ?
+						'forms.messages.coordinatorOffline':
+						'forms.messages.deviceOffline', {address: address}
+					).toString()
+				);
+			} else if (statusMessage.includes('Dpa error')) {
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: address}).toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+				);
+			}
+			return;
+		}
+		this.$toast.error(
+			this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+		);
 	}
 }
 </script>
