@@ -14,7 +14,7 @@
 			<span style='color: white;'>
 				{{ $t('daemonStatus.mode') }}
 				<CBadge
-					:color='isSocketConnected ? daemonStatus.mode !== "service" ? "success": "danger" : "secondary"'
+					:color='daemonBadgeColor'
 				>
 					{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonStatus.mode : 'unknown')) }}
 				</CBadge>
@@ -109,7 +109,7 @@ export default class TheHeader extends Vue {
 		const daemonStatus = this.$store.getters.daemonStatus;
 		const socketConnected = this.$store.getters.isSocketConnected;
 		if (!socketConnected) {
-			return 'seconday';
+			return 'secondary';
 		}
 		if (daemonStatus.mode === 'unknown') {
 			return 'secondary';

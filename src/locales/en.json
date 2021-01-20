@@ -1318,14 +1318,30 @@
 					"eeepromAddress": "Please enter an integer between 0 and 16383 for external EEPROM start address."
 				},
 				"messages": {
+					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
 					"gwUploadFail": "Failed to upload file to gateway.",
+					"coordinator": {
+						"uploadStepSuccess": "Upload step has been successfully completed for coordinator.",
+						"verifyStepSuccess": "Verification step has been successfully completed for coordinator.",
+						"loadStepSuccess": "Flash load step has been successfully completed for coordinator.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed for coordinator."
+					},
+					"node": {
+						"uploadStepSuccess": "Upload step has been successfully completed for node at address {address}.",
+						"verifyStepSuccess": "Verification step has been successfully completed for node at address {address}.",
+						"loadStepSuccess": "Flash load step has been successfully completed for node at address {address}.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
+					},
+					"network": {
+						"uploadStepSuccess": "Upload step has been successfully completed for all online devices.",
+						"verifyStepSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"loadStepSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+					},
 					"uploadStepFail": "An error has occured during the upload step.",
-					"uploadStepSucces": "Upload step has been successfully completed.",
 					"verifyStepFail": "An error has occured during the verification step.",
-					"verifyStepSuccess": "Verification step has been successfully completed.",
-					"loadStepFail": "An error has occured during the flash load step.",
-					"loadStepSuccess": "Flash load step has been successfully completed."
+					"loadStepFail": "An error has occured during the flash load step."
 				}
 			},
 			"messages": {
