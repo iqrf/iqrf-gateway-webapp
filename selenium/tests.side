@@ -1,0 +1,185 @@
+{
+  "id": "127f334c-dd2f-4fb6-817f-2ee0f4e1b10a",
+  "version": "2.0",
+  "name": "iqrf-gw-webapp",
+  "url": "http://localhost:8081",
+  "tests": [{
+    "id": "d58395a2-c47b-42ec-bb0e-6381dca7ba6d",
+    "name": "Installation redirect",
+    "commands": [{
+      "id": "2100728a-ba5c-4572-b4a3-a151ab927b72",
+      "comment": "",
+      "command": "times",
+      "target": "50",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "80db4146-1a88-40f9-872a-0c209bb1d2ed",
+      "comment": "",
+      "command": "open",
+      "target": "/install/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ad12e0b7-d48b-4eb4-87b2-16f6f12fe4e6",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1848x1053",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cfe7fb89-e4f6-4c42-92b5-a4a8fdf3f50a",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Create a new user",
+      "targets": [
+        ["linkText=Create a new user", "linkText"],
+        ["css=.btn-primary:nth-child(1)", "css:finder"],
+        ["xpath=//a[contains(text(),'Create a new user')]", "xpath:link"],
+        ["xpath=//a[contains(@href, '/install/user')]", "xpath:href"],
+        ["xpath=//a", "xpath:position"],
+        ["xpath=//a[contains(.,'Create a new user')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a93d4161-191f-4a97-99cb-6b19041f0589",
+      "comment": "",
+      "command": "click",
+      "target": "id=username",
+      "targets": [
+        ["id=username", "id"],
+        ["css=#username", "css:finder"],
+        ["xpath=//input[@id='username']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c55ab1fa-96b0-4e7d-8bb7-dc7745d50d0f",
+      "comment": "",
+      "command": "type",
+      "target": "id=username",
+      "targets": [
+        ["id=username", "id"],
+        ["css=#username", "css:finder"],
+        ["xpath=//input[@id='username']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "test"
+    }, {
+      "id": "5f789789-a32a-42a7-82ec-0b1b630e0e76",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//span[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3243e9e0-db90-4563-b2ea-5037e0e6c556",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//span[2]/div/input", "xpath:position"]
+      ],
+      "value": "test"
+    }, {
+      "id": "f2763eb5-fa2a-4a88-a198-24075912cea6",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-primary",
+      "targets": [
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Add')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dfc6c8d6-ea61-4473-a2e2-d097788a8d8e",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=User manager",
+      "targets": [
+        ["linkText=User manager", "linkText"],
+        ["css=.c-sidebar-nav > .c-sidebar-nav-item:nth-child(6) > .c-sidebar-nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'User manager')]", "xpath:link"],
+        ["xpath=//a[contains(@href, '/user/')]", "xpath:href"],
+        ["xpath=//div/ul/li[6]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'User manager')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d5bfb7fb-77eb-45b6-94f5-0aba35501382",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-danger:nth-child(2)",
+      "targets": [
+        ["css=.btn-danger:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//td[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Delete')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f22be3d0-6443-41c8-a044-ca5aef2ce4a8",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.btn-danger:nth-child(2)",
+      "targets": [
+        ["css=.btn-danger:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//td[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Delete')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f661b832-8444-4708-a744-797713ad4d61",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.btn-danger:nth-child(2)",
+      "targets": [
+        ["css=.btn-danger:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//td[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Delete')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "abfab035-5947-4855-9c75-b8cf116a4356",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success:nth-child(2)",
+      "targets": [
+        ["css=.btn-success:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[7]", "xpath:attributes"],
+        ["xpath=//footer/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Yes')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d83d0812-5760-4e53-9b04-208add4b1e20",
+      "comment": "",
+      "command": "end",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "e4dd2aab-e73d-4cde-9ea5-5fb44cdbf27a",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["https://localhost:8081/", "http://localhost:8081/"],
+  "plugins": []
+}

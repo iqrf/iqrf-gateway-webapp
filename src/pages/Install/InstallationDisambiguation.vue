@@ -6,8 +6,7 @@
 		<CCardFooter>
 			<CButton color='primary' to='/install/user'>
 				{{ $t('install.createUser.title') }}
-			</CButton>
-			<CButton color='primary' to='/install/gateway-info'>
+			</CButton> <CButton color='primary' to='/install/gateway-info'>
 				{{ $t('install.gwInfo.button') }}
 			</CButton>
 		</CCardFooter>
