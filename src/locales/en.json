@@ -1791,8 +1791,8 @@
 		}
 	},
 	"network": {
-		"title": "Network manager",
-		"description": "Controls the network.",
+		"title": "IP network",
+		"description": "IP network management.",
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
@@ -1805,7 +1805,7 @@
 			"table": {
 				"accessPoints": "Available access points",
 				"noAccessPoints": "No available access points.",
-				"ssid": "Access point name",
+				"ssid": "Name",
 				"signal": "Signal strength",
 				"security": "Network security"
 			},
