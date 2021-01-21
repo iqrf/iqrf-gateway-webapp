@@ -12,6 +12,7 @@
 						}'
 					>
 						<CInput
+							id='username'
 							v-model='username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
@@ -26,6 +27,7 @@
 						}'
 					>
 						<CInput
+							id='password'
 							v-model='password'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
