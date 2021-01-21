@@ -102,6 +102,13 @@ export default class EthernetConnections extends Vue {
 	@Prop({required: false, default: null}) interfaceName!: string
 
 	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		this.fields[0].label = this.$t('network.connection.name', {interface: this.interfaceName});
+	}
+
+	/**
 	 * Establishes a connection using the specified configuration
 	 * @param {NetworkConnection} connection Network connection configuration
 	 */
