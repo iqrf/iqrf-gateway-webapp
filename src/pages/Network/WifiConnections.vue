@@ -17,6 +17,18 @@
 					<template #no-items-view='{}'>
 						{{ $t('network.wireless.table.noAccessPoints') }}
 					</template>
+					<template #ssid='{item}'>
+						<td>
+							{{ item.ssid }}
+							<CBadge 
+								v-if='item.inUse'
+								style='float: right;'
+								color='success'
+							>
+								{{ $t('network.connection.states.connected') }}
+							</CBadge>
+						</td>
+					</template>
 					<template #signal='{item}'>
 						<td>
 							<CProgress
@@ -68,7 +80,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
 import {cilPencil, cilLink, cilLinkBroken, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
@@ -82,6 +94,7 @@ import {IAccessPoint, NetworkConnection} from '../../interfaces/network';
 
 @Component({
 	components: {
+		CBadge,
 		CCard,
 		CCardBody,
 		CCardHeader,
@@ -147,6 +160,7 @@ export default class WifiConnections extends Vue {
 			key: 'security',
 			label: this.$t('network.wireless.table.security'),
 			filter: false,
+			sorter: false,
 		},
 		{
 			key: 'actions',
@@ -263,6 +277,7 @@ export default class WifiConnections extends Vue {
 		if (!connection) {
 			return;
 		}
+		console.warn(connection);
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
 			.then(() => {
@@ -270,7 +285,7 @@ export default class WifiConnections extends Vue {
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: connection?.interfaceName, connection: connection?.interfaceName}
+						{interface: connection?.interfaceName, connection: connection?.name}
 					).toString());
 				this.getAccessPoints();
 			})
