@@ -2,16 +2,16 @@
 	<CCard>
 		<CCardBody>
 			<CRow>
-				<CCol>
+				<CCol md='6'>
 					<p v-if='gatewayTime !== null'>
 						<b>
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
 					</p>
-					<p style='font-size: 2.5em'>
+					<p style='font-size: 2em'>
 						{{ timeDisplay }}
 					</p> 
-					<p style='font-size: 2.5em'>
+					<p style='font-size: 1.5em'>
 						{{ timezoneDisplay }}
 					</p>
 					<div class='form-group'>
@@ -29,7 +29,7 @@
 						/>
 					</div>
 				</CCol>
-				<CCol>
+				<CCol md='6'>
 					<p>
 						<b>
 							{{ $t('gateway.datetime.currentTimezone') }}
