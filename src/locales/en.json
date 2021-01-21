@@ -1810,7 +1810,7 @@
 			}
 		},
 		"connection": {
-			"name": "Connection name",
+			"name": "Connections on interface {interface}",
 			"errors": {
 				"name": "Please enter a connection name."
 			},
