@@ -19,8 +19,9 @@
 declare(strict_types = 1);
 
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
-use Rector\SOLID\Rector\Class_\FinalizeClassesWithoutChildrenRector;
-use Rector\SOLID\Rector\ClassMethod\UseInterfaceOverImplementationInConstructorRector;
+use Rector\Core\Configuration\Option;
+use Rector\Core\ValueObject\PhpVersion;
+use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -28,28 +29,26 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 	$parameters->set('exclude_rectors', [
 		CallableThisArrayToAnonymousFunctionRector::class,
-		FinalizeClassesWithoutChildrenRector::class,
-		UseInterfaceOverImplementationInConstructorRector::class,
 	]);
 
-	$parameters->set('paths', [
+	$parameters->set(Option::PATHS, [
 		__DIR__ . '/app',
 		__DIR__ . '/bin',
 		__DIR__ . '/tests',
 		]);
 
-	$parameters->set('php_version_features', '7.2');
+	$parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_73);
 
-	$parameters->set('sets', [
-		'code-quality',
-		'doctrine-code-quality',
-		'doctrine-dbal210',
-		'nette30',
-		'nette-utils-code-quality',
-		'php72',
-		'php73',
-		'php74',
-		'symfony50',
-		'solid',
+	$parameters->set(Option::SETS, [
+		SetList::CODE_QUALITY,
+		SetList::CODE_QUALITY_STRICT,
+		SetList::DOCTRINE_CODE_QUALITY,
+		SetList::DOCTRINE_DBAL_211,
+		SetList::NETTE_30,
+		SetList::NETTE_UTILS_CODE_QUALITY,
+		SetList::PHP_73,
+		SetList::PHP_74,
+		SetList::SYMFONY_52,
+		SetList::TYPE_DECLARATION,
 	]);
 };
