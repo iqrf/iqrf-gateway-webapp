@@ -1323,6 +1323,9 @@
 					"gwUploadFail": "Failed to upload file to gateway.",
 					"invalidFile": "Uploaded file is not HEX or IQRF file.",
 					"invalidContent": "Invalid file content.",
+					"uploadRunning": "Uploading data to external EEPROM.",
+					"verifyRunning": "Verifying data in external EEPROM.",
+					"loadRunning": "Loading data from external EEPROM to Flash memory.",
 					"coordinator": {
 						"uploadStepSuccess": "Upload step has been successfully completed for coordinator.",
 						"verifyStepSuccess": "Verification step has been successfully completed for coordinator.",
