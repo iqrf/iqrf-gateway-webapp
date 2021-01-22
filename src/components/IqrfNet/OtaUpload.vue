@@ -387,6 +387,7 @@ export default class OtaUpload extends Vue {
 	 */
 	private executeStep(action: OtaUploadAction, message: string): void {
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.otaUpload.messages.' + action.toLowerCase() + 'Running').toString());
 		IqrfNetService.otaUpload(
 			this.getAddress(),
 			this.hwpid,
