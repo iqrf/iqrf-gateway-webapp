@@ -19,14 +19,13 @@
 					</template>
 					<template #ssid='{item}'>
 						<td>
-							{{ item.ssid }}
 							<CBadge 
 								v-if='item.inUse'
-								style='float: right;'
 								color='success'
 							>
 								{{ $t('network.connection.states.connected') }}
 							</CBadge>
+							{{ item.ssid }}
 						</td>
 					</template>
 					<template #signal='{item}'>
