@@ -73,7 +73,8 @@ import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
-import { Dictionary } from 'vue-router/types/router';
+import {sleep} from '../../helpers/sleep';
+import {Dictionary} from 'vue-router/types/router';
 import VueRouter from 'vue-router';
 const { isNavigationFailure, NavigationFailureType } = VueRouter;
 
@@ -139,7 +140,8 @@ export default class SignIn extends Vue {
 			this.$store.dispatch('user/signIn', credentials),
 			this.$store.dispatch('features/fetch'),
 		])
-			.then(() => {
+			.then(async () => {
+				await sleep(500);
 				this.$router.push((this.$route.query.redirect as string|undefined) ?? '/');
 				this.$toast.success(
 					this.$t('core.sign.in.messages.success').toString()

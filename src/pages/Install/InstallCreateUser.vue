@@ -52,6 +52,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 import {UserCredentials} from '../../services/AuthenticationService';
+import {sleep} from '../../helpers/sleep';
 
 @Component({
 	components: {
@@ -110,7 +111,8 @@ export default class InstallCreateUser extends Vue {
 					this.$store.dispatch('user/signIn', credentials),
 					this.$store.dispatch('features/fetch'),
 				])
-					.then(() => {
+					.then(async () => {
+						await sleep(500);
 						this.$router.push('/');
 						this.$toast.success(
 							this.$t('core.user.messages.addSuccess', {username: this.username})
