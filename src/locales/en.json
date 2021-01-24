@@ -1804,6 +1804,15 @@
 					"phaseTwoAlgorithm": {
 						"mschapv2": "MSCHAPv2"
 					},
+					"wep": {
+						"type": "Type",
+						"types": {
+							"key": "Key",
+							"passphrase": "Passphrase"
+						},
+						"index": "Key index",
+						"keyNum": "Key {index}"
+					},
 					"noCaCert": "No CA certificate required",
 					"caCert": "CA certificate",
 					"authPhaseTwo": "Phase two authentication",
@@ -1812,7 +1821,13 @@
 					"password": "Password"
 				},
 				"errors": {
-					"password": "Please enter the password."
+					"password": "Please enter the password.",
+					"wepKeyType": "Please select WEP security type.",
+					"wepIndex": "Please enter default key index.",
+					"wepIndexInvalid": "Default key index should be between 1 and 4.",
+					"wepKey": "Please enter a WEP key.",
+					"wepPassphrase": "Please enter a WEP passphrase",
+					"wepKeyInvalid": "WEP key should be 5 or 13 characters long ASCII string, or a 10 or 26 characters long hexadecimal string."
 				}
 			},
 			"messages": {
@@ -1899,6 +1914,7 @@
 			},
 			"messages": {
 				"loadFailed": "Failed to retrieve connection details.",
+				"createFailed": "Failed to create connection {connection}.",
 				"edit": {
 					"failure": "An error occurred while saving the network connection settings.",
 					"success": "Network connection {connection} has been edited."

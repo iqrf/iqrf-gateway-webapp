@@ -98,8 +98,6 @@ final class WifiSecurityType extends Enum {
 	 */
 	public function nmCliSerialize(): string {
 		switch ($this) {
-			case self::OPEN():
-				return 'remove ' . WifiConnectionSecurity::NMCLI_PREFIX . ' ';
 			case self::LEAP():
 				$authAlgorithm = WifiAuthAlgorithm::LEAP();
 				$keyManagement = WifiKeyManagement::DYNAMIC_WEP();
@@ -114,6 +112,7 @@ final class WifiSecurityType extends Enum {
 			case self::WPA_PSK():
 				$keyManagement = WifiKeyManagement::WPA_PSK();
 				break;
+			case self::OPEN():
 			default:
 				return '';
 		}

@@ -26,6 +26,59 @@
 						:label='$t("network.wireless.modal.form.password")'
 					/>
 				</div>
+				<div v-if='getSecurityType() === "wep"' class='form-group'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: "network.wireless.modal.errors.wepKeyType"
+						}'
+					>
+						<CSelect
+							:value.sync='configWep.type'
+							:options='wepKeyOptions'
+							:label='$t("network.wireless.modal.form.wep.type")'
+							:placeholder='$t("network.wireless.modal.errors.wepKeyType")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required|integer|between:1,4'
+						:custom-messages='{
+							required: "network.wireless.modal.errors.wepIndex",
+							integer: "forms.errors.integer",
+							between: "network.wireless.modal.errors.wepIndexInvalid"
+						}'
+					>
+						<CInput
+							v-model.number='configWep.index'
+							type='number'
+							min='1'
+							max='4'
+							:label='$t("network.wireless.modal.form.wep.index")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-for='(key, index) of configWep.keys'
+						:key='index'
+						v-slot='{errors, touched, valid}'
+						:rules='configWep.type === "key" ? "wepKey" : ""'
+						:custom-messages='{
+							wepKey: "network.wireless.modal.errors.wepKeyInvalid"
+						}'
+					>
+						<CInput							
+							v-model='configWep.keys[index]'
+							:label='$t("network.wireless.modal.form.wep.keyNum", {index: index+1})'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+				</div>
 				<div v-if='getSecurityType() === "wpa-eap"' class='form-group'>
 					<CSelect
 						:value.sync='configEap.phaseOne'
@@ -36,8 +89,7 @@
 						v-model='configEap.anonymousIdentity'
 						:label='$t("network.wireless.modal.form.anonymousIdentity")'
 					/>
-					<CInputFile
-						ref='certFile'
+					<CInput
 						:label='$t("network.wireless.modal.form.caCert")'
 						:disabled='configEap.noCert'
 					/>
@@ -105,7 +157,7 @@ import {Component, Vue, Prop} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CInputFile, CModal} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+import {required, between, integer} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
 
 import {IAccessPoint} from '../../interfaces/network';
@@ -136,8 +188,8 @@ export default class WifiForm extends Vue {
 	}
 
 	private configWep = {
-		type: 'unknown',
-		index: 0,
+		type: '',
+		index: 1,
 		keys: [
 			'', '', '', ''
 		]
@@ -146,6 +198,7 @@ export default class WifiForm extends Vue {
 	private configEap = {
 		phaseOne: 'peap',
 		anonymousIdentity: '',
+		cert: '',
 		noCert: false,
 		phaseTwo: 'mschapv2',
 		username: '',
@@ -169,6 +222,20 @@ export default class WifiForm extends Vue {
 		{
 			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
 			value: 'mschapv2'
+		}
+	]
+
+	/**
+	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
+	 */
+	private wepKeyOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.key'),
+			value: 'key'
+		},
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.passphrase'),
+			value: 'passphrase'
 		}
 	]
 
@@ -200,8 +267,16 @@ export default class WifiForm extends Vue {
 	 */
 	@Prop({required: true}) ifname!: string
 
+	/**
+	 * Initializes validation rules
+	 */
 	created(): void {
+		extend('between', between);
+		extend('integer', integer);
 		extend('required', required);
+		extend('wepKey', (key: string) => {
+			return new RegExp(/^((\w{5}(\w{8})?)|([0-9a-fA-F]{10}([0-9a-fA-F]{16})?))$/).test(key);
+		});
 	}
 
 	/**
@@ -217,7 +292,11 @@ export default class WifiForm extends Vue {
 	 */
 	private getSecurityType(): string {
 		const type = this.ap.security;
-		if (['WPA-Personal', 'WPA2-Personal', 'WPA3-Personal'].includes(type)) {
+		if (type === 'Open') {
+			return 'open';
+		} else if (type === 'WEP') {
+			return 'wep';
+		} else if (['WPA-Personal', 'WPA2-Personal', 'WPA3-Personal'].includes(type)) {
 			return 'wpa-psk';
 		} else if (['WPA-Enterprise', 'WPA2-Enterprise', 'WPA3-Enterprise'].includes(type)) {
 			return 'wpa-eap';
@@ -257,7 +336,13 @@ export default class WifiForm extends Vue {
 					wep: this.configWep,
 				}
 			}
-		}; //TODO component object for wifi security
+		};
+		// fixup index
+		connectionData.wifi.security.wep.index -= 1;
+		if (this.getSecurityType() !== 'wep') {
+			connectionData.wifi.security.wep.type = 'unknown';
+		} 
+		this.hideModal();
 		this.$emit('create-connection', connectionData);
 	}
 }
