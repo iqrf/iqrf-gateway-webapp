@@ -505,7 +505,7 @@ class ConfigController extends BaseConfigController {
 			foreach ($reqData as $component) {
 				$index = array_search($component['name'], array_column($config['components'], 'name'), true);
 				if (!$index) {
-					throw new ClientErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S404_INTERNAL_SERVER_ERROR);
+					throw new ClientErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S404_NOT_FOUND);
 				}
 				$config['components'][$index]['enabled'] = $component['enabled'];
 			}
