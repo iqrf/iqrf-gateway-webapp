@@ -12,7 +12,7 @@ export interface IComponent {
 /**
  * Daemon IQRF interface state change interface
  */
-export interface IChangeInterface {
+export interface IChangeComponent {
 	/**
 	 * Interface name
 	 */

@@ -475,33 +475,37 @@ class ConfigController extends BaseConfigController {
 	}
 
 	/**
-	 * @Path("/interface")
+	 * @Path("/components")
 	 * @Method("PATCH")
 	 * @OpenApi("
-	 *  summary: Changes IQRF Interface in configuration
+	 *  summary: 'Changes enabled state of component(s)'
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonChangeInterface'
+	 *                  $ref: '#/components/schemas/DaemonComponentEnabled'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function changeInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('daemonChangeInterface', $request);
+	public function changeComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('daemonComponentEnabled', $request);
 		try {
 			$reqData = $request->getJsonBody(true);
 			$config = $this->mainManager->load();
 			foreach ($reqData as $component) {
 				$index = array_search($component['name'], array_column($config['components'], 'name'), true);
 				if (!$index) {
-					throw new ServerErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+					throw new ClientErrorException('Component ' . $component['name'] . ' missing in daemon configuration.', ApiResponse::S404_INTERNAL_SERVER_ERROR);
 				}
 				$config['components'][$index]['enabled'] = $component['enabled'];
 			}

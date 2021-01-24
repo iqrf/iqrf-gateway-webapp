@@ -30,7 +30,7 @@ import IqrfDpa from '../../components/Config/IqrfDpa.vue';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
-import {IChangeInterface, IComponent} from '../../interfaces/daemonComponent';
+import {IChangeComponent, IComponent} from '../../interfaces/daemonComponent';
 import { IOption } from '../../interfaces/coreui';
 
 @Component({
@@ -150,7 +150,7 @@ export default class Interfaces extends Vue {
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
 	private changeInterface(): void {
-		let updateInterfaces: Array<IChangeInterface> = [];
+		let updateInterfaces: Array<IChangeComponent> = [];
 		for (let component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
 				updateInterfaces.push({name: component.name, enabled: false});
@@ -159,7 +159,7 @@ export default class Interfaces extends Vue {
 			}
 		}
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.changeInterface(updateInterfaces)
+		DaemonConfigurationService.changeComponent(updateInterfaces)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.getConfig().then(() => 

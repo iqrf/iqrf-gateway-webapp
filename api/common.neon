@@ -61,12 +61,12 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
 		ControllerConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json
-		DaemonChangeInterface:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonChangeInterface.json
 		DaemonComponent:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json
 		DaemonComponentDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json
+		DaemonComponentEnabled:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentEnabled.json
 		DaemonConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		DpaFile:

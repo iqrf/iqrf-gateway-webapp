@@ -12,10 +12,11 @@
 				"port": 80
 			},
 			"mqtt": {
-				"cid": "MQTT-REST-Translator",
+				"cid": "ffffffffffffffff",
 				"addr": "localhost",
 				"port": 1883,
-				"topic": "gateway/+/rest/requests/+/#",
+				"request_topic": "gateway/ffffffffffffffff/rest/requests/",
+				"response_topic": "gateway/ffffffffffffffff/rest/requests",
 				"user": "user",
 				"pw": "pw"
 			}
@@ -71,7 +72,8 @@
 				"cid",
 				"addr",
 				"port",
-				"topic",
+				"request_topic",
+				"response_topic",
 				"user",
 				"pw"
 			],
@@ -81,8 +83,7 @@
 					"type": "string",
 					"title": "MQTT client ID",
 					"description": "MQTT client identification string.",
-					"example": "MQTT-REST-Translator"
-
+					"example": "ffffffffffffffff"
 				},
 				"addr": {
 					"$id": "#/properties/mqtt/addr",
@@ -100,12 +101,19 @@
 					"maximum": 65535,
 					"example": 1883
 				},
-				"topic": {
-					"$id": "#/properties/mqtt/topic",
+				"request_topic": {
+					"$id": "#/properties/mqtt/request_topic",
 					"type": "string",
-					"title": "MQTT topic",
-					"description": "Topic for the MQTT client to subscribe to.",
-					"example": "topic"
+					"title": "MQTT request topic",
+					"description": "MQTT topic for Translator to subscribe to.",
+					"example": "gateway/ffffffffffffffff/rest/requests/"
+				},
+				"response_topic": {
+					"$id": "#/properties/mqtt/response_topic",
+					"type": "string",
+					"title": "MQTT response topic",
+					"description": "MQTT topic for Translator to publish to.",
+					"example": "gateway/ffffffffffffffff/rest/responses/"
 				},
 				"user": {
 					"$id": "#/properties/mqtt/user",

@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import { IChangeInterface } from '../interfaces/daemonComponent';
+import {IChangeComponent} from '../interfaces/daemonComponent';
 
 /**
  * Daemon configuration service
@@ -107,11 +107,11 @@ class DaemonConfigurationService {
 	}
 
 	/**
-	 * Changes IQRF interfaces
-	 * @param data Interface configuration
+	 * Changes IQRF component
+	 * @param data component configuration
 	 */
-	changeInterface(data: Array<IChangeInterface>): Promise<AxiosResponse> {
-		return axios.patch('config/daemon/interface', data, {headers: authorizationHeader()});
+	changeComponent(data: Array<IChangeComponent>): Promise<AxiosResponse> {
+		return axios.patch('config/daemon/components', data, {headers: authorizationHeader()});
 	}
 
 }
