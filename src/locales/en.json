@@ -1813,6 +1813,18 @@
 				"title": "Connect to {accessPoint}",
 				"form": {
 					"security": "Security",
+					"authPhaseOne": "Phase one authentication",
+					"phaseOneAlgorithm": {
+						"peap": "Protected EAP"
+					},
+					"phaseTwoAlgorithm": {
+						"mschapv2": "MSCHAPv2"
+					},
+					"noCaCert": "No CA certificate required",
+					"caCert": "CA certificate",
+					"authPhaseTwo": "Phase two authentication",
+					"anonymousIdentity": "Anonymous identity",
+					"username": "Username",
 					"password": "Password"
 				},
 				"errors": {

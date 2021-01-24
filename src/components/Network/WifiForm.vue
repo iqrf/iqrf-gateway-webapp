@@ -16,7 +16,51 @@
 						<span>{{ $t('network.wireless.modal.form.security') }}</span>
 					</b> {{ ap.security }}
 				</div>
+				<div v-if='getSecurityType() === "ieee8021x"' class='form-group'>
+					<CInput
+						v-model='configLeap.username'
+						:label='$t("network.wireless.modal.form.username")'
+					/>
+					<CInput
+						v-model='configLeap.password'
+						:label='$t("network.wireless.modal.form.password")'
+					/>
+				</div>
+				<div v-if='getSecurityType() === "wpa-eap"' class='form-group'>
+					<CSelect
+						:value.sync='configEap.phaseOne'
+						:options='authOneOptions'
+						:label='$t("network.wireless.modal.form.authPhaseOne")'
+					/>
+					<CInput
+						v-model='configEap.anonymousIdentity'
+						:label='$t("network.wireless.modal.form.anonymousIdentity")'
+					/>
+					<CInputFile
+						ref='certFile'
+						:label='$t("network.wireless.modal.form.caCert")'
+						:disabled='configEap.noCert'
+					/>
+					<CInputCheckbox
+						:checked.sync='configEap.noCert'
+						:label='$t("network.wireless.modal.form.noCaCert")'
+					/>
+					<CSelect
+						:value.sync='configEap.phaseTwo'
+						:options='authTwoOptions'
+						:label='$t("network.wireless.modal.form.authPhaseTwo")'
+					/>
+					<CInput
+						v-model='configEap.username'
+						:label='$t("network.wireless.modal.form.username")'
+					/>
+					<CInput
+						v-model='configEap.password'
+						:label='$t("network.wireless.modal.form.password")'
+					/>
+				</div>
 				<ValidationProvider
+					v-if='getSecurityType() === "wpa-psk"'
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
@@ -58,13 +102,14 @@
 
 <script lang='ts'>
 import {Component, Vue, Prop} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
+import {CButton, CForm, CInput, CInputFile, CModal} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
 
 import {IAccessPoint} from '../../interfaces/network';
+import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
 import {ConnectionType} from '../../services/NetworkConnectionService';
 
@@ -73,6 +118,7 @@ import {ConnectionType} from '../../services/NetworkConnectionService';
 		CButton,
 		CForm,
 		CInput,
+		CInputFile,
 		CModal,
 		ValidationObserver,
 		ValidationProvider,
@@ -96,6 +142,35 @@ export default class WifiForm extends Vue {
 			'', '', '', ''
 		]
 	}
+
+	private configEap = {
+		phaseOne: 'peap',
+		anonymousIdentity: '',
+		noCert: false,
+		phaseTwo: 'mschapv2',
+		username: '',
+		password: ''
+	}
+
+	/**
+	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
+	 */
+	private authOneOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseOneAlgorithm.peap'),
+			value: 'peap'
+		}
+	]
+
+	/**
+	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
+	 */
+	private authTwoOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
+			value: 'mschapv2'
+		}
+	]
 
 	/**
 	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
