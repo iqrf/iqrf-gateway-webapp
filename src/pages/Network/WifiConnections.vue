@@ -240,8 +240,8 @@ export default class WifiConnections extends Vue {
 	 * Retrieves list of existing wifi connections and adds UUID to matching access points
 	 * @param {Array<IAccessPoint>} accessPoints Array of available access points
 	 */
-	private findConnections(accessPoints: Array<IAccessPoint>): void {
-		NetworkConnectionService.list(ConnectionType.WIFI)
+	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
+		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
 				for (const connection of response.data) {
 					const index = accessPoints.findIndex(ap => ap.ssid === connection.name);
@@ -262,7 +262,16 @@ export default class WifiConnections extends Vue {
 	}
 
 	private createConnection(connection: any): void {
-		NetworkConnectionService.add(connection);
+		NetworkConnectionService.add(connection)
+			.then((response: AxiosResponse) => {
+				this.findConnections(this.accessPoints).then(() => this.connect(response.data));
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('network.connection.messages.createFailed', {connection: connection.wifi.ssid}).toString()
+				);
+			});
 	}
 
 	/**
