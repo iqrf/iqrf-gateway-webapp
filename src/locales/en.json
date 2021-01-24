@@ -746,7 +746,7 @@
 				"rest": {
 					"title": "REST API client configuration",
 					"port": "Port",
-					"api_key": "API key"
+					"apiKey": "API key"
 				},
 				"mqtt": {
 					"title": "MQTT client configuration",
@@ -759,20 +759,18 @@
 			},
 			"errors": {
 				"port": "Please enter an integer between 1 and 49151 for port number.",
-				"invalid": {
-					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
-					"mtopic": "Invalid MQTT requests topic format. The request topic format should be: gateway/{GWID}/rest/requests/+/# (GWID is 16 hexadecimal digits).",
-					"mcid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits)."
-				},
-				"missing": {
-					"maddr": "Please enter the MQTT broker address.",
-					"mcid": "Please enter the MQTT client ID.",
-					"mtopic": "Please enter the MQTT requests topic.",
-					"muser": "Please enter the MQTT client username.",
-					"mpw": "Please enter the MQTT client password.",
-					"raddr": "Please enter the REST API address.",
-					"rapi_key": "Please enter the REST API client key."
-				}
+				"restAddr": "Please enter the REST API address.",
+				"apiKey": "Please enter the REST API client key.",
+				"apiKeyInvalid": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
+				"requestTopic": "Please enter the MQTT request topic.",
+				"requestTopicInvalid": "Invalid MQTT request topic format. The request topic format should be: gateway/{GWID}/rest/requests/ (GWID is 16 hexadecimal characters).",
+				"responseTopic": "Please enter the MQTT response topic.",
+				"responseTopicInvalid": "Invalid MQTT response topic format. The response topic format should be: gateway/{GWID}/rest/responses/ (GWID is 16 hexadecaimal characters).",
+				"clientId": "Please enter the MQTT client ID.",
+				"clientIdInvalid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits).",
+				"brokerAddr": "Please enter the MQTT broker address.",
+				"brokerUser": "Please enter the MQTT client username.",
+				"brokerPassword": "Please enter the MQTT client password."
 			}
 		},
 		"controller": {

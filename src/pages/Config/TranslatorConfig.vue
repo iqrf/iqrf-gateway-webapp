@@ -3,15 +3,17 @@
 		<h1>{{ $t('config.translator.title') }}</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
+				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
 					<CForm @submit.prevent='processSubmit'>
 						<CRow>
 							<CCol md='6'>
 								<h3>{{ $t("config.translator.form.mqtt.title") }}</h3>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }' 
+									v-slot='{errors, touched, valid}' 
 									rules='required'
-									:custom-messages='{required: "config.translator.errors.missing.maddr"}'
+									:custom-messages='{
+										required: "config.translator.errors.brokerAddr"
+									}'
 								>
 									<CInput
 										v-model='config.mqtt.addr'
@@ -21,10 +23,10 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }' 
+									v-slot='{errors, touched, valid}' 
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "config.translator.errors.integer",
+										integer: "forms.errors.integer",
 										required: "config.translator.errors.port",
 										between: "config.translator.errors.port"
 									}'
@@ -40,11 +42,11 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }' 
-									rules='required|client_id'
+									v-slot='{errors, touched, valid}' 
+									rules='required|clientId'
 									:custom-messages='{
-										required: "config.translator.errors.missing.mcid",
-										client_id: "config.translator.errors.invalid.mcid",
+										required: "config.translator.errors.clientId",
+										clientId: "config.translator.errors.clientIdInvalid"
 									}'
 								>
 									<CInput
@@ -55,37 +57,50 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }' 
-									rules='topic|required'
+									v-slot='{errors, touched, valid}' 
+									rules='required|requestTopic'
 									:custom-messages='{
-										required: "config.translator.errors.missing.mtopic",
-										topic: "config.translator.errors.invalid.mtopic",
+										required: "config.translator.errors.requestTopic",
+										requestTopic: "config.translator.errors.requestTopicInvalid"
 									}'
 								>
 									<CInput
-										v-model='config.mqtt.topic'
+										v-model='config.mqtt.request_topic'
 										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|responseTopic'
+									:custom-messages='{
+										required: "config.translator.errors.responseTopic",
+										responseTopic: "config.translator.errors.responseTopicInvalid"
+									}'
+								>
+									<CInput
+										v-model='config.mqtt.response_topic'
+										:label='$t("forms.fields.responseTopic")'
+										:is-valid='touched ? valid: null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }'
+									v-slot='{errors, touched, valid}'
 								>
 									<CInput
 										v-model='config.mqtt.user'
-										autocomplete='off'
 										:label='$t("forms.fields.username")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }'
+									v-slot='{errors, touched, valid}'
 								>
 									<CInput
 										v-model='config.mqtt.pw'
-										autocomplete='off'
 										:label='$t("forms.fields.password")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
@@ -106,9 +121,11 @@
 							<CCol md='6'>
 								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
 								<ValidationProvider
-									v-slot='{ errors, touched, valid }'
+									v-slot='{errors, touched, valid}'
 									rules='required'
-									:custom-messages='{required: "config.translator.errors.missing.raddr"}'
+									:custom-messages='{
+										required: "config.translator.errors.restAddr"
+									}'
 								>
 									<CInput
 										v-model='config.rest.addr' 
@@ -118,10 +135,10 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }'
+									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "config.translator.errors.integer",
+										integer: "forms.errors.integer",
 										required: "config.translator.errors.port",
 										between: "config.translator.errors.port"
 									}'
@@ -137,16 +154,16 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider 
-									v-slot='{ errors, touched, valid }' 
-									rules='api_key_r|required'
+									v-slot='{errors, touched, valid}' 
+									rules='required|apiKey'
 									:custom-messages='{
-										required: "config.translator.errors.missing.rapi_key",
-										api_key_r: "config.translator.errors.invalid.api_key"
+										required: "config.translator.errors.apiKey",
+										apiKey: "config.translator.errors.apiKeyInvalid"
 									}'
 								>
 									<CInput
 										v-model='config.rest.api_key' 
-										:label='$t("config.translator.form.rest.api_key")'
+										:label='$t("config.translator.form.rest.apiKey")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -241,16 +258,20 @@ export default class TranslatorConfig extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('api_key_r', (key) => {
+		extend('apiKey', (key) => {
 			const regex = RegExp('^[./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}$');
 			return regex.test(key);
 		});
-		extend('client_id', (id) => {
+		extend('clientId', (id) => {
 			const regex = RegExp('^[A-Fa-f0-9]{16}$');
 			return regex.test(id);
 		});
-		extend('topic', (topic) => {
-			const regex = RegExp('^gateway\\/[A-Fa-f0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
+		extend('requestTopic', (topic) => {
+			const regex = RegExp('^gateway\\/[0-9a-fA-F]{16}\\/rest\\/requests\\/$');
+			return regex.test(topic);
+		});
+		extend('responseTopic', (topic) => {
+			const regex = RegExp('^gateway\\/[0-9a-fA-F]{16}\\/rest\\/responses\\/');
 			return regex.test(topic);
 		});
 	}

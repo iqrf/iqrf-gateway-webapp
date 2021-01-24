@@ -40,7 +40,12 @@ interface ITranslatorMqtt {
 	/**
 	 * MQTT request topic
 	 */
-	topic: string
+	request_topic: string
+
+	/**
+	 * MQTT response topic
+	 */
+	response_topic: string
 
 	/**
 	 * User name
