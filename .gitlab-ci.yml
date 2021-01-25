@@ -152,14 +152,21 @@ coverage:
   <<: *test_template
 
 coverage:jest:
-  image: node:10-buster
+  image: node:lts
   before_script:
     - npm install
   script:
     - npm run coverage:unit-ci
   allow_failure: true
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
   artifacts:
+    paths:
+      - 'coverage/'
+    expire_in: 2 weeks
     when: always
     reports:
       junit:
