@@ -13,7 +13,7 @@ See the installation guide [here](https://docs.iqrf.org/iqrf-gateway/webapp-inst
 
 ## Requirements
 
-PHP 7.2 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/3.0/requirements).
+PHP 7.3 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/3.0/requirements).
 
 ### Web server
 
