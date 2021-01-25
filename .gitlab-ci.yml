@@ -90,17 +90,6 @@ build-docker:tests-buster:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_TAG: tests-buster
 
-test:php7.2:
-  allow_failure: true
-  before_script:
-    - update-alternatives --set php /usr/bin/php7.2
-    - composer install --no-progress
-  script:
-    - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
-  after_script:
-    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-  <<: *test_template
-
 test:php7.3:
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
