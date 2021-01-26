@@ -99,7 +99,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			'type' => $this->type->toScalar(),
 			'psk' => $this->psk,
 			'leap' => $this->leap->jsonSerialize(),
-			'wep' => $this->leap->jsonSerialize(),
+			'wep' => $this->wep->jsonSerialize(),
 		];
 	}
 
