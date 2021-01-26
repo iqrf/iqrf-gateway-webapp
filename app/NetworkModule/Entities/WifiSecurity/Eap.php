@@ -21,8 +21,11 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities\WifiSecurity;
 
 use App\NetworkModule\Entities\INetworkManagerEntity;
+use App\NetworkModule\Entities\WifiConnectionSecurity;
 use App\NetworkModule\Enums\EapPhaseOneMethod;
 use App\NetworkModule\Enums\EapPhaseTwoMethod;
+use App\NetworkModule\Utils\NmCliConnection;
+use stdClass;
 
 /**
  * EAP (Extensible Authentication Protocol) entity
@@ -64,11 +67,11 @@ class Eap implements INetworkManagerEntity {
 	 * @param EapPhaseOneMethod $phaseOne EAP phase one authentication method
 	 * @param EapPhaseTwoMethod $phaseTwo EAP phase two authentication method
 	 * @param string $anonymousIdentity EAP anonymous identity string
-	 * @param string $caCert EAP CA certificate
+	 * @param string $cert EAP CA certificate
 	 * @param string $identity EAP identity string
 	 * @param string $password EAP password
 	 */
-	public function __construct(EapPhaseOneMethod $phaseOne, EapPhaseTwoMethod $phaseTwo, string $anonymousIdentity, string $cert, string $username, string $password) {
+	public function __construct(EapPhaseOneMethod $phaseOne, EapPhaseTwoMethod $phaseTwo, string $anonymousIdentity, string $cert, string $identity, string $password) {
 		$this->phaseOne = $phaseOne;
 		$this->phaseTwo = $phaseTwo;
 		$this->anonymousIdentity = $anonymousIdentity;
@@ -78,18 +81,67 @@ class Eap implements INetworkManagerEntity {
 	}
 
 	/**
+	 * Deserializes EAP entity from JSON
+	 * @param stdClass $json JSON serialized data
+	 * @return INetworkManagerEntity EAP entity
+	 */
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		return new self(
+			$json->phaseOne,
+			$json->phaseTwo,
+			$json->anonymousIdentity,
+			$json->cert,
+			$json->username,
+			$json->password
+		);
+	}
+
+	/**
 	 * Serializes EAP entity into JSON
 	 * @return array<string, string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'phaseOneMethod' => $this->phaseOne,
-			'phaseTwoMethod' => $this->phaseTwo,
+			'phaseOneMethod' => $this->phaseOne->jsonSerialize(),
+			'phaseTwoMethod' => $this->phaseTwo->jsonSerialize(),
 			'anonymousIdentity' => $this->anonymousIdentity,
 			'cert' => $this->cert,
 			'identity' => $this->identity,
 			'password' => $this->password,
 		];
+	}
+
+	/**
+	 * Deserializes EAP entity from nmcli configuration
+	 * @param string $nmCli nmcli configuration
+	 * @return INetworkManagerEntity EAP entity
+	 */
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
+		$array = NmCliConnection::decode($nmCli, WifiConnectionSecurity::NMCLI_EAP_PREFIX);
+		return new self(
+			EapPhaseOneMethod::fromScalar($array['eap']),
+			EapPhaseTwoMethod::fromScalar($array['phase2-auth']),
+			$array['anonymous-identity'],
+			$array['ca-cert'],
+			$array['identity'],
+			$array['password']
+		);
+	}
+
+	/**
+	 * Serializes EAP entity into nmcli configuration string
+	 * @return string nmcli configuration
+	 */
+	public function nmCliSerialize(): string {
+		$array = [
+			'eap' => (string) $this->phaseOne->toScalar(),
+			'phase2-auth' => (string) $this->phaseTwo->toScalar(),
+			'anonymous-identity' => $this->anonymousIdentity,
+			'ca-cert' => $this->cert,
+			'identity' => $this->identity,
+			'password' => $this->password,
+		];
+		return NmCliConnection::encode($array, WifiConnectionSecurity::NMCLI_EAP_PREFIX);
 	}
 
 }

@@ -53,7 +53,7 @@ final class EapPhaseTwoMethod extends Enum implements JsonSerializable {
 	 * Serializes EAP phase two authentication method into JSON string
 	 * @return string JSON serialized data
 	 */
-	public function jsonSerializable(): string {
+	public function jsonSerialize(): string {
 		return (string) $this->toScalar();
 	}
 
