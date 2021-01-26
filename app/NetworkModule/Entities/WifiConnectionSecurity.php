@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
-use App\NetworkModule\Entities\WifiSecurity\Eap;
 use App\NetworkModule\Entities\WifiSecurity\Leap;
 use App\NetworkModule\Entities\WifiSecurity\Wep;
 use App\NetworkModule\Enums\WifiSecurityType;
@@ -35,12 +34,12 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	/**
 	 * nmcli 802-11-wireless security configuration prefix
 	 */
-	public const NMCLI_11_PREFIX = '802-11-wireless-security';
+	public const NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
 	 * nmcli 802-1x security configuration prefix
 	 */
-	public const NMCLI_1X_PREFIX = '802-1x';
+	public const NMCLI_EAP_PREFIX = '802-1x';
 
 	/**
 	 * @var WifiSecurityType WiFi security type
@@ -63,24 +62,17 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	private $wep;
 
 	/**
-	 * @var Eap|null EAP entity
-	 */
-	private $eap;
-
-	/**
 	 * Constructor
 	 * @param WifiSecurityType $type WiFi security type
 	 * @param string|null $psk Pre-shared key
 	 * @param Leap|null $leap Cisco LEAP entity
 	 * @param Wep|null $wep WEP entity
-	 * @param Eap|null $eap EAP entity
 	 */
-	public function __construct(WifiSecurityType $type, ?string $psk, ?Leap $leap, ?Wep $wep, ?Eap $eap) {
+	public function __construct(WifiSecurityType $type, ?string $psk, ?Leap $leap, ?Wep $wep) {
 		$this->type = $type;
 		$this->psk = $psk;
 		$this->leap = $leap;
 		$this->wep = $wep;
-		$this->eap = $eap;
 	}
 
 	/**
@@ -94,7 +86,6 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 		assert($leap instanceof Leap);
 		$wep = Wep::jsonDeserialize($json->wep);
 		assert($wep instanceof Wep);
-		$eap = $type === WifiSecurityType::WPA_EAP() ? Eap::jsonDeserialize($json->eap) : null;
 		return new static($type, $json->psk, $leap, $wep);
 	}
 
@@ -104,20 +95,12 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @return array<string, string|array> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
-		$array = [
+		return [
 			'type' => $this->type->toScalar(),
 			'psk' => $this->psk,
+			'leap' => $this->leap->jsonSerialize(),
+			'wep' => $this->leap->jsonSerialize(),
 		];
-		if ($this->leap) {
-			$array['leap'] = $this->leap->jsonSerialize();
-		}
-		if ($this->wep) {
-			$array['wep'] = $this->leap->jsonSerialize();
-		}
-		if ($this->eap) {
-			$array['eap'] = $this->eap->jsonSerialize();	
-		}
-		return $array;
 	}
 
 	/**
