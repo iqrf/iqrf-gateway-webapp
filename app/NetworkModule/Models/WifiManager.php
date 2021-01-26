@@ -47,7 +47,7 @@ class WifiManager {
 	 * @return array<WifiNetwork> Available WiFi networks
 	 */
 	public function list(): array {
-		$output = $this->commandManager->run('nmcli -t device wifi list --rescan auto', true);
+		$output = $this->commandManager->run('nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto', true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}
