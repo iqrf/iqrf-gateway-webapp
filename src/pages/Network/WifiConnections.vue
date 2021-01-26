@@ -41,7 +41,7 @@
 							<CButton
 								size='sm'
 								:color='item.inUse ? "danger" : "success"'
-								@click='item.inUse ? disconnect(item.uuid) : item.uuid ? connect(item.uuid) : showModal(item)'
+								@click='item.inUse ? disconnect(item.uuid, item.ssid) : item.uuid ? connect(item.uuid, item.ssid) : showModal(item)'
 							>
 								<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
 								{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
@@ -57,7 +57,7 @@
 								v-if='item.uuid'
 								size='sm'
 								color='danger'
-								@click='removeConnection(item.uuid)'
+								@click='removeConnection(item.uuid, item.ssid)'
 							>
 								<CIcon :content='icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -116,11 +116,6 @@ export default class WifiConnections extends Vue {
 	 * @var {Array<IAccessPoint>} accessPoints Array of available access points
 	 */
 	private accessPoints: Array<IAccessPoint> = []
-
-	/**
-	 * @var {Array<NetworkConnection>} connections Array of existing connections
-	 */
-	private connections: Array<NetworkConnection> = []
 
 	/**
 	 * @var {string} ifname Interface name
@@ -249,9 +244,8 @@ export default class WifiConnections extends Vue {
 						accessPoints[index].uuid = connection.uuid;
 					}
 				}
-				this.$store.commit('spinner/HIDE');
-				this.connections = response.data;
 				this.accessPoints = accessPoints;
+				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
@@ -264,7 +258,7 @@ export default class WifiConnections extends Vue {
 	private createConnection(connection: any): void {
 		NetworkConnectionService.add(connection)
 			.then((response: AxiosResponse) => {
-				this.findConnections(this.accessPoints).then(() => this.connect(response.data));
+				this.connect(response.data, connection.name);
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
@@ -277,23 +271,17 @@ export default class WifiConnections extends Vue {
 	/**
 	 * Connects to wifi access point
 	 * @param {string} uuid Network connection UUID
+	 * @param {string} name Network connection name
 	 */
-	private connect(uuid: string): void {
-		let connection = this.connections.find((item: NetworkConnection) => {
-			return item.uuid === uuid;
-		});
-		if (!connection) {
-			return;
-		}
-		console.warn(connection);
+	private connect(uuid: string, name: string): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
+		NetworkConnectionService.connect(uuid, this.ifname)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: connection?.interfaceName, connection: connection?.name}
+						{interface: this.ifname, connection: name}
 					).toString());
 				this.getAccessPoints();
 			})
@@ -303,22 +291,17 @@ export default class WifiConnections extends Vue {
 	/**
 	 * Disconnects from wifi access point
 	 * @param {string} uuid Network connection UUID
+	 * @param {string} name Network connection name
 	 */
-	private disconnect(uuid: string): void {
-		let connection = this.connections.find((item: NetworkConnection) => {
-			return item.uuid === uuid;
-		});
-		if (!connection) {
-			return;
-		}
+	private disconnect(uuid: string, name: string): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(connection.uuid)
+		NetworkConnectionService.disconnect(uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.disconnect.success',
-						{interface: connection?.interfaceName, connection: connection?.name}
+						{interface: this.ifname, connection: name}
 					).toString());
 				this.getAccessPoints();
 			})
@@ -328,20 +311,18 @@ export default class WifiConnections extends Vue {
 	/**
 	 * Removes wifi access point connection
 	 * @param {string} uuid Network connection UUID
+	 * @param {string} name Network connection name
 	 */
-	private removeConnection(uuid: string): void {
-		let connection = this.connections.find((item: NetworkConnection) => {
-			return item.uuid === uuid;
-		});
-		if (!connection) {
-			return;
-		}
+	private removeConnection(uuid: string, name: string): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.remove(uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('network.connection.messages.removeSuccess', {connection: connection?.name}).toString()
+					this.$t(
+						'network.connection.messages.removeSuccess', 
+						{connection: name}
+					).toString()
 				);
 				this.getAccessPoints();
 			})
