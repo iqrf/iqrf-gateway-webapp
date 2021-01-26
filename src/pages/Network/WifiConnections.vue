@@ -4,6 +4,15 @@
 		<CCard>
 			<CCardHeader>
 				{{ $t('network.wireless.table.accessPoints') }}
+				<CButton
+					style='float: right;'
+					color='primary'
+					size='sm'
+					@click='getAccessPoints'
+				>
+					<CIcon :content='icons.refresh' size='sm' />
+					{{ $t('forms.refresh') }}
+				</CButton>
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
@@ -41,7 +50,7 @@
 							<CButton
 								size='sm'
 								:color='item.inUse ? "danger" : "success"'
-								@click='item.inUse ? disconnect(item.uuid, item.ssid) : item.uuid ? connect(item.uuid, item.ssid) : showModal(item)'
+								@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : connectAction(item)'
 							>
 								<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
 								{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
@@ -72,7 +81,7 @@
 			:ap='modalAccessPoint'
 			:ifname='ifname'
 			@hide-modal='hideModal'
-			@create-connection='createConnection'
+			@connection-created='connectAction'
 		/>
 	</div>
 </template>
@@ -80,7 +89,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
-import {cilPencil, cilLink, cilLinkBroken, cilTrash} from '@coreui/icons';
+import {cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
@@ -89,7 +98,7 @@ import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInte
 import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
-import {IAccessPoint, NetworkConnection} from '../../interfaces/network';
+import {IAccessPoint} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -134,6 +143,7 @@ export default class WifiConnections extends Vue {
 		connect: cilLink,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
+		refresh: cilReload,
 		remove: cilTrash,
 	}
 
@@ -173,9 +183,10 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Show wifi access point connection modal window
+	 * @param {IAccessPoint} accesPoint Access point
 	 */
-	private showModal(item: IAccessPoint): void {
-		this.modalAccessPoint = item;
+	private showModal(accessPoint: IAccessPoint): void {
+		this.modalAccessPoint = accessPoint;
 	}
 
 	/**
@@ -255,17 +266,25 @@ export default class WifiConnections extends Vue {
 			});
 	}
 
-	private createConnection(connection: any): void {
-		NetworkConnectionService.add(connection)
-			.then((response: AxiosResponse) => {
-				this.connect(response.data, connection.name);
-			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.connection.messages.createFailed', {connection: connection.wifi.ssid}).toString()
+	/**
+	 * Performs a connect button action depending on the state of connection
+	 * @param {IAccessPoint} accessPoint Access point
+	 */
+	private connectAction(accessPoint: IAccessPoint): void {
+		const activeAP = this.accessPoints.find((ap: IAccessPoint) => {
+			return ap.inUse === true && ap.uuid;
+		});
+		if (accessPoint.uuid) { // connection for AP exists
+			if (activeAP) {
+				this.disconnect(activeAP.uuid!, activeAP.ssid, true).then(() => 
+					this.connect(accessPoint.uuid!, accessPoint.ssid)
 				);
-			});
+			} else {
+				this.connect(accessPoint.uuid, accessPoint.ssid);
+			}
+		} else { // connection for AP does not exist
+			this.showModal(accessPoint);			
+		}
 	}
 
 	/**
@@ -292,18 +311,22 @@ export default class WifiConnections extends Vue {
 	 * Disconnects from wifi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
+	 * @param {boolean} inChain Disconnect request in connect chain
+	 * @returns {Promise<void>} Promise for request chaining
 	 */
-	private disconnect(uuid: string, name: string): void {
+	private disconnect(uuid: string, name: string, inChain: boolean): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(uuid)
+		return NetworkConnectionService.disconnect(uuid)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t(
-						'network.connection.messages.disconnect.success',
-						{interface: this.ifname, connection: name}
-					).toString());
-				this.getAccessPoints();
+				if (!inChain) {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t(
+							'network.connection.messages.disconnect.success',
+							{interface: this.ifname, connection: name}
+						).toString());
+					this.getAccessPoints();
+				}
 			})
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}

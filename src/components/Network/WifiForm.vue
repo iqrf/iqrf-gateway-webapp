@@ -158,12 +158,15 @@ import {CButton, CForm, CInput, CInputFile, CModal} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, between, integer} from 'vee-validate/dist/rules';
+
 import {v4 as uuidv4} from 'uuid';
+import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 
 import {IAccessPoint} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
-import {ConnectionType} from '../../services/NetworkConnectionService';
+import {AxiosResponse} from 'axios';
+
 
 @Component({
 	components: {
@@ -342,8 +345,18 @@ export default class WifiForm extends Vue {
 		if (this.getSecurityType() !== 'wep') {
 			connectionData.wifi.security.wep.type = 'unknown';
 		} 
-		this.hideModal();
-		this.$emit('create-connection', connectionData);
+		NetworkConnectionService.add(connectionData)
+			.then((response: AxiosResponse) => {
+				this.ap.uuid = response.data;
+				this.hideModal();
+				this.$emit('connection-created', this.ap);
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('network.connection.messages.createFailed', {connection: this.ap.ssid}).toString()
+				);
+			});
 	}
 }
 </script>
