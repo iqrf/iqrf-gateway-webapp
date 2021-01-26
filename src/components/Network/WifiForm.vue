@@ -43,6 +43,12 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
+					<CSelect
+						v-if='configWep.type === WepKeyType.KEY'
+						:value.sync='wepLen'
+						:options='wepLenOptions'
+						:label='$t("network.wireless.modal.form.wep.length")'
+					/>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,4'
@@ -162,11 +168,21 @@ import {required, between, integer} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 
-import {IAccessPoint} from '../../interfaces/network';
+import {IAccessPoint, IWifiLeap} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
 import {AxiosResponse} from 'axios';
 
+enum WepKeyLen {
+	BIT64 = '64bit',
+	BIT128 = '128bit',
+}
+
+enum WepKeyType {
+	KEY = 'key',
+	PASSPHRASE = 'passphrase',
+	UNKNOWN = 'unknown',
+}
 
 @Component({
 	components: {
@@ -185,13 +201,19 @@ import {AxiosResponse} from 'axios';
  */
 export default class WifiForm extends Vue {
 
-	private configLeap = {
+	/**
+	 * @var {IWifiLeap} configLeap Wifi LEAP security configuration
+	 */
+	private configLeap: IWifiLeap = {
 		username: '',
 		password: '',
 	}
 
+	/**
+	 * @var {IWifiWep} configWep Wifi WEP security configuration
+	 */
 	private configWep = {
-		type: '',
+		type: WepKeyType.KEY,
 		index: 1,
 		keys: [
 			'', '', '', ''
@@ -207,40 +229,6 @@ export default class WifiForm extends Vue {
 		username: '',
 		password: ''
 	}
-
-	/**
-	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
-	 */
-	private authOneOptions: Array<IOption> = [
-		{
-			label: this.$t('network.wireless.modal.form.phaseOneAlgorithm.peap'),
-			value: 'peap'
-		}
-	]
-
-	/**
-	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
-	 */
-	private authTwoOptions: Array<IOption> = [
-		{
-			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
-			value: 'mschapv2'
-		}
-	]
-
-	/**
-	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
-	 */
-	private wepKeyOptions: Array<IOption> = [
-		{
-			label: this.$t('network.wireless.modal.form.wep.types.key'),
-			value: 'key'
-		},
-		{
-			label: this.$t('network.wireless.modal.form.wep.types.passphrase'),
-			value: 'passphrase'
-		}
-	]
 
 	/**
 	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
@@ -261,6 +249,59 @@ export default class WifiForm extends Vue {
 	private passwordVisibility = 'password'
 
 	/**
+	 * @var {WepKeyLen} wepLen WEP key length
+	 */
+	private wepLen = WepKeyLen.BIT64
+
+	/**
+	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
+	 */
+	private authOneOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseOneAlgorithm.peap'),
+			value: 'peap'
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
+	 */
+	private authTwoOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
+			value: 'mschapv2'
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
+	 */
+	private wepKeyOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.key'),
+			value: 'key'
+		},
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.passphrase'),
+			value: 'passphrase'
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} wepLenOptions CoreUI wep key length select options
+	 */
+	private wepLenOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.wep.lengths.64bit'),
+			value: WepKeyLen.BIT64,
+		},
+		{
+			label: this.$t('network.wireless.modal.form.wep.lengths.128bit'),
+			value: WepKeyLen.BIT128,
+		},
+	]
+
+	/**
 	 * @property {IAccessPoint} ap Wifi access point
 	 */
 	@Prop({required: true}) ap!: IAccessPoint
@@ -278,7 +319,10 @@ export default class WifiForm extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('wepKey', (key: string) => {
-			return new RegExp(/^((\w{5}(\w{8})?)|([0-9a-fA-F]{10}([0-9a-fA-F]{16})?))$/).test(key);
+			if (this.wepLen === WepKeyLen.BIT64) {
+				return new RegExp(/^(\w{5}|[0-9a-fA-F]{10})$/).test(key);
+			}
+			return new RegExp(/^(\w{13}|[0-9a-fA-F]{26})$/).test(key);
 		});
 	}
 
@@ -343,7 +387,7 @@ export default class WifiForm extends Vue {
 		// fixup index
 		connectionData.wifi.security.wep.index -= 1;
 		if (this.getSecurityType() !== 'wep') {
-			connectionData.wifi.security.wep.type = 'unknown';
+			connectionData.wifi.security.wep.type = WepKeyType.UNKNOWN;
 		} 
 		NetworkConnectionService.add(connectionData)
 			.then((response: AxiosResponse) => {

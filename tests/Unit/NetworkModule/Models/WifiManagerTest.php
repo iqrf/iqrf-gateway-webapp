@@ -29,7 +29,7 @@ final class WifiManagerTest extends CommandTestCase {
 	/**
 	 * NetworkManager WiFi list command
 	 */
-	private const LIST_COMMAND = 'nmcli -t device wifi list --rescan auto';
+	private const LIST_COMMAND = 'nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto';
 
 	/**
 	 * @var WifiManager WiFi network manager

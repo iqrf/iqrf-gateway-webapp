@@ -1806,13 +1806,18 @@
 						"mschapv2": "MSCHAPv2"
 					},
 					"wep": {
+						"length": "WEP key length",
+						"lengths": {
+							"64bit": "64 bit (5 ASCII / 10 hex)",
+							"128bit": "128 bit (13 ASCII / 26 hex)"
+						},
 						"type": "Type",
 						"types": {
 							"key": "Key",
 							"passphrase": "Passphrase"
 						},
-						"index": "Key index",
-						"keyNum": "Key {index}"
+						"index": "Default WEP key",
+						"keyNum": "WEP Key {index}"
 					},
 					"noCaCert": "No CA certificate required",
 					"caCert": "CA certificate",
