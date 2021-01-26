@@ -40,7 +40,7 @@
 								type='submit'
 								:disabled='invalid'
 							>
-								{{ $t('forms.update') }}
+								{{ $t('forms.upload') }}
 							</CButton>
 						</div>
 						<CAlert 

@@ -2,32 +2,29 @@
 	<div>
 		<h1>{{ $t('gateway.log.title') }}</h1>
 		<CCard>
-			<CCardHeader>
-				<CButton 
-					v-if='controllerLog'
-					color='primary'
-					@click='switchCollapse()'
+			<CTabs variant='tabs' :active-tab='activeTab'>
+				<CTab 
+					v-if='controllerLog !== ""'
+					:title='$t("service.iqrf-gateway-controller.title")'
 				>
-					{{ $t('service.iqrf-gateway-controller.title') }}
-				</CButton> <CButton 
-					v-if='daemonLog'
-					color='primary'
-					@click='switchCollapse()'
+					<CCardBody>
+						<pre class='log'>{{ controllerLog }}</pre>
+					</CCardBody>
+				</CTab>
+				<CTab
+					v-if='daemonLog !== ""'
+					:title='$t("service.iqrf-gateway-daemon.title")'
 				>
-					{{ $t('service.iqrf-gateway-daemon.title') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody v-if='daemonLog !== ""'>
-				<CCollapse :show='controllerShow' transition='linear' :duration='{show: 0, hide: 0}'>
-					<pre class='log'>{{ controllerLog }}</pre>
-				</CCollapse>
-				<CCollapse :show='daemonShow' transition='linear' :duration='{show: 0, hide: 0}'>
-					<pre class='log'>{{ daemonLog }}</pre>
-				</CCollapse>
+					<CCardBody>
+						<pre class='log'>{{ daemonLog }}</pre>
+					</CCardBody>
+				</CTab>
+			</CTabs>
+			<CCardFooter>
 				<CButton color='primary' @click='downloadArchive()'>
 					{{ $t('gateway.log.download') }}
 				</CButton>
-			</CCardBody>
+			</CCardFooter>
 		</CCard>
 	</div>
 </template>
@@ -35,7 +32,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse} from '@coreui/vue/src';
+import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 import {MetaInfo} from 'vue-meta';
@@ -44,9 +41,8 @@ import {MetaInfo} from 'vue-meta';
 	components: {
 		CButton,
 		CCard,
-		CCardBody,
-		CCardHeader,
-		CCollapse,
+		CTab,
+		CTabs
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -61,18 +57,19 @@ import {MetaInfo} from 'vue-meta';
 export default class LogViewer extends Vue {
 
 	/**
+	 * @var {number} activeTab CoreUI tabs active tab index
+	 */
+	private activeTab = 0
+
+	/**
 	 * @var {string} controllerLog Controller log file content
 	 */
 	private controllerLog = ''
-
-	private controllerShow = false;
 
 	/**
 	 * @var {string} daemonLog Daemon log file content
 	 */
 	private daemonLog = ''
-
-	private daemonShow = false;
 
 	/**
 	 * Vue lifecycle hook created
@@ -82,13 +79,10 @@ export default class LogViewer extends Vue {
 		GatewayService.getLatestLog()
 			.then(
 				(response: AxiosResponse) => {
+					this.daemonLog = response.data.daemon;
 					if (response.data.controller) {
 						this.controllerLog = response.data.controller;
-						this.controllerShow = true;
-					}
-					this.daemonLog = response.data.daemon;
-					if (this.controllerShow === false) {
-						this.daemonShow = true;
+						this.activeTab = 1;
 					}
 					this.$store.commit('spinner/HIDE');
 				}
@@ -103,13 +97,6 @@ export default class LogViewer extends Vue {
 					}
 				}
 			});
-	}
-
-	private switchCollapse(): void {
-		if (this.controllerLog !== '') {
-			this.controllerShow = !this.controllerShow;
-		}
-		this.daemonShow = !this.daemonShow;
 	}
 	
 	/**
