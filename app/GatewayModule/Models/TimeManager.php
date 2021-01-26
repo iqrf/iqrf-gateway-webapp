@@ -92,7 +92,7 @@ class TimeManager {
 	 * @param string $timezone Timezone name
 	 */
 	public function setTimezone(string $timezone): void {
-		$this->commandManager->run('timedatectl set-timezone ' . $timezone);
+		$this->commandManager->run('timedatectl set-timezone ' . $timezone, true);
 	}
 
 }
