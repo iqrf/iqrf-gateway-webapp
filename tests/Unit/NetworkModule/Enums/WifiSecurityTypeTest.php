@@ -77,7 +77,7 @@ final class WifiSecurityTypeTest extends TestCase {
 	 * Tests the function to serialize WiFi security type into nmcli configuration string - Open
 	 */
 	public function testNmCliSerializeOpen(): void {
-		$expected = 'remove 802-11-wireless-security ';
+		$expected = '';
 		$type = WifiSecurityType::OPEN();
 		Assert::same($expected, $type->nmCliSerialize());
 	}
