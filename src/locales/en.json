@@ -1840,10 +1840,13 @@
 					"authPhaseTwo": "Phase two authentication",
 					"anonymousIdentity": "Anonymous identity",
 					"username": "Username",
-					"password": "Password"
+					"password": "Password",
+					"psk": "Pre-shared key"
 				},
 				"errors": {
 					"password": "Please enter the password.",
+					"psk": "Please enter pre-shared key.",
+					"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
 					"wepKeyType": "Please select WEP security type.",
 					"wepIndex": "Please enter default key index.",
 					"wepIndexInvalid": "Default key index should be between 1 and 4.",
