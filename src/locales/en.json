@@ -1778,6 +1778,7 @@
 	"network": {
 		"title": "IP network",
 		"description": "IP network management.",
+		"edit": "Edit connection {connection}",
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
@@ -1795,9 +1796,15 @@
 				"security": "Network security"
 			},
 			"modal": {
-				"title": "Connect to {accessPoint}",
+				"title": "Wi-Fi configuration",
+				"modalTitle": "Connect to {accessPoint}",
 				"form": {
 					"security": "Security",
+					"securityTypes": {
+						"open": "Open",
+						"wpa-psk": "WPA-Personal",
+						"wpa-eap": "WPA-Enterprise"
+					},
 					"authPhaseOne": "Phase one authentication",
 					"phaseOneAlgorithm": {
 						"peap": "Protected EAP"
@@ -1848,7 +1855,7 @@
 			}
 		},
 		"connection": {
-			"name": "Connections on interface {interface}",
+			"name": "Connections name",
 			"errors": {
 				"name": "Please enter a connection name."
 			},
