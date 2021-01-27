@@ -192,6 +192,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$array = [
 			'id' => $this->name,
 			'type' => $this->type,
+			'interface-name' => $this->interfaceName,
 		];
 		$nmcli = NmCliConnection::encode($array, self::NMCLI_PREFIX);
 		$nmcli .= $this->autoConnect->nmCliSerialize();
