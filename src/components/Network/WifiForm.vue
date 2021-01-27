@@ -120,14 +120,15 @@
 				<ValidationProvider
 					v-if='getSecurityType() === "wpa-psk"'
 					v-slot='{errors, touched, valid}'
-					rules='required'
+					rules='required|wpaPsk'
 					:custom-messages='{
-						required: "network.wireless.modal.errors.password"
+						required: "network.wireless.modal.errors.psk",
+						wpaPsk: "network.wireless.modal.errors.pskInvalid"
 					}'
 				>
 					<CInput
-						v-model='password'
-						:label='$t("network.wireless.modal.form.password")'
+						v-model='psk'
+						:label='$t("network.wireless.modal.form.psk")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 						:type='passwordVisibility'
@@ -239,9 +240,9 @@ export default class WifiForm extends Vue {
 	}
 
 	/**
-	 * @var {string} password Access point password
+	 * @var {string} psk Access point pre-shared key for WPA
 	 */
-	private password = ''
+	private psk = ''
 
 	/**
 	 * @var {string} passwordVisibility Access point password field visibility
@@ -324,6 +325,9 @@ export default class WifiForm extends Vue {
 			}
 			return new RegExp(/^(\w{13}|[0-9a-fA-F]{26})$/).test(key);
 		});
+		extend('wpaPsk', (key: string) => {
+			return new RegExp(/^(\w{8,63}|[0-9a-fA-F]{64})$/).test(key);
+		});
 	}
 
 	/**
@@ -378,13 +382,13 @@ export default class WifiForm extends Vue {
 				mode: this.ap.mode,
 				security: {
 					type: this.getSecurityType(),
-					psk: this.password,
+					psk: this.psk,
 					leap: this.configLeap,
 					wep: this.configWep,
 				}
 			}
 		};
-		// fixup index
+		// fixup wep key index
 		connectionData.wifi.security.wep.index -= 1;
 		if (this.getSecurityType() !== 'wep') {
 			connectionData.wifi.security.wep.type = WepKeyType.UNKNOWN;
