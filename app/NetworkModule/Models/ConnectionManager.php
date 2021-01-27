@@ -230,7 +230,7 @@ class ConnectionManager {
 		$values->type = $currentConnection->getType()->toScalar();
 		$values->interface = $currentConnection->getInterfaceName();
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
-		$configuration = $newConnection->nmCliSerialize();
+		$configuration = preg_replace('/connection\.type \"[\-\w]+\" /', '', $newConnection->nmCliSerialize(), 1);
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		$exitCode = $output->getExitCode();

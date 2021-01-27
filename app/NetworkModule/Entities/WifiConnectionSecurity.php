@@ -95,12 +95,17 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @return array<string, string|array> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$array = [
 			'type' => $this->type->toScalar(),
 			'psk' => $this->psk,
-			'leap' => $this->leap->jsonSerialize(),
-			'wep' => $this->wep->jsonSerialize(),
 		];
+		if (isset($this->leap)) {
+			$array['leap'] = $this->leap->jsonSerialize();
+		}
+		if (isset($this->wep)) {
+			$array['wep'] = $this->wep->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**

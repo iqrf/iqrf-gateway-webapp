@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('network.ethernet.' + ($route.path === '/network/add' ? 'add' : 'edit')) }}</h1>
+		<h1>{{ $t('network.edit', {connection: connection.name}) }}</h1>
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
@@ -20,7 +20,7 @@
 							/>
 						</ValidationProvider>
 						<CRow>
-							<CCol>
+							<CCol md='6'>
 								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -124,7 +124,7 @@
 									</div>
 								</div>
 							</CCol>
-							<CCol>
+							<CCol md='6'>
 								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -250,6 +250,39 @@
 								</div>
 							</CCol>
 						</CRow>
+						<CRow v-if='connection.type === "802-11-wireless"'>
+							<CCol md='6'>
+								<legend>{{ $t('network.wireless.modal.title') }}</legend>
+								<div class='form-group'>
+									<b>
+										<span>{{ $t('network.wireless.modal.form.security') }}</span>
+									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
+								</div>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|wpaPsk'
+									:custom-messages='{
+										required: "network.wireless.modal.errors.psk",
+										wpaPsk: "network.wireless.modal.errors.pskInvalid"
+									}'
+								>
+									<CInput
+										v-model='connection.wifi.security.psk'
+										:type='pskInputType'
+										visibility
+										:label='$t("network.wireless.modal.form.psk")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									>
+										<template #append-content>
+											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
+												<CIcon :content='pskInputType === "password" ? icons.hidden: icons.shown' />
+											</span>
+										</template>
+									</CInput>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
 						<CButton
 							type='submit'
 							color='primary'
@@ -274,6 +307,8 @@ import {IConnection} from '../../interfaces/network';
 import {AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import ip from 'ip-regex';
+import {Dictionary} from 'vue-router/types/router';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 
 @Component({
 	components: {
@@ -311,9 +346,22 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		shown: cilLockUnlocked,
+		hidden: cilLockLocked
+	}
+
+	/**
 	 * @var {boolean} powerUser Indicates that user is a power user
 	 */
 	private powerUser = false
+
+	/**
+	 * @var {string} pskInputType WPA pre-shared key input type
+	 */
+	private pskInputType = 'password'
 
 	/**
 	 * @property {string} uuid Network connection configuration id
@@ -338,6 +386,9 @@ export default class ConnectionFormBasic extends Vue {
 		});
 		extend('ipv6', (address: string) => {
 			return ip.v6({exact: true}).test(address);
+		});
+		extend('wpaPsk', (key: string) => {
+			return new RegExp(/^(\w{8,63}|[0-9a-fA-F]{64})$/).test(key);
 		});
 	}
 

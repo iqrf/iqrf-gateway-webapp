@@ -7,7 +7,7 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('network.wireless.modal.title', {accessPoint: ap.ssid}) }}
+					{{ $t('network.wireless.modal.modalTitle', {accessPoint: ap.ssid}) }}
 				</h5>
 			</template>
 			<CForm>
