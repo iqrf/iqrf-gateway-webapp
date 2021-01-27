@@ -103,15 +103,18 @@ class ConnectionManager {
 			}
 		}
 		$prefix = isset($address) ? intval(explode('/', $address)[1]) : null;
-		$mask = str_split(str_repeat('1', $prefix) . str_repeat('0', 32 - $prefix), 8);
-		foreach ($mask as &$number) {
-			$number = bindec($number);
+		$mask = null;
+		if (isset($prefix)) {
+			$mask = str_split(str_repeat('1', $prefix) . str_repeat('0', 32 - $prefix), 8);
+			foreach ($mask as &$number) {
+				$number = bindec($number);
+			}
 		}
 		return [
 			'method' => 'auto',
 			'addresses' => [[
 				'address' => isset($address) ? explode('/', $address)[0] : null,
-				'mask' => isset($prefix) ? implode('.', $mask) : null,
+				'mask' => isset($prefix) ? implode('.', $mask) : $mask,
 				'prefix' => $prefix,
 			]],
 			'gateway' => $gateway ?? null,
@@ -172,7 +175,7 @@ class ConnectionManager {
 		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString() . ' | grep ' . $protocol, true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
-			$this->handleError($exitCode, $output->getStderr());
+			return [];
 		}
 		return explode(PHP_EOL, $output->getStdout());
 	}
