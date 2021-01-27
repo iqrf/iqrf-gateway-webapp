@@ -1850,9 +1850,11 @@
 					"wepKeyType": "Please select WEP security type.",
 					"wepIndex": "Please enter default key index.",
 					"wepIndexInvalid": "Default key index should be between 1 and 4.",
+					"wepIndexKeyMissing": "WEP key at specified index missing.",
 					"wepKey": "Please enter a WEP key.",
 					"wepPassphrase": "Please enter a WEP passphrase",
-					"wepKeyInvalid": "WEP key should be 5 or 13 characters long ASCII string, or a 10 or 26 characters long hexadecimal string."
+					"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
+					"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
 				}
 			},
 			"messages": {
