@@ -44,18 +44,19 @@
 						/>
 					</ValidationProvider>
 					<CSelect
-						v-if='configWep.type === WepKeyType.KEY'
+						v-if='configWep.type === wepKeyTypeEnum.KEY'
 						:value.sync='wepLen'
 						:options='wepLenOptions'
 						:label='$t("network.wireless.modal.form.wep.length")'
 					/>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
-						rules='required|integer|between:1,4'
+						rules='required|integer|between:1,4|wepIndex'
 						:custom-messages='{
 							required: "network.wireless.modal.errors.wepIndex",
 							integer: "forms.errors.integer",
-							between: "network.wireless.modal.errors.wepIndexInvalid"
+							between: "network.wireless.modal.errors.wepIndexInvalid",
+							wepIndex: "network.wireless.modal.errors.wepIndexKeyMissing"
 						}'
 					>
 						<CInput
@@ -74,7 +75,9 @@
 						v-slot='{errors, touched, valid}'
 						:rules='configWep.type === "key" ? "wepKey" : ""'
 						:custom-messages='{
-							wepKey: "network.wireless.modal.errors.wepKeyInvalid"
+							wepKey: wepLen === "64bit" ?
+								"network.wireless.modal.errors.wepKey64Invalid":
+								"network.wireless.modal.errors.wepKey128Invalid"
 						}'
 					>
 						<CInput							
@@ -275,6 +278,11 @@ export default class WifiForm extends Vue {
 	]
 
 	/**
+	 * @constant {enum} wepKeyTypeEnum WEP key type enum
+	 */
+	private wepKeyTypeEnum = WepKeyType
+
+	/**
 	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
 	 */
 	private wepKeyOptions: Array<IOption> = [
@@ -319,6 +327,9 @@ export default class WifiForm extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
+		extend('wepIndex', (index: number) => {
+			return this.configWep.keys[index - 1] !== '';
+		});
 		extend('wepKey', (key: string) => {
 			if (this.wepLen === WepKeyLen.BIT64) {
 				return new RegExp(/^(\w{5}|[0-9a-fA-F]{10})$/).test(key);
