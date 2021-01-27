@@ -199,6 +199,11 @@ class ConnectionManager {
 		return $connections;
 	}
 
+	/**
+	 * Adds a new network connection configuration
+	 * @param stdClass $values Network connection configuration from values
+	 * @return string UUID of the new connection
+	 */
 	public function add(stdClass $values): string {
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
 		$configuration = $newConnection->nmCliSerialize();
