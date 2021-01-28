@@ -45,7 +45,7 @@ final class InterfaceStatus implements JsonSerializable {
 	protected $state;
 
 	/**
-	 * @var string Network connection name
+	 * @var string|null Network connection name
 	 */
 	protected $connectionName;
 
@@ -97,7 +97,7 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array<string, string> JSON serialized data
+	 * @return array<string, string|null> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -117,7 +117,7 @@ final class InterfaceStatus implements JsonSerializable {
 		$array = explode(':', $string);
 		$type = InterfaceTypes::fromScalar($array[1]);
 		$state = InterfaceStates::fromNmCli($array[2]);
-		return new static($array[0], $type, $state, $array[3]);
+		return new self($array[0], $type, $state, $array[3]);
 	}
 
 }

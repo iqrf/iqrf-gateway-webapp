@@ -26,6 +26,7 @@ use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
+use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
@@ -87,101 +88,6 @@ class ConnectionManager {
 	}
 
 	/**
-	 * Returns current automatic IPv4 configuration
-	 * @param UuidInterface $uuid Network connection UUID
-	 * @return array<string, string|array<int, string|array<string, int|string>>> Current IPv4 automatic configuration
-	 */
-	public function getIpv4Auto(UuidInterface $uuid): array {
-		$config = $this->getAutoConfig($uuid, 'IP4');
-		foreach ($config as $item) {
-			if (strpos($item, 'IP4.ADDRESS[1]') !== false) {
-				$address = explode(':', $item)[1];
-			} elseif (strpos($item, 'IP4.GATEWAY') !== false) {
-				$gateway = explode(':', $item)[1];
-			} elseif (strpos($item, 'IP4.DNS[1]') !== false) {
-				$dns = explode(':', $item)[1];
-			}
-		}
-		$prefix = isset($address) ? intval(explode('/', $address)[1]) : null;
-		$mask = null;
-		if (isset($prefix)) {
-			$mask = str_split(str_repeat('1', $prefix) . str_repeat('0', 32 - $prefix), 8);
-			foreach ($mask as &$number) {
-				$number = bindec($number);
-			}
-		}
-		return [
-			'method' => 'auto',
-			'addresses' => [[
-				'address' => isset($address) ? explode('/', $address)[0] : null,
-				'mask' => isset($prefix) ? implode('.', $mask) : $mask,
-				'prefix' => $prefix,
-			]],
-			'gateway' => $gateway ?? null,
-			'dns' => [[
-				'address' => $dns ?? null,
-			]],
-		];
-	}
-
-	/**
-	 * Returns current automatic IPv6 configuration
-	 * @param UuidInterface $uuid Network connection UUID
-	 * @return array<string, string|array<int, string|array<string, int|string>>> Current IPv6 automatic configuration
-	 */
-	public function getIpv6Auto(UuidInterface $uuid): array {
-		$config = $this->getAutoConfig($uuid, 'IP6');
-		$addresses = [];
-		$gateways = [];
-		$dns = [];
-		foreach ($config as $item) {
-			if (strpos($item, 'IP6.ADDRESS') !== false) {
-				array_push($addresses, explode(']:', $item)[1]);
-			} elseif (strpos($item, 'IP6.GATEWAY') !== false) {
-				array_push($gateways, $item);
-			} elseif (strpos($item, 'IP6.DNS') !== false) {
-				array_push($dns, ['address' => explode(']:', $item)[1]]);
-			}
-		}
-		$array = [
-			'method' => 'auto',
-			'addresses' => [],
-			'dns' => count($dns) === 0 ? [['address' => null]] : $dns,
-		];
-		foreach ($addresses as $item) {
-			$tokens = explode('/', $item);
-			array_push($array['addresses'], ['address' => $tokens[0], 'prefix' => intval($tokens[1]), 'gateway' => null]);
-		}
-		if (count($gateways) === 1) {
-			foreach ($array['addresses'] as $item) {
-				$item['gateway'] = $gateways[0];
-			}
-		} elseif (count($gateways) > 1) {
-			foreach ($gateways as $item) {
-				$index = explode('[', $item)[1][0];
-				$array['addresses'][$index]['gateway'] = explode(']:', $item)[1];
-			}
-		}
-		return $array;
-	}
-
-	/**
-	 * Returns connection configuration properties filtered by protocol
-	 * @param UuidInterface $uuid Network connection UUID
-	 * @param string $protocol Internet protocol version
-	 * @return array<int, string> Filtered connection configuration
-	 */
-	private function getAutoConfig(UuidInterface $uuid, string $protocol): array {
-		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString() . ' | grep ' . $protocol, true);
-		$exitCode = $output->getExitCode();
-		if ($exitCode !== 0) {
-			return [];
-		}
-		return explode(PHP_EOL, $output->getStdout());
-	}
-
-
-	/**
 	 * Lists the network connections
 	 * @param ConnectionTypes|null $type Network connection type
 	 * @return array<Connection> Network connections
@@ -217,7 +123,7 @@ class ConnectionManager {
 			$this->handleError($exitCode, $output->getStderr());
 		}
 		$pattern = '/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/';
-		preg_match($pattern, $output->getStdout(), $matches);
+		$matches = Strings::match($output->getStdout(), $pattern);
 		return $matches[0];
 	}
 
@@ -233,7 +139,7 @@ class ConnectionManager {
 		$values->type = $currentConnection->getType()->toScalar();
 		$values->interface = $currentConnection->getInterfaceName();
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
-		$configuration = preg_replace('/connection\.type \"[\-\w]+\" /', '', $newConnection->nmCliSerialize(), 1);
+		$configuration = Strings::replace($newConnection->nmCliSerialize(), '/connection\.type \"[\\-\w]+\" /', '');
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		$exitCode = $output->getExitCode();

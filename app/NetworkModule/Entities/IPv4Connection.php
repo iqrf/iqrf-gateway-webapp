@@ -67,7 +67,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @param array<IPv4Address> $addresses IPv4 addresses
 	 * @param IPv4|null $gateway IPv4 gateway address
 	 * @param array<IPv4> $dns DNS servers
-	 * @param IPv4Current $current Current configuration
+	 * @param IPv4Current|null $current Current configuration
 	 */
 	public function __construct(IPv4Methods $method, array $addresses, ?IPv4 $gateway, array $dns, ?IPv4Current $current) {
 		$this->method = $method;
@@ -97,7 +97,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 				$dns[] = IPv4::factory($dnsServer->address);
 			}
 		}
-		return new static($method, $addresses, $gateway, $dns, null);
+		return new self($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**
@@ -159,7 +159,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 			}
 			$current = new IPv4Current($currentAddresses, $currentGateway, $currentDns);
 		}
-		return new static($method, $addresses, $gateway, $dns, $current ?? null);
+		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}
 
 	/**

@@ -171,7 +171,7 @@ final class WifiNetwork implements JsonSerializable {
 		$channel = (int) $matches['channel'];
 		$signal = (int) $matches['signal'];
 		$security = WifiSecurity::fromNmCli($matches['security']);
-		return new static($inUse, $bssid, $ssid, $mode, $channel, $matches['rate'], $signal, $security);
+		return new self($inUse, $bssid, $ssid, $mode, $channel, $matches['rate'], $signal, $security);
 	}
 
 	/**
