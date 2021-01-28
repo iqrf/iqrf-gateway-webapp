@@ -12,9 +12,9 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 
 Package: iqrf-gateway-webapp
 Architecture: all
-Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl, php-common (>= 7.3),
- php-cli (>= 7.3), php-fpm (>= 7.3), php-curl (>= 7.3), php-json (>= 7.3),
- php-mbstring (>= 7.3), php-sqlite3 (>= 7.3), php-xml (>= 7.3),
- php-zip (>= 7.3), nginx | apache2, sudo
+Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl, php7.3-common | php7.4-common,
+ php7.3-cli | php7.4-cli, php7.3-fpm | php7.4-fpm, php7.3-curl | php7.4-curl,
+ php7.3-json | php7.4-json, php7.3-mbstring | php7.4-mbstring, php7.3-sqlite3 | php7.4-sqlite3, 
+ php7.3-xml | php7.4-xml, php7.3-zip | php7.4-zip, nginx | apache2, sudo
 Description: Web user interface for IQRF Gateway Daemon
  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.
