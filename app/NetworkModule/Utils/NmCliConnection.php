@@ -36,25 +36,22 @@ class NmCliConnection {
 	 * @return array<string, string|array<string>> Connection configuration
 	 */
 	public static function decode(string $data, string $prefix): array {
+		$config = [];
 		$array = explode(PHP_EOL, Strings::trim($data));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], $prefix . '.')) {
-				$key = Strings::replace($temp[0], '~' . $prefix . '\.~', '');
-				if (Strings::contains($key, '[')) {
-					$key = strtolower(Strings::split($key, '/\[/')[0]);
-					if (!array_key_exists($key, $array)) {
-						$array[$key] = [$temp[1]];
-					} else {
-						array_push($array[$key], $temp[1]);
-					}
-				} else {
-					$array[strtolower($key)] = $temp[1];
-				}
+			if (!Strings::startsWith($temp[0], $prefix . '.')) {
+				continue;
 			}
-			unset($array[$i]);
+			$key = Strings::lower(Strings::replace($temp[0], '~' . $prefix . '\.~', ''));
+			if (Strings::contains($key, '[')) {
+				[$key, $idx] = Strings::split($key, '/\[(\d)\]/');
+				$config[$key][$idx] = $temp[1];
+			} else {
+				$config[$key] = $temp[1];
+			}
 		}
-		return $array;
+		return $config;
 	}
 
 	/**
