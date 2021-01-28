@@ -82,7 +82,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
 		$dns = [IPv4::factory('192.168.1.1')];
-		return new IPv4Connection($method, $addresses, $gateway, $dns);
+		return new IPv4Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**

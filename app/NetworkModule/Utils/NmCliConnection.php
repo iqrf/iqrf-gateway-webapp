@@ -33,7 +33,7 @@ class NmCliConnection {
 	 * Decodes nmcli connection configuration
 	 * @param string $data nmcli connection configuration
 	 * @param string $prefix nmcli configuration prefix
-	 * @return array<string, string> Connection configuration
+	 * @return array<string, string|array<string>> Connection configuration
 	 */
 	public static function decode(string $data, string $prefix): array {
 		$array = explode(PHP_EOL, Strings::trim($data));
@@ -41,7 +41,16 @@ class NmCliConnection {
 			$temp = explode(':', $row, 2);
 			if (Strings::startsWith($temp[0], $prefix . '.')) {
 				$key = Strings::replace($temp[0], '~' . $prefix . '\.~', '');
-				$array[$key] = $temp[1];
+				if (Strings::contains($key, '[')) {
+					$key = strtolower(Strings::split($key, '/\[/')[0]);
+					if (!array_key_exists($key, $array)) {
+						$array[$key] = [$temp[1]];
+					} else {
+						array_push($array[$key], $temp[1]);
+					}
+				} else {
+					$array[strtolower($key)] = $temp[1];
+				}
 			}
 			unset($array[$i]);
 		}

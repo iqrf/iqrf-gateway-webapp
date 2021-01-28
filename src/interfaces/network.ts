@@ -25,7 +25,6 @@ export interface IConnection {
 	interface?: string
 	ipv4: IConnectionIPv4
 	ipv6: IConnectionIPv6
-	current?: IConnectionCurrent
 }
 
 export interface IConnectionCurrent {
@@ -38,6 +37,7 @@ export interface IConnectionIPv4 {
 	dns: Array<IConnectionIPDns>
 	gateway: string|null
 	method: string
+	current?: IConnectionIPv4
 }
 
 export interface IConnectionIPv6 {
