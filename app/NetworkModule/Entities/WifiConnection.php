@@ -70,7 +70,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		$mode = WifiMode::fromScalar($json->mode);
 		$security = ($json->security === null) ? null : WifiConnectionSecurity::jsonDeserialize($json->security);
-		return new static($json->ssid, $mode, $security);
+		return new self($json->ssid, $mode, $security);
 	}
 
 	/**
@@ -81,7 +81,7 @@ final class WifiConnection implements INetworkManagerEntity {
 		return [
 			'ssid' => $this->ssid,
 			'mode' => $this->mode->toScalar(),
-			'security' => $this->security === null ? null : $this->security->jsonSerialize(),
+			'security' => $this->security instanceof WifiConnectionSecurity ? $this->security->jsonSerialize() : null,
 		];
 	}
 
@@ -98,7 +98,7 @@ final class WifiConnection implements INetworkManagerEntity {
 		} catch (Throwable $e) {
 			$security = null;
 		}
-		return new static($array['ssid'], $mode, $security);
+		return new self($array['ssid'], $mode, $security);
 	}
 
 	/**

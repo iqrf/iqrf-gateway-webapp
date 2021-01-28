@@ -86,7 +86,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 		assert($leap instanceof Leap);
 		$wep = Wep::jsonDeserialize($json->wep);
 		assert($wep instanceof Wep);
-		return new static($type, $json->psk, $leap, $wep);
+		return new self($type, $json->psk, $leap, $wep);
 	}
 
 
@@ -99,10 +99,10 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			'type' => $this->type->toScalar(),
 			'psk' => $this->psk,
 		];
-		if (isset($this->leap)) {
+		if ($this->leap !== null) {
 			$array['leap'] = $this->leap->jsonSerialize();
 		}
-		if (isset($this->wep)) {
+		if ($this->wep !== null) {
 			$array['wep'] = $this->wep->jsonSerialize();
 		}
 		return $array;
@@ -117,13 +117,13 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$type = WifiSecurityType::nmCliDeserialize($nmCli);
 		if ($type->equals(WifiSecurityType::OPEN())) {
-			return new static($type, null, null, null);
+			return new self($type, null, null, null);
 		}
 		$leap = Leap::nmCliDeserialize($nmCli);
 		assert($leap instanceof Leap);
 		$wep = Wep::nmCliDeserialize($nmCli);
 		assert($wep instanceof Wep);
-		return new static($type, $array['psk'], $leap, $wep);
+		return new self($type, $array['psk'], $leap, $wep);
 	}
 
 	/**

@@ -84,7 +84,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 				$dns[] = IPv6::factory($dnsServer->address);
 			}
 		}
-		return new static($method, $addresses, $dns);
+		return new self($method, $addresses, $dns);
 	}
 
 	/**
@@ -128,7 +128,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 				$dns[] = IPv6::factory($server);
 			}
 		}
-		return new static($method, $addresses, $dns);
+		return new self($method, $addresses, $dns);
 	}
 
 	/**
