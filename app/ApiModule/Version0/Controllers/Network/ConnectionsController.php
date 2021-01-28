@@ -245,14 +245,7 @@ class ConnectionsController extends NetworkController {
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$uuid = $this->getUuid($request);
-			$connection = $this->manager->get($uuid)->jsonSerialize();
-			if ($connection['ipv4']['method'] === 'auto') {
-				$connection['current']['ipv4'] = $this->manager->getIpv4Auto($uuid);
-			}
-			if ($connection['ipv6']['method'] === 'auto') {
-				$connection['current']['ipv6'] = $this->manager->getIpv6Auto($uuid);
-			}
-			return $response->writeJsonBody($connection);
+			return $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
 		} catch (NonexistentConnectionException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NetworkManagerException $e) {

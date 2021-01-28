@@ -13,7 +13,9 @@ namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\ConnectionDetail;
+use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
+use App\NetworkModule\Entities\IPv4Current;
 use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiConnectionSecurity;
@@ -25,6 +27,7 @@ use App\NetworkModule\Enums\IPv6Methods;
 use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurityType;
+use Darsyn\IP\Version\IPv4;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Ramsey\Uuid\Uuid;
@@ -116,7 +119,8 @@ final class ConnectionDetailWifiTest extends TestCase {
 		$addresses = [];
 		$gateway = null;
 		$dns = [];
-		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns);
+		$current = new IPv4Current([IPv4Address::fromPrefix('192.168.1.183/24')], IPv4::factory('192.168.1.1'), [IPv4::factory('192.168.1.1')]);
+		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns, $current);
 	}
 
 	/**
@@ -178,7 +182,7 @@ final class ConnectionDetailWifiTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, Json::FORCE_ARRAY);
-		Assert::same($expected, $this->entity->jsonSerialize());
+		Assert::equal($expected, $this->entity->jsonSerialize());
 	}
 
 }

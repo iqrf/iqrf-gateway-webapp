@@ -533,23 +533,13 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		if (connection.ipv4.method === 'auto') {
-			if (connection.current?.ipv4) {
-				connection.ipv4 = connection.current.ipv4;
+			if (connection.ipv4.current) {
+				connection.ipv4 = connection.ipv4.current;
+				delete connection.ipv4.current;
 			} else {
 				connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
 				connection.ipv4.dns.push({address: ''});
 			}
-		}
-		if (connection.ipv6.method === 'auto') {
-			if (connection.current?.ipv6) {
-				connection.ipv6 = connection.current.ipv6;
-			} else {
-				connection.ipv6.addresses.push({address: '', prefix: 128, gateway: ''});
-				connection.ipv6.dns.push({address: ''});
-			}
-		}
-		if (connection.current) {
-			delete connection.current;
 		}
 		this.connection = connection;
 	}
