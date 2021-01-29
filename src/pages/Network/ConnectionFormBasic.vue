@@ -87,7 +87,7 @@
 										/>
 									</ValidationProvider>
 									<hr>
-									<div 
+									<div
 										v-for='(address, index) in connection.ipv4.dns'
 										:key='index'
 									>
@@ -462,13 +462,13 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$t(
-			'network.ethernet.' + 
+			'network.ethernet.' +
 			(this.$route.path === '/network/add/' ? 'add' : 'edit')
 		).toString();
 	}
 
 	/**
-	 * Adds a new IPv4 dns object to configuraiton
+	 * Adds a new IPv4 dns object to configuration
 	 */
 	private addIpv4Dns(): void {
 		this.connection.ipv4.dns.push({address: ''});
@@ -486,7 +486,7 @@ export default class ConnectionFormBasic extends Vue {
 	 * Adds a new IPv6 address object to configuration
 	 */
 	private addIpv6Address(): void {
-		this.connection.ipv6.addresses.push({address: '', prefix: 64, gateway: ''});
+		this.connection.ipv6.addresses.push({address: '', prefix: 64});
 	}
 
 	/**
@@ -498,7 +498,7 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
-	 * Adds a new IPv6 dns object to configuraiton
+	 * Adds a new IPv6 dns object to configuration
 	 */
 	private addIpv6Dns(): void {
 		this.connection.ipv6.dns.push({address: ''});
