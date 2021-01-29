@@ -555,7 +555,7 @@ export default class ConnectionFormBasic extends Vue {
 			delete connection.ipv6.current;
 		}
 		if (connection.ipv6.addresses.length === 0) {
-			connection.ipv6.addresses.push({address: '', prefix: 128, gateway: ''});
+			connection.ipv6.addresses.push({address: '', prefix: 64});
 		}
 		if (connection.ipv6.dns.length === 0) {
 			connection.ipv6.dns.push({address: ''});
