@@ -143,7 +143,7 @@
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv6.method === "manual"'>
-									<div 
+									<div
 										v-for='(address, index) in connection.ipv6.addresses'
 										:key='index'
 									>
@@ -181,21 +181,6 @@
 												:invalid-feedback='$t(errors[0])'
 											/>
 										</ValidationProvider>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
-											:custom-messages='{
-												required: "network.connection.ipv6.errors.gateway",
-												ipv6: "network.connection.ipv6.errors.addressInvalid"
-											}'
-										>
-											<CInput
-												v-model='address.gateway'
-												:label='$t("network.connection.ipv6.gateway")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
-											/>
-										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
 												v-if='index > 0'
@@ -212,9 +197,24 @@
 											</CButton>
 										</div>
 									</div><hr>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
+										:custom-messages='{
+											required: "network.connection.ipv6.errors.gateway",
+											ipv6: "network.connection.ipv6.errors.addressInvalid"
+										}'
+									>
+										<CInput
+											v-model='connection.ipv6.addresses[0].gateway'
+											:label='$t("network.connection.ipv6.gateway")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider><hr>
 									<div
 										v-for='(address, index) in connection.ipv6.dns'
-										:key='index'
+										:key='index+"a"'
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
@@ -532,14 +532,30 @@ export default class ConnectionFormBasic extends Vue {
 	 * @param {IConnection} connection Connection details
 	 */
 	private storeConnectionData(connection: IConnection): void {
-		if (connection.ipv4.method === 'auto') {
-			if (connection.ipv4.current) {
-				connection.ipv4 = connection.ipv4.current;
-				delete connection.ipv4.current;
-			} else {
-				connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
-				connection.ipv4.dns.push({address: ''});
+		// initialize ipv4 configuration objects
+		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
+			connection.ipv4 = connection.ipv4.current;
+			delete connection.ipv4.current;
+		} else {
+			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
+		}
+		if (connection.ipv4.dns.length === 0) {
+			connection.ipv4.dns.push({address: ''});
+		}
+		// initialize ipv6 configuration objects
+		if ((connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') && connection.ipv6.current) {
+			connection.ipv6 = connection.ipv6.current;
+			for (let i = 0; i < connection.ipv6.addresses.length; i++) {
+				if (i > 0) {
+					connection.ipv6.addresses[i].gateway = '';
+				}
 			}
+			delete connection.ipv6.current;
+		} else {
+			connection.ipv6.addresses.push({address: '', prefix: 128, gateway: ''});
+		}
+		if (connection.ipv6.dns.length === 0) {
+			connection.ipv6.dns.push({address: ''});
 		}
 		this.connection = connection;
 	}

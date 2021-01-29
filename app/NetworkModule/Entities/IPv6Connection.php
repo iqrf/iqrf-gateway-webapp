@@ -147,19 +147,9 @@ final class IPv6Connection implements INetworkManagerEntity {
 		if ($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP()) {
 			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
 			$currentAddresses = [];
-			$currentGateways = [];
-			if (array_key_exists('gateway', $config)) {
-				if (is_array($config['gateway'])) {
-					$currentGateways = array_map(function (string $addr): ?string {
-						return $addr !== '' ? $addr : null;
-					}, $config['gateway']);
-				} else {
-					$currentGateways[] = $config['gateway'] !== '' ? $config['gateway'] : null;
-				}
-			}
+			$currentGateway = array_key_exists('gateway', $config) ? ($config['gateway'] !== '' ? $config['gateway'] : null) : null;
 			if (array_key_exists('address', $config)) {
 				foreach ($config['address'] as $i => $addr) {
-					$currentGateway = count($currentGateways) > 1 ? $currentGateways[$i] ?? null : $currentGateways[0] ?? null;
 					$currentAddresses[] = IPv6Address::fromPrefix($addr, $currentGateway);
 				}
 			}
