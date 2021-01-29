@@ -43,6 +43,7 @@ export interface IConnectionIPv4 {
 export interface IConnectionIPv6 {
 	addresses: Array<IConnectionIPv6Addrs>
 	dns: Array<IConnectionIPDns>
+	gateway: string|null
 	method: string
 	current?: IConnectionIPv6
 }

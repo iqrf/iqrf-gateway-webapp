@@ -38,34 +38,25 @@ class IPv6Address {
 	private $prefix;
 
 	/**
-	 * @var IPv6|null IPv6 gateway address
-	 */
-	private $gateway;
-
-	/**
 	 * IPv6 address entity constructor
 	 * @param IPv6 $address IPv6 address
 	 * @param int $prefix IPv6 prefix
-	 * @param IPv6|null $gateway IPv6 gateway address
 	 */
-	public function __construct(IPv6 $address, int $prefix, ?IPv6 $gateway = null) {
+	public function __construct(IPv6 $address, int $prefix) {
 		$this->address = $address;
 		$this->prefix = $prefix;
-		$this->gateway = $gateway;
 	}
 
 	/**
 	 * Creates a new IPv6 address entity from the IPv6 address and prefix as a string
 	 * @param string $addr IPv6 address with prefix as a string
-	 * @param string|null $gwAddr IPv6 gateway address
 	 * @return IPv6Address IPv6 address entity
 	 */
-	public static function fromPrefix(string $addr, ?string $gwAddr = null): self {
+	public static function fromPrefix(string $addr): self {
 		$array = explode('/', trim($addr));
 		$address = IPv6::factory($array[0]);
 		$prefix = (int) $array[1];
-		$gateway = ($gwAddr !== null) ? IPv6::factory($gwAddr) : null;
-		return new self($address, $prefix, $gateway);
+		return new self($address, $prefix);
 	}
 
 	/**
@@ -85,27 +76,14 @@ class IPv6Address {
 	}
 
 	/**
-	 * Returns the IPv6 gateway prefix
-	 * @return IPv6|null IPv6 gateway address
-	 */
-	public function getGateway(): ?IPv6 {
-		return $this->gateway;
-	}
-
-	/**
 	 * Converts the IPv6 address entity to an array
 	 * @return array<string, int|string> IPv6 address entity in the array
 	 */
 	public function toArray(): array {
-		$array = [
+		return [
 			'address' => $this->address->getCompactedAddress(),
 			'prefix' => $this->prefix,
-			'gateway' => '',
 		];
-		if ($this->gateway !== null) {
-			$array['gateway'] = $this->gateway->getCompactedAddress();
-		}
-		return $array;
 	}
 
 	/**

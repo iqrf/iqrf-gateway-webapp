@@ -132,21 +132,23 @@ final class ConnectionDetailWifiTest extends TestCase {
 	private function createIpv6Connection(): void {
 		$method = IPv6Methods::AUTO();
 		$addresses = [];
+		$gateway = null;
 		$dns = [];
 		$current = new IPv6Current(
 			$method,
 			[
-				IPv6Address::fromPrefix('2001:470:5bb2:0:437f:a19c:1607:6bff/64', 'fe80::6f0:21ff:fe24:1e53'),
-				IPv6Address::fromPrefix('fd50:ccd6:13ed:0:833f:3996:18b3:a9d8/64', 'fe80::6f0:21ff:fe24:1e53'),
-				IPv6Address::fromPrefix('2001:470:5bb2::ca9/128', 'fe80::6f0:21ff:fe24:1e53'),
-				IPv6Address::fromPrefix('fd50:ccd6:13ed::ca9/128', 'fe80::6f0:21ff:fe24:1e53'),
-				IPv6Address::fromPrefix('fe80::ccae:7146:7f08:541e/64', 'fe80::6f0:21ff:fe24:1e53'),
+				IPv6Address::fromPrefix('2001:470:5bb2:0:437f:a19c:1607:6bff/64'),
+				IPv6Address::fromPrefix('fd50:ccd6:13ed:0:833f:3996:18b3:a9d8/64'),
+				IPv6Address::fromPrefix('2001:470:5bb2::ca9/128'),
+				IPv6Address::fromPrefix('fd50:ccd6:13ed::ca9/128'),
+				IPv6Address::fromPrefix('fe80::ccae:7146:7f08:541e/64'),
 			],
+			IPv6::factory('fe80::6f0:21ff:fe24:1e53'),
 			[
 				IPv6::factory('fd50:ccd6:13ed::1'),
 			],
 		);
-		$this->ipv6 = new IPv6Connection($method, $addresses, $dns, $current);
+		$this->ipv6 = new IPv6Connection($method, $addresses, $gateway, $dns, $current);
 	}
 
 	/**

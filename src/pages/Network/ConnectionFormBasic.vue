@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('network.edit', {connection: connection.name}) }}</h1>
+		<h1>{{ $t('network.connection.edit') }}</h1>
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
@@ -206,7 +206,7 @@
 										}'
 									>
 										<CInput
-											v-model='connection.ipv6.addresses[0].gateway'
+											v-model='connection.ipv6.gateway'
 											:label='$t("network.connection.ipv6.gateway")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
@@ -322,7 +322,7 @@ import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 		ValidationProvider,
 	},
 	metaInfo: {
-		title: 'network.ethernet.edit',
+		title: 'network.connection.edit',
 	}
 })
 
@@ -341,6 +341,7 @@ export default class ConnectionFormBasic extends Vue {
 		ipv6: {
 			addresses: [],
 			dns: [],
+			gateway: '',
 			method: '',
 		}
 	}
@@ -536,7 +537,8 @@ export default class ConnectionFormBasic extends Vue {
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
-		} else {
+		}
+		if (connection.ipv4.addresses.length === 0) {
 			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
 		}
 		if (connection.ipv4.dns.length === 0) {
@@ -545,13 +547,9 @@ export default class ConnectionFormBasic extends Vue {
 		// initialize ipv6 configuration objects
 		if ((connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
-			for (let i = 0; i < connection.ipv6.addresses.length; i++) {
-				if (i > 0) {
-					connection.ipv6.addresses[i].gateway = '';
-				}
-			}
 			delete connection.ipv6.current;
-		} else {
+		}
+		if (connection.ipv6.addresses.length === 0) {
 			connection.ipv6.addresses.push({address: '', prefix: 128, gateway: ''});
 		}
 		if (connection.ipv6.dns.length === 0) {
@@ -576,6 +574,7 @@ export default class ConnectionFormBasic extends Vue {
 		}
 		if (connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
+			connection.ipv6.gateway = null;
 		}
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.edit(this.uuid, connection)

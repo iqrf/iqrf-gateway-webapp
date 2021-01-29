@@ -37,6 +37,11 @@ final class IPv6Current implements JsonSerializable {
 	private $addresses;
 
 	/**
+	 * @var IPv6|null IPv6 gateway address
+	 */
+	private $gateway;
+
+	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
 	private $dns;
@@ -45,11 +50,13 @@ final class IPv6Current implements JsonSerializable {
 	 * IPv6 current configuration constructor
 	 * @param IPv6Methods $method IPv6 connection method
 	 * @param array<IPv6Address> $addresses IPv6 addresses
+	 * @param IPv6|null $gateway IPv6 gateway address
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, array $dns) {
+	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns) {
 		$this->method = $method;
 		$this->addresses = $addresses;
+		$this->gateway = $gateway;
 		$this->dns = $dns;
 	}
 
@@ -63,6 +70,7 @@ final class IPv6Current implements JsonSerializable {
 			'addresses' => array_map(function (IPv6Address $a): array {
 				return $a->toArray();
 			}, $this->addresses),
+			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
 			'dns' => array_map(function (IPv6 $a): array {
 				return ['address' => $a->getCompactedAddress()];
 			}, $this->dns),
