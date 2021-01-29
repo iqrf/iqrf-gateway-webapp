@@ -68,7 +68,7 @@ final class IPv6ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void  {
-		$this->entity = new IPv6Connection($this->method, $this->addresses, $this->dns);
+		$this->entity = new IPv6Connection($this->method, $this->addresses, $this->dns, null);
 	}
 
 	/**
@@ -90,7 +90,7 @@ final class IPv6ConnectionTest extends TestCase {
 			new IPv6Address(IPv6::factory('2001:470:5bb2::50c'), 64, IPv6::factory('fe80::6f0:21ff:fe23:2900')),
 		];
 		$dns = [IPv6::factory('fd50:ccd6:13ed::1')];
-		$expected = new IPv6Connection($this->method, $addresses, $dns);
+		$expected = new IPv6Connection($this->method, $addresses, $dns, null);
 		$actual = IPv6Connection::jsonDeserialize($arrayHash);
 		Assert::equal($expected, $actual);
 	}

@@ -93,7 +93,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		$method = IPv6Methods::MANUAL();
 		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1'))];
 		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		return new IPv6Connection($method, $addresses, $dns);
+		return new IPv6Connection($method, $addresses, $dns, null);
 	}
 
 	/**

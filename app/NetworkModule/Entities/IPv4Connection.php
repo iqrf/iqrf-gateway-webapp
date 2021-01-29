@@ -37,6 +37,11 @@ final class IPv4Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
+	 * nmcli current configuration prefix
+	 */
+	private const NMCLI_CURRENT_PREFIX = 'IP4';
+
+	/**
 	 * @var IPv4Methods Connection method
 	 */
 	private $method;
@@ -143,7 +148,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 			}
 		}
 		if ($method === IPv4Methods::AUTO()) {
-			$config = NmCliConnection::decode($nmCli, IPv4Current::NMCLI_PREFIX);
+			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
 			$currentAddresses = [];
 			if (array_key_exists('address', $config)) {
 				foreach ($config['address'] as $addr) {
