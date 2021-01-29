@@ -568,6 +568,9 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		if (!connection.interface) {
+			connection.interface = this.ifname;
+		}
 		if (connection.ipv4.method === 'manual') {
 			const binaryMask = connection.ipv4.addresses[0].mask.split('.').map((token: string) => {
 				return parseInt(token).toString(2).padStart(8, '0');
