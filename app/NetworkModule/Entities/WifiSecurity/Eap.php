@@ -33,6 +33,11 @@ use stdClass;
 class Eap implements INetworkManagerEntity {
 
 	/**
+	 * nmcli 802-1x prefix
+	 */
+	private const NMCLI_PREFIX = '802-1x';
+
+	/**
 	 * @var EapPhaseOneMethod EAP phase one authentication method
 	 */
 	private $phaseOne;
@@ -117,7 +122,7 @@ class Eap implements INetworkManagerEntity {
 	 * @return INetworkManagerEntity EAP entity
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, WifiConnectionSecurity::NMCLI_EAP_PREFIX);
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		return new self(
 			EapPhaseOneMethod::fromScalar($array['eap']),
 			EapPhaseTwoMethod::fromScalar($array['phase2-auth']),
@@ -141,7 +146,7 @@ class Eap implements INetworkManagerEntity {
 			'identity' => $this->identity,
 			'password' => $this->password,
 		];
-		return NmCliConnection::encode($array, WifiConnectionSecurity::NMCLI_EAP_PREFIX);
+		return NmCliConnection::encode($array, WifiConnectionSecurity::NMCLI_PREFIX);
 	}
 
 }
