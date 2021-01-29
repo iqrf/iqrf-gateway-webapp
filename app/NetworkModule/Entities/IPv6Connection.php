@@ -175,7 +175,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 	public function nmCliSerialize(): string {
 		$array = [
 			'method' => $this->method->toScalar(),
-			'addresses' => implode(' ', array_map(function (IPv6Address $address): string {
+			'addresses' => implode(', ', array_map(function (IPv6Address $address): string {
 				return $address->toString();
 			}, $this->addresses)),
 			'gateway' => ($this->gateway !== null) ? $this->gateway->getCompactedAddress() : '',

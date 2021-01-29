@@ -75,7 +75,7 @@ class WifiController extends NetworkController {
 		try {
 			return $response->writeJsonBody($this->wifiManager->list());
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
