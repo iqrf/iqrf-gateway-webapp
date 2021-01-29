@@ -118,7 +118,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1')),
 		];
 		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		$this->ipv6 = new IPv6Connection($method, $addresses, $dns);
+		$this->ipv6 = new IPv6Connection($method, $addresses, $dns, null);
 	}
 
 	/**
@@ -137,7 +137,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 		$ipv4 = new IPv4Connection(IPv4Methods::MANUAL(), $ipv4Addresses, $ipv4Gateway, $ipv4Dns, null);
 		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64', 'fe80::1')];
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
-		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns);
+		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns, null);
 		$expected = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $ipv4, $ipv6);
 		Assert::equal($expected, $actual);
 	}

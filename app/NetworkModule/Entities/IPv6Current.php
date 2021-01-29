@@ -20,54 +20,51 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
-use Darsyn\IP\Version\IPv4;
+use App\NetworkModule\Enums\IPv6Methods;
+use Darsyn\IP\Version\IPv6;
 use JsonSerializable;
 
-/**
- * Current configuration entity
- */
-final class IPv4Current implements JsonSerializable {
+final class IPv6Current implements JsonSerializable {
 
 	/**
-	 * @var array<IPv4Address> IPv4 addresses
+	 * @var IPv6Methods Connection method
+	 */
+	private $method;
+
+	/**
+	 * @var array<IPv6Address> IPv6 addresses
 	 */
 	private $addresses;
 
 	/**
-	 * @var IPv4|null IPv4 gateway address
-	 */
-	private $gateway;
-
-	/**
-	 * @var array<IPv4> IPv4 addresses of DNS servers
+	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
 	private $dns;
 
 	/**
-	 * Current IPv4 configuration entity
-	 * @param array<IPv4Address> $addresses IPv4 addresses
-	 * @param IPv4|null $gateway IPv4 gateway address
-	 * @param array<IPv4> $dns DNS servers
+	 * IPv6 current configuration constructor
+	 * @param IPv6Methods $method IPv6 connection method
+	 * @param array<IPv6Address> $addresses IPv6 addresses
+	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
-	public function __construct(array $addresses, ?IPv4 $gateway, array $dns) {
+	public function __construct(IPv6Methods $method, array $addresses, array $dns) {
+		$this->method = $method;
 		$this->addresses = $addresses;
-		$this->gateway = $gateway;
 		$this->dns = $dns;
 	}
 
 	/**
-	 * Serializes current IPv4 configuration entity to JSON
-	 * @return array<string, array<array<string, int|string>>|string|null>
+	 * Serializes current IPv6 configuration entity into JSON
+	 * @return array<string, array<array>|int|string> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'method' => 'auto',
-			'addresses' => array_map(function (IPv4Address $a): array {
+			'method' => $this->method->toScalar(),
+			'addresses' => array_map(function (IPv6Address $a): array {
 				return $a->toArray();
 			}, $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(function (IPv4 $a): array {
-				return ['address' => $a->getDotAddress()];
+			'dns' => array_map(function (IPv6 $a): array {
+				return ['address' => $a->getCompactedAddress()];
 			}, $this->dns),
 		];
 	}

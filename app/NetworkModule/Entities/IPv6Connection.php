@@ -37,6 +37,11 @@ final class IPv6Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv6';
 
 	/**
+	 * nmcli current configuration prefix
+	 */
+	private const NMCLI_CURRENT_PREFIX = 'IP6';
+
+	/**
 	 * @var IPv6Methods Connection method
 	 */
 	private $method;
@@ -52,15 +57,22 @@ final class IPv6Connection implements INetworkManagerEntity {
 	private $dns;
 
 	/**
+	 * @var IPv6Current|null
+	 */
+	private $current;
+
+	/**
 	 * IPv6 connection entity constructor
 	 * @param IPv6Methods $method IPv6 connection method
 	 * @param array<IPv6Address> $addresses IPv6 addresses
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
+	 * @param IPv6Current $current Current IPv6 configuration
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, array $dns) {
+	public function __construct(IPv6Methods $method, array $addresses, array $dns, ?IPv6Current $current) {
 		$this->method = $method;
 		$this->addresses = $addresses;
 		$this->dns = $dns;
+		$this->current = $current;
 	}
 
 	/**
@@ -84,7 +96,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 				$dns[] = IPv6::factory($dnsServer->address);
 			}
 		}
-		return new self($method, $addresses, $dns);
+		return new self($method, $addresses, $dns, null);
 	}
 
 	/**
@@ -92,7 +104,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(function (IPv6Address $a): array {
 				return $a->toArray();
@@ -101,6 +113,10 @@ final class IPv6Connection implements INetworkManagerEntity {
 				return ['address' => $a->getCompactedAddress()];
 			}, $this->dns),
 		];
+		if ($this->current !== null) {
+			$array['current'] = $this->current->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**
@@ -128,7 +144,34 @@ final class IPv6Connection implements INetworkManagerEntity {
 				$dns[] = IPv6::factory($server);
 			}
 		}
-		return new self($method, $addresses, $dns);
+		if ($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP()) {
+			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
+			$currentAddresses = [];
+			$currentGateways = [];
+			if (array_key_exists('gateway', $config)) {
+				if (is_array($config['gateway'])) {
+					$currentGateways = array_map(function (string $addr): ?string {
+						return $addr !== '' ? $addr : null;
+					}, $config['gateway']);
+				} else {
+					$currentGateways[] = $config['gateway'] !== '' ? $config['gateway'] : null;
+				}
+			}
+			if (array_key_exists('address', $config)) {
+				foreach ($config['address'] as $i => $addr) {
+					$currentGateway = count($currentGateways) > 1 ? $currentGateways[$i] ?? null : $currentGateways[0] ?? null;
+					$currentAddresses[] = IPv6Address::fromPrefix($addr, $currentGateway);
+				}
+			}
+			$currentDns = [];
+			if (array_key_exists('dns', $config)) {
+				foreach ($config['dns'] as $addr) {
+					$currentDns[] = IPv6::factory($addr);
+				}
+			}
+			$current = new IPv6Current($method, $currentAddresses, $currentDns);
+		}
+		return new self($method, $addresses, $dns, $current ?? null);
 	}
 
 	/**

@@ -33,7 +33,42 @@
 	"ipv6": {
 		"method": "auto",
 		"addresses": [],
-		"dns": []
+		"dns": [],
+		"current": {
+			"method": "auto",
+			"addresses": [
+				{
+					"address": "2001:470:5bb2::437f:a19c:1607:6bff",
+					"prefix": 64,
+					"gateway": "fe80::6f0:21ff:fe24:1e53"
+				},
+				{
+					"address": "fd50:ccd6:13ed::833f:3996:18b3:a9d8",
+					"prefix": 64,
+					"gateway": "fe80::6f0:21ff:fe24:1e53"
+				},
+				{
+					"address": "2001:470:5bb2::ca9",
+					"prefix": 128,
+					"gateway": "fe80::6f0:21ff:fe24:1e53"
+				},
+				{
+					"address": "fd50:ccd6:13ed::ca9",
+					"prefix": 128,
+					"gateway": "fe80::6f0:21ff:fe24:1e53"
+				},
+				{
+					"address": "fe80::ccae:7146:7f08:541e",
+					"prefix": 64,
+					"gateway": "fe80::6f0:21ff:fe24:1e53"
+				}
+			],
+			"dns": [
+				{
+					"address": "fd50:ccd6:13ed::1"
+				}
+			]
+		}
 	},
 	"wifi": {
 		"ssid": "WIFI MAGDA",
