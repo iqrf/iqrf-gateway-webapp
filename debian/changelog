@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.2.4) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * Debian package: allow only php7.3 and 7.4; nginx: increase proxy timeout
+  * Debian package: updated iqube/iqaros dependencies patch
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Fri, 29 Jan 2021 09:36:51 +0100
+
 iqrf-gateway-webapp (2.2.3) stable; urgency=medium
 
   [ Karel Hanák ]
