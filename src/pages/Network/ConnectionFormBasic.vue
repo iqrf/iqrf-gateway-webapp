@@ -370,6 +370,11 @@ export default class ConnectionFormBasic extends Vue {
 	@Prop({required: false, default: null}) uuid!: string
 
 	/**
+	 * @property {string} ifname Network connection interface name
+	 */
+	@Prop({required: true}) ifname!: string
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {

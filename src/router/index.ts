@@ -742,6 +742,7 @@ const routes: Array<RouteConfig> = [
 						path: 'wireless',
 					},
 					{
+						name: 'edit-connection',
 						component: ConnectionFormBasic,
 						path: 'edit/:uuid',
 						props: true,
