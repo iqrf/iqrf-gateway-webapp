@@ -44,6 +44,7 @@ export interface IConnectionIPv6 {
 	addresses: Array<IConnectionIPv6Addrs>
 	dns: Array<IConnectionIPDns>
 	method: string
+	current?: IConnectionIPv6
 }
 
 export interface IConnectionIPv4Addrs {
