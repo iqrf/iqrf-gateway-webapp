@@ -62,7 +62,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	private $dns;
 
 	/**
-	 * @var IPv4Current|null Current configuration
+	 * @var IPv4Current|null Current IPv4 configuration
 	 */
 	private $current;
 

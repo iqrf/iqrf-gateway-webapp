@@ -168,8 +168,8 @@
 							"prefix": {
 								"$id": "#/properties/ipv4/properties/addresses/items/properties/prefix",
 								"type": "integer",
-								"minimum": 1,
-								"maximum": 31,
+								"minimum": 0,
+								"maximum": 32,
 								"title": "IPv4 network prefix",
 								"example": 24
 							},
@@ -254,6 +254,7 @@
 			"required": [
 				"method",
 				"addresses",
+				"gateway",
 				"dns"
 			],
 			"properties": {
@@ -298,8 +299,7 @@
 						"additionalProperties": false,
 						"required": [
 							"address",
-							"prefix",
-							"gateway"
+							"prefix"
 						],
 						"properties": {
 							"address": {
@@ -313,23 +313,23 @@
 								"type": "integer",
 								"title": "IPv6 network prefix",
 								"example": 64
-							},
-							"gateway": {
-								"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
-								"oneOf": [
-									{
-										"type": "string"
-									},
-									{
-										"type": "null"
-									}
-								],
-								"format": "ipv6",
-								"title": "IPv6 gateway address",
-								"example": "fe80::6f0:21ff:fe24:1e53"
 							}
 						}
 					}
+				},
+				"gateway": {
+					"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"format": "ipv6",
+					"title": "IPv6 gateway address",
+					"example": "fe80::6f0:21ff:fe24:1e53"
 				},
 				"dns": {
 					"$id": "#/properties/ipv6/properties/dns",

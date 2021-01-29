@@ -28,11 +28,6 @@ final class IPv6AddressTest extends TestCase {
 	private const ADDRESS = '2a00:19a0:3:75::d9c6:75a0:1';
 
 	/**
-	 * IPv6 gateway address
-	 */
-	private const GATEWAY = 'fe80::1';
-
-	/**
 	 * IPv6 network prefix
 	 */
 	private const PREFIX = 112;
@@ -41,11 +36,6 @@ final class IPv6AddressTest extends TestCase {
 	 * @var IPv6 IPv6 address
 	 */
 	private $address;
-
-	/**
-	 * @var IPv6 IPv6 gateway address
-	 */
-	private $gateway;
 
 	/**
 	 * @var IPv6Address IPv6 address entity
@@ -57,15 +47,14 @@ final class IPv6AddressTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->address = IPv6::factory(self::ADDRESS);
-		$this->gateway = IPv6::factory(self::GATEWAY);
-		$this->entity = new IPv6Address($this->address, self::PREFIX, $this->gateway);
+		$this->entity = new IPv6Address($this->address, self::PREFIX);
 	}
 
 	/**
 	 * Tests the function to create the entity from IPv6 address with prefix
 	 */
 	public function testFromPrefix(): void {
-		Assert::equal($this->entity, IPv6Address::fromPrefix('2a00:19a0:3:75:0:d9c6:75a0:1/112', self::GATEWAY));
+		Assert::equal($this->entity, IPv6Address::fromPrefix('2a00:19a0:3:75:0:d9c6:75a0:1/112'));
 	}
 
 	/**
@@ -83,20 +72,12 @@ final class IPv6AddressTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get IPv6 gateway address
-	 */
-	public function testGetGateway(): void {
-		Assert::same($this->gateway, $this->entity->getGateway());
-	}
-
-	/**
 	 * Tests the function to convert IPv6 address entity to an array
 	 */
 	public function testToArray(): void {
 		$expected = [
 			'address' => self::ADDRESS,
 			'prefix' => self::PREFIX,
-			'gateway' => self::GATEWAY,
 		];
 		Assert::same($expected, $this->entity->toArray());
 	}

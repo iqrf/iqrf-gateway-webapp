@@ -1778,7 +1778,6 @@
 	"network": {
 		"title": "IP network",
 		"description": "IP network management.",
-		"edit": "Edit connection {connection}",
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
@@ -1856,6 +1855,7 @@
 		},
 		"connection": {
 			"name": "Connections name",
+			"edit": "Edit connection",
 			"errors": {
 				"name": "Please enter a connection name."
 			},
@@ -1875,7 +1875,7 @@
 					"remove": "Remove IPv4 address"
 				},
 				"mask": "Subnet mask",
-				"gateway": "Gateway address",
+				"gateway": "IPv4 Gateway address",
 				"dns": {
 					"title": "IPv4 DNS servers",
 					"address": "DNS server IPv4 address",
@@ -1908,8 +1908,8 @@
 					"add": "Add another IPv6 address",
 					"remove": "Remove IPv6 address"
 				},
-				"prefix": "Prefix",
-				"gateway": "Gateway address",
+				"prefix": "Prefix length",
+				"gateway": "IPv6 Gateway address",
 				"dns": {
 					"title": "IPv6 DNS servers",
 					"address": "DNS server IPv6 address",

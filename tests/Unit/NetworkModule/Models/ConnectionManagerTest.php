@@ -91,9 +91,10 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	private function createIpv6Connection(): IPv6Connection {
 		$method = IPv6Methods::MANUAL();
-		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1'))];
+		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64)];
+		$gateway = IPv6::factory('fe80::1');
 		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		return new IPv6Connection($method, $addresses, $dns, null);
+		return new IPv6Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**
