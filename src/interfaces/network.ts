@@ -57,7 +57,6 @@ export interface IConnectionIPv4Addrs {
 export interface IConnectionIPv6Addrs {
 	address: string
 	prefix: number
-	gateway: string
 }
 
 export interface IConnectionIPDns {
