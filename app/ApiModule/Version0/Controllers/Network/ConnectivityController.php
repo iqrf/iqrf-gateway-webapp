@@ -76,7 +76,7 @@ class ConnectivityController extends NetworkController {
 			$state = $this->manager->check()->toScalar();
 			return $response->writeJsonBody(['state' => $state]);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
