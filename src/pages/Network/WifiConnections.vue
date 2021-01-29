@@ -58,7 +58,7 @@
 								v-if='item.uuid'
 								size='sm'
 								color='primary'
-								:to='"/network/edit/" + item.uuid'
+								:to='{name: "edit-connection", params: {uuid: item.uuid, ifname: ifname}}'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
