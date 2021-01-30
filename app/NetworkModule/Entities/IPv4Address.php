@@ -57,15 +57,17 @@ class IPv4Address {
 	 */
 	public static function fromMask(string $address, string $mask): self {
 		$temp = ip2long($mask);
-		$sign = $temp > 0;
+		$negative = $temp < 0;
 		$prefix = 0;
+		if ($negative) {
+			$temp = $temp * (-1) - 1;
+		}
 		while ($temp !== 0) {
 			$prefix += $temp & 1;
-			if ($sign) {
-				$temp >>= 1;
-			} else {
-				$temp <<= 1;
-			}
+			$temp >>= 1;
+		}
+		if ($negative) {
+			$prefix = 32 - $prefix;
 		}
 		return new self(IPv4::factory($address), $prefix);
 	}
