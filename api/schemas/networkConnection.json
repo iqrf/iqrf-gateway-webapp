@@ -152,10 +152,26 @@
 							"prefix": 24
 						},
 						"additionalProperties": false,
-						"required": [
-							"address",
-							"prefix",
-							"mask"
+						"anyOf": [
+							{
+								"required": [
+									"address",
+									"prefix"
+								]
+							},
+							{
+								"required": [
+									"address",
+									"mask"
+								]
+							},
+							{
+								"required": [
+									"address",
+									"prefix",
+									"mask"
+								]
+							}
 						],
 						"properties": {
 							"address": {

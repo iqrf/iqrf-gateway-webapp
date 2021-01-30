@@ -91,8 +91,12 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$method = IPv4Methods::fromScalar($json->method);
 		$addresses = [];
 		foreach ($json->addresses as $address) {
-			if (($address->address !== '') && ($address->prefix !== null)) {
-				$addresses[] = IPv4Address::fromPrefix($address->address . '/' . strval($address->prefix));
+			if (($address->address !== '')) {
+				if (isset($address->prefix)) {
+					$addresses[] = IPv4Address::fromPrefix($address->address . '/' . strval($address->prefix));
+				} elseif (isset($address->mask)) {
+					$addresses[] = IPv4Address::fromMask($address->address, $address->mask);
+				}
 			}
 		}
 		$gateway = $json->gateway !== '' && isset($json->gateway) ? IPv4::factory($json->gateway) : null;
