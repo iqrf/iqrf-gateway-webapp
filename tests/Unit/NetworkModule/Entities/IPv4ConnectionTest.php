@@ -84,6 +84,7 @@ final class IPv4ConnectionTest extends TestCase {
 			'addresses' => [
 				[
 					'address' => '10.0.0.2',
+					'prefix' => 16,
 					'mask' => '255.255.0.0',
 				],
 			],
