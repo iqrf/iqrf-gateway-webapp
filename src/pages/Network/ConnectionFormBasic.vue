@@ -19,6 +19,12 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
+						<CSelect
+							v-if='ifnameOptions.length > 1'
+							:value.sync='ifname'
+							:label='$t("network.connection.interfaceName")'
+							:options='ifnameOptions'
+						/>
 						<CRow>
 							<CCol md='6'>
 								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
@@ -303,12 +309,13 @@ import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, between} from 'vee-validate/dist/rules';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import {IConnection} from '../../interfaces/network';
+import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import ip from 'ip-regex';
 import {Dictionary} from 'vue-router/types/router';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
 @Component({
 	components: {
@@ -355,6 +362,16 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
+	 * @var {string} ifname Interface name
+	 */
+	private ifname = ''
+
+	/**
+	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface options
+	 */
+	private ifnameOptions: Array<IOption> = []
+
+	/**
 	 * @var {boolean} powerUser Indicates that user is a power user
 	 */
 	private powerUser = false
@@ -368,11 +385,6 @@ export default class ConnectionFormBasic extends Vue {
 	 * @property {string} uuid Network connection configuration id
 	 */
 	@Prop({required: false, default: null}) uuid!: string
-
-	/**
-	 * @property {string} ifname Network connection interface name
-	 */
-	@Prop({required: true}) ifname!: string
 
 	/**
 	 * Initializes validation rules
@@ -405,8 +417,10 @@ export default class ConnectionFormBasic extends Vue {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
-		if (this.uuid !== null) {
-			this.getConnection();
+		if (this.$route.path.includes('/network/wireless/')) {
+			this.getInterfaces(InterfaceType.WIFI);
+		} else if (this.$route.path.includes('/network/ethernet/')) {
+			this.getInterfaces(InterfaceType.ETHERNET);
 		}
 	}
 
@@ -457,17 +471,6 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
-	 * Computes page title
-	 * @returns {string} Page title
-	 */
-	get pageTitle(): string {
-		return this.$t(
-			'network.ethernet.' +
-			(this.$route.path === '/network/add/' ? 'add' : 'edit')
-		).toString();
-	}
-
-	/**
 	 * Adds a new IPv4 dns object to configuration
 	 */
 	private addIpv4Dns(): void {
@@ -513,6 +516,37 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
+	 * Retrieves interfaces of a type
+	 * @param {InterfaceType} iftype Interface type
+	 */
+	private getInterfaces(iftype: InterfaceType): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkInterfaceService.list(iftype)
+			.then((response: AxiosResponse) => {
+				if (response.data.length === 1) {
+					this.ifname = response.data[0].name;
+				}
+				let interfaces: Array<IOption> = [];
+				response.data.forEach((item: NetworkInterface) => {
+					interfaces.push({label: item.name, value: item.name});
+				});
+				this.ifnameOptions = interfaces;
+				this.getConnection();
+			})
+			.catch(() => {
+				if (iftype === InterfaceType.ETHERNET) {
+					this.$router.push('/network/ethernet');
+				} else if (iftype === InterfaceType.WIFI) {
+					this.$router.push('/network/wireless');
+				}
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('network.connection.messages.interfacesFetchFailed').toString()
+				);
+			});
+	}
+
+	/**
 	 * Get connection specified by prop
 	 */
 	private getConnection(): void {
@@ -525,10 +559,12 @@ export default class ConnectionFormBasic extends Vue {
 			.catch(() => {
 				if (this.connection.type === ConnectionType.ETHERNET) {
 					this.$router.push('/network/ethernet');
+				} else if (this.connection.type === ConnectionType.WIFI) {
+					this.$router.push('/network/wireless');
 				}
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
-					this.$t('network.connection.messages.loadFailed').toString()
+					this.$t('network.connection.messages.connectionFetchFailed').toString()
 				);
 			});
 	}
@@ -539,6 +575,9 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
+		if (connection.interface) {
+			this.ifname = connection.interface;
+		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
@@ -568,9 +607,7 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
-		if (!connection.interface) {
-			connection.interface = this.ifname;
-		}
+		connection.interface = this.ifname;
 		if (connection.ipv4.method === 'manual') {
 			const binaryMask = connection.ipv4.addresses[0].mask.split('.').map((token: string) => {
 				return parseInt(token).toString(2).padStart(8, '0');

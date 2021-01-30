@@ -32,7 +32,7 @@
 					{{ $t('network.table.disconnect') }}
 				</CButton> <CButton
 					color='primary'
-					:to='{name: "edit-connection", params: {uuid: item.uuid, ifname: interfaceName}}'
+					:to='"/network/ethernet/edit/" + item.uuid'
 					size='sm'
 				>
 					<CIcon :content='icons.edit' size='sm' />

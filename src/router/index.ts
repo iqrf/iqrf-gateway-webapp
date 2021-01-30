@@ -78,6 +78,7 @@ const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pag
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 
 import store from '../store';
+import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 
@@ -734,19 +735,53 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
-						component: EthernetInterfaces,
 						path: 'ethernet',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: EthernetInterfaces,
+								path: '',
+							},
+							{
+								component: ConnectionFormBasic,
+								path: 'add',
+							},
+							{
+								name: 'edit-ethernet-connection',
+								component: ConnectionFormBasic,
+								path: 'edit/:uuid',
+								props: true,
+							},
+						]
 					},
 					{
-						component: WifiConnections,
 						path: 'wireless',
-					},
-					{
-						name: 'edit-connection',
-						component: ConnectionFormBasic,
-						path: 'edit/:uuid',
-						props: true,
-					},
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: WifiConnections,
+								path: '',
+							},
+							{
+								component: ConnectionFormBasic,
+								path: 'add'
+							},
+							{
+								name: 'edit-wireless-connection',
+								component: ConnectionFormBasic,
+								path: 'edit/:uuid',
+								props: true,
+							}
+						]
+					}
 				]
 			},
 			{

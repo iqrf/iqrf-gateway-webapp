@@ -58,7 +58,7 @@
 								v-if='item.uuid'
 								size='sm'
 								color='primary'
-								:to='{name: "edit-connection", params: {uuid: item.uuid, ifname: ifname}}'
+								:to='"/network/wireless/edit/" + item.uuid'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -130,6 +130,11 @@ export default class WifiConnections extends Vue {
 	 * @var {string} ifname Interface name
 	 */
 	private ifname = ''
+
+	/**
+	 * @constant {InterfaceType} iftype Interface type
+	 */
+	private iftype = InterfaceType.WIFI
 
 	/**
 	 * @var {IAccessPoint} modalAccessPoint Access point for modal window

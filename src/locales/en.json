@@ -1859,6 +1859,7 @@
 			"errors": {
 				"name": "Please enter a connection name."
 			},
+			"interfaceName": "Interface name",
 			"ipv4": {
 				"title": "IPv4 configuration",
 				"method": "Connection method",
@@ -1931,7 +1932,8 @@
 				"connected": "Connected"
 			},
 			"messages": {
-				"loadFailed": "Failed to retrieve connection details.",
+				"interfacesFetchFailed": "Failed to retrieve interfaces.",
+				"connectionFetchFailed": "Failed to retrieve connection details.",
 				"createFailed": "Failed to create connection {connection}.",
 				"edit": {
 					"failure": "An error occurred while saving the network connection settings.",
