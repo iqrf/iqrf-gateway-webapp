@@ -168,7 +168,7 @@
 							"prefix": {
 								"$id": "#/properties/ipv4/properties/addresses/items/properties/prefix",
 								"type": "integer",
-								"minimum": 0,
+								"minimum": 1,
 								"maximum": 32,
 								"title": "IPv4 network prefix",
 								"example": 24
