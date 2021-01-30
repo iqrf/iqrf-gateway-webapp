@@ -628,6 +628,8 @@ export default class ConnectionFormBasic extends Vue {
 					.then(() => {
 						if (this.connection.type === ConnectionType.ETHERNET) {
 							this.$router.push('/network/ethernet');
+						} else if (this.connection.type === ConnectionType.WIFI) {
+							this.$router.push('/network/wireless');
 						}
 						this.$toast.success(
 							this.$t('network.connection.messages.edit.success', {connection: connection.name}).toString()

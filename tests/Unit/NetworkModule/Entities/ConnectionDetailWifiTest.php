@@ -161,7 +161,7 @@ final class ConnectionDetailWifiTest extends TestCase {
 		$psk = 'password';
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
-		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep);
+		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep, null);
 		$this->wifi = new WifiConnection($ssid, $mode, $security);
 	}
 
