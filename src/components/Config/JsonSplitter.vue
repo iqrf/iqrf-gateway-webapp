@@ -18,6 +18,20 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: "config.daemon.misc.jsonSplitter.errors.insId"
+						}'
+					>
+						<CInput
+							v-model='configuration.insId'
+							:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='configuration.validateJsonResponse'
 						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse")'
@@ -75,6 +89,7 @@ export default class JsonSplitter extends Vue {
 	private configuration: IJsonSplitter = {
 		instance: '',
 		validateJsonResponse: false,
+		insId: '',
 	}
 
 	/**

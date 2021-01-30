@@ -627,10 +627,12 @@
 					"title": "JSON Splitter",
 					"description": "JSON Splitter settings.",
 					"form": {
-						"validateJsonResponse": "Validate JSON response"
+						"validateJsonResponse": "Validate JSON response",
+						"insId": "JSON Splitter instance ID"
 					},
 					"errors": {
-						"instance": "Please enter name of JSON Splitter instance."
+						"instance": "Please enter name of JSON Splitter instance.",
+						"insId": "Please enter ID of JSON Splitter instance."
 					}
 				},
 				"iqrfRepository": {

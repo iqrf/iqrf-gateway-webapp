@@ -1,35 +1,58 @@
 <template>
 	<CCard body-wrapper class='border-0'>
-		<CForm @submit.prevent='saveConfig'>
-			<CInputCheckbox
-				:checked.sync='metaDataToMessages'
-				:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
-			/>
-			<CInputCheckbox
-				:checked.sync='asyncDpaMessage'
-				:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
-			/>
-			<CInputCheckbox
-				:checked.sync='validateJsonResponse'
-				:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
-			/>
-			<CButton
-				type='submit'
-				color='primary'
-			>
-				{{ $t('forms.save') }}
-			</CButton>
-		</CForm>
+		<ValidationObserver
+			v-slot='{invalid}'
+		>
+			<CForm @submit.prevent='saveConfig'>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: "config.daemon.misc.jsonSplitter.errors.insId"
+					}'
+				>
+					<CInput
+						v-model='insId'
+						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<CInputCheckbox
+					:checked.sync='metaDataToMessages'
+					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
+				/>
+				<CInputCheckbox
+					:checked.sync='asyncDpaMessage'
+					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
+				/>
+				<CInputCheckbox
+					:checked.sync='validateJsonResponse'
+					:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
+				/>
+				<CButton
+					type='submit'
+					color='primary'
+					:disabled='invalid'
+				>
+					{{ $t('forms.save') }}
+				</CButton>
+			</CForm>
+		</ValidationObserver>
 	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import { Dictionary } from 'vue-router/types/router';
-import { AxiosError, AxiosResponse } from 'axios';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {Dictionary} from 'vue-router/types/router';
+import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 
 @Component({
@@ -39,7 +62,10 @@ import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInputCheckbox
+		CInput,
+		CInputCheckbox,
+		ValidationObserver,
+		ValidationProvider,
 	}
 })
 
@@ -55,6 +81,11 @@ export default class JsonApi extends Vue {
 		rawApi: 'iqrf::JsonDpaApiRaw',
 		splitter: 'iqrf::JsonSplitter'
 	}
+
+	/**
+	 * @var {string} insId JSON splitter instance ID
+	 */
+	private insId = ''
 
 	/**
 	 * @var {IJsonMetaData|null} metaData JSON metadata configuration object
@@ -87,6 +118,13 @@ export default class JsonApi extends Vue {
 	private validateJsonResponse = false
 
 	/**
+	 * Initializes validation rules
+	 */
+	created(): void {
+		extend('required', required);
+	}
+
+	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
@@ -110,6 +148,7 @@ export default class JsonApi extends Vue {
 				this.rawApi = responses[1].data.instances[0];
 				this.asyncDpaMessage = responses[1].data.instances[0].asyncDpaMessage;
 				this.splitter = responses[2].data.instances[0];
+				this.insId = responses[2].data.instances[0].insId;
 				this.validateJsonResponse = responses[2].data.instances[0].validateJsonResponse;
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
@@ -133,7 +172,9 @@ export default class JsonApi extends Vue {
 			}
 		}
 		if (this.splitter !== null) {
-			if (this.validateJsonResponse !== this.splitter.validateJsonResponse) {
+			if (this.validateJsonResponse !== this.splitter.validateJsonResponse ||
+				this.insId !== this.splitter.insId) {
+				this.splitter.insId = this.insId;
 				this.splitter.validateJsonResponse = this.validateJsonResponse;
 				requests.push(DaemonConfigurationService.updateInstance(this.componentNames.splitter, this.splitter.instance, this.splitter));
 			}
