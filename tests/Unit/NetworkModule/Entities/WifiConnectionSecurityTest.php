@@ -36,7 +36,7 @@ final class WifiConnectionSecurityTest extends TestCase {
 	protected function setUp(): void {
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
-		$this->entity = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK(), 'password', $leap, $wep);
+		$this->entity = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK(), 'password', $leap, $wep, null);
 	}
 
 	public function testJsonSerialize(): void {

@@ -46,7 +46,7 @@ final class WifiConnectionTest extends TestCase {
 		$mode = WifiMode::INFRA();
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
-		$security = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK(), 'password', $leap, $wep);
+		$security = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK(), 'password', $leap, $wep, null);
 		$this->entity = new WifiConnection($ssid, $mode, $security);
 	}
 

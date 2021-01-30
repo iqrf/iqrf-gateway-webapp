@@ -38,12 +38,12 @@ class Eap implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = '802-1x';
 
 	/**
-	 * @var EapPhaseOneMethod EAP phase one authentication method
+	 * @var EapPhaseOneMethod|null EAP phase one authentication method
 	 */
 	private $phaseOne;
 
 	/**
-	 * @var EapPhaseTwoMethod EAP phase two authentication method
+	 * @var EapPhaseTwoMethod|null EAP phase two authentication method
 	 */
 	private $phaseTwo;
 
@@ -76,7 +76,7 @@ class Eap implements INetworkManagerEntity {
 	 * @param string $identity EAP identity string
 	 * @param string $password EAP password
 	 */
-	public function __construct(EapPhaseOneMethod $phaseOne, EapPhaseTwoMethod $phaseTwo, string $anonymousIdentity, string $cert, string $identity, string $password) {
+	public function __construct(?EapPhaseOneMethod $phaseOne, ?EapPhaseTwoMethod $phaseTwo, string $anonymousIdentity, string $cert, string $identity, string $password) {
 		$this->phaseOne = $phaseOne;
 		$this->phaseTwo = $phaseTwo;
 		$this->anonymousIdentity = $anonymousIdentity;
@@ -107,8 +107,8 @@ class Eap implements INetworkManagerEntity {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'phaseOneMethod' => $this->phaseOne->jsonSerialize(),
-			'phaseTwoMethod' => $this->phaseTwo->jsonSerialize(),
+			'phaseOneMethod' => ($this->phaseOne !== null) ? $this->phaseOne->jsonSerialize() : null,
+			'phaseTwoMethod' => ($this->phaseTwo !== null) ? $this->phaseTwo->jsonSerialize() : null,
 			'anonymousIdentity' => $this->anonymousIdentity,
 			'cert' => $this->cert,
 			'identity' => $this->identity,
@@ -123,6 +123,9 @@ class Eap implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+		if (count($array) === 0) {
+			return new self(null, null, '', '', '', '');
+		}
 		return new self(
 			EapPhaseOneMethod::fromScalar($array['eap']),
 			EapPhaseTwoMethod::fromScalar($array['phase2-auth']),
