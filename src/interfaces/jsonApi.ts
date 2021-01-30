@@ -19,5 +19,6 @@ export interface IJsonRaw {
  */
 export interface IJsonSplitter {
 	instance: string
+	insId: string,
 	validateJsonResponse: boolean
 }
