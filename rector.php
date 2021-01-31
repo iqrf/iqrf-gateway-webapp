@@ -19,6 +19,8 @@
 declare(strict_types = 1);
 
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
+use Rector\CodeQualityStrict\Rector\If_\MoveOutMethodCallInsideIfConditionRector;
+use Rector\CodeQualityStrict\Rector\Variable\MoveVariableDeclarationNearReferenceRector;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Set\ValueObject\SetList;
@@ -27,8 +29,10 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
 	$parameters = $containerConfigurator->parameters();
 
-	$parameters->set('exclude_rectors', [
+	$parameters->set(Option::SKIP, [
 		CallableThisArrayToAnonymousFunctionRector::class,
+		MoveVariableDeclarationNearReferenceRector::class,
+		MoveOutMethodCallInsideIfConditionRector::class,
 	]);
 
 	$parameters->set(Option::PATHS, [
@@ -45,6 +49,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 		SetList::DOCTRINE_CODE_QUALITY,
 		SetList::DOCTRINE_DBAL_211,
 		SetList::NETTE_30,
+		SetList::NETTE_31,
 		SetList::NETTE_UTILS_CODE_QUALITY,
 		SetList::PHP_73,
 		SetList::PHP_74,
