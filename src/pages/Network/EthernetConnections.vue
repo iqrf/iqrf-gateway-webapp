@@ -1,15 +1,6 @@
 <template>
 	<div>
 		<h1>{{ $t('network.ethernet.title') }}</h1>
-		<CCard v-if='ifNameOptions.length > 1'>
-			<CCardBody>
-				<CSelect
-					:value.sync='ifname'
-					:label='$t("network.ethernet.multipleInterfaces")'
-					:options='ifNameOptions'
-				/>
-			</CCardBody>
-		</CCard>
 		<CCard>
 			<div v-if='interfacesLoaded && ifNameOptions.length === 0'>
 				<CCardBody>
@@ -45,7 +36,10 @@
 						</template>
 						<template #interfaceName='{item}'>
 							<td>
-								{{ item.interfaceName === null ? '' : item.interfaceName }}
+								<CSelect
+									v-model='item.interfaceName'
+									:options='ifNameOptions'
+								/>
 							</td>
 						</template>
 						<template #actions='{item}'>
@@ -91,7 +85,7 @@ import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icon
 import EthernetConnection from '../../components/Network/EthernetConnection.vue';
 
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
 
 import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
@@ -124,11 +118,6 @@ export default class EthernetConnections extends Vue {
 	private connectionsLoaded = false
 
 	/**
-	 * @var {string} ifname Interface to be used
-	 */
-	private ifname = ''
-
-	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
 	 */
 	private ifNameOptions: Array<IOption> = []
@@ -148,7 +137,9 @@ export default class EthernetConnections extends Vue {
 		},
 		{
 			key: 'interfaceName',
-			label: this.$t('network.connection.interfaceName')
+			label: this.$t('network.connection.interface'),
+			filter: false,
+			sorter: false,
 		},
 		{
 			key: 'actions',
@@ -184,11 +175,10 @@ export default class EthernetConnections extends Vue {
 		NetworkInterfaceService.list(InterfaceType.ETHERNET)
 			.then((response: AxiosResponse) => {
 				let interfaces: Array<IOption> = [];
-				if (response.data.length > 0) {
-					this.ifname = response.data[0].name;
-				}
 				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
+					if (item.state !== InterfaceState.UNAVAILABLE) {
+						interfaces.push({label: item.name, value: item.name});
+					}
 				});
 				this.ifNameOptions = interfaces;
 				this.interfacesLoaded = true;
@@ -226,13 +216,13 @@ export default class EthernetConnections extends Vue {
 	 */
 	private connect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(connection.uuid, this.ifname)
+		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: this.ifname, connection: connection.name}
+						{interface: connection.interfaceName, connection: connection.name}
 					).toString());
 				this.getConnections();
 			})
