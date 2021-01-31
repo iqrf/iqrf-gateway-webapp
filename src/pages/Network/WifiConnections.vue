@@ -65,7 +65,7 @@
 								<CButton
 									size='sm'
 									:color='item.inUse ? "danger" : "success"'
-									@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : checkInterfaces(item, null)'
+									@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : connectAction(item)'
 								>
 									<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
 									{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
@@ -97,7 +97,7 @@
 			:ap='modalAccessPoint'
 			:ifname='ifname'
 			@hide-modal='hideModal'
-			@connection-created='checkInterfaces'
+			@connection-created='connectAction'
 		/>
 	</div>
 </template>
@@ -302,17 +302,6 @@ export default class WifiConnections extends Vue {
 					this.$t('network.wireless.messages.connectionsFailed').toString()
 				);
 			});
-	}
-
-	/**
-	 * Checks if multiple interfaces exist, and shows modal to select one,
-	 * if called with interface name, that interface name is used
-	 */
-	private checkInterfaces(accessPoint: IAccessPoint, ifname: string|null): void {
-		if (ifname !== null) {
-			this.ifname = ifname;
-		}
-		this.connectAction(accessPoint);
 	}
 
 	/**
