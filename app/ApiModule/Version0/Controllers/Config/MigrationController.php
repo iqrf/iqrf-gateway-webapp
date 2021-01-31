@@ -118,13 +118,13 @@ class MigrationController extends BaseConfigController {
 		try {
 			$this->manager->extractArchive($path);
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IncompleteConfigurationException $e) {
-			throw new ClientErrorException('Incomplete configuration', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Incomplete configuration', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (NotDaemonConfigurationException $e) {
-			throw new ClientErrorException('Invalid daemon configuration file', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid daemon configuration file', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
 		FileSystem::delete($path);
 		return $response->writeBody('Workaround');

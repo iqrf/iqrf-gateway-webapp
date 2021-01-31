@@ -112,9 +112,9 @@ class UploadController extends IqrfController {
 			$file = $request->getUploadedFiles()[0];
 			return $response->writeJsonBody($this->uploadManager->uploadFile($file->getClientFilename(), $file->getStream()->getContents(), $format));
 		} catch (UnknownFileFormatExceptions $e) {
-			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -158,9 +158,9 @@ class UploadController extends IqrfController {
 			$data = $request->getJsonBody(false);
 			$interface = DpaInterfaces::fromScalar($data->interfaceType);
 			$trSeries = TrSeries::fromTrMcuType($data->trSeries);
-			$rfMode = isset($data->rfMode) ? RfModes::fromScalar($data->rfMode) : null;
+			$rfMode = property_exists($data, 'rfMode') ? RfModes::fromScalar($data->rfMode) : null;
 			$dpa = new Dpa($data->dpa, $interface, $trSeries, $rfMode);
-			if (hexdec($dpa->getVersion()) < 0x400 && $rfMode === null) {
+			if (hexdec($dpa->getVersion()) < 0x400 && !($rfMode instanceof RfModes)) {
 				throw new ClientErrorException('Missing RF mode for DPA Version < 4.00', ApiResponse::S400_BAD_REQUEST);
 			}
 			$fileName = $this->dpaManager->getFile($data->osBuild, $dpa);
@@ -169,9 +169,9 @@ class UploadController extends IqrfController {
 			}
 			return $response->writeJsonBody(['fileName' => $fileName]);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (ClientException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

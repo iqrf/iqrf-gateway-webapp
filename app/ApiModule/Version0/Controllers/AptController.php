@@ -78,7 +78,7 @@ class AptController extends BaseConfigController {
 		try {
 			return $response->writeJsonBody($this->manager->read());
 		} catch (AptErrorException | AptNotFoundException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -111,7 +111,7 @@ class AptController extends BaseConfigController {
 			$this->manager->write($request->getJsonBody());
 			return $response->writeBody('Workaround');
 		} catch (AptErrorException | AptNotFoundException | IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
+use Nette\Utils\Json;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,7 +65,7 @@ class OpenApiSpecificationCommand extends Command {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$schema = $this->schemaBuilder->getArray();
-		$output->writeln(json_encode($schema));
+		$output->writeln(Json::encode($schema));
 		return 0;
 	}
 

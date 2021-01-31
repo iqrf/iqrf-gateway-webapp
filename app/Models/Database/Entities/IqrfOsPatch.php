@@ -35,49 +35,49 @@ class IqrfOsPatch {
 
 	/**
 	 * @var string IQRF TR module type
-	 * @ORM\Column(type="string", length=15, nullable=false, unique=false)
+	 * @ORM\Column(type="string", length=15)
 	 */
 	private $moduleType;
 
 	/**
 	 * @var int Current IQRF OS version
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $fromVersion;
 
 	/**
 	 * @var int Current IQRF OS build
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $fromBuild;
 
 	/**
 	 * @var int Next IQRF OS version
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $toVersion;
 
 	/**
 	 * @var int Next IQRF OS build
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $toBuild;
 
 	/**
 	 * @var int Part number
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $part;
 
 	/**
 	 * @var int Total parts
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
 	private $parts;
 
 	/**
 	 * @var string File name
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
 	private $fileName;
 

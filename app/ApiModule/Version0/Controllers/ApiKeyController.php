@@ -125,7 +125,7 @@ class ApiKeyController extends BaseController {
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
 		} catch (Throwable $e) {
-			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
@@ -234,7 +234,7 @@ class ApiKeyController extends BaseController {
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
 		} catch (Throwable $e) {
-			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();

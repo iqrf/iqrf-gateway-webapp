@@ -128,9 +128,9 @@ class UsersController extends BaseController {
 			$this->entityManager->persist($user);
 			$this->entityManager->flush();
 		} catch (InvalidUserLanguageException $e) {
-			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidUserRoleException $e) {
-			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
 			->withHeader('Location', '/api/v0/users/' . $user->getId())
@@ -247,14 +247,14 @@ class UsersController extends BaseController {
 			try {
 				$user->setRole($json['role']);
 			} catch (InvalidUserRoleException $e) {
-				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
+				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
 		if (array_key_exists('language', $json)) {
 			try {
 				$user->setLanguage($json['language']);
 			} catch (InvalidUserLanguageException $e) {
-				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST);
+				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
 		$this->entityManager->persist($user);

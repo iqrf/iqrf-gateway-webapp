@@ -48,19 +48,19 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * @var string API key hash
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
 	private $hash;
 
 	/**
 	 * @var string API key hash salt
-	 * @ORM\Column(type="string", length=22, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=22, unique=true)
 	 */
 	private $salt;
 
 	/**
 	 * @var string API key description
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
 	private $description;
 
@@ -176,7 +176,7 @@ class ApiKey implements JsonSerializable {
 			'description' => $this->getDescription(),
 			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
 		];
-		if (isset($this->key)) {
+		if ($this->key !== null) {
 			$array['key'] = $this->getKey();
 		}
 		return $array;

@@ -99,7 +99,7 @@ class PowerController extends GatewayController {
 	 * @return array<string, int> Timestamp
 	 */
 	private function calculateNextMinute(): array {
-		$timestamp = intval(ceil(time() / 60) * 60);
+		$timestamp = (int) (ceil(time() / 60) * 60);
 		return ['timestamp' => $timestamp];
 	}
 

@@ -45,11 +45,11 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 			$this->setSchema($schema);
 			$this->validate($request->getJsonBody(false));
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

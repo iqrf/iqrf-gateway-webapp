@@ -156,13 +156,13 @@ class IqrfOsController extends IqrfController {
 			$files = $this->iqrfOsManager->getUpgradeFiles((array) $request->getJsonBody(false));
 			return $response->writeJsonBody($files);
 		} catch (DpaRfMissingException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (DpaFileNotFoundException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (ClientException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -198,9 +198,9 @@ class IqrfOsController extends IqrfController {
 			$this->uploadUtilManager->executeUpload($data->name, $data->type);
 			return $response->writeBody('Workaround');
 		} catch (UploadUtilFileException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UploadUtilMissingException | UploadUtilSpiException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

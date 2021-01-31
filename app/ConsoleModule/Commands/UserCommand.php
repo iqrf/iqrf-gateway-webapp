@@ -65,7 +65,7 @@ abstract class UserCommand extends Command {
 		if ($username !== null) {
 			$user = $this->repository->findOneByUserName($username);
 		}
-		while ($user === null) {
+		while (!($user instanceof User)) {
 			$helper = $this->getHelper('question');
 			$userNames = $this->repository->listUserNames();
 			$question = new ChoiceQuestion('Please enter the username: ', $userNames);

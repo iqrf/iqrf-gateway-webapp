@@ -52,7 +52,7 @@ class MappingListCommand extends MappingCommand {
 		$mappings = [];
 		foreach ($this->repository->findAll() as $mapping) {
 			assert($mapping instanceof Mapping);
-			array_push($mappings, [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate(), $mapping->getI2cPin(), $mapping->getSpiPin(), $mapping->getUartPin()]);
+			$mappings[] = [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate(), $mapping->getI2cPin(), $mapping->getSpiPin(), $mapping->getUartPin()];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List mappings (* IQRF Gateway only)');

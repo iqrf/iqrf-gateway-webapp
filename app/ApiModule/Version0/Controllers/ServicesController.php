@@ -133,9 +133,9 @@ class ServicesController extends BaseController {
 			$status['status'] = $this->manager->getStatus($name);
 			return $response->writeJsonBody($status);
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -168,9 +168,9 @@ class ServicesController extends BaseController {
 			$this->manager->enable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -203,9 +203,9 @@ class ServicesController extends BaseController {
 			$this->manager->disable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -238,9 +238,9 @@ class ServicesController extends BaseController {
 			$this->manager->start($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -273,9 +273,9 @@ class ServicesController extends BaseController {
 			$this->manager->stop($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -308,9 +308,9 @@ class ServicesController extends BaseController {
 			$this->manager->restart($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 

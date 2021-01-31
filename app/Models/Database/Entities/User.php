@@ -77,25 +77,25 @@ class User implements JsonSerializable {
 
 	/**
 	 * @var string User name
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
 	private $username;
 
 	/**
 	 * @var string Password hash
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
 	private $password;
 
 	/**
 	 * @var string User role
-	 * @ORM\Column(type="string", length=15, nullable=false, unique=false)
+	 * @ORM\Column(type="string", length=15)
 	 */
 	private $role;
 
 	/**
 	 * @var string User language
-	 * @ORM\Column(type="string", length=7, nullable=false, unique=false)
+	 * @ORM\Column(type="string", length=7)
 	 */
 	private $language;
 

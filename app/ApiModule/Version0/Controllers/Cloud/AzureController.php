@@ -87,13 +87,13 @@ class AzureController extends CloudsController {
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (InvalidConnectionStringException $e) {
-			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ClientErrorException('Missing JSON schema', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Missing JSON schema', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

@@ -32,7 +32,6 @@ use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function array_search;
 
 /**
  * Authentication middleware
@@ -123,11 +122,11 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
 		$requestUrl = rtrim($request->getUri()->getPath(), '/');
-		if (array_search($requestUrl, self::WHITELISTED_PATHS, true) !== false) {
+		if (in_array($requestUrl, self::WHITELISTED_PATHS, true)) {
 			return true;
 		}
 		return ($this->entityManager->getUserRepository()->count([]) === 0) &&
-			(array_search($requestUrl, self::INSTALLER_PATHS, true) !== false);
+			(in_array($requestUrl, self::INSTALLER_PATHS, true));
 	}
 
 }

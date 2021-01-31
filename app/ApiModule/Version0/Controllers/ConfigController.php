@@ -99,9 +99,9 @@ class ConfigController extends BaseConfigController {
 			$config = $this->mainManager->load();
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -134,7 +134,7 @@ class ConfigController extends BaseConfigController {
 			$this->mainManager->save($request->getJsonBody(true));
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -166,7 +166,7 @@ class ConfigController extends BaseConfigController {
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -200,9 +200,9 @@ class ConfigController extends BaseConfigController {
 			$this->componentManager->delete($id);
 			return $response->writeBody('Workaround');
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -240,7 +240,7 @@ class ConfigController extends BaseConfigController {
 		try {
 			$this->componentManager->save($request->getJsonBody(), $id);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');
 	}
@@ -274,7 +274,7 @@ class ConfigController extends BaseConfigController {
 		try {
 			$this->manager->setComponent($component);
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
@@ -287,9 +287,9 @@ class ConfigController extends BaseConfigController {
 			];
 			return $response->writeJsonBody($body);
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -339,13 +339,13 @@ class ConfigController extends BaseConfigController {
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -419,13 +419,13 @@ class ConfigController extends BaseConfigController {
 			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND, $e);
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');
 	}
@@ -462,11 +462,11 @@ class ConfigController extends BaseConfigController {
 			$instance = urldecode($request->getParameter('instance'));
 			$configuration = $this->manager->loadInstance($instance);
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		if ($configuration === []) {
 			throw new ClientErrorException('Instance not found', ApiResponse::S404_NOT_FOUND);
@@ -512,7 +512,7 @@ class ConfigController extends BaseConfigController {
 			$this->mainManager->save($config);
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

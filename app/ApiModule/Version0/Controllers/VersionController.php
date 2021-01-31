@@ -93,7 +93,7 @@ class VersionController extends BaseController {
 			$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
 			return $response->writeJsonBody($json);
 		} catch (IOException | JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

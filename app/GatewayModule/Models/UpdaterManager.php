@@ -70,7 +70,7 @@ class UpdaterManager {
 	 * Returns list of upgradable packages
 	 * @return array<int, array<string, int|string>> Upgradable packages
 	 */
-	public function getUpgradable(): ?array {
+	public function getUpgradable(): array {
 		return $this->packageManager->getUpgradable();
 	}
 

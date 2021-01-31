@@ -32,7 +32,6 @@ use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use function assert;
-use function preg_match;
 use function strpos;
 
 class BearerAuthenticator implements IAuthenticator {
@@ -66,7 +65,7 @@ class BearerAuthenticator implements IAuthenticator {
 		if ($token === null) {
 			return null;
 		}
-		if (preg_match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $token)) {
+		if (Strings::match($token, '~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~') !== null) {
 			return $this->authenticateApp($token);
 		}
 		return $this->authenticateUser($token);

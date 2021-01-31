@@ -77,9 +77,9 @@ class CertificateController extends BaseController {
 		try {
 			return $response->writeJsonBody($this->manager->getInfo());
 		} catch (AcmeSslException $e) {
-			throw new ServerErrorException('Certificate parsing error', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Certificate parsing error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CertificateNotFoundException $e) {
-			throw new ServerErrorException('Certificate not found', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Certificate not found', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

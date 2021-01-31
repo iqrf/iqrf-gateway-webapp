@@ -112,7 +112,7 @@ class FeatureController extends BaseController {
 		try {
 			return $response->writeJsonBody($this->manager->get($name));
 		} catch (FeatureNotFoundException $e) {
-			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -154,9 +154,9 @@ class FeatureController extends BaseController {
 			$this->manager->edit($name, $request->getJsonBody());
 			return $response->writeBody('Workaround');
 		} catch (FeatureNotFoundException $e) {
-			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
