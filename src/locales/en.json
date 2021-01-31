@@ -1794,6 +1794,7 @@
 				"signal": "Signal strength",
 				"security": "Network security"
 			},
+			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
 				"title": "Wi-Fi configuration",
 				"modalTitle": "Connect to {accessPoint}",
@@ -1848,6 +1849,7 @@
 				}
 			},
 			"messages": {
+				"noInterfaces": "No Wi-Fi network interface detected.",
 				"interfacesFailed": "Failed to retrieve list of interfaces",
 				"listFailed": "Failed to retrieve list of available access points.",
 				"connectionsFailed": "Failed to retrieve access point connection details."

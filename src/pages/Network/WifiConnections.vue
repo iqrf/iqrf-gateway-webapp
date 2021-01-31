@@ -1,87 +1,103 @@
 <template>
 	<div>
 		<h1>{{ $t('network.wireless.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				{{ $t('network.wireless.table.accessPoints') }}
-				<CButton
-					style='float: right;'
-					color='primary'
-					size='sm'
-					@click='getAccessPoints'
-				>
-					<CIcon :content='icons.refresh' size='sm' />
-					{{ $t('forms.refresh') }}
-				</CButton>
-			</CCardHeader>
+		<CCard v-if='ifNameOptions.length > 1'>
 			<CCardBody>
-				<CDataTable
-					:fields='tableFields'
-					:items='accessPoints'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('network.wireless.table.noAccessPoints') }}
-					</template>
-					<template #ssid='{item}'>
-						<td>
-							<CBadge 
-								v-if='item.inUse'
-								color='success'
-							>
-								{{ $t('network.connection.states.connected') }}
-							</CBadge>
-							{{ item.ssid }}
-						</td>
-					</template>
-					<template #signal='{item}'>
-						<td>
-							<CProgress
-								:value='item.signal'
-								:color='signalColor(item.signal)'
-							/>
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								size='sm'
-								:color='item.inUse ? "danger" : "success"'
-								@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : connectAction(item)'
-							>
-								<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
-								{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
-							</CButton> <CButton
-								v-if='item.uuid'
-								size='sm'
-								color='primary'
-								:to='"/network/wireless/edit/" + item.uuid'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								v-if='item.uuid'
-								size='sm'
-								color='danger'
-								@click='removeConnection(item.uuid, item.ssid)'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
-					</template>
-				</CDataTable>
+				<CSelect
+					:value.sync='ifname'
+					:label='$t("network.wireless.multipleInterfaces")'
+					:options='ifnameOptions'
+				/>
 			</CCardBody>
+		</CCard>
+		<CCard>
+			<div v-if='interfacesLoaded && ifnameOptions.length === 0'>
+				<CCardBody>
+					{{ $t('network.wireless.messages.noInterfaces') }}
+				</CCardBody>
+			</div>
+			<div v-else>
+				<CCardHeader>
+					{{ $t('network.wireless.table.accessPoints') }}
+					<CButton
+						style='float: right;'
+						color='primary'
+						size='sm'
+						@click='getAccessPoints'
+					>
+						<CIcon :content='icons.refresh' size='sm' />
+						{{ $t('forms.refresh') }}
+					</CButton>
+				</CCardHeader>
+				<CCardBody>
+					<CDataTable
+						:fields='tableFields'
+						:items='accessPoints'
+						:column-filter='true'
+						:items-per-page='20'
+						:pagination='true'
+						:sorter='{external: false, resetable: true}'
+					>
+						<template #no-items-view='{}'>
+							{{ $t('network.wireless.table.noAccessPoints') }}
+						</template>
+						<template #ssid='{item}'>
+							<td>
+								<CBadge 
+									v-if='item.inUse'
+									color='success'
+								>
+									{{ $t('network.connection.states.connected') }}
+								</CBadge>
+								{{ item.ssid }}
+							</td>
+						</template>
+						<template #signal='{item}'>
+							<td>
+								<CProgress
+									:value='item.signal'
+									:color='signalColor(item.signal)'
+								/>
+							</td>
+						</template>
+						<template #actions='{item}'>
+							<td class='col-actions'>
+								<CButton
+									size='sm'
+									:color='item.inUse ? "danger" : "success"'
+									@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : checkInterfaces(item, null)'
+								>
+									<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
+									{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
+								</CButton> <CButton
+									v-if='item.uuid'
+									size='sm'
+									color='primary'
+									:to='"/network/wireless/edit/" + item.uuid'
+								>
+									<CIcon :content='icons.edit' size='sm' />
+									{{ $t('table.actions.edit') }}
+								</CButton> <CButton
+									v-if='item.uuid'
+									size='sm'
+									color='danger'
+									@click='removeConnection(item.uuid, item.ssid)'
+								>
+									<CIcon :content='icons.remove' size='sm' />
+									{{ $t('table.actions.delete') }}
+								</CButton>
+							</td>
+						</template>
+					</CDataTable>
+				</CCardBody>
+			</div>
 		</CCard>
 		<WifiForm
 			v-if='modalAccessPoint !== null'
 			:ap='modalAccessPoint'
 			:ifname='ifname'
 			@hide-modal='hideModal'
-			@connection-created='connectAction'
+			@connection-created='checkInterfaces'
 		/>
 	</div>
 </template>
@@ -97,8 +113,8 @@ import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInte
 
 import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
-import {IField} from '../../interfaces/coreui';
-import {IAccessPoint} from '../../interfaces/network';
+import {IField, IOption} from '../../interfaces/coreui';
+import {IAccessPoint, NetworkInterface} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -127,9 +143,19 @@ export default class WifiConnections extends Vue {
 	private accessPoints: Array<IAccessPoint> = []
 
 	/**
-	 * @var {string} ifname Interface name
+	 * @var {string} ifname Interface to be used
 	 */
 	private ifname = ''
+
+	/**
+	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
+	 */
+	private ifNameOptions: Array<IOption> = []
+
+	/**
+	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
+	 */
+	private interfacesLoaded = false
 
 	/**
 	 * @constant {InterfaceType} iftype Interface type
@@ -221,7 +247,14 @@ export default class WifiConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.WIFI)
 			.then((response: AxiosResponse) => {
-				this.ifname = response.data[0].name;
+				let interfaces: Array<IOption> = [];
+				if (response.data.length > 0) {
+					this.ifname = response.data[0].name;
+				}
+				response.data.forEach((item: NetworkInterface) => {
+					interfaces.push({label: item.name, value: item.name});
+				});
+				this.ifNameOptions = interfaces;
 				this.getAccessPoints();
 			})
 			.catch(() => {
@@ -269,6 +302,17 @@ export default class WifiConnections extends Vue {
 					this.$t('network.wireless.messages.connectionsFailed').toString()
 				);
 			});
+	}
+
+	/**
+	 * Checks if multiple interfaces exist, and shows modal to select one,
+	 * if called with interface name, that interface name is used
+	 */
+	private checkInterfaces(accessPoint: IAccessPoint, ifname: string|null): void {
+		if (ifname !== null) {
+			this.ifname = ifname;
+		}
+		this.connectAction(accessPoint);
 	}
 
 	/**

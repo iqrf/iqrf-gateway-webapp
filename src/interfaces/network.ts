@@ -12,7 +12,7 @@ export interface NetworkConnection {
  * Network interface interace
  */
 export interface NetworkInterface {
-	interfaceName: string
+	connectionName: string
 	name: string
 	state: string
 	type: string
