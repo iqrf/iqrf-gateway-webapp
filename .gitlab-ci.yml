@@ -322,7 +322,7 @@ deploy-apidocs:
   script:
     - composer install --no-progress
     - bin/manager open-api:specification > api.json
-    - ssh www-deploy@iqrfsdk.org "rm -f/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
     - ssh www-deploy@iqrfsdk.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
     - rsync -hrvz --delete -e ssh api.json www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
     - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
