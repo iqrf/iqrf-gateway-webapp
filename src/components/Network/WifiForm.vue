@@ -218,7 +218,7 @@ export default class WifiForm extends Vue {
 	 */
 	private configWep = {
 		type: WepKeyType.KEY,
-		index: 1,
+		index: 0,
 		keys: [
 			'', '', '', ''
 		]
@@ -328,7 +328,7 @@ export default class WifiForm extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('wepIndex', (index: number) => {
-			return this.configWep.keys[index - 1] !== '';
+			return this.configWep.keys[index] !== '';
 		});
 		extend('wepKey', (key: string) => {
 			if (this.wepLen === WepKeyLen.BIT64) {
@@ -381,12 +381,13 @@ export default class WifiForm extends Vue {
 				method: 'auto',
 				addresses: [],
 				gateway: null,
-				dns: []
+				dns: [],
 			},
 			ipv6: {
 				method: 'auto',
 				addresses: [],
-				dns: []
+				dns: [],
+				gateway: null,
 			},
 			wifi: {
 				ssid: this.ap.ssid,
@@ -399,8 +400,6 @@ export default class WifiForm extends Vue {
 				}
 			}
 		};
-		// fixup wep key index
-		connectionData.wifi.security.wep.index -= 1;
 		if (this.getSecurityType() !== 'wep') {
 			connectionData.wifi.security.wep.type = WepKeyType.UNKNOWN;
 		} 
