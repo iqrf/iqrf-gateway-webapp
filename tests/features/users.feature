@@ -11,42 +11,6 @@ Feature: User manager
 	  | 1  | admin    | power | en       |
 
   @api
-  Scenario: Create a new user without role
-	Given I log in as "admin" with password "iqrf"
-	And I am an authenticated user
-	When I create HTTP "POST" request to "/users" with JSON object body:
-	  | username | password | language |
-	  | user     | iqrf     | en       |
-	Then HTTP status code is 400
-
-  @api
-  Scenario: Create a new user with invalid role
-	Given I log in as "admin" with password "iqrf"
-	And I am an authenticated user
-	When I create HTTP "POST" request to "/users" with JSON object body:
-	  | username     | password | language | role    |
-	  | invalid_role | iqrf     | en       | invalid |
-	Then HTTP status code is 400
-
-  @api
-  Scenario: Create a new user without language
-	Given I log in as "admin" with password "iqrf"
-	And I am an authenticated user
-	When I create HTTP "POST" request to "/users" with JSON object body:
-	  | username | password | role   |
-	  | user     | iqrf     | normal |
-	Then HTTP status code is 400
-
-  @api
-  Scenario: Create a new user with invalid language
-	Given I log in as "admin" with password "iqrf"
-	And I am an authenticated user
-	When I create HTTP "POST" request to "/users" with JSON object body:
-	  | username         | password | language | role   |
-	  | invalid_language | iqrf     | invalid  | normal |
-	Then HTTP status code is 400
-
-  @api
   Scenario: List all users after adding
 	Given I log in as "admin" with password "iqrf"
 	And I am an authenticated user
