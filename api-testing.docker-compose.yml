@@ -1,12 +1,14 @@
 version: "3.3"
 services:
-  behat:
-    image: iqrf-gateway-webapp-behat
-    container_name: behat
-    command: make behat
+  newman:
+    image: postman/newman
+    container_name: newman
+    command: run /tests/iqrf-gateway-webapp.postman_collection.json -e /tests/gitlab-ci.postman_environment.json
     tty: true
     depends_on:
       - webapp
+    volumes:
+      - "./tests:/tests"
     networks:
       iqrf-gateway-webapp-api:
         ipv4_address: 172.16.10.3
