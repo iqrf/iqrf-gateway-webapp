@@ -164,7 +164,7 @@ class UserController extends BaseController {
 		$this->validator->validateRequest('userSignIn', $request);
 		$credentials = $request->getJsonBody();
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
-		if ($user === null) {
+		if (!($user instanceof User)) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!$user->verifyPassword($credentials['password'])) {
@@ -175,7 +175,7 @@ class UserController extends BaseController {
 			$us = $now->format('u');
 			$now = $now->modify('-' . $us . ' usec');
 		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$hostname = gethostname();
 		$builder = $this->configuration->createBuilder()

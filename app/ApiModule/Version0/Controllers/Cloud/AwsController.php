@@ -103,17 +103,17 @@ class AwsController extends CloudsController {
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (GuzzleException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (RuntimeException $e) {
-			throw new ClientErrorException('Invalid files', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid files', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidPrivateKeyForCertificateException $e) {
-			throw new ClientErrorException('The private key does not correspond to the certificate', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('The private key does not correspond to the certificate', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 	}
 

@@ -87,7 +87,7 @@ class LogController extends GatewayController {
 			$contentType = 'application/json; charset=utf-8';
 			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, $contentType);
 		} catch (LogNotFoundException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

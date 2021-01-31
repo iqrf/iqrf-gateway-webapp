@@ -107,7 +107,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$busPin = $helper->ask($input, $output, $question);
 
 		}
-		return intval($busPin);
+		return (int) $busPin;
 	}
 
 	/**
@@ -124,7 +124,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$pgmPin = $helper->ask($input, $output, $question);
 
 		}
-		return intval($pgmPin);
+		return (int) $pgmPin;
 	}
 
 	/**
@@ -141,7 +141,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$powerPin = $helper->ask($input, $output, $question);
 
 		}
-		return intval($powerPin);
+		return (int) $powerPin;
 	}
 
 	/**
@@ -157,7 +157,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, Mapping::BAUD_RATE_DEFAULT);
 			$baudRate = $helper->ask($input, $output, $question);
 		}
-		return intval($baudRate);
+		return (int) $baudRate;
 	}
 
 	/**

@@ -125,9 +125,9 @@ class SchedulerController extends BaseController {
 		try {
 			$this->manager->save($task, null);
 		} catch (InvalidTaskMessageException $e) {
-			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
 			->writeBody('Workaround');
@@ -164,7 +164,7 @@ class SchedulerController extends BaseController {
 			$task = (array) $this->manager->load($taskId);
 			return $response->writeJsonBody($task);
 		} catch (TaskNotFoundException $e) {
-			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -195,7 +195,7 @@ class SchedulerController extends BaseController {
 			$this->manager->delete($taskId);
 			return $response->writeBody('Workaround');
 		} catch (TaskNotFoundException $e) {
-			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -233,16 +233,16 @@ class SchedulerController extends BaseController {
 		try {
 			$fileName = $this->manager->getFileName($taskId);
 		} catch (TaskNotFoundException $e) {
-			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 		$this->validator->validateRequest('task', $request);
 		$task = $request->getJsonBody(false);
 		try {
 			$this->manager->save($task, $fileName);
 		} catch (InvalidTaskMessageException $e) {
-			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');
 	}
@@ -313,11 +313,11 @@ class SchedulerController extends BaseController {
 					throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 			}
 		} catch (InvalidTaskMessageException $e) {
-			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		return $response->writeBody('Workaround');
 	}

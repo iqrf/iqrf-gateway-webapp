@@ -23,7 +23,7 @@ namespace App\CoreModule\Models;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
+use Nette\Caching\Storage;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -55,10 +55,10 @@ class VersionManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param IStorage $storage Cache storage
+	 * @param Storage $storage Cache storage
 	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(CommandManager $commandManager, IStorage $storage, ClientInterface $client) {
+	public function __construct(CommandManager $commandManager, Storage $storage, ClientInterface $client) {
 		$this->cache = new Cache($storage, 'version_manager');
 		$this->client = $client;
 		$this->commandManager = $commandManager;

@@ -106,7 +106,7 @@ class PixlaController extends BaseController {
 			$this->manager->setToken($request->getJsonBody()['token']);
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

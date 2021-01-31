@@ -27,6 +27,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Tool for managing Hexio IoT platform
@@ -81,7 +82,7 @@ class HexioManager implements IManager {
 			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
 			'Qos' => 1,
-			'TopicRequest' => '{no-process}/' . preg_replace('/^\{no\-process\}\//', '', $values['topicRequest']),
+			'TopicRequest' => '{no-process}/' . Strings::replace($values['topicRequest'], '/^\{no\-process\}\//', ''),
 			'TopicResponse' => $values['topicResponse'],
 			'User' => $values['username'],
 			'Password' => $values['password'],

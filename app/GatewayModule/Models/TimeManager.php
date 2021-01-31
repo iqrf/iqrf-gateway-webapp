@@ -67,7 +67,7 @@ class TimeManager {
 		$timezones = explode(PHP_EOL, $command->getStdout());
 		$array = [];
 		foreach ($timezones as $timezone) {
-			array_push($array, $this->timezoneInfo($timezone));
+			$array[] = $this->timezoneInfo($timezone);
 		}
 		return $array;
 	}

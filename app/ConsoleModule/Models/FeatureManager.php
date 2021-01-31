@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Models;
 
 use App\CoreModule\Models\FeatureManager as CoreFeatureManager;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 /**
  * Webapp's optional feature manager
@@ -29,16 +29,16 @@ use Nette\Localization\ITranslator;
 class FeatureManager extends CoreFeatureManager {
 
 	/**
-	 * @var ITranslator Translator
+	 * @var Translator Translator
 	 */
 	private $translator;
 
 	/**
 	 * Constructor
 	 * @param string $path Path to the configuration file
-	 * @param ITranslator $translator ITranslator
+	 * @param Translator $translator ITranslator
 	 */
-	public function __construct(string $path, ITranslator $translator) {
+	public function __construct(string $path, Translator $translator) {
 		parent::__construct($path);
 		$this->translator = $translator;
 	}

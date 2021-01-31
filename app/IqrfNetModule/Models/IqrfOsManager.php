@@ -67,7 +67,7 @@ class IqrfOsManager {
 	public function listOsPatches(): array {
 		$patches = [];
 		foreach ($this->repository->findAll() as $patch) {
-			array_push($patches, $patch->jsonSerialize());
+			$patches[] = $patch->jsonSerialize();
 		}
 		return $patches;
 	}
@@ -96,10 +96,10 @@ class IqrfOsManager {
 				$upgrade['osVersion'] = $toVersion;
 				if (hexdec($dpa->getDpa()) < 0x400) {
 					$upgrade['dpa'] = $dpa->getDpa(true) . ', LP';
-					array_push($versions, $upgrade);
+					$versions[] = $upgrade;
 					$upgrade['dpa'] = $dpa->getDpa(true) . ', STD';
 				}
-				array_push($versions, $upgrade);
+				$versions[] = $upgrade;
 			}
 		}
 		return $versions;
@@ -143,13 +143,13 @@ class IqrfOsManager {
 	 */
 	private function getOsFileNames(array $request): array {
 		$files = [];
-		$oldVersion = intval($request['fromVersion']);
-		$newVersion = intval($request['toVersion']);
+		$oldVersion = (int) $request['fromVersion'];
+		$newVersion = (int) $request['toVersion'];
 		$oldBuild = hexdec($request['fromBuild']);
 		$newBuild = hexdec($request['toBuild']);
 		$patches = $this->repository->findBy(['fromVersion' => $oldVersion, 'toVersion' => $newVersion, 'fromBuild' => $oldBuild, 'toBuild' => $newBuild]);
 		foreach ($patches as $patch) {
-			array_push($files, __DIR__ . '/../../../iqrf/os/' . $patch->getFileName());
+			$files[] = __DIR__ . '/../../../iqrf/os/' . $patch->getFileName();
 		}
 		return $files;
 	}

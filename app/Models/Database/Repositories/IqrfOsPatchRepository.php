@@ -37,7 +37,7 @@ class IqrfOsPatchRepository extends EntityRepository {
 		$patches = [];
 		foreach ($this->findAll() as $patch) {
 			assert($patch instanceof IqrfOsPatch);
-			array_push($patches, [$patch->getId(), $patch->getModuleType(), $patch->getFromVersion(), $patch->getFromBuild(), $patch->getToVersion(), $patch->getToBuild(), $patch->getPart(), $patch->getParts(), $patch->getFileName()]);
+			$patches[] = [$patch->getId(), $patch->getModuleType(), $patch->getFromVersion(), $patch->getFromBuild(), $patch->getToVersion(), $patch->getToBuild(), $patch->getPart(), $patch->getParts(), $patch->getFileName()];
 		}
 		return $patches;
 	}

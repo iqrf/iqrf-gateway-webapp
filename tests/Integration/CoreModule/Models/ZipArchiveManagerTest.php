@@ -126,7 +126,8 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testExistFiles(): void {
 		$files = $this->createList(self::CONFIG_DIR);
-		for ($i = 0; $i < count($files); ++$i) {
+		$filesCount = count($files);
+		for ($i = 0; $i < $filesCount; ++$i) {
 			$files[$i] = 'daemon/' . $files[$i];
 		}
 		Assert::true($this->manager->exist(ArrayHash::from($files)));
@@ -140,7 +141,8 @@ final class ZipArchiveManagerTest extends TestCase {
 		$destinationPath = realpath(__DIR__ . '/../../../temp/zip');
 		$this->manager->extract($destinationPath);
 		$expected = $this->createList($originalPath);
-		for ($i = 0; $i < count($expected); ++$i) {
+		$expectedCount = count($expected);
+		for ($i = 0; $i < $expectedCount; ++$i) {
 			$expected[$i] = 'daemon/' . $expected[$i];
 		}
 		$actual = $this->createList($destinationPath);
@@ -155,7 +157,8 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testListFiles(): void {
 		$expected = $this->createList(self::CONFIG_DIR);
-		for ($i = 0; $i < count($expected); ++$i) {
+		$expectedCount = count($expected);
+		for ($i = 0; $i < $expectedCount; ++$i) {
 			$expected[$i] = 'daemon/' . $expected[$i];
 		}
 		Assert::same($expected, $this->manager->listFiles());

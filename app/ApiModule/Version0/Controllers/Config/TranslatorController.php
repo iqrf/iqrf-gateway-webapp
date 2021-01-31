@@ -79,9 +79,9 @@ class TranslatorController extends BaseConfigController {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -114,7 +114,7 @@ class TranslatorController extends BaseConfigController {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

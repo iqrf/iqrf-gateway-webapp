@@ -119,7 +119,7 @@ class MappingEditCommand extends MappingCommand {
 			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, $mapping->getBaudRate());
 			$baudRate = $helper->ask($input, $output, $question);
 		}
-		return intval($baudRate);
+		return (int) $baudRate;
 	}
 
 }
