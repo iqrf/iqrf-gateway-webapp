@@ -432,6 +432,55 @@
 							"response": []
 						},
 						{
+							"name": "Create a new user with username collision",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 409', function () {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'Username is already used.\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('Username is already used');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Create a new user without username",
 							"event": [
 								{
@@ -839,7 +888,391 @@
 		},
 		{
 			"name": "Features",
-			"item": []
+			"item": [
+				{
+					"name": "Get optional features configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Optional features', function () {",
+									"    var jsonData = pm.response.json();",
+									"    const features = {",
+									"\t\t'docs': {",
+									"\t\t\t'enabled': true,",
+									"\t\t\t'url': 'https://docs.iqrf.org/iqrf-gateway/',",
+									"\t\t},",
+									"\t\t'grafana': {",
+									"\t\t\t'enabled': false,",
+									"\t\t\t'url': '/grafana/',",
+									"\t\t},",
+									"\t\t'iqrfGatewayController': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'iqrfGatewayTranslator': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'mender': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'networkManager': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'nodeRed': {",
+									"\t\t\t'enabled': false,",
+									"\t\t\t'url': '/node-red/',",
+									"\t\t},",
+									"\t\t'pixla': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'ssh': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'supervisord': {",
+									"\t\t\t'enabled': false,",
+									"\t\t\t'url': '/supervisord/',",
+									"\t\t},",
+									"\t\t'trUpload': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'updater': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'unattendedUpgrades': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t\t'versionChecker': {",
+									"\t\t\t'enabled': false,",
+									"\t\t},",
+									"\t};",
+									"    pm.expect(jsonData).to.eql(features);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get optional feature configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Optional feature for Grafana', function () {",
+									"    var jsonData = pm.response.json();",
+									"    const feature = {",
+									"\t\t'enabled': false,",
+									"\t\t'url': '/grafana/',",
+									"\t};",
+									"    pm.expect(jsonData).to.eql(feature);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/grafana",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"grafana"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get optional nonexistent feature configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 404', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Error message is \\'Feature not found\\'', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql('Feature not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/nonsense",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"nonsense"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit optional feature configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"const checkRequest = {",
+									"    url: pm.environment.get('baseUrl') + '/api/v0/features/grafana',",
+									"    header: {",
+									"        'Authorization': 'Bearer ' + pm.collectionVariables.get('token')",
+									"    },",
+									"};",
+									"pm.sendRequest(checkRequest, (error, response) => {",
+									"    pm.test('Chack optional feature for Grafana', function () {",
+									"        var jsonData = response.json();",
+									"        const feature = {",
+									"\t\t    'enabled': true,",
+									"\t\t    'url': '/grafana/',",
+									"\t    };",
+									"        pm.expect(jsonData).to.eql(feature);",
+									"    });",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/grafana",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"grafana"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit optional feature configuration with missing parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 400', function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Error message is \\'JSON does not validate.\\'', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[url] The property url is required');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/grafana",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"grafana"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit optional feature configuration with extra parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 400', function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Error message is \\'JSON does not validate.\\'', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\",\n    \"extra\": {}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/grafana",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"grafana"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit optional nonexistent feature configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 404', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Error message is \\'Feature not found\\'', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql('Feature not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/features/nonsense",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"features",
+								"nonsense"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Config",
