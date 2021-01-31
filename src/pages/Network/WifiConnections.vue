@@ -143,11 +143,6 @@ export default class WifiConnections extends Vue {
 	private accessPoints: Array<IAccessPoint> = []
 
 	/**
-	 * @var {string} ifname Interface to be used
-	 */
-	private ifname = ''
-
-	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
 	 */
 	private ifNameOptions: Array<IOption> = []
@@ -248,9 +243,6 @@ export default class WifiConnections extends Vue {
 		NetworkInterfaceService.list(InterfaceType.WIFI)
 			.then((response: AxiosResponse) => {
 				let interfaces: Array<IOption> = [];
-				if (response.data.length > 0) {
-					this.ifname = response.data[0].name;
-				}
 				response.data.forEach((item: NetworkInterface) => {
 					interfaces.push({label: item.name, value: item.name});
 				});

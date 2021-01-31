@@ -1882,7 +1882,7 @@
 			"errors": {
 				"name": "Please enter a connection name."
 			},
-			"interfaceName": "Interface name",
+			"interface": "Interface",
 			"ipv4": {
 				"title": "IPv4 configuration",
 				"method": "Connection method",

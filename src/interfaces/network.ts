@@ -73,6 +73,7 @@ export interface IAccessPoint {
 	signal: number
 	security: string
 	uuid?: string
+	interfaceName: string
 }
 
 /**
