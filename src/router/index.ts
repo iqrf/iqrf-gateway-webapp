@@ -75,6 +75,7 @@ const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
 const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetInterfaces.vue');
+const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 
 import store from '../store';
@@ -757,6 +758,10 @@ const routes: Array<RouteConfig> = [
 								props: true,
 							},
 						]
+					},
+					{
+						component: EthernetConnections,
+						path: 'ethernet2',
 					},
 					{
 						path: 'wireless',

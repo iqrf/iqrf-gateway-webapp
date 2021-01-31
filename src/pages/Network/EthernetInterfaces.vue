@@ -12,7 +12,7 @@
 				</CBadge>
 			</CCardHeader>
 			<CCardBody>
-				<EthernetConnections
+				<EthernetConnection
 					:connections='connections'
 					:interface-name='iface.name'
 					@update-connection='getConnections'
@@ -27,13 +27,13 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
-import EthernetConnections from '../../components/Network/EthernetConnections.vue';
+import EthernetConnection from '../../components/Network/EthernetConnection.vue';
 import {AxiosResponse} from 'axios';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
 @Component({
 	components: {
-		EthernetConnections,
+		EthernetConnection,
 		CBadge,
 		CCard,
 		CCardBody,

@@ -6,12 +6,12 @@
 				<CSelect
 					:value.sync='ifname'
 					:label='$t("network.wireless.multipleInterfaces")'
-					:options='ifnameOptions'
+					:options='ifNameOptions'
 				/>
 			</CCardBody>
 		</CCard>
 		<CCard>
-			<div v-if='interfacesLoaded && ifnameOptions.length === 0'>
+			<div v-if='interfacesLoaded && ifNameOptions.length === 0'>
 				<CCardBody>
 					{{ $t('network.wireless.messages.noInterfaces') }}
 				</CCardBody>
@@ -255,6 +255,7 @@ export default class WifiConnections extends Vue {
 					interfaces.push({label: item.name, value: item.name});
 				});
 				this.ifNameOptions = interfaces;
+				this.interfacesLoaded = true;
 				this.getAccessPoints();
 			})
 			.catch(() => {
