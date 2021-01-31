@@ -8,7 +8,7 @@
 				</CCardBody>
 			</div>
 			<div v-if='interfacesLoaded && connectionsLoaded && ifNameOptions.length > 0'>
-				<CCardHeader>
+				<CCardHeader class='border-0'>
 					{{ $t('network.connection.title') }}
 				</CCardHeader>
 				<CCardBody>
@@ -37,7 +37,7 @@
 						<template #interfaceName='{item}'>
 							<td>
 								<CSelect
-									v-model='item.interfaceName'
+									:value.sync='item.interfaceName'
 									:options='ifNameOptions'
 								/>
 							</td>

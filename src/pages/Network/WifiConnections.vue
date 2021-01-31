@@ -1,23 +1,14 @@
 <template>
 	<div>
 		<h1>{{ $t('network.wireless.title') }}</h1>
-		<CCard v-if='ifNameOptions.length > 1'>
-			<CCardBody>
-				<CSelect
-					:value.sync='ifname'
-					:label='$t("network.wireless.multipleInterfaces")'
-					:options='ifNameOptions'
-				/>
-			</CCardBody>
-		</CCard>
 		<CCard>
 			<div v-if='interfacesLoaded && ifNameOptions.length === 0'>
 				<CCardBody>
 					{{ $t('network.wireless.messages.noInterfaces') }}
 				</CCardBody>
 			</div>
-			<div v-else>
-				<CCardHeader>
+			<div v-if='interfacesLoaded && ifNameOptions.length > 0'>
+				<CCardHeader class='border-0'>
 					{{ $t('network.wireless.table.accessPoints') }}
 					<CButton
 						style='float: right;'
@@ -60,6 +51,14 @@
 								/>
 							</td>
 						</template>
+						<template #interfaceName='{item}'>
+							<td>
+								<CSelect
+									:value.sync='item.interfaceName'
+									:options='ifNameOptions'
+								/>
+							</td>
+						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
@@ -95,7 +94,6 @@
 		<WifiForm
 			v-if='modalAccessPoint !== null'
 			:ap='modalAccessPoint'
-			:ifname='ifname'
 			@hide-modal='hideModal'
 			@connection-created='connectAction'
 		/>
@@ -104,7 +102,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CSelect} from '@coreui/vue/src';
 import {cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
@@ -125,6 +123,7 @@ import {IAccessPoint, NetworkInterface} from '../../interfaces/network';
 		CDataTable,
 		CIcon,
 		CProgress,
+		CSelect,
 		WifiForm,
 	},
 	metaInfo: {
@@ -151,11 +150,6 @@ export default class WifiConnections extends Vue {
 	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
 	 */
 	private interfacesLoaded = false
-
-	/**
-	 * @constant {InterfaceType} iftype Interface type
-	 */
-	private iftype = InterfaceType.WIFI
 
 	/**
 	 * @var {IAccessPoint} modalAccessPoint Access point for modal window
@@ -189,6 +183,12 @@ export default class WifiConnections extends Vue {
 		{
 			key: 'security',
 			label: this.$t('network.wireless.table.security'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'interfaceName',
+			label: this.$t('network.connection.interface'),
 			filter: false,
 			sorter: false,
 		},
@@ -286,7 +286,12 @@ export default class WifiConnections extends Vue {
 						accessPoints[index].uuid = connection.uuid;
 					}
 				}
-				this.accessPoints = accessPoints;
+				this.accessPoints = accessPoints.map((item: IAccessPoint) => {
+					if (this.ifNameOptions.length > 0) {
+						item.interfaceName = this.ifNameOptions[0].label.toString();
+					}
+					return item;
+				});
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {
@@ -307,11 +312,11 @@ export default class WifiConnections extends Vue {
 		});
 		if (accessPoint.uuid) { // connection for AP exists
 			if (activeAP) {
-				this.disconnect(activeAP.uuid!, activeAP.ssid, true).then(() => 
-					this.connect(accessPoint.uuid!, accessPoint.ssid)
+				this.disconnect(activeAP.uuid!, activeAP.ssid, accessPoint.interfaceName!, true).then(() => 
+					this.connect(accessPoint.uuid!, accessPoint.ssid, accessPoint.interfaceName!)
 				);
 			} else {
-				this.connect(accessPoint.uuid, accessPoint.ssid);
+				this.connect(accessPoint.uuid, accessPoint.ssid, accessPoint.interfaceName!);
 			}
 		} else { // connection for AP does not exist
 			this.showModal(accessPoint);			
@@ -322,16 +327,17 @@ export default class WifiConnections extends Vue {
 	 * Connects to wifi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
+	 * @param {string} ifname Network interface name
 	 */
-	private connect(uuid: string, name: string): void {
+	private connect(uuid: string, name: string, ifname: string): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(uuid, this.ifname)
+		NetworkConnectionService.connect(uuid, ifname)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: this.ifname, connection: name}
+						{interface: ifname, connection: name}
 					).toString());
 				this.getAccessPoints();
 			})
@@ -342,10 +348,11 @@ export default class WifiConnections extends Vue {
 	 * Disconnects from wifi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
+	 * @param {string} ifname Network interface name
 	 * @param {boolean} inChain Disconnect request in connect chain
 	 * @returns {Promise<void>} Promise for request chaining
 	 */
-	private disconnect(uuid: string, name: string, inChain: boolean): Promise<void> {
+	private disconnect(uuid: string, name: string, ifname: string,inChain: boolean): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return NetworkConnectionService.disconnect(uuid)
 			.then(() => {
@@ -354,7 +361,7 @@ export default class WifiConnections extends Vue {
 					this.$toast.success(
 						this.$t(
 							'network.connection.messages.disconnect.success',
-							{interface: this.ifname, connection: name}
+							{interface: ifname, connection: name}
 						).toString());
 					this.getAccessPoints();
 				}

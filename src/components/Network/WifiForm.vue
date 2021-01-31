@@ -316,11 +316,6 @@ export default class WifiForm extends Vue {
 	@Prop({required: true}) ap!: IAccessPoint
 
 	/**
-	 * @property {string} ifname Interface name
-	 */
-	@Prop({required: true}) ifname!: string
-
-	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -371,7 +366,7 @@ export default class WifiForm extends Vue {
 			name: this.ap.ssid,
 			uuid: uuidv4(),
 			type: ConnectionType.WIFI,
-			interface: this.ifname,
+			interface: this.ap.interfaceName,
 			autoConnect: {
 				enabled: true,
 				priority: 0,
