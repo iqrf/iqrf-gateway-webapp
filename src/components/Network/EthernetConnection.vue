@@ -63,7 +63,7 @@ import {NetworkConnection} from '../../interfaces/network';
 /**
  * Ethernet connections card for Network Manager component
  */
-export default class EthernetConnections extends Vue {
+export default class EthernetConnection extends Vue {
 	/**
 	 * @constant {Array<IField>} fields CoreUI data table columns
 	 */

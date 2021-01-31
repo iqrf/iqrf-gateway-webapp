@@ -1795,10 +1795,14 @@
 		"title": "IP network",
 		"description": "IP network management.",
 		"ethernet": {
+			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
 			"add": "Add Ethernet connection",
-			"edit": "Edit Ethernet connection"
+			"edit": "Edit Ethernet connection",
+			"messages": {
+				"noInterfaces": "No ethernet network interface detected."
+			}
 		},
 		"wireless": {
 			"title": "Wireless connections",
@@ -1872,7 +1876,8 @@
 			}
 		},
 		"connection": {
-			"name": "Connections name",
+			"title": "Available connections",
+			"name": "Name",
 			"edit": "Edit connection",
 			"errors": {
 				"name": "Please enter a connection name."
