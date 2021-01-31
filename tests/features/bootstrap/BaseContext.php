@@ -203,42 +203,6 @@ final class BaseContext implements Context {
 	}
 
 	/**
-	 * @When I edit optional feature :name:
-	 * @param string $name Feature name
-	 * @param TableNode $table Feature configuration
-	 */
-	public function iEditOptionalFeature(string $name, TableNode $table): void {
-		$options = $this->getClientOptions();
-		$row = $table->getHash()[0];
-		$row['enabled'] = $row['enabled'] === 'true';
-		$options[self::HTTP_BODY] = Json::encode($row);
-		$this->response = $this->client->request('PUT', self::API_PATH . '/features/' . $name, $options);
-	}
-
-
-	/**
-	 * @Then Optional feature :feature has configuration:
-	 * @param string $feature Optional feature name
-	 * @param TableNode $table Optional feature configuration in table
-	 */
-	public function optionalFeatureHasConfiguration(string $feature, TableNode $table): void {
-		$response = $this->client->get(self::API_PATH . '/features/' . $feature, $this->getClientOptions());
-		if ($response->getStatusCode() !== 200) {
-			throw new Exception('Unexpected HTTP status code: ' . $response->getStatusCode());
-		}
-		$body = $response->getBody()->getContents();
-		$actual = Json::decode($body, Json::FORCE_ARRAY);
-		$expected = $table->getHash()[0];
-		foreach ($expected as $key => $value) {
-			$this->correctType($actual[$key], $value);
-			if ((!array_key_exists($key, $actual)) ||
-				$actual[$key] !== $value) {
-				throw new Exception('Unexpected key "' . $key . '" value: ' . $value);
-			}
-		}
-	}
-
-	/**
 	 * Corrects types
 	 * @param mixed $actual Actual value
 	 * @param mixed $expected Expected value

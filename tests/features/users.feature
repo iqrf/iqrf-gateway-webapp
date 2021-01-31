@@ -47,15 +47,6 @@ Feature: User manager
 	Then HTTP status code is 400
 
   @api
-  Scenario: Create a new user with username collision
-	Given I log in as "admin" with password "iqrf"
-	And I am an authenticated user
-	When I create HTTP "POST" request to "/users" with JSON object body:
-	  | username | password | language | role   |
-	  | user     | iqrf     | en       | normal |
-	Then HTTP status code is 409
-
-  @api
   Scenario: List all users after adding
 	Given I log in as "admin" with password "iqrf"
 	And I am an authenticated user
