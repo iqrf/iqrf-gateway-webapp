@@ -312,6 +312,22 @@ build-package_iqaros_release:
       - './*.changes'
     expire_in: 2 weeks
 
+deploy-apidocs:
+  stage: deploy-docs
+  environment:
+    name: apidocs
+    url: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/
+  only:
+    - master
+  script:
+    - composer install --no-progress
+    - bin/manager open-api:specification > api.json
+    - ssh www-deploy@iqrfsdk.org "rm -f/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
+    - ssh www-deploy@iqrfsdk.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
+    - rsync -hrvz --delete -e ssh api.json www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
+    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
+  <<: *ssh_template
+
 deploy-package-devel:
   stage: deploy-package
   needs:
