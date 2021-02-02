@@ -20,6 +20,7 @@
 							/>
 						</ValidationProvider>
 						<CSelect
+							v-if='ifnameOptions.length > 1'	
 							:value.sync='connection.interface'
 							:label='$t("network.connection.interface")'
 							:options='ifnameOptions'
@@ -32,7 +33,87 @@
 										<span>{{ $t('network.wireless.modal.form.security') }}</span>
 									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
 								</div>
+								<div
+									v-if='connection.wifi.security.type = "ieee8021x"'
+									class='form-group'
+								>
+									<CInput
+										v-model='config.wifi.security.leap.username'
+										:label='$t("network.wireless.modal.form.username")'
+									/>
+									<CInput
+										v-model='config.wifi.security.leap.password'
+										:label='$t("network.wireless.modal.form.password")'
+									/>
+								</div>
+								<div 
+									v-else-if='connection.wifi.security.type === "wep"'
+									class='form-group'
+								>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|wepKeyType'
+										:custom-messages='{
+											required: "network.wireless.modal.errors.wepKeyType",
+											wepKeyType: "network.wireless.modal.errors.wepKeyType"
+										}'
+									>
+										<CSelect
+											:value.sync='connection.wifi.security.wep.type'
+											:options='wepKeyOptions'
+											:label='$t("network.wireless.modal.form.wep.type")'
+											:placeholder='$t("network.wireless.modal.errors.wepKeyType")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<CSelect
+										v-if='connection.wifi.security.wep.type === "key"'
+										:value.sync='wepLen'
+										:options='wepLenOptions'
+										:label='$t("network.wireless.modal.form.wep.length")'
+									/>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|integer|between:0,3|wepIndex'
+										:custom-messages='{
+											required: "network.wireless.modal.errors.wepIndex",
+											integer: "forms.errors.integer",
+											between: "network.wireless.modal.errors.wepIndexInvalid",
+											wepIndex: "network.wireless.modal.errors.wepIndexKeyMissing"
+										}'
+									>
+										<CInput
+											v-model.number='connection.wifi.security.wep.index'
+											type='number'
+											min='0'
+											max='3'
+											:label='$t("network.wireless.modal.form.wep.index")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-for='(key, index) of connection.wifi.security.wep.keys'
+										:key='index'
+										v-slot='{errors, touched, valid}'
+										:rules='connection.wifi.security.wep.type === "key" ? "wepKey" : ""'
+										:custom-messages='{
+											wepKey: wepLen === "64bit" ?
+												"network.wireless.modal.errors.wepKey64Invalid":
+												"network.wireless.modal.errors.wepKey128Invalid"
+										}'
+									>
+										<CInput							
+											v-model='connection.wifi.security.wep.keys[index]'
+											:label='$t("network.wireless.modal.form.wep.keyNum", {index: index})'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</div>
 								<ValidationProvider
+									v-else-if='connection.wifi.security.type === "wpa-psk"'
 									v-slot='{errors, touched, valid}'
 									rules='required|wpaPsk'
 									:custom-messages='{
@@ -307,7 +388,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required, between} from 'vee-validate/dist/rules';
+import {required, integer, between} from 'vee-validate/dist/rules';
 
 import {v4 as uuidv4} from 'uuid';
 import ip from 'ip-regex';
@@ -318,6 +399,17 @@ import {AxiosResponse} from 'axios';
 import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
+
+enum WepKeyLen {
+	BIT64 = '64bit',
+	BIT128 = '128bit',
+}
+
+enum WepKeyType {
+	KEY = 'key',
+	PASSPHRASE = 'passphrase',
+	UNKNOWN = 'unknown',
+}
 
 @Component({
 	components: {
@@ -382,6 +474,39 @@ export default class ConnectionFormBasic extends Vue {
 	private powerUser = false
 
 	/**
+	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
+	 */
+	private wepKeyOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.key'),
+			value: WepKeyType.KEY
+		},
+		{
+			label: this.$t('network.wireless.modal.form.wep.types.passphrase'),
+			value: WepKeyType.PASSPHRASE
+		},
+	]
+
+	/**
+	 * @var {WepKeyLen} wepLen WEP key length
+	 */
+	private wepLen = WepKeyLen.BIT64
+
+	/**
+	 * @constant {Array<IOption>} wepLenOptions CoreUI wep key length select options
+	 */
+	private wepLenOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.wep.lengths.64bit'),
+			value: WepKeyLen.BIT64,
+		},
+		{
+			label: this.$t('network.wireless.modal.form.wep.lengths.128bit'),
+			value: WepKeyLen.BIT128,
+		},
+	]
+
+	/**
 	 * @var {string} pskInputType WPA pre-shared key input type
 	 */
 	private pskInputType = 'password'
@@ -415,8 +540,9 @@ export default class ConnectionFormBasic extends Vue {
 	 * Initializes validation rules
 	 */
 	created(): void {
-		extend('required', required);
 		extend('between', between);
+		extend('integer', integer);
+		extend('required', required);
 		extend('ipv4', (address: string) => {
 			return ip.v4({exact: true}).test(address);
 		});
@@ -429,6 +555,18 @@ export default class ConnectionFormBasic extends Vue {
 		});
 		extend('ipv6', (address: string) => {
 			return ip.v6({exact: true}).test(address);
+		});
+		extend('wepIndex', (index: number) => {
+			return this.connection.wifi!.security.wep.keys[index] !== '';
+		});
+		extend('wepKey', (key: string) => {
+			if (this.wepLen === WepKeyLen.BIT64) {
+				return new RegExp(/^(\w{5}|[0-9a-fA-F]{10})$/).test(key);
+			}
+			return new RegExp(/^(\w{13}|[0-9a-fA-F]{26})$/).test(key);
+		});
+		extend('wepKeyType', (key: string) => {
+			return key !== WepKeyType.UNKNOWN;
 		});
 		extend('wpaPsk', (key: string) => {
 			return new RegExp(/^(\w{8,63}|[0-9a-fA-F]{64})$/).test(key);
@@ -574,7 +712,7 @@ export default class ConnectionFormBasic extends Vue {
 										password: ''
 									},
 									wep: {
-										type: 'unknown',
+										type: WepKeyType.UNKNOWN,
 										index: 0,
 										keys: ['', '', '', '']
 									}
