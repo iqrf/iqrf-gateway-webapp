@@ -19,12 +19,20 @@ export interface NetworkInterface {
 }
 
 export interface IConnection {
+	autoConnect: IConnectionAutoConnect
 	name?: string
 	uuid?: string
 	type?: string
 	interface?: string
 	ipv4: IConnectionIPv4
 	ipv6: IConnectionIPv6
+	wifi?: IConnectionWifi
+}
+
+export interface IConnectionAutoConnect {
+	enabled: boolean,
+	priority: number,
+	retries: number
 }
 
 export interface IConnectionCurrent {
@@ -61,6 +69,13 @@ export interface IConnectionIPv6Addrs {
 
 export interface IConnectionIPDns {
 	address: string
+}
+
+export interface IConnectionWifi {
+	type: string
+	psk: string
+	leap: IWifiLeap
+	wep: IWifiWep
 }
 
 export interface IAccessPoint {

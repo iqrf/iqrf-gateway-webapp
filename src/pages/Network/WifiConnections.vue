@@ -54,9 +54,11 @@
 						<template #interfaceName='{item}'>
 							<td>
 								<CSelect
+									v-if='ifNameOptions.length > 1'
 									:value.sync='item.interfaceName'
 									:options='ifNameOptions'
 								/>
+								<span v-else>{{ item.interfaceName }}</span>
 							</td>
 						</template>
 						<template #actions='{item}'>
@@ -64,7 +66,9 @@
 								<CButton
 									size='sm'
 									:color='item.inUse ? "danger" : "success"'
-									@click='item.inUse ? disconnect(item.uuid, item.ssid, false) : connectAction(item)'
+									@click='item.inUse ? disconnect(item.uuid, item.ssid, item.interfaceName):
+										item.uuid !== undefined ? connect(item.uuid, item.ssid, item.interfaceName):
+										addConnection(item)'
 								>
 									<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
 									{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
@@ -303,27 +307,6 @@ export default class WifiConnections extends Vue {
 	}
 
 	/**
-	 * Performs a connect button action depending on the state of connection
-	 * @param {IAccessPoint} accessPoint Access point
-	 */
-	private connectAction(accessPoint: IAccessPoint): void {
-		const activeAP = this.accessPoints.find((ap: IAccessPoint) => {
-			return ap.inUse === true && ap.uuid;
-		});
-		if (accessPoint.uuid) { // connection for AP exists
-			if (activeAP) {
-				this.disconnect(activeAP.uuid!, activeAP.ssid, accessPoint.interfaceName!, true).then(() => 
-					this.connect(accessPoint.uuid!, accessPoint.ssid, accessPoint.interfaceName!)
-				);
-			} else {
-				this.connect(accessPoint.uuid, accessPoint.ssid, accessPoint.interfaceName!);
-			}
-		} else { // connection for AP does not exist
-			this.showModal(accessPoint);			
-		}
-	}
-
-	/**
 	 * Connects to wifi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
@@ -349,25 +332,52 @@ export default class WifiConnections extends Vue {
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
 	 * @param {string} ifname Network interface name
-	 * @param {boolean} inChain Disconnect request in connect chain
-	 * @returns {Promise<void>} Promise for request chaining
 	 */
-	private disconnect(uuid: string, name: string, ifname: string,inChain: boolean): Promise<void> {
+	private disconnect(uuid: string, name: string, ifname: string): void {
 		this.$store.commit('spinner/SHOW');
-		return NetworkConnectionService.disconnect(uuid)
+		NetworkConnectionService.disconnect(uuid)
 			.then(() => {
-				if (!inChain) {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t(
-							'network.connection.messages.disconnect.success',
-							{interface: ifname, connection: name}
-						).toString());
-					this.getAccessPoints();
-				}
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.disconnect.success',
+						{interface: ifname, connection: name}
+					).toString());
+				this.getAccessPoints();
 			})
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
+
+	private addConnection(ap: IAccessPoint) {
+		this.$router.push({
+			name: 'add-wireless-connection',
+			params: {
+				ssid: ap.ssid,
+				interfaceName: ap.interfaceName!,
+				wifiMode: ap.mode,
+				wifiSecurity: this.getSecurityType(ap.security)
+			}
+		});
+	}
+
+	/**
+	 * Returns security type code from type string
+	 * @param {string} type security type string
+	 * @returns {string} security type code
+	 */
+	private getSecurityType(type: string): string {
+		if (type === 'Open') {
+			return 'open';
+		} else if (type === 'WEP') {
+			return 'wep';
+		} else if (['WPA-Personal', 'WPA2-Personal', 'WPA3-Personal'].includes(type)) {
+			return 'wpa-psk';
+		} else if (['WPA-Enterprise', 'WPA2-Enterprise', 'WPA3-Enterprise'].includes(type)) {
+			return 'wpa-eap';
+		}
+		return '';
+	}
+
 
 	/**
 	 * Removes wifi access point connection
