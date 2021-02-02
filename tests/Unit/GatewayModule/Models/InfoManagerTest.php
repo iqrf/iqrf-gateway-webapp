@@ -65,6 +65,7 @@ final class InfoManagerTest extends CommandTestCase {
 	private const EXPECTED = [
 		'board' => 'MICRORISC s.r.o. IQD-GW-01',
 		'gwId' => '0242fc1e6f85b296',
+		'gwImage' => 'gw v1.0.0',
 		'pixla' => null,
 		'versions' => [
 			'controller' => 'v1.0.0',
@@ -167,6 +168,24 @@ final class InfoManagerTest extends CommandTestCase {
 		$output = '{"gwId":"0242fc1e6f85b296",}';
 		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
 		Assert::null($this->manager->getId());
+	}
+
+	/**
+	 * Tests the function to get the gateway image version
+	 */
+	public function testGetImage(): void {
+		$output = '{"gwImage": "gw v1.0.0"}';
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::same(self::EXPECTED['gwImage'], $this->manager->getImage());
+	}
+
+	/**
+	 * Tests the function to get the gateway image version (invalid JSON)
+	 */
+	public function testGetImageInvalidJson(): void {
+		$output = '{"gwImage": "gw v1.0.0",}';
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::null($this->manager->getImage());
 	}
 
 	/**
@@ -274,6 +293,8 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
 			->andReturn(self::EXPECTED['gwId']);
+		$manager->shouldReceive('getImage')
+			->andReturn(self::EXPECTED['gwImage']);
 		$manager->shouldReceive('getPixlaToken')
 			->andReturn(self::EXPECTED['pixla']);
 		$this->versionManager->shouldReceive('getController')

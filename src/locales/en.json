@@ -996,6 +996,7 @@
 			"description": "Show information about this gateway.",
 			"board": "Board",
 			"gwId": "IQRF Gateway ID",
+			"gwImage": "IQRF Gateway image",
 			"gwmonId": "PIXLA token",
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
