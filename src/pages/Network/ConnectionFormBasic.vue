@@ -136,6 +136,58 @@
 										</template>
 									</CInput>
 								</ValidationProvider>
+								<div
+									v-if='connection.wifi.security.type === "wpa-eap"'
+									class='form-group'
+								>
+									<CSelect
+										:value.sync='connection.wifi.security.eap.phaseOne'
+										:options='authOneOptions'
+										:label='$t("network.wireless.modal.form.authPhaseOne")'
+									/>
+									<CInput
+										v-model='connection.wifi.security.eap.anonymousIdentity'
+										:label='$t("network.wireless.modal.form.anonymousIdentity")'
+									/>
+									<CInput
+										v-model='connection.wifi.security.eap.cert'
+										:label='$t("network.wireless.modal.form.caCert")'
+										:disabled='connection.wifi.security.eap.noCert'
+									/>
+									<CSelect
+										:value.sync='connection.wifi.security.eap.phaseTwo'
+										:options='authTwoOptions'
+										:label='$t("network.wireless.modal.form.authPhaseTwo")'
+									/>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "forms.errors.username"
+										}'
+									>
+										<CInput
+											v-model='connection.wifi.security.eap.identity'
+											:label='$t("network.wireless.modal.form.username")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "forms.errors.password"
+										}'
+									>
+										<CInput
+											v-model='connection.wifi.security.eap.password'
+											:label='$t("network.wireless.modal.form.password")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</div>
 							</CCol>
 						</CRow>
 						<CRow>
@@ -474,6 +526,26 @@ export default class ConnectionFormBasic extends Vue {
 	private powerUser = false
 
 	/**
+	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
+	 */
+	private authOneOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseOneAlgorithm.peap'),
+			value: 'peap'
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
+	 */
+	private authTwoOptions: Array<IOption> = [
+		{
+			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
+			value: 'mschapv2'
+		},
+	]
+
+	/**
 	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
 	 */
 	private wepKeyOptions: Array<IOption> = [
@@ -719,6 +791,18 @@ export default class ConnectionFormBasic extends Vue {
 								}
 							}
 						});
+						if (this.wifiSecurity === 'wpa-eap') {
+							Object.assign(this.connection.wifi?.security, {
+								eap: {
+									phaseOne: '',
+									anonymousIdentity: '',
+									cert: '',
+									phaseTwo: '',
+									identity: '',
+									password: '',
+								}
+							});
+						}
 					}
 					this.storeConnectionData(this.connection);
 					this.$store.commit('spinner/HIDE');
