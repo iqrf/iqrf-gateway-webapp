@@ -87,6 +87,7 @@ class InfoManager {
 		return [
 			'board' => $this->getBoard(),
 			'gwId' => $this->getId(),
+			'gwImage' => $this->getImage(),
 			'pixla' => $this->getPixlaToken(),
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
@@ -116,21 +117,35 @@ class InfoManager {
 	}
 
 	/**
-	 * Gets gateway ID
-	 * @return string|null Gateway ID
+	 * Reads IQRF Gateway file and returns it's contents
+	 * @return array<string, string>
 	 */
-	public function getId(): ?string {
+	private function readGatewayFile(): ?array {
 		$command = 'cat /etc/iqrf-gateway.json';
 		$output = $this->commandManager->run($command, true)->getStdout();
 		if ($output !== '') {
 			try {
-				$json = Json::decode($output, Json::FORCE_ARRAY);
-				return $json['gwId'] ?? null;
+				return Json::decode($output, Json::FORCE_ARRAY);
 			} catch (JsonException $e) {
 				// Skip IQRF GW info file parsing
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Gets IQRF Gateway ID
+	 * @return string|null IQRF Gateway ID
+	 */
+	public function getId(): ?string {
+		return $this->readGatewayFile()['gwId'] ?? null;
+	}
+
+	/**
+	 * Gets IQRF Gateway Image
+	 */
+	public function getImage(): ?string {
+		return $this->readGatewayFile()['gwImage'] ?? null;
 	}
 
 	/**

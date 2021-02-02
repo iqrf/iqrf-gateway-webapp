@@ -13,6 +13,10 @@
 							<th>{{ $t('gateway.info.gwId') }}</th>
 							<td>{{ info.gwId }}</td>
 						</tr>
+						<tr v-if='info.gwImage'>
+							<th>{{ $t('gateway.info.gwImage') }}</th>
+							<td>{{ info.gwImage }}</td>
+						</tr>
 						<tr v-if='info.pixla'>
 							<th>
 								<a href='https://www.pixla.online/'>
