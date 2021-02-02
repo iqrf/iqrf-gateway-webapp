@@ -34,7 +34,7 @@
 									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
 								</div>
 								<div
-									v-if='connection.wifi.security.type = "ieee8021x"'
+									v-if='connection.wifi.security.type === "ieee8021x"'
 									class='form-group'
 								>
 									<CInput
