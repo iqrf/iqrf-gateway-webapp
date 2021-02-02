@@ -38,11 +38,11 @@
 									class='form-group'
 								>
 									<CInput
-										v-model='config.wifi.security.leap.username'
+										v-model='connection.wifi.security.leap.username'
 										:label='$t("network.wireless.modal.form.username")'
 									/>
 									<CInput
-										v-model='config.wifi.security.leap.password'
+										v-model='connection.wifi.security.leap.password'
 										:label='$t("network.wireless.modal.form.password")'
 									/>
 								</div>
