@@ -1942,6 +1942,10 @@
 				"interfacesFetchFailed": "Failed to retrieve interfaces.",
 				"connectionFetchFailed": "Failed to retrieve connection details.",
 				"createFailed": "Failed to create connection {connection}.",
+				"add": {
+					"failure": "Failed to create new connection.",
+					"success": "Network connection {connection} has been created."
+				},
 				"edit": {
 					"failure": "An error occurred while saving the network connection settings.",
 					"success": "Network connection {connection} has been edited."

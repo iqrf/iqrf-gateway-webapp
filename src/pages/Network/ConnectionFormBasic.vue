@@ -20,11 +20,43 @@
 							/>
 						</ValidationProvider>
 						<CSelect
-							v-if='ifnameOptions.length > 1'
-							:value.sync='ifname'
-							:label='$t("network.connection.interfaceName")'
+							:value.sync='connection.interface'
+							:label='$t("network.connection.interface")'
 							:options='ifnameOptions'
 						/>
+						<CRow v-if='connection.type === "802-11-wireless"'>
+							<CCol md='6'>
+								<legend>{{ $t('network.wireless.modal.title') }}</legend>
+								<div class='form-group'>
+									<b>
+										<span>{{ $t('network.wireless.modal.form.security') }}</span>
+									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
+								</div>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|wpaPsk'
+									:custom-messages='{
+										required: "network.wireless.modal.errors.psk",
+										wpaPsk: "network.wireless.modal.errors.pskInvalid"
+									}'
+								>
+									<CInput
+										v-model='connection.wifi.security.psk'
+										:type='pskInputType'
+										visibility
+										:label='$t("network.wireless.modal.form.psk")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									>
+										<template #append-content>
+											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
+												<CIcon :content='pskInputType === "password" ? icons.hidden: icons.shown' />
+											</span>
+										</template>
+									</CInput>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
 						<CRow>
 							<CCol md='6'>
 								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
@@ -256,39 +288,6 @@
 								</div>
 							</CCol>
 						</CRow>
-						<CRow v-if='connection.type === "802-11-wireless"'>
-							<CCol md='6'>
-								<legend>{{ $t('network.wireless.modal.title') }}</legend>
-								<div class='form-group'>
-									<b>
-										<span>{{ $t('network.wireless.modal.form.security') }}</span>
-									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
-								</div>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|wpaPsk'
-									:custom-messages='{
-										required: "network.wireless.modal.errors.psk",
-										wpaPsk: "network.wireless.modal.errors.pskInvalid"
-									}'
-								>
-									<CInput
-										v-model='connection.wifi.security.psk'
-										:type='pskInputType'
-										visibility
-										:label='$t("network.wireless.modal.form.psk")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									>
-										<template #append-content>
-											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
-												<CIcon :content='pskInputType === "password" ? icons.hidden: icons.shown' />
-											</span>
-										</template>
-									</CInput>
-								</ValidationProvider>
-							</CCol>
-						</CRow>
 						<CButton
 							type='submit'
 							color='primary'
@@ -306,16 +305,19 @@
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, between} from 'vee-validate/dist/rules';
-import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import {IConnection, NetworkInterface} from '../../interfaces/network';
-import {AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+
+import {v4 as uuidv4} from 'uuid';
 import ip from 'ip-regex';
-import {Dictionary} from 'vue-router/types/router';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+
+import {AxiosResponse} from 'axios';
+import {IConnection, NetworkInterface} from '../../interfaces/network';
+import {IOption} from '../../interfaces/coreui';
+import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -339,6 +341,14 @@ export default class ConnectionFormBasic extends Vue {
 	 * @var {IConnection} connection Configuration of IPv4 and IPv6 connectivity
 	 */
 	private connection: IConnection = {
+		autoConnect: {
+			enabled: true,
+			priority: 0,
+			retries: -1,
+		},
+		name: '',
+		type: '',
+		interface: '',
 		ipv4: {
 			addresses: [],
 			dns: [],
@@ -362,11 +372,6 @@ export default class ConnectionFormBasic extends Vue {
 	}
 
 	/**
-	 * @var {string} ifname Interface name
-	 */
-	private ifname = ''
-
-	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface options
 	 */
 	private ifnameOptions: Array<IOption> = []
@@ -385,6 +390,26 @@ export default class ConnectionFormBasic extends Vue {
 	 * @property {string} uuid Network connection configuration id
 	 */
 	@Prop({required: false, default: null}) uuid!: string
+
+	/**
+	 * @property {string} ssid Network connection name
+	 */
+	@Prop({required: false, default: null}) ssid!: string
+
+	/**
+	 * @property {string} interfaceName Default interface name
+	 */
+	@Prop({required: false, default: null}) interfaceName!: string
+
+	/**
+	 * @property {string} wifiModel Wifi mode
+	 */
+	@Prop({required: false, default: null}) wifiMode!: string
+
+	/**
+	 * @property {string} wifiSecurity Wifi security type
+	 */
+	@Prop({required: false, default: null}) wifiSecurity!: string
 
 	/**
 	 * Initializes validation rules
@@ -523,15 +548,43 @@ export default class ConnectionFormBasic extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(iftype)
 			.then((response: AxiosResponse) => {
-				if (response.data.length === 1) {
-					this.ifname = response.data[0].name;
-				}
 				let interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
 					interfaces.push({label: item.name, value: item.name});
 				});
 				this.ifnameOptions = interfaces;
-				this.getConnection();
+				if (this.uuid !== null) {
+					this.getConnection();
+				} else {
+					this.connection.name = this.ssid;
+					this.connection.interface = this.interfaceName;
+					if (iftype === InterfaceType.ETHERNET) {
+						this.connection.type = ConnectionType.ETHERNET;
+					} else if (iftype === InterfaceType.WIFI) {
+						this.connection.type = ConnectionType.WIFI;
+						Object.assign(this.connection, {
+							wifi: {
+								ssid: this.ssid,
+								mode: this.wifiMode,
+								security: {
+									type: this.wifiSecurity,
+									psk: '',
+									leap: {
+										username: '',
+										password: ''
+									},
+									wep: {
+										type: 'unknown',
+										index: 0,
+										keys: ['', '', '', '']
+									}
+								}
+							}
+						});
+					}
+					this.storeConnectionData(this.connection);
+					this.$store.commit('spinner/HIDE');
+				}
 			})
 			.catch(() => {
 				if (iftype === InterfaceType.ETHERNET) {
@@ -575,9 +628,6 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
-		if (connection.interface) {
-			this.ifname = connection.interface;
-		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
@@ -607,7 +657,6 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
-		connection.interface = this.ifname;
 		if (connection.ipv4.method === 'manual') {
 			const binaryMask = connection.ipv4.addresses[0].mask.split('.').map((token: string) => {
 				return parseInt(token).toString(2).padStart(8, '0');
@@ -622,32 +671,60 @@ export default class ConnectionFormBasic extends Vue {
 			connection.ipv6.gateway = null;
 		}
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.edit(this.uuid, connection)
-			.then(() => {
-				NetworkConnectionService.connect(this.uuid)
-					.then(() => {
-						if (this.connection.type === ConnectionType.ETHERNET) {
-							this.$router.push('/network/ethernet');
-						} else if (this.connection.type === ConnectionType.WIFI) {
-							this.$router.push('/network/wireless');
-						}
-						this.$toast.success(
-							this.$t('network.connection.messages.edit.success', {connection: connection.name}).toString()
-						);
-						this.$store.commit('spinner/HIDE');
-					})
-					.catch(this.handleError);
-			}).catch(this.handleError);
+		if (connection.uuid === undefined) {
+			connection.uuid = uuidv4();
+			NetworkConnectionService.add(connection)
+				.then((response: AxiosResponse) => this.connect(response.data, connection.name!))
+				.catch(this.handleConnectionError);
+		} else {
+			NetworkConnectionService.edit(this.uuid, connection)
+				.then(() => this.connect(this.uuid, connection.name!))
+				.catch(this.handleConnectionError);
+		}
 	}
 
 	/**
-	 * Handle submit errors
+	 * @param {string} uuid Connection UUID
+	 * @param {string} name Connection name
 	 */
-	private handleError(): void {
+	private connect(uuid: string, name: string): void {
+		NetworkConnectionService.connect(uuid)
+			.then(() => {
+				if (this.connection.type === ConnectionType.ETHERNET) {
+					this.$router.push('/network/ethernet');
+				} else if (this.connection.type === ConnectionType.WIFI) {
+					this.$router.push('/network/wireless');
+				}
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.' + 
+						(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
+						{connection: name}).toString()
+				);
+			})
+			.catch(this.handleConnectError);
+	}
+
+	/**
+	 * Handles connection create or edit errors
+	 */
+	private handleConnectionError(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(
+			this.$t('network.connection.messages.' + 
+			(this.$route.path.includes('/add') ? 'add' : 'edit') + '.failure').toString()
+		);
+	}
+
+	/**
+	 * Handle connect errors
+	 */
+	private handleConnectError(): void {
+		this.$store.commit('spinner/HIDE');
 		this.$toast.error(
 			this.$t('network.connection.messages.edit.failure').toString()
 		);
-		this.$store.commit('spinner/HIDE');
 	}
 
 }

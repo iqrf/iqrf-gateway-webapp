@@ -74,7 +74,6 @@ const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
-const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetInterfaces.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 
@@ -744,7 +743,7 @@ const routes: Array<RouteConfig> = [
 						},
 						children: [
 							{
-								component: EthernetInterfaces,
+								component: EthernetConnections,
 								path: '',
 							},
 							{
@@ -760,10 +759,6 @@ const routes: Array<RouteConfig> = [
 						]
 					},
 					{
-						component: EthernetConnections,
-						path: 'ethernet2',
-					},
-					{
 						path: 'wireless',
 						component: {
 							render(c) {
@@ -776,8 +771,10 @@ const routes: Array<RouteConfig> = [
 								path: '',
 							},
 							{
+								name: 'add-wireless-connection',
 								component: ConnectionFormBasic,
-								path: 'add'
+								path: 'add',
+								props: true,
 							},
 							{
 								name: 'edit-wireless-connection',
