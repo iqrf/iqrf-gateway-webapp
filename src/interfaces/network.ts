@@ -72,10 +72,9 @@ export interface IConnectionIPDns {
 }
 
 export interface IConnectionWifi {
-	type: string
-	psk: string
-	leap: IWifiLeap
-	wep: IWifiWep
+	ssid: string
+	mode: string
+	security: IWifiSecurity
 }
 
 export interface IAccessPoint {
@@ -89,6 +88,13 @@ export interface IAccessPoint {
 	security: string
 	uuid?: string
 	interfaceName: string|null
+}
+
+export interface IWifiSecurity {
+	type: string
+	psk: string
+	leap: IWifiLeap
+	wep: IWifiWep
 }
 
 /**

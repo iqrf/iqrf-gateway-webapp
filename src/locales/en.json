@@ -1822,6 +1822,7 @@
 					"security": "Security",
 					"securityTypes": {
 						"open": "Open",
+						"wep": "Wep",
 						"wpa-psk": "WPA-Personal",
 						"wpa-eap": "WPA-Enterprise"
 					},
@@ -1860,7 +1861,7 @@
 					"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
 					"wepKeyType": "Please select WEP security type.",
 					"wepIndex": "Please enter default key index.",
-					"wepIndexInvalid": "Default key index should be between 1 and 4.",
+					"wepIndexInvalid": "Default key index should be between 0 and 3.",
 					"wepIndexKeyMissing": "WEP key at specified index missing.",
 					"wepKey": "Please enter a WEP key.",
 					"wepPassphrase": "Please enter a WEP passphrase",
