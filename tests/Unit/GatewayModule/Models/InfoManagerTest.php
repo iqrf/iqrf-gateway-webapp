@@ -189,12 +189,12 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to get the gateway ID (missing file)
+	 * Tests the function to read the gateway file (missing file)
 	 */
-	public function testGetIdMissingFile(): void {
+	public function testReadGatewayFileMissingFle(): void {
 		$stderr = 'cat: /etc/iqrf-gateway.json: No such file or directory';
 		$this->receiveCommand(self::COMMANDS['gw'], true, '', $stderr, 1);
-		Assert::null($this->manager->getId());
+		Assert::null($this->manager->readGatewayFile());
 	}
 
 	/**
@@ -204,6 +204,15 @@ final class InfoManagerTest extends CommandTestCase {
 		$output = '{"id":"0242fc1e6f85b296"}';
 		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
 		Assert::null($this->manager->getId());
+	}
+
+	/**
+	 * Tests the function to get the gateway image (missing property)
+	 */
+	public function testGetImageMissingProperty(): void {
+		$output = '{"image": "gw v1.0.0"}';
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::null($this->manager->getImage());
 	}
 
 	/**

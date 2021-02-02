@@ -120,7 +120,7 @@ class InfoManager {
 	 * Reads IQRF Gateway file and returns it's contents
 	 * @return array<string, string>
 	 */
-	private function readGatewayFile(): ?array {
+	public function readGatewayFile(): ?array {
 		$command = 'cat /etc/iqrf-gateway.json';
 		$output = $this->commandManager->run($command, true)->getStdout();
 		if ($output !== '') {
