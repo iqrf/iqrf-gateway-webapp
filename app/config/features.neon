@@ -10,13 +10,13 @@ iqrfGatewayController:
 	enabled: false
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
-	enabled: true
+	enabled: false
 # Mender client configuration
 mender:
 	enabled: false
 # Network manager
 networkManager:
-	enabled: true
+	enabled: false
 # Node-RED
 nodeRed:
 	enabled: false
