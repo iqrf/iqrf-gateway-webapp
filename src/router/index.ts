@@ -76,6 +76,7 @@ const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/
 const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
+const WireguardConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardConnections.vue');
 
 import store from '../store';
 import { component } from 'vue/types/umd';
@@ -783,7 +784,21 @@ const routes: Array<RouteConfig> = [
 								props: true,
 							}
 						]
-					}
+					},
+					{
+						path: 'vpn',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: WireguardConnections,
+								path: '',
+							},
+						],
+					},
 				]
 			},
 			{
