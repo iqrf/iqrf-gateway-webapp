@@ -184,7 +184,10 @@ export default class EthernetConnections extends Vue {
 				});
 				this.ifNameOptions = interfaces;
 				this.interfacesLoaded = true;
-				this.getConnections();
+				this.$store.commit('spinner/HIDE');
+				if (this.ifNameOptions.length > 0) {
+					this.getConnections();
+				}
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
@@ -198,6 +201,7 @@ export default class EthernetConnections extends Vue {
 	 * Retrieves ethernet connections
 	 */
 	private getConnections(): void {
+		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.list(ConnectionType.ETHERNET)
 			.then((response: AxiosResponse) => {
 				this.connections = response.data;

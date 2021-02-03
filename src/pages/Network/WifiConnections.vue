@@ -261,7 +261,10 @@ export default class WifiConnections extends Vue {
 				});
 				this.ifNameOptions = interfaces;
 				this.interfacesLoaded = true;
-				this.getAccessPoints();
+				this.$store.commit('spinner/HIDE');
+				if (this.ifNameOptions.length > 0) {
+					this.getAccessPoints();
+				}
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');

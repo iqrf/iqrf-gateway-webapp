@@ -1860,6 +1860,14 @@
 				"connectionsFailed": "Failed to retrieve access point connection details."
 			}
 		},
+		"wireguard": {
+			"title": "VPN",
+			"description": "VPN management.",
+			"createInterface": "Create new Wireguard interface",
+			"messages": {
+				"noInterfaces": "No Wireguard network interface detected."
+			}
+		},
 		"connection": {
 			"title": "Available connections",
 			"name": "Name",
