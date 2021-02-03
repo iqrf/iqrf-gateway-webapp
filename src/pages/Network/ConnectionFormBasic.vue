@@ -892,6 +892,9 @@ export default class ConnectionFormBasic extends Vue {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
+		if (connection.wifi?.bssids !== undefined) {
+			delete connection.wifi.bssids;
+		}
 		this.$store.commit('spinner/SHOW');
 		if (connection.uuid === undefined) {
 			connection.uuid = uuidv4();
