@@ -157,12 +157,13 @@ final class ConnectionDetailWifiTest extends TestCase {
 	private function createWifiConnection(): void {
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA();
+		$bssids = ['04:4F:4C:AB:DD:6A', '04:F0:21:23:29:00', '04:F0:21:24:1E:53', '18:E8:29:E4:CB:9A', '1A:E8:29:E5:CB:9A'];
 		$securityType = WifiSecurityType::WPA_PSK();
 		$psk = 'password';
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
 		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep, null);
-		$this->wifi = new WifiConnection($ssid, $mode, $security);
+		$this->wifi = new WifiConnection($ssid, $mode, $bssids, $security);
 	}
 
 	/**
