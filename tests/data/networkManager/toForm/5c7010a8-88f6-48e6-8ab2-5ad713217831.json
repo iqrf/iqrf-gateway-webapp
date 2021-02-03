@@ -70,6 +70,13 @@
 	"wifi": {
 		"ssid": "WIFI MAGDA",
 		"mode": "infrastructure",
+		"bssids": [
+			"04:4F:4C:AB:DD:6A",
+			"04:F0:21:23:29:00",
+			"04:F0:21:24:1E:53",
+			"18:E8:29:E4:CB:9A",
+			"1A:E8:29:E5:CB:9A"
+		],
 		"security": {
 			"type": "wpa-psk",
 			"psk": "password",

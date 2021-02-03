@@ -41,6 +41,14 @@
 									{{ $t('network.connection.states.connected') }}
 								</CBadge>
 								{{ item.ssid }}
+								<CIcon
+									v-c-tooltip='{
+										content: "BSSID: " + item.bssid + "\n Channel: " + item.channel + "\n Rate: " + item.rate,
+										placement: "bottom"
+									}'
+									style='float: right;'
+									:content='icons.details'
+								/>
 							</td>
 						</template>
 						<template #signal='{item}'>
@@ -107,7 +115,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CSelect} from '@coreui/vue/src';
-import {cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
+import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
@@ -164,6 +172,7 @@ export default class WifiConnections extends Vue {
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Dictionary<Array<string>> = {
+		details: cilInfo,
 		connect: cilLink,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
@@ -284,12 +293,12 @@ export default class WifiConnections extends Vue {
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
-				for (const connection of response.data) {
-					const index = accessPoints.findIndex(ap => ap.ssid === connection.name);
-					if (index !== - 1) {
-						accessPoints[index].uuid = connection.uuid;
+				accessPoints.forEach((ap: IAccessPoint) => {
+					const index = response.data.findIndex(con => con.bssids.includes(ap.bssid));
+					if (index !== -1) {
+						ap.uuid = response.data[index].uuid;
 					}
-				}
+				});
 				this.accessPoints = accessPoints.map((item: IAccessPoint) => {
 					if (this.ifNameOptions.length > 0) {
 						item.interfaceName = this.ifNameOptions[0].label.toString();
