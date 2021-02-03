@@ -74,6 +74,7 @@ export interface IConnectionIPDns {
 export interface IConnectionWifi {
 	ssid: string
 	mode: string
+	bssids?: Array<string>
 	security: IWifiSecurity
 }
 
