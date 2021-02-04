@@ -318,7 +318,7 @@ export default class WifiConnections extends Vue {
 	 * @param {string} ifname Network interface name
 	 */
 	private connect(uuid: string, name: string, ifname: string|null): void {
-		if (ifname === null && this.ifNameOptions.length === 1) {
+		if (ifname === undefined && this.ifNameOptions.length === 1) {
 			ifname = this.ifNameOptions[0].label.toString();
 		}
 		this.$store.commit('spinner/SHOW');
