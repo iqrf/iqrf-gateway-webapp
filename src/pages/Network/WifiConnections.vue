@@ -28,7 +28,6 @@
 						:items-per-page='20'
 						:pagination='true'
 						:sorter='{external: false, resetable: true}'
-						:responsive='true'
 					>
 						<template #no-items-view='{}'>
 							{{ $t('network.wireless.table.noAccessPoints') }}
