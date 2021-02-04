@@ -36,12 +36,7 @@
 						</template>
 						<template #interfaceName='{item}'>
 							<td>
-								<CSelect
-									v-if='ifNameOptions.length > 1'
-									:value.sync='item.interfaceName'
-									:options='ifNameOptions'
-								/>
-								<span v-else>{{ item.interfaceName }}</span>
+								{{ item.interfaceName }}
 							</td>
 						</template>
 						<template #actions='{item}'>
