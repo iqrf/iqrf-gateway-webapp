@@ -19,12 +19,22 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CSelect
-							v-if='ifnameOptions.length > 1'	
-							:value.sync='connection.interface'
-							:label='$t("network.connection.interface")'
-							:options='ifnameOptions'
-						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: "network.connection.errors.interface"
+							}'
+						>
+							<CSelect
+								:value.sync='ifname'
+								:label='$t("network.connection.interface")'
+								:placeholder='$t("network.connection.errors.interface")'
+								:options='ifnameOptions'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CRow v-if='connection.type === "802-11-wireless"'>
 							<CCol md='6'>
 								<legend>{{ $t('network.wireless.modal.title') }}</legend>
@@ -492,18 +502,17 @@ export default class ConnectionFormBasic extends Vue {
 		},
 		name: '',
 		type: '',
-		interface: '',
 		ipv4: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: '',
+			method: 'auto',
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: '',
+			method: 'auto',
 		}
 	}
 
@@ -514,6 +523,11 @@ export default class ConnectionFormBasic extends Vue {
 		shown: cilLockUnlocked,
 		hidden: cilLockLocked
 	}
+
+	/**
+	 * @var {string} ifname Interface name
+	 */
+	private ifname = ''
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface options
@@ -850,6 +864,9 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
+		if (connection.interface) {
+			this.ifname = connection.interface;
+		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
@@ -879,6 +896,7 @@ export default class ConnectionFormBasic extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		Object.assign(connection, {interface: this.ifname});
 		if (connection.ipv4.method === 'manual') {
 			const binaryMask = connection.ipv4.addresses[0].mask.split('.').map((token: string) => {
 				return parseInt(token).toString(2).padStart(8, '0');
