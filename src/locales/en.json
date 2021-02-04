@@ -1880,8 +1880,30 @@
 			"title": "VPN",
 			"description": "VPN management.",
 			"createInterface": "Create new Wireguard interface",
-			"messages": {
-				"noInterfaces": "No Wireguard network interface detected."
+			"interfaces": {
+				"title": "Wireguard VPN interfaces",
+				"modal": {
+					"title": "Create new Wireguard VPN interface",
+					"interfaceName": "Interface name",
+					"errors": {
+						"interfaceName": "Please enter name of new Wireguard VPN interface."
+					}
+				},
+				"table": {
+					"noInterfaces": "No Wireguard network interface detected.",
+					"name": "Name",
+					"state": "State"
+				}
+			},
+			"keys": {
+				"title": "Wireguard keys",
+				"modal": {
+					"title": "Create new Wireguard key pair",
+					"name": "Key pair identifier",
+					"errors": {
+						"name": "Please enter key pair identifier."
+					}
+				}
 			}
 		},
 		"connection": {
@@ -1962,7 +1984,8 @@
 			},
 			"state": "Connection state",
 			"states": {
-				"connected": "Connected"
+				"connected": "Connected",
+				"notConnected": "Not connected"
 			},
 			"messages": {
 				"interfacesFetchFailed": "Failed to retrieve interfaces.",
