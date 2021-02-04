@@ -61,12 +61,7 @@
 						</template>
 						<template #interfaceName='{item}'>
 							<td>
-								<CSelect
-									v-if='ifNameOptions.length > 1'
-									:value.sync='item.interfaceName'
-									:options='ifNameOptions'
-								/>
-								<span v-else>{{ item.interfaceName }}</span>
+								{{ item.interfaceName }}
 							</td>
 						</template>
 						<template #actions='{item}'>
@@ -302,12 +297,6 @@ export default class WifiConnections extends Vue {
 						ap.uuid = response.data[index].uuid;
 					}
 				});
-				this.accessPoints = accessPoints.map((item: IAccessPoint) => {
-					if (this.ifNameOptions.length > 0) {
-						item.interfaceName = this.ifNameOptions[0].label.toString();
-					}
-					return item;
-				});
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {
@@ -324,7 +313,10 @@ export default class WifiConnections extends Vue {
 	 * @param {string} name Network connection name
 	 * @param {string} ifname Network interface name
 	 */
-	private connect(uuid: string, name: string, ifname: string): void {
+	private connect(uuid: string, name: string, ifname: string|null): void {
+		if (ifname === null && this.ifNameOptions.length === 1) {
+			ifname = this.ifNameOptions[0].label.toString();
+		}
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.connect(uuid, ifname)
 			.then(() => {

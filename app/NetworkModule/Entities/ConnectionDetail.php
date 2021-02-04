@@ -175,6 +175,12 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+		if ($array['interface-name'] === '') {
+			$general = NmCliConnection::decode($nmCli, 'GENERAL');
+			if (count($general) !== 0) {
+				$array['interface-name'] = $general['devices'] ?? '';
+			}
+		}
 		$autoConnect = AutoConnect::nmCliDeserialize($nmCli);
 		$uuid = Uuid::fromString($array['uuid']);
 		$type = ConnectionTypes::fromScalar($array['type']);
