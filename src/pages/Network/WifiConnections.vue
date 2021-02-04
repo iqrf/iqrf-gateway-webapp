@@ -28,6 +28,7 @@
 						:items-per-page='20'
 						:pagination='true'
 						:sorter='{external: false, resetable: true}'
+						:responsive='true'
 					>
 						<template #no-items-view='{}'>
 							{{ $t('network.wireless.table.noAccessPoints') }}
@@ -43,11 +44,12 @@
 								{{ item.ssid }}
 								<CIcon
 									v-c-tooltip='{
-										content: "BSSID: " + item.bssid + "\n Channel: " + item.channel + "\n Rate: " + item.rate,
-										placement: "bottom"
+										content: "BSSID: " + item.bssid + " Channel: " + item.channel + " Rate: " + item.rate,
+										placement: "left"
 									}'
 									style='float: right;'
 									:content='icons.details'
+									size='xl'
 								/>
 							</td>
 						</template>
