@@ -295,8 +295,12 @@ export default class WifiConnections extends Vue {
 					const index = response.data.findIndex(con => con.bssids.includes(ap.bssid));
 					if (index !== -1) {
 						ap.uuid = response.data[index].uuid;
+						if (response.data[index].interfaceName !== null) {
+							ap.interfaceName = response.data[index].interfaceName;
+						}
 					}
 				});
+				this.accessPoints = accessPoints;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {

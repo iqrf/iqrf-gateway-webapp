@@ -1889,7 +1889,8 @@
 			"name": "Name",
 			"edit": "Edit connection",
 			"errors": {
-				"name": "Please enter a connection name."
+				"name": "Please enter a connection name.",
+				"interface": "Please select an interface."
 			},
 			"interface": "Interface",
 			"ipv4": {
