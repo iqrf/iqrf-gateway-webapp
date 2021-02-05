@@ -31,10 +31,9 @@ class WireguardService {
 
 	/**
 	 * Creates a new Wireguard key-pair
-	 * @param {string} name Wireguard key-pair name
 	 */
-	public createKeys(name: string): Promise<AxiosResponse> {
-		return axios.post('network/wireguard/keys/' + name, null, {headers: authorizationHeader()});
+	public createKeys(): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/keypair/' + name, null, {headers: authorizationHeader()});
 	}
 }
 

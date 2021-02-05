@@ -107,18 +107,16 @@ class WireguardManager {
 	}
 
 	/**
-	 * Generates Wireguard key pair and stores them under specified name
-	 * @param string $name Key pair name
+	 * Generates Wireguard key pair
+	 * @return array<string, string> New key pair
 	 */
-	public function generateKeys(string $name): void {
+	public function generateKeys(): array {
 		$privateKey = $this->generatePrivateKey();
 		$publicKey = $this->generatePublicKey($privateKey);
-		$path = '/etc/wireguard/keys/' . $name;
-		if (file_exists($path . '.privatekey') || file_exists($path . '.publickey')) {
-			throw new WireguardKeyExistsException('Key pair ' . $name . ' already exists.');
-		}
-		FileSystem::write($path . '.privatekey', $privateKey);
-		FileSystem::write($path . '.publickey', $publicKey);
+		return [
+			'privateKey' => $privateKey,
+			'publicKey' => $publicKey
+		];
 	}
 
 	/**
@@ -126,17 +124,23 @@ class WireguardManager {
 	 * @return string Wireguard private key
 	 */
 	public function generatePrivateKey(): string {
-		$output = $this->commandManager->run('umask 077 && wg genkey', true);
+		$output = $this->commandManager->run('umask 077 && wg genkey', false);
+		if ($output->getExitCode() !== 0) {
+			throw new WireguardKeyExistsException($output->getStderr());
+		}
 		return $output->getStdout();
 	}
 
 	/**
 	 * Derives Wireguard public key from private key
+	 * @param string $privateKey Private key to derive public key from
 	 * @return string Wireguard public key
 	 */
 	public function generatePublicKey(string $privateKey): string {
-		$command = sprintf('wg pubkey %s', $privateKey);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
+		if ($output->getExitCode() !== 0) {
+			throw new WireguardKeyExistsException($output->getStderr());
+		}
 		return $output->getStdout();
 	}
 
