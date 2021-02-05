@@ -123,24 +123,7 @@ class WireguardController extends NetworkController {
 	}
 
 	/**
-	 * @Path("/keys")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists all existing Wireguard key pairs
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $response->writeJsonBody($this->wireguardManager->listKeys());
-	}
-
-	/**
-	 * @Path("/keys/{name}")
+	 * @Path("/keypair")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Generates a new Wireguard key pair
@@ -150,20 +133,18 @@ class WireguardController extends NetworkController {
 	 *      '409':
 	 *          description: Already exists
 	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="name", type="string", description="Wireguard key-pair name")
-	 * )
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$this->wireguardManager->generateKeys($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+		try{
+			$result = $this->wireguardManager->generateKeys();
+			return $response->writeJsonBody($result);
 		} catch (WireguardKeyExistsException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
+		
 	}
 
 }

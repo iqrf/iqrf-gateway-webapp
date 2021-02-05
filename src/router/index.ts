@@ -76,7 +76,8 @@ const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/
 const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
-const Wireguard = () => import(/* webpackChunkName: "network" */ '@/pages/Network/Wireguard.vue');
+const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
+const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 import store from '../store';
 import { component } from 'vue/types/umd';
@@ -794,8 +795,17 @@ const routes: Array<RouteConfig> = [
 						},
 						children: [
 							{
-								component: Wireguard,
+								component: WireguardTunnels,
 								path: '',
+							},
+							{
+								component: WireguardTunnel,
+								path: 'add'
+							},
+							{
+								component: WireguardTunnel,
+								path: 'edit/:uuid',
+								props: true,
 							},
 						],
 					},

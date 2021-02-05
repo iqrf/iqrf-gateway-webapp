@@ -1879,30 +1879,30 @@
 		"wireguard": {
 			"title": "VPN",
 			"description": "VPN management.",
-			"createInterface": "Create new Wireguard interface",
-			"interfaces": {
-				"title": "Wireguard VPN interfaces",
-				"modal": {
-					"title": "Create new Wireguard VPN interface",
-					"interfaceName": "Interface name",
-					"errors": {
-						"interfaceName": "Please enter name of new Wireguard VPN interface."
-					}
-				},
+			"tunnels": {
+				"title": "Wireguard VPN tunnels",
+				"add": "Add Wireguard tunnel",
+				"edit": "Edit Wireguard tunnel",
 				"table": {
-					"noInterfaces": "No Wireguard network interface detected.",
+					"noTunnels": "No Wireguard tunnels detected.",
 					"name": "Name",
 					"state": "State"
-				}
-			},
-			"keys": {
-				"title": "Wireguard keys",
-				"modal": {
-					"title": "Create new Wireguard key pair",
-					"name": "Key pair identifier",
-					"errors": {
-						"name": "Please enter key pair identifier."
-					}
+				},
+				"form": {
+					"addPeer": "Add another peer",
+					"removePeer": "Remove peer",
+					"interface": "Interface configuration",
+					"name": "Tunnel name",
+					"generateKeys": "Generate key pair",
+					"privateKey": "Private key",
+					"publicKey": "Public key",
+					"port": "Listen port",
+					"peers": "Peer configuration",
+					"psk": "Pre-shared key",
+					"keepalive": "Persistent keepalive in seconds *",
+					"keepaliveNote": "* 0 = disabled",
+					"endpoint": "Endpoint",
+					"allowedAddrs": "Allowed IP addresses"
 				}
 			}
 		},
