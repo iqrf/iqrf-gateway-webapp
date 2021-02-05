@@ -785,20 +785,6 @@ const routes: Array<RouteConfig> = [
 							}
 						]
 					},
-					{
-						path: 'vpn',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								component: WireguardConnections,
-								path: '',
-							},
-						],
-					},
 				]
 			},
 			{
