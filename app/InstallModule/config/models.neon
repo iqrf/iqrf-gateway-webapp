@@ -1,0 +1,2 @@
+services:
+	- App\InstallModule\Models\RootManager

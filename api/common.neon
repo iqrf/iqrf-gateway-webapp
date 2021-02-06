@@ -121,6 +121,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaToken.json
 		PowerControl:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
+		RootPassword:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/rootPassword.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:

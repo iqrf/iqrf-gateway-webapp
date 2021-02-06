@@ -67,6 +67,9 @@ class FeatureManager {
 		'pixla' => [
 			'enabled' => false,
 		],
+		'rootpass' => [
+			'enabled' => false,
+		],
 		'ssh' => [
 			'enabled' => false,
 		],
