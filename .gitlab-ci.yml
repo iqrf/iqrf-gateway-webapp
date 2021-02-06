@@ -302,7 +302,7 @@ build-package_yocto:
   stage: build-package
   except:
     - tags
-  before_script: 
+  before_script:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
     - mkdir -p debian/patches
