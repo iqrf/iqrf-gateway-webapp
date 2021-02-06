@@ -24,6 +24,9 @@ nodeRed:
 # PIXLA mamagement system
 pixla:
 	enabled: false
+# Root password change
+rootpass:
+	enabled: false
 # SSH daemon manager
 ssh:
 	enabled: false
