@@ -1,0 +1,11 @@
+--- a/app/config/features.neon
++++ b/app/config/features.neon
+@@ -26,7 +26,7 @@ pixla:
+ 	enabled: true
+ # Root password change
+ rootpass:
+-	enabled: false
++	enabled: true
+ # SSH daemon manager
+ ssh:
+ 	enabled: true
