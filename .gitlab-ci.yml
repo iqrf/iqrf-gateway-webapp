@@ -298,49 +298,6 @@ build-package_iqaros_release:
       - './*.changes'
     expire_in: 2 weeks
 
-build-package_yocto:
-  stage: build-package
-  except:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
-    - cp debian/yocto/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - ls --format=single-column debian/yocto/patches/ >> debian/patches/series
-    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_yocto_release:
-  stage: build-package
-  only:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
-    - cp debian/yocto/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - ls --format=single-column debian/yocto/patches/ >> debian/patches/series
-    - debuild -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
 deploy-apidocs:
   stage: deploy-docs
   environment:
