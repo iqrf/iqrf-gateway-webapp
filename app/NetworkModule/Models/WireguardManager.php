@@ -115,7 +115,7 @@ class WireguardManager {
 		$publicKey = $this->generatePublicKey($privateKey);
 		return [
 			'privateKey' => $privateKey,
-			'publicKey' => $publicKey
+			'publicKey' => $publicKey,
 		];
 	}
 

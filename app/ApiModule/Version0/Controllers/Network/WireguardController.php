@@ -138,13 +138,12 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try{
+		try {
 			$result = $this->wireguardManager->generateKeys();
 			return $response->writeJsonBody($result);
 		} catch (WireguardKeyExistsException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		
 	}
 
 }
