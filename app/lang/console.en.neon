@@ -7,6 +7,7 @@ features:
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	pixla: PIXLA device management
+	rootpass: Root password change
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
 	trUpload: IQRF TR native upload
