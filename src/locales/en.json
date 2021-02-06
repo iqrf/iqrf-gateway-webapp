@@ -181,6 +181,7 @@
 		"allSteps": "Run All Steps",
 		"on": "On",
 		"off": "Off",
+		"skip": "Skip",
 		"downloadBackup": "Download backup",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
@@ -1760,6 +1761,13 @@
 	"install": {
 		"title": "Installation wizard",
 		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the first webapp's user.",
+		"rootPass": {
+			"title": "Set gateway root password",
+			"messages": {
+				"success": "Gateway root password has been successfully set.",
+				"failure": "Failed to set root password."
+			}
+		},
 		"createUser": {
 			"title": "Create a new user"
 		},

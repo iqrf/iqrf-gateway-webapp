@@ -1,47 +1,49 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='handleSubmit'>
-					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
-						rules='required'
-						:custom-messages='{
-							required: "forms.errors.username",
-						}'
-					>
-						<CInput
-							id='username'
-							v-model='username'
-							:label='$t("forms.fields.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
-						rules='required'
-						:custom-messages='{
-							required: "forms.errors.password",
-						}'
-					>
-						<CInput
-							id='password'
-							v-model='password'
-							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='password'
-						/>
-					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('forms.add') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<CCard>
+			<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='handleSubmit'>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{
+								required: "forms.errors.username",
+							}'
+						>
+							<CInput
+								id='username'
+								v-model='username'
+								:label='$t("forms.fields.username")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{
+								required: "forms.errors.password",
+							}'
+						>
+							<CInput
+								id='password'
+								v-model='password'
+								:label='$t("forms.fields.password")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='password'
+							/>
+						</ValidationProvider>
+						<CButton color='primary' type='submit' :disabled='invalid'>
+							{{ $t('forms.add') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>
@@ -53,6 +55,7 @@ import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
+import InstallRootPass from './InstallRootPass.vue';
 
 @Component({
 	components: {
@@ -60,6 +63,7 @@ import {sleep} from '../../helpers/sleep';
 		CCard,
 		CForm,
 		CInput,
+		InstallRootPass,
 		ValidationObserver,
 		ValidationProvider,
 	},
