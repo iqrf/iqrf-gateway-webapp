@@ -1,45 +1,51 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			{{ $t('install.rootPass.title') }}
-			<CButton
-				style='float: right;'
-				color='primary'
-				type='submit'
-				size='sm'
-				to='/install/user'
-			>
-				{{ $t('forms.skip') }}
-			</CButton>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='handleSubmit'>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: "forms.errors.password"
-						}'
-					>
-						<CInput
-							v-model='password'
-							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton 
-						color='primary'
-						type='submit'
-						:disabled='invalid'
-					>
-						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<ServiceControl 
+			v-if='$store.getters["features/isEnabled"]("rootpass")'
+			service-name='ssh'
+		/>
+		<CCard>
+			<CCardHeader>
+				{{ $t('install.rootPass.title') }}
+				<CButton
+					style='float: right;'
+					color='primary'
+					type='submit'
+					size='sm'
+					to='/install/user'
+				>
+					{{ $t('forms.skip') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm @submit.prevent='handleSubmit'>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: "forms.errors.password"
+							}'
+						>
+							<CInput
+								v-model='password'
+								:label='$t("forms.fields.password")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton 
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
+							{{ $t('forms.save') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>
@@ -47,6 +53,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import ServiceControl from '../../pages/Gateway/ServiceControl.vue';
 
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 import InstallationService from '../../services/InstallationService';
@@ -59,6 +66,7 @@ import InstallationService from '../../services/InstallationService';
 		CCardHeader,
 		CForm,
 		CInput,
+		ServiceControl,
 		ValidationObserver,
 		ValidationProvider,
 	},
