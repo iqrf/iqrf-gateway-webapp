@@ -1877,10 +1877,10 @@
 			}
 		},
 		"wireguard": {
-			"title": "VPN",
+			"title": "Wireguard VPN",
 			"description": "VPN management.",
 			"tunnels": {
-				"title": "Wireguard VPN tunnels",
+				"title": "Tunnels",
 				"add": "Add Wireguard tunnel",
 				"edit": "Edit Wireguard tunnel",
 				"table": {
@@ -1896,13 +1896,37 @@
 					"generateKeys": "Generate key pair",
 					"privateKey": "Private key",
 					"publicKey": "Public key",
+					"ipv4": "IPv4 address",
+					"ipv4Prefix": "IPv4 address prefix",
+					"ipv6": "IPv6 address",
+					"ipv6Prefix": "IPv6 address prefix",
 					"port": "Listen port",
 					"peers": "Peer configuration",
-					"psk": "Pre-shared key",
+					"psk": "Pre-shared key (optional)",
 					"keepalive": "Persistent keepalive in seconds *",
 					"keepaliveNote": "* 0 = disabled",
 					"endpoint": "Endpoint",
-					"allowedAddrs": "Allowed IP addresses"
+					"allowedIPv4Addrs": "Allowed peer IPv4 addresses",
+					"allowedIPv6Addrs": "Allowed peer IPv6 addresses"
+				},
+				"errors": {
+					"name": "Please enter interface name.",
+					"privateKey": "Please enter interface private key.",
+					"publicKey": "Please enter interface public key.",
+					"ipv4": "Please enter interface IPv4 address.",
+					"ipv4Invalid": "Invalid IPv4 address format.",
+					"ipv4Prefix": "Please enter IPv4 address prefix.",
+					"ipv4PrefixInvalid": "IPv4 address prefix should be an integer between 1 and 32.",
+					"ipv6": "Please enter interface IPv6 address.",
+					"ipv6Invalid": "Invalid IPv6 address format.",
+					"ipv6Prefix": "Please enter IPv6 address prefix.",
+					"ipv6PrefixInvalid": "IPv6 address prefix should be an integer between 48 and 128.",
+					"portIface": "Please enter interface listen port.",
+					"endpoint": "Please enter peer endpoint.",
+					"publicKeyPeer": "Please enter peer public key.",
+					"portPeer": "Please enter peer listen port.",
+					"portInvalid": "Port number should be an integer between 0 and 65535.",
+					"keepalive": "Please enter the peer keepalive interval."
 				}
 			}
 		},
@@ -1927,7 +1951,7 @@
 				},
 				"address": "IPv4 address",
 				"addresses": {
-					"add": "Add IPv4 address",
+					"add": "Add another IPv4 address",
 					"remove": "Remove IPv4 address"
 				},
 				"mask": "Subnet mask",

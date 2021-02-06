@@ -114,3 +114,46 @@ export interface IWifiWep {
 	index: number
 	keys: Array<string>
 }
+
+/**
+ * Wireguard VPN tunnel interface
+ */
+export interface IWGTunnel {
+	name: string
+	privateKey: string
+	publicKey: string
+	port: number
+	ipv4: string
+	ipv4Prefix: number
+	ipv6: string
+	ipv6Prefix: number
+	peers: Array<IWGPeer>
+}
+
+/**
+ * Wireguard VPN peer interface
+ */
+export interface IWGPeer {
+	publicKey: string,
+	psk: string
+	keepalive: number
+	endpoint: string
+	port: number
+	allowedIPs: IWGAllowedIPs
+}
+
+/**
+ * Wireguard VPN peer allowed IPs interface
+ */
+export interface IWGAllowedIPs {
+	ipv4: Array<IWGAllowedIP>
+	ipv6: Array<IWGAllowedIP>
+}
+
+/**
+ * Wireguard VPN peer allowed IP interface
+ */
+export interface IWGAllowedIP {
+	address: string
+	prefix: number
+}
