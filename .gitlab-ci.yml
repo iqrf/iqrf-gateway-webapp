@@ -304,7 +304,7 @@ build-package_yocto:
     - tags
   before_script: 
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-   script:
+  script:
     - mkdir -p debian/patches
     - cp debian/iqd-gw-01/patches/* debian/patches/
     - cp debian/yocto/patches/* debian/patches/
