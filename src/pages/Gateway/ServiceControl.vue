@@ -45,10 +45,10 @@
 			<span v-if='missing'>
 				{{ $t('service.states.missing') }}
 			</span>
-			<span v-if='unsupported'>
+			<span v-else-if='unsupported'>
 				{{ $t('service.states.unsupported') }}
 			</span>
-			<span v-if='unknown'>
+			<span v-else-if='unknown'>
 				{{ $t('service.states.unknown') }}
 			</span>
 			<span v-else>
