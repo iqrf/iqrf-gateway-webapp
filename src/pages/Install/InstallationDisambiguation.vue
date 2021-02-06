@@ -4,7 +4,7 @@
 			{{ $t('install.invitation') }}
 		</CCardBody>
 		<CCardFooter>
-			<CButton color='primary' to='/install/user'>
+			<CButton color='primary' :to='$store.getters["features/isEnabled"]("rootpass") ? "/install/root-password" : "/install/user"'>
 				{{ $t('install.createUser.title') }}
 			</CButton>
 			<CButton color='primary' to='/install/gateway-info'>

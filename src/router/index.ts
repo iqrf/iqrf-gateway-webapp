@@ -42,6 +42,7 @@ const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallCreateUser.vue');
 const InstallationDisambiguation = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationDisambiguation.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
+const InstallRootPassword = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallRootPass.vue');
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
 
 const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigDisambiguation.vue');
@@ -100,6 +101,10 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallGatewayInfo,
 				path: 'gateway-info',
+			},
+			{
+				component: InstallRootPassword,
+				path: 'root-password',
 			},
 			{
 				component: MissingMigration,
