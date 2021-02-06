@@ -31,5 +31,12 @@ import LogoBlue from '../../assets/logo-blue.svg';
  * Installation base page component
  */
 export default class InstallationBase extends Vue {
+
+	/**
+	 * Retrieves enabled features
+	 */
+	created(): void {
+		this.$store.dispatch('features/fetch');
+	}
 }
 </script>
