@@ -60,9 +60,9 @@ import {required} from 'vee-validate/dist/rules';
 import ApiKeyService from '../../services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { Dictionary } from 'vue-router/types/router';
-import { MetaInfo } from 'vue-meta';
-import { AxiosError, AxiosResponse } from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {MetaInfo} from 'vue-meta';
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {

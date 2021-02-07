@@ -66,7 +66,7 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * @var DateTime|null API key expiration
-	 * @ORM\Column(type="date", nullable=true)
+	 * @ORM\Column(type="datetime", nullable=true)
 	 */
 	private $expiration;
 
