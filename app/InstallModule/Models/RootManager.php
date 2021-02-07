@@ -46,8 +46,8 @@ class RootManager {
 	 * @param string $password New password to set
 	 */
 	public function setPassword(string $password): void {
-		$command = sprintf('echo "root:%s" | chpasswd', $password);
-		$output = $this->commandManager->run($command, true);
+		$input = 'root:' . $password;
+		$output = $this->commandManager->run('chpasswd', true, $input);
 		if ($output->getExitCode() !== 0) {
 			throw new ChpasswdErrorException($output->getStderr());
 		}
