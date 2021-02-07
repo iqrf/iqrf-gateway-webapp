@@ -4,7 +4,7 @@
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent=''>
+					<CForm @submit.prevent='saveTunnel'>
 						<legend>{{ $t('network.wireguard.tunnels.form.interface') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -531,6 +531,13 @@ export default class WireguardTunnel extends Vue {
 				this.tunnel.privateKey = response.data.privateKey;
 				this.tunnel.publicKey = response.data.publicKey;
 			});
+	}
+
+	/**
+	 * Creates new Wireguard tunnel
+	 */
+	private saveTunnel(): void {
+		WireguardService.createTunnel(this.tunnel);
 	}
 
 }

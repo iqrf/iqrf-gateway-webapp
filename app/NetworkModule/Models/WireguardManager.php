@@ -21,12 +21,10 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\NetworkModule\Enums\InterfaceTypes;
-use App\NetworkModule\Exceptions\IpKernelException;
-use App\NetworkModule\Exceptions\IpSyntaxException;
-use App\NetworkModule\Exceptions\NonexistentDeviceException;
+use App\NetworkModule\Entities\WireguardTunnel;
 use App\NetworkModule\Exceptions\WireguardKeyExistsException;
-use Nette\Utils\FileSystem;
+use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
+use stdClass;
 
 /**
  * Wireguard VPN manager
@@ -39,54 +37,22 @@ class WireguardManager {
 	private $commandManager;
 
 	/**
-	 * @var InterfaceManager Interface manager
-	 */
-	private $interfaceManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager, InterfaceManager $interfaceManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->interfaceManager = $interfaceManager;
 	}
 
 	/**
-	 * Creates a new Wireguard VPN interface
-	 * @param string $name New interface name
+	 * Adds a new Wireguard tunnel
+	 * @param stdClass $values New Wireguard tunnel configuration
 	 */
-	public function createInterface(string $name): void {
-		$command = sprintf('ip link add dev %s type wireguard', $name);
-		$output = $this->commandManager->run($command, true);
-		$exitCode = $output->getExitCode();
-		if ($exitCode !== 0) {
-			$this->handleIpError($exitCode, $output->getStderr());
+	public function createTunnel(stdClass $values): void {
+		if (!$this->validatePublicKey($values->privateKey, $values->publicKey)) {
+			throw new WireguardKeyMismatchException('Supplied private key and public key do not match.');
 		}
-	}
-
-	/**
-	 * Removes an existing Wireguard VPN interface
-	 * @param string $name Interface name
-	 */
-	public function removeInterface(string $name): void {
-		$interfaces = $this->interfaceManager->list(InterfaceTypes::WIREGUARD());
-		$match = null;
-		foreach ($interfaces as $iface) {
-			if ($name === $iface->getName()) {
-				$match = $iface;
-				break;
-			}
-		}
-		if ($match === null) {
-			throw new NonexistentDeviceException();
-		}
-		$command = sprintf('ip link delete %s', $name);
-		$output = $this->commandManager->run($command, true);
-		$exitCode = $output->getExitCode();
-		if ($exitCode !== 0) {
-			$this->handleIpError($exitCode, $output->getStderr());
-		}
+		WireguardTunnel::jsonDeserialize($values);
 	}
 
 	/**
@@ -115,7 +81,7 @@ class WireguardManager {
 		$publicKey = $this->generatePublicKey($privateKey);
 		return [
 			'privateKey' => $privateKey,
-			'publicKey' => $publicKey
+			'publicKey' => $publicKey,
 		];
 	}
 
@@ -145,26 +111,17 @@ class WireguardManager {
 	}
 
 	/**
-	 * Removes an existing wireguard key pair
+	 * Checks if supplied public key has been derived from supplied private key
+	 * @param string $privateKey Wireguard tunnel interface private key
+	 * @param string $publicKey Wireguard tunnel interface public key
+	 * @return bool true if public key matches private key, false otherwise
 	 */
-	public function removeKeys(string $name): void {
-		$path = '/etc/wireguard/keys/' . $name;
-		FileSystem::delete($path . '.privatekey');
-		FileSystem::delete($path . '.publickey');
-	}
-
-	/**
-	 * Handles ip-link errors
-	 * @param int $exitCode Exit code
-	 * @param string $error Error message
-	 * @throws IpSyntaxException
-	 * @throws IpKernelException
-	 */
-	private function handleIpError(int $exitCode, string $error): void {
-		if ($exitCode === 1) {
-			throw new IpSyntaxException($error);
+	private function validatePublicKey(string $privateKey, string $publicKey): bool {
+		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
+		if ($output->getExitCode() !== 0) {
+			return false;
 		}
-		throw new IpKernelException($error);
+		return $output->getStdout() === $publicKey;
 	}
 
 }
