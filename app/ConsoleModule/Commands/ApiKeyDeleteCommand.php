@@ -20,11 +20,13 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Models\Database\Entities\ApiKey;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -58,7 +60,11 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Delete the API key');
-		$apiKey = $this->askId($input, $output);
+		$apiKey = $this->deleteAskId($input, $output);
+		if ($apiKey === null) {
+			$style->error('API key with specified ID does not exist.');
+			return Command::FAILURE;
+		}
 		$helper = $this->getHelper('question');
 		$question = new ConfirmationQuestion('Do you really want to delete API key "' . $apiKey->getDescription() . '"? ', false);
 		if (!$helper->ask($input, $output, $question)) {
@@ -68,6 +74,31 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 		$this->entityManager->flush();
 		$style->success('API key "' . $apiKey->getDescription() . '" has been deleted.');
 		return Command::SUCCESS;
+	}
+
+	/**
+	 * Asks for API key ID
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return ApiKey|null Api key
+	 */
+	protected function deleteAskId(InputInterface $input, OutputInterface $output): ?ApiKey {
+		$apiKeyId = $input->getOption('id');
+		$apiKey = ($apiKeyId !== null) ? $this->repository->find($apiKeyId) : null;
+		if (!$input->isInteractive()) {
+			return $apiKey;
+		}
+		$style = new SymfonyStyle($input, $output);
+		$helper = $this->getHelper('question');
+		while ($apiKey === null) {
+			$style->error('API key with ID "' . $apiKeyId . '" does not exist.');
+			$apiKeys = $this->repository->listWithDescription();
+			$question = new ChoiceQuestion('Please enter API key ID: ', $apiKeys);
+			$apiKeyId = array_search($helper->ask($input, $output, $question), $apiKeys, true);
+			$apiKey = $this->repository->find($apiKeyId);
+		}
+		assert($apiKey instanceof ApiKey);
+		return $apiKey;
 	}
 
 }

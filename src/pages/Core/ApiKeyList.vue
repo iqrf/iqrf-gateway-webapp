@@ -218,7 +218,7 @@ export default class ApiKeyList extends Vue {
 	 * @returns {string} Expiration date and time in locale format
 	 */
 	private timeString(item: ApiKey): string {
-		return DateTime.fromISO(item.expiration).toLocaleString(this.dateFormat);
+		return DateTime.fromISO(item.expiration).toLocaleString(DateTime.DATETIME_FULL);
 	}
 
 }
