@@ -26,6 +26,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 /**
  * CLI command for editing API keys
@@ -61,7 +62,12 @@ class ApiKeyEditCommand extends ApiKeyCommand {
 		$apiKey = $this->askId($input, $output);
 		$description = $this->askDescription($input, $output);
 		$apiKey->setDescription($description);
-		$expiration = $this->askExpiration($input, $output);
+		try {
+			$expiration = $this->askExpiration($input, $output);
+		} catch (Throwable $e) {
+			$style->error('Invalid time and date format.');
+			return Command::FAILURE;
+		}
 		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
