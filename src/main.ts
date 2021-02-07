@@ -35,7 +35,14 @@ import './css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
 
+import * as version from '../version.json';
+
 process.env.SETTINGS = process.env.SETTINGS || 'development';
+
+let release = version.version;
+if (version.pipeline !== '') {
+	release += '~' + version.pipeline;
+}
 
 if (process.env.NODE_ENV === 'production') {
 	Sentry.init({
@@ -45,6 +52,7 @@ if (process.env.NODE_ENV === 'production') {
 			attachProps: true,
 			logErrors: true,
 		})],
+		release: release,
 	});
 }
 

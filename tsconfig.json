@@ -7,6 +7,7 @@
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
+		"resolveJsonModule": true,
 		"types": ["jest", "node"],
 		"lib": ["ES2020", "DOM"]
 	},
