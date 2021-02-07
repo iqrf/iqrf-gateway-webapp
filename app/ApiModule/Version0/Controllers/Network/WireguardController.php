@@ -23,18 +23,14 @@ namespace App\ApiModule\Version0\Controllers\Network;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\NetworkModule\Exceptions\IpKernelException;
-use App\NetworkModule\Exceptions\IpSyntaxException;
-use App\NetworkModule\Exceptions\NonexistentDeviceException;
 use App\NetworkModule\Exceptions\WireguardKeyExistsException;
+use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use App\NetworkModule\Models\WireguardManager;
 
 /**
@@ -59,66 +55,32 @@ class WireguardController extends NetworkController {
 	}
 
 	/**
-	 * @Path("/interface/{name}")
+	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Creates a new Wireguard VPN interface
+	 *  summary: Creates a new Wireguard VPN tunnel
+	 *  requestBody:
+	 *      description: Wireguard tunnel configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/WireguardTunnel'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="name", type="string", description="Wireguard VPN interface name")
-	 * )
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function createInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function createTunnel(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
-			$this->wireguardManager->createInterface($request->getParameter('name'));
+			$this->wireguardManager->createTunnel($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
-		} catch (IpSyntaxException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		} catch (IpKernelException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	/**
-	 * @Path("/interface/{name}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Removes a Wireguard VPN interface
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="name", type="string", description="Wireguard VPN interface name")
-	 * )
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function removeInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$this->wireguardManager->removeInterface($request->getParameter('name'));
-			return $response->writeBody('Workaround');
-		} catch (IpSyntaxException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		} catch (NonexistentDeviceException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
-		} catch (IpKernelException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (WireguardKeyMismatchException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 	}
 
@@ -138,13 +100,12 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try{
+		try {
 			$result = $this->wireguardManager->generateKeys();
 			return $response->writeJsonBody($result);
 		} catch (WireguardKeyExistsException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		
 	}
 
 }

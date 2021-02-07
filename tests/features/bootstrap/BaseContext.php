@@ -157,7 +157,7 @@ final class BaseContext implements Context {
 
 	/**
 	 * @Then HTTP response contains :response
-	 * @var string HTTP response
+	 * @param string $response HTTP response
 	 */
 	public function httpResponseContains(string $response): void {
 		$actual = $this->response->getBody()->getContents();

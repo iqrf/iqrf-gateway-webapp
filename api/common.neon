@@ -153,6 +153,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionDaemon.json
 		VersionWebapp:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionWebapp.json
+		WireguardTunnel:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/wireguardTunnel.json
 	securitySchemes:
 		bearerAuth:
 			type: http

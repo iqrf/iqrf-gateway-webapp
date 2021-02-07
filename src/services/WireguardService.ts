@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import {IWGTunnel} from '../interfaces/network';
 
 /**
  * Wireguard VPN service
@@ -33,7 +34,15 @@ class WireguardService {
 	 * Creates a new Wireguard key-pair
 	 */
 	public createKeys(): Promise<AxiosResponse> {
-		return axios.post('network/wireguard/keypair/' + name, null, {headers: authorizationHeader()});
+		return axios.post('network/wireguard/keypair', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Creates a new Wireguard VPN tunnel
+	 * @param {IWGTunnel} data Wireguard tunnel configuration
+	 */
+	public createTunnel(data: IWGTunnel): Promise<AxiosResponse> {
+		return axios.post('network/wireguard', data, {headers: authorizationHeader()});
 	}
 }
 
