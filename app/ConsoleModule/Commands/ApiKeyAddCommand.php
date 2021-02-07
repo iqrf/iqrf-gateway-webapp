@@ -21,11 +21,13 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\ApiKey;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 /**
  * CLI command for adding a new API key
@@ -45,6 +47,7 @@ class ApiKeyAddCommand extends ApiKeyCommand {
 		$definitions = [
 			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'API key description'),
 			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'API key expiration date'),
+			new InputOption('no-formatting', null, InputOption::VALUE_NONE, 'Output API key without formatting.'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
@@ -57,13 +60,25 @@ class ApiKeyAddCommand extends ApiKeyCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$style->title('Add a new API key');
+		$format = ($input->getParameterOption('--no-formatting') === false);
+		if ($format) {
+			$style->title('Add a new API key');
+		}
 		$description = $this->askDescription($input, $output);
-		$expiration = $this->askExpiration($input, $output);
+		try {
+			$expiration = $this->askExpiration($input, $output);
+		} catch (Throwable $e) {
+			$style->error('Invalid time and date format.');
+			return Command::FAILURE;
+		}
 		$apiKey = new ApiKey($description, $expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		$style->success('API key ' . $apiKey->getKey() . ' has been added!');
+		if ($format) {
+			$style->success('API key ' . $apiKey->getKey() . ' has been added!');
+		} else {
+			$style->text($apiKey->getKey());
+		}
 		return 0;
 	}
 
