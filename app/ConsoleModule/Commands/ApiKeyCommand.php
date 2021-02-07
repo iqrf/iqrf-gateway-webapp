@@ -24,6 +24,7 @@ use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use DateTime;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -71,6 +72,9 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	protected function askExpiration(InputInterface $input, OutputInterface $output): ?DateTime {
 		$expiration = $input->getOption('expiration');
 		if ($expiration !== null) {
+			if ($expiration === '') {
+				throw new Exception();
+			}
 			return new DateTime($expiration);
 		}
 		$helper = $this->getHelper('question');
