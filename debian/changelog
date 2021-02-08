@@ -1,3 +1,30 @@
+iqrf-gateway-webapp (2.2.5) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * Daemon config: allow user to change json splitter insId
+  * Gateway: show gateway image version if available
+  * Gateway: display detailed service status only if it is available
+  * Install: root password change
+  * Install: root password component
+  * Features: add root password change feature
+  * Debian: update gateway features patch
+  * Install: include SSH service control on root password setting page
+  * Install: fetch features upon entering installation wizard
+  * Console: add localization for rootpass feature
+  * Api keys: fixed database datetime type, delete command non-interactive handling
+  * ConsoleModule: treat api key empty expiration string as invalid, handle datetime exception
+  * InstallModule: pass user and password as command input
+
+  [ Roman Ondráček ]
+  * Frontend: add release to Sentry reports
+
+  [ Karel Hanák ]
+  * Gateway: Apt configuration component, updated api schema, AptManager
+  * ConfigModule: AptManager write extended configuration, updated interfaces and vue component
+  * Features: moved rootpass from installation to gateway
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 08 Feb 2021 14:41:59 +0100
+
 iqrf-gateway-webapp (2.2.4) stable; urgency=medium
 
   [ Karel Hanák ]
