@@ -1086,6 +1086,13 @@
 				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
+		"rootPass": {
+			"title": "Change root password",
+			"messages": {
+				"success": "Gateway root password has been successfully changed.",
+				"failure": "Failed to change root password."
+			}
+		},
 		"updater": {
 			"title": "System updater",
 			"description": "System updater.",
@@ -1761,13 +1768,6 @@
 	"install": {
 		"title": "Installation wizard",
 		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the first webapp's user.",
-		"rootPass": {
-			"title": "Set gateway root password",
-			"messages": {
-				"success": "Gateway root password has been successfully set.",
-				"failure": "Failed to set root password."
-			}
-		},
 		"createUser": {
 			"title": "Create a new user"
 		},

@@ -55,7 +55,6 @@ import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
-import InstallRootPass from './InstallRootPass.vue';
 
 @Component({
 	components: {
@@ -63,7 +62,6 @@ import InstallRootPass from './InstallRootPass.vue';
 		CCard,
 		CForm,
 		CInput,
-		InstallRootPass,
 		ValidationObserver,
 		ValidationProvider,
 	},

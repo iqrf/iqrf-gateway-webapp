@@ -9,13 +9,6 @@ export interface InstallationCheck {
 }
 
 /**
- * Root password interface
- */
-export interface RootPassword {
-	password: string,
-}
-
-/**
  * Installation service
  */
 class InstallationService {
@@ -28,14 +21,6 @@ class InstallationService {
 			.then((response: AxiosResponse) => {
 				return response.data as InstallationCheck;
 			});
-	}
-
-	/**
-	 * Sets gateway root password
-	 * @param {RootPassword} data New root gateway password
-	 */
-	public setRootPass(data: RootPassword): Promise<AxiosResponse> {
-		return axios.put('/installation/rootpass', data);
 	}
 
 }
