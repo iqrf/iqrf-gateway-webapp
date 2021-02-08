@@ -18,10 +18,10 @@
  */
 declare(strict_types = 1);
 
-namespace App\InstallModule\Models;
+namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\InstallModule\Exceptions\ChpasswdErrorException;
+use App\GatewayModule\Exceptions\ChpasswdErrorException;
 
 /**
  * Root account manager

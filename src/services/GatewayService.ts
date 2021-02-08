@@ -2,6 +2,13 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
 /**
+ * Root password interface
+ */
+export interface RootPassword {
+	password: string,
+}
+
+/**
  * Gateway service
  */
 class GatewayService {
@@ -45,6 +52,14 @@ class GatewayService {
 	 */
 	performReboot(): Promise<AxiosResponse> {
 		return axios.post('gateway/reboot', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Sets gateway root password
+	 * @param {RootPassword} data New root gateway password
+	 */
+	setRootPass(data: RootPassword): Promise<AxiosResponse> {
+		return axios.put('gateway/rootpass', data, {headers: authorizationHeader()});
 	}
 }
 
