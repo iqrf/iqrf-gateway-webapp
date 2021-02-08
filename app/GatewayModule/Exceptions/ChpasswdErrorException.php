@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\InstallModule\Exceptions;
+namespace App\GatewayModule\Exceptions;
 
 use Exception;
 

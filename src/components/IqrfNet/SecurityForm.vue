@@ -16,7 +16,7 @@
 					<template #append-content>
 						<span @click='changeVisibility'>
 							<CIcon
-								:content='(visibility === "password" ? icons.hidden : icons.shown)'
+								:content='(visibility === "password" ? icons.show : icons.hide)'
 							/>
 						</span>
 					</template>
@@ -47,7 +47,6 @@ import OsService from '../../services/DaemonApi/OsService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
-import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -74,10 +73,9 @@ export default class SecurityForm extends Vue {
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Dictionary<Array<string>> = {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
+		hide: cilLockLocked,
+		show: cilLockUnlocked
 	}
-
 
 	/**
 	 * @var {string|null} msgId Daemon api message id

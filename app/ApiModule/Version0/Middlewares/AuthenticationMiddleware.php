@@ -44,13 +44,6 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
-		'/api/v0/installation/rootpass',
-		'/api/v0/services/ssh',
-		'/api/v0/services/ssh/disable',
-		'/api/v0/services/ssh/enable',
-		'/api/v0/services/ssh/start',
-		'/api/v0/services/ssh/stop',
-		'/api/v0/services/ssh/restart',
 		'/api/v0/users',
 	];
 

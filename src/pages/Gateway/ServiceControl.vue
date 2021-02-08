@@ -59,15 +59,19 @@
 			<pre v-if='service.status !== null' class='log'>{{ service.status }}</pre>
 		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades"' />
+		<GatewayRootPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("rootpass")' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import AptService, {AptEnable} from '../../services/AptService';
 import AptConfig from '../../components/Gateway/AptConfig.vue';
+import GatewayRootPassword from '../../components/Gateway/GatewayRootPassword.vue';
+
+import AptService, {AptEnable} from '../../services/AptService';
 import ServiceService from '../../services/ServiceService';
+
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
@@ -98,6 +102,7 @@ interface IService {
 		AptConfig,
 		CButton,
 		CCard,
+		GatewayRootPassword,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
