@@ -29,7 +29,10 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\NetworkModule\Exceptions\WireguardKeyExistsException;
+use App\NetworkModule\Exceptions\InterfaceExistsException;
+use App\NetworkModule\Exceptions\IpKernelException;
+use App\NetworkModule\Exceptions\IpSyntaxException;
+use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use App\NetworkModule\Models\WireguardManager;
 
@@ -79,8 +82,14 @@ class WireguardController extends NetworkController {
 		try {
 			$this->wireguardManager->createTunnel($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
+		} catch (InterfaceExistsException $e) {
+			throw new InterfaceExistsException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (WireguardKeyMismatchException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (IpSyntaxException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (IpKernelException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -92,8 +101,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *      '409':
-	 *          description: Already exists
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -103,8 +112,8 @@ class WireguardController extends NetworkController {
 		try {
 			$result = $this->wireguardManager->generateKeys();
 			return $response->writeJsonBody($result);
-		} catch (WireguardKeyExistsException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (WireguardKeyErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

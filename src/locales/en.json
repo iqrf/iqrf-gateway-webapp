@@ -1935,7 +1935,7 @@
 				},
 				"address": "IPv4 address",
 				"addresses": {
-					"add": "Add another IPv4 address",
+					"add": "Add IPv4 address",
 					"remove": "Remove IPv4 address"
 				},
 				"mask": "Subnet mask",
@@ -1943,7 +1943,7 @@
 				"dns": {
 					"title": "IPv4 DNS servers",
 					"address": "DNS server IPv4 address",
-					"add": "Add another DNS server",
+					"add": "Add DNS server",
 					"remove": "Remove DNS server"
 				},
 				"errors": {
@@ -1969,7 +1969,7 @@
 				},
 				"address": "IPv6 address",
 				"addresses": {
-					"add": "Add another IPv6 address",
+					"add": "Add IPv6 address",
 					"remove": "Remove IPv6 address"
 				},
 				"prefix": "Prefix length",
@@ -1977,7 +1977,7 @@
 				"dns": {
 					"title": "IPv6 DNS servers",
 					"address": "DNS server IPv6 address",
-					"add": "Add another DNS server",
+					"add": "Add DNS server",
 					"remove": "Remove DNS server"
 				},
 				"errors": {

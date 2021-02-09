@@ -21,8 +21,13 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FileManager;
 use App\NetworkModule\Entities\WireguardTunnel;
-use App\NetworkModule\Exceptions\WireguardKeyExistsException;
+use App\NetworkModule\Enums\InterfaceTypes;
+use App\NetworkModule\Exceptions\InterfaceExistsException;
+use App\NetworkModule\Exceptions\IpKernelException;
+use App\NetworkModule\Exceptions\IpSyntaxException;
+use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use stdClass;
 
@@ -32,16 +37,35 @@ use stdClass;
 class WireguardManager {
 
 	/**
+	 * Wireguard directory
+	 */
+	private const DIR = '/etc/wireguard/';
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
 
 	/**
+	 * @var FileManager File manager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var InterfaceManager Interface manager
+	 */
+	private $interfaceManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param FileManager $fileManager File manager
+	 * @param InterfaceManager $interfaceManager Interface manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, FileManager $fileManager, InterfaceManager $interfaceManager) {
 		$this->commandManager = $commandManager;
+		$this->fileManager = $fileManager;
+		$this->interfaceManager = $interfaceManager;
 	}
 
 	/**
@@ -52,28 +76,54 @@ class WireguardManager {
 		if (!$this->validatePublicKey($values->privateKey, $values->publicKey)) {
 			throw new WireguardKeyMismatchException('Supplied private key and public key do not match.');
 		}
-		WireguardTunnel::jsonDeserialize($values);
+		$this->createInterface($values->name);
+		$keyFiles = $this->storeKeys($values->name, $values->privateKey, $values->publicKey);
+		$values->privateKey = $keyFiles['privateKey'];
+		$values->publicKey = $keyFiles['publicKey'];
+		$tunnel = WireguardTunnel::jsonDeserialize($values);
+		$this->commandManager->run($tunnel->wgSerialize(), true);
+		$this->commandManager->run($tunnel->ipSerialize(), true);
 	}
 
 	/**
-	 * Lists all existing Wireguard key pairs
-	 * @return array<int, string> List of key pair names
+	 * Creates a new wireguard interface
+	 * @param string $name Interface name
 	 */
-	public function listKeys(): array {
-		$files = scandir('/etc/wireguard/keys/');
-		$keys = [];
-		foreach ($files as $file) {
-			$filename = pathinfo($file, PATHINFO_FILENAME);
-			if (in_array($filename, $keys, true)) {
-				continue;
+	public function createInterface(string $name): void {
+		$interfaces = $this->interfaceManager->list(InterfaceTypes::WIREGUARD());
+		foreach ($interfaces as $iface) {
+			if ($iface->getName() === $name) {
+				throw new InterfaceExistsException('Interface ' . $name . ' already exists.');
 			}
-			array_push($keys, $filename);
 		}
-		return $keys;
+		$command = sprintf('ip link add dev %s type wireguard', $name);
+		$output = $this->commandManager->run($command, true);
+		$exitCode = $output->getExitCode();
+		if ($exitCode !== 0) {
+			$this->handleIpErrors($exitCode, $output->getStderr());
+		}
 	}
 
 	/**
-	 * Generates Wireguard key pair
+	 * Stores keypair in files
+	 * @param string $name Keypair name
+	 * @param string $privateKey Private key
+	 * @param string $publicKey Public key
+	 * @return array<string, string> Path to keypair files
+	 */
+	public function storeKeys(string $name, string $privateKey, string $publicKey): array {
+		$privateKeyFile = $name . '.privatekey';
+		$publicKeyFile = $name . '.publickey';
+		$this->fileManager->write($privateKeyFile, $privateKey);
+		$this->fileManager->write($publicKeyFile, $publicKey);
+		return [
+			'privateKey' => self::DIR . $privateKeyFile,
+			'publicKey' => self::DIR . $publicKeyFile,
+		];
+	}
+
+	/**
+	 * Generates Wireguard keypair
 	 * @return array<string, string> New key pair
 	 */
 	public function generateKeys(): array {
@@ -92,7 +142,7 @@ class WireguardManager {
 	public function generatePrivateKey(): string {
 		$output = $this->commandManager->run('umask 077 && wg genkey', false);
 		if ($output->getExitCode() !== 0) {
-			throw new WireguardKeyExistsException($output->getStderr());
+			throw new WireguardKeyErrorException($output->getStderr());
 		}
 		return $output->getStdout();
 	}
@@ -105,7 +155,7 @@ class WireguardManager {
 	public function generatePublicKey(string $privateKey): string {
 		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
 		if ($output->getExitCode() !== 0) {
-			throw new WireguardKeyExistsException($output->getStderr());
+			throw new WireguardKeyErrorException($output->getStderr());
 		}
 		return $output->getStdout();
 	}
@@ -122,6 +172,18 @@ class WireguardManager {
 			return false;
 		}
 		return $output->getStdout() === $publicKey;
+	}
+
+	/**
+	 * Handles ip utility errors
+	 * @param int $exitCode IP exit code
+	 * @param string $message Error message
+	 */
+	private function handleIpErrors(int $exitCode, string $message): void {
+		if ($exitCode === 1) {
+			throw new IpSyntaxException($message);
+		}
+		throw new IpKernelException($message);
 	}
 
 }
