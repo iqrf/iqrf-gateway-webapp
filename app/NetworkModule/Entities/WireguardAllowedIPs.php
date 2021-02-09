@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use JsonSerializable;
+use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -84,6 +85,42 @@ final class WireguardAllowedIPs implements JsonSerializable {
 				];
 			}, $this->ipv6),
 		];
+	}
+
+	/**
+	 * Serializes Wireguard peer allowed IP addresses entity into wg utility command
+	 * @return string wg utility peer allowed ip addresses configuration command
+	 */
+	public function wgSerialize(): string {
+		if (count($this->ipv4) === 0 && count($this->ipv6) === 0) {
+			return '';
+		}
+		$command = 'allowed-ips ';
+		foreach ($this->ipv4 as $ip) {
+			$command .= sprintf('%s,', $ip->toString());
+		}
+		foreach ($this->ipv6 as $ip) {
+			$command .= sprintf('%s,', $ip->toString());
+		}
+		return Strings::substring($command, 0, -1);
+	}
+
+	/**
+	 * Converts Wireguard peer allowed IP addresses entity into configuration file format
+	 * @return string Wireguard peer allowed IP addresses in configuration file format
+	 */
+	public function toConf(): string {
+		if (count($this->ipv4) === 0 && count($this->ipv6) === 0) {
+			return '';
+		}
+		$conf = 'AllowedIPs = ';
+		foreach ($this->ipv4 as $ip) {
+			$conf .= sprintf('%s,', $ip->toString());
+		}
+		foreach ($this->ipv6 as $ip) {
+			$conf .= sprintf('%s,', $ip->toString());
+		}
+		return Strings::substring($conf, 0, -1);
 	}
 
 }

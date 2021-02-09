@@ -23,8 +23,8 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates that Wireguard key pair exists
+ * The exception that indicates interface already exists
  */
-class WireguardKeyExistsException extends RuntimeException {
+class InterfaceExistsException extends RuntimeException {
 
 }

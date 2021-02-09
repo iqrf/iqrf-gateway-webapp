@@ -118,4 +118,41 @@ final class WireguardTunnel implements JsonSerializable {
 		];
 	}
 
+	/**
+	 * Serializes Wireguard tunnel entity into wg utility command
+	 * @return string wg utility tunnel configuration command
+	 */
+	public function wgSerialize(): string {
+		$command = 'wg set ' . $this->name;
+		$command .= sprintf(' listen-port %s', $this->port);
+		$command .= sprintf(' private-key %s', $this->privateKey);
+		foreach ($this->peers as $peer) {
+			$command .= sprintf(' %s', $peer->wgSerialize());
+		}
+		return $command;
+	}
+
+	/**
+	 * Serializes Wireguard tunnel ip addresses into ip utility command
+	 * @return string ip utility address configuration command
+	 */
+	public function ipSerialize(): string {
+		return sprintf('ip address add dev %s %s %s', $this->name, $this->ipv4->toString(), $this->ipv6->toString());
+	}
+
+	/**
+	 * Converts Wireguard tunnel entity into configuration file format
+	 * @return string Wireguard tunnel configuration in configuration file format
+	 */
+	public function toConf(): string {
+		$conf = '[Interface]' . PHP_EOL;
+		$conf .= sprintf('Address = %s, %s%s', $this->ipv4->toString(), $this->ipv6->toString(), PHP_EOL);
+		$conf .= sprintf('ListenPort = %u%s', $this->port, PHP_EOL);
+		$conf .= sprintf('PrivateKey = %s%s', $this->privateKey, PHP_EOL);
+		foreach ($this->peers as $peer) {
+			$conf .= sprintf('%s%s', PHP_EOL, $peer->toConf());
+		}
+		return $conf;
+	}
+
 }

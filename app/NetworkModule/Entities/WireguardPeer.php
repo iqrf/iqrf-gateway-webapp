@@ -100,4 +100,35 @@ final class WireguardPeer implements JsonSerializable {
 		];
 	}
 
+	/**
+	 * Serializes Wireguard peer configuration entity into wg utility command
+	 * @return string wg utility peer configuration command
+	 */
+	public function wgSerialize(): string {
+		$command = 'peer ' . $this->publicKey;
+		if ($this->psk !== null) {
+			$command .= sprintf(' preshared-key %s', $this->psk);
+		}
+		$command .= sprintf(' endpoint %s:%u', $this->endpoint, $this->port);
+		$command .= sprintf(' persistent-keepalive %u', $this->keepalive);
+		$command .= sprintf(' %s', $this->allowedIPs->wgSerialize());
+		return $command;
+	}
+
+	/**
+	 * Converts Wireguard peer entity into configuration file format
+	 * @return string Wireguard peer configuration in configuration file format
+	 */
+	public function toConf(): string {
+		$conf = '[Peer]' . PHP_EOL;
+		$conf .= sprintf('PublicKey = %s%s', $this->publicKey, PHP_EOL);
+		if ($this->psk !== null) {
+			$conf .= sprintf('PresharedKey = %s%s', $this->psk, PHP_EOL);
+		}
+		$conf .= sprintf('Endpoint = %s:%u%s', $this->endpoint, $this->port, PHP_EOL);
+		$conf .= sprintf('PersistentKeepalive = %u%s', $this->keepalive, PHP_EOL);
+		$conf .= sprintf('%s%s', $this->allowedIPs->toConf(), PHP_EOL);
+		return $conf;
+	}
+
 }
