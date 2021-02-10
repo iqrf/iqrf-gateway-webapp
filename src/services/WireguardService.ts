@@ -1,5 +1,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+
+import {Dictionary} from 'vue-router/types/router';
 import {IWGTunnel} from '../interfaces/network';
 
 /**
@@ -8,42 +10,35 @@ import {IWGTunnel} from '../interfaces/network';
 class WireguardService {
 
 	/**
-	 * Creates a new Wireguard interface
-	 * @param {string} name Wireguard interface name
-	 */
-	public createInterface(name: string): Promise<AxiosResponse> {
-		return axios.post('network/wireguard/interface/' + name, null, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Removes an existing Wireguard interface
-	 * @param {string} name Wireguard interface name
-	 */
-	public removeInterface(name: string): Promise<AxiosResponse> {
-		return axios.delete('network/wireguard/interface/' + name, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Retrieves list of existing key pairs
-	 */
-	public listKeys(): Promise<AxiosResponse> {
-		return axios.get('network/wireguard/keys', {headers: authorizationHeader()});
-	}
-
-	/**
 	 * Creates a new Wireguard key-pair
 	 */
-	public createKeys(): Promise<AxiosResponse> {
+	createKeys(): Promise<AxiosResponse> {
 		return axios.post('network/wireguard/keypair', null, {headers: authorizationHeader()});
 	}
 
 	/**
-	 * Creates a new Wireguard VPN tunnel
+	 * Creates a new Wireguard tunnel
 	 * @param {IWGTunnel} data Wireguard tunnel configuration
 	 */
-	public createTunnel(data: IWGTunnel): Promise<AxiosResponse> {
+	createTunnel(data: IWGTunnel): Promise<AxiosResponse> {
 		return axios.post('network/wireguard', data, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Retrieves list of existing Wireguard tunnel configurations
+	 */
+	listTunnels(): Promise<AxiosResponse> {
+		return axios.get('network/wireguard', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Changes state of Wireguard tunnel 
+	 * @param {Dictionary<string|boolean>} config Wireguard tunnel state config
+	 */
+	changeState(config: Dictionary<string|boolean>): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/state', config, {headers: authorizationHeader()});
+	}
+
 }
 
 export default new WireguardService();

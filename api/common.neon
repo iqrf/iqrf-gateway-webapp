@@ -155,6 +155,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionWebapp.json
 		WireguardTunnel:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/wireguardTunnel.json
+		WireguardTunnelState:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/wireguardTunnelState.json
 	securitySchemes:
 		bearerAuth:
 			type: http
