@@ -804,7 +804,7 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								component: WireguardTunnel,
-								path: 'edit/:uuid',
+								path: 'edit/:tunnelName',
 								props: true,
 							},
 						],

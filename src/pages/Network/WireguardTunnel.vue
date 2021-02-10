@@ -364,7 +364,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
@@ -436,6 +436,11 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
+	 * @property {string|null} tunnelName Wireguard tunnel name
+	 */
+	@Prop({required: false, default: null}) tunnelName!: string
+
+	/**
 	 * Initializes form validation rules
 	 */
 	created(): void {
@@ -451,12 +456,43 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
+	 * Retrieves wireguard tunnel configuration if tunnel name prop is populated
+	 */
+	mounted(): void {
+		if (this.tunnelName !== null) {
+			this.getTunnel();
+		}
+	}
+
+	/**
 	 * Computes page title from the path
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/network/vpn/add' ? 
 			this.$t('network.wireguard.tunnels.add').toString() : this.$t('network.wireguard.tunnels.edit').toString();
+	}
+
+	/**
+	 * Retrieves Wireguard tunnel configuration
+	 */
+	private getTunnel(): void {
+		this.$store.commit('spinner/SHOW');
+		WireguardService.getTunnel(this.tunnelName)
+			.then((response: AxiosResponse) => {
+				this.tunnel = response.data;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$router.push('/network/vpn/');
+				this.$toast.error(
+					this.$t(
+						'network.wireguard.tunnels.messages.getFailed',
+						{tunnel: this.tunnelName}
+					).toString()
+				);
+			});
 	}
 
 	/**
@@ -547,13 +583,13 @@ export default class WireguardTunnel extends Vue {
 		WireguardService.createTunnel(this.tunnel)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
+				this.$router.push('/network/vpn/');
 				this.$toast.success(
 					this.$t(
 						'network.wireguard.tunnels.messages.addSuccess',
 						{tunnel: this.tunnel.name}
 					).toString()
 				);
-				this.$router.push('/network/vpn/');
 			})
 			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');
