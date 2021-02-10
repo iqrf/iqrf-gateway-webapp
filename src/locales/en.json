@@ -1923,11 +1923,14 @@
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
 					"addFailed": "Failed to create Wireguard tunnel: {error}.",
-					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
 					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
 					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
 					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
-					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}."
+					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}.",
+					"getFailed": "Failed to retrieve configuraiton of Wireguard tunnel {tunnel}.",
+					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
+					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
+					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}."
 				}
 			}
 		},

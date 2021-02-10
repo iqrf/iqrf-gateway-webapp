@@ -27,6 +27,7 @@ use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\IpKernelException;
 use App\NetworkModule\Exceptions\IpSyntaxException;
+use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use App\ServiceModule\Models\ServiceManager;
@@ -77,7 +78,7 @@ class WireguardManager {
 	}
 
 	/**
-	 * Returns list of existing wireguard tunnel configurations
+	 * Returns list of existing Wireguard tunnel configurations
 	 * @return array<int, array<string, string|bool>> List of Wireguard tunnels
 	 */
 	public function listTunnels(): array {
@@ -94,6 +95,15 @@ class WireguardManager {
 	}
 
 	/**
+	 * Returns configuration of Wireguard tunnel
+	 * @param string $name Wireguard tunnel name
+	 * @return array<int> Wireguard tunnel configuration
+	 */
+	public function getTunnel(string $name): array {
+		return [];
+	}
+
+	/**
 	 * Adds a new Wireguard tunnel
 	 * @param stdClass $values New Wireguard tunnel configuration
 	 */
@@ -107,6 +117,22 @@ class WireguardManager {
 		//$this->commandManager->run($tunnel->wgSerialize(), true); not wg-quick
 		//$this->commandManager->run($tunnel->ipSerialize(), true); not wg-quick
 		$this->fileManager->write($tunnel->getName() . '.conf', $tunnel->toConf());
+	}
+
+	/**
+	 * Removes an existing Wireguard tunnel
+	 * @param string $name Wireguard tunnel name
+	 */
+	public function removeTunnel(string $name): void {
+		$filename = $name . '.conf';
+		if (!$this->fileManager->exists($filename)) {
+			throw new NonexistentWireguardTunnelException('Wireguard tunnel ' . $name . ' not found.');
+		}
+		$serviceName = 'wg-quick@' . $name;
+		if ($this->serviceManager->isEnabled($serviceName) || $this->serviceManager->isActive($serviceName)) {
+			$this->serviceManager->disable($serviceName);
+		}
+		$this->fileManager->delete($filename);
 	}
 
 	/**

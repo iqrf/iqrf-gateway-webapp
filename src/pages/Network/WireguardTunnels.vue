@@ -49,6 +49,13 @@
 								{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
 							</CButton> <CButton
 								size='sm'
+								color='primary'
+								:to='"/network/vpn/edit/" + item.name'
+							>
+								<CIcon :content='icons.edit' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton> <CButton
+								size='sm'
 								color='danger'
 								@click='removeTunnel(item.name)'
 							>
@@ -184,5 +191,30 @@ export default class WireguardTunnels extends Vue {
 			});
 	}
 
+	/**
+	 * Removes an existing Wireguard tunnel
+	 * @param {string} name Wireguard tunnel name
+	 */
+	private removeTunnel(name: string): void {
+		this.$store.commit('spinner/SHOW');
+		WireguardService.removeTunnel(name)
+			.then(() => {
+				this.getTunnels().then(() =>this.$toast.success(
+					this.$t(
+						'network.wireguard.tunnels.messages.removeSuccess',
+						{tunnel: name}
+					).toString()
+				));
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'network.wireguard.tunnels.messages.removeFailed',
+						{tunnel: name}
+					).toString()
+				);
+			});
+	}
 }
 </script>
