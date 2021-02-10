@@ -29,9 +29,9 @@
 					<template #state='{item}'>
 						<td>
 							<CBadge
-								:color='item.state === "connected" ? "success" : "danger"'
+								:color='item.active ? "success" : "danger"'
 							>
-								{{ $t('network.connection.states.' + (item.state === 'connected' ? 'connected' : 'notConnected')) }}
+								{{ $t('network.wireguard.tunnels.table.states.' + (item.active ? 'active' : 'inactive')) }}
 							</CBadge>
 						</td>
 					</template>
@@ -39,8 +39,18 @@
 						<td class='col-actions'>
 							<CButton
 								size='sm'
+								:color='item.active ? "danger": "success"'
+								@click='changeTunnelState(item.name, (item.active ? false : true))'
+							>
+								<CIcon 
+									:content='item.active ? icons.deactivate : icons.activate'
+									size='sm'
+								/>
+								{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+							</CButton> <CButton
+								size='sm'
 								color='danger'
-								@click='removeInterface(item.name)'
+								@click='removeTunnel(item.name)'
 							>
 								<CIcon :content='icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -56,13 +66,14 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
-import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+
+import WireguardService from '../../services/WireguardService';
 
 import {AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
-import {IConnection} from '../../interfaces/network';
+import {IWG} from '../../interfaces/network';
 import {Dictionary} from 'vue-router/types/router';
-import NetworkConnectionService, { ConnectionType } from '../../services/NetworkConnectionService';
 
 @Component({
 	components: {
@@ -90,12 +101,14 @@ export default class WireguardTunnels extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
+		activate: cilLink,
+		deactivate: cilLinkBroken 
 	}
 
 	/**
-	 * @var {Array<IConnection>} tunnels Array of existing interfaces
+	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */
-	private tunnels: Array<IConnection> = []
+	private tunnels: Array<IWG> = []
 
 	/**
 	 * @constant {Array<IField>} tableField Array of CoreUI data table fields
@@ -120,20 +133,54 @@ export default class WireguardTunnels extends Vue {
 	]
 
 	/**
-	 * Retrieves existing wireguard interfaces and wireguard configuration
+	 * Retrieves existing Wireguard tunnels
 	 */
 	mounted(): void {
-		this.getConnections();
+		this.getTunnels();
 	}
 
 	/**
-	 * Retrieves existing wireguard interfaces
+	 * Retrieves existing Wireguard tunnels and stores data into table
 	 */
-	private getConnections(): void {
+	private getTunnels(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.list(ConnectionType.WIREGUARD)
+		return WireguardService.listTunnels()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
+				this.tunnels = response.data;
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('network.wireguard.tunnels.messages.listFailed').toString()
+				);
+			});
+	}
+
+	/**
+	 * Changes Wireguard tunnel state
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private changeTunnelState(name: string, state: boolean): void {
+		this.$store.commit('spinner/SHOW');
+		WireguardService.changeState({name: name, enabled: state})
+			.then(() => {
+				this.getTunnels().then(() => this.$toast.success(
+					this.$t(
+						'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateSuccess',
+						{tunnel: name}
+					).toString()
+				));
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateFailed',
+						{tunnel: name}
+					).toString()
+				);
 			});
 	}
 

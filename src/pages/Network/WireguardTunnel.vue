@@ -372,7 +372,7 @@ import {required, integer, between} from 'vee-validate/dist/rules';
 import ip from 'ip-regex';
 import WireguardService from '../../services/WireguardService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IWGTunnel} from '../../interfaces/network';
 
@@ -543,7 +543,27 @@ export default class WireguardTunnel extends Vue {
 	 * Creates new Wireguard tunnel
 	 */
 	private saveTunnel(): void {
-		WireguardService.createTunnel(this.tunnel);
+		this.$store.commit('spinner/SHOW');
+		WireguardService.createTunnel(this.tunnel)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.wireguard.tunnels.messages.addSuccess',
+						{tunnel: this.tunnel.name}
+					).toString()
+				);
+				this.$router.push('/network/vpn/');
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'network.wireguard.tunnels.messages.addFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message}
+					).toString()
+				);
+			});
 	}
 
 }

@@ -39,11 +39,6 @@ final class WireguardTunnel implements JsonSerializable {
 	private $privateKey;
 
 	/**
-	 * @var string $publicKey Wireguard tunnel interface public key
-	 */
-	private $publicKey;
-
-	/**
 	 * @var int $port Wireguard tunnel interface listen port
 	 */
 	private $port;
@@ -67,20 +62,26 @@ final class WireguardTunnel implements JsonSerializable {
 	 * Constructor
 	 * @param string $name Wireguard tunnel interface name
 	 * @param string $privateKey Wireguard tunnel interface private key
-	 * @param string $publicKey Wireguard tunnel interface public key
 	 * @param int $port Wireguard tunnel interface listen port
 	 * @param IPv4Address $ipv4 Wireguard tunnel interface IPv4 address
 	 * @param IPv6Address $ipv6 Wireguard tunnel interface IPv6 address
 	 * @param array<WireguardPeer> $peers Wireguard tunnel interface peers
 	 */
-	public function __construct(string $name, string $privateKey, string $publicKey, int $port, IPv4Address $ipv4, IPv6Address $ipv6, array $peers) {
+	public function __construct(string $name, string $privateKey, int $port, IPv4Address $ipv4, IPv6Address $ipv6, array $peers) {
 		$this->name = $name;
 		$this->privateKey = $privateKey;
-		$this->publicKey = $publicKey;
 		$this->port = $port;
 		$this->ipv4 = $ipv4;
 		$this->ipv6 = $ipv6;
 		$this->peers = $peers;
+	}
+
+	/**
+	 * Returns Wireguard tunnel interface name
+	 * @return string Wireguard tunnel interface name
+	 */
+	public function getName(): string {
+		return $this->name;
 	}
 
 	/**
@@ -95,7 +96,7 @@ final class WireguardTunnel implements JsonSerializable {
 		foreach ($json->peers as $peer) {
 			$peers[] = WireguardPeer::jsonDeserialize($peer);
 		}
-		return new self($json->name, $json->privateKey, $json->publicKey, $json->port, $ipv4, $ipv6, $peers);
+		return new self($json->name, $json->privateKey, $json->port, $ipv4, $ipv6, $peers);
 	}
 
 	/**
@@ -106,7 +107,6 @@ final class WireguardTunnel implements JsonSerializable {
 		return [
 			'name' => $this->name,
 			'privateKey' => $this->privateKey,
-			'publicKey' => $this->publicKey,
 			'port' => $this->port,
 			'ipv4' => $this->ipv4->getAddress()->getDotAddress(),
 			'ipv4Prefix' => $this->ipv4->getPrefix(),

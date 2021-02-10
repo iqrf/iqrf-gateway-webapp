@@ -29,6 +29,7 @@ use App\NetworkModule\Exceptions\IpKernelException;
 use App\NetworkModule\Exceptions\IpSyntaxException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
+use App\ServiceModule\Models\ServiceManager;
 use stdClass;
 
 /**
@@ -57,15 +58,39 @@ class WireguardManager {
 	private $interfaceManager;
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param FileManager $fileManager File manager
 	 * @param InterfaceManager $interfaceManager Interface manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, FileManager $fileManager, InterfaceManager $interfaceManager) {
+	public function __construct(CommandManager $commandManager, FileManager $fileManager, InterfaceManager $interfaceManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
 		$this->interfaceManager = $interfaceManager;
+		$this->serviceManager = $serviceManager;
+	}
+
+	/**
+	 * Returns list of existing wireguard tunnel configurations
+	 * @return array<int, array<string, string|bool>> List of Wireguard tunnels
+	 */
+	public function listTunnels(): array {
+		$files = scandir(self::DIR);
+		$array = [];
+		foreach ($files as $file) {
+			if (pathinfo($file, PATHINFO_EXTENSION) === 'conf') {
+				$filename = pathinfo($file, PATHINFO_FILENAME);
+				$output = $this->commandManager->run('wg show ' . $filename, true);
+				$array[] = ['name' => $filename, 'active' => ($output->getExitCode() === 0)];
+			}
+		}
+		return $array;
 	}
 
 	/**
@@ -76,13 +101,29 @@ class WireguardManager {
 		if (!$this->validatePublicKey($values->privateKey, $values->publicKey)) {
 			throw new WireguardKeyMismatchException('Supplied private key and public key do not match.');
 		}
-		$this->createInterface($values->name);
-		$keyFiles = $this->storeKeys($values->name, $values->privateKey, $values->publicKey);
-		$values->privateKey = $keyFiles['privateKey'];
-		$values->publicKey = $keyFiles['publicKey'];
+		//$this->createInterface($values->name); not wg-quick
+		//$keyFiles = $this->storeKeys($values->name, $values->privateKey, $values->publicKey);
 		$tunnel = WireguardTunnel::jsonDeserialize($values);
-		$this->commandManager->run($tunnel->wgSerialize(), true);
-		$this->commandManager->run($tunnel->ipSerialize(), true);
+		//$this->commandManager->run($tunnel->wgSerialize(), true); not wg-quick
+		//$this->commandManager->run($tunnel->ipSerialize(), true); not wg-quick
+		$this->fileManager->write($tunnel->getName() . '.conf', $tunnel->toConf());
+	}
+
+	/**
+	 * Activates Wireguard tunnel specified by name
+	 * @param stdClass $config Wireguard state configuration
+	 */
+	public function changeTunnelState(stdClass $config): void {
+		$serviceName = 'wg-quick@' . $config->name;
+		if ($config->enabled) {
+			if (!$this->serviceManager->isEnabled($serviceName)) {
+				$this->serviceManager->enable($serviceName);
+			}
+		} else {
+			if ($this->serviceManager->isEnabled($serviceName)) {
+				$this->serviceManager->disable($serviceName);
+			}
+		}
 	}
 
 	/**

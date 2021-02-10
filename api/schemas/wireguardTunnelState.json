@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/wireguardTunnelState.json",
+	"type": "object",
+	"title": "Wireguard VPN tunnel state change",
+	"required": [
+		"name",
+		"enabled"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"name": {
+			"$id": "#/properties/name",
+			"title": "Tunnel name",
+			"type": "string",
+			"example": "wg0"
+		},
+		"enabled": {
+			"$id": "#/properties/active",
+			"title": "Tunnel enabled state",
+			"type": "boolean",
+			"example": true
+		}
+	}
+}

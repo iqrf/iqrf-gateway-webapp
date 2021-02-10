@@ -1886,7 +1886,15 @@
 				"table": {
 					"noTunnels": "No Wireguard tunnels detected.",
 					"name": "Name",
-					"state": "State"
+					"state": "State",
+					"states": {
+						"active": "Active",
+						"inactive": "Inactive"
+					},
+					"action": {
+						"activate": "Activate",
+						"deactivate": "Deactivate"
+					}
 				},
 				"form": {
 					"addPeer": "Add another peer",
@@ -1927,6 +1935,15 @@
 					"portPeer": "Please enter peer listen port.",
 					"portInvalid": "Port number should be an integer between 0 and 65535.",
 					"keepalive": "Please enter the peer keepalive interval."
+				},
+				"messages": {
+					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
+					"addFailed": "Failed to create Wireguard tunnel: {error}.",
+					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
+					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
+					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
+					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
+					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}."
 				}
 			}
 		},

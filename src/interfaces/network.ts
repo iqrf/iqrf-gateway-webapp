@@ -116,6 +116,14 @@ export interface IWifiWep {
 }
 
 /**
+ * Wireguard VPN list entry interface
+ */
+export interface IWG {
+	name: string
+	state: string
+}
+
+/**
  * Wireguard VPN tunnel interface
  */
 export interface IWGTunnel {
