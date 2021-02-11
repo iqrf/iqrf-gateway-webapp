@@ -16,6 +16,8 @@ nettrine.dbal:
 	connection:
 		driver: pdo_sqlite
 		path: %appDir%/config/database.db
+		types:
+			ip: Darsyn\IP\Doctrine\MultiType
 	debug:
 		panel: %debugMode%
 

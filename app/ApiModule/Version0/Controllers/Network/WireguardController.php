@@ -81,7 +81,7 @@ class WireguardController extends NetworkController {
 	}
 
 	/**
-	 * @Path("/{tunnel}")
+	 * @Path("/{id}")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Retrieves configuration of Wireguard tunnel
@@ -96,7 +96,7 @@ class WireguardController extends NetworkController {
 	 *          description: Not found
 	 * ")
 	 * @RequestParameters(
-	 *     @RequestParameter(name="tunnel", type="string", description="Wireguard tunnel name")
+	 *     @RequestParameter(name="id", type="integer", description="Wireguard tunnel id")
 	 * )
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -104,8 +104,8 @@ class WireguardController extends NetworkController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$tunnel = $this->wireguardManager->getTunnel($request->getParameter('tunnel'));
-			return $response->writeJsonBody($tunnel);
+			$tunnel = $this->wireguardManager->getTunnel($request->getParameter('id'));
+			return $response->writeJsonObject($tunnel);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}

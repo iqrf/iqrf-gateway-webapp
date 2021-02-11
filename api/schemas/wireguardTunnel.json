@@ -6,7 +6,6 @@
 	"required": [
 		"name",
 		"privateKey",
-		"publicKey",
 		"port",
 		"ipv4",
 		"ipv4Prefix",
@@ -28,12 +27,6 @@
 			"title": "Wireguard interface private key",
 			"type": "string",
 			"example": "+DsMmGWks1DawE1yc4UlOI6pbH3XVxdVArj9lLOyD18="
-		},
-		"publicKey": {
-			"$id": "#/properties/publicKey",
-			"title": "Wireguard interface public key",
-			"type": "string",
-			"example": "2OGuuIWQLKvtVYGntdHSoRb8MtDyKq6wxKd9vQphzDQ="
 		},
 		"port": {
 			"$id": "#/properties/port",
