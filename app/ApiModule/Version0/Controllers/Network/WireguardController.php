@@ -126,7 +126,7 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *      '400'
+	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'

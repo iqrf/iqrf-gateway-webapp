@@ -56,12 +56,12 @@ final class WireguardAllowedIPs implements JsonSerializable {
 	 */
 	public static function jsonDeserialize(stdClass $json): self {
 		$ipv4s = [];
-		foreach ($json->ipv4 as $ipv4) {
-			$ipv4s[] = IPv4Address::fromPrefix($ipv4->address . '/' . $ipv4->prefix);
+		foreach ($json->ipv4 as $ip) {
+			$ipv4s[] = IPv4Address::fromPrefix($ip->address . '/' . $ip->prefix);
 		}
 		$ipv6s = [];
-		foreach ($json->ipv6 as $ipv6) {
-			$ipv6s[] = IPv6Address::fromPrefix($ipv6->address . '/' . $ipv6->prefix);
+		foreach ($json->ipv6 as $ip) {
+			$ipv6s[] = IPv6Address::fromPrefix($ip->address . '/' . $ip->prefix);
 		}
 		return new self($ipv4s, $ipv6s);
 	}

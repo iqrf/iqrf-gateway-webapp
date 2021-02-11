@@ -141,6 +141,19 @@ final class WireguardTunnel implements JsonSerializable {
 	}
 
 	/**
+	 * Creates Wireguard tunnel entity from conf file
+	 * @param string $name Wireguard tunnel name
+	 * @param array<mixed> $conf
+	 * @return WireguardTunnel Wireguard tunnel entity
+	 *
+	 * public function fromConf(string $name, array $conf): self {
+	 * $interface = $conf['Interface'];
+	 * $addresses = explode(',', trim($interface['Address']));
+	 * return new self($name, $interface['PrivateKey'], intval($interface['ListenPort'],))
+	 * }
+	 */
+
+	/**
 	 * Converts Wireguard tunnel entity into configuration file format
 	 * @return string Wireguard tunnel configuration in configuration file format
 	 */
