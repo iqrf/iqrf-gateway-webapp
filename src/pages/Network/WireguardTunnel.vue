@@ -580,10 +580,11 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private saveTunnel(): void {
 		this.$store.commit('spinner/SHOW');
+		delete this.tunnel.publicKey;
 		WireguardService.createTunnel(this.tunnel)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$router.push('/network/vpn/');
+				//this.$router.push('/network/vpn/');
 				this.$toast.success(
 					this.$t(
 						'network.wireguard.tunnels.messages.addSuccess',

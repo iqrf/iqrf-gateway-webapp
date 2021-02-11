@@ -21,16 +21,14 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
-use App\NetworkModule\Entities\WireguardTunnel;
-use App\NetworkModule\Enums\InterfaceTypes;
-use App\NetworkModule\Exceptions\InterfaceExistsException;
-use App\NetworkModule\Exceptions\IpKernelException;
-use App\NetworkModule\Exceptions\IpSyntaxException;
-use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
+use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardPeer;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
-use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use App\ServiceModule\Models\ServiceManager;
+use Darsyn\IP\Version\Multi;
+use Doctrine\Common\Collections\ArrayCollection;
 use stdClass;
 
 /**
@@ -49,14 +47,14 @@ class WireguardManager {
 	private $commandManager;
 
 	/**
-	 * @var FileManager File manager
+	 * @var EntityManager Entity manager
 	 */
-	private $fileManager;
+	private $entityManager;
 
 	/**
-	 * @var InterfaceManager Interface manager
+	 * @var WireguardInterfaceRepository;
 	 */
-	private $interfaceManager;
+	private $repository;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -66,14 +64,13 @@ class WireguardManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param FileManager $fileManager File manager
-	 * @param InterfaceManager $interfaceManager Interface manager
+	 * @param EntityManager $entityManager Entity manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, FileManager $fileManager, InterfaceManager $interfaceManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager, EntityManager $entityManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->interfaceManager = $interfaceManager;
+		$this->entityManager = $entityManager;
+		$this->repository = $this->entityManager->getWireguardInterfaceRepository();
 		$this->serviceManager = $serviceManager;
 	}
 
@@ -82,29 +79,16 @@ class WireguardManager {
 	 * @return array<int, array<string, string|bool>> List of Wireguard tunnels
 	 */
 	public function listTunnels(): array {
-		$files = scandir(self::DIR);
-		$array = [];
-		foreach ($files as $file) {
-			if (pathinfo($file, PATHINFO_EXTENSION) === 'conf') {
-				$filename = pathinfo($file, PATHINFO_FILENAME);
-				$output = $this->commandManager->run('wg show ' . $filename, true);
-				$array[] = ['name' => $filename, 'active' => ($output->getExitCode() === 0)];
-			}
-		}
-		return $array;
+		return $this->repository->findAll();
 	}
 
 	/**
 	 * Returns configuration of Wireguard tunnel
-	 * @param string $name Wireguard tunnel name
-	 * @return array<int> Wireguard tunnel configuration
+	 * @param string $id Wireguard interface id
+	 * @return WireguardInterface Wireguard tunnel configuration
 	 */
-	public function getTunnel(string $name): array {
-		$filename = $name . '.conf';
-		if (!$this->fileManager->exists($filename)) {
-			throw new NonexistentWireguardTunnelException('Wireguard tunnel ' . $name . ' not found.');
-		}
-		return parse_ini_string($this->fileManager->read($filename), true, INI_SCANNER_RAW);
+	public function getTunnel(string $id): WireguardInterface {
+		return $this->repository->find($id);
 	}
 
 	/**
@@ -112,15 +96,14 @@ class WireguardManager {
 	 * @param stdClass $values New Wireguard tunnel configuration
 	 */
 	public function createTunnel(stdClass $values): void {
-		if (!$this->validatePublicKey($values->privateKey, $values->publicKey)) {
-			throw new WireguardKeyMismatchException('Supplied private key and public key do not match.');
+		$peers = [];
+		foreach ($values->peers as $peer) {
+			$peers[] = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, null);
 		}
-		//$this->createInterface($values->name); not wg-quick
-		//$keyFiles = $this->storeKeys($values->name, $values->privateKey, $values->publicKey);
-		$tunnel = WireguardTunnel::jsonDeserialize($values);
-		//$this->commandManager->run($tunnel->wgSerialize(), true); not wg-quick
-		//$this->commandManager->run($tunnel->ipSerialize(), true); not wg-quick
-		$this->fileManager->write($tunnel->getName() . '.conf', $tunnel->toConf());
+		$peers = new ArrayCollection($peers);
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix, $peers);
+		$this->entityManager->persist($interface);
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -128,15 +111,7 @@ class WireguardManager {
 	 * @param string $name Wireguard tunnel name
 	 */
 	public function removeTunnel(string $name): void {
-		$filename = $name . '.conf';
-		if (!$this->fileManager->exists($filename)) {
-			throw new NonexistentWireguardTunnelException('Wireguard tunnel ' . $name . ' not found.');
-		}
-		$serviceName = 'wg-quick@' . $name;
-		if ($this->serviceManager->isEnabled($serviceName) || $this->serviceManager->isActive($serviceName)) {
-			$this->serviceManager->disable($serviceName);
-		}
-		$this->fileManager->delete($filename);
+		//TODO
 	}
 
 	/**
@@ -154,43 +129,6 @@ class WireguardManager {
 				$this->serviceManager->disable($serviceName);
 			}
 		}
-	}
-
-	/**
-	 * Creates a new wireguard interface
-	 * @param string $name Interface name
-	 */
-	public function createInterface(string $name): void {
-		$interfaces = $this->interfaceManager->list(InterfaceTypes::WIREGUARD());
-		foreach ($interfaces as $iface) {
-			if ($iface->getName() === $name) {
-				throw new InterfaceExistsException('Interface ' . $name . ' already exists.');
-			}
-		}
-		$command = sprintf('ip link add dev %s type wireguard', $name);
-		$output = $this->commandManager->run($command, true);
-		$exitCode = $output->getExitCode();
-		if ($exitCode !== 0) {
-			$this->handleIpErrors($exitCode, $output->getStderr());
-		}
-	}
-
-	/**
-	 * Stores keypair in files
-	 * @param string $name Keypair name
-	 * @param string $privateKey Private key
-	 * @param string $publicKey Public key
-	 * @return array<string, string> Path to keypair files
-	 */
-	public function storeKeys(string $name, string $privateKey, string $publicKey): array {
-		$privateKeyFile = $name . '.privatekey';
-		$publicKeyFile = $name . '.publickey';
-		$this->fileManager->write($privateKeyFile, $privateKey);
-		$this->fileManager->write($publicKeyFile, $publicKey);
-		return [
-			'privateKey' => self::DIR . $privateKeyFile,
-			'publicKey' => self::DIR . $publicKeyFile,
-		];
 	}
 
 	/**
@@ -229,32 +167,6 @@ class WireguardManager {
 			throw new WireguardKeyErrorException($output->getStderr());
 		}
 		return $output->getStdout();
-	}
-
-	/**
-	 * Checks if supplied public key has been derived from supplied private key
-	 * @param string $privateKey Wireguard tunnel interface private key
-	 * @param string $publicKey Wireguard tunnel interface public key
-	 * @return bool true if public key matches private key, false otherwise
-	 */
-	private function validatePublicKey(string $privateKey, string $publicKey): bool {
-		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
-		if ($output->getExitCode() !== 0) {
-			return false;
-		}
-		return $output->getStdout() === $publicKey;
-	}
-
-	/**
-	 * Handles ip utility errors
-	 * @param int $exitCode IP exit code
-	 * @param string $message Error message
-	 */
-	private function handleIpErrors(int $exitCode, string $message): void {
-		if ($exitCode === 1) {
-			throw new IpSyntaxException($message);
-		}
-		throw new IpKernelException($message);
 	}
 
 }

@@ -24,10 +24,14 @@ use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\UserRepository;
+use App\Models\Database\Repositories\WireguardInterfaceRepository;
+use App\Models\Database\Repositories\WireguardPeerRepository;
 
 /**
  * @mixin EntityManager
@@ -71,6 +75,26 @@ trait TRepositories {
 	public function getUserRepository(): UserRepository {
 		$repository = $this->getRepository(User::class);
 		assert($repository instanceof UserRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the wireguard interface repository
+	 * @return WireguardInterfaceRepository Wireguard interface repository
+	 */
+	public function getWireguardInterfaceRepository(): WireguardInterfaceRepository {
+		$repository = $this->getRepository(WireguardInterface::class);
+		assert($repository instanceof WireguardInterfaceRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the wireguard peer repository
+	 * @return WireguardPeerRepository Wireguard peer repository
+	 */
+	public function getWireguardPeerRepository(): WireguardPeerRepository {
+		$repository = $this->getRepository(WireguardPeer::class);
+		assert($repository instanceof WireguardPeerRepository);
 		return $repository;
 	}
 
