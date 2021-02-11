@@ -100,7 +100,11 @@ class WireguardManager {
 	 * @return array<int> Wireguard tunnel configuration
 	 */
 	public function getTunnel(string $name): array {
-		return [];
+		$filename = $name . '.conf';
+		if (!$this->fileManager->exists($filename)) {
+			throw new NonexistentWireguardTunnelException('Wireguard tunnel ' . $name . ' not found.');
+		}
+		return parse_ini_string($this->fileManager->read($filename), true, INI_SCANNER_RAW);
 	}
 
 	/**
