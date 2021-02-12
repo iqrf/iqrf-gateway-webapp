@@ -97,11 +97,12 @@ class WireguardManager {
 	 */
 	public function createTunnel(stdClass $values): void {
 		$peers = [];
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix, new ArrayCollection($peers));
 		foreach ($values->peers as $peer) {
-			$peers[] = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, null);
+			$peers[] = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface);
 		}
 		$peers = new ArrayCollection($peers);
-		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix, $peers);
+		$interface->setPeers($peers);
 		$this->entityManager->persist($interface);
 		$this->entityManager->flush();
 	}

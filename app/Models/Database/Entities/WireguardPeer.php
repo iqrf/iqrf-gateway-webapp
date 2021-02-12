@@ -65,11 +65,11 @@ class WireguardPeer implements JsonSerializable {
 	private $port;
 
 	/**
-	 * @var int Interface this peer belongs to
-	 * @ORM\ManyToOne(targetEntity="WireguardInterface", inversedBy="peers", cascade={"persist"})
+	 * @var WireguardInterface Interface
+	 * @ORM\ManyToOne(targetEntity="WireguardInterface", inversedBy="peers")
 	 * @ORM\JoinColumn(name="interface_id", referencedColumnName="id")
 	 */
-	private $interfaceId;
+	private $interface;
 
 	/**
 	 * Constructor
@@ -78,15 +78,31 @@ class WireguardPeer implements JsonSerializable {
 	 * @param int $keepalive Peer keepalive interval
 	 * @param string $endpoint Peer endpoint
 	 * @param int $port Peer listen port
-	 * @param int|null $interfaceId Interface this peer belongs to
+	 * @param WireguardInterface $interface Wireguard interface
 	 */
-	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, ?int $interfaceId) {
+	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
 		$this->publicKey = $publicKey;
 		$this->psk = $psk;
 		$this->keepalive = $keepalive;
 		$this->endpoint = $endpoint;
 		$this->port = $port;
-		$this->interfaceId = $interfaceId;
+		$this->interface = $interface;
+	}
+
+	/**
+	 * Returns Wireguard interface
+	 * @return WireguardInterface Wireguard interface
+	 */
+	public function getInterface(): WireguardInterface {
+		return $this->interface;
+	}
+
+	/**
+	 * Sets Wireguard interface
+	 * @param WireguardInterface $interface Wireguard interface
+	 */
+	public function setInterface(WireguardInterface $interface): void {
+		$this->interface = $interface;
 	}
 
 	/**
@@ -101,7 +117,6 @@ class WireguardPeer implements JsonSerializable {
 			'keepalive' => $this->keepalive,
 			'endpoint' => $this->endpoint,
 			'port' => $this->port,
-			'interface' => $this->interfaceId,
 		];
 	}
 
