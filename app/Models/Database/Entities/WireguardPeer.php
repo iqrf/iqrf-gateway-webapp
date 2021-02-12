@@ -74,8 +74,8 @@ class WireguardPeer implements JsonSerializable {
 	private $interface;
 
 	/**
-	 * @var Collection Peer allowed IPs
-	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist", "remove"})
+	 * @var Collection<WireguardPeerAddress> Peer allowed IPs
+	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	private $addresses;
 
@@ -87,16 +87,15 @@ class WireguardPeer implements JsonSerializable {
 	 * @param string $endpoint Peer endpoint
 	 * @param int $port Peer listen port
 	 * @param WireguardInterface $interface Wireguard interface
-	 * @param Collection $addresses Peer allowed IPs
 	 */
-	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface, Collection $addresses) {
+	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
 		$this->publicKey = $publicKey;
 		$this->psk = $psk;
 		$this->keepalive = $keepalive;
 		$this->endpoint = $endpoint;
 		$this->port = $port;
 		$this->interface = $interface;
-		$this->addresses = $addresses;
+		$this->addresses = new ArrayCollection();
 	}
 
 	/**
@@ -125,7 +124,7 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * Sets peer pre-shared key
-	 * @param string $psk Peer pre-shared key
+	 * @param string|null $psk Peer pre-shared key
 	 */
 	public function setPsk(?string $psk): void {
 		$this->psk = $psk;
@@ -196,8 +195,16 @@ class WireguardPeer implements JsonSerializable {
 	}
 
 	/**
+	 * Adds peer allowed IP address
+	 * @param WireguardPeerAddress $address WireGuard allowed peer IP address
+	 */
+	public function addAddress(WireguardPeerAddress $address): void {
+		$this->addresses->add($address);
+	}
+
+	/**
 	 * Returns peer allowed IPs
-	 * @return Collection Peer allowed IPs
+	 * @return Collection<WireguardPeerAddress> Peer allowed IPs
 	 */
 	public function getAddresses(): Collection {
 		return $this->addresses;
@@ -205,9 +212,9 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * Sets peer allowed IPs
-	 * @param ArrayCollection $addresses Peer allowed IPs
+	 * @param Collection<WireguardPeerAddress> $addresses Peer allowed IPs
 	 */
-	public function setAddresses(ArrayCollection $addresses): void {
+	public function setAddresses(Collection $addresses): void {
 		$this->addresses = $addresses;
 	}
 

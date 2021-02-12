@@ -13,7 +13,7 @@
 								:custom-messages='{
 									required: "network.wireguard.tunnels.errors.name"
 								}'
-							>	
+							>
 								<CInput
 									v-model='tunnel.name'
 									:label='$t("network.wireguard.tunnels.form.name")'
@@ -45,10 +45,7 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: "network.wireguard.tunnels.errors.publicKey"
-								}'
+								rules=''
 							>
 								<CInput
 									v-model='tunnel.publicKey'
@@ -342,7 +339,7 @@
 									</CCol>
 								</CRow>
 								<CButton
-									v-if='index > 0'
+									v-if='tunnel.peers.length !== 1'
 									color='danger'
 									@click='removePeer(index)'
 								>
@@ -397,7 +394,7 @@ import {IWGTunnel} from '../../interfaces/network';
  * Wireguard tunnel form component
  */
 export default class WireguardTunnel extends Vue {
-	
+
 	/**
 	 * Wireguard VPN tunnel configuration
 	 */
@@ -469,7 +466,7 @@ export default class WireguardTunnel extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/network/vpn/add' ? 
+		return this.$route.path === '/network/vpn/add' ?
 			this.$t('network.wireguard.tunnels.add').toString() : this.$t('network.wireguard.tunnels.edit').toString();
 	}
 
@@ -587,7 +584,6 @@ export default class WireguardTunnel extends Vue {
 				.then(this.handleSuccess)
 				.catch(this.handleError);
 		}
-		
 	}
 
 	/**

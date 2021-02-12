@@ -81,7 +81,7 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * @var Collection Interface peer IDs
-	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist", "remove"})
+	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	private $peers;
 
@@ -94,9 +94,8 @@ class WireguardInterface implements JsonSerializable {
 	 * @param int $ipv4Prefix Interface IPv4 address prefix
 	 * @param IP $ipv6 Interface IPv6 address
 	 * @param int $ipv6Prefix Interface IPv6 address prefix
-	 * @param Collection $peers Interface peers
 	 */
-	public function __construct(string $name, string $privateKey, int $port, IP $ipv4, int $ipv4Prefix, IP $ipv6, int $ipv6Prefix, Collection $peers) {
+	public function __construct(string $name, string $privateKey, int $port, IP $ipv4, int $ipv4Prefix, IP $ipv6, int $ipv6Prefix) {
 		$this->name = $name;
 		$this->privateKey = $privateKey;
 		$this->port = $port;
@@ -104,7 +103,7 @@ class WireguardInterface implements JsonSerializable {
 		$this->ipv4Prefix = $ipv4Prefix;
 		$this->ipv6 = $ipv6;
 		$this->ipv6Prefix = $ipv6Prefix;
-		$this->peers = $peers;
+		$this->peers = new ArrayCollection();
 	}
 
 	/**
@@ -220,8 +219,24 @@ class WireguardInterface implements JsonSerializable {
 	}
 
 	/**
+	 * Adds WireGuard peer
+	 * @param WireguardPeer $peer WireGuard peer to add
+	 */
+	public function addPeer(WireguardPeer $peer): void {
+		$this->peers->add($peer);
+	}
+
+	/**
+	 * Deletes WireGuard peer
+	 * @param WireguardPeer $peer WireGuard peer to delete
+	 */
+	public function deletePeer(WireguardPeer $peer): void {
+		$this->peers->removeElement($peer);
+	}
+
+	/**
 	 * Returns interface peers
-	 * @return Collection interface peers
+	 * @return Collection<WireguardPeer> interface peers
 	 */
 	public function getPeers(): Collection {
 		return $this->peers;
@@ -229,9 +244,9 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Sets interface peers
-	 * @param ArrayCollection $peers interface peers
+	 * @param Collection $peers interface peers
 	 */
-	public function setPeers(ArrayCollection $peers): void {
+	public function setPeers(Collection $peers): void {
 		$this->peers = $peers;
 	}
 
