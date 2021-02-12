@@ -102,6 +102,8 @@ class WireguardManager {
 
 	/**
 	 * Checks if interface is active
+	 * @param string $name WireGuard interface name
+	 * @return bool Is WireGuard interface active?
 	 */
 	public function isInterfaceActive(string $name): bool {
 		$output = $this->commandManager->run('wg show ' . $name, true);
@@ -127,12 +129,10 @@ class WireguardManager {
 	 * @param stdClass $values New Wireguard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
-		$peers = [];
-		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix, new ArrayCollection($peers));
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix);
 		foreach ($values->peers as $peer) {
-			$peers[] = $this->createPeer($peer, $interface);
+			$interface->addPeer($this->createPeer($peer, $interface));
 		}
-		$interface->setPeers(new ArrayCollection($peers));
 		$this->entityManager->persist($interface);
 		$this->entityManager->flush();
 	}
@@ -151,11 +151,13 @@ class WireguardManager {
 		$interface->setIpv4Prefix($values->ipv4Prefix);
 		$interface->setIpv6(Multi::factory($values->ipv6));
 		$interface->setIpv6Prefix($values->ipv6Prefix);
-		$peers = [];
+		/** @var array<WireguardPeer> $oldPeers */
+		$oldPeers = $interface->getPeers()->toArray();
+		$peersIds = [];
 		foreach ($values->peers as $peer) {
-			if ($peer->id !== null) {
+			if (property_exists($peer, 'id') && $peer->id !== null) {
 				$ifPeer = $this->wireguardPeerRepository->find($peer->id);
-				if ($ifPeer === null) {
+				if (!($ifPeer instanceof WireguardPeer)) {
 					throw new NonexistentWireguardTunnelException('Wireguard peer not found');
 				}
 				$addresses = $this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
@@ -166,12 +168,18 @@ class WireguardManager {
 				$ifPeer->setEndpoint($peer->endpoint);
 				$ifPeer->setPort($peer->port);
 				$ifPeer->setAddresses(new ArrayCollection($addresses));
+				$this->entityManager->persist($ifPeer);
+				$peersIds[] = $ifPeer->getId();
 			} else {
-				$peers[] = $this->createPeer($peer, $interface);
+				$interface->addPeer($this->createPeer($peer, $interface));
 			}
 		}
-		$interface->setPeers(new ArrayCollection($peers));
-		$this->entityManager->merge($interface);
+		foreach ($oldPeers as $peer) {
+			if (!in_array($peer->getId(), $peersIds, true)) {
+				$interface->deletePeer($peer);
+			}
+		}
+		$this->entityManager->persist($interface);
 		$this->entityManager->flush();
 	}
 
@@ -182,10 +190,9 @@ class WireguardManager {
 	 * @return WireguardPeer Wireguard peer entity
 	 */
 	private function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
-		$ifPeer = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface, new ArrayCollection([]));
-		$addresses = $this->createPeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
-		$addresses = array_merge($addresses, $this->createPeerAddresses($peer->allowedIPs->ipv6, $ifPeer));
-		$ifPeer->setAddresses(new ArrayCollection($addresses));
+		$ifPeer = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface);
+		$this->createPeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
+		$this->createPeerAddresses($peer->allowedIPs->ipv6, $ifPeer);
 		return $ifPeer;
 	}
 
@@ -193,21 +200,19 @@ class WireguardManager {
 	 * Creates array of wireguard peer addresses for new wireguard peer entity
 	 * @param array<int, stdClass> $addrs Wireguard peer addresses
 	 * @param WireguardPeer $ifPeer Wireguard peer entity
-	 * @return array<int, WireguardPeerAddress> Wireguard peer addresses
 	 */
-	private function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): array {
-		$addresses = [];
+	private function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): void {
 		foreach ($addrs as $ip) {
-			$addresses[] = new WireguardPeerAddress(Multi::factory($ip->address), $ip->prefix, $ifPeer);
+			$address = new WireguardPeerAddress(Multi::factory($ip->address), $ip->prefix, $ifPeer);
+			$ifPeer->addAddress($address);
 		}
-		return $addresses;
 	}
 
 	/**
 	 * Creates array of wireguard peer addresses to update existing peer entity
 	 * @param array<int, stdClass> $addrs Wireguard peer addresses
 	 * @param WireguardPeer $ifPeer Wireguard peer entity
-	 * @return array<int, WireguardPeer> Wireguard peer addresses
+	 * @return array<int, WireguardPeerAddress> Wireguard peer addresses
 	 */
 	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer): array {
 		$addresses = [];
