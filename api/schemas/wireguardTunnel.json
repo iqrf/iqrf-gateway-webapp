@@ -15,6 +15,12 @@
 	],
 	"additionalProperties": false,
 	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "Wireguard interface ID",
+			"type": "integer",
+			"example": 1
+		},
 		"name": {
 			"$id": "#/properties/name",
 			"title": "Wireguard interface name",
@@ -84,6 +90,12 @@
 				],
 				"additionalProperties": false,
 				"properties": {
+					"id": {
+						"$id": "#/properties/peers/items/properties/id",
+						"title": "Wireguard peer ID",
+						"type": "integer",
+						"example": 1
+					},
 					"publicKey": {
 						"$id": "#/properties/peers/items/properties/publicKey",
 						"title": "Wireguard tunnel peer public key",
@@ -142,6 +154,12 @@
 									],
 									"additionalProperties": false,
 									"properties": {
+										"id": {
+											"$id": "#/properties/id",
+											"title": "Wireguard peer allowed IPv4 address ID",
+											"type": "integer",
+											"example": 1
+										},
 										"address": {
 											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv4/items/properties/address",
 											"title": "Wireguard tunnel peer allowed IPv4 address",
@@ -175,6 +193,12 @@
 									],
 									"additionalProperties": false,
 									"properties": {
+										"id": {
+											"$id": "#/properties/id",
+											"title": "Wireguard peer allowed IPv6 address ID",
+											"type": "integer",
+											"example": 2
+										},
 										"address": {
 											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv6/items/properties/address",
 											"title": "Wireguard tunnel peer allowed IPv6 address",

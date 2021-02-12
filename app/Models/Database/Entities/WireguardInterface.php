@@ -237,7 +237,7 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Serializes wireguard interface entity into JSON
-	 * @return array<string, string|int> JSON serialized wireguard interface entity
+	 * @return array<string, array<array<string, int|string|null>>|int|string|null> JSON serialized wireguard interface entity
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -249,6 +249,9 @@ class WireguardInterface implements JsonSerializable {
 			'ipv4Prefix' => $this->getIpv4Prefix(),
 			'ipv6' => $this->getIpv6()->getCompactedAddress(),
 			'ipv6Prefix' => $this->getIpv6Prefix(),
+			'peers' => array_map(function (WireguardPeer $peer): array {
+				return $peer->jsonSerialize();
+			}, $this->getPeers()->toArray()),
 		];
 	}
 

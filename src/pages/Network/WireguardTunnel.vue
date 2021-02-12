@@ -436,9 +436,9 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
-	 * @property {string|null} tunnelName Wireguard tunnel name
+	 * @property {number|null} id Wireguard tunnel id
 	 */
-	@Prop({required: false, default: null}) tunnelName!: string
+	@Prop({required: false, default: null}) id!: number
 
 	/**
 	 * Initializes form validation rules
@@ -459,7 +459,7 @@ export default class WireguardTunnel extends Vue {
 	 * Retrieves wireguard tunnel configuration if tunnel name prop is populated
 	 */
 	mounted(): void {
-		if (this.tunnelName !== null) {
+		if (this.id !== null) {
 			this.getTunnel();
 		}
 	}
@@ -478,7 +478,7 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private getTunnel(): void {
 		this.$store.commit('spinner/SHOW');
-		WireguardService.getTunnel(this.tunnelName)
+		WireguardService.getTunnel(this.id)
 			.then((response: AxiosResponse) => {
 				this.tunnel = response.data;
 				this.$store.commit('spinner/HIDE');
@@ -487,10 +487,7 @@ export default class WireguardTunnel extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$router.push('/network/vpn/');
 				this.$toast.error(
-					this.$t(
-						'network.wireguard.tunnels.messages.getFailed',
-						{tunnel: this.tunnelName}
-					).toString()
+					this.$t('network.wireguard.tunnels.messages.getFailed').toString()
 				);
 			});
 	}
@@ -581,26 +578,43 @@ export default class WireguardTunnel extends Vue {
 	private saveTunnel(): void {
 		this.$store.commit('spinner/SHOW');
 		delete this.tunnel.publicKey;
-		WireguardService.createTunnel(this.tunnel)
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				//this.$router.push('/network/vpn/');
-				this.$toast.success(
-					this.$t(
-						'network.wireguard.tunnels.messages.addSuccess',
-						{tunnel: this.tunnel.name}
-					).toString()
-				);
-			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'network.wireguard.tunnels.messages.addFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message}
-					).toString()
-				);
-			});
+		if (this.$route.path === '/network/vpn/add') {
+			WireguardService.createTunnel(this.tunnel)
+				.then(this.handleSuccess)
+				.catch(this.handleError);
+		} else {
+			WireguardService.editTunnel(this.id, this.tunnel)
+				.then(this.handleSuccess)
+				.catch(this.handleError);
+		}
+		
+	}
+
+	/**
+	 * Handles axios success response
+	 */
+	private handleSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$router.push('/network/vpn/');
+		this.$toast.success(
+			this.$t(
+				'network.wireguard.tunnels.messages.addSuccess',
+				{tunnel: this.tunnel.name}
+			).toString()
+		);
+	}
+
+	/**
+	 * Handles axios errors
+	 */
+	private handleError(error: AxiosError): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(
+			this.$t(
+				'network.wireguard.tunnels.messages.addFailed',
+				{error: error.response !== undefined ? error.response.data.message : error.message}
+			).toString()
+		);
 	}
 
 }

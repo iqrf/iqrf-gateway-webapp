@@ -804,8 +804,14 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								component: WireguardTunnel,
-								path: 'edit/:tunnelName',
-								props: true,
+								path: 'edit/:id',
+								props: (route) => {
+									const id = Number.parseInt(route.params.id, 10);
+									if (Number.isNaN(id)) {
+										return 0;
+									}
+									return {id};
+								},
 							},
 						],
 					},

@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
@@ -72,6 +74,12 @@ class WireguardPeer implements JsonSerializable {
 	private $interface;
 
 	/**
+	 * @var Collection Peer allowed IPs
+	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist", "remove"})
+	 */
+	private $addresses;
+
+	/**
 	 * Constructor
 	 * @param string $publicKey Peer public key
 	 * @param string|null $psk Peer pre-shared key
@@ -79,14 +87,96 @@ class WireguardPeer implements JsonSerializable {
 	 * @param string $endpoint Peer endpoint
 	 * @param int $port Peer listen port
 	 * @param WireguardInterface $interface Wireguard interface
+	 * @param Collection $addresses Peer allowed IPs
 	 */
-	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
+	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface, Collection $addresses) {
 		$this->publicKey = $publicKey;
 		$this->psk = $psk;
 		$this->keepalive = $keepalive;
 		$this->endpoint = $endpoint;
 		$this->port = $port;
 		$this->interface = $interface;
+		$this->addresses = $addresses;
+	}
+
+	/**
+	 * Returns peer public key
+	 * @return string Peer public key
+	 */
+	public function getPublicKey(): string {
+		return $this->publicKey;
+	}
+
+	/**
+	 * Sets peer public key
+	 * @param string $publicKey Peer public key
+	 */
+	public function setPublicKey(string $publicKey): void {
+		$this->publicKey = $publicKey;
+	}
+
+	/**
+	 * Returns peer pre-shared key
+	 * @return string|null Peer pre-shared key
+	 */
+	public function getPsk(): ?string {
+		return $this->psk;
+	}
+
+	/**
+	 * Sets peer pre-shared key
+	 * @param string $psk Peer pre-shared key
+	 */
+	public function setPsk(?string $psk): void {
+		$this->psk = $psk;
+	}
+
+	/**
+	 * Returns peer keepalive interval
+	 * @return int Peer keepalive interval
+	 */
+	public function getKeepalive(): int {
+		return $this->keepalive;
+	}
+
+	/**
+	 * Sets peer keepalive interval
+	 * @param int $keepalive Peer keepalive interval
+	 */
+	public function setKeepalive(int $keepalive): void {
+		$this->keepalive = $keepalive;
+	}
+
+	/**
+	 * Returns peer endpoint
+	 * @return string Peer endpoint
+	 */
+	public function getEndpoint(): string {
+		return $this->endpoint;
+	}
+
+	/**
+	 * Sets peer endpoint
+	 * @param string $endpoint Peer endpoint
+	 */
+	public function setEndpoint(string $endpoint): void {
+		$this->endpoint = $endpoint;
+	}
+
+	/**
+	 * Return peer listen port
+	 * @return int Peer listen port
+	 */
+	public function getPort(): int {
+		return $this->port;
+	}
+
+	/**
+	 * Sets peer listen port
+	 * @param int $port peer listen port
+	 */
+	public function setPort(int $port): void {
+		$this->port = $port;
 	}
 
 	/**
@@ -106,17 +196,45 @@ class WireguardPeer implements JsonSerializable {
 	}
 
 	/**
+	 * Returns peer allowed IPs
+	 * @return Collection Peer allowed IPs
+	 */
+	public function getAddresses(): Collection {
+		return $this->addresses;
+	}
+
+	/**
+	 * Sets peer allowed IPs
+	 * @param ArrayCollection $addresses Peer allowed IPs
+	 */
+	public function setAddresses(ArrayCollection $addresses): void {
+		$this->addresses = $addresses;
+	}
+
+	/**
 	 * Serializes wireguard peer entity into JSON
-	 * @return array<string, string|int|null> JSON serialized wireguard peer entity
+	 * @return array<string, array<string, array<int, mixed>>|int|string|null> JSON serialized wireguard peer entity
 	 */
 	public function jsonSerialize(): array {
+		$ipv4 = $ipv6 = [];
+		foreach ($this->getAddresses()->toArray() as $addr) {
+			if ($addr->getAddress()->getVersion() === 4) {
+				$ipv4[] = $addr->jsonSerialize();
+			} else {
+				$ipv6[] = $addr->jsonSerialize();
+			}
+		}
 		return [
 			'id' => $this->getId(),
-			'publicKey' => $this->publicKey,
-			'psk' => $this->psk,
-			'keepalive' => $this->keepalive,
-			'endpoint' => $this->endpoint,
-			'port' => $this->port,
+			'publicKey' => $this->getPublicKey(),
+			'psk' => $this->getPsk(),
+			'keepalive' => $this->getKeepalive(),
+			'endpoint' => $this->getEndpoint(),
+			'port' => $this->getPort(),
+			'allowedIPs' => [
+				'ipv4' => $ipv4,
+				'ipv6' => $ipv6,
+			],
 		];
 	}
 
