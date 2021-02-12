@@ -25,6 +25,15 @@ class WireguardService {
 	}
 
 	/**
+	 * Edits an existing Wireguard tunnel
+	 * @param id Wireguard tunnel ID
+	 * @param data Wireguard tunnel configuration
+	 */
+	editTunnel(id: number, data: IWGTunnel): Promise<AxiosResponse> {
+		return axios.put('network/wireguard/' + id, data, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Retrieves list of existing Wireguard tunnel configurations
 	 */
 	listTunnels(): Promise<AxiosResponse> {
@@ -33,10 +42,10 @@ class WireguardService {
 
 	/**
 	 * Retrieves configuration of existing Wireguard tunnel
-	 * @param name Wireguard tunnel name
+	 * @param {number} id Wireguard tunnel name
 	 */
-	getTunnel(name: string): Promise<AxiosResponse> {
-		return axios.get('network/wireguard/' + name, {headers: authorizationHeader()});
+	getTunnel(id: number): Promise<AxiosResponse> {
+		return axios.get('network/wireguard/' + id, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -49,10 +58,10 @@ class WireguardService {
 
 	/**
 	 * Removes an existing Wireguard tunnel
-	 * @param name Wireguard tunnel name
+	 * @param {number} id Wireguard tunnel name
 	 */
-	removeTunnel(name: string): Promise<AxiosResponse> {
-		return axios.delete('network/wireguard/' + name, {headers: authorizationHeader()});
+	removeTunnel(id: number): Promise<AxiosResponse> {
+		return axios.delete('network/wireguard/' + id, {headers: authorizationHeader()});
 	}
 
 }

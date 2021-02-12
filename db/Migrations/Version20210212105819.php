@@ -8,25 +8,24 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Wireguard interface repository migration
+ * Wireguard peer address repository migration
  */
-final class Version20210211113031 extends AbstractMigration
+final class Version20210212105819 extends AbstractMigration
 {
 	public function getDescription() : string
 	{
-		return 'Added new wireguard interface repository';
+		return 'Added new wireguard peer address repository';
 	}
 
 	public function up(Schema $schema) : void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-		$this->addSql('CREATE TABLE wireguard_interfaces (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL UNIQUE, private_key VARCHAR(255) NOT NULL, port INTEGER NOT NULL, ipv4 BLOB NOT NULL, ipv4_prefix INTEGER NOT NULL, ipv6 BLOB NOT NULL, ipv6_prefix INTEGER NOT NULL)');
+		$this->addSql('CREATE TABLE wireguard_peer_addresses (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, address BLOB NOT NULL, prefix INTEGER NOT NULL, peer_id INTEGER NOT NULL, FOREIGN KEY (peer_id) REFERENCES wireguard_peers(id))');
 	}
 
 	public function down(Schema $schema) : void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-		$this->addSql('DROP TABLE wireguard_interfaces');
+		$this->addSql('DROP TABLE wireguard_peer_addresses');
 	}
-
 }

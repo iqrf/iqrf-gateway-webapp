@@ -50,14 +50,14 @@
 							</CButton> <CButton
 								size='sm'
 								color='primary'
-								:to='"/network/vpn/edit/" + item.name'
+								:to='"/network/vpn/edit/" + item.id'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								size='sm'
 								color='danger'
-								@click='removeTunnel(item.name)'
+								@click='removeTunnel(item.id, item.name)'
 							>
 								<CIcon :content='icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -193,11 +193,11 @@ export default class WireguardTunnels extends Vue {
 
 	/**
 	 * Removes an existing Wireguard tunnel
-	 * @param {string} name Wireguard tunnel name
+	 * @param {number} id Wireguard tunnel id
 	 */
-	private removeTunnel(name: string): void {
+	private removeTunnel(id: number, name: string): void {
 		this.$store.commit('spinner/SHOW');
-		WireguardService.removeTunnel(name)
+		WireguardService.removeTunnel(id)
 			.then(() => {
 				this.getTunnels().then(() =>this.$toast.success(
 					this.$t(

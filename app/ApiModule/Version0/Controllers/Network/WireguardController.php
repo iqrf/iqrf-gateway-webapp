@@ -32,8 +32,6 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
-use App\NetworkModule\Exceptions\IpKernelException;
-use App\NetworkModule\Exceptions\IpSyntaxException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
@@ -76,7 +74,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$tunnels = $this->wireguardManager->listTunnels();
+		$tunnels = $this->wireguardManager->listInterfaces();
 		return $response->writeJsonBody($tunnels);
 	}
 
@@ -94,6 +92,8 @@ class WireguardController extends NetworkController {
 	 *                      $ref: '#/components/schemas/WireguardTunnel'
 	 *      '404':
 	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="id", type="integer", description="Wireguard tunnel id")
@@ -104,10 +104,14 @@ class WireguardController extends NetworkController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$tunnel = $this->wireguardManager->getTunnel($request->getParameter('id'));
-			return $response->writeJsonObject($tunnel);
+			$id = (int) $request->getParameter('id');
+			$tunnel = $this->wireguardManager->getInterface($id)->jsonSerialize();
+			$tunnel['publicKey'] = $this->wireguardManager->generatePublicKey($tunnel['privateKey']);
+			return $response->writeJsonBody($tunnel);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (WireguardKeyErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -138,21 +142,57 @@ class WireguardController extends NetworkController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
-			$this->wireguardManager->createTunnel($request->getJsonBody(false));
+			$this->wireguardManager->createInterface($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (InterfaceExistsException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (WireguardKeyMismatchException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (IpSyntaxException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IpKernelException $e) {
+		}
+	}
+
+	/**
+	 * @Path("/{id}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Edits an existing Wireguard VPN tunnel
+	 *  requestBody:
+	 *      description: Wireguard tunnel configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/WireguardTunnel'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @RequestParameters(
+	 *     @RequestParameter(name="id", type="integer", description="Wireguard tunnel id")
+	 * )
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('wireguardTunnel', $request);
+		try {
+			$id = (int) $request->getParameter('id');
+			$this->wireguardManager->editInterface($id, $request->getJsonBody(false));
+			return $response->writeBody('Workaround');
+		} catch (NonexistentWireguardTunnelException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/{tunnel}")
+	 * @Path("/{id}")
 	 * @Method("DELETE")
 	 * @OpenApi("
 	 *  summary: Removes an existing Wireguard VPN tunnel
@@ -165,7 +205,7 @@ class WireguardController extends NetworkController {
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
-	 *     @RequestParameter(name="tunnel", type="string", description="Wireguard tunnel name")
+	 *     @RequestParameter(name="id", type="integer", description="Wireguard tunnel ID")
 	 * )
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -173,46 +213,11 @@ class WireguardController extends NetworkController {
 	 */
 	public function remove(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->wireguardManager->removeTunnel($request->getParameter('tunnel'));
+			$id = (int) $request->getParameter('id');
+			$this->wireguardManager->removeInterface($id);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
-		} catch (UnsupportedInitSystemException $e) {
-			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
-		}
-	}
-
-	/**
-	 * @Path("/state")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Change state of a Wireguard tunnel
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          schema:
-	 *              application/json:
-	 *                  $ref: '#/components/WireguardTunnelState'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function changeState(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('wireguardTunnelState', $request);
-		try {
-			$config = $request->getJsonBody(false);
-			$this->wireguardManager->changeTunnelState($config);
-			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
