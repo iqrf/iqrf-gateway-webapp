@@ -28,7 +28,9 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\Models\Database\Repositories\WireguardPeerRepository;
+use App\NetworkModule\Entities\MultiAddress;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
+use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use Darsyn\IP\Version\Multi;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -129,7 +131,7 @@ class WireguardManager {
 	 * @param stdClass $values New Wireguard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
-		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port, Multi::factory($values->ipv4), $values->ipv4Prefix, Multi::factory($values->ipv6), $values->ipv6Prefix);
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null, MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix), MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix));
 		foreach ($values->peers as $peer) {
 			$interface->addPeer($this->createPeer($peer, $interface));
 		}
@@ -146,12 +148,9 @@ class WireguardManager {
 		$interface = $this->getInterface($id);
 		$interface->setName($values->name);
 		$interface->setPrivateKey($values->privateKey);
-		$interface->setPort($values->port);
-		$interface->setIpv4(Multi::factory($values->ipv4));
-		$interface->setIpv4Prefix($values->ipv4Prefix);
-		$interface->setIpv6(Multi::factory($values->ipv6));
-		$interface->setIpv6Prefix($values->ipv6Prefix);
-		/** @var array<WireguardPeer> $oldPeers */
+		$interface->setPort($values->port ?? null);
+		$interface->setIpv4(MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix));
+		$interface->setIpv6(MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix));
 		$oldPeers = $interface->getPeers()->toArray();
 		$peersIds = [];
 		foreach ($values->peers as $peer) {
@@ -159,6 +158,9 @@ class WireguardManager {
 				$ifPeer = $this->wireguardPeerRepository->find($peer->id);
 				if (!($ifPeer instanceof WireguardPeer)) {
 					throw new NonexistentWireguardTunnelException('Wireguard peer not found');
+				}
+				if (!((bool) ip2long($peer->endpoint))) {
+					$this->validateEndpoint($peer->endpoint);
 				}
 				$addresses = $this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
 				$addresses = array_merge($addresses, $this->updatePeerAddresses($peer->allowedIPs->ipv6, $ifPeer));
@@ -184,12 +186,25 @@ class WireguardManager {
 	}
 
 	/**
+	 * Checks DNS records for specified endpoint
+	 */
+	private function validateEndpoint(string $endpoint): void {
+		$matches = dns_get_record($endpoint, DNS_A + DNS_AAAA);
+		if ($matches === false || count($matches) === 0) {
+			throw new WireguardInvalidEndpointException('No DNS record found for ' . $endpoint);
+		}
+	}
+
+	/**
 	 * Creates a wireguard peer entity
 	 * @param stdClass $peer Peer entity configuration
 	 * @param WireguardInterface $interface Wireguard interface
 	 * @return WireguardPeer Wireguard peer entity
 	 */
 	private function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
+		if (!((bool) ip2long($peer->endpoint))) {
+			$this->validateEndpoint($peer->endpoint);
+		}
 		$ifPeer = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface);
 		$this->createPeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
 		$this->createPeerAddresses($peer->allowedIPs->ipv6, $ifPeer);

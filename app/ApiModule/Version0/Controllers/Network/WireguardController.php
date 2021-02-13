@@ -33,8 +33,8 @@ use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
+use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
-use App\NetworkModule\Exceptions\WireguardKeyMismatchException;
 use App\NetworkModule\Models\WireguardManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -146,8 +146,10 @@ class WireguardController extends NetworkController {
 			return $response->writeBody('Workaround');
 		} catch (InterfaceExistsException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (WireguardKeyMismatchException $e) {
+		} catch (WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (WireguardKeyErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -186,6 +188,8 @@ class WireguardController extends NetworkController {
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (WireguardInvalidEndpointException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

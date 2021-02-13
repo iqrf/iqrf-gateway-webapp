@@ -130,7 +130,7 @@ export interface IWGTunnel {
 	name: string
 	privateKey: string
 	publicKey?: string
-	port: number
+	port?: number
 	ipv4: string
 	ipv4Prefix: number
 	ipv6: string

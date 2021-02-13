@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -50,8 +51,8 @@ class WireguardInterface implements JsonSerializable {
 	private $privateKey;
 
 	/**
-	 * @var int Interface listen port
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @var int|null Interface listen port
+	 * @ORM\Column(type="integer", nullable=true)
 	 */
 	private $port;
 
@@ -89,20 +90,18 @@ class WireguardInterface implements JsonSerializable {
 	 * Constructor
 	 * @param string $name Wireguard tunnel interface name
 	 * @param string $privateKey Wireguard tunnel interface private key
-	 * @param int $port Wireguard tunnel interface listen port
-	 * @param IP $ipv4 Interface IPv4 address
-	 * @param int $ipv4Prefix Interface IPv4 address prefix
-	 * @param IP $ipv6 Interface IPv6 address
-	 * @param int $ipv6Prefix Interface IPv6 address prefix
+	 * @param int|null $port Wireguard tunnel interface listen port
+	 * @param MultiAddress $ipv4 Interface IPv4 address
+	 * @param MultiAddress $ipv6 Interface IPv6 address
 	 */
-	public function __construct(string $name, string $privateKey, int $port, IP $ipv4, int $ipv4Prefix, IP $ipv6, int $ipv6Prefix) {
+	public function __construct(string $name, string $privateKey, ?int $port, MultiAddress $ipv4, MultiAddress $ipv6) {
 		$this->name = $name;
 		$this->privateKey = $privateKey;
 		$this->port = $port;
-		$this->ipv4 = $ipv4;
-		$this->ipv4Prefix = $ipv4Prefix;
-		$this->ipv6 = $ipv6;
-		$this->ipv6Prefix = $ipv6Prefix;
+		$this->ipv4 = $ipv4->getAddress();
+		$this->ipv4Prefix = $ipv4->getPrefix();
+		$this->ipv6 = $ipv6->getAddress();
+		$this->ipv6Prefix = $ipv6->getPrefix();
 		$this->peers = new ArrayCollection();
 	}
 
@@ -140,82 +139,52 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Returns Interface listen port
-	 * @return int Interface listen port
+	 * @return int|null Interface listen port
 	 */
-	public function getPort(): int {
+	public function getPort(): ?int {
 		return $this->port;
 	}
 
 	/**
 	 * Sets Interface listen port
-	 * @param int $port Interface listen port
+	 * @param int|null $port Interface listen port
 	 */
-	public function setPort(int $port): void {
+	public function setPort(?int $port): void {
 		$this->port = $port;
 	}
 
 	/**
 	 * Returns Interface IPv4 address
-	 * @return IP Interface IPv4 address
+	 * @return MultiAddress Interface IPv4 address
 	 */
-	public function getIpv4(): IP {
-		return $this->ipv4;
+	public function getIpv4(): MultiAddress {
+		return new MultiAddress($this->ipv4, $this->ipv4Prefix);
 	}
 
 	/**
 	 * Sets Interface IPv4 address
-	 * @param IP $ipv4 Interface IPv4 address
+	 * @param MultiAddress $ipv4 Interface IPv4 address
 	 */
-	public function setIpv4(IP $ipv4): void {
-		$this->ipv4 = $ipv4;
-	}
-
-	/**
-	 * Returns Interface IPv4 address prefix
-	 * @return int Interface IPv4 address prefix
-	 */
-	public function getIpv4Prefix(): int {
-		return $this->ipv4Prefix;
-	}
-
-	/**
-	 * Sets Interface IPv4 address prefix
-	 * @param int $ipv4Prefix Interface IPv4 address prefix
-	 */
-	public function setIpv4Prefix(int $ipv4Prefix): void {
-		$this->ipv4Prefix = $ipv4Prefix;
+	public function setIpv4(MultiAddress $ipv4): void {
+		$this->ipv4 = $ipv4->getAddress();
+		$this->ipv4Prefix = $ipv4->getPrefix();
 	}
 
 	/**
 	 * Returns Interface IPv6 address
-	 * @return IP Interface IPv6 address
+	 * @return MultiAddress Interface IPv6 address
 	 */
-	public function getIpv6(): IP {
-		return $this->ipv6;
+	public function getIpv6(): MultiAddress {
+		return new MultiAddress($this->ipv6, $this->ipv6Prefix);
 	}
 
 	/**
 	 * Sets Interface IPv6 address
-	 * @param IP $ipv6 Interface IPv6 address
+	 * @param MultiAddress $ipv6 Interface IPv6 address
 	 */
-	public function setIpv6(IP $ipv6): void {
-		$this->ipv6 = $ipv6;
-	}
-
-	/**
-	 * Returns Interface IPv6 address prefix
-	 * @return int Interface IPv6 address prefix
-	 */
-	public function getIpv6Prefix(): int {
-		return $this->ipv6Prefix;
-	}
-
-	/**
-	 * Sets Interface IPv6 address prefix
-	 * @param int $ipv6Prefix Interface IPv6 address prefix
-	 */
-	public function setIpv6Prefix(int $ipv6Prefix): void {
-		$this->ipv6Prefix = $ipv6Prefix;
+	public function setIpv6(MultiAddress $ipv6): void {
+		$this->ipv6 = $ipv6->getAddress();
+		$this->ipv6Prefix = $ipv6->getPrefix();
 	}
 
 	/**
@@ -255,15 +224,17 @@ class WireguardInterface implements JsonSerializable {
 	 * @return array<string, array<array<string, int|string|null>>|int|string|null> JSON serialized wireguard interface entity
 	 */
 	public function jsonSerialize(): array {
+		$ipv4 = $this->getIpv4();
+		$ipv6 = $this->getIpv6();
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'privateKey' => $this->getPrivateKey(),
 			'port' => $this->getPort(),
-			'ipv4' => $this->getIpv4()->getDotAddress(),
-			'ipv4Prefix' => $this->getIpv4Prefix(),
-			'ipv6' => $this->getIpv6()->getCompactedAddress(),
-			'ipv6Prefix' => $this->getIpv6Prefix(),
+			'ipv4' => $ipv4->getAddress()->getDotAddress(),
+			'ipv4Prefix' => $ipv4->getPrefix(),
+			'ipv6' => $ipv6->getAddress()->getCompactedAddress(),
+			'ipv6Prefix' => $ipv6->getPrefix(),
 			'peers' => array_map(function (WireguardPeer $peer): array {
 				return $peer->jsonSerialize();
 			}, $this->getPeers()->toArray()),
