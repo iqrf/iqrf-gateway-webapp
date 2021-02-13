@@ -6,11 +6,29 @@
 	"required": [
 		"name",
 		"privateKey",
-		"ipv4",
-		"ipv4Prefix",
-		"ipv6",
-		"ipv6Prefix",
 		"peers"
+	],
+	"anyOf": [
+		{
+			"required": [
+				"ipv4",
+				"ipv4Prefix"
+			]
+		},
+		{
+			"required": [
+				"ipv6",
+				"ipv6Prefix"
+			]
+		},
+		{
+			"required": [
+				"ipv4",
+				"ipv4Prefix",
+				"ipv6",
+				"ipv6Prefix"
+			]
+		}
 	],
 	"additionalProperties": false,
 	"properties": {
