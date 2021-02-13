@@ -131,7 +131,14 @@ class WireguardManager {
 	 * @param stdClass $values New Wireguard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
-		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null, MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix), MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix));
+		$ipv4 = $ipv6 = null;
+		if (property_exists($values, 'ipv4')) {
+			$ipv4 = MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix);
+		}
+		if (property_exists($values, 'ipv6')) {
+			$ipv6 = MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix);
+		}
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null, $ipv4, $ipv6);
 		foreach ($values->peers as $peer) {
 			$interface->addPeer($this->createPeer($peer, $interface));
 		}
@@ -146,11 +153,18 @@ class WireguardManager {
 	 */
 	public function editInterface(int $id, stdClass $values): void {
 		$interface = $this->getInterface($id);
+		$ipv4 = $ipv6 = null;
+		if (property_exists($values, 'ipv4')) {
+			$ipv4 = MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix);
+		}
+		if (property_exists($values, 'ipv6')) {
+			$ipv6 = MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix);
+		}
 		$interface->setName($values->name);
 		$interface->setPrivateKey($values->privateKey);
 		$interface->setPort($values->port ?? null);
-		$interface->setIpv4(MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix));
-		$interface->setIpv6(MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix));
+		$interface->setIpv4($ipv4);
+		$interface->setIpv6($ipv6);
 		$oldPeers = $interface->getPeers()->toArray();
 		$peersIds = [];
 		foreach ($values->peers as $peer) {

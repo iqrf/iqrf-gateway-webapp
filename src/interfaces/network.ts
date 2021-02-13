@@ -131,10 +131,10 @@ export interface IWGTunnel {
 	privateKey: string
 	publicKey?: string
 	port?: number
-	ipv4: string
-	ipv4Prefix: number
-	ipv6: string
-	ipv6Prefix: number
+	ipv4?: string
+	ipv4Prefix?: number
+	ipv6?: string
+	ipv6Prefix?: number
 	peers: Array<IWGPeer>
 }
 

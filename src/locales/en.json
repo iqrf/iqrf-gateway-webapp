@@ -1888,6 +1888,12 @@
 					"generateKeys": "Generate key pair",
 					"privateKey": "Private key",
 					"publicKey": "Public key",
+					"stack": "Stack",
+					"stackTypes": {
+						"ipv4": "Single stack (IPv4 only)",
+						"ipv6": "Single stack (IPv6 only)",
+						"both": "Dual stack (IPv4 and IPv6)"
+					},
 					"ipv4": "IPv4 address",
 					"ipv4Prefix": "IPv4 address prefix",
 					"ipv6": "IPv6 address",
