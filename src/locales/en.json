@@ -1909,6 +1909,7 @@
 					"ipv6": "IPv6 address",
 					"ipv6Prefix": "IPv6 address prefix",
 					"port": "Listen port",
+					"portOptional": "Specify listen port",
 					"peers": "Peer configuration",
 					"psk": "Pre-shared key (optional)",
 					"keepalive": "Persistent keepalive in seconds *",

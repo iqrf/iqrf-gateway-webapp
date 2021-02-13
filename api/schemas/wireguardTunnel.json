@@ -6,7 +6,6 @@
 	"required": [
 		"name",
 		"privateKey",
-		"port",
 		"ipv4",
 		"ipv4Prefix",
 		"ipv6",

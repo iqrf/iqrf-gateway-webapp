@@ -45,17 +45,6 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules=''
-							>
-								<CInput
-									v-model='tunnel.publicKey'
-									:label='$t("network.wireguard.tunnels.form.publicKey")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
 								rules='required|ipv4'
 								:custom-messages='{
 									required: "network.wireguard.tunnels.errors.ipv4",
@@ -122,7 +111,12 @@
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
+							<CInputCheckbox
+								:checked.sync='optionalPort'
+								:label='$t("network.wireguard.tunnels.form.portOptional")'
+							/>
 							<ValidationProvider
+								v-if='optionalPort'
 								v-slot='{errors, touched, valid}'
 								rules='required|integer|between:0,65535'
 								:custom-messages='{
@@ -396,7 +390,7 @@ import {IWGTunnel} from '../../interfaces/network';
 export default class WireguardTunnel extends Vue {
 
 	/**
-	 * Wireguard VPN tunnel configuration
+	 * @var {IWGTunnel} tunnel Wireguard VPN tunnel configuration
 	 */
 	private tunnel: IWGTunnel = {
 		name: '',
@@ -431,6 +425,11 @@ export default class WireguardTunnel extends Vue {
 			},
 		],
 	}
+
+	/**
+	 * @var {boolean} optionalPort Controls visibility of interface listen port input
+	 */
+	private optionalPort = false
 
 	/**
 	 * @property {number|null} id Wireguard tunnel id
@@ -574,6 +573,9 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private saveTunnel(): void {
 		this.$store.commit('spinner/SHOW');
+		if (!this.optionalPort) {
+			delete this.tunnel.port;
+		}
 		delete this.tunnel.publicKey;
 		if (this.$route.path === '/network/vpn/add') {
 			WireguardService.createTunnel(this.tunnel)
