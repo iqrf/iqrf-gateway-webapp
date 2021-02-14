@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\WireguardInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -53,14 +54,14 @@ class WireguardListCommand extends WireguardCommand {
 		$tunnels = [];
 		foreach ($this->repository->findAll() as $tunnel) {
 			assert($tunnel instanceof WireguardInterface);
-			$command = $this->commandManager->run('wg ' . $tunnel->getName(), true);
+			$command = $this->commandManager->run('wg show ' . $tunnel->getName(), true);
 			$state = $command->getExitCode() === 0 ? 'active' : 'inactive';
-			$tunnels[] = [$tunnel->getId(), $tunnel->getName(), $state];
+			$tunnels[] = [$tunnel->getName(), $state];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List of WireGuard tunnels');
-		$style->table(['Tunnel ID', 'Name', 'State'], $tunnels);
-		return 0;
+		$style->table(['Name', 'State'], $tunnels);
+		return Command::SUCCESS;
 	}
 
 }

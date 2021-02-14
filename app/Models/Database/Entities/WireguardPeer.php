@@ -225,7 +225,7 @@ class WireguardPeer implements JsonSerializable {
 	public function jsonSerialize(): array {
 		$ipv4 = $ipv6 = [];
 		foreach ($this->getAddresses()->toArray() as $addr) {
-			if ($addr->getAddress()->getAddress()->getVersion() === 4) {
+			if ($addr->getAddress()->getVersion() === 4) {
 				$ipv4[] = $addr->jsonSerialize();
 			} else {
 				$ipv6[] = $addr->jsonSerialize();
@@ -243,6 +243,29 @@ class WireguardPeer implements JsonSerializable {
 				'ipv6' => $ipv6,
 			],
 		];
+	}
+
+	/**
+	 * Serializes wireguard peer entity into wg utility command
+	 */
+	public function wgSerialize(): string {
+		$command = 'peer ' . $this->getPublicKey();
+		$psk = $this->getPsk();
+		if ($psk !== null && $psk !== '') {
+			$command .= sprintf(' preshared-key %s', $psk);
+		}
+		$command .= sprintf(' endpoint %s:%u', $this->getEndpoint(), $this->getPort());
+		$command .= sprintf(' persistent-keepalive %u', $this->getKeepalive());
+		$command .= sprintf(
+			' allowed-ips %s',
+			implode(
+				',',
+				array_map(function (WireguardPeerAddress $addr): string {
+					return $addr->getAddress()->toString();
+				}, $this->getAddresses()->toArray())
+			)
+		);
+		return $command;
 	}
 
 }

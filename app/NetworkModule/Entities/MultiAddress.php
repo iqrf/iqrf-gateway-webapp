@@ -72,11 +72,19 @@ class MultiAddress {
 	}
 
 	/**
+	 * Returns the IP version
+	 * @return int IP version
+	 */
+	public function getVersion(): int {
+		return $this->address->getVersion();
+	}
+
+	/**
 	 * Converts the Multi address address entity to a string
 	 * @return string IP address address with prefix
 	 */
 	public function toString(): string {
-		if ($this->address->getVersion() === 4) {
+		if ($this->getVersion() === 4) {
 			return $this->address->getDotAddress() . '/' . $this->prefix;
 		}
 		return $this->address->getCompactedAddress() . '/' . $this->prefix;

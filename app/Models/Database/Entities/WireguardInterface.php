@@ -247,4 +247,20 @@ class WireguardInterface implements JsonSerializable {
 		];
 	}
 
+	/**
+	 * Serializes wireguard interface entity into wg utility command
+	 * @return string JSON serialized wireguard interface entity
+	 */
+	public function wgSerialize(): string {
+		$command = 'wg set ' . $this->getName();
+		$port = $this->getPort();
+		if ($port !== null) {
+			$command .= sprintf(' listen-port %s', $port);
+		}
+		foreach ($this->getPeers()->toArray() as $peer) {
+			$command .= sprintf(' %s', $peer->wgSerialize());
+		}
+		return $command;
+	}
+
 }

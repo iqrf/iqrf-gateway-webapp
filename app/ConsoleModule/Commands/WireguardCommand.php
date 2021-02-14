@@ -27,6 +27,11 @@ use App\Models\Database\Repositories\WireguardInterfaceRepository;
 abstract class WireguardCommand extends EntityManagerCommand {
 
 	/**
+	 * @var CommandManager Command manager
+	 */
+	protected $commandManager;
+
+	/**
 	 * @var WireguardInterfaceRepository Wireguard interface repository
 	 */
 	protected $repository;
@@ -44,4 +49,3 @@ abstract class WireguardCommand extends EntityManagerCommand {
 	}
 
 }
-
