@@ -149,7 +149,7 @@ class WireguardInterface implements JsonSerializable {
 	 * Sets Interface listen port
 	 * @param int|null $port Interface listen port
 	 */
-	public function setPort(?int $port): void {
+	public function setPort(?int $port = null): void {
 		$this->port = $port;
 	}
 
@@ -168,7 +168,7 @@ class WireguardInterface implements JsonSerializable {
 	 * Sets Interface IPv4 address
 	 * @param MultiAddress|null $ipv4 Interface IPv4 address
 	 */
-	public function setIpv4(?MultiAddress $ipv4): void {
+	public function setIpv4(?MultiAddress $ipv4 = null): void {
 		$this->ipv4 = $ipv4 === null ? null : $ipv4->getAddress();
 		$this->ipv4Prefix = $ipv4 === null ? null : $ipv4->getPrefix();
 	}
@@ -188,7 +188,7 @@ class WireguardInterface implements JsonSerializable {
 	 * Sets Interface IPv6 address
 	 * @param MultiAddress|null $ipv6 Interface IPv6 address
 	 */
-	public function setIpv6(?MultiAddress $ipv6): void {
+	public function setIpv6(?MultiAddress $ipv6 = null): void {
 		$this->ipv6 = $ipv6 === null ? null : $ipv6->getAddress();
 		$this->ipv6Prefix = $ipv6 === null ? null : $ipv6->getPrefix();
 	}
