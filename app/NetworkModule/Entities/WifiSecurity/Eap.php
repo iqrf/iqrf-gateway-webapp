@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities\WifiSecurity;
 
 use App\NetworkModule\Entities\INetworkManagerEntity;
-use App\NetworkModule\Entities\WifiConnectionSecurity;
 use App\NetworkModule\Enums\EapPhaseOneMethod;
 use App\NetworkModule\Enums\EapPhaseTwoMethod;
 use App\NetworkModule\Utils\NmCliConnection;
@@ -92,11 +91,11 @@ class Eap implements INetworkManagerEntity {
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		return new self(
-			$json->phaseOne,
-			$json->phaseTwo,
+			EapPhaseOneMethod::fromScalar($json->phaseOne),
+			EapPhaseTwoMethod::fromScalar($json->phaseTwo),
 			$json->anonymousIdentity,
 			$json->cert,
-			$json->username,
+			$json->identity,
 			$json->password
 		);
 	}
@@ -123,9 +122,6 @@ class Eap implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
-		if (count($array) === 0) {
-			return new self(null, null, '', '', '', '');
-		}
 		return new self(
 			EapPhaseOneMethod::fromScalar($array['eap']),
 			EapPhaseTwoMethod::fromScalar($array['phase2-auth']),
@@ -149,7 +145,7 @@ class Eap implements INetworkManagerEntity {
 			'identity' => $this->identity,
 			'password' => $this->password,
 		];
-		return NmCliConnection::encode($array, WifiConnectionSecurity::NMCLI_PREFIX);
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

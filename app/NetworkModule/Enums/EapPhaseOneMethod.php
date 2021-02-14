@@ -26,13 +26,13 @@ use JsonSerializable;
 
 /**
  * EAP (Extensible Authentication Protocol) phase one authentication method enum
- * @method static EapPhaseOneType FAST()
- * @method static EapPhaseOneType LEAP()
- * @method static EapPhaseOneType MD5()
- * @method static EapPhaseOneType PEAP()
- * @method static EapPhaseOneType PWD()
- * @method static EapPhaseOneType TLS()
- * @method static EapPhaseOneType TTLS()
+ * @method static EapPhaseOneMethod FAST()
+ * @method static EapPhaseOneMethod LEAP()
+ * @method static EapPhaseOneMethod MD5()
+ * @method static EapPhaseOneMethod PEAP()
+ * @method static EapPhaseOneMethod PWD()
+ * @method static EapPhaseOneMethod TLS()
+ * @method static EapPhaseOneMethod TTLS()
  */
 final class EapPhaseOneMethod extends Enum implements JsonSerializable {
 
