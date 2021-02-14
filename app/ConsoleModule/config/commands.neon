@@ -19,3 +19,4 @@ services:
 	- App\ConsoleModule\Commands\UserListCommand
 	- App\ConsoleModule\Commands\UserPasswordCommand
 	- App\ConsoleModule\Commands\UserRemoveCommand
+	- App\ConsoleModule\Commands\WireguardListCommand
