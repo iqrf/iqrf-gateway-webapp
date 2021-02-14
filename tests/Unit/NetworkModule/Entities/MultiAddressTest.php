@@ -65,7 +65,7 @@ final class MultiAddressTest extends TestCase {
 	/**
 	 * Sets up the test environment
 	 */
-	public function __construct() {
+	protected function setUp(): void {
 		$this->ipv4 = Multi::factory(self::IPV4_ADDR);
 		$this->ipv6 = Multi::factory(self::IPV6_ADDR);
 		$this->ipv4Entity = new MultiAddress($this->ipv4, self::IPV4_PREFIX);

@@ -126,7 +126,7 @@ class WireguardPeer implements JsonSerializable {
 	 * Sets peer pre-shared key
 	 * @param string|null $psk Peer pre-shared key
 	 */
-	public function setPsk(?string $psk): void {
+	public function setPsk(?string $psk = null): void {
 		$this->psk = $psk;
 	}
 
@@ -225,7 +225,7 @@ class WireguardPeer implements JsonSerializable {
 	public function jsonSerialize(): array {
 		$ipv4 = $ipv6 = [];
 		foreach ($this->getAddresses()->toArray() as $addr) {
-			if ($addr->getAddress()->getVersion() === 4) {
+			if ($addr->getAddress()->getAddress()->getVersion() === 4) {
 				$ipv4[] = $addr->jsonSerialize();
 			} else {
 				$ipv6[] = $addr->jsonSerialize();

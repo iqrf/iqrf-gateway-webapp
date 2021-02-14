@@ -232,7 +232,7 @@ class WireguardManager {
 	 */
 	private function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): void {
 		foreach ($addrs as $ip) {
-			$address = new WireguardPeerAddress(Multi::factory($ip->address), $ip->prefix, $ifPeer);
+			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
 		}
 	}
@@ -251,11 +251,10 @@ class WireguardManager {
 				if ($peerAddr === null) {
 					throw new NonexistentWireguardTunnelException('Wireguard peer address not found');
 				}
-				$peerAddr->setAddress(Multi::factory($ip->address));
-				$peerAddr->setPrefix($ip->prefix);
+				$peerAddr->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
 				$addresses[] = $peerAddr;
 			} else {
-				$addresses[] = new WireguardPeerAddress(Multi::factory($ip->address), $ip->prefix, $ifPeer);
+				$addresses[] = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			}
 		}
 		return $addresses;

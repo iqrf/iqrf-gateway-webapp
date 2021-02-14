@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -56,46 +57,30 @@ class WireguardPeerAddress implements JsonSerializable {
 
 	/**
 	 * Constructor
-	 * @param IP $address Peer address
-	 * @param int $prefix Peer address prefix
+	 * @param MultiAddress $address Peer address
 	 * @param WireguardPeer $peer Wireguard peer
 	 */
-	public function __construct(IP $address, int $prefix, WireguardPeer $peer) {
-		$this->address = $address;
-		$this->prefix = $prefix;
+	public function __construct(MultiAddress $address, WireguardPeer $peer) {
+		$this->address = $address->getAddress();
+		$this->prefix = $address->getPrefix();
 		$this->peer = $peer;
 	}
 
 	/**
 	 * Returns peer address
-	 * @return IP Peer address
+	 * @return MultiAddress Peer address
 	 */
-	public function getAddress(): IP {
-		return $this->address;
+	public function getAddress(): MultiAddress {
+		return new MultiAddress($this->address, $this->prefix);
 	}
 
 	/**
 	 * Sets peer address
-	 * @param IP $address Peer address
+	 * @param MultiAddress $address Peer address
 	 */
-	public function setAddress(IP $address): void {
-		$this->address = $address;
-	}
-
-	/**
-	 * Returns peer address prefix
-	 * @return int Peer address prefix
-	 */
-	public function getPrefix(): int {
-		return $this->prefix;
-	}
-
-	/**
-	 * Sets peer address prefix
-	 * @param int $prefix Peer address prefix
-	 */
-	public function setPrefix(int $prefix): void {
-		$this->prefix = $prefix;
+	public function setAddress(MultiAddress $address): void {
+		$this->address = $address->getAddress();
+		$this->prefix = $address->getPrefix();
 	}
 
 	/**
