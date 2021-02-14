@@ -257,6 +257,14 @@ class WireguardInterfaceTest extends TestCase {
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
+	/**
+	 * Tests the function to serialize wg interface configuration into wg utility string
+	 */
+	public function testWgSerialize(): void {
+		$expected = sprintf('wg set %s listen-port %u', self::NAME, self::PORT);
+		Assert::same($expected, $this->entity->wgSerialize());
+	}
+
 }
 
 $test = new WireguardInterfaceTest();
