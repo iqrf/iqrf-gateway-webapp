@@ -101,6 +101,20 @@ final class MultiAddressTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to get IP version (IPv4)
+	 */
+	public function testGetVersionIpv4(): void {
+		Assert::same(4, $this->ipv4Entity->getVersion());
+	}
+
+	/**
+	 * Tests the function to get IP version (IPv6)
+	 */
+	public function testGetVersionIpv6(): void {
+		Assert::same(6, $this->ipv6Entity->getVersion());
+	}
+
+	/**
 	 * Tests the function to create multiple address type entity from IPv4 address and prefix
 	 */
 	public function testFromPrefixIpv4(): void {

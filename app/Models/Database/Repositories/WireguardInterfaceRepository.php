@@ -20,11 +20,24 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
+use App\Models\Database\Entities\WireguardInterface;
 use Doctrine\ORM\EntityRepository;
+use function assert;
 
 /**
  * Wireguard interface repository
  */
 class WireguardInterfaceRepository extends EntityRepository {
+
+	/**
+	 * Finds Wireguard interface by specified name
+	 * @param string $name Wireguard interface name
+	 * @return WireguardInterface|null Wireguard interface entity
+	 */
+	public function findInterfaceByName(string $name): ?WireguardInterface {
+		$interface = $this->findOneBy(['name' => $name]);
+		assert($interface instanceof WireguardInterface || $interface === null);
+		return $interface;
+	}
 
 }

@@ -100,7 +100,7 @@ class WireguardPeerAddress implements JsonSerializable {
 	}
 
 	/**
-	 * Serializes wireguard peer allowed IPs into JSON
+	 * Serializes wireguard peer allowed IP into JSON
 	 * @return array<string, int|string> JSON serialized wireguard peer allowed IPs
 	 */
 	public function jsonSerialize(): array {
