@@ -255,7 +255,7 @@ class WireguardInterface implements JsonSerializable {
 		$command = 'wg set ' . $this->getName();
 		$port = $this->getPort();
 		if ($port !== null) {
-			$command .= sprintf(' listen-port %s', $port);
+			$command .= sprintf(' listen-port %u', $port);
 		}
 		foreach ($this->getPeers()->toArray() as $peer) {
 			$command .= sprintf(' %s', $peer->wgSerialize());

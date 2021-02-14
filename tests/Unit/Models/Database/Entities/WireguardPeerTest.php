@@ -238,6 +238,16 @@ final class WireguardPeerTest extends TestCase {
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
+	/**
+	 * Tests the function to serialize wg peer configuration into wg utility string
+	 */
+	public function testWgSerialize(): void {
+		$this->entity->addAddress($this->peerIpv4Entity);
+		$this->entity->addAddress($this->peerIpv6Entity);
+		$expected = sprintf('peer %s preshared-key %s endpoint %s:%u persistent-keepalive %u allowed-ips 10.0.0.0/32,::/48', self::PUBLIC_KEY, self::PSK, self::ENDPOINT, self::PORT, self::KEEPALIVE);
+		Assert::same($expected, $this->entity->wgSerialize());
+	}
+
 }
 
 $test = new WireguardPeerTest();
