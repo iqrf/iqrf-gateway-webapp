@@ -666,7 +666,10 @@ export default class WireguardTunnel extends Vue {
 			delete tunnel.ipv4;
 			delete tunnel.ipv4Prefix;
 		}
-		for (const idx in this.tunnel.peers) {
+		for (const idx in tunnel.peers) {
+			if (tunnel.peers[idx].psk === '' || tunnel.peers[idx].psk === null) {
+				delete tunnel.peers[idx].psk;
+			}
 			if (this.peerStacks[idx] === StackType.SINGLE_IPV4) {
 				tunnel.peers[idx].allowedIPs.ipv6 = [];
 			} else if (this.peerStacks[idx] === StackType.SINGLE_IPV6) {

@@ -33,7 +33,6 @@ use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use Darsyn\IP\Version\Multi;
-use Doctrine\Common\Collections\ArrayCollection;
 use stdClass;
 use function assert;
 
@@ -176,14 +175,13 @@ class WireguardManager {
 				if (!((bool) ip2long($peer->endpoint))) {
 					$this->validateEndpoint($peer->endpoint);
 				}
-				$addresses = $this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
-				$addresses = array_merge($addresses, $this->updatePeerAddresses($peer->allowedIPs->ipv6, $ifPeer));
+				$this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer, 4);
+				$this->updatePeerAddresses($peer->allowedIPs->ipv6, $ifPeer, 6);
 				$ifPeer->setPublicKey($peer->publicKey);
 				$ifPeer->setPsk($peer->psk ?? null);
 				$ifPeer->setKeepalive($peer->keepalive);
 				$ifPeer->setEndpoint($peer->endpoint);
 				$ifPeer->setPort($peer->port);
-				$ifPeer->setAddresses(new ArrayCollection($addresses));
 				$this->entityManager->persist($ifPeer);
 				$peersIds[] = $ifPeer->getId();
 			} else {
@@ -238,13 +236,14 @@ class WireguardManager {
 	}
 
 	/**
-	 * Creates array of wireguard peer addresses to update existing peer entity
+	 * Adds new, updates existing and deletes missing wireguard peer addresses
 	 * @param array<int, stdClass> $addrs Wireguard peer addresses
 	 * @param WireguardPeer $ifPeer Wireguard peer entity
-	 * @return array<int, WireguardPeerAddress> Wireguard peer addresses
+	 * @param int $protocol IP version
 	 */
-	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer): array {
-		$addresses = [];
+	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer, int $protocol): void {
+		$oldAddrs = $ifPeer->getAddresses()->toArray();
+		$addrIds = [];
 		foreach ($addrs as $ip) {
 			if (isset($ip->id)) {
 				$peerAddr = $this->wireguardPeerAddressRepository->find($ip->id);
@@ -252,12 +251,17 @@ class WireguardManager {
 					throw new NonexistentWireguardTunnelException('Wireguard peer address not found');
 				}
 				$peerAddr->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
-				$addresses[] = $peerAddr;
+				$this->entityManager->persist($peerAddr);
+				$addrIds[] = $peerAddr->getId();
 			} else {
-				$addresses[] = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
+				$ifPeer->addAddress(new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer));
 			}
 		}
-		return $addresses;
+		foreach ($oldAddrs as $addr) {
+			if (!in_array($addr->getId(), $addrIds, true) && $addr->getAddress()->getVersion() === $protocol) {
+				$ifPeer->deleteAddress($addr);
+			}
+		}
 	}
 
 	/**

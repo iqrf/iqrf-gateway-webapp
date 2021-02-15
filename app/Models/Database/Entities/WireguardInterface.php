@@ -82,7 +82,7 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * @var Collection Interface peer IDs
-	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $peers;
 

@@ -75,7 +75,7 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * @var Collection<WireguardPeerAddress> Peer allowed IPs
-	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $addresses;
 
@@ -200,6 +200,14 @@ class WireguardPeer implements JsonSerializable {
 	 */
 	public function addAddress(WireguardPeerAddress $address): void {
 		$this->addresses->add($address);
+	}
+
+	/**
+	 * Delets peer allowed IP address
+	 * @param WireguardPeerAddress $address WireGuard allowed peer IP address
+	 */
+	public function deleteAddress(WireguardPeerAddress $address): void {
+		$this->addresses->removeElement($address);
 	}
 
 	/**

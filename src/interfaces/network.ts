@@ -143,7 +143,7 @@ export interface IWGTunnel {
  */
 export interface IWGPeer {
 	publicKey: string,
-	psk: string
+	psk?: string
 	keepalive: number
 	endpoint: string
 	port: number

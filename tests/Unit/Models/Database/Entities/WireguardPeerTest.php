@@ -187,11 +187,21 @@ final class WireguardPeerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to add wg peer allowed IPs
+	 * Tests the function to add wg peer allowed IP
 	 */
 	public function testAddAddress(): void {
 		$this->entity->addAddress($this->peerIpv4Entity);
 		Assert::true($this->entity->getAddresses()->contains($this->peerIpv4Entity));
+	}
+
+	/**
+	 * Tests the function to delete wg peer allowed IP
+	 */
+	public function testDeleteAddress(): void {
+		$this->entity->addAddress($this->peerIpv4Entity);
+		Assert::true($this->entity->getAddresses()->contains($this->peerIpv4Entity));
+		$this->entity->deleteAddress($this->peerIpv4Entity);
+		Assert::true(!$this->entity->getAddresses()->contains($this->peerIpv4Entity));
 	}
 
 	/**
