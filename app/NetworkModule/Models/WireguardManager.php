@@ -32,6 +32,7 @@ use App\NetworkModule\Entities\MultiAddress;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
+use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
 use stdClass;
 use function assert;
@@ -57,6 +58,11 @@ class WireguardManager {
 	private $entityManager;
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * @var WireguardInterfaceRepository Wireguard interface repository
 	 */
 	private $wireguardInterfaceRepository;
@@ -75,10 +81,12 @@ class WireguardManager {
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param EntityManager $entityManager Entity manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager) {
+	public function __construct(CommandManager $commandManager, EntityManager $entityManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->entityManager = $entityManager;
+		$this->serviceManager = $serviceManager;
 		$this->wireguardInterfaceRepository = $this->entityManager->getWireguardInterfaceRepository();
 		$this->wireguardPeerAddressRepository = $this->entityManager->getWireguardPeerAddressRepository();
 		$this->wireguardPeerRepository = $this->entityManager->getWireguardPeerRepository();
@@ -95,20 +103,11 @@ class WireguardManager {
 			$array[] = [
 				'id' => $interface->getId(),
 				'name' => $interface->getName(),
-				'active' => $this->isInterfaceActive($interface->getName()),
+				'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
+				'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
 			];
 		}
 		return $array;
-	}
-
-	/**
-	 * Checks if interface is active
-	 * @param string $name WireGuard interface name
-	 * @return bool Is WireGuard interface active?
-	 */
-	public function isInterfaceActive(string $name): bool {
-		$output = $this->commandManager->run('wg show ' . $name, true);
-		return $output->getExitCode() === 0;
 	}
 
 	/**
@@ -276,7 +275,6 @@ class WireguardManager {
 		$this->entityManager->remove($interface);
 		$this->entityManager->flush();
 	}
-
 
 	/**
 	 * Generates Wireguard keypair

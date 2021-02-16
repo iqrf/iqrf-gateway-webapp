@@ -39,14 +39,24 @@
 						<td class='col-actions'>
 							<CButton
 								size='sm'
-								:color='item.active ? "danger": "success"'
-								@click='changeTunnelState(item.name, (item.active ? false : true))'
+								:color='item.active ? "danger" : "success"'
+								@click='changeActiveState(item.id, item.name, (item.active ? false : true))'
 							>
 								<CIcon 
 									:content='item.active ? icons.deactivate : icons.activate'
 									size='sm'
 								/>
 								{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+							</CButton> <CButton
+								size='sm'
+								:color='item.enabled ? "danger" : "success"'
+								@click='changeEnabledState(item.id, item.name, (item.enabled ? false : true))'
+							>
+								<CIcon
+									:content='item.enabled ? icons.disable : icons.enable'
+									size='sm'
+								/>
+								{{ $t('table.actions.' + (item.enabled ? "disable" : "enable")) }}
 							</CButton> <CButton
 								size='sm'
 								color='primary'
@@ -73,7 +83,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
-import {cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {cilLink, cilLinkBroken, cilPlus, cilPencil, cilSync, cilTrash, cilXCircle} from '@coreui/icons';
 
 import WireguardService from '../../services/WireguardService';
 
@@ -109,7 +119,9 @@ export default class WireguardTunnels extends Vue {
 		edit: cilPencil,
 		remove: cilTrash,
 		activate: cilLink,
-		deactivate: cilLinkBroken 
+		deactivate: cilLinkBroken,
+		enable: cilSync,
+		disable: cilXCircle,
 	}
 
 	/**
@@ -165,30 +177,99 @@ export default class WireguardTunnels extends Vue {
 	}
 
 	/**
-	 * Changes Wireguard tunnel state
+	 * Changes active state of Wireguard tunnel
+	 * @param {number} id Wireguard tunnel ID
 	 * @param {string} name Wireguard tunnel name
 	 * @param {boolean} state Wireguard tunnel state
 	 */
-	private changeTunnelState(name: string, state: boolean): void {
+	private changeActiveState(id: number, name: string, state: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		WireguardService.changeState({name: name, enabled: state})
-			.then(() => {
-				this.getTunnels().then(() => this.$toast.success(
-					this.$t(
-						'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateSuccess',
-						{tunnel: name}
-					).toString()
-				));
-			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateFailed',
-						{tunnel: name}
-					).toString()
-				);
-			});
+		if (state) {
+			WireguardService.activateTunnel(id)
+				.then(() => this.handleActiveSuccess(name, state))
+				.catch(() => this.handleActiveError(name, state));
+		} else {
+			WireguardService.deactivateTunnel(id)
+				.then(() => this.handleActiveSuccess(name, state))
+				.catch(() => this.handleActiveError(name, state));
+		}
+	}
+
+	/**
+	 * Handles tunnel activation success
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private handleActiveSuccess(name: string, state: boolean): void {
+		this.getTunnels().then(() => this.$toast.success(
+			this.$t(
+				'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateSuccess',
+				{tunnel: name}
+			).toString()
+		));
+	}
+	
+	/**
+	 * Handles tunnel activation error
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private handleActiveError(name: string, state: boolean): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(
+			this.$t(
+				'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateFailed',
+				{tunnel: name}
+			).toString()
+		);
+	}
+
+	/**
+	 * Changes enabled state of Wireguard tunnel
+	 * @param {number} id Wireguard tunnel ID
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private changeEnabledState(id: number, name: string, state: boolean): void {
+		this.$store.commit('spinner/SHOW');
+		if (state) {
+			WireguardService.enableTunnel(id)
+				.then(() => this.handleEnableSuccess(name, state))
+				.catch(() => this.handleEnableError(name, state));
+		} else {
+			WireguardService.disableTunnel(id)
+				.then(() => this.handleEnableSuccess(name, state))
+				.catch(() => this.handleEnableError(name, state));
+		}
+	}
+
+	/**
+	 * Handles tunnel enable success
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private handleEnableSuccess(name: string, state: boolean): void {
+		this.getTunnels().then(() => this.$toast.success(
+			this.$t(
+				'network.wireguard.tunnels.messages.' + (state ? 'enableSuccess' : 'disableSuccess'),
+				{tunnel: name}
+			).toString()
+		));
+	}
+	
+	/**
+	 * Handles tunnel enable error
+	 * @param {string} name Wireguard tunnel name
+	 * @param {boolean} state Wireguard tunnel state
+	 */
+	private handleEnableError(name: string, state: boolean): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(
+			this.$t(
+				'network.wireguard.tunnels.messages.' + (state ? 'enableFailed' : 'disableFailed'),
+				{tunnel: name}
+			).toString()
+		);
 	}
 
 	/**

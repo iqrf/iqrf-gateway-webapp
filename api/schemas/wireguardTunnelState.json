@@ -4,20 +4,22 @@
 	"type": "object",
 	"title": "Wireguard VPN tunnel state change",
 	"required": [
-		"name",
+		"active",
 		"enabled"
 	],
 	"additionalProperties": false,
 	"properties": {
-		"name": {
-			"$id": "#/properties/name",
-			"title": "Tunnel name",
-			"type": "string",
-			"example": "wg0"
+		"active": {
+			"$id": "#/properties/active",
+			"title": "Tunnel active state",
+			"description": "Activates or deactivates Wireguard tunnel",
+			"type": "boolean",
+			"example": true
 		},
 		"enabled": {
-			"$id": "#/properties/active",
+			"$id": "#/properties/enabled",
 			"title": "Tunnel enabled state",
+			"description": "Enables or disables Wireguard tunnel (on startup)",
 			"type": "boolean",
 			"example": true
 		}

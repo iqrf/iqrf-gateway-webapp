@@ -49,19 +49,43 @@ class WireguardService {
 	}
 
 	/**
-	 * Changes state of Wireguard tunnel 
-	 * @param {Dictionary<string|boolean>} config Wireguard tunnel state config
-	 */
-	changeState(config: Dictionary<string|boolean>): Promise<AxiosResponse> {
-		return axios.post('network/wireguard/state', config, {headers: authorizationHeader()});
-	}
-
-	/**
 	 * Removes an existing Wireguard tunnel
 	 * @param {number} id Wireguard tunnel name
 	 */
 	removeTunnel(id: number): Promise<AxiosResponse> {
 		return axios.delete('network/wireguard/' + id, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Activates a Wireguard tunnel
+	 * @param id Wireguard tunnel ID
+	 */
+	activateTunnel(id: number): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/' + id + '/activate', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Deactivates a Wireguard tunnel
+	 * @param id Wireguard tunnel ID
+	 */
+	deactivateTunnel(id: number): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/' + id + '/deactivate', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Enables a Wireguard tunnel autostart
+	 * @param id Wireguard tunnel ID
+	 */
+	enableTunnel(id: number): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/' + id + '/enable', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Disables a Wireguard tunnel autostart
+	 * @param id Wireguard tunnel ID
+	 */
+	disableTunnel(id: number): Promise<AxiosResponse> {
+		return axios.post('network/wireguard/' + id + '/disable', null, {headers: authorizationHeader()});
 	}
 
 }
