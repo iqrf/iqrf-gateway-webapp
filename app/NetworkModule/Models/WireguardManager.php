@@ -22,6 +22,8 @@ namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardInterfaceIpv4;
+use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\EntityManager;
@@ -130,13 +132,17 @@ class WireguardManager {
 	 */
 	public function createInterface(stdClass $values): void {
 		$ipv4 = $ipv6 = null;
+		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
-			$ipv4 = MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix);
+			$ipv4 = new WireguardInterfaceIpv4(MultiAddress::fromPrefix($values->ipv4 . '/' . $values->ipv4Prefix), $interface);
+			$this->entityManager->persist($ipv4);
+			$interface->setIpv4($ipv4);
 		}
 		if (property_exists($values, 'ipv6')) {
-			$ipv6 = MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix);
+			$ipv6 = new WireguardInterfaceIpv6(MultiAddress::fromPrefix($values->ipv6 . '/' . $values->ipv6Prefix), $interface);
+			$this->entityManager->persist($ipv6);
+			$interface->setIpv6($ipv6);
 		}
-		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null, $ipv4, $ipv6);
 		foreach ($values->peers as $peer) {
 			$interface->addPeer($this->createPeer($peer, $interface));
 		}
