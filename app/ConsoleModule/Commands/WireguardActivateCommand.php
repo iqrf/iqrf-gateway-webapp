@@ -125,7 +125,7 @@ class WireguardActivateCommand extends WireguardCommand {
 		foreach ($peers as $peer) {
 			$psk = $peer->getPsk();
 			if ($psk !== null) {
-				$pskFile = self::WG_DIR . $peer->getPublicKey();
+				$pskFile = self::WG_DIR . $peer->getPublicKey() . '.psk';
 				FileSystem::write($pskFile, $psk);
 				$peer->setPsk($pskFile);
 			}
