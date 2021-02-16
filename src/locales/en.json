@@ -1875,6 +1875,7 @@
 						"active": "Active",
 						"inactive": "Inactive"
 					},
+					"autostart": "Activate on startup",
 					"action": {
 						"activate": "Activate",
 						"deactivate": "Deactivate"
@@ -1934,6 +1935,10 @@
 					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
 					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
 					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}.",
+					"disableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully disabled.",
+					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}.",
+					"enableSuccess": "Wiregguard tunnel {tunnel} startup activation has been successfully enabled.",
+					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}.",
 					"getFailed": "Failed to retrieve configuraiton of Wireguard tunnel {tunnel}.",
 					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
 					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
@@ -2181,7 +2186,9 @@
 			"title": "Actions",
 			"add": "Add",
 			"delete": "Delete",
-			"edit": "Edit"
+			"edit": "Edit",
+			"enable": "Enable",
+			"disable": "Disable"
 		},
 		"messages": {
 			"noRecords": "No records have been found."

@@ -29,14 +29,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptOnlyLocalhost)'
+								:toggler-text='$t("states." + (item.acceptOnlyLocalhost ? "enabled" : "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -45,14 +45,14 @@
 						<td>
 							<CDropdown
 								:color='item.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + (item.tlsEnabled !== undefined ? item.tlsEnabled : false))'
+								:toggler-text='$t("states." + (item.tlsEnabled !== undefined ? item.tlsEnabled ? "enabled" : "disabled" : "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTls(item.webSocket, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeTls(item.webSocket, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
