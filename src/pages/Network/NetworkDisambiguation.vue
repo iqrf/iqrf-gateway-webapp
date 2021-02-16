@@ -19,6 +19,14 @@
 						{{ $t('network.wireless.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/network/vpn'>
+					<header class='list-group-item-heading'>
+						{{ $t('network.wireguard.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('network.wireguard.description') }}
+					</p>
+				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>
