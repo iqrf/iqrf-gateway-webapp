@@ -26,6 +26,8 @@ use App\Models\Database\Repositories\WireguardInterfaceRepository;
 
 abstract class WireguardCommand extends EntityManagerCommand {
 
+	public const WG_DIR = '/tmp/wireguard/';
+
 	/**
 	 * @var CommandManager Command manager
 	 */
