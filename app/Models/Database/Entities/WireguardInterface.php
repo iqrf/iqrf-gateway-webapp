@@ -58,25 +58,25 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * @var IP|null Interface IPv4 address
-	 * @ORM\Column(type="ip", nullable=false)
+	 * @ORM\Column(type="ip", nullable=true)
 	 */
 	private $ipv4;
 
 	/**
 	 * @var int|null Interface IPv4 address prefix
-	 * @ORM\Column(type="integer", name="ipv4_prefix", nullable=false)
+	 * @ORM\Column(type="integer", name="ipv4_prefix", nullable=true)
 	 */
 	private $ipv4Prefix;
 
 	/**
 	 * @var IP|null Interface IPv6 address
-	 * @ORM\Column(type="ip", nullable=false)
+	 * @ORM\Column(type="ip", nullable=true)
 	 */
 	private $ipv6;
 
 	/**
 	 * @var int|null Interface IPv6 address prefix
-	 * @ORM\Column(type="integer", name="ipv6_prefix", nullable=false)
+	 * @ORM\Column(type="integer", name="ipv6_prefix", nullable=true)
 	 */
 	private $ipv6Prefix;
 
@@ -253,6 +253,7 @@ class WireguardInterface implements JsonSerializable {
 	 */
 	public function wgSerialize(): string {
 		$command = 'wg set ' . $this->getName();
+		$command .= sprintf(' private-key %s', $this->getPrivateKey());
 		$port = $this->getPort();
 		if ($port !== null) {
 			$command .= sprintf(' listen-port %u', $port);

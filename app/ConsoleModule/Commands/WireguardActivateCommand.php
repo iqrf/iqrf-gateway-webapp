@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardPeer;
 use Exception;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
@@ -91,39 +92,67 @@ class WireguardActivateCommand extends WireguardCommand {
 		$name = $iface->getName();
 		$output = $this->commandManager->run('ip link add ' . $name . ' type wireguard', true);
 		if ($output->getExitCode() !== 0) {
-			throw new Exception('Failed to create new interface: ' . $output->getStderr() . '.');
+			throw new Exception(sprintf('Failed to create new interface: %s.', $output->getStderr()));
 		}
+		FileSystem::createDir(self::WG_DIR, 0700);
+		$privateKeyFile = self::WG_DIR . $name . '.privatekey';
+		FileSystem::write($privateKeyFile, $iface->getPrivateKey(), 0600);
+		$iface->setPrivateKey($privateKeyFile);
+		$this->setPeerPsk($iface->getPeers()->toArray());
 		$output = $this->commandManager->run($iface->wgSerialize(), true);
 		if ($output->getExitCode() !== 0) {
-			throw new Exception('Failed to set wg tunnel properties: ' . $output->getStderr() . '.');
+			throw new Exception(sprintf('Failed to set wg tunnel properties: %s.', $output->getStderr()));
 		}
-		$pkFile = '/etc/wireguard' . $name . '.privatekey';
-		FileSystem::write($pkFile, $iface->getPrivateKey());
-		$command = sprintf('wg set %s private-key %s', $name, $pkFile);
-		$output = $this->commandManager->run($command, true);
-		if ($output->getExitCode() !== 0) {
-			throw new Exception('Failed to set interface private key: ' . $output->getStderr());
-		}
-		FileSystem::delete($pkFile);
+		FileSystem::delete(self::WG_DIR);
 		if ($iface->getIpv4() !== null) {
-			$command = sprintf('ip -4 address add %s dev %s', $iface->getIpv4()->toString(), $name);
-			$output = $this->commandManager->run($command, true);
-			if ($output->getExitCode() !== 0) {
-				throw new Exception('Failed to set interface IPv4 address: ' . $output->getStderr() . '.');
-			}
+			$this->setIp($name, $iface->getIpv4()->toString(), 4);
 		}
 		if ($iface->getIpv6() !== null) {
-			$command = sprintf('ip -6 address add %s dev %s', $iface->getIpv6()->toString(), $name);
-			$output = $this->commandManager->run($command, true);
-			if ($output->getExitCode() !== 0) {
-				throw new Exception('Failed to set interface IPv6 address: ' . $output->getStderr() . '.');
-			}
+			$this->setIp($name, $iface->getIpv6()->toString(), 6);
 		}
 		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . $name, true);
 		if ($output->getExitCode() !== 0) {
-			throw new Exception('Failed to set interface MTU: ' . $output->getStderr() . '.');
+			throw new Exception(sprintf('Failed to set interface MTU: %s.', $output->getStderr()));
 		}
-		foreach ($iface->getPeers()->toArray() as $peer) {
+		$this->setPeerRoutes($name, $iface->getPeers()->toArray());
+	}
+
+	/**
+	 * Sets peer preshared-key
+	 * @param array<WireguardPeer> $peers Interface peers
+	 */
+	private function setPeerPsk(array $peers): void {
+		foreach ($peers as $peer) {
+			$psk = $peer->getPsk();
+			if ($psk !== null) {
+				$pskFile = self::WG_DIR . $peer->getPublicKey();
+				FileSystem::write($pskFile, $psk);
+				$peer->setPsk($pskFile);
+			}
+		}
+	}
+
+	/**
+	 * Sets interface IP address
+	 * @param string $name Interface name
+	 * @param string $address Interface IP address
+	 * @param int $protocol IP address version
+	 */
+	private function setIp(string $name, string $address, int $protocol): void {
+		$command = sprintf('ip -%u address add %s dev %s', $protocol, $address, $name);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new Exception(sprintf('Failed to set interface IPv%u address: %s.', $protocol, $output->getStderr()));
+		}
+	}
+
+	/**
+	 * Sets peer routes
+	 * @param string $name Interface name
+	 * @param array<int, WireguardPeer> $peers Interface peers
+	 */
+	private function setPeerRoutes(string $name, array $peers): void {
+		foreach ($peers as $peer) {
 			$addresses = [];
 			foreach ($peer->getAddresses()->toArray() as $addr) {
 				if ($addr->getAddress()->getVersion() === 6) {
@@ -134,7 +163,7 @@ class WireguardActivateCommand extends WireguardCommand {
 				$command = sprintf('ip -6 route add %s dev %s', $addr, $name);
 				$output = $this->commandManager->run($command, true);
 				if ($output->getExitCode() !== 0) {
-					throw new Exception('Failed to set IPv6 route: ' . $output->getStderr() . '.');
+					throw new Exception(sprintf('Failed to set IPv6 route: %s.', $output->getStderr()));
 				}
 			}
 		}
