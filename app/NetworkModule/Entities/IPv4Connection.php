@@ -93,7 +93,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 		foreach ($json->addresses as $address) {
 			if (($address->address !== '')) {
 				if (isset($address->prefix)) {
-					$addresses[] = IPv4Address::fromPrefix($address->address . '/' . strval($address->prefix));
+					$addresses[] = new IPv4Address(IPv4::factory($address->address), $address->prefix);
 				} elseif (isset($address->mask)) {
 					$addresses[] = IPv4Address::fromMask($address->address, $address->mask);
 				}

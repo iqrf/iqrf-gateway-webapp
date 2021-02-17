@@ -265,6 +265,22 @@ class WireguardInterfaceTest extends TestCase {
 		Assert::same($expected, $this->entity->wgSerialize());
 	}
 
+	/**
+	 * Tests the function to create command to delete Wireguard tunnel using the ip utility
+	 */
+	public function testIpDelete(): void {
+		$expected = 'ip link delete dev ' . self::NAME;
+		Assert::same($expected, $this->entity->ipDelete());
+	}
+
+	/**
+	 * Tests the function to create command to show Wireguard tunnel status
+	 */
+	public function testWgStatus(): void {
+		$expected = 'wg show ' . self::NAME;
+		Assert::same($expected, $this->entity->wgStatus());
+	}
+
 }
 
 $test = new WireguardInterfaceTest();

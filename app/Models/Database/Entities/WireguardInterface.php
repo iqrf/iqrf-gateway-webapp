@@ -264,4 +264,20 @@ class WireguardInterface implements JsonSerializable {
 		return $command;
 	}
 
+	/**
+	 * Returns a command to delete interface using the IP utility
+	 * @return string IP utility interface delete command
+	 */
+	public function ipDelete(): string {
+		return 'ip link delete dev ' . $this->getName();
+	}
+
+	/**
+	 * Returns a command to show status of interface using the WG utility
+	 * @return string WG utility interface status command
+	 */
+	public function wgStatus(): string {
+		return 'wg show ' . $this->getName();
+	}
+
 }

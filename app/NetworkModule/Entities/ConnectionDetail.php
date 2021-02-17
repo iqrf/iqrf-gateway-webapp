@@ -177,7 +177,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		if ($array['interface-name'] === '') {
 			$general = NmCliConnection::decode($nmCli, 'GENERAL');
-			if (count($general) !== 0) {
+			if ($general !== []) {
 				$array['interface-name'] = $general['devices'] ?? '';
 			}
 		}
