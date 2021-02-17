@@ -126,9 +126,9 @@ export default class DevicesInfo extends Vue {
 	private msgId: string|null = null
 
 	/**
-	 * @var {boolean} notified Component notified by parent
+	 * @var {string|null} toastMessage Toast message from other components to show after grid is refreshed
 	 */
-	private notified = false
+	private toastMessage: string|null = null
 
 	/**
 	 * Component unsubscribe function
@@ -199,15 +199,6 @@ export default class DevicesInfo extends Vue {
 	}
 
 	/**
-	 * Performs FRC ping
-	 */
-	private frcPing(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.ping(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
 	 * Creates array of devices filled with default values
 	 */
 	private generateDevices(): void {
@@ -229,10 +220,15 @@ export default class DevicesInfo extends Vue {
 
 	/**
 	 * Performs BondedDevices api call
+	 * @param {string|null} message Message from other components to show after grid is refreshed
 	 */
-	public getBondedDevices(): void {
-		this.$store.dispatch('spinner/show', {timeout: 20000});
-		IqrfNetService.getBonded(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+	public getBondedDevices(message: string|null = null): void {
+		if (message !== null) {
+			this.toastMessage = message;
+		}
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getBonded').toString());
+		IqrfNetService.getBonded(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bondedFailed'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -240,8 +236,19 @@ export default class DevicesInfo extends Vue {
 	 * Performs DiscoveredDevices api call
 	 */
 	private getDiscoveredDevices(): void {
-		this.$store.dispatch('spinner/show', {timeout: 20000});
-		IqrfNetService.getDiscovered(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getDiscovered').toString());
+		IqrfNetService.getDiscovered(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.discoveredFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Performs FRC ping
+	 */
+	private frcPing(): void {
+		this.$store.dispatch('spinner/show', {timeout: 90000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getOnline').toString());
+		IqrfNetService.ping(this.buildOptions(90000, 'iqrfnet.networkManager.devicesInfo.messages.pingFailed'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -264,7 +271,7 @@ export default class DevicesInfo extends Vue {
 			}
 			default:
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.bondedFailed')
 						.toString()
 				);
 				break;
@@ -290,7 +297,7 @@ export default class DevicesInfo extends Vue {
 			}
 			default:
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.discoveredFailed')
 						.toString()
 				);
 				break;
@@ -316,18 +323,20 @@ export default class DevicesInfo extends Vue {
 					this.manual = false;
 					this.$forceUpdate();
 				}
+				if (this.toastMessage !== null) {
+					this.$toast.success(
+						this.toastMessage
+					);
+					this.toastMessage = null;
+				}
 				break;
 			}
 			default:
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.pingFailed')
 						.toString()
 				);
 				break;
-		}
-		if (!this.notified) {
-			this.notified = true;
-			this.$emit('notify-autonetwork');
 		}
 	}
 

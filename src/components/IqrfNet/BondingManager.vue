@@ -424,8 +424,9 @@ export default class BondingManager extends Vue {
 	 */
 	private processSubmitClearAll(): void {
 		this.modalClear = false;
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+		this.$store.dispatch('spinner/show', {timeout: 120000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.bondingManager.messages.clearAll' + (this.unbondCoordinatorOnly ? 'CStatus' : 'Status')).toString());
+		IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly, this.buildOptions(120000, 'iqrfnet.networkManager.messages.submit.timeout'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 }

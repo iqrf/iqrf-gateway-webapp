@@ -1251,6 +1251,8 @@
 					"unbondSuccessC": "Device at address {address} has been successfully removed from Coordinator memory.",
 					"noDevices": "There are no devices bonded in the network.",
 					"unbondFailure": "Failed to remove device at address {address} from network.",
+					"clearAllStatus": "Removing all nodes from network.",
+					"clearAllCStatus": "Removing all nodes from coordinator memory.",
 					"clearAllSuccess": "All bonds have been cleared successfully.",
 					"clearAllCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
 					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}."
@@ -1267,15 +1269,12 @@
 				},
 				"messages": {
 					"empty": "No response from IQRF Network",
-					"bonded": {
-						"failure": "Failed to retrieve list of bonded devices."
-					},
-					"discovered": {
-						"failure": "Failed to retrieve list of discovered devices."
-					},
-					"ping": {
-						"failure": "FRC ping request failed."
-					}
+					"getBonded": "Retrieving list of bonded devices",
+					"getDiscovered": "Retrieving list of discovered devices",
+					"getOnline": "Retrieving status of devices",
+					"bondedFailed": "Failed to retrieve list of bonded devices.",
+					"discoveredFailed": "Failed to retrieve list of discovered devices.",
+					"pingFailed": "Failed to retrieve status of devices."
 				}
 			},
 			"discovery": {
