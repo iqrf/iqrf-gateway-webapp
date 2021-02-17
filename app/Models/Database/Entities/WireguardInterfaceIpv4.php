@@ -57,16 +57,17 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	/**
 	 * Constructor
-	 * @param MultiAddress Interface address
+	 * @param MultiAddress $address Interface address
+	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function __construct(MultiAddress $address, WireguardInterface $interface) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
-		$this->inteface = $interface;
+		$this->interface = $interface;
 	}
 
 	public function getAddress(): MultiAddress {
-		return new MultiAddress($this->address, $this->prefix);		
+		return new MultiAddress($this->address, $this->prefix);
 	}
 
 	public function setAddress(MultiAddress $address): void {
