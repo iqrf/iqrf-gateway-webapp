@@ -445,10 +445,10 @@ export default class AutoNetwork extends Vue {
 		if (response.rsp.waveState) { // wave information exists
 			message += response.rsp.waveState;
 		}
-		if (response.rsp.nodesNr) { // collects number of nodes in network
+		if (response.rsp.nodesNr !== undefined) { // collects number of nodes in network
 			this.messages.nodesTotal = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusTotalNodes').toString() + response.rsp.nodesNr;
 		}
-		if (response.rsp.newNodesNr) { // collects number of nodes added to network in last wave
+		if (response.rsp.newNodesNr !== undefined) { // collects number of nodes added to network in last wave
 			this.messages.nodesNew = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusAddedNodes').toString() + response.rsp.newNodesNr;
 		}
 		message += this.messages.nodesTotal + this.messages.nodesNew;
