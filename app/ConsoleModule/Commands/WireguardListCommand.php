@@ -54,9 +54,7 @@ class WireguardListCommand extends WireguardCommand {
 		$tunnels = [];
 		foreach ($this->repository->findAll() as $tunnel) {
 			assert($tunnel instanceof WireguardInterface);
-			$command = $this->commandManager->run('wg show ' . $tunnel->getName(), true);
-			$state = $command->getExitCode() === 0 ? 'active' : 'inactive';
-			$tunnels[] = [$tunnel->getName(), $state];
+			$tunnels[] = [$tunnel->getName(), $this->manager->getTunnelState($tunnel)];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List of WireGuard tunnels');

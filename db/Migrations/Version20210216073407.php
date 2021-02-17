@@ -8,18 +8,21 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Auto-generated Migration: Please modify to your needs!
+ * Wireguard VPN repository migration
  */
 final class Version20210216073407 extends AbstractMigration
 {
+	/**
+	 * Returns the migration description
+	 * @return string Migration description
+	 */
 	public function getDescription() : string
 	{
-		return '';
+		return 'Added new repositories for Wireguard VPN';
 	}
 
 	public function up(Schema $schema) : void
 	{
-		// this up() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('CREATE TABLE "wireguard_interfaces" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, private_key VARCHAR(255) NOT NULL, port INTEGER DEFAULT NULL, ipv4 BLOB DEFAULT NULL --(DC2Type:ip)
@@ -35,7 +38,6 @@ final class Version20210216073407 extends AbstractMigration
 
 	public function down(Schema $schema) : void
 	{
-		// this down() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "wireguard_interfaces"');

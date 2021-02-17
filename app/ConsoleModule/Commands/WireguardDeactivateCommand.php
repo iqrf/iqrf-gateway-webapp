@@ -63,13 +63,11 @@ class WireguardDeactivateCommand extends WireguardCommand {
 			$style->error('WireGuard tunnel ' . $tunnelName . ' does not exist.');
 			return Command::FAILURE;
 		}
-		$command = $this->commandManager->run('wg show ' . $tunnel->getName(), true);
-		if ($command->getExitCode() !== 0) {
+		if (!$this->manager->isTunnelActive($tunnel)) {
 			$style->block('WireGuard tunnel ' . $tunnelName . ' is not active.', 'INFO', 'fg=white;bg=blue', ' ', true);
 			return Command::SUCCESS;
 		}
-		$command = $this->commandManager->run('ip link delete dev ' . $tunnel->getName(), true);
-		if ($command->getExitCode() !== 0) {
+		if (!$this->manager->deleteTunnel($tunnel)) {
 			$style->error('An error has occured while deactivating WiregGuard tunnel ' . $tunnelName);
 			return Command::FAILURE;
 		}

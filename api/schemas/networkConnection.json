@@ -152,7 +152,7 @@
 							"prefix": 24
 						},
 						"additionalProperties": false,
-						"anyOf": [
+						"oneOf": [
 							{
 								"required": [
 									"address",
@@ -162,13 +162,6 @@
 							{
 								"required": [
 									"address",
-									"mask"
-								]
-							},
-							{
-								"required": [
-									"address",
-									"prefix",
 									"mask"
 								]
 							}

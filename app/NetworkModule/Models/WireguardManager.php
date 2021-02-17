@@ -34,6 +34,8 @@ use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
+use Exception;
+use Nette\Utils\FileSystem;
 use stdClass;
 use function assert;
 
@@ -46,6 +48,8 @@ class WireguardManager {
 	 * Wireguard directory
 	 */
 	private const DIR = '/etc/wireguard/';
+
+	private const TMP_DIR = '/tmp/wireguard/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -312,6 +316,121 @@ class WireguardManager {
 			throw new WireguardKeyErrorException($output->getStderr());
 		}
 		return $output->getStdout();
+	}
+
+	/**
+	 * Returns Wireguard tunnel state string
+	 * @param WireguardInterface $tunnel Wireguard tunnel
+	 * @return string Tunnel state string
+	 */
+	public function getTunnelState(WireguardInterface $tunnel): string {
+		$command = $this->commandManager->run($tunnel->wgStatus(), true);
+		return $command->getExitCode() === 0 ? 'active' : 'inactive';
+	}
+
+	/**
+	 * Checks if Wireguard tunnel is active using the wg utility
+	 * @param WireguardInterface $tunnel Wireguard tunnel
+	 * @return bool Is Wireguard tunnel active?
+	 */
+	public function isTunnelActive(WireguardInterface $tunnel): bool {
+		$command = $this->commandManager->run($tunnel->wgStatus(), true);
+		return $command->getExitCode() === 0;
+	}
+
+	/**
+	 * Removes a tunnel using the ip utility
+	 * @param WireguardInterface $tunnel Wireguard tunnel
+	 * @return bool Was Wireguard tunnel successfully removed?
+	 */
+	public function deleteTunnel(WireguardInterface $tunnel): bool {
+		$command = $this->commandManager->run($tunnel->ipDelete(), true);
+		return $command->getExitCode() === 0;
+	}
+
+	/**
+	 * Configures Wireguard interface and peers
+	 * @param WireguardInterface $iface Wireguard interface entity
+	 */
+	public function initializeTunnel(WireguardInterface $iface): void {
+		$name = $iface->getName();
+		$output = $this->commandManager->run('ip link add ' . $name . ' type wireguard', true);
+		if ($output->getExitCode() !== 0) {
+			throw new Exception(sprintf('Failed to create new interface: %s.', $output->getStderr()));
+		}
+		FileSystem::createDir(self::TMP_DIR, 0700);
+		$privateKeyFile = self::TMP_DIR . $name . '.privatekey';
+		FileSystem::write($privateKeyFile, $iface->getPrivateKey(), 0600);
+		$iface->setPrivateKey($privateKeyFile);
+		$this->setPeerPsk($iface->getPeers()->toArray());
+		$output = $this->commandManager->run($iface->wgSerialize(), true);
+		if ($output->getExitCode() !== 0) {
+			throw new Exception(sprintf('Failed to set wg tunnel properties: %s.', $output->getStderr()));
+		}
+		FileSystem::delete(self::TMP_DIR);
+		if ($iface->getIpv4() !== null) {
+			$this->setTunnelIp($name, $iface->getIpv4()->toString(), 4);
+		}
+		if ($iface->getIpv6() !== null) {
+			$this->setTunnelIp($name, $iface->getIpv6()->toString(), 6);
+		}
+		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . $name, true);
+		if ($output->getExitCode() !== 0) {
+			throw new Exception(sprintf('Failed to set interface MTU: %s.', $output->getStderr()));
+		}
+		$this->setPeerRoutes($name, $iface->getPeers()->toArray());
+	}
+
+	/**
+	 * Sets peer preshared-key
+	 * @param array<WireguardPeer> $peers Interface peers
+	 */
+	private function setPeerPsk(array $peers): void {
+		foreach ($peers as $peer) {
+			$psk = $peer->getPsk();
+			if ($psk !== null) {
+				$pskFile = self::TMP_DIR . $peer->getPublicKey() . '.psk';
+				FileSystem::write($pskFile, $psk);
+				$peer->setPsk($pskFile);
+			}
+		}
+	}
+
+	/**
+	 * Sets tunnel IP address
+	 * @param string $name Tunnel name
+	 * @param string $address Interface IP address
+	 * @param int $protocol IP address version
+	 */
+	private function setTunnelIp(string $name, string $address, int $protocol): void {
+		$command = sprintf('ip -%u address add %s dev %s', $protocol, $address, $name);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new Exception(sprintf('Failed to set interface IPv%u address: %s.', $protocol, $output->getStderr()));
+		}
+	}
+
+	/**
+	 * Sets peer routes
+	 * @param string $name Tunnel name
+	 * @param array<int, WireguardPeer> $peers Interface peers
+	 */
+	private function setPeerRoutes(string $name, array $peers): void {
+		foreach ($peers as $peer) {
+			$addresses = [];
+			foreach ($peer->getAddresses()->toArray() as $addr) {
+				if ($addr->getAddress()->getVersion() === 6) {
+					$addresses[] = $addr->getAddress()->toString();
+				}
+			}
+			foreach ($addresses as $addr) {
+				$command = sprintf('ip -6 route add %s dev %s', $addr, $name);
+				$output = $this->commandManager->run($command, true);
+				if ($output->getExitCode() !== 0) {
+					throw new Exception(sprintf('Failed to set IPv6 route: %s.', $output->getStderr()));
+				}
+			}
+		}
 	}
 
 }

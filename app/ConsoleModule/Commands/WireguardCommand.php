@@ -20,18 +20,16 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\CoreModule\Models\CommandManager;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
+use App\NetworkModule\Models\WireguardManager;
 
 abstract class WireguardCommand extends EntityManagerCommand {
 
-	public const WG_DIR = '/tmp/wireguard/';
-
 	/**
-	 * @var CommandManager Command manager
+	 * @var WireguardManager Wireguard manager
 	 */
-	protected $commandManager;
+	protected $manager;
 
 	/**
 	 * @var WireguardInterfaceRepository Wireguard interface repository
@@ -40,13 +38,13 @@ abstract class WireguardCommand extends EntityManagerCommand {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
 	 * @param EntityManager $entityManager Entity manager
+	 * @param WireguardManager $manager Wireguard manager
 	 * @param string|null $name Command name
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, ?string $name = null) {
+	public function __construct(EntityManager $entityManager, WireguardManager $manager, ?string $name = null) {
 		parent::__construct($entityManager, $name);
-		$this->commandManager = $commandManager;
+		$this->manager = $manager;
 		$this->repository = $entityManager->getWireguardInterfaceRepository();
 	}
 
