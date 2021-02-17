@@ -1947,6 +1947,8 @@
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
 					"addFailed": "Failed to create Wireguard tunnel: {error}.",
+					"editSuccess": "Wireguard tunnel {tunnel} has been successfully edited.",
+					"editFailed": "Failed to edit Wireguard tunnel: {error}.",
 					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
 					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
 					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",

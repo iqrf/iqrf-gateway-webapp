@@ -696,13 +696,13 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		this.$router.push('/network/vpn/');
 		this.$toast.success(
 			this.$t(
-				'network.wireguard.tunnels.messages.addSuccess',
+				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Success',
 				{tunnel: this.tunnel.name}
 			).toString()
 		);
+		this.$router.push('/network/vpn/');
 	}
 
 	/**
@@ -712,7 +712,7 @@ export default class WireguardTunnel extends Vue {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.error(
 			this.$t(
-				'network.wireguard.tunnels.messages.addFailed',
+				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Failed',
 				{error: error.response !== undefined ? error.response.data.message : error.message}
 			).toString()
 		);
