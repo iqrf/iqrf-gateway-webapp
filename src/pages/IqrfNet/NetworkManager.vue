@@ -99,9 +99,10 @@ export default class NetworkManager extends Vue {
 
 	/**
 	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
+	 * @param {string} message Success toast message passed from other components for devices info grid to show
 	 */
-	private updateDevices(): void {
-		(this.$refs.devs as DevicesInfo).getBondedDevices();
+	private updateDevices(message: string): void {
+		(this.$refs.devs as DevicesInfo).getBondedDevices(message);
 	}
 
 }
