@@ -199,7 +199,7 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Serializes wireguard interface entity into JSON
-	 * @return array<string, array<array<string, int|string|null>>|int|string|null> JSON serialized wireguard interface entity
+	 * @return array<string, array<array<string, array<string, array<int, mixed>>|int|string|null>|int|string>|int|string|null> JSON serialized wireguard interface entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [

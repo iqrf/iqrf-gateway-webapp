@@ -85,7 +85,7 @@ class WireguardInterfaceIpv6 implements JsonSerializable {
 
 	/**
 	 * Returns Wireguard interface this address belongs to
-	 * @return Wireguard interface
+	 * @return WireguardInterface Wireguard interface
 	 */
 	public function getInterface(): WireguardInterface {
 		return $this->interface;
