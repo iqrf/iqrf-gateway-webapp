@@ -131,11 +131,17 @@ export interface IWGTunnel {
 	privateKey: string
 	publicKey?: string
 	port?: number
-	ipv4?: string
-	ipv4Prefix?: number
-	ipv6?: string
-	ipv6Prefix?: number
+	ipv4?: IWGTunnelIP
+	ipv6?: IWGTunnelIP
 	peers: Array<IWGPeer>
+}
+
+/**
+ * Wireguard VPN tunnel interface address
+ */
+export interface IWGTunnelIP {
+	address: string
+	prefix: number
 }
 
 /**

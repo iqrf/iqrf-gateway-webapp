@@ -43,6 +43,17 @@
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
+							<div
+								v-if='tunnel.publicKey !== ""' 
+								class='form-group'
+							>
+								<label>
+									{{ $t('network.wireguard.tunnels.form.publicKeyIface') }}
+								</label>
+								<p>
+									{{ tunnel.publicKey }}
+								</p>
+							</div>
 							<CSelect
 								:value.sync='stack'
 								:options='stackOptions'
@@ -61,7 +72,7 @@
 									}'
 								>
 									<CInput
-										v-model='tunnel.ipv4'
+										v-model='tunnel.ipv4.address'
 										:label='$t("network.wireguard.tunnels.form.ipv4")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
@@ -77,7 +88,7 @@
 									}'
 								>
 									<CInput
-										v-model.number='tunnel.ipv4Prefix'
+										v-model.number='tunnel.ipv4.prefix'
 										type='number'
 										min='1'
 										max='32'
@@ -100,7 +111,7 @@
 									}'
 								>
 									<CInput
-										v-model='tunnel.ipv6'
+										v-model='tunnel.ipv6.address'
 										:label='$t("network.wireguard.tunnels.form.ipv6")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
@@ -116,7 +127,7 @@
 									}'
 								>
 									<CInput
-										v-model.number='tunnel.ipv6Prefix'
+										v-model.number='tunnel.ipv6.prefix'
 										type='number'
 										min='48'
 										max='128'
@@ -432,10 +443,14 @@ export default class WireguardTunnel extends Vue {
 		privateKey: '',
 		publicKey: '',
 		port: 51820,
-		ipv4: '',
-		ipv4Prefix: 24,
-		ipv6: '',
-		ipv6Prefix: 64,
+		ipv4: {
+			address: '',
+			prefix: 24,
+		},
+		ipv6: {
+			address: '',
+			prefix: 64,
+		},
 		peers: [
 			{
 				publicKey: '',
@@ -544,22 +559,26 @@ export default class WireguardTunnel extends Vue {
 				let peerStacks: Array<StackType> = [];
 				for (const idx in response.data.peers) {
 					if (response.data.peers[idx].allowedIPs.ipv4.length === 0) {
-						delete response.data.peers[idx].allowedIPs.ipv4;
+						response.data.peers[idx].allowedIPs.ipv4.push({address: '', prefix: 24});
 						peerStacks.push(StackType.SINGLE_IPV6);
 					} else if (response.data.peers[idx].allowedIPs.ipv6.length === 0) {
-						delete response.data.peers[idx].allowedIPs.ipv6;
+						response.data.peers[idx].allowedIPs.ipv6.push({address: '', prefix: 64});
 						peerStacks.push(StackType.SINGLE_IPV4);
 					} else {
 						peerStacks.push(StackType.DUAL);
 					}
 				}
+				if (response.data.ipv4 !== undefined && response.data.ipv6 !== undefined) {
+					this.stack = StackType.DUAL;
+				} else if (response.data.ipv4 !== undefined && response.data.ipv6 === undefined) {
+					this.stack = StackType.SINGLE_IPV4;
+					Object.assign(response.data, {ipv6: {address: '', prefix: 64}});
+				} else {
+					this.stack = StackType.SINGLE_IPV6;
+					Object.assign(response.data, {ipv4: {address: '', prefix: 24}});
+				}
 				this.peerStacks = peerStacks;
 				this.tunnel = response.data;
-				if (this.tunnel.ipv4 !== null && this.tunnel.ipv6 !== null) {
-					this.stack = StackType.DUAL;
-				} else if (this.tunnel.ipv6 !== null && this.tunnel.ipv4 === null) {
-					this.stack = StackType.SINGLE_IPV6;
-				}
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {
@@ -661,10 +680,8 @@ export default class WireguardTunnel extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.stack === StackType.SINGLE_IPV4) {
 			delete tunnel.ipv6;
-			delete tunnel.ipv6Prefix;
 		} else if (this.stack === StackType.SINGLE_IPV6) {
 			delete tunnel.ipv4;
-			delete tunnel.ipv4Prefix;
 		}
 		for (const idx in tunnel.peers) {
 			if (tunnel.peers[idx].psk === '' || tunnel.peers[idx].psk === null) {

@@ -21,8 +21,6 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
-use App\NetworkModule\Entities\MultiAddress;
-use Darsyn\IP\Version\Multi as IP;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -57,28 +55,16 @@ class WireguardInterface implements JsonSerializable {
 	private $port;
 
 	/**
-	 * @var IP|null Interface IPv4 address
-	 * @ORM\Column(type="ip", nullable=true)
+	 * @var WireguardInterfaceIpv4 Interface IPv4 address
+	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv4", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $ipv4;
 
 	/**
-	 * @var int|null Interface IPv4 address prefix
-	 * @ORM\Column(type="integer", name="ipv4_prefix", nullable=true)
-	 */
-	private $ipv4Prefix;
-
-	/**
-	 * @var IP|null Interface IPv6 address
-	 * @ORM\Column(type="ip", nullable=true)
+	 * @var WireguardInterfaceIpv6 Interface IPv6 address
+	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv6", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $ipv6;
-
-	/**
-	 * @var int|null Interface IPv6 address prefix
-	 * @ORM\Column(type="integer", name="ipv6_prefix", nullable=true)
-	 */
-	private $ipv6Prefix;
 
 	/**
 	 * @var Collection Interface peer IDs
@@ -91,17 +77,11 @@ class WireguardInterface implements JsonSerializable {
 	 * @param string $name Wireguard tunnel interface name
 	 * @param string $privateKey Wireguard tunnel interface private key
 	 * @param int|null $port Wireguard tunnel interface listen port
-	 * @param MultiAddress|null $ipv4 Interface IPv4 address
-	 * @param MultiAddress|null $ipv6 Interface IPv6 address
 	 */
-	public function __construct(string $name, string $privateKey, ?int $port, ?MultiAddress $ipv4, ?MultiAddress $ipv6) {
+	public function __construct(string $name, string $privateKey, ?int $port) {
 		$this->name = $name;
 		$this->privateKey = $privateKey;
 		$this->port = $port;
-		$this->ipv4 = $ipv4 === null ? null : $ipv4->getAddress();
-		$this->ipv4Prefix = $ipv4 === null ? null : $ipv4->getPrefix();
-		$this->ipv6 = $ipv6 === null ? null : $ipv6->getAddress();
-		$this->ipv6Prefix = $ipv6 === null ? null : $ipv6->getPrefix();
 		$this->peers = new ArrayCollection();
 	}
 
@@ -155,42 +135,34 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Returns Interface IPv4 address
-	 * @return MultiAddress|null Interface IPv4 address
+	 * @return WireguardInterfaceIpv4|null Interface IPv4 address
 	 */
-	public function getIpv4(): ?MultiAddress {
-		if ($this->ipv4 === null && $this->ipv4Prefix === null) {
-			return $this->ipv4;
-		}
-		return new MultiAddress($this->ipv4, $this->ipv4Prefix);
+	public function getIpv4(): ?WireguardInterfaceIpv4 {
+		return $this->ipv4;
 	}
 
 	/**
 	 * Sets Interface IPv4 address
-	 * @param MultiAddress|null $ipv4 Interface IPv4 address
+	 * @param WireguardInterfaceIpv4|null $ipv4 Interface IPv4 address
 	 */
-	public function setIpv4(?MultiAddress $ipv4 = null): void {
-		$this->ipv4 = $ipv4 === null ? null : $ipv4->getAddress();
-		$this->ipv4Prefix = $ipv4 === null ? null : $ipv4->getPrefix();
+	public function setIpv4(?WireguardInterfaceIpv4 $ipv4 = null): void {
+		$this->ipv4 = $ipv4;
 	}
 
 	/**
 	 * Returns Interface IPv6 address
-	 * @return MultiAddress|null Interface IPv6 address
+	 * @return WireguardInterfaceIpv6|null Interface IPv6 address
 	 */
-	public function getIpv6(): ?MultiAddress {
-		if ($this->ipv6 === null && $this->ipv6Prefix === null) {
-			return $this->ipv6;
-		}
-		return new MultiAddress($this->ipv6, $this->ipv6Prefix);
+	public function getIpv6(): ?WireguardInterfaceIpv6 {
+		return $this->ipv6;
 	}
 
 	/**
 	 * Sets Interface IPv6 address
-	 * @param MultiAddress|null $ipv6 Interface IPv6 address
+	 * @param WireguardInterfaceIpv6|null $ipv6 Interface IPv6 address
 	 */
-	public function setIpv6(?MultiAddress $ipv6 = null): void {
-		$this->ipv6 = $ipv6 === null ? null : $ipv6->getAddress();
-		$this->ipv6Prefix = $ipv6 === null ? null : $ipv6->getPrefix();
+	public function setIpv6(?WireguardInterfaceIpv6 $ipv6 = null): void {
+		$this->ipv6 = $ipv6;
 	}
 
 	/**
@@ -230,21 +202,22 @@ class WireguardInterface implements JsonSerializable {
 	 * @return array<string, array<array<string, int|string|null>>|int|string|null> JSON serialized wireguard interface entity
 	 */
 	public function jsonSerialize(): array {
-		$ipv4 = $this->getIpv4();
-		$ipv6 = $this->getIpv6();
-		return [
+		$array = [
 			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'privateKey' => $this->getPrivateKey(),
 			'port' => $this->getPort(),
-			'ipv4' => $ipv4 === null ? null : $ipv4->getAddress()->getDotAddress(),
-			'ipv4Prefix' => $ipv4 === null ? null : $ipv4->getPrefix(),
-			'ipv6' => $ipv6 === null ? null : $ipv6->getAddress()->getCompactedAddress(),
-			'ipv6Prefix' => $ipv6 === null ? null : $ipv6->getPrefix(),
 			'peers' => array_map(function (WireguardPeer $peer): array {
 				return $peer->jsonSerialize();
 			}, $this->getPeers()->toArray()),
 		];
+		if ($this->getIpv4() !== null) {
+			$array['ipv4'] = $this->getIpv4()->jsonSerialize();
+		}
+		if ($this->getIpv6() !== null) {
+			$array['ipv6'] = $this->getIpv6()->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**
