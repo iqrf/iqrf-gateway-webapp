@@ -1616,7 +1616,11 @@
 				"rfSubChannelA": "RF channel 2nd network",
 				"rfSubChannelB": "Alternative DSM channel",
 				"rfAltDsmChannel": "Alternative DSM channel",
-				"stdAndLpNetwork": "STD and LP network",
+				"networkType": "Network type",
+				"networkTypes": {
+					"std": "STD",
+					"stdLp": "STD and LP"
+				},
 				"txPower": "TX power",
 				"rxFilter": "RX filter",
 				"lpRxTimeout": "LP RX timeout",
