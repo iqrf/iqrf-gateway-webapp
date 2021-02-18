@@ -76,7 +76,7 @@ final class WireguardPeerTest extends TestCase {
 	 * Sets the test environment
 	 */
 	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null, null, null);
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
 		$this->entity = new WireguardPeer(self::PUBLIC_KEY, self::PSK, self::KEEPALIVE, self::ENDPOINT, self::PORT, $this->interfaceEntity);
 		$this->peerIpv4Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('10.0.0.0'), 32), $this->entity);
 		$this->peerIpv6Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('::'), 48), $this->entity);
@@ -181,7 +181,7 @@ final class WireguardPeerTest extends TestCase {
 	 * Tests the function to set wg peer interface
 	 */
 	public function testSetInterface(): void {
-		$expected = new WireguardInterface('test', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7abcdef1234=', null, null, null);
+		$expected = new WireguardInterface('test', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7abcdef1234=', null);
 		$this->entity->setInterface($expected);
 		Assert::equal($expected, $this->entity->getInterface());
 	}

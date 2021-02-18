@@ -12,6 +12,8 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\Database\Entities;
 
 use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardInterfaceIpv4;
+use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi;
@@ -42,12 +44,12 @@ class WireguardInterfaceTest extends TestCase {
 	private const PORT = 51775;
 
 	/**
-	 * @var MultiAddress IPv4 address entity
+	 * @var WireguardInterfaceIpv4 IPv4 address entity
 	 */
 	private $ipv4Entity;
 
 	/**
-	 * @var MultiAddress IPv6 address entity
+	 * @var WireguardInterfaceIpv6 IPv6 address entity
 	 */
 	private $ipv6Entity;
 
@@ -65,9 +67,11 @@ class WireguardInterfaceTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->ipv4Entity = new MultiAddress(Multi::factory('192.168.1.2'), 24);
-		$this->ipv6Entity = new MultiAddress(Multi::factory('2001:db8::'), 32);
-		$this->entity = new WireguardInterface(self::NAME, self::PRIVATE_KEY, self::PORT, $this->ipv4Entity, $this->ipv6Entity);
+		$this->entity = new WireguardInterface(self::NAME, self::PRIVATE_KEY, self::PORT);
+		$this->ipv4Entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->entity);
+		$this->ipv6Entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('2001:db8::'), 32), $this->entity);
+		$this->entity->setIpv4($this->ipv4Entity);
+		$this->entity->setIpv6($this->ipv6Entity);
 		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->entity);
 	}
 
@@ -138,7 +142,7 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to set wg interface ipv4 address and prefix
 	 */
 	public function testSetIpv4(): void {
-		$expected = new MultiAddress(Multi::factory('10.0.0.20'), 24);
+		$expected = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('10.0.0.20'), 24), $this->entity);
 		$this->entity->setIpv4($expected);
 		Assert::equal($expected, $this->entity->getIpv4());
 	}
@@ -162,7 +166,7 @@ class WireguardInterfaceTest extends TestCase {
 	 * Tests the function to set wg interface ipv6 address and prefix
 	 */
 	public function testSetIpv6(): void {
-		$expected = new MultiAddress(Multi::factory('::20'), 48);
+		$expected = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('::20'), 48), $this->entity);
 		$this->entity->setIpv6($expected);
 		Assert::equal($expected, $this->entity->getIpv6());
 	}
@@ -213,10 +217,6 @@ class WireguardInterfaceTest extends TestCase {
 			'name' => self::NAME,
 			'privateKey' => self::PRIVATE_KEY,
 			'port' => self::PORT,
-			'ipv4' => $this->ipv4Entity->getAddress()->getDotAddress(),
-			'ipv4Prefix' => $this->ipv4Entity->getPrefix(),
-			'ipv6' => $this->ipv6Entity->getAddress()->getCompactedAddress(),
-			'ipv6Prefix' => $this->ipv6Entity->getPrefix(),
 			'peers' => [
 				[
 					'id' => null,
@@ -230,6 +230,16 @@ class WireguardInterfaceTest extends TestCase {
 						'ipv6' => [],
 					],
 				],
+			],
+			'ipv4' => [
+				'id' => null,
+				'address' => '192.168.1.2',
+				'prefix' => 24,
+			],
+			'ipv6' => [
+				'id' => null,
+				'address' => '2001:db8::',
+				'prefix' => 32,
 			],
 		];
 		$this->entity->addPeer($this->peerEntity);
@@ -245,10 +255,6 @@ class WireguardInterfaceTest extends TestCase {
 			'name' => self::NAME,
 			'privateKey' => self::PRIVATE_KEY,
 			'port' => null,
-			'ipv4' => null,
-			'ipv4Prefix' => null,
-			'ipv6' => null,
-			'ipv6Prefix' => null,
 			'peers' => [],
 		];
 		$this->entity->setPort();
