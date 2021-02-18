@@ -1254,6 +1254,7 @@
 					"scCodeInvalid": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
 				},
 				"messages": {
+					"bondLocalAction": "Press node device button within 10 seconds to invoke bonding.",
 					"bondSuccess": "A new device has been successfully bonded to address {address}.",
 					"bondExists": "Another device is already bonded to address {address}.",
 					"timeout": "Request to bond a new device has timed out.",

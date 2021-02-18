@@ -251,7 +251,6 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
 
-
 interface NodeMessages {
 	nodesNew: string
 	nodesTotal: string
@@ -395,11 +394,10 @@ export default class AutoNetwork extends Vue {
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
 								this.$store.dispatch('removeMessage', this.msgId);
-								this.$toast.success(
-									this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success')
-										.toString()
-								);
-								this.$emit('update-devices');
+								this.$emit('update-devices', {
+									message: this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString(),
+									type: 'success',
+								});
 							}
 							break;
 						default:

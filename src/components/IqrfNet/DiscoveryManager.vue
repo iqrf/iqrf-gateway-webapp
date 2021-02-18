@@ -139,7 +139,10 @@ export default class DiscoveryManager extends Vue {
 	 */
 	private handleDiscoveryResponse(response): void {
 		if (response.data.status === 0) {
-			this.$emit('update-devices', this.$t('iqrfnet.networkManager.discovery.messages.success').toString());
+			this.$emit('update-devices', {
+				message: this.$t('iqrfnet.networkManager.discovery.messages.success').toString(),
+				type: 'success',
+			});
 		} else if (response.data.status === -1) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.discovery.messages.timeout').toString()
