@@ -25,12 +25,16 @@ use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\WireguardInterface;
+use App\Models\Database\Entities\WireguardInterfaceIpv4;
+use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\UserRepository;
+use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
+use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\Models\Database\Repositories\WireguardPeerRepository;
@@ -77,6 +81,26 @@ trait TRepositories {
 	public function getUserRepository(): UserRepository {
 		$repository = $this->getRepository(User::class);
 		assert($repository instanceof UserRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the wireguard interface ipv4 repository
+	 * @return WireguardInterfaceIpv4Repository Wireguard interface ipv6 repository
+	 */
+	public function getWireguardInterfaceIpv4Repository(): WireguardInterfaceIpv4Repository {
+		$repository = $this->getRepository(WireguardInterfaceIpv4::class);
+		assert($repository instanceof WireguardInterfaceIpv4Repository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the wireguard interface ipv6 repository
+	 * @return WireguardInterfaceIpv6Repository Wireguard interface ipv4 repository
+	 */
+	public function getWireguardInterfaceIpv6Repository(): WireguardInterfaceIpv6Repository {
+		$repository = $this->getRepository(WireguardInterfaceIpv6::class);
+		assert($repository instanceof WireguardInterfaceIpv6Repository);
 		return $repository;
 	}
 
