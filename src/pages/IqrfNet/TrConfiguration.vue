@@ -101,10 +101,18 @@
 								<CAlert v-if='address === 0 && config.stdAndLpNetwork === false' color='warning'>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
-								<CInputCheckbox
+								<CSelect
 									v-if='address === 0 && config.stdAndLpNetwork !== undefined'
-									:checked.sync='config.stdAndLpNetwork'
-									:label='$t("iqrfnet.trConfiguration.form.stdAndLpNetwork")'
+									:label='$t("iqrfnet.trConfiguration.form.networkType")'
+									:value.sync='config.stdAndLpNetwork'
+									:options='[
+										{
+											value: false, label: $t("iqrfnet.trConfiguration.form.networkTypes.std")
+										},
+										{
+											value: true, label: $t("iqrfnet.trConfiguration.form.networkTypes.stdLp")
+										}
+									]'
 								/>
 								<ValidationProvider
 									v-slot='{ valid, touched, errors }'
