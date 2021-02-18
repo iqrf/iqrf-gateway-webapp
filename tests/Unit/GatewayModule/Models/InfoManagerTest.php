@@ -57,6 +57,7 @@ final class InfoManagerTest extends CommandTestCase {
 		'gw' => 'cat /etc/iqrf-gateway.json',
 		'gitBranches' => 'git branch -v --no-abbrev',
 		'pixlaToken' => 'cat /etc/gwman/customer_id',
+		'uptime' => 'uptime -p',
 	];
 
 	/**
@@ -107,6 +108,7 @@ final class InfoManagerTest extends CommandTestCase {
 			'free' => '5.63 GB',
 			'usage' => '27.15%',
 		],
+		'uptime' => 'up 2 hours, 30 minutes',
 	];
 
 	/**
@@ -276,6 +278,15 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get gateway uptime
+	 */
+	public function testGetUptime(): void {
+		$output = 'up 2 hours, 30 minutes';
+		$this->receiveCommand(self::COMMANDS['uptime'], null, $output);
+		Assert::same(self::EXPECTED['uptime'], $this->manager->getUptime());
+	}
+
+	/**
 	 * Tests the function to return PIXLA token (failure)
 	 */
 	public function testGetPixlaTokenFailure(): void {
@@ -324,6 +335,8 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['memoryUsage']);
 		$manager->shouldReceive('getSwapUsage')
 			->andReturn(self::EXPECTED['swapUsage']);
+		$manager->shouldReceive('getUptime')
+			->andReturn(self::EXPECTED['uptime']);
 		Assert::same(self::EXPECTED, $manager->get($verbose));
 	}
 
