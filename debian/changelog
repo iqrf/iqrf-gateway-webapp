@@ -1,3 +1,13 @@
+iqrf-gateway-webapp (2.2.6) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * Iqrfnet: fixed timeouts in components, fixed autonetwork node count parsing
+  * IqrfNet: pass bonding and discovery actions success messages to devices info to project upon refreshing grid
+  * Iqrfnet: TR configuration network type select instead of checkbox, reload configuration
+  * Gateway: added uptime to info page, updated tests and jsonschema
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 18 Feb 2021 16:04:31 +0100
+
 iqrf-gateway-webapp (2.2.5) stable; urgency=medium
 
   [ Karel Hanák ]
