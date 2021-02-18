@@ -10,6 +10,7 @@
 		"pixla",
 		"versions",
 		"hostname",
+		"uptime",
 		"interfaces",
 		"diskUsages",
 		"memoryUsage",
@@ -89,6 +90,12 @@
 			"type": "string",
 			"title": "Hostname",
 			"example": "iqd-gw-01.local"
+		},
+		"uptime": {
+			"$id": "#/properties/uptime",
+			"title": "Gateway uptime",
+			"type": "string",
+			"example": "up 2 hours, 30 minutes"
 		},
 		"interfaces": {
 			"$id": "#/properties/interfaces",

@@ -1005,6 +1005,7 @@
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},
 			"hostname": "Hostname",
+			"uptime": "Uptime",
 			"addresses": {
 				"ip": "IP addresses",
 				"mac": "MAC addresses"

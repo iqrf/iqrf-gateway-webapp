@@ -99,6 +99,7 @@ class InfoManager {
 			'diskUsages' => $this->getDiskUsages(),
 			'memoryUsage' => $this->getMemoryUsage(),
 			'swapUsage' => $this->getSwapUsage(),
+			'uptime' => $this->getUptime(),
 		];
 	}
 
@@ -157,6 +158,14 @@ class InfoManager {
 	 */
 	public function getCoordinatorInfo(): array {
 		return $this->enumerationManager->device(0);
+	}
+
+	/**
+	 * Gets gateway uptime
+	 * @return string Gateway uptime
+	 */
+	public function getUptime(): string {
+		return $this->commandManager->run('uptime -p')->getStdout();
 	}
 
 	/**

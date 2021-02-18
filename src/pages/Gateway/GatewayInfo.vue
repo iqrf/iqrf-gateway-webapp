@@ -74,6 +74,10 @@
 							<th>{{ $t('gateway.info.usages.swap') }}</th>
 							<td><resource-usage :usage='info.swapUsage' /></td>
 						</tr>
+						<tr>
+							<th>{{ $t('gateway.info.uptime') }}</th>
+							<td>{{ info.uptime }}</td>
+						</tr>
 						<tr v-if='showCoordinator'>
 							<th>{{ $t('gateway.info.tr.title') }}</th>
 							<td>
