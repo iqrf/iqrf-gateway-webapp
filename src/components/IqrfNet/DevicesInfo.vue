@@ -74,6 +74,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 import { Dictionary } from 'vue-router/types/router';
 import { MutationPayload } from 'vuex';
+import { ToastOptions } from 'vue-toast-notification';
 
 @Component({
 	components: {
@@ -126,9 +127,9 @@ export default class DevicesInfo extends Vue {
 	private msgId: string|null = null
 
 	/**
-	 * @var {string|null} toastMessage Toast message from other components to show after grid is refreshed
+	 * @var {ToastOptions|null} toastMessage Toast message from other components to show after grid is refreshed
 	 */
-	private toastMessage: string|null = null
+	private toastMessage: ToastOptions|null = null
 
 	/**
 	 * Component unsubscribe function
@@ -220,9 +221,9 @@ export default class DevicesInfo extends Vue {
 
 	/**
 	 * Performs BondedDevices api call
-	 * @param {string|null} message Message from other components to show after grid is refreshed
+	 * @param {ToastOptions|null} message Message from other components to show after grid is refreshed
 	 */
-	public getBondedDevices(message: string|null = null): void {
+	public getBondedDevices(message: ToastOptions|null = null): void {
 		if (message !== null) {
 			this.toastMessage = message;
 		}
@@ -324,9 +325,7 @@ export default class DevicesInfo extends Vue {
 					this.$forceUpdate();
 				}
 				if (this.toastMessage !== null) {
-					this.$toast.success(
-						this.toastMessage
-					);
+					this.$toast.open(this.toastMessage);
 					this.toastMessage = null;
 				}
 				break;

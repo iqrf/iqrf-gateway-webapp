@@ -298,11 +298,12 @@ export default class BondingManager extends Vue {
 	 * Performs local bonding or SmartConnect bonding
 	 */
 	private processSubmitBond(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
+		this.$store.dispatch('spinner/show', {timeout: 11000});
 		const address = this.autoAddress ? 0 : this.address;
 		if (this.bondMethod === 'local') {
-			IqrfNetService.bondLocal(address, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+			IqrfNetService.bondLocal(address, this.buildOptions(11000, 'iqrfnet.networkManager.messages.submit.timeout'))
 				.then((msgId: string) => this.msgId = msgId);
+			this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.bondingManager.messages.bondLocalAction').toString());
 		} else if (this.bondMethod === 'smartConnect') {
 			IqrfNetService.bondSmartConnect(address, this.scCode, this.bondingRetries, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
 				.then((msgId: string) => this.msgId = msgId);
@@ -322,10 +323,10 @@ export default class BondingManager extends Vue {
 					bondAddr = response.rsp.result.bondAddr;
 				}
 			}
-			this.$toast.success(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString()
-			);
-			this.$emit('update-devices');
+			this.$emit('update-devices', {
+				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
+				type: 'success',
+			});
 		} else if (response.status === -1) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.messages.submit.timeout').toString()
@@ -350,32 +351,36 @@ export default class BondingManager extends Vue {
 		if (response.status === 0) {
 			if (response.rsp.nodesNr === 0) { // all bonds cleared
 				if (this.unbondCoordinatorOnly) {
-					this.$toast.success(
-						this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllCSuccess').toString()
-					);
+					this.$emit('update-devices', {
+						message: this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllCSuccess').toString(),
+						type: 'success',
+					});
 				} else {
-					this.$toast.success(
-						this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllSuccess').toString()
-					);
+					this.$emit('update-devices', {
+						message: this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllSuccess').toString(),
+						type: 'success',
+					});
 				}
 			} else { // select nodes
 				if (this.unbondCoordinatorOnly) {
-					this.$toast.success(
-						this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccessC', {address: this.address}).toString()
-					);
+					this.$emit('update-devices', {
+						message: this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccessC', {address: this.address}).toString(),
+						type: 'success',
+					});
 				} else {
 					if (response.rsp.removeBondFailedNodes) { //clear all, but some were offline
-						this.$toast.info(
-							this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString()
-						);
+						this.$emit('update-devices', {
+							message: this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString(),
+							type: 'info',
+						});
 					} else {
-						this.$toast.success(
-							this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccess', {address: this.address}).toString()
-						);
+						this.$emit('update-devices', {
+							message: this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccess', {address: this.address}).toString(),
+							type: 'success',
+						});
 					}
 				}
 			}
-			this.$emit('update-devices');
 			return;
 		}
 		if (this.unbondCoordinatorOnly) {

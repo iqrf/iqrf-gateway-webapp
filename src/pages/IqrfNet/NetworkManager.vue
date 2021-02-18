@@ -46,6 +46,7 @@ import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
 import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 import OtaUpload from '../../components/IqrfNet/OtaUpload.vue';
 import VersionAlert from '../../components/IqrfNet/VersionAlert.vue';
+import {ToastOptions} from 'vue-toast-notification';
 
 @Component({
 	components: {
@@ -104,9 +105,9 @@ export default class NetworkManager extends Vue {
 
 	/**
 	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
-	 * @param {string} message Success toast message passed from other components for devices info grid to show
+	 * @param {ToastOptions} message Success toast message passed from other components for devices info grid to show
 	 */
-	private updateDevices(message: string): void {
+	private updateDevices(message: ToastOptions): void {
 		(this.$refs.devs as DevicesInfo).getBondedDevices(message);
 	}
 
