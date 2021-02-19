@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use DateTime;
 use DateTimeZone;
 
@@ -50,7 +51,7 @@ class TimeManager {
 		$array = [];
 		$command = $this->commandManager->run('date +%s');
 		$timestamp = [
-			'timestamp' => $command->getStdout(),
+			'timestamp' => intval($command->getStdout()),
 		];
 		$command = $this->commandManager->run('cat /etc/timezone');
 		$timezone = $this->timezoneInfo($command->getStdout());
@@ -77,7 +78,7 @@ class TimeManager {
 	 * @param string $timezone Timezone name
 	 * @return array<string, string> Timezone name, abbreviation and offset
 	 */
-	private function timezoneInfo(string $timezone): array {
+	public function timezoneInfo(string $timezone): array {
 		$time = new DateTime('now', new DateTimeZone($timezone));
 		$timezoneInfo = explode(' ', $time->format('T O'));
 		return [
@@ -92,7 +93,10 @@ class TimeManager {
 	 * @param string $timezone Timezone name
 	 */
 	public function setTimezone(string $timezone): void {
-		$this->commandManager->run('timedatectl set-timezone ' . $timezone, true);
+		$command = $this->commandManager->run('timedatectl set-timezone ' . $timezone, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentTimezoneException($command->getStderr());
+		}
 	}
 
 }

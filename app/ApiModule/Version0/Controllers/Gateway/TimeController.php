@@ -23,10 +23,12 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Models\TimeManager;
 
 /**
@@ -99,6 +101,12 @@ class TimeController extends GatewayController {
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Sets new gateway timezone
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                 $ref: '#/components/schemas/TimezoneSet'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -106,6 +114,8 @@ class TimeController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/TimezoneSet'
+	 *      '400':
+	 *          description: Not found
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -113,9 +123,13 @@ class TimeController extends GatewayController {
 	 */
 	public function setTimezone(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('timezoneSet', $request);
-		$body = $request->getJsonBody();
-		$this->manager->setTimezone($body['timezone']);
-		return $response->writeBody('Workaround');
+		try {
+			$body = $request->getJsonBody();
+			$this->manager->setTimezone($body['timezone']);
+			return $response->writeBody('Workaround');
+		} catch (NonexistentTimezoneException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		}
 	}
 
 }
