@@ -301,6 +301,22 @@ build-package_iqaros_release:
       - './*.changes'
     expire_in: 2 weeks
 
+deploy-apidocs:
+  stage: deploy-docs
+  environment:
+    name: apidocs
+    url: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/
+  only:
+    - master
+  script:
+    - composer install --no-progress
+    - bin/manager open-api:specification > api.json
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
+    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
+    - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
+    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
+  <<: *ssh_template
+
 deploy-package-devel:
   stage: deploy-package
   dependencies:
@@ -311,8 +327,8 @@ deploy-package-devel:
   only:
     - master
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/devel
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/all/devel
   <<: *ssh_template
 
 deploy-package-devel_iqd-gw-01:
@@ -325,8 +341,8 @@ deploy-package-devel_iqd-gw-01:
   only:
     - master
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
   <<: *ssh_template
 
 deploy-package-devel_iqaros:
@@ -339,8 +355,8 @@ deploy-package-devel_iqaros:
   only:
     - master
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/devel
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/devel
   <<: *ssh_template
 
 deploy-package-stable:
@@ -353,8 +369,8 @@ deploy-package-stable:
   only:
     - tags
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*.changes"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/stable
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/all/stable
   <<: *ssh_template
 
 deploy-package-stable_iqd-gw-01:
@@ -367,8 +383,8 @@ deploy-package-stable_iqd-gw-01:
   only:
     - tags
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
   <<: *ssh_template
 
 deploy-package-stable_iqaros:
@@ -381,8 +397,8 @@ deploy-package-stable_iqaros:
   only:
     - tags
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/stable/*.changes"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/stable
+    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/stable
   <<: *ssh_template
 
 include:
