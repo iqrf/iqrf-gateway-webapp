@@ -135,11 +135,46 @@ class ConnectionsController extends NetworkController {
 			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
 		} catch (NonexistentConnectionException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Creates new network connection
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/NetworkConnection'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('networkConnection', $request);
+		try {
+			$json = $request->getJsonBody(false);
+			$uuid = $this->manager->add($json);
+			return $response->writeBody($uuid);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 	/**
@@ -176,9 +211,9 @@ class ConnectionsController extends NetworkController {
 			$json = $request->getJsonBody(false);
 			$this->manager->edit($uuid, $json);
 		} catch (NonexistentConnectionException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');
 	}
@@ -210,11 +245,11 @@ class ConnectionsController extends NetworkController {
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$uuid = $this->getUuid($request);
-			return $response->writeJsonObject($this->manager->get($uuid));
+			return $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
 		} catch (NonexistentConnectionException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -252,9 +287,9 @@ class ConnectionsController extends NetworkController {
 			$this->manager->up($uuid, $interface);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentConnectionException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -284,9 +319,9 @@ class ConnectionsController extends NetworkController {
 			$this->manager->down($uuid);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentConnectionException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -300,7 +335,7 @@ class ConnectionsController extends NetworkController {
 		try {
 			return Uuid::fromString($request->getParameter('uuid'));
 		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 	}
 

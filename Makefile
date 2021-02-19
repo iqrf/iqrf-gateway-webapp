@@ -21,6 +21,7 @@ DATA_DIR=${DESTDIR}/usr/share/iqrf-gateway-webapp
 LOG_DIR=${DESTDIR}/var/log/iqrf-gateway-webapp
 VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
+SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 
 .PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
 
@@ -71,6 +72,8 @@ install:
 	cp version.json $(DATA_DIR)
 	cp -r vendor/ $(DATA_DIR)
 	cp -r www/ $(DATA_DIR)
+	install -d $(SYSTEMD_DIR)
+	install -m 0644 install/config/systemd/* $(SYSTEMD_DIR)
 	install -d -o www-data $(LOG_DIR)
 	install -d -o www-data ${DESTDIR}/var/lib/iqrf-gateway-webapp
 	# Delete documentation

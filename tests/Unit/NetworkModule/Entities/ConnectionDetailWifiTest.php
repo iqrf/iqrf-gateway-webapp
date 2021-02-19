@@ -13,8 +13,12 @@ namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\ConnectionDetail;
+use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
+use App\NetworkModule\Entities\IPv4Current;
+use App\NetworkModule\Entities\IPv6Address;
 use App\NetworkModule\Entities\IPv6Connection;
+use App\NetworkModule\Entities\IPv6Current;
 use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiConnectionSecurity;
 use App\NetworkModule\Entities\WifiSecurity\Leap;
@@ -25,6 +29,8 @@ use App\NetworkModule\Enums\IPv6Methods;
 use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurityType;
+use Darsyn\IP\Version\IPv4;
+use Darsyn\IP\Version\IPv6;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Ramsey\Uuid\Uuid;
@@ -116,7 +122,8 @@ final class ConnectionDetailWifiTest extends TestCase {
 		$addresses = [];
 		$gateway = null;
 		$dns = [];
-		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns);
+		$current = new IPv4Current([IPv4Address::fromPrefix('192.168.1.183/24')], IPv4::factory('192.168.1.1'), [IPv4::factory('192.168.1.1')]);
+		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns, $current);
 	}
 
 	/**
@@ -125,8 +132,23 @@ final class ConnectionDetailWifiTest extends TestCase {
 	private function createIpv6Connection(): void {
 		$method = IPv6Methods::AUTO();
 		$addresses = [];
+		$gateway = null;
 		$dns = [];
-		$this->ipv6 = new IPv6Connection($method, $addresses, $dns);
+		$current = new IPv6Current(
+			$method,
+			[
+				IPv6Address::fromPrefix('2001:470:5bb2:0:437f:a19c:1607:6bff/64'),
+				IPv6Address::fromPrefix('fd50:ccd6:13ed:0:833f:3996:18b3:a9d8/64'),
+				IPv6Address::fromPrefix('2001:470:5bb2::ca9/128'),
+				IPv6Address::fromPrefix('fd50:ccd6:13ed::ca9/128'),
+				IPv6Address::fromPrefix('fe80::ccae:7146:7f08:541e/64'),
+			],
+			IPv6::factory('fe80::6f0:21ff:fe24:1e53'),
+			[
+				IPv6::factory('fd50:ccd6:13ed::1'),
+			],
+		);
+		$this->ipv6 = new IPv6Connection($method, $addresses, $gateway, $dns, $current);
 	}
 
 	/**
@@ -135,12 +157,13 @@ final class ConnectionDetailWifiTest extends TestCase {
 	private function createWifiConnection(): void {
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA();
+		$bssids = ['04:4F:4C:AB:DD:6A', '04:F0:21:23:29:00', '04:F0:21:24:1E:53', '18:E8:29:E4:CB:9A', '1A:E8:29:E5:CB:9A'];
 		$securityType = WifiSecurityType::WPA_PSK();
 		$psk = 'password';
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
-		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep);
-		$this->wifi = new WifiConnection($ssid, $mode, $security);
+		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep, null);
+		$this->wifi = new WifiConnection($ssid, $mode, $bssids, $security);
 	}
 
 	/**
@@ -178,7 +201,7 @@ final class ConnectionDetailWifiTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, Json::FORCE_ARRAY);
-		Assert::same($expected, $this->entity->jsonSerialize());
+		Assert::equal($expected, $this->entity->jsonSerialize());
 	}
 
 }

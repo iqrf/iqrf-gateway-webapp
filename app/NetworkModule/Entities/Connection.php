@@ -118,7 +118,7 @@ final class Connection implements JsonSerializable {
 		$array = explode(':', $string);
 		$uuid = Uuid::fromString($array[1]);
 		$type = ConnectionTypes::fromScalar($array[2]);
-		return new static($array[0], $uuid, $type, $array[3]);
+		return new self($array[0], $uuid, $type, $array[3]);
 	}
 
 }

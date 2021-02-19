@@ -22,6 +22,7 @@ namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\WifiNetwork;
+use App\NetworkModule\Enums\WifiSecurity;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 
 /**
@@ -47,16 +48,24 @@ class WifiManager {
 	 * @return array<WifiNetwork> Available WiFi networks
 	 */
 	public function list(): array {
-		$output = $this->commandManager->run('nmcli -t device wifi list --rescan auto', true);
+		$output = $this->commandManager->run('nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto', true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}
+		$gateway = file_exists('/etc/iqrf-gateway.json');
 		$networks = [];
 		foreach (explode(PHP_EOL, $output->getStdout()) as $network) {
 			if ($network === '') {
 				continue;
 			}
-			$networks[] = WifiNetwork::nmCliDeserialize($network);
+			$deserializedEntry = WifiNetwork::nmCliDeserialize($network);
+			if ($gateway) {
+				$security = $deserializedEntry->getSecurity();
+				if ($security === WifiSecurity::OPEN() || $security === WifiSecurity::WEP()) {
+					continue;
+				}
+			}
+			$networks[] = $deserializedEntry;
 		}
 		return $networks;
 	}

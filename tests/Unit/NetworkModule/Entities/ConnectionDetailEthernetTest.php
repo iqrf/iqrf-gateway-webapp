@@ -106,7 +106,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
 		$dns = [IPv4::factory('192.168.1.1')];
-		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns);
+		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**
@@ -115,10 +115,11 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	private function createIpv6Connection(): void {
 		$method = IPv6Methods::MANUAL();
 		$addresses = [
-			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1')),
+			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
 		];
+		$gateway = IPv6::factory('fe80::1');
 		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		$this->ipv6 = new IPv6Connection($method, $addresses, $dns);
+		$this->ipv6 = new IPv6Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**
@@ -134,10 +135,11 @@ final class ConnectionDetailEthernetTest extends TestCase {
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
-		$ipv4 = new IPv4Connection(IPv4Methods::MANUAL(), $ipv4Addresses, $ipv4Gateway, $ipv4Dns);
-		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64', 'fe80::1')];
+		$ipv4 = new IPv4Connection(IPv4Methods::MANUAL(), $ipv4Addresses, $ipv4Gateway, $ipv4Dns, null);
+		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64')];
+		$ipv6Gateway = IPv6::factory('fe80::1');
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
-		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns);
+		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Gateway, $ipv6Dns, null);
 		$expected = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $ipv4, $ipv6);
 		Assert::equal($expected, $actual);
 	}

@@ -32,7 +32,7 @@
 					{{ $t('network.table.disconnect') }}
 				</CButton> <CButton
 					color='primary'
-					:to='"/network/edit/" + item.uuid'
+					:to='"/network/ethernet/edit/" + item.uuid'
 					size='sm'
 				>
 					<CIcon :content='icons.edit' size='sm' />
@@ -63,7 +63,7 @@ import {NetworkConnection} from '../../interfaces/network';
 /**
  * Ethernet connections card for Network Manager component
  */
-export default class EthernetConnections extends Vue {
+export default class EthernetConnection extends Vue {
 	/**
 	 * @constant {Array<IField>} fields CoreUI data table columns
 	 */
@@ -100,6 +100,13 @@ export default class EthernetConnections extends Vue {
 	 * @property {string} interfaceName Name of network interface
 	 */
 	@Prop({required: false, default: null}) interfaceName!: string
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		this.fields[0].label = this.$t('network.connection.name', {interface: this.interfaceName});
+	}
 
 	/**
 	 * Establishes a connection using the specified configuration

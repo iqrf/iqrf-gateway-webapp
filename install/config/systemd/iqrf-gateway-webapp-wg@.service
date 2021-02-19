@@ -1,0 +1,13 @@
+[Unit]
+Description=IQRF Gateway Webapp WireGuard tunnel for %I
+After=network-online.target nss-lookup.target
+Wants=network-online.target nss-lookup.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager wireguard:activate %i'
+ExecStop=/bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager wireguard:deactivate %i'
+
+[Install]
+WantedBy=multi-user.target

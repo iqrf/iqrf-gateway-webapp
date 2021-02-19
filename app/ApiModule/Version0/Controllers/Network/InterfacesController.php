@@ -128,9 +128,9 @@ class InterfacesController extends NetworkController {
 			$this->interfaceManager->connect($request->getParameter('name'));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentDeviceException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -159,9 +159,9 @@ class InterfacesController extends NetworkController {
 			$this->interfaceManager->disconnect($request->getParameter('name'));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentDeviceException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

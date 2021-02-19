@@ -44,6 +44,10 @@ class NetworkConnectionService {
 		return axios.post('network/connections/' + uuid + '/disconnect', null, config);
 	}
 
+	public add(configuration: any): Promise<AxiosResponse> {
+		return axios.post('network/connections/', configuration, {headers: authorizationHeader()});
+	}
+
 	/**
 	 * Edits the network configuration
 	 * @param uuid Network configuration UUID
@@ -63,6 +67,14 @@ class NetworkConnectionService {
 	}
 
 	/**
+	 * Removes an existing network connection configuration
+	 * @param uuid Network connection UUID
+	 */
+	public remove(uuid: string): Promise<AxiosResponse> {
+		return axios.delete('network/connections/' + uuid, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Lists available network connections
 	 * @param type Network connection type
 	 */
@@ -72,6 +84,13 @@ class NetworkConnectionService {
 			Object.assign(config, {params: {type: type}});
 		}
 		return axios.get('network/connections', config);
+	}
+
+	/**
+	 * Lists available wifi access points
+	 */
+	public listWifiAccessPoints(): Promise<AxiosResponse> {
+		return axios.get('network/wifi/list', {headers: authorizationHeader()});
 	}
 
 }

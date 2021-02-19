@@ -26,6 +26,7 @@ use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
+use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
@@ -101,10 +102,35 @@ class ConnectionManager {
 		foreach ($array as $row) {
 			$connection = Connection::nmCliDeserialize($row);
 			if ($type === null || $type->equals($connection->getType())) {
+				if ($type === ConnectionTypes::WIFI()) {
+					$detail = $this->get($connection->getUuid())->jsonSerialize();
+					$bssids = $detail['wifi']['bssids'];
+					$connection = $connection->jsonSerialize();
+					$connection['bssids'] = $bssids;
+				}
 				$connections[] = $connection;
 			}
 		}
 		return $connections;
+	}
+
+	/**
+	 * Adds a new network connection configuration
+	 * @param stdClass $values Network connection configuration from values
+	 * @return string UUID of the new connection
+	 */
+	public function add(stdClass $values): string {
+		$newConnection = ConnectionDetail::jsonDeserialize($values);
+		$configuration = $newConnection->nmCliSerialize();
+		$command = sprintf('nmcli -t connection add %s', $configuration);
+		$output = $this->commandManager->run($command, true);
+		$exitCode = $output->getExitCode();
+		if ($exitCode !== 0) {
+			$this->handleError($exitCode, $output->getStderr());
+		}
+		$pattern = '/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/';
+		$matches = Strings::match($output->getStdout(), $pattern);
+		return $matches[0];
 	}
 
 	/**
@@ -119,7 +145,7 @@ class ConnectionManager {
 		$values->type = $currentConnection->getType()->toScalar();
 		$values->interface = $currentConnection->getInterfaceName();
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
-		$configuration = $newConnection->nmCliSerialize();
+		$configuration = Strings::replace($newConnection->nmCliSerialize(), '/connection\.type \"[\\-\w]+\" /', '');
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		$exitCode = $output->getExitCode();

@@ -46,6 +46,11 @@ final class WifiConnection implements INetworkManagerEntity {
 	private $mode;
 
 	/**
+	 * @var array<int, string> Seen BSSIDs
+	 */
+	private $bssids;
+
+	/**
 	 * @var WifiConnectionSecurity|null Wifi connection security entity
 	 */
 	private $security;
@@ -54,11 +59,13 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * Constructor
 	 * @param string $ssid SSID
 	 * @param WifiMode $mode WiFi network mode
+	 * @param array<int, string> $bssids Seen BSSIDs
 	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
-	public function __construct(string $ssid, WifiMode $mode, ?WifiConnectionSecurity $security) {
+	public function __construct(string $ssid, WifiMode $mode, array $bssids, ?WifiConnectionSecurity $security) {
 		$this->ssid = $ssid;
 		$this->mode = $mode;
+		$this->bssids = $bssids;
 		$this->security = $security;
 	}
 
@@ -70,7 +77,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		$mode = WifiMode::fromScalar($json->mode);
 		$security = ($json->security === null) ? null : WifiConnectionSecurity::jsonDeserialize($json->security);
-		return new static($json->ssid, $mode, $security);
+		return new self($json->ssid, $mode, [], $security);
 	}
 
 	/**
@@ -81,7 +88,8 @@ final class WifiConnection implements INetworkManagerEntity {
 		return [
 			'ssid' => $this->ssid,
 			'mode' => $this->mode->toScalar(),
-			'security' => $this->security === null ? null : $this->security->jsonSerialize(),
+			'bssids' => $this->bssids,
+			'security' => $this->security instanceof WifiConnectionSecurity ? $this->security->jsonSerialize() : null,
 		];
 	}
 
@@ -93,12 +101,13 @@ final class WifiConnection implements INetworkManagerEntity {
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$mode = WifiMode::fromScalar($array['mode']);
+		$bssids = explode(',', $array['seen-bssids']);
 		try {
 			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
 		} catch (Throwable $e) {
 			$security = null;
 		}
-		return new static($array['ssid'], $mode, $security);
+		return new self($array['ssid'], $mode, $bssids, $security);
 	}
 
 	/**

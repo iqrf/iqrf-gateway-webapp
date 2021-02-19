@@ -73,10 +73,14 @@ const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
-const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
-const EthernetInterfaces = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetInterfaces.vue');
+const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
+const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
+const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
+const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
+const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 import store from '../store';
+import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 
@@ -733,13 +737,83 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
-						component: EthernetInterfaces,
 						path: 'ethernet',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: EthernetConnections,
+								path: '',
+							},
+							{
+								component: ConnectionFormBasic,
+								path: 'add',
+							},
+							{
+								name: 'edit-ethernet-connection',
+								component: ConnectionFormBasic,
+								path: 'edit/:uuid',
+								props: true,
+							},
+						]
 					},
 					{
-						component: ConnectionForm,
-						path: 'edit/:uuid',
-						props: true,
+						path: 'wireless',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: WifiConnections,
+								path: '',
+							},
+							{
+								name: 'add-wireless-connection',
+								component: ConnectionFormBasic,
+								path: 'add',
+								props: true,
+							},
+							{
+								name: 'edit-wireless-connection',
+								component: ConnectionFormBasic,
+								path: 'edit/:uuid',
+								props: true,
+							}
+						]
+					},
+					{
+						path: 'vpn',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: WireguardTunnels,
+								path: '',
+							},
+							{
+								component: WireguardTunnel,
+								path: 'add'
+							},
+							{
+								component: WireguardTunnel,
+								path: 'edit/:id',
+								props: (route) => {
+									const id = Number.parseInt(route.params.id, 10);
+									if (Number.isNaN(id)) {
+										return 0;
+									}
+									return {id};
+								},
+							},
+						],
 					},
 				]
 			},

@@ -152,10 +152,19 @@
 							"prefix": 24
 						},
 						"additionalProperties": false,
-						"required": [
-							"address",
-							"prefix",
-							"mask"
+						"oneOf": [
+							{
+								"required": [
+									"address",
+									"prefix"
+								]
+							},
+							{
+								"required": [
+									"address",
+									"mask"
+								]
+							}
 						],
 						"properties": {
 							"address": {
@@ -168,8 +177,8 @@
 							"prefix": {
 								"$id": "#/properties/ipv4/properties/addresses/items/properties/prefix",
 								"type": "integer",
-								"exclusiveMinimum": 0,
-								"exclusiveMaximum": 32,
+								"minimum": 1,
+								"maximum": 32,
 								"title": "IPv4 network prefix",
 								"example": 24
 							},
@@ -254,6 +263,7 @@
 			"required": [
 				"method",
 				"addresses",
+				"gateway",
 				"dns"
 			],
 			"properties": {
@@ -298,8 +308,7 @@
 						"additionalProperties": false,
 						"required": [
 							"address",
-							"prefix",
-							"gateway"
+							"prefix"
 						],
 						"properties": {
 							"address": {
@@ -313,23 +322,23 @@
 								"type": "integer",
 								"title": "IPv6 network prefix",
 								"example": 64
-							},
-							"gateway": {
-								"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
-								"oneOf": [
-									{
-										"type": "string"
-									},
-									{
-										"type": "null"
-									}
-								],
-								"format": "ipv6",
-								"title": "IPv6 gateway address",
-								"example": "fe80::6f0:21ff:fe24:1e53"
 							}
 						}
 					}
+				},
+				"gateway": {
+					"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"format": "ipv6",
+					"title": "IPv6 gateway address",
+					"example": "fe80::6f0:21ff:fe24:1e53"
 				},
 				"dns": {
 					"$id": "#/properties/ipv6/properties/dns",
@@ -408,7 +417,7 @@
 					"type": "object",
 					"title": "WiFi connection security",
 					"example": {
-						"keyManagement": "wpa-psk",
+						"type": "wpa-psk",
 						"psk": "password"
 					},
 					"additionalProperties": false,
@@ -416,7 +425,7 @@
 						"type"
 					],
 					"properties": {
-						"keyManagement": {
+						"type": {
 							"$id": "#/properties/wifi/properties/security/properties/type",
 							"type": "string",
 							"title": "Security type",

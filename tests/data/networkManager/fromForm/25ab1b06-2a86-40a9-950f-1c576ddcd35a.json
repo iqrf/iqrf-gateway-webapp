@@ -10,6 +10,7 @@
 		"addresses": [
 			{
 				"address": "10.0.0.2",
+				"prefix": 16,
 				"mask": "255.255.0.0"
 			}
 		],
@@ -28,10 +29,10 @@
 		"addresses": [
 			{
 				"address": "2001:470:5bb2:2::2",
-				"prefix": 64,
-				"gateway": "fe80::1"
+				"prefix": 64
 			}
 		],
+		"gateway": "fe80::1",
 		"dns": [
 			{
 				"address": "2001:470:5bb2:2::1"

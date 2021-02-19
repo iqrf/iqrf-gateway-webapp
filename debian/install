@@ -1,2 +1,3 @@
 install/config/nginx						etc/iqrf-gateway-webapp
 install/config/sudoers/iqrf-gateway-webapp	etc/sudoers.d
+install/config/systemd                      lib/systemd/system
