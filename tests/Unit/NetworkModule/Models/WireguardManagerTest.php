@@ -173,8 +173,7 @@ final class WireguardManagerTest extends CommandTestCase {
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['privateKey'], false])->andReturn($command);
 		Assert::throws(function (): void {
-			$manager = new WireguardManager($this->commandManager, $this->entityManager, $this->serviceManager);
-			$manager->generatePrivateKey();
+			$this->manager->generatePrivateKey();
 		}, WireguardKeyErrorException::class);
 	}
 
@@ -196,8 +195,7 @@ final class WireguardManagerTest extends CommandTestCase {
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['publicKey'], false, ''])->andReturn($command);
 		Assert::throws(function (): void {
-			$manager = new WireguardManager($this->commandManager, $this->entityManager, $this->serviceManager);
-			$manager->generatePublicKey('');
+			$this->manager->generatePublicKey('');
 		}, WireguardKeyErrorException::class);
 	}
 
