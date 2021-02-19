@@ -141,7 +141,7 @@
 									>
 										<template #append-content>
 											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
-												<CIcon :content='pskInputType === "password" ? icons.hidden: icons.shown' />
+												<CIcon :content='pskInputType === "password" ? icons.show: icons.hide' />
 											</span>
 										</template>
 									</CInput>
@@ -520,8 +520,8 @@ export default class ConnectionFormBasic extends Vue {
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Dictionary<Array<string>> = {
-		shown: cilLockUnlocked,
-		hidden: cilLockLocked
+		hide: cilLockLocked,
+		show: cilLockUnlocked
 	}
 
 	/**
@@ -932,11 +932,6 @@ export default class ConnectionFormBasic extends Vue {
 	private connect(uuid: string, name: string): void {
 		NetworkConnectionService.connect(uuid)
 			.then(() => {
-				if (this.connection.type === ConnectionType.ETHERNET) {
-					this.$router.push('/network/ethernet');
-				} else if (this.connection.type === ConnectionType.WIFI) {
-					this.$router.push('/network/wireless');
-				}
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
@@ -944,6 +939,12 @@ export default class ConnectionFormBasic extends Vue {
 						(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
 						{connection: name}).toString()
 				);
+				if (this.connection.type === ConnectionType.ETHERNET) {
+					this.$router.push('/network/ethernet');
+				} else if (this.connection.type === ConnectionType.WIFI) {
+					this.$router.push('/network/wireless');
+				}
+				
 			})
 			.catch(this.handleConnectError);
 	}

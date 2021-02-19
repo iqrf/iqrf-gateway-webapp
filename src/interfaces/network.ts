@@ -78,6 +78,11 @@ export interface IConnectionWifi {
 	security: IWifiSecurity
 }
 
+export interface IAccessPointArray {
+	ssid: string,
+	aps: Array<IAccessPoint>
+}
+
 export interface IAccessPoint {
 	inUse: boolean
 	bssid: string
