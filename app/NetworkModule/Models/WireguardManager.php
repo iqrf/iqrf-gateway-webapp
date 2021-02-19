@@ -251,7 +251,7 @@ class WireguardManager {
 	/**
 	 * Checks DNS records for specified endpoint
 	 */
-	private function validateEndpoint(string $endpoint): void {
+	public function validateEndpoint(string $endpoint): void {
 		$matches = dns_get_record($endpoint, DNS_A + DNS_AAAA);
 		if ($matches === false || count($matches) === 0) {
 			throw new WireguardInvalidEndpointException('No DNS record found for ' . $endpoint);
@@ -264,7 +264,7 @@ class WireguardManager {
 	 * @param WireguardInterface $interface Wireguard interface
 	 * @return WireguardPeer Wireguard peer entity
 	 */
-	private function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
+	public function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
 		if (!((bool) ip2long($peer->endpoint))) {
 			$this->validateEndpoint($peer->endpoint);
 		}
@@ -279,7 +279,7 @@ class WireguardManager {
 	 * @param array<int, stdClass> $addrs Wireguard peer addresses
 	 * @param WireguardPeer $ifPeer Wireguard peer entity
 	 */
-	private function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): void {
+	public function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): void {
 		foreach ($addrs as $ip) {
 			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
@@ -359,7 +359,7 @@ class WireguardManager {
 	 * @return string Wireguard public key
 	 */
 	public function generatePublicKey(string $privateKey): string {
-		$output = $this->commandManager->run('wg pubkey', true, $privateKey);
+		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
 		if ($output->getExitCode() !== 0) {
 			throw new WireguardKeyErrorException($output->getStderr());
 		}
@@ -433,7 +433,7 @@ class WireguardManager {
 	 * Sets peer preshared-key
 	 * @param array<WireguardPeer> $peers Interface peers
 	 */
-	private function setPeerPsk(array $peers): void {
+	public function setPeerPsk(array $peers): void {
 		foreach ($peers as $peer) {
 			$psk = $peer->getPsk();
 			if ($psk !== null) {
@@ -450,7 +450,7 @@ class WireguardManager {
 	 * @param string $address Interface IP address
 	 * @param int $protocol IP address version
 	 */
-	private function setTunnelIp(string $name, string $address, int $protocol): void {
+	public function setTunnelIp(string $name, string $address, int $protocol): void {
 		$command = sprintf('ip -%u address add %s dev %s', $protocol, $address, $name);
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
@@ -463,7 +463,7 @@ class WireguardManager {
 	 * @param string $name Tunnel name
 	 * @param array<int, WireguardPeer> $peers Interface peers
 	 */
-	private function setPeerRoutes(string $name, array $peers): void {
+	public function setPeerRoutes(string $name, array $peers): void {
 		foreach ($peers as $peer) {
 			$addresses = [];
 			foreach ($peer->getAddresses()->toArray() as $addr) {
