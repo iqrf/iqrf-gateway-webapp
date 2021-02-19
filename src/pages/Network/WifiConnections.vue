@@ -35,7 +35,7 @@
 						<template #ssid='{item}'>
 							<td>
 								<CBadge 
-									v-if='item.inUse'
+									v-if='item.aps[0].inUse'
 									color='success'
 								>
 									{{ $t('network.connection.states.connected') }}
@@ -43,7 +43,7 @@
 								{{ item.ssid }}
 								<CIcon
 									v-c-tooltip='{
-										content: "BSSID: " + item.bssid + " Channel: " + item.channel + " Rate: " + item.rate,
+										content: "BSSID: " + item.aps[0].bssid + " Channel: " + item.aps[0].channel + " Rate: " + item.aps[0].rate,
 										placement: "left"
 									}'
 									style='float: right;'
@@ -52,43 +52,48 @@
 								/>
 							</td>
 						</template>
+						<template #security='{item}'>
+							<td>
+								{{ item.aps[0].security }}
+							</td>
+						</template>
 						<template #signal='{item}'>
 							<td>
 								<CProgress
-									:value='item.signal'
-									:color='signalColor(item.signal)'
+									:value='item.aps[0].signal'
+									:color='signalColor(item.aps[0].signal)'
 								/>
 							</td>
 						</template>
 						<template #interfaceName='{item}'>
 							<td>
-								{{ item.interfaceName }}
+								{{ item.aps[0].interfaceName }}
 							</td>
 						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
 									size='sm'
-									:color='item.inUse ? "danger" : "success"'
-									@click='item.inUse ? disconnect(item.uuid, item.ssid, item.interfaceName):
-										item.uuid !== undefined ? connect(item.uuid, item.ssid, item.interfaceName):
-										addConnection(item)'
+									:color='item.aps[0].inUse ? "danger" : "success"'
+									@click='item.aps[0].inUse ? disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
+										item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
+										addConnection(item.aps[0])'
 								>
-									<CIcon :content='item.inUse ? icons.disconnect : icons.connect' size='sm' />
-									{{ $t('network.table.' + (item.inUse ? 'disconnect' : 'connect')) }}
+									<CIcon :content='item.aps[0].inUse ? icons.disconnect : icons.connect' size='sm' />
+									{{ $t('network.table.' + (item.aps[0].inUse ? 'disconnect' : 'connect')) }}
 								</CButton> <CButton
-									v-if='item.uuid'
+									v-if='item.aps[0].uuid'
 									size='sm'
 									color='primary'
-									:to='"/network/wireless/edit/" + item.uuid'
+									:to='"/network/wireless/edit/" + item.aps[0].uuid'
 								>
 									<CIcon :content='icons.edit' size='sm' />
 									{{ $t('table.actions.edit') }}
 								</CButton> <CButton
-									v-if='item.uuid'
+									v-if='item.aps[0].uuid'
 									size='sm'
 									color='danger'
-									@click='removeConnection(item.uuid, item.ssid)'
+									@click='removeConnection(item.aps[0].uuid, item.aps[0].ssid)'
 								>
 									<CIcon :content='icons.remove' size='sm' />
 									{{ $t('table.actions.delete') }}
@@ -99,12 +104,6 @@
 				</CCardBody>
 			</div>
 		</CCard>
-		<WifiForm
-			v-if='modalAccessPoint !== null'
-			:ap='modalAccessPoint'
-			@hide-modal='hideModal'
-			@connection-created='connectAction'
-		/>
 	</div>
 </template>
 
@@ -120,7 +119,7 @@ import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInte
 import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
-import {IAccessPoint, NetworkInterface} from '../../interfaces/network';
+import {IAccessPoint, IAccessPointArray, NetworkInterface} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -145,9 +144,9 @@ import {IAccessPoint, NetworkInterface} from '../../interfaces/network';
 export default class WifiConnections extends Vue {
 
 	/**
-	 * @var {Array<IAccessPoint>} accessPoints Array of available access points
+	 * @var {Array<IAccessPointArray>} accessPoints Array of available access points
 	 */
-	private accessPoints: Array<IAccessPoint> = []
+	private accessPoints: Array<IAccessPointArray> = []
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
@@ -158,11 +157,6 @@ export default class WifiConnections extends Vue {
 	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
 	 */
 	private interfacesLoaded = false
-
-	/**
-	 * @var {IAccessPoint} modalAccessPoint Access point for modal window
-	 */
-	private modalAccessPoint: IAccessPoint|null = null
 
 	/**
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
@@ -214,21 +208,6 @@ export default class WifiConnections extends Vue {
 	 */
 	mounted(): void {
 		this.getInterfaces();
-	}
-
-	/**
-	 * Show wifi access point connection modal window
-	 * @param {IAccessPoint} accesPoint Access point
-	 */
-	private showModal(accessPoint: IAccessPoint): void {
-		this.modalAccessPoint = accessPoint;
-	}
-
-	/**
-	 * Hides wifi access point connection modal window
-	 */
-	private hideModal(): void {
-		this.modalAccessPoint = null;
 	}
 
 	/**
@@ -292,16 +271,30 @@ export default class WifiConnections extends Vue {
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
-				accessPoints.forEach((ap: IAccessPoint) => {
-					const index = response.data.findIndex(con => con.bssids.includes(ap.bssid));
+				let apArray: Array<IAccessPointArray> = [];
+				for (const ap of accessPoints) {
+					let index = response.data.findIndex(con => con.bssids.includes(ap.bssid));
 					if (index !== -1) {
 						ap.uuid = response.data[index].uuid;
 						if (response.data[index].interfaceName !== null) {
 							ap.interfaceName = response.data[index].interfaceName;
 						}
 					}
-				});
-				this.accessPoints = accessPoints;
+					index = apArray.findIndex(arrAp => arrAp.ssid === ap.ssid);
+					if (index !== -1) {
+						if (ap.inUse) {
+							apArray[index].aps.unshift(ap);
+						} else {
+							apArray[index].aps.push(ap);
+						}
+					} else {
+						apArray.push({
+							ssid: ap.ssid,
+							aps: [ap]
+						});
+					}
+				}
+				this.accessPoints = apArray;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch(() => {
