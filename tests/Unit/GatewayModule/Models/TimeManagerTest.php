@@ -12,7 +12,6 @@ namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Models\TimeManager;
-use Mockery;
 use Tester\Assert;
 use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -53,21 +52,18 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	public function testCurrentTime(): void {
 		$expected = [
-			'timestamp' => 1613756375,
 			'time' => [
+				'timestamp' => 1613756375,
 				'name' => 'Europe/London',
 				'code' => 'GMT',
 				'offset' => '+0000',
 			],
 		];
-		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756423', '', 0);
+		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
 		$timezoneCommand = new Command(self::COMMANDS['timezone'], 'Europe/London', '', 0);
-		$manager = Mockery::mock(TimeManager::class, [$this->commandManager]);
-		$manager->shouldReceive('currentTime')
-			->andReturn($expected);
 		$this->commandManager->shouldReceive('run')
 			->andReturn($timestampCommand, $timezoneCommand);
-		Assert::same($expected, $manager->currentTime());
+		Assert::same($expected, $this->manager->currentTime());
 	}
 
 	/**
