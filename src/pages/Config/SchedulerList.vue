@@ -453,7 +453,7 @@ export default class SchedulerList extends Vue {
 	private getTasks(): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
-		if (this.useRest || !this.daemonHigher230) {
+		if (this.useRest) {
 			SchedulerService.listTasksREST()
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');

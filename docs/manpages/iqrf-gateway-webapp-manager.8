@@ -16,7 +16,7 @@ Lists all available commands
 .BR api\-key:list\fP
 Lists all existing API keys
 .TP
-.BR api\-key:add\fP " [\-d DESCRIPTION] [\-e EXPIRATION]"
+.BR api\-key:add\fP " [\-d DESCRIPTION] [\-e EXPIRATION] [\-\-no\-formatting]"
 Creates a new API key
 .TP
 .BR api\-key:delete\fP " [\-i ID]"
@@ -69,6 +69,15 @@ Changes a user's password
 .TP
 .BR user:remove\fP " [\-u USERNAME]"
 Removes an existing user
+.TP
+.BR wireguard:list\fP
+Lists all WireGuard VPN tunnels
+.TP
+.BR wireguard:activate\fP " \<name\>"
+Activates specified WireGuard VPN tunnel
+.TP
+.BR wireguard:deactivate\fP " \<name\>"
+Deactivates specified WireGuard VPN tunnel
 .fi
 .SH OPTIONS
 .nf
@@ -106,6 +115,9 @@ API key description
 .TP
 .BR \-e ", " \-\-expiration " \fIEXPIRATION\fP"
 API key expiration
+.TP
+.BR \-\-no\-formatting
+Outputs API key without formatting
 .TP
 .BR "Mapping commands"
 .TQ
