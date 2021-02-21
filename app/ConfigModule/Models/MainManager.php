@@ -60,6 +60,18 @@ class MainManager {
 	}
 
 	/**
+	 * Returns the path of data directory
+	 * @return string Data directory path
+	 */
+	public function getDataDir(): string {
+		try {
+			return $this->load()['dataDir'];
+		} catch (IOException | JsonException $e) {
+			return '/usr/share/iqrf-gateway-daemon/';
+		}
+	}
+
+	/**
 	 * Converts the main configuration form array to JSON array
 	 * @return array<string, array<array<string, bool|int|string>>|string> Array for form
 	 * @throws JsonException
