@@ -169,6 +169,7 @@ import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {mapGetters} from 'vuex';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import { parse } from 'uuid';
 
 @Component({
 	components: {
@@ -615,6 +616,7 @@ export default class SchedulerList extends Vue {
 				if (typeof item.cronTime === 'string') {
 					return item.cronTime;
 				}
+				item.cronTime[5] = (parseInt(item.cronTime[5]) + 1).toString();
 				return item.cronTime.join(' ').trim();
 			}
 		} catch (err) {
