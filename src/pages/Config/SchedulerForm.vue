@@ -43,18 +43,23 @@
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
-							<label for='cronTime'>
-								{{ $t("config.daemon.scheduler.form.task.cronTime") }}
-							</label>
-							<CBadge v-if='cronMessage !== null' color='info'>
-								{{ cronMessage }}
-							</CBadge>
-							<CInput
-								id='cronTime'
-								v-model='timeSpec.cronTime'
-								:disabled='timeSpec.exactTime || timeSpec.periodic'
-								@input='calculateCron'
-							/>
+							<ValidationProvider
+								v-slot='{touched, valid}'
+								rules='cron'
+							>
+								<label for='cronTime'>
+									{{ $t("config.daemon.scheduler.form.task.cronTime") }}
+								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
+									{{ cronMessage }}
+								</CBadge>
+								<CInput
+									id='cronTime'
+									v-model='timeSpec.cronTime'
+									:is-valid='touched ? valid : null'
+									:disabled='timeSpec.exactTime || timeSpec.periodic'
+									@input='cronMessage = null'
+								/>
+							</ValidationProvider>
 						</div>
 						<CInputCheckbox
 							:checked.sync='timeSpec.exactTime'
@@ -177,6 +182,7 @@ import {TaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {mapGetters} from 'vuex';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import cron from 'cron-validate';
 
 interface LocalTask {
 	message: string
@@ -301,6 +307,76 @@ export default class SchedulerForm extends Vue {
 	 */
 	private useRest = true
 
+	/**
+	 * @constant cronPreset Cron validate presets
+	 */
+	private cronPreset = {
+		presetId: 'schedulerCron',
+		useSeconds: true,
+		useYears: true,
+		useAliases: true,
+		useBlankDay: true,
+		allowOnlyOneBlankDayField: false,
+		seconds: {
+			minValue: 0,
+			maxValue: 0,
+		},
+		minutes: {
+			minValue: 0,
+			maxValue: 59,
+		},
+		hours: {
+			minValue: 0,
+			maxValue: 23,
+		},
+		daysOfMonth: {
+			minValue: 1,
+			maxValue: 31,
+		},
+		months: {
+			minValue: 0,
+			maxValue: 12,
+		},
+		daysOfWeek: {
+			minValue: 1,
+			maxValue: 7,
+		},
+		years: {
+			minValue: 1970,
+			maxValue: 2099,
+		},
+	}
+
+	/**
+	 * @constant {Array<string>} dayAliases Array of day aliases
+	 */
+	private dayAliases = [
+		'mon',
+		'tue',
+		'wed',
+		'thu',
+		'fri',
+		'sat',
+		'sun'
+	]
+
+	/**
+	 * @constant {Array<string>} monthAliases Array of month aliases
+	 */
+	private monthAliases = [
+		'jan',
+		'feb',
+		'mar',
+		'apr',
+		'may',
+		'jun',
+		'jul',
+		'aug',
+		'sep',
+		'oct',
+		'nov',
+		'dec'
+	]
 
 	/**
 	 * @property {number} id Id of existing scheduler task
@@ -327,6 +403,24 @@ export default class SchedulerForm extends Vue {
 			let object = JSON.parse(json);
 			return {}.hasOwnProperty.call(object, 'mType');
 		});
+		extend('cron', (cronstring: string) => {
+			if (cronstring[0] === '@') {
+				const cronAlias = this.getCronAlias(cronstring);
+				if (cronAlias !== undefined) {
+					this.cronMessage = cronstrue.toString(cronAlias);
+				}
+				this.cronMessage = null;
+				return false;
+			}
+			const cronResult = cron(cronstring, {preset: this.cronPreset});
+			if (cronResult.isValid()) {
+				this.calculateCron(cronstring);
+				return true;
+			} else {
+				this.cronMessage = cronResult.getError().join(',');
+				return false;
+			}
+		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.useRest = false;
@@ -345,6 +439,7 @@ export default class SchedulerForm extends Vue {
 						let rsp = mutation.payload.data.rsp;
 						this.taskId = rsp.taskId;
 						this.clientId = rsp.clientId;
+						rsp.timeSpec.cronTime[5] = (parseInt(rsp.timeSpec.cronTime[5]) + 1).toString();
 						this.timeSpec = rsp.timeSpec;
 						if (Array.isArray(this.timeSpec.cronTime)) {
 							this.timeSpec.cronTime = this.timeSpec.cronTime.join(' ');
@@ -442,9 +537,10 @@ export default class SchedulerForm extends Vue {
 
 	/**
 	 * Converts cron time string into a human readable message
+	 * @param {string} cronstring cRon time string
 	 */
-	private calculateCron(): void {
-		const cronTime = (this.timeSpec.cronTime as string).split(' ');
+	private calculateCron(cronstring: string): void {
+		const cronTime = cronstring.trim().split(' ');
 		const len = cronTime.length;
 		if (len === 1) {
 			const alias = this.getCronAlias((this.timeSpec.cronTime as string));
@@ -488,6 +584,9 @@ export default class SchedulerForm extends Vue {
 					this.$store.commit('spinner/HIDE');
 					this.taskId = response.data.taskId;
 					this.clientId = response.data.clientId;
+					let cronTime = response.data.timeSpec.cronTime.split(' ');
+					cronTime[5] = (parseInt(cronTime[5]) + 1).toString();
+					response.data.timeSpec.cronTime = cronTime.join(' ');
 					this.timeSpec = response.data.timeSpec;
 					let tasks: Array<LocalTask> = [];
 					response.data.task.forEach(item => {
@@ -558,30 +657,24 @@ export default class SchedulerForm extends Vue {
 	private saveTask(): void {
 		this.$store.commit('spinner/SHOW');
 		let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
-		timeSpec.cronTime = timeSpec.cronTime.replace('?', '*');
-		timeSpec.cronTime = timeSpec.cronTime.split(' ');
+		timeSpec.cronTime = timeSpec.cronTime.replace('?', '*').split(' ');
 		if (timeSpec.cronTime.length === 1) {
 			const alias = this.getCronAlias(timeSpec.cronTime[0]);
 			if (alias !== undefined) {
 				timeSpec.cronTime = [alias, '', '', '', '', '', ''];
 			}
 		}
-		switch(timeSpec.cronTime.length) {
-			case 5:
-				timeSpec.cronTime.unshift('0');
-				timeSpec.cronTime.push('*');
-				break;
-			case 6:
-				if (timeSpec.cronTime[5].length === 4) {
-					timeSpec.cronTime.unshift('0');
-				} else {
-					timeSpec.cronTime.push('*');
-				}
-				break;
-			case 7:
-				break;
-			default:
-				timeSpec.cronTime = new Array(7).fill('');
+		if (this.dayAliases.includes(timeSpec.cronTime[5])) {
+			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
+		}
+		try {
+			const cronDay = parseInt(timeSpec.cronTime[5]);
+			timeSpec.cronTime[5] = (cronDay - 1).toString();
+		} catch (err) {
+			//
+		}
+		if (this.monthAliases.includes(timeSpec.cronTime[4])) {
+			timeSpec.cronTime[4] = (this.monthAliases.indexOf(timeSpec.cronTime[4]) + 1).toString();
 		}
 		if (timeSpec.exactTime) {
 			let date = new Date(timeSpec.startTime);
