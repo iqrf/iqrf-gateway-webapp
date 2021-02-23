@@ -73,7 +73,7 @@
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|min:1'
+							rules='integer|required|min:0'
 							:custom-messages='{
 								required: "config.daemon.scheduler.errors.period",
 								integer: "config.daemon.scheduler.errors.period",
@@ -83,7 +83,7 @@
 							<CInput
 								v-model.number='timeSpec.period'
 								type='number'
-								min='1'
+								min='0'
 								:label='$t("config.daemon.scheduler.form.task.period")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
