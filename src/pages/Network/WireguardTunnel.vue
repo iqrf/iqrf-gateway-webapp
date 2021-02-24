@@ -31,9 +31,10 @@
 							</CButton>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required'
+								rules='required|base64Key'
 								:custom-messages='{
-									required: "network.wireguard.tunnels.errors.privateKey"
+									required: "network.wireguard.tunnels.errors.privateKey",
+									base64Key: "network.wireguard.tunnels.errors.base64Key"
 								}'
 							>
 								<CInput
@@ -178,9 +179,10 @@
 								<legend>{{ $t('network.wireguard.tunnels.form.peers') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
-									rules='required'
+									rules='required|base64Key'
 									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.publicKeyPeer"
+										required: "network.wireguard.tunnels.errors.publicKeyPeer",
+										base64Key: "network.wireguard.tunnels.errors.base64Key"
 									}'
 								>
 									<CInput
@@ -230,15 +232,18 @@
 								<div class='form-group'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										rules='required|integer'
+										rules='required|integer|between:0,65535'
 										:custom-messages='{
 											required: "network.wireguard.tunnels.errors.keepalive",
-											integer: "forms.errors.integer"
+											integer: "forms.errors.integer",
+											between: "network.wireguard.tunnels.errors.keepaliveInvalid"
 										}'
 									>
 										<CInput
 											v-model.number='peer.keepalive'
 											type='number'
+											min='0'
+											max='65535'
 											:label='$t("network.wireguard.tunnels.form.keepalive")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
@@ -528,6 +533,9 @@ export default class WireguardTunnel extends Vue {
 		});
 		extend('ipv6', (address: string) => {
 			return ip.v6({exact: true}).test(address);
+		});
+		extend('base64Key', (key: string) => {
+			return RegExp('^[0-9a-zA-Z+/]{43}=$').test(key);
 		});
 	}
 

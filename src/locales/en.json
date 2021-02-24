@@ -1943,7 +1943,9 @@
 					"publicKeyPeer": "Please enter peer public key.",
 					"portPeer": "Please enter peer listen port.",
 					"portInvalid": "Port number should be an integer between 0 and 65535.",
-					"keepalive": "Please enter the peer keepalive interval."
+					"keepalive": "Please enter the peer keepalive interval.",
+					"keepaliveInvalid": "Persistent keepalive should be an integer between 0 and 65535 seconds.",
+					"base64Key": "Invalid key format, the key should be 32-byte Curve25519 key."
 				},
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
