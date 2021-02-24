@@ -43,7 +43,9 @@ const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallCreateUser.vue');
 const InstallationDisambiguation = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationDisambiguation.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
+const MissingExtension = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingExtension.vue');
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
+const SudoError = () => import(/* webpackChunkName: "install" */ '@/pages/Install/SudoError.vue');
 
 const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigDisambiguation.vue');
 const DaemonDisambiguation = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/DaemonDisambiguation.vue');
@@ -108,8 +110,20 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				component: MissingMigration,
-				path: 'error/missing-migration'
+				path: 'error/missing-migration',
 			},
+			{
+				name: 'missing-extension',
+				component: MissingExtension,
+				path: 'error/missing-extension',
+				props: true,
+			},
+			{
+				name: 'sudo-error',
+				component: SudoError,
+				path: 'error/sudo-error',
+				props: true,
+			}
 		]
 	},
 	{

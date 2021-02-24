@@ -31,7 +31,22 @@ export default class App extends Vue {
 		InstallationService.check()
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
-				if (!check.allMigrationsExecuted) {
+				if (!check.sudo.exists || !check.sudo.webappSudo) {
+					this.$router.push({
+						name: 'sudo-error',
+						params: {
+							exists: check.sudo.exists.toString(),
+							webappSudo: check.sudo.webappSudo.toString()
+						}
+					});
+				} else if (!check.phpModules.allExtensionsLoaded) {
+					this.$router.push({
+						name: 'missing-extension',
+						params: {
+							extensionString: check.phpModules.missing!.join(', ')
+						}
+					});
+				} else if (!check.allMigrationsExecuted) {
 					this.$router.push('/install/error/missing-migration');
 				} else if (!check.hasUsers && !installUrl) {
 					this.$router.push('/install/');

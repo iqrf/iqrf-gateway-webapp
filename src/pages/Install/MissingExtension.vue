@@ -1,15 +1,15 @@
 <template>
 	<CCard>
 		<CCardHeader color='danger' class='text-white'>
-			{{ $t('install.error.missingMigration.title') }}
+			{{ $t('install.error.missingExtension.title') }}
 		</CCardHeader>
 		<CCardBody>
-			{{ $t('install.error.missingMigration.description') }}
+			{{ $t('install.error.missingExtension.description', {extensions: extensionString}) }}
 		</CCardBody>
 		<CCardFooter>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<br>
-			{{ $t('install.error.missingMigration.fixDescription') }}
+			{{ $t('install.error.missingExtension.fixDescription') }}
 			<prism-editor
 				v-model='fixCommands'
 				:highlight='highlighter'
@@ -20,8 +20,8 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardFooter, CCardHeader} from '@coreui/vue/src';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -33,23 +33,29 @@ import 'prismjs/themes/prism.css';
 	components: {
 		CCard,
 		CCardBody,
+		CCardFooter,
 		CCardHeader,
-		PrismEditor,
+		PrismEditor
 	},
 	metaInfo: {
-		title: 'install.error.missingMigration.title'
-	},
+		title: 'install.error.missingExtension.title'
+	}
 })
 
 /**
- * Missing migration notification
+ * Missing extension notification component
  */
-export default class MissingMigration extends Vue {
+export default class MissingExtension extends Vue {
 
 	/**
 	 * Commands to fix this issue
 	 */
-	private fixCommands = 'sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction';
+	private fixCommands = 'sudo apt-get update && sudo apt-get install php7.4-common php7.4-cli php7.4-curl php7.4-fpm php7.4-json php7.4-mbstring php7.4-sqlite3 php7.4-xml php7.4-zip'
+
+	/**
+	 * @property {string} extensionString String of missing extensions
+	 */
+	@Prop({required: true}) extensionString!: string
 
 	/**
 	 * JSON highlighter method
