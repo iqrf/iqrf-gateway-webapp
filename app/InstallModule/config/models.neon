@@ -1,0 +1,3 @@
+services:
+	- App\InstallModule\Models\PhpModuleManager
+	- App\InstallModule\Models\SudoManager

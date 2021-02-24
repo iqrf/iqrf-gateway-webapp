@@ -1778,11 +1778,23 @@
 			"title": "Create a new user"
 		},
 		"error": {
+			"howToFix": "How to fix it",
+			"missingExtension": {
+				"title": "One or more PHP extensions are missing",
+				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
+				"fixDescription": "Install required PHP modules using the following commands:"
+			},
 			"missingMigration": {
 				"title": "Some database table is missing",
 				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
-				"howToFix": "How to fix it",
 				"fixDescription": "Run these commands in terminal:"
+			},
+			"sudo": {
+				"title": "Sudo error",
+				"missing": "IQRF Gateway Webapp did not detect the sudo utility.",
+				"invalid": "IQRF Gateway Webapp cannot execute commands with sudo.",
+				"fixMissing": "Enter interactive shell as root and install sudo utility using the following commands:",
+				"fixInvalid": "Allow user www-data to execute commands with sudo using the following commands:"
 			}
 		},
 		"gwInfo": {

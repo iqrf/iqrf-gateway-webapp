@@ -5,13 +5,15 @@
 	"title": "Installation check",
 	"required": [
 		"allMigrationsExecuted",
-		"hasUsers"
+		"hasUsers",
+		"phpModules",
+		"sudo"
 	],
 	"properties": {
 		"allMigrationsExecuted": {
 			"$id": "#/properties/allMigrationsExecuted",
 			"type": "boolean",
-			"title": "Has been all database migrations executed?",
+			"title": "Have all the database migrations been executed?",
 			"example":
 				true
 		},
@@ -21,7 +23,59 @@
 			"title": "Has the webapp created users?",
 			"example":
 				true
-
+		},
+		"phpModules": {
+			"$id": "#/properties/phpModules",
+			"type": "object",
+			"title": "Webapp PHP modules check",
+			"required": [
+				"allExtensionsLoaded"
+			],
+			"properties": {
+				"allExtensionsRequired": {
+					"$id": "#/properties/phpModules/properties/allExtensionsLoaded",
+					"type": "boolean",
+					"title": "Have all the required PHP extensions been loaded?",
+					"example": true
+				},
+				"missing": {
+					"$id": "#/properties/phpModules/properties/missing",
+					"type": "array",
+					"title": "Array of missing PHP extensions",
+					"items": {
+						"$id": "#/properties/phpModules/properties/missing/items",
+						"type": "string",
+						"title": "Missing PHP extension",
+						"example": "json"
+					},
+					"additionalItems": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"sudo": {
+			"$id": "#/properties/sudo",
+			"type": "object",
+			"title": "Webapp sudo check",
+			"required": [
+				"exists",
+				"webappSudo"
+			],
+			"properties": {
+				"exists": {
+					"$id": "#/properties/sudo/properties/exists",
+					"type": "boolean",
+					"title": "Does sudo exist?",
+					"example": true
+				},
+				"webappSudo": {
+					"$id": "#/properties/sudo/properties/webappSudo",
+					"type": "boolean",
+					"title": "Can webapp execute commands with sudo?",
+					"example": true
+				}
+			},
+			"additionalProperties": false
 		}
 	},
 	"additionalProperties": false

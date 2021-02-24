@@ -27,6 +27,8 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\InstallModule\Models\PhpModuleManager;
+use App\InstallModule\Models\SudoManager;
 use App\Models\Database\EntityManager;
 use Nettrine\Migrations\ContainerAwareConfiguration as DoctrineConfiguration;
 
@@ -48,14 +50,28 @@ class InstallationController extends BaseController {
 	private $entityManager;
 
 	/**
+	 * @var PhpModuleManager PHP module manager
+	 */
+	private $phpModuleManager;
+
+	/**
+	 * @var SudoManager Sudo manager
+	 */
+	private $sudoManager;
+
+	/**
 	 * Constructor
 	 * @param DoctrineConfiguration $doctrineConfiguration Doctrine configuration
 	 * @param EntityManager $entityManager Database entity manager
+	 * @param PhpModuleManager $phpModuleManager Php module manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param SudoManager $sudoManager Sudo manager
 	 */
-	public function __construct(DoctrineConfiguration $doctrineConfiguration, EntityManager $entityManager, RestApiSchemaValidator $validator) {
+	public function __construct(DoctrineConfiguration $doctrineConfiguration, EntityManager $entityManager, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
 		$this->doctrineConfiguration = $doctrineConfiguration;
 		$this->entityManager = $entityManager;
+		$this->phpModuleManager = $phpModuleManager;
+		$this->sudoManager = $sudoManager;
 		parent::__construct($validator);
 	}
 
@@ -87,6 +103,8 @@ class InstallationController extends BaseController {
 		}
 		$users = $this->entityManager->getUserRepository()->count([]);
 		$status['hasUsers'] = $users !== 0;
+		$status['phpModules'] = $this->phpModuleManager::checkModules();
+		$status['sudo'] = $this->sudoManager->checkSudo();
 		return $response->writeJsonBody($status);
 	}
 
