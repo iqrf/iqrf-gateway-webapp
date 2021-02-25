@@ -149,6 +149,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 import { IOption } from '../../interfaces/coreui';
+import { versionHigherEqual } from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -234,6 +235,11 @@ export default class BondingManager extends Vue {
 	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
+	 */
+	private daemon236 = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -241,32 +247,24 @@ export default class BondingManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('scCode', (code) => {
-			const regex = RegExp('^[a-zA-Z0-9]{34}$');
+			const regex = RegExp('^[1-9a-km-tv-zA-HJ-NP-Z]{34}$');
 			return regex.test(code);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||
-					mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
-					if (mutation.payload.data.msgId !== this.msgId) {
-						return;
-					}
-					this.$store.dispatch('spinner/hide');
-					this.$store.dispatch('removeMessage', this.msgId);
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
+				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal') {
 					this.handleBondResponse(mutation.payload.data);
+				} else if (mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
+					this.handleSmartConnectResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
-							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
-					if (mutation.payload.data.msgId !== this.msgId) {
-						return;
-					}
-					this.$store.dispatch('spinner/hide');
-					this.$store.dispatch('removeMessage', this.msgId);
+					mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
 					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
-					if (mutation.payload.data.msgId !== this.msgId) {
-						return;
-					}
-					this.$store.dispatch('spinner/hide');
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
@@ -274,6 +272,13 @@ export default class BondingManager extends Vue {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Initializes daemon version for error handling
+	 */
+	mounted(): void {
+		this.daemon236 = versionHigherEqual('2.3.6');
 	}
 
 	/**
@@ -315,34 +320,66 @@ export default class BondingManager extends Vue {
 	 */
 	private handleBondResponse(response): void {
 		if (response.status === 0) {
-			let bondAddr = this.address;
-			if (this.autoAddress) {
-				if (this.bondMethod === 'local') {
-					bondAddr = response.rsp.assignedAddr;
-				} else {
-					bondAddr = response.rsp.result.bondAddr;
-				}
-			}
+			let bondAddr = this.autoAddress ? this.address : response.rsp.assignedAddr;
 			this.$emit('update-devices', {
 				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
 				type: 'success',
 			});
-		} else if (response.status === -1) {
+			return;
+		}
+		
+		if (this.daemon236) { // unified status codes
+			if (response.status === 1) {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
+				);
+			}
+			return;
+		}
+
+		if (response.status === 1003) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.messages.submit.timeout').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
+			);
+		} else if (response.status === 1005) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.timeout').toString()
 			);
 		} else {
-			if (response.statusStr.includes('Dpa error')) {
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.bondingManager.messages.timeout').toString()
-				);
-				return;
-			}
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
+				this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
 			);
 		}
 	}
+
+	/**
+	 * Handles SmartConnect Daemon API call response
+	 */
+	private handleSmartConnectResponse(response) {
+		if (response.status === 0) {
+			let bondAddr = this.autoAddress ? this.address : response.rsp.assignedAddr;
+			this.$emit('update-devices', {
+				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
+				type: 'success',
+			});
+			return;
+		}
+
+		if (response.status === 1 || (response.status === 1003 && !this.daemon236)) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectBondExists', {address: this.address}).toString()
+			);
+		} else if ((response.status === 1000 && !this.daemon236) || response.status === 1001) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
+			);
+		}
+	}
+
 
 	/**
 	 * Handles RemoveBond Daemon API call responses
