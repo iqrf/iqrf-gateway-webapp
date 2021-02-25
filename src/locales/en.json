@@ -1222,7 +1222,8 @@
 					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
 					"statusCoordinator": "Restoring coordinator device.",
 					"invalidSize": "Invalid coordinator backup data size.",
-					"checksumMismatch": "Incorrect coordinator backup data checksum."
+					"checksumMismatch": "Incorrect coordinator backup data checksum.",
+					"failedMessage": "Restore process not started: {message}"
 				}
 			},
 			"bondingManager": {
