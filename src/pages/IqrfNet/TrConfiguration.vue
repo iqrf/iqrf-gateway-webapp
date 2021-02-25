@@ -322,6 +322,7 @@ import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {MutationPayload} from 'vuex';
 import {Dictionary} from 'vue-router/types/router';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -398,6 +399,11 @@ export default class TrConfiguration extends Vue {
 	private unwatch: CallableFunction = () => {return;}
 
 	/**
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
+	 */
+	private daemon236 = false
+
+	/**
 	 * @property {number} address Device address
 	 */
 	@Prop({required: true}) address!: number
@@ -407,6 +413,9 @@ export default class TrConfiguration extends Vue {
 	 */
 	@Watch('address')
 	getAddress(): void {
+		if (!this.loaded) {
+			return;
+		}
 		this.loaded = false;
 		this.config = null;
 		this.peripherals = [];
@@ -510,6 +519,13 @@ export default class TrConfiguration extends Vue {
 				this.handleWriteByteResponse(mutation.payload.data);
 			}
 		});
+	}
+
+	/**
+	 * Initializes daemon version for error handling and reads configuration
+	 */
+	mounted(): void {
+		this.daemon236 = versionHigherEqual('2.3.6');
 		if (this.$store.getters.isSocketConnected) {
 			this.readOs();
 		} else {
@@ -591,8 +607,8 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
+		this.$store.dispatch('spinner/show', {timeout: 60000});
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -603,13 +619,19 @@ export default class TrConfiguration extends Vue {
 	private handleEnumerationResponse(response): void {
 		if (response.data.status === 0) {
 			this.parseResponse(response);
-		} else if (response.data.status === 1001 && response.data.statusStr.includes('not bonded')) {
+			return;
+		}
+		if (response.data.status === -1 || response.data.status === 1005) {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+			);
+		} else if (response.data.status === 8 || response.data.status === 1001) {
 			this.$toast.error(
 				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
-		} else if (response.data.status === 1005 && response.data.statusStr.includes('ERROR_TIMEOUT')) {
+		} else {
 			this.$toast.error(
-				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+				this.$t('iqrfnet.trConfiguration.messages.readFailure').toString()
 			);
 		}
 	}
@@ -654,11 +676,45 @@ export default class TrConfiguration extends Vue {
 					this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
 				);
 			}
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-			);
+			return;
 		}
+
+		if (this.daemon236) { // unified status codes
+			if (response.data.status === -1) {
+				this.$toast.error(
+					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+				);
+			} else if (response.data.status === 8) {
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+				);
+			}
+			return;
+		}
+		
+		if (response.data.status === 1007) { // pre-unified status codes
+			if (response.data.statusStr.includes('ERROR_TIMEOUT')) {
+				this.$toast.error(
+					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+				);
+			} else if (response.data.statusStr.includes('ERROR_NADR')) {
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+				);
+			}
+			return;
+		}
+		this.$toast.error(
+			this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+		);
 	}
 
 	/**
