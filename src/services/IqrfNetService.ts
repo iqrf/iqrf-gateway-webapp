@@ -163,7 +163,7 @@ class IqrfNetService {
 		const request = {
 			'mType': 'iqmeshNetwork_EnumerateDevice',
 			'data': {
-				'repeat': 2,
+				'repeat': 1,
 				'req': {
 					'deviceAddr': address,
 					'morePeripheralsInfo': true,
@@ -257,6 +257,25 @@ class IqrfNetService {
 					},
 					'returnVerbose': true,
 				},
+			},
+		};
+		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Reads TR configuration
+	 * @param {number} address Device address to read configuration from
+	 * @return {string} Message ID
+	 */
+	readTrConfiguration(address: number, options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_ReadTrConf',
+			'data': {
+				'repeat': 1,
+				'req': {
+					'deviceAddr': address,
+				},
+				'returnVerbose': true,
 			},
 		};
 		return store.dispatch('sendRequest', options);
