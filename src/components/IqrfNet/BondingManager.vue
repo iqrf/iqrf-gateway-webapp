@@ -421,20 +421,20 @@ export default class BondingManager extends Vue {
 			return;
 		}
 		if (this.unbondCoordinatorOnly) {
-			if (response.statusStr === 'DPA error: ERROR_FAIL') {
+			if (response.status === 1 || (response.statusStr === 'DPA error: ERROR_FAIL' && !this.daemon236)) {
 				this.$toast.error(
 					this.$t('forms.messages.noDevice', {address: this.address}).toString()
 				);
 				return;
 			}
 		}
-		if (response.statusStr === 'Transaction error: ERROR_TIMEOUT') {
+		if (response.status === -1 || (response.statusStr === 'Transaction error: ERROR_TIMEOUT' && !this.daemon236)) {
 			this.$toast.error(
 				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
 			);
 			return;
 		}
-		if (response.statusStr === 'DPA error: ERROR_NADR') {
+		if (response.status === 8 || (response.statusStr === 'DPA error: ERROR_NADR' && !this.daemon236)) {
 			this.$toast.error(
 				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
