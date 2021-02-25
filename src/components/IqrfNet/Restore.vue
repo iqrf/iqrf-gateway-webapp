@@ -37,6 +37,7 @@ import ini from '../../../node_modules/ini';
 import IqrfNetService from '../../services/IqrfNetService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {MutationPayload} from 'vuex';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 
 interface BackupData {
 	Address: string
@@ -73,12 +74,12 @@ export default class Restore extends Vue {
 	/**
 	 * @var {boolean} fileUntouched Has file input been interacted with?
 	 */
-	private fileUntouched = true;
+	private fileUntouched = true
 	
 	/**
 	 * @var {boolean} fileEmpty Is file input empty?
 	 */
-	private fileEmpty = true;
+	private fileEmpty = true
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -88,12 +89,17 @@ export default class Restore extends Vue {
 	/**
 	 * @var {boolean} restartOnRestore Restart coordinator on restore
 	 */
-	private restartOnRestore = false;
+	private restartOnRestore = false
 
 	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
+	 */
+	private daemon236 = false
 
 	/**
 	 * Vue lifecycle hook created
@@ -132,6 +138,13 @@ export default class Restore extends Vue {
 	}
 
 	/**
+	 * Checks daemon version for error handling
+	 */
+	mounted(): void {
+		this.daemon236 = versionHigherEqual('2.3.6');
+	}
+
+	/**
 	 * Recovers from request sent state, hides spinner and removes message id
 	 */
 	private requestRecovery(): void {
@@ -144,48 +157,43 @@ export default class Restore extends Vue {
 	 * @param {any} data Daemon API response
 	 */
 	private handleRestoreResponse(data: any): void {
+		this.requestRecovery();
 		if (data.status === 0) {
-			this.requestRecovery();
 			this.$toast.success(
 				this.$t('iqrfnet.networkManager.restore.messages.success').toString()
 			);
 			return;
 		}
 
-		if (data.status === -1) { // request timed out
-			this.requestRecovery();
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.timeout').toString()
-			);
+		if (!this.daemon236 && data.status === 1000) { // error handling before unified codes
+			if (data.statusStr.includes('ERROR_TIMEOUT')) {
+				this.$toast.error(
+					this.$t('forms.messages.coordinatorOffline').toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.restore.messages.failedMessage', {message: data.statusStr}).toString()
+				);
+			}
 			return;
 		}
 
-		if (data.status !== 1000) {
-			return;
-		}
-
-		if (data.statusStr.includes('ERROR_TIMEOUT')) { // coordinator device is offline
-			this.requestRecovery();
+		if (data.status === -1) { // coordinator device is offline
 			this.$toast.error(
 				this.$t('forms.messages.coordinatorOffline').toString()
 			);
-			return;
-		}
-
-		if (data.statusStr.includes('Incorrect backupData size')) { // backup data is too long or too short
-			this.requestRecovery();
+		} else if (data.status === 1004) { // backup data is too long or too short
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.invalidSize').toString()
 			);
-			return;
-		}
-
-		if (data.statusStr.includes('BackupData CRC8 mismatch')) { // backup data checksum is incorrect
-			this.requestRecovery();
+		} else if (data.status === 1005) { // backup data checksum is incorrect
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.checksumMismatch').toString()
 			);
-			return;
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.failedMessage', {message: data.statusStr}).toString()
+			);
 		}
 	}
 
