@@ -112,7 +112,6 @@ test:php7.4:
 
 newman:
   stage: test
-  allow_failure: true
   image: docker:latest
   needs: []
   services:
