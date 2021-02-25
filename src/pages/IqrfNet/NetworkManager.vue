@@ -10,11 +10,11 @@
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
-							<AutoNetwork v-if='daemonHigher230' ref='autonetwork' @update-devices='updateDevices' />
+							<AutoNetwork v-if='daemon230' ref='autonetwork' @update-devices='updateDevices' />
 							<VersionAlert v-else />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
-							<div v-if='daemonHigher230'>
+							<div v-if='daemon230'>
 								<Backup />
 								<Restore />
 							</div>
@@ -37,7 +37,7 @@
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import Backup from '../../components/IqrfNet/Backup.vue';
 import Restore from '../../components/IqrfNet/Restore.vue';
 import BondingManager from '../../components/IqrfNet/BondingManager.vue';
@@ -82,17 +82,17 @@ export default class NetworkManager extends Vue {
 	private activeTab = 0
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false;
+	private daemon230 = false;
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
 	@Watch('daemonVersion')
 	private updateDaemonVersion(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 

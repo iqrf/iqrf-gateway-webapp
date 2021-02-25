@@ -56,7 +56,7 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<div v-if='daemonHigher230'>
+					<div v-if='daemon230'>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
@@ -92,7 +92,7 @@
 							/>
 						</ValidationProvider>
 						<i>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</i>
-					</div><br v-if='daemonHigher230'>
+					</div><br v-if='daemon230'>
 					<CInputCheckbox
 						:checked.sync='timestampFiles'
 						:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
@@ -169,7 +169,7 @@ import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITracerFile, IVerbosityLevel} from '../../interfaces/tracerFile';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -217,9 +217,9 @@ export default class TracerForm extends Vue {
 	private componentName = 'shape::TraceFileService'
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {string} filename Name of file used by this Logging service component instance
@@ -316,8 +316,8 @@ export default class TracerForm extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 
@@ -390,7 +390,7 @@ export default class TracerForm extends Vue {
 		this.filename = configuration.filename;
 		this.timestampFiles = configuration.timestampFiles;
 		this.VerbosityLevels = configuration.VerbosityLevels;
-		if (this.daemonHigher230) { // Daemon v2.3.0 supports new properties
+		if (this.daemon230) { // Daemon v2.3.0 supports new properties
 			this.maxSize = configuration.maxSize ? configuration.maxSize : configuration.maxSizeMB;
 			if (configuration.maxAgeMinutes) { // optional property
 				this.maxAgeMinutes = configuration.maxAgeMinutes;
@@ -416,7 +416,7 @@ export default class TracerForm extends Vue {
 			timestampFiles: this.timestampFiles,
 			VerbosityLevels: this.VerbosityLevels
 		};
-		if (this.daemonHigher230) { // Daemon version 2.3.0 or higher
+		if (this.daemon230) { // Daemon version 2.3.0 or higher
 			Object.assign(configuration, {maxSizeMB: this.maxSize}); // TODO: to be changed for version 2.4.0 as maxSize is currently not supported by Shape
 			if (this.maxAgeMinutes > 0) { // > 0, not disabled (optional)
 				Object.assign(configuration, {maxAgeMinutes: this.maxAgeMinutes});
