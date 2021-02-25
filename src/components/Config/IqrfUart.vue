@@ -64,7 +64,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='daemonHigher230'
+						v-if='daemon230'
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
@@ -169,7 +169,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -227,9 +227,9 @@ export default class IqrfUart extends Vue {
 	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {number|null} i2cEnableGpioPin I2C interface enable pin
@@ -290,8 +290,8 @@ export default class IqrfUart extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 	
@@ -340,7 +340,7 @@ export default class IqrfUart extends Vue {
 		this.baudRate = response.baudRate;
 		this.powerEnableGpioPin = response.powerEnableGpioPin;
 		this.busEnableGpioPin = response.busEnableGpioPin;
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			if (response.pgmSwitchGpioPin !== undefined) {
 				this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
 			}
@@ -372,7 +372,7 @@ export default class IqrfUart extends Vue {
 			powerEnableGpioPin: this.powerEnableGpioPin,
 			busEnableGpioPin: this.busEnableGpioPin
 		};
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
 		}
 		if (this.i2cEnableGpioPin !== null) {
@@ -422,7 +422,7 @@ export default class IqrfUart extends Vue {
 		}
 		this.busEnableGpioPin = mapping.busEnableGpioPin;
 		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
 		}
 		if (mapping.i2cEnableGpioPin !== undefined) {

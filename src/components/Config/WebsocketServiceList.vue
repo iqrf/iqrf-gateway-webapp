@@ -119,7 +119,7 @@ import {IField} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IWsService} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -198,7 +198,7 @@ export default class WebsocketServiceList extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateTable(): void {
-		if (versionHigherThan('2.3.0')) {
+		if (versionHigherEqual('2.3.0')) {
 			this.fields.splice(3, 0, {
 				key: 'tlsEnabled',
 				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled')

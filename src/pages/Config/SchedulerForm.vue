@@ -181,7 +181,7 @@ import {WsMessaging} from '../../interfaces/messagingInterfaces';
 import {TaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {mapGetters} from 'vuex';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import cron from 'cron-validate';
 
 interface LocalTask {
@@ -244,9 +244,9 @@ export default class SchedulerForm extends Vue {
 	private cronMessage: string|null = null
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 	
 	/**
 	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
@@ -338,8 +338,8 @@ export default class SchedulerForm extends Vue {
 			maxValue: 12,
 		},
 		daysOfWeek: {
-			minValue: 1,
-			maxValue: 7,
+			minValue: 0,
+			maxValue: 6,
 		},
 		years: {
 			minValue: 1970,
@@ -498,8 +498,8 @@ export default class SchedulerForm extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateDaemonVersion(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 
@@ -578,7 +578,7 @@ export default class SchedulerForm extends Vue {
 	private getTask(taskId: number): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
-		if (this.useRest || !this.daemonHigher230) {
+		if (this.useRest || !this.daemon230) {
 			SchedulerService.getTaskREST(taskId)
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');

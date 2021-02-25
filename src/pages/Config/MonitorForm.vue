@@ -58,7 +58,7 @@
 							:checked.sync='webSocket.acceptOnlyLocalhost'
 							:label='$t("config.daemon.misc.monitor.form.acceptOnlyLocalhost")'
 						/>
-						<div v-if='daemonHigher230'>
+						<div v-if='daemon230'>
 							<CInputCheckbox
 								:checked.sync='webSocket.tlsEnabled'
 								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
@@ -71,7 +71,7 @@
 								:disabled='!webSocket.tlsEnabled'
 							/>
 							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
-						</div><br v-if='daemonHigher230'>
+						</div><br v-if='daemon230'>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
 						</CButton>
@@ -92,7 +92,7 @@ import {integer, required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
 import {RequiredInterface} from '../../interfaces/requiredInterfaces';
 import {AxiosError, AxiosResponse} from 'axios';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters} from 'vuex';
 
@@ -155,9 +155,9 @@ export default class MonitorForm extends Vue {
 	}
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates that Daemon is version 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates that Daemon is version 2.3.0 or higher
 	 */
-	private daemonHigher230 = false;
+	private daemon230 = false;
 
 	/**
 	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
@@ -230,8 +230,8 @@ export default class MonitorForm extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
@@ -305,7 +305,7 @@ export default class MonitorForm extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (!this.daemonHigher230) {
+		if (!this.daemon230) {
 			delete this.webSocket.tlsEnabled;
 			delete this.webSocket.tlsMode;
 			delete this.webSocket.certificate;

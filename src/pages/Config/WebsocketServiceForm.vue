@@ -42,7 +42,7 @@
 							:checked.sync='acceptOnlyLocalhost'
 							:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 						/>
-						<div v-if='daemonHigher230'>
+						<div v-if='daemon230'>
 							<CInputCheckbox
 								:checked.sync='tlsEnabled'
 								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
@@ -88,7 +88,7 @@ import {IWsService} from '../../interfaces/messagingInterfaces';
 import {AxiosError, AxiosResponse } from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -146,9 +146,9 @@ export default class WebsocketServiceForm extends Vue {
 	private componentName = 'shape::WebsocketCppService'
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {string} privateKey Path to private key for TLS
@@ -203,8 +203,8 @@ export default class WebsocketServiceForm extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
@@ -265,7 +265,7 @@ export default class WebsocketServiceForm extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.WebsocketPort = response.WebsocketPort;
 		this.acceptOnlyLocalhost = response.acceptOnlyLocalhost;
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			if (response.tlsEnabled !== undefined) {
 				this.tlsEnabled = response.tlsEnabled;
 			}
@@ -292,7 +292,7 @@ export default class WebsocketServiceForm extends Vue {
 			WebsocketPort: this.WebsocketPort,
 			acceptOnlyLocalhost: this.acceptOnlyLocalhost
 		};
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			Object.assign(configuration, {tlsEnabled: this.tlsEnabled, tlsMode: this.tlsMode, certificate: this.certificate, privateKey: this.privateKey});
 		}
 		return configuration;
