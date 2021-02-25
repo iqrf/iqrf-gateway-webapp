@@ -413,15 +413,12 @@ export default class TrConfiguration extends Vue {
 	 */
 	@Watch('address')
 	getAddress(): void {
-		if (!this.loaded) {
-			return;
-		}
 		this.loaded = false;
 		this.config = null;
 		this.peripherals = [];
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+			this.$store.dispatch('spinner/show', {timeout: 60000});
+			IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 				.then((msgId: string) => this.msgId = msgId);
 		}
 	}
@@ -506,6 +503,7 @@ export default class TrConfiguration extends Vue {
 				this.$store.dispatch('spinner/hide');
 				this.handleWriteResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				this.$store.dispatch('spinner/hide');
 				this.handleEnumerationResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				this.$store.dispatch('spinner/hide');

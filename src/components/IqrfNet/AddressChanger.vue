@@ -86,7 +86,7 @@ export default class AddressChanger extends Vue {
 	 * Changes device address used to retrieve transciever configuration
 	 */
 	private changeAddress(): void {
-		if (!this.loaded || this.address === this.currentAddress) {
+		if (this.address === this.currentAddress) {
 			this.$emit('reload-configuration');
 			return;
 		}
