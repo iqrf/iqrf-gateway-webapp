@@ -1241,7 +1241,7 @@
 					"address": "Please enter an integer between 1 and 239 for new node address.",
 					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests.",
 					"scCodeMissing": "Please enter the IQRF Smart Connect code.",
-					"scCodeInvalid": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
+					"scCodeInvalid": "IQRF Smart Connect code should be a 34 characters long base57 string."
 				},
 				"messages": {
 					"bondLocalAction": "Press node device button within 10 seconds to invoke bonding.",
@@ -1259,7 +1259,9 @@
 					"clearAllCStatus": "Removing all nodes from coordinator memory.",
 					"clearAllSuccess": "All bonds have been cleared successfully.",
 					"clearAllCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
-					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}."
+					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}.",
+					"smartConnectErrorMessage": "Smart Connect not started: {message}",
+					"smartConnectBondExists": "Another device is already bonded to address {address}, or the device with specified Smart Connect code is already bonded to another address."
 				}
 			},
 			"devicesInfo": {
