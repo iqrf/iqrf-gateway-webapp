@@ -168,7 +168,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {mapGetters} from 'vuex';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import { parse } from 'uuid';
 
 @Component({
@@ -200,9 +200,9 @@ import { parse } from 'uuid';
  */
 export default class SchedulerList extends Vue {
 	/**
-	 * @var {boolean} daemonHigher230 Indicates that Daemon is version 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates that Daemon is version 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
@@ -388,8 +388,8 @@ export default class SchedulerList extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateDaemonVersion(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 

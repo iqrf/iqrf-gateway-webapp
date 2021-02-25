@@ -46,7 +46,7 @@
 							:checked.sync='service.acceptOnlyLocalhost'
 							:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 						/>
-						<div v-if='daemonHigher230'>
+						<div v-if='daemon230'>
 							<CInputCheckbox
 								:checked.sync='service.tlsEnabled'
 								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
@@ -59,7 +59,7 @@
 								:disabled='!service.tlsEnabled'
 							/>
 							<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
-						</div><br v-if='daemonHigher230'>
+						</div><br v-if='daemon230'>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
 						</CButton>
@@ -81,7 +81,7 @@ import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messaging
 import {MetaInfo} from 'vue-meta';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 
@@ -123,9 +123,9 @@ export default class WebsocketInterfaceForm extends Vue {
 	}
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {ModalInstance} instances Names of websocket messaging and service instances
@@ -192,8 +192,8 @@ export default class WebsocketInterfaceForm extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
@@ -255,7 +255,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
 	private saveConfig(): void {
-		if (!this.daemonHigher230) {
+		if (!this.daemon230) {
 			delete this.service.tlsEnabled;
 			delete this.service.tlsMode;
 			delete this.service.certificate;

@@ -53,6 +53,7 @@ import {MutationPayload} from 'vuex';
 import {saveAs} from 'file-saver';
 import {AxiosResponse } from 'axios';
 import VersionService from '../../services/VersionService';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 
 interface DeviceData {
 	data: string
@@ -122,6 +123,11 @@ export default class Backup extends Vue {
 	private target = 'coordinator'
 
 	/**
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
+	 */
+	private daemon236 = false 
+
+	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
 	 */
 	private webappVersion = 'unknown'
@@ -166,6 +172,7 @@ export default class Backup extends Vue {
 	mounted(): void {
 		VersionService.getWebappVersionRest()
 			.then((response: AxiosResponse) => this.webappVersion = response.data.version);
+		this.daemon236 = versionHigherEqual('2.3.6');
 	}
 
 	/**
@@ -216,58 +223,34 @@ export default class Backup extends Vue {
 			return;
 		}
 
-		if (data.status === -1) { // request timed out
-			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.backup.messages.timeout').toString()
-			);
-			return;
-		}
-
-		if (data.status !== 1000) { // is not a backup response code
-			return;
-		}
-
-		if (this.target === 'coordinator' && data.rsp.progress === 100) { // coordinator is offline
+		if (this.target === 'coordinator') {
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.error(
 				this.$t('forms.messages.coordinatorOffline').toString()
 			);
 			return;
-		}
-
-		if (data.statusStr.includes('ERROR_NADR')) { // device not bonded
-			if (this.target === 'node' && data.rsp.progress === 100) {
-				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: this.address}).toString()
-				);
-				return;
-			}
-			if (this.target === 'network' && data.rsp.progress === 100) { // device in coordinator address but not found
-				this.concludeBackup();
-				return;
-			}
-		}
-
-		if (data.statusStr.includes('ERROR_TIMEOUT')) { // device is offline
-			if (this.target === 'node' && data.rsp.progress === 100) {
-				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
+		} else if (this.target === 'node') {
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			if (data.status === -1 || data.statusStr.includes('ERROR_TIMEOUT')) { // node device offline
 				this.$toast.error(
 					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
 				);
-				return;
+			} else if (data.status === 8 || data.statusStr.includes('ERROR_NADR')) {
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
 			}
-			if (this.target === 'network' && data.rsp.progress === 100) { // backup finished, but last node device was offline
+			return;
+		} else {
+			if (data.status === -1 || data.statusStr.includes('ERROR_TIMEOUT')) { // node device is offline during network backup
 				this.offlineDevices.push(data.rsp.devices[0].deviceAddr);
-				this.concludeBackup();
-				return;
+				if (data.rsp.progress === 100) {
+					this.concludeBackup();
+					return;
+				}
 			}
-			this.offlineDevices.push(data.rsp.devices[0].deviceAddr);
 			this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(data));
 		}
 	}

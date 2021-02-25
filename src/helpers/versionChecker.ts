@@ -6,13 +6,10 @@ import compareVersions from 'compare-versions';
  * @param {string} version Version to compare Daemon version against
  * @returns {boolean} True if Daemon version is higher than passed version
  */
-export function versionHigherThan(version: string): boolean {
+export function versionHigherEqual(version: string): boolean {
 	const daemonVersion = store.getters.daemonVersion;
 	if (daemonVersion === '') {
 		return false;
 	}
-	if (compareVersions.compare(daemonVersion, version, '>=')) {
-		return true;
-	}
-	return false;
+	return compareVersions.compare(daemonVersion, version, '>=');
 }

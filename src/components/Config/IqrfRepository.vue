@@ -47,7 +47,7 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						v-if='daemonHigher230'
+						v-if='daemon230'
 						:checked.sync='downloadIfRepoCacheEmpty'
 						:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
 					/>
@@ -69,7 +69,7 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -111,9 +111,9 @@ export default class IqrfRepository extends Vue {
 	private componentName = 'iqrf::JsCache'
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {boolean} downloadIfRepoCacheEmpty Download if repository cache is empty?
@@ -140,8 +140,8 @@ export default class IqrfRepository extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 
@@ -188,7 +188,7 @@ export default class IqrfRepository extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.urlRepo = response.urlRepo;
 		this.checkPeriodInMinutes = response.checkPeriodInMinutes;
-		if (!this.daemonHigher230) {
+		if (!this.daemon230) {
 			return;
 		}
 		if (response.downloadIfRepoCacheEmpty !== undefined) {
@@ -206,7 +206,7 @@ export default class IqrfRepository extends Vue {
 			urlRepo: this.urlRepo,
 			checkPeriodInMinutes: this.checkPeriodInMinutes,
 		};
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			Object.assign(configuration, {downloadIfRepoCacheEmpty: this.downloadIfRepoCacheEmpty});
 		}
 		return configuration;

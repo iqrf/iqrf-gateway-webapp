@@ -17,7 +17,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='daemonHigher230'
+						v-if='daemon230'
 						v-slot='{ errors, touched, valid }'
 						:rules='enumAtStartUp ? "integer|min:0|required": ""'
 						:custom-messages='{
@@ -40,7 +40,7 @@
 						:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 					/>
 					<CInputCheckbox
-						v-if='daemonHigher230'
+						v-if='daemon230'
 						:checked.sync='enumUniformDpaVer'
 						:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 					/>
@@ -63,7 +63,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IIqrfInfo} from '../../interfaces/iqrfInfo';
 import {mapGetters} from 'vuex';
-import {versionHigherThan} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -99,9 +99,9 @@ export default class IqrfInfo extends Vue {
 	private componentName = 'iqrf::IqrfInfo'
 
 	/**
-	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonHigher230 = false
+	private daemon230 = false
 
 	/**
 	 * @var {boolean} enumAtStartUp Enumerate network after startup?
@@ -133,8 +133,8 @@ export default class IqrfInfo extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
+		if (versionHigherEqual('2.3.0')) {
+			this.daemon230 = true;
 		}
 	}
 
@@ -180,7 +180,7 @@ export default class IqrfInfo extends Vue {
 	private parseConfiguration(response: IIqrfInfo): void {
 		this.instance = this.componentInstance = response.instance;
 		this.enumAtStartUp = response.enumAtStartUp;
-		if (!this.daemonHigher230) {
+		if (!this.daemon230) {
 			return;
 		}
 		if (response.enumPeriod !== undefined) {
@@ -201,7 +201,7 @@ export default class IqrfInfo extends Vue {
 			instance: this.componentInstance,
 			enumAtStartUp: this.enumAtStartUp
 		};
-		if (this.daemonHigher230) {
+		if (this.daemon230) {
 			Object.assign(configuration, {enumPeriod: this.enumPeriod, enumUniformDpaVer: this.enumUniformDpaVer});
 		}
 		return configuration;
