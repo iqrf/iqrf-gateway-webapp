@@ -38,6 +38,7 @@ class PhpModuleManager {
 		'openssl',
 		'PDO',
 		'pdo_sqlite',
+		'posix',
 		'SimpleXML',
 		'sqlite3',
 		'xml',

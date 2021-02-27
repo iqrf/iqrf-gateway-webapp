@@ -42,13 +42,18 @@ class SudoManager {
 
 	/**
 	 * Checks if sudo exists and webapp can use sudo
-	 * @return array<string, bool> Does sudo exist? Can www-data use sudo?
+	 * @return array<string, bool|string> Sudo check meta
 	 */
 	public function checkSudo(): array {
-		return [
-			'exists' => $this->commandManager->commandExist('sudo'),
-			'webappSudo' => $this->commandManager->run('sudo -v')->getExitCode() === 0,
-		];
+		$user = posix_getpwuid(posix_geteuid())['name'];
+		if ($user !== 'root') {
+			return [
+				'user' => $user,
+				'exists' => $this->commandManager->commandExist('sudo'),
+				'userSudo' => $this->commandManager->run('sudo -v')->getExitCode() === 0,
+			];
+		}
+		return [];
 	}
 
 }

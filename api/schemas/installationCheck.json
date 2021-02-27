@@ -6,8 +6,7 @@
 	"required": [
 		"allMigrationsExecuted",
 		"hasUsers",
-		"phpModules",
-		"sudo"
+		"phpModules"
 	],
 	"properties": {
 		"allMigrationsExecuted": {
@@ -58,20 +57,27 @@
 			"type": "object",
 			"title": "Webapp sudo check",
 			"required": [
+				"user",
 				"exists",
-				"webappSudo"
+				"userSudo"
 			],
 			"properties": {
+				"user": {
+					"$id": "#/properties/sudo/properties/user",
+					"type": "string",
+					"title": "User under which webapp runs",
+					"example": "www-data"
+				},
 				"exists": {
 					"$id": "#/properties/sudo/properties/exists",
 					"type": "boolean",
 					"title": "Does sudo exist?",
 					"example": true
 				},
-				"webappSudo": {
+				"userSudo": {
 					"$id": "#/properties/sudo/properties/webappSudo",
 					"type": "boolean",
-					"title": "Can webapp execute commands with sudo?",
+					"title": "Can webapp user execute commands with sudo?",
 					"example": true
 				}
 			},
