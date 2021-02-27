@@ -40,7 +40,7 @@ export default class App extends Vue {
 							packageString: check.phpModules.missing!.packages.join(' '),
 						}
 					});
-				} else if (!check.sudo !== undefined) {
+				} else if (check.sudo !== undefined) {
 					this.$router.push({
 						name: 'sudo-error',
 						params: {
