@@ -19,7 +19,7 @@
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "vue-cli-service build",
+		"build": "vue-cli-service build --mode development",
 		"coverage:unit": "vue-cli-service test:unit --coverage",
 		"coverage:unit-ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit",
 		"test:unit": "vue-cli-service test:unit",
