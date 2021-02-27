@@ -42,17 +42,9 @@
 					"type": "object",
 					"title": "Missing PHP extensions and packages that contain them",
 					"required": [
-						"debianBased",
-						"extensions",
-						"packages"
+						"extensions"
 					],
 					"properties": {
-						"debianBased": {
-							"$id": "#/properties/phpModules/properties/missing/properties/debianBased",
-							"type": "boolean",
-							"title": "Is the OS debian based?",
-							"example": true
-						},
 						"extensions": {
 							"$id": "#/properties/phpModules/properties/missing/properties/extensions",
 							"type": "array",

@@ -19,9 +19,8 @@ export interface InstallationCheckPhp {
 }
 
 export interface InstallationCheckPhpMissing {
-	debianBased: boolean,
 	extensions: Array<string>,
-	packages: Array<string>,
+	packages?: Array<string>,
 }
 
 /**

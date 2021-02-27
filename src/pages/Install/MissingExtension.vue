@@ -6,13 +6,12 @@
 		<CCardBody>
 			{{ $t('install.error.missingExtension.description', {extensions: extensionString}) }}
 		</CCardBody>
-		<CCardFooter
-			v-if='debianBased === "true"'
-		>
+		<CCardFooter>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<br>
-			{{ $t('install.error.missingExtension.fixDescription') }}
+			{{ $t('install.error.missingExtension.fixDescription' + (packageString !== '' ? 'Debian': '')) }}
 			<prism-editor
+				v-if='packageString !== ""'
 				v-model='fixCommands'
 				:highlight='highlighter'
 				:readonly='true'
@@ -53,11 +52,6 @@ export default class MissingExtension extends Vue {
 	 * Commands to fix this issue
 	 */
 	private fixCommands = 'sudo apt-get update\nsudo apt-get install '
-
-	/**
-	 * @property {string} debianBased Debian based distribution
-	 */
-	@Prop({required: true}) debianBased!: string
 
 	/**
 	 * @property {string} extensionString String of missing extensions
