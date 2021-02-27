@@ -1,0 +1,40 @@
+# Local application configuration
+app/config/config.local.neon
+app/config/database.db
+temp/*/
+# Composer
+vendor/
+composer.lock
+# NPM
+node_modules/
+package-lock.json
+# Debian package
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/iqrf-gateway-webapp/
+debian/iqrf-gateway-webapp.substvars
+# NetBeans IDE
+nbproject/
+# PhpStorm IDE
+.idea/
+# Nette Tester
+tests/output/
+tests/*/output/
+tests/*/*/output/
+tests/*/*/*/output/
+tests/*/*/*/*/output/
+tests/temp/
+coverage.html
+coverage.xml
+# Sphinx
+docs/build/
+# VScode
+.vscode/
+# Vue.js build
+www/dist/
+# Cypress
+cypress/videos
+cypress/screenshots
+# Debian packaging
+debian/
