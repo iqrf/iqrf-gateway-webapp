@@ -39,15 +39,46 @@
 				},
 				"missing": {
 					"$id": "#/properties/phpModules/properties/missing",
-					"type": "array",
-					"title": "Array of missing PHP extensions",
-					"items": {
-						"$id": "#/properties/phpModules/properties/missing/items",
-						"type": "string",
-						"title": "Missing PHP extension",
-						"example": "json"
+					"type": "object",
+					"title": "Missing PHP extensions and packages that contain them",
+					"required": [
+						"debianBased",
+						"extensions",
+						"packages"
+					],
+					"properties": {
+						"debianBased": {
+							"$id": "#/properties/phpModules/properties/missing/properties/debianBased",
+							"type": "boolean",
+							"title": "Is the OS debian based?",
+							"example": true
+						},
+						"extensions": {
+							"$id": "#/properties/phpModules/properties/missing/properties/extensions",
+							"type": "array",
+							"title": "Missing PHP extensions",
+							"items": {
+								"$id": "#/properties/phpModules/properties/missing/properties/extensions/items",
+								"type": "string",
+								"title": "Missing PHP extension",
+								"example": "json"
+							},
+							"additionalItems": false
+						},
+						"packages": {
+							"$id": "#/properties/phpModules/properties/missing/properties/packages",
+							"type": "array",
+							"title": "Packages containing missing extensions",
+							"items": {
+								"$id": "#/properties/phpModules/properties/missing/properties/packages/items",
+								"type": "string",
+								"title": "Package name",
+								"example": "php7.3-json"
+							},
+							"additionalItems": false
+						}
 					},
-					"additionalItems": false
+					"additionalProperties": false
 				}
 			},
 			"additionalProperties": false

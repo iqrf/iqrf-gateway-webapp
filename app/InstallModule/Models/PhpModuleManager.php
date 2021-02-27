@@ -20,51 +20,61 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Models;
 
+use Nette\Utils\Strings;
+
 /**
  * PHP module manager
  */
 class PhpModuleManager {
 
 	/**
-	 * Required php modules
+	 * Required php extensions and their modules
 	 */
-	private const REQUIRED_MODULES = [
-		'curl',
-		'dom',
-		'fileinfo',
-		'iconv',
-		'json',
-		'mbstring',
-		'openssl',
-		'PDO',
-		'pdo_sqlite',
-		'posix',
-		'SimpleXML',
-		'sqlite3',
-		'xml',
-		'xmlreader',
-		'xmlwriter',
-		'xsl',
-		'zip',
+	private const REQUIRED_EXTENSIONS_MODULES = [
+		'curl' => 'curl',
+		'dom' => 'xml',
+		'fileinfo' => 'common',
+		'iconv' => 'common',
+		'json' => 'json',
+		'mbstring' => 'mbstring',
+		'openssl' => 'openssl',
+		'PDO' => 'common',
+		'pdo_sqlite' => 'sqlite3',
+		'posix' => 'common',
+		'SimpleXML' => 'xml',
+		'sqlite3' => 'sqlite3',
+		'xml' => 'xml',
+		'xmlreader' => 'xml',
+		'xmlwriter' => 'xml',
+		'xsl' => 'xml',
+		'zip' => 'zip',
 	];
 
 	/**
 	 * Checks installed and loaded PHP modules
-	 * @return array<string, bool|array<int, string>> Array of missing extensions
+	 * @return array<string, array<string, array<int, string>|bool>|bool> Missing extensions meta
 	 */
 	public static function checkModules(): array {
+		$version = Strings::substring($version = phpversion(), 0, 3);
 		$loaded = get_loaded_extensions();
-		$missing = [];
-		foreach (self::REQUIRED_MODULES as $module) {
-			if (!in_array($module, $loaded, true)) {
-				$missing[] = $module;
+		$extensions = [];
+		$packages = [];
+
+		foreach (self::REQUIRED_EXTENSIONS_MODULES as $extension => $package) {
+			if (!in_array($extension, $loaded, true)) {
+				$extensions[] = $extension;
+				$packageName = ($extension === 'openssl') ? $package : sprintf('php%s-%s', $version, $package);
+				if (!in_array($packageName, $packages, true)) {
+					$packages[] = $packageName;
+				}
 			}
 		}
-		$modules = ['allExtensionsLoaded' => $missing === []];
-		if ($missing !== []) {
-			$modules['missing'] = $missing;
+
+		$extensionCheck = ['allExtensionsLoaded' => $extensions === []];
+		if ($extensions !== []) {
+			$extensionCheck['missing'] = ['debianBased' => file_exists('/etc/debian_version'), 'extensions' => $extensions, 'packages' => $packages];
 		}
-		return $modules;
+		return $extensionCheck;
 	}
 
 }

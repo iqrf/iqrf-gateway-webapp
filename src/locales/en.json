@@ -1785,7 +1785,7 @@
 			"missingExtension": {
 				"title": "One or more PHP extensions are missing",
 				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
-				"fixDescription": "Install required PHP modules using the following commands:"
+				"fixDescription": "Use the following commands to install packages containing the required PHP extensions:"
 			},
 			"missingMigration": {
 				"title": "Some database table is missing",

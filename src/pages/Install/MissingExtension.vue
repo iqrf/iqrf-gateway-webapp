@@ -6,7 +6,9 @@
 		<CCardBody>
 			{{ $t('install.error.missingExtension.description', {extensions: extensionString}) }}
 		</CCardBody>
-		<CCardFooter>
+		<CCardFooter
+			v-if='debianBased === "true"'
+		>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<br>
 			{{ $t('install.error.missingExtension.fixDescription') }}
@@ -50,12 +52,29 @@ export default class MissingExtension extends Vue {
 	/**
 	 * Commands to fix this issue
 	 */
-	private fixCommands = 'sudo apt-get update && sudo apt-get install php7.4-common php7.4-cli php7.4-curl php7.4-fpm php7.4-json php7.4-mbstring php7.4-sqlite3 php7.4-xml php7.4-zip'
+	private fixCommands = 'sudo apt-get update\nsudo apt-get install '
+
+	/**
+	 * @property {string} debianBased Debian based distribution
+	 */
+	@Prop({required: true}) debianBased!: string
 
 	/**
 	 * @property {string} extensionString String of missing extensions
 	 */
 	@Prop({required: true}) extensionString!: string
+
+	/**
+	 * @property {string} packageString String of packages to install
+	 */
+	@Prop({required: true}) packageString!: string
+
+	/**
+	 * Updates the fix command with packages
+	 */
+	mounted(): void {
+		this.fixCommands += this.packageString;
+	}
 
 	/**
 	 * JSON highlighter method
