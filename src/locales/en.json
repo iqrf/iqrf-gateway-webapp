@@ -1785,7 +1785,8 @@
 			"missingExtension": {
 				"title": "One or more PHP extensions are missing",
 				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
-				"fixDescription": "Use the following commands to install packages containing the required PHP extensions:"
+				"fixDescription": "Install packages containing missing PHP extensions.",
+				"fixDescriptionDebian": "Use the following commands to install packages containing the required PHP extensions:"
 			},
 			"missingMigration": {
 				"title": "Some database table is missing",

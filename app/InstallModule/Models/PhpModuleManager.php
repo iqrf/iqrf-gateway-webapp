@@ -52,10 +52,11 @@ class PhpModuleManager {
 
 	/**
 	 * Checks installed and loaded PHP modules
-	 * @return array<string, array<string, array<int, string>|bool>|bool> Missing extensions meta
+	 * @return array<string, array<string, array<int, string>>|bool> Missing extensions meta
 	 */
 	public static function checkModules(): array {
 		$version = Strings::substring($version = phpversion(), 0, 3);
+		$debianBased = file_exists('/etc/debian_version');
 		$loaded = get_loaded_extensions();
 		$extensions = [];
 		$packages = [];
@@ -63,16 +64,21 @@ class PhpModuleManager {
 		foreach (self::REQUIRED_EXTENSIONS_MODULES as $extension => $package) {
 			if (!in_array($extension, $loaded, true)) {
 				$extensions[] = $extension;
-				$packageName = ($extension === 'openssl') ? $package : sprintf('php%s-%s', $version, $package);
-				if (!in_array($packageName, $packages, true)) {
-					$packages[] = $packageName;
+				if ($debianBased) {
+					$packageName = ($extension === 'openssl') ? $package : sprintf('php%s-%s', $version, $package);
+					if (!in_array($packageName, $packages, true)) {
+						$packages[] = $packageName;
+					}
 				}
 			}
 		}
 
 		$extensionCheck = ['allExtensionsLoaded' => $extensions === []];
 		if ($extensions !== []) {
-			$extensionCheck['missing'] = ['debianBased' => file_exists('/etc/debian_version'), 'extensions' => $extensions, 'packages' => $packages];
+			$extensionCheck['missing'] = ['extensions' => $extensions];
+			if ($debianBased) {
+				$extensionCheck['missing']['packages'] = $packages;
+			}
 		}
 		return $extensionCheck;
 	}

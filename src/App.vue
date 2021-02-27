@@ -35,9 +35,8 @@ export default class App extends Vue {
 					this.$router.push({
 						name: 'missing-extension',
 						params: {
-							debianBased: check.phpModules.missing!.debianBased.toString(),
 							extensionString: check.phpModules.missing!.extensions.join(', '),
-							packageString: check.phpModules.missing!.packages.join(' '),
+							packageString: check.phpModules.missing?.packages !== undefined ? check.phpModules.missing?.packages.join(' ') : '',
 						}
 					});
 				} else if (check.sudo !== undefined) {
