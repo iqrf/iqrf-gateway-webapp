@@ -35,7 +35,9 @@ export default class App extends Vue {
 					this.$router.push({
 						name: 'missing-extension',
 						params: {
-							extensionString: check.phpModules.missing!.join(', ')
+							debianBased: check.phpModules.missing!.debianBased.toString(),
+							extensionString: check.phpModules.missing!.extensions.join(', '),
+							packageString: check.phpModules.missing!.packages.join(' '),
 						}
 					});
 				} else if (!check.sudo !== undefined) {
@@ -44,7 +46,7 @@ export default class App extends Vue {
 						params: {
 							user: check.sudo!.user,
 							exists: check.sudo!.exists.toString(),
-							userSudo: check.sudo!.userSudo.toString()
+							userSudo: check.sudo!.userSudo.toString(),
 						}
 					});
 				} else if (!check.allMigrationsExecuted) {

@@ -6,16 +6,22 @@ import axios, {AxiosResponse} from 'axios';
 export interface InstallationCheck {
 	allMigrationsExecuted: boolean,
 	hasUsers?: boolean,
-	phpModules: InstallationCheckPhpModules,
+	phpModules: InstallationCheckPhp,
 	sudo?: InstallationCheckSudo,
 }
 
 /**
  * Installation check php extensions interface
  */
-export interface InstallationCheckPhpModules {
+export interface InstallationCheckPhp {
 	allExtensionsLoaded: boolean,
-	missing?: Array<string>,
+	missing?: InstallationCheckPhpMissing,
+}
+
+export interface InstallationCheckPhpMissing {
+	debianBased: boolean,
+	extensions: Array<string>,
+	packages: Array<string>,
 }
 
 /**
