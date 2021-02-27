@@ -37,7 +37,7 @@ interface IMonitorMsgData {
 
 interface IMonitorMsg {
 	mType: string
-	data: IMonitorMsgData 
+	data: IMonitorMsgData
 }
 
 @Component({
@@ -73,13 +73,13 @@ export default class DaemonModeModal extends Vue {
 	created(): void {
 		this.setSocket();
 	}
-	
+
 	/**
 	 * Creates websocket connection to daemon monitor server and sets callbacks
 	 */
 	private setSocket(): void {
 		this.webSocket = new WebSocket(
-			(window.location.protocol === 'https' ? 'wss://' : 'ws://')
+			(window.location.protocol === 'https:' ? 'wss://' : 'ws://')
 			+ window.location.hostname
 			+ (window.location.port === '8081' ? ':1438' : ':' + window.location.port + '/wsMonitor'));
 		this.webSocket.onmessage = (event) => {
