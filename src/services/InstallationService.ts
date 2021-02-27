@@ -7,7 +7,7 @@ export interface InstallationCheck {
 	allMigrationsExecuted: boolean,
 	hasUsers?: boolean,
 	phpModules: InstallationCheckPhpModules,
-	sudo: InstallationCheckSudo,
+	sudo?: InstallationCheckSudo,
 }
 
 /**
@@ -22,8 +22,9 @@ export interface InstallationCheckPhpModules {
  * Installation check sudo interface
  */
 export interface InstallationCheckSudo {
+	user: string
 	exists: boolean,
-	webappSudo: boolean,
+	userSudo: boolean,
 }
 
 /**

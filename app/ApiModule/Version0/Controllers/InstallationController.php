@@ -104,7 +104,10 @@ class InstallationController extends BaseController {
 		$users = $this->entityManager->getUserRepository()->count([]);
 		$status['hasUsers'] = $users !== 0;
 		$status['phpModules'] = $this->phpModuleManager::checkModules();
-		$status['sudo'] = $this->sudoManager->checkSudo();
+		$sudo = $this->sudoManager->checkSudo();
+		if ($sudo !== []) {
+			$status['sudo'] = $sudo;
+		}
 		return $response->writeJsonBody($status);
 	}
 

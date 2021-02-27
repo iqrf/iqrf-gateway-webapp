@@ -31,12 +31,13 @@ export default class App extends Vue {
 		InstallationService.check()
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
-				if (!check.sudo.exists || !check.sudo.webappSudo) {
+				if (!check.sudo !== undefined) {
 					this.$router.push({
 						name: 'sudo-error',
 						params: {
-							exists: check.sudo.exists.toString(),
-							webappSudo: check.sudo.webappSudo.toString()
+							user: check.sudo!.user,
+							exists: check.sudo!.exists.toString(),
+							userSudo: check.sudo!.userSudo.toString()
 						}
 					});
 				} else if (!check.phpModules.allExtensionsLoaded) {

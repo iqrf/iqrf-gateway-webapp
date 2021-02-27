@@ -8,7 +8,7 @@
 				{{ $t('install.error.sudo.missing') }}
 			</span>
 			<br>
-			<span v-if='!(webappSudo === "true")'>
+			<span v-if='!(userSudo === "true")'>
 				{{ $t('install.error.sudo.invalid') }}
 			</span>
 		</CCardBody>
@@ -27,7 +27,7 @@
 				<br>
 				{{ $t('install.error.sudo.fixInvalid') }}
 				<prism-editor
-					v-model='fixCommands.webappSudo'
+					v-model='fixCommands.userSudo'
 					:highlight='highlighter'
 					:readonly='true'
 				/>
@@ -69,8 +69,13 @@ export default class SudoError extends Vue {
 	 */
 	private fixCommands = {
 		exists: 'su\napt-get install sudo',
-		webappSudo: 'echo "www-data ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/iqrf-gateway-webapp >/dev/null'
+		userSudo: ' ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/iqrf-gateway-webapp >/dev/null'
 	}
+
+	/**
+	 * @property {string} user User under which webapp runs
+	 */
+	@Prop({required: true, default: null}) user!: string
 
 	/**
 	 * @property {boolean} exists Does sudo utility exist?
@@ -78,9 +83,16 @@ export default class SudoError extends Vue {
 	@Prop({required: true, default: false}) exists!: boolean
 
 	/**
-	 * @property {boolean} webappSudo Can webapp executo commands with sudo?
+	 * @property {boolean} userSudo Can webapp executo commands with sudo?
 	 */
-	@Prop({required: true, default: false}) webappSudo!: boolean
+	@Prop({required: true, default: false}) userSudo!: boolean
+
+	/**
+	 * Initializes userSudo command with user name
+	 */
+	mounted(): void {
+		this.fixCommands.userSudo = 'echo "' + this.user + this.fixCommands.userSudo;
+	}
 
 	/**
 	 * JSON highlighter method
