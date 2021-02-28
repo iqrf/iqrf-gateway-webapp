@@ -40,7 +40,7 @@
 			</ValidationObserver>
 		</CCardBody>
 		<CCardFooter v-if='responseType != null'>
-			<table class='table'>
+			<table class='table d-block overflow-auto text-nowrap'>
 				<thead>
 					{{ $t('iqrfnet.standard.sensor.sensors') }}
 				</thead>
@@ -223,7 +223,7 @@ export default class SensorManager extends Vue {
 			this.sensors.push({'type': item.name, 'unit': item.unit});
 		});
 	}
-	
+
 	/**
 	 * Parses Sensor read request response
 	 * @param {Array<StandardSensor>} sensors Array of Sensor standard objects from response
