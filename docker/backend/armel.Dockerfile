@@ -29,6 +29,5 @@ RUN sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\"
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker-compose'/g" app/config/config.neon
 RUN chown -R www-data:www-data app/ log/ temp/ vendor/
 
-USER www-data:www-data
-RUN bin/manager database:create \
- && bin/manager migrations:migrate --no-interaction
+COPY docker/backend/run.sh run.sh
+CMD ["bash", "run.sh"]

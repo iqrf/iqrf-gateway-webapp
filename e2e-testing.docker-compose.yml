@@ -1,0 +1,78 @@
+version: "3.3"
+services:
+  webapp-frontend:
+    image: iqrftech/iqrf-gateway-webapp-frontend:latest
+    #build:
+    #  context: .
+    #  dockerfile: docker/frontend/Dockerfile
+    container_name: iqrf-gateway-webapp-frontend
+    tty: true
+    depends_on:
+      - daemon
+      - webapp-backend
+    networks:
+      iqrf-gateway-webapp-e2e:
+        ipv4_address: 172.16.10.2
+    expose:
+      - 80
+      - 443
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - daemon-config:/etc/iqrf-gateway-daemon
+  webapp-backend:
+    image: iqrftech/iqrf-gateway-webapp-backend:latest-amd64
+    container_name: iqrf-gateway-webapp-backend
+    depends_on:
+      - daemon
+    #build:
+    #  context: .
+    #  dockerfile: docker/backend/Dockerfile
+    environment:
+      - IQRFGD_WS_SERVER=ws://daemon:1338
+    expose:
+      - 9000
+    networks:
+      iqrf-gateway-webapp-e2e:
+        ipv4_address: 172.16.10.3
+    volumes:
+    - daemon-log:/var/log/iqrf-gateway-daemon
+  daemon:
+    image: iqrftech/iqrf-gateway-daemon:latest-amd64
+    container_name: iqrf-gateway-daemon
+    expose:
+      - 1338
+    ports:
+      - "1338:1338"
+      - "1348:1348"
+      - "55000:55000/udp"
+      - "55300:55300/udp"
+    networks:
+      iqrf-gateway-webapp-e2e:
+        ipv4_address: 172.16.10.4
+    volumes:
+      - daemon-config:/etc/iqrf-gateway-daemon
+      - ./docker/e2e/daemon/config.json:/etc/iqrf-gateway-daemon/config.json
+      - ./docker/e2e/daemon/iqrf__IqrfTcp.json:/etc/iqrf-gateway-daemon/iqrf__IqrfTcp.json
+      - daemon-log:/var/log/iqrf-gateway-daemon
+  tr-emulator:
+    image: iqrftech/iqrf-tr-emulator:latest
+    container_name: iqrf-tr-emulator
+    expose:
+      - 10000
+    networks:
+      iqrf-gateway-webapp-e2e:
+        ipv4_address: 172.16.10.5
+
+networks:
+  iqrf-gateway-webapp-e2e:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.10.0/24
+
+volumes:
+  daemon-config:
+  daemon-log:
