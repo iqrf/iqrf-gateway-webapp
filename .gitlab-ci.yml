@@ -128,7 +128,7 @@ coverage:
     - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
-    - vendor/bin/tester -p phpdbg -c ./tests/php.ini -o none --coverage ./coverage.html --coverage-src ./app ./tests
+    - vendor/bin/tester -p phpdbg7.4 -c ./tests/php.ini -o none --coverage ./coverage.html --coverage-src ./app ./tests
   allow_failure: true
   artifacts:
     paths:
