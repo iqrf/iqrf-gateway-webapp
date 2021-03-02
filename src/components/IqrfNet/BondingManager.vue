@@ -76,14 +76,14 @@
 					<CButton
 						color='primary' 
 						type='button' 
-						:disabled='invalid' 
+						:disabled='invalid'
 						@click.prevent='processSubmitBond'
 					>
 						{{ $t('forms.bond') }}
 					</CButton> <CButton
 						color='secondary' 
 						type='button' 
-						:disabled='invalid || autoAddress'
+						:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
 						@click='modalUnbond = true'
 					>
 						{{ $t('forms.unbond') }}
