@@ -60,28 +60,6 @@ cache:
   tags:
     - linux, docker, amd64
 
-build-docker:latest-amd64:
-  extends: .docker_template
-  only:
-    refs:
-      - master
-  tags:
-    - linux, docker, amd64
-  variables:
-    DOCKER_FILE: docker/latest/Dockerfile
-    DOCKER_TAG: latest-amd64
-
-build-docker:stable-amd64:
-  extends: .docker_template
-  only:
-    refs:
-      - stable
-  tags:
-    - linux, docker, amd64
-  variables:
-    DOCKER_FILE: docker/stable/Dockerfile
-    DOCKER_TAG: stable-amd64
-
 build-docker:tests-buster:
   extends: .docker_template_testing
   only:
