@@ -19,7 +19,6 @@ do
 done
 
 export DOCKER_CLI_EXPERIMENTAL="enabled"
-docker manifest rm "${REPO}:${TAG}"
 docker manifest create "${REPO}:${TAG}" ${TAGS}
 docker manifest annotate "${REPO}:${TAG}" "${REPO}:${TAG}-armel" --os=linux --arch=arm --variant=v6
-docker manifest push "$REPO":"$TAG"
+docker manifest push --purge "$REPO":"$TAG"
