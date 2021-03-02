@@ -822,13 +822,6 @@ router.beforeEach((to, from, next) => {
 			});
 			return;
 		}
-		const now = new Date();
-		const epoch = Math.round(now.getTime() / 1000);
-		const jwt: JwtPayload = jwt_decode(store.getters['user/getToken']);
-		if (jwt.exp !== undefined && jwt.exp < epoch) {
-			next({path: '/sign/in', query: {redirect: to.path}});
-			return;
-		}
 	}
 	next();
 });
