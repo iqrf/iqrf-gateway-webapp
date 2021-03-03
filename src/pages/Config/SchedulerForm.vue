@@ -439,7 +439,10 @@ export default class SchedulerForm extends Vue {
 						let rsp = mutation.payload.data.rsp;
 						this.taskId = rsp.taskId;
 						this.clientId = rsp.clientId;
-						rsp.timeSpec.cronTime[5] = (parseInt(rsp.timeSpec.cronTime[5]) + 1).toString();
+						const day = Number.parseInt(rsp.timeSpec.cronTime[5]);
+						if (!isNaN(day)) {
+							rsp.timeSpect.cronTime = (day + 1).toString();
+						}
 						this.timeSpec = rsp.timeSpec;
 						if (Array.isArray(this.timeSpec.cronTime)) {
 							this.timeSpec.cronTime = this.timeSpec.cronTime.join(' ');
@@ -668,8 +671,10 @@ export default class SchedulerForm extends Vue {
 			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
 		}
 		try {
-			const cronDay = parseInt(timeSpec.cronTime[5]);
-			timeSpec.cronTime[5] = (cronDay - 1).toString();
+			const cronDay = Number.parseInt(timeSpec.cronTime[5]);
+			if (!isNaN(cronDay)) {
+				timeSpec.cronTime[5] = (cronDay - 1).toString();
+			}
 		} catch (err) {
 			//
 		}

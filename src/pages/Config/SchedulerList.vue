@@ -616,7 +616,10 @@ export default class SchedulerList extends Vue {
 				if (typeof item.cronTime === 'string') {
 					return item.cronTime;
 				}
-				item.cronTime[5] = (parseInt(item.cronTime[5]) + 1).toString();
+				const day = Number.parseInt(item.cronTime[5]);
+				if (!isNaN(day)) {
+					item.cronTime[5] = (day + 1).toString();
+				}
 				return item.cronTime.join(' ').trim();
 			}
 		} catch (err) {
