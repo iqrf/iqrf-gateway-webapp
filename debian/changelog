@@ -1,3 +1,15 @@
+iqrf-gateway-webapp (2.2.8) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * Scheduler: fix crontime day projection
+  * Scheduler: fixed get task rest
+  * Mappings: fixed uart baud rate translation
+
+  [ Roman Ondráček ]
+  * nginx: fix WebSocket proxy read timeout
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 03 Mar 2021 18:33:31 +0100
+
 iqrf-gateway-webapp (2.2.7) stable; urgency=medium
 
   [ Roman Ondráček ]
