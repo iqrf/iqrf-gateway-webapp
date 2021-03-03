@@ -329,7 +329,8 @@
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
 						"uartPin": "UART interface enable GPIO pin *",
-						"gwOnly": "* IQRF Gateway only"
+						"gwOnly": "* IQRF Gateway only",
+						"baudRate": "UART baud rate"
 					},
 					"errors": {
 						"typeSelect": "Please select mapping type.",
