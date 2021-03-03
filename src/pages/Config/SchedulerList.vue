@@ -351,7 +351,12 @@ export default class SchedulerList extends Vue {
 						if (this.tasks === null) {
 							return;
 						}
-						this.tasks.push(mutation.payload.data.rsp);
+						let rsp = mutation.payload.data.rsp;
+						const day = Number.parseInt(rsp.timeSpec.cronTime[5]);
+						if (!isNaN(day)) {
+							rsp.timeSpec.cronTime[5] = (day + 1).toString();
+						}
+						this.tasks.push(rsp);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
 							this.msgIds.includes(mutation.payload.data.msgId)) {
@@ -458,7 +463,16 @@ export default class SchedulerList extends Vue {
 			SchedulerService.listTasksREST()
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
-					this.tasks = response.data;
+					let tasks = response.data;
+					for (let idx in tasks) {
+						let cronTime = tasks[idx].timeSpec.cronTime.split(' ');
+						const day = Number.parseInt(cronTime[5]);
+						if (!isNaN(day)) {
+							cronTime[5] = (day + 1).toString();
+							tasks[idx].timeSpec.cronTime = cronTime.join(' ');
+						}
+					}
+					this.tasks = tasks;
 					this.retrieved = 'rest';
 				})
 				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
@@ -615,10 +629,6 @@ export default class SchedulerList extends Vue {
 			if (item.cronTime.length > 0) { // time specification in cron, conversion from array to string
 				if (typeof item.cronTime === 'string') {
 					return item.cronTime;
-				}
-				const day = Number.parseInt(item.cronTime[5]);
-				if (!isNaN(day)) {
-					item.cronTime[5] = (day + 1).toString();
 				}
 				return item.cronTime.join(' ').trim();
 			}
