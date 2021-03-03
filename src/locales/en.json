@@ -324,7 +324,6 @@
 						"powerPin": "Power enable GPIO pin",
 						"busPin": "Bus enable GPIO pin",
 						"pgmPin": "Programming mode switch GPIO pin",
-						"baudRate": "UART baud rate",
 						"gateway": "IQRF Gateway mapping",
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
