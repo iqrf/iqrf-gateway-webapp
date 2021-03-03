@@ -1,3 +1,28 @@
+iqrf-gateway-webapp (2.2.7) stable; urgency=medium
+
+  [ Roman Ondráček ]
+  * GitLab CI: deploy to another server
+
+  [ Karel Hanák ]
+  * Scheduler: cron time refactor, validation, error handling
+  * added missing package, fixed scheduler period validation rule
+  * Iqrfnet: backup refactor error handling
+  * Iqrfnet: Restore error handling refactor
+  * Iqrfnet: TR configuration error handling refactor
+  * Iqrfnet: TR configuration fixed conf reload
+  * Iqrfnet: bond node and smartconnect error handling refactor
+  * Iqrfnet: remove bond error handling refactor
+
+  [ Roman Ondráček ]
+  * IQRF net: fix IQRF Standard Sensor table overflow
+
+  [ Karel Hanák ]
+  * Iqrfnet: fix bonding manager unbond node button disabled condition
+  * User module: fixed token expiration validation
+  * Scheduler: fixed task fetch condition
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 03 Mar 2021 13:57:21 +0100
+
 iqrf-gateway-webapp (2.2.6) stable; urgency=medium
 
   [ Karel Hanák ]
