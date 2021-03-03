@@ -441,7 +441,7 @@ export default class SchedulerForm extends Vue {
 						this.clientId = rsp.clientId;
 						const day = Number.parseInt(rsp.timeSpec.cronTime[5]);
 						if (!isNaN(day)) {
-							rsp.timeSpect.cronTime = (day + 1).toString();
+							rsp.timeSpec.cronTime[5] = (day + 1).toString();
 						}
 						this.timeSpec = rsp.timeSpec;
 						if (Array.isArray(this.timeSpec.cronTime)) {
@@ -588,7 +588,10 @@ export default class SchedulerForm extends Vue {
 					this.taskId = response.data.taskId;
 					this.clientId = response.data.clientId;
 					let cronTime = response.data.timeSpec.cronTime.split(' ');
-					cronTime[5] = (parseInt(cronTime[5]) + 1).toString();
+					const cronDay = Number.parseInt(cronTime[5]);
+					if (!isNaN(cronDay)) {
+						cronTime[5] = (cronDay + 1).toString();
+					}
 					response.data.timeSpec.cronTime = cronTime.join(' ');
 					this.timeSpec = response.data.timeSpec;
 					let tasks: Array<LocalTask> = [];
