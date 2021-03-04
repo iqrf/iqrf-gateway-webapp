@@ -68,8 +68,8 @@
 							>
 								<template #append-content>
 									<span @click='changeVisibility'>
-										<CIcon
-											:content='(visibility === "password" ? icons.hidden : icons.shown)'
+										<FontAwesomeIcon
+											:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
 										/>
 									</span>
 								</template>
@@ -99,13 +99,12 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
-import {Dictionary} from 'vue-router/types/router';
 import {IInteliGlueCloud} from '../../interfaces/clouds';
 
 @Component({
@@ -115,6 +114,7 @@ import {IInteliGlueCloud} from '../../interfaces/clouds';
 		CCardBody,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -140,14 +140,6 @@ export default class InteliGlueCreator extends Vue {
 		assignedPort: 1234,
 		clientId: '',
 		password: ''
-	}
-
-	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
 	}
 
 	/**
