@@ -755,7 +755,14 @@
 				},
 				"mqtt": {
 					"title": "MQTT client configuration",
-					"port": "Broker port"
+					"port": "Broker port",
+					"tls": {
+						"enable": "Enable TLS",
+						"trustStore": "CA certificate",
+						"keyStore": "Client certificate",
+						"privateKey": "Client private key",
+						"requireBrokerCert": "Broker certificate required"
+					}
 				}
 			},
 			"messages": {
