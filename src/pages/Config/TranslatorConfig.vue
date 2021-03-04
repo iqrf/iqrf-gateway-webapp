@@ -117,6 +117,26 @@
 										</template>
 									</CInput>
 								</ValidationProvider>
+								<CInputCheckbox
+									:checked.sync='config.mqtt.tls.enabled'
+									:label='$t("config.translator.form.mqtt.tls.enable")'
+								/>
+								<CInput
+									v-model='config.mqtt.tls.trust_store'
+									:label='$t("config.translator.form.mqtt.tls.trustStore")'
+								/>
+								<CInput
+									v-model='config.mqtt.tls.key_store'
+									:label='$t("config.translator.form.mqtt.tls.keyStore")'
+								/>
+								<CInput
+									v-model='config.mqtt.tls.private_key'
+									:label='$t("config.translator.form.mqtt.tls.privateKey")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.mqtt.tls.require_broker_certificate'
+									:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
+								/>
 							</CCol>
 							<CCol md='6'>
 								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
@@ -185,7 +205,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -206,6 +226,7 @@ import {ITranslator} from '../../interfaces/translator';
 		CForm,
 		CIcon,
 		CInput,
+		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	},

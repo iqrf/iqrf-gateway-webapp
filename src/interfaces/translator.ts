@@ -51,6 +51,41 @@ interface ITranslatorMqtt {
 	 * User name
 	 */
 	user: string
+
+	/**
+	 * TLS configuration
+	 */
+	tls: ITranslatorTls
+}
+
+/**
+ * Translator MQTT TLS configuration interface
+ */
+interface ITranslatorTls {
+	/**
+	 * TLS enabled
+	 */
+	enabled: boolean
+
+	/**
+	 * Server certificate
+	 */
+	trust_store: string
+
+	/**
+	 * Client certificate
+	 */
+	key_store: string
+
+	/**
+	 * Client private key
+	 */
+	private_key: string
+
+	/**
+	 * Require broker certificate
+	 */
+	require_broker_certificate: boolean
 }
 
 /**
