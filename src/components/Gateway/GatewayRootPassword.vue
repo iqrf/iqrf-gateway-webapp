@@ -22,7 +22,9 @@
 						>
 							<template #append-content>
 								<span @click='visibility = (visibility === "password" ? "text" : "password")'>
-									<CIcon :content='(visibility === "password" ? icons.show : icons.hide)' />
+									<FontAwesomeIcon
+										:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+									/>
 								</span>
 							</template>
 						</CInput>
@@ -43,14 +45,12 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import ServiceControl from '../../pages/Gateway/ServiceControl.vue';
 
 import GatewayService from '../../services/GatewayService';
-
-import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -60,6 +60,7 @@ import {Dictionary} from 'vue-router/types/router';
 		CCardHeader,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		ServiceControl,
 		ValidationObserver,
 		ValidationProvider,
@@ -80,14 +81,6 @@ export default class GatewayRootPassword extends Vue {
 	 * @var {string} visibility Form password field visibility type
 	 */
 	private visibility = 'password'
-
-	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hide: cilLockLocked,
-		show: cilLockUnlocked
-	}
 
 	/**
 	 * Initializes validation rules

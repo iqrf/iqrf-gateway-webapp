@@ -15,8 +15,8 @@
 				>
 					<template #append-content>
 						<span @click='changeVisibility'>
-							<CIcon
-								:content='(visibility === "password" ? icons.show : icons.hide)'
+							<FontAwesomeIcon
+								:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
 							/>
 						</span>
 					</template>
@@ -41,12 +41,11 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import SecurityService from '../../services/SecurityService';
 import OsService from '../../services/DaemonApi/OsService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
-import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -57,6 +56,7 @@ import {Dictionary} from 'vue-router/types/router';
 		CForm,
 		CInput,
 		CSelect,
+		FontAwesomeIcon
 	}
 })
 
@@ -68,14 +68,6 @@ export default class SecurityForm extends Vue {
 	 * @var {SecurityFormat} format Format of password or user key
 	 */
 	private format: SecurityFormat = SecurityFormat.ASCII.valueOf()
-
-	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hide: cilLockLocked,
-		show: cilLockUnlocked
-	}
 
 	/**
 	 * @var {string|null} msgId Daemon api message id

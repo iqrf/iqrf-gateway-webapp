@@ -141,7 +141,9 @@
 									>
 										<template #append-content>
 											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
-												<CIcon :content='pskInputType === "password" ? icons.show: icons.hide' />
+												<FontAwesomeIcon
+													:icon='(pskInputType === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+												/>
 											</span>
 										</template>
 									</CInput>
@@ -448,7 +450,7 @@
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
 
@@ -460,7 +462,6 @@ import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInte
 import {AxiosResponse} from 'axios';
 import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
-import {Dictionary} from 'vue-router/types/router';
 
 enum WepKeyLen {
 	BIT64 = '64bit',
@@ -481,6 +482,7 @@ enum WepKeyType {
 		CForm,
 		CInput,
 		CSelect,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -514,14 +516,6 @@ export default class ConnectionFormBasic extends Vue {
 			gateway: '',
 			method: 'auto',
 		}
-	}
-
-	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hide: cilLockLocked,
-		show: cilLockUnlocked
 	}
 
 	/**

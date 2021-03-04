@@ -35,6 +35,12 @@ import './css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
 
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
+
+library.add(faEye);
+library.add(faEyeSlash);
+
 import * as version from '../version.json';
 
 process.env.SETTINGS = process.env.SETTINGS || 'development';
