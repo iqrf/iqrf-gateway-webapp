@@ -12,6 +12,7 @@ namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Models\TimeManager;
+use Mockery;
 use Tester\Assert;
 use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -28,7 +29,7 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	private const COMMANDS = [
 		'timestamp' => 'date +%s',
-		'timezone' => 'cat /etc/timezone',
+		'timezone' => 'timedatectl | grep "Time zone"',
 		'listTimezones' => 'timedatectl list-timezones',
 		'setTimezone' => 'timedatectl set-timezone Europe/London',
 		'setTimezoneNonexistent' => 'timedatectl set-timezone Nonexistent/Nonexistent',
@@ -60,10 +61,27 @@ final class TimeManagerTest extends CommandTestCase {
 			],
 		];
 		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
-		$timezoneCommand = new Command(self::COMMANDS['timezone'], 'Europe/London', '', 0);
+		$timezone = 'Europe/London';
+		$manager = Mockery::mock(TimeManager::class, [$this->commandManager])->makePartial();
 		$this->commandManager->shouldReceive('run')
-			->andReturn($timestampCommand, $timezoneCommand);
-		Assert::same($expected, $this->manager->currentTime());
+			->withArgs([self::COMMANDS['timestamp']])
+			->andReturn($timestampCommand);
+		$manager->shouldReceive('getTimezone')
+			->andReturn($timezone);
+		Assert::same($expected, $manager->currentTime());
+	}
+
+	/**
+	 * Tests the function to get time zone
+	 */
+	public function testGetTimezone(): void {
+		$timezone = 'Time zone: Europe/London (GMT, +0000)';
+		$command = new Command(self::COMMANDS['timezone'], $timezone, '', 0);
+		$this->commandManager->shouldReceive('run')
+			->withArgs(['timedatectl | grep "Time zone"'])
+			->andReturn($command);
+		$expected = 'Europe/London';
+		Assert::same($expected, $this->manager->getTimezone());
 	}
 
 	/**
