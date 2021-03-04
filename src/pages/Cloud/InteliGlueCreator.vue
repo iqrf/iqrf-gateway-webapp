@@ -69,7 +69,7 @@
 								<template #append-content>
 									<span @click='changeVisibility'>
 										<CIcon
-											:content='(visibility === "password" ? icons.hidden : icons.shown)'
+											:content='(visibility === "password" ? icons.show : icons.hide)'
 										/>
 									</span>
 								</template>
@@ -146,8 +146,8 @@ export default class InteliGlueCreator extends Vue {
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Dictionary<Array<string>> = {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
+		hide: cilLockLocked,
+		show: cilLockUnlocked
 	}
 
 	/**
