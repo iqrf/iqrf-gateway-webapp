@@ -31,6 +31,7 @@ use Grifart\Enum\Enum;
  * @method static ConnectionTypes ETHERNET()
  * @method static ConnectionTypes GSM()
  * @method static ConnectionTypes INFINIBAND()
+ * @method static ConnectionTypes IP_TUNNEL()
  * @method static ConnectionTypes TUN()
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
@@ -72,6 +73,11 @@ final class ConnectionTypes extends Enum {
 	 * IP-over-InfiniBand connection
 	 */
 	private const INFINIBAND = 'infiniband';
+
+	/**
+	 * IP tunnel connection
+	 */
+	private const IP_TUNNEL = 'ip-tunnel';
 
 	/**
 	 * TUN connection

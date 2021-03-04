@@ -187,7 +187,7 @@ export default class EthernetConnections extends Vue {
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
-					this.$t('network.connection.messages.interfaceFetchFailed').toString()
+					this.$t('network.connection.messages.interfacesFetchFailed').toString()
 				);
 			});
 	}

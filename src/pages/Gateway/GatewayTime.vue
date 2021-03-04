@@ -159,7 +159,7 @@ export default class GatewayTime extends Vue {
 		}
 		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
 			{zone: this.gatewayTime.name}).toFormat(
-			'cccc dd.LL.yyyy ' + (this.hour12 ? 'hh:mm:ss a': 'HH:mm:ss')
+			'cccc dd.LL.yyyy ' + (this.hour12 ? 'tt': 'TT')
 		);
 	}
 
