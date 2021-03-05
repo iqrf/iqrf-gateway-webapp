@@ -542,10 +542,11 @@
 						"period": "Period in seconds",
 						"startTime": "Start time"
 					},
-					"message": {
+					"messages": {
 						"title": "Messages",
 						"label": "Message (JSON request)",
-						"messagePlaceholder": "Select message",
+						"messaging": "Messaging",
+						"messagingPlaceholder": "Select messaging",
 						"add": "Add another message",
 						"remove": "Remove message"
 					}

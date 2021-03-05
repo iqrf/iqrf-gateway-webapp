@@ -104,7 +104,7 @@
 								:disabled='!timeSpec.exactTime || timeSpec.periodic'
 							/>
 						</div>
-						<h3>{{ $t('config.daemon.scheduler.form.message.title') }}</h3><hr>
+						<h3>{{ $t('config.daemon.scheduler.form.messages.title') }}</h3><hr>
 						<div v-for='i of task.length' :key='i' class='form-group'>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid}'
@@ -113,7 +113,8 @@
 							>
 								<CSelect
 									:value.sync='task[i-1].messaging'
-									:placeholder='$t("config.daemon.scheduler.form.message.messagePlaceholder")'
+									:label='$t("config.daemon.scheduler.form.messages.messaging")'
+									:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 									:options='messagings'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -131,7 +132,7 @@
 								<CTextarea
 									v-model='task[i-1].message'
 									v-autogrow
-									:label='$t("config.daemon.scheduler.form.message.label")'
+									:label='$t("config.daemon.scheduler.form.messages.label")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -141,14 +142,13 @@
 								color='danger'
 								@click='removeMessage(i-1)'
 							>
-								{{ $t('config.daemon.scheduler.form.message.remove') }}
-							</CButton>
-							<CButton
+								{{ $t('config.daemon.scheduler.form.messages.remove') }}
+							</CButton> <CButton
 								v-if='i === task.length'
 								color='success'
 								@click='addMessage'
 							>
-								{{ $t('config.daemon.scheduler.form.message.add') }}
+								{{ $t('config.daemon.scheduler.form.messages.add') }}
 							</CButton>
 						</div>
 						<CButton type='submit' color='primary' :disabled='invalid'>
