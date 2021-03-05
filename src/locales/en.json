@@ -1065,7 +1065,7 @@
 				"forwarding": "Forwarding mode",
 				"operational": "Operational mode",
 				"service": "Service mode",
-				"unknown": "An error occurred while getting the current gateway mode."
+				"unknown": "Unknown"
 			},
 			"messages": {
 				"getFailed": "An error occurred while getting the current gateway mode.",
