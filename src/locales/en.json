@@ -517,8 +517,8 @@
 					},
 					"errors": {
 						"instance": "Please enter name of UDP interface.",
-						"RemotePort": "Please enter remote port - integer between 1 and 49151.",
-						"LocalPort": "Please enter local port - integer between 1 and 49151."
+						"RemotePort": "Please enter remote port - integer between 1 and 65535.",
+						"LocalPort": "Please enter local port - integer between 1 and 65535."
 					}
 				}
 			},
