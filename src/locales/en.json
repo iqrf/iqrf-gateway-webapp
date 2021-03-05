@@ -482,9 +482,12 @@
 						"messagingInstance": "Please enter name of WebSocket messaging.",
 						"serviceInstance": "Please enter name of WebSocket service.",
 						"WebsocketPort": "Please enter WebSocket port number.",
+						"WebsocketPortRange": "Please enter valid WebSocket port number - an integer between 1 and 65535.",
 						"interfaceName": "Please select the name of required interface.",
 						"interfaceInstance": "Please select the required WebSocket service instance.",
-						"tlsMode": "Please select TLS mode."
+						"tlsMode": "Please select TLS mode.",
+						"certificate": "Please enter path to the TLS certificate.",
+						"privateKey": "Please enter path to the private key."
 					}
 				},
 				"mq": {
