@@ -176,7 +176,7 @@ export default class DaliManager extends Vue {
 							break;
 						case 8:
 							this.$toast.error(
-								this.$t('iqrfnet.standard.messages.noDevice', {address: this.address}).toString()
+								this.$t('forms.messages.noDevice', {address: this.address}).toString()
 							);
 							break;
 						default:
