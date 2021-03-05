@@ -38,7 +38,7 @@
 						</td>
 						<td v-if='service !== null' class='d-flex'>
 							<div class='mr-auto'>
-								{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
+								{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
 								{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
 							</div>
 							<CButton
