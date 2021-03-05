@@ -1166,6 +1166,8 @@
 		"networkManager": {
 			"title": "Network manager",
 			"description": "Network manager.",
+			"iqmesh": "IQMESH",
+			"backupRestore": "Backup/Restore",
 			"autoNetwork": {
 				"title": "AutoNetwork",
 				"form": {
@@ -1274,7 +1276,7 @@
 					"clearAllCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
 					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}.",
 					"smartConnectErrorMessage": "Smart Connect not started: {message}",
-					"smartConnectBondExists": "Another device is already bonded to address {address}, or the device with specified Smart Connect code is already bonded to another address."
+					"smartConnectBondExists": "Device is offline, another device is already bonded to address {address}, or the device with specified Smart Connect code is already bonded to another address."
 				}
 			},
 			"devicesInfo": {
@@ -1647,16 +1649,16 @@
 				}
 			},
 			"messages": {
-				"read": {
-					"failure": "An error occurred while TR configuration reading.",
-					"success": "The TR configuration has been read successfully."
-				},
-				"write": {
-					"failure": "An error occurred while TR configuration saving.",
-					"restartFailure": "The TR configuration has been saved successfully, but device could not be restarted.",
-					"success": "The TR configuration has been saved successfully.",
-					"successRestart": "The TR configuration has been saved successfully. Device restarted."
-				}
+				"modalTitle": "Custom DPA handler issue detected",
+				"modalPrompt": "Custom DPA handler has been enabled in transciever configuration, but not detected. Do you wish to disable Custom DPA handler? The transciever will then be restarted.",
+				"disableFailure": "An error has occured while disabling Custom DPA handler.",
+				"osReadFailure": "Could not retrieve OS information.",
+				"readFailure": "An error has occurred while reading TR configuration.",
+				"readSuccess": "The TR configuration has been read successfully.",
+				"writeFailure": "An error has occured while saving TR configuration.",
+				"writeSuccess": "The TR configuration has been saved successfully.",
+				"restartFailure": "The TR configuration has been saved successfully, but device could not be restarted.",
+				"restartSuccess": "The TR configuration has been saved successfully. Device restarted."
 			}
 		},
 		"trUpload": {
