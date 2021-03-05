@@ -58,8 +58,23 @@
 								:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 								:disabled='!service.tlsEnabled'
 							/>
-							<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
-						</div><br v-if='daemon230'>
+							<p
+								v-if='service.tlsMode !== "" && service.tlsMode !== undefined'
+								:class='!service.tlsEnabled ? "text-secondary" : ""'
+							>
+								{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}
+							</p>
+							<CInput
+								v-model='service.certificate'
+								:label='$t("forms.fields.certificate")'
+								:disabled='!service.tlsEnabled'
+							/>
+							<CInput
+								v-model='service.privateKey'
+								:label='$t("forms.fields.privateKey")'
+								:disabled='!service.tlsEnabled'
+							/>
+						</div>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
 						</CButton>
@@ -177,7 +192,7 @@ export default class WebsocketInterfaceForm extends Vue {
 		return this.$route.path === '/config/daemon/messagings/websocket/add' ?
 			this.$t('config.daemon.messagings.websocket.interface.add').toString() : this.$t('config.daemon.messagings.websocket.interface.edit').toString();
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text
@@ -250,7 +265,7 @@ export default class WebsocketInterfaceForm extends Vue {
 				FormErrorHandler.configError(error);
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
