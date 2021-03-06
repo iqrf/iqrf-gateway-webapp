@@ -91,6 +91,7 @@
 							>
 								<CInput
 									v-model='packetPdata'
+									v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
 									:label='$t("iqrfnet.sendPacket.form.pdata")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -217,15 +218,18 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
-import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
-import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import sendPacket from '../../iqrfNet/sendPacket';
+import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
+
+import {maska} from 'maska';
+import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import sendPacket from '../../iqrfNet/sendPacket';
+
+import {MutationPayload} from 'vuex';
 import {RawMessage} from '../../interfaces/dpa';
 
 @Component({
@@ -243,6 +247,9 @@ import {RawMessage} from '../../interfaces/dpa';
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	directives: {
+		'maska': maska,
 	},
 	metaInfo: {
 		title: 'iqrfnet.sendPacket.title',
@@ -344,15 +351,11 @@ export default class SendDpaPacket extends Vue {
 		return packet;
 	}
 
-	@Watch('packetPdata')
-	fixUpPacketNadr(): void {
-		if (this.packetPdata === '') {
-			return;
-		}
-		let pdata = this.packetPdata.replace(/[. ]/g, '').match(/.{1,2}/g);
-		if (pdata !== null) {
-			this.packetPdata = pdata.join('.');
-		}
+	/**
+	 * 
+	 */
+	get generateMask(): string {
+		return 'HH.'.repeat(56) + 'HH';
 	}
 
 	/**
