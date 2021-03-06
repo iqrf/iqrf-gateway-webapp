@@ -273,7 +273,7 @@ export default class WifiConnections extends Vue {
 			.then((response: AxiosResponse) => {
 				let apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
-					let index = response.data.findIndex(con => con.bssids.includes(ap.bssid));
+					let index = response.data.findIndex(con => con.name === ap.ssid);
 					if (index !== -1) {
 						ap.uuid = response.data[index].uuid;
 						if (response.data[index].interfaceName !== null) {
