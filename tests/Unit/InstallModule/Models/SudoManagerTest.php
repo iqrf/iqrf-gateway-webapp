@@ -12,6 +12,7 @@ namespace Tests\Unit\InstallModule\Models;
 
 use App\InstallModule\Models\SudoManager;
 use Tester\Assert;
+use Tester\Environment;
 use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -41,6 +42,7 @@ final class SudoManagerTest extends CommandTestCase {
 	 * Tests the function to check sudo and if webapp can use sudo
 	 */
 	public function testCheckSudo(): void {
+		Environment::lock();
 		$command = new Command(self::COMMAND, '', '', 0);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['sudo'])
@@ -48,15 +50,17 @@ final class SudoManagerTest extends CommandTestCase {
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMAND])
 			->andReturn($command);
-		$posix_user_info = posix_getpwnam('www-data');
-		posix_seteuid($posix_user_info['uid']);
-		posix_setegid($posix_user_info['gid']);
+		$user_info = posix_getpwnam('www-data');
+		posix_seteuid($user_info['uid']);
+		posix_setegid($user_info['gid']);
 		$expected = [
 			'user' => 'www-data',
 			'exists' => true,
 			'userSudo' => true,
 		];
 		Assert::same($expected, $this->manager->checkSudo());
+		posix_seteuid(0);
+		posix_setegid(0);
 	}
 
 	/**
