@@ -1623,8 +1623,7 @@
 				"localFrcReception": "Local FRC",
 				"dpaPeerToPeer": "DPA Peer-to-Peer",
 				"neverSleep": "Stay awake when not bonded",
-				"uartBaudRateC": "UART interface baud rate",
-				"uartBaudRateN": "UART baud rate",
+				"uartBaudRate": "UART interface baud rate",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
 					"2400": "2400 Bd",
