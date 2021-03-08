@@ -40,7 +40,8 @@
 						}'
 					>
 						<CInput
-							v-model='powerEnableGpioPin'
+							v-model.number='powerEnableGpioPin'
+							type='number'
 							:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -55,7 +56,8 @@
 						}'
 					>
 						<CInput
-							v-model='busEnableGpioPin'
+							v-model.number='busEnableGpioPin'
+							type='number'
 							:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -70,7 +72,8 @@
 						}'
 					>
 						<CInput
-							v-model='pgmSwitchGpioPin'
+							v-model.number='pgmSwitchGpioPin'
+							type='number'
 							:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
