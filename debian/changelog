@@ -1,3 +1,27 @@
+iqrf-gateway-webapp (2.2.9) stable; urgency=medium
+
+  [ Roman Ondráček ]
+  * Config: add missing paths for TLS certificate and private key in WebSocket interface configuration form
+
+  [ Karel Hanák ]
+  * Gateway info: unknown mode translation
+  * Scheduler: fixed messaging translations
+  * Udp messaging: fixed local and remote port error translations
+  * Iqrfnet: fixed some translations
+  * Debian package: remove uploader dependency
+  * Iqrfnet: standards translation fix
+
+  [ Roman Ondráček ]
+  * Config: add missing paths for certificate and private key for WebSocket servers and missing validations
+
+  [ Karel Hanák ]
+  * Iqrfnet: send dpa packet fixed pdata fixup
+  * TrConfiguration: fix uart baud rate translation
+  * Iqrfnet: bonding manager fix autoaddress toast message
+  * Config: fix spi pin input type
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 08 Mar 2021 10:53:46 +0100
+
 iqrf-gateway-webapp (2.2.8) stable; urgency=medium
 
   [ Karel Hanák ]
