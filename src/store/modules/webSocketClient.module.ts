@@ -233,6 +233,7 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
+		state.daemonStatus.mode = 'unknown';
 	},
 	SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
 		console.error(state, event);
