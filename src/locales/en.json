@@ -1083,12 +1083,15 @@
 				"service": "Service mode",
 				"unknown": "Unknown"
 			},
+			"startupMode": "Startup mode",
 			"messages": {
 				"getFailed": "An error occurred while getting the current gateway mode.",
 				"setFailed": "An error occurred while setting a new gateway mode.",
 				"forwarding": "IQRF Gateway Daemon's mode has been changed to forwarding mode.",
 				"operational": "IQRF Gateway Daemon's mode has been changed to operational mode.",
-				"service": "IQRF Gateway Daemon's mode has been changed to service mode."
+				"service": "IQRF Gateway Daemon's mode has been changed to service mode.",
+				"startupModeSuccess": "Startup mode has been successfully set to {mode}.",
+				"startupModeFailure": "Failed to change startup mode."
 			}
 		},
 		"power": {

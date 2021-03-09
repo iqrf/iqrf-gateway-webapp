@@ -4,7 +4,9 @@
 		<CCard body-wrapper>
 			<CRow style='margin-bottom: 1.25rem'>
 				<CCol>
-					{{ $t('gateway.info.gwMode') }}
+					<b>
+						{{ $t('gateway.info.gwMode') }}
+					</b>
 				</CCol>
 				<CCol>
 					{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
@@ -29,21 +31,26 @@
 				</CButton>
 			</div>
 		</CCard>
+		<DaemonStartupMode />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
 import {CButton, CCard} from '@coreui/vue/src';
+import DaemonStartupMode from '../../components/Gateway/DaemonStartupMode.vue';
+
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
+
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {Dictionary} from 'vue-router/types/router';
+import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		DaemonStartupMode,
 	},
 	metaInfo: {
 		title: 'gateway.mode.title',
