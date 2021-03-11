@@ -25,6 +25,10 @@
 									"pm.test('Are all database migration executed?', function () {",
 									"    let jsonData = pm.response.json();",
 									"    pm.expect(jsonData.allMigrationsExecuted).to.eql(true);",
+									"});",
+									"pm.test('Are all required PHP modules loaded?', function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.phpModules.allExtensionsLoaded).to.eql(true);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1149,6 +1153,9 @@
 									"            'enabled': false,",
 									"        },",
 									"        'versionChecker': {",
+									"            'enabled': false,",
+									"        },",
+									"        'systemdJournal': {",
 									"            'enabled': false,",
 									"        },",
 									"    };",
