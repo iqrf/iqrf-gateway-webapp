@@ -11,6 +11,7 @@ services:
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\RootManager
+	- App\GatewayModule\Models\SystemdLogManager
 	- App\GatewayModule\Models\TimeManager
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\Utils\GatewayInfoUtil
