@@ -87,19 +87,15 @@ class SystemdLogManager {
 
 	/**
 	 * Converts array to ini array
-	 * @param array $conf Modified configuration array
+	 * @param array<string, array<string, mixed>> $conf Modified configuration array
 	 * @return array<int, string> Configuration array in ini format
 	 */
 	private static function toIni(array $conf): array {
 		$output = [];
 		foreach ($conf as $key => $value) {
-			if (is_array($value)) {
-				$output[] = '[' . $key . ']';
-				foreach($value as $childKey => $childValue) {
-					$output[] = $childKey . '=' . $childValue;
-				}
-			} else {
-				$output[] = $key . '=' . $value;
+			$output[] = '[' . $key . ']';
+			foreach ($value as $childKey => $childValue) {
+				$output[] = $childKey . '=' . $childValue;
 			}
 		}
 		return $output;
