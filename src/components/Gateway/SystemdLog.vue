@@ -1,4 +1,4 @@
- <template>
+<template>
 	<CCard>
 		<CCardHeader>
 			{{ $t('gateway.log.systemd.title') }}
