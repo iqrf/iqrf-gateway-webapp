@@ -127,6 +127,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		SystemdLog:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdLog.json
 		Task:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
 		TaskList:

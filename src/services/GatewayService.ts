@@ -61,6 +61,27 @@ class GatewayService {
 	setRootPass(data: RootPassword): Promise<AxiosResponse> {
 		return axios.put('gateway/rootpass', data, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Retrieves systemd log configuration
+	 */
+	systemdLog(): Promise<AxiosResponse> {
+		return axios.get('gateway/syslog', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Enables systemd log persistence
+	 */
+	enablePersistence(): Promise<AxiosResponse> {
+		return axios.post('gateway/syslog/persistence/enable', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Enables systemd log persistence
+	 */
+	disablePersistence(): Promise<AxiosResponse> {
+		return axios.post('gateway/syslog/persistence/disable', null, {headers: authorizationHeader()});
+	}
 }
 
 export default new GatewayService();

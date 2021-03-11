@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<h1>{{ $t('gateway.log.title') }}</h1>
+		<SystemdLog v-if='$store.getters["features/isEnabled"]("systemdJournal")' />
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab 
@@ -31,10 +32,13 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
-import GatewayService from '../../services/GatewayService';
+import SystemdLog from '../../components/Gateway/SystemdLog.vue';
+
 import {fileDownloader} from '../../helpers/fileDownloader';
+import GatewayService from '../../services/GatewayService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
@@ -42,7 +46,8 @@ import {MetaInfo} from 'vue-meta';
 		CButton,
 		CCard,
 		CTab,
-		CTabs
+		CTabs,
+		SystemdLog,
 	},
 	metaInfo(): MetaInfo {
 		return {
