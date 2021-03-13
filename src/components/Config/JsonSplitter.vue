@@ -4,41 +4,46 @@
 			{{ $t('config.daemon.misc.jsonSplitter.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<CElementCover v-if='loadFailed'>
+				{{ $t('config.daemon.misc.messages.failedElement') }}
+			</CElementCover>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.daemon.misc.jsonSplitter.errors.instance"}'
-					>
-						<CInput
-							v-model='configuration.instance'
-							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+					<fieldset :disabled='loadFailed'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{required: "config.daemon.misc.jsonSplitter.errors.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("forms.fields.instanceName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: "config.daemon.misc.jsonSplitter.errors.insId"
+							}'
+						>
+							<CInput
+								v-model='configuration.insId'
+								:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='configuration.validateJsonResponse'
+							:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.daemon.misc.jsonSplitter.errors.insId"
-						}'
-					>
-						<CInput
-							v-model='configuration.insId'
-							:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.validateJsonResponse'
-						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse")'
-					/>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</fieldset>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
@@ -93,6 +98,11 @@ export default class JsonSplitter extends Vue {
 	}
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -109,8 +119,8 @@ export default class JsonSplitter extends Vue {
 	/**
 	 * Retrieves configuration of JSON splitter component
 	 */
-	private getConfig(): void {
-		DaemonConfigurationService.getComponent(this.componentName)
+	private getConfig(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				if (response.data.instances.length > 0) {
 					this.configuration = response.data.instances[0];
@@ -119,6 +129,7 @@ export default class JsonSplitter extends Vue {
 				this.$emit('fetched', {name: 'jsonSplitter', success: true});
 			})
 			.catch(() => {
+				this.loadFailed = true;
 				this.$emit('fetched', {name: 'jsonSplitter', success: false});
 			});
 	}
@@ -127,6 +138,7 @@ export default class JsonSplitter extends Vue {
 	 * Saves new or updates existing configuration of JSON Splitter component instance
 	 */
 	private saveConfig(): void {
+		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
@@ -142,7 +154,7 @@ export default class JsonSplitter extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
-		this.$toast.success(this.$t('config.success').toString());
+		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
 }
 </script>
