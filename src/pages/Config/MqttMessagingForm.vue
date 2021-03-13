@@ -262,8 +262,17 @@
 							<CCol md='6'>
 								<CInput
 									v-model='configuration.PrivateKeyPassword'
+									:type='visibility'
 									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
-								/>
+								>
+									<template #append-content>
+										<span @click='visibility = (visibility === "password" ? "text": "password")'>
+											<FontAwesomeIcon
+												:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+											/>
+										</span>
+									</template>
+								</CInput>
 							</CCol>
 							<CCol md='6'>
 								<CInput
@@ -292,13 +301,16 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
+import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {between, integer, min_value, required} from 'vee-validate/dist/rules';
-import {MqttInstance} from '../../interfaces/messagingInterfaces';
-import {MetaInfo} from 'vue-meta';
-import {IOption} from '../../interfaces/coreui';
+
 import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '../../interfaces/coreui';
+import {MetaInfo} from 'vue-meta';
+import {MqttInstance} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -311,6 +323,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 		CInputCheckbox,
 		CSelect,
 		CSwitch,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -357,6 +370,11 @@ export default class MqttMessagingForm extends Vue {
 		EnableServerCertAuth: false,
 		acceptAsyncMsg: false,
 	}
+
+	/**
+	 * @var {string} visibility TLS password field visibility
+	 */
+	private visibility = 'password'
 
 	/**
 	 * @property {string} instance MQTT messaging component instance name
