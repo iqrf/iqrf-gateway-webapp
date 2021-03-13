@@ -263,6 +263,7 @@
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
 				"messages": {
+					"fetchFailed": "Failed to retrieve interfaces configuration.",
 					"noInterface": "All IQRF communication interfaces are disabled.",
 					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
 					"updateFailed": "An error occured while updating interface settings."
@@ -772,14 +773,12 @@
 							"level": "Please select the verbosity level."
 						}
 					}
-				},
-				"messages": {
-					"configFetchFailed": "Failed to retrieve configuration for {children}.",
-					"failedElement": "Failed to retrieve component configuration."
 				}
 			},
 			"messages": {
-				"configFailed": "An unexpected error has occured: {error}"
+				"configFailed": "An unexpected error has occured: {error}",
+				"configFetchFailed": "Failed to retrieve configuration for {children}.",
+				"failedElement": "Failed to retrieve component configuration."
 			}
 		},
 		"translator": {

@@ -1,7 +1,7 @@
 <template>
 	<CCard body-wrapper class='border-0 card-margin-bottom'>
 		<CElementCover v-if='loadFailed'>
-			{{ $t('config.daemon.misc.messages.failedElement') }}
+			{{ $t('config.daemon.messages.failedElement') }}
 		</CElementCover>
 		<ValidationObserver
 			v-slot='{invalid}'

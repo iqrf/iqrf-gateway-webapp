@@ -47,10 +47,7 @@ import MonitorList from '../../components/Config/MonitorList.vue';
 import OtaUpload from '../../components/Config/OtaUpload.vue';
 import TracerList from '../../components/Config/TracerList.vue';
 
-interface IConfigFetch {
-	name: string
-	success: boolean,
-}
+import {IConfigFetch} from '../../interfaces/daemonComponent';
 
 @Component({
 	components: {
@@ -157,10 +154,11 @@ export default class MiscConfiguration extends Vue {
 		}
 		this.$toast.error(
 			this.$t(
-				'config.daemon.misc.messages.configFetchFailed',
+				'config.daemon.messages.configFetchFailed',
 				{children: this.failed.sort().join(', ')},
 			).toString()
 		);
+		this.failed = [];
 	}
 
 }

@@ -4,42 +4,47 @@
 			{{ $t('config.daemon.interfaces.iqrfDpa.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<CElementCover v-if='loadFailed'>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</CElementCover>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-if='powerUser'
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.daemon.interfaces.iqrfDpa.errors.instance"}'
-					>
-						<CInput
-							v-model='configuration.instance'
-							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|required|min:0'
-						:custom-messages='{
-							integer: "forms.errors.integer",
-							min: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout",
-							required: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout"
-						}'
-					>
-						<CInput
-							v-model.number='configuration.DpaHandlerTimeout'
-							type='number'
-							min='0'
-							:label='$t("config.daemon.interfaces.iqrfDpa.form.DpaHandlerTimeout")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
+					<fieldset :disabled='loadFailed'>
+						<ValidationProvider
+							v-if='powerUser'
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{required: "config.daemon.interfaces.iqrfDpa.errors.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("forms.fields.instanceName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required|min:0'
+							:custom-messages='{
+								integer: "forms.errors.integer",
+								min: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout",
+								required: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout"
+							}'
+						>
+							<CInput
+								v-model.number='configuration.DpaHandlerTimeout'
+								type='number'
+								min='0'
+								:label='$t("config.daemon.interfaces.iqrfDpa.form.DpaHandlerTimeout")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</fieldset>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
@@ -48,12 +53,14 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 
 @Component({
@@ -62,6 +69,7 @@ import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		ValidationObserver,
@@ -98,6 +106,11 @@ export default class IqrfDpa extends Vue {
 	private powerUser = false
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -119,17 +132,19 @@ export default class IqrfDpa extends Vue {
 	/**
 	 * Retrieves configuration of IQRF DPA component
 	 */
-	private getConfig() {
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent(this.componentName)
+	private getConfig(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
+				this.$emit('fetched', {name: 'iqrfDpa', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('fetched', {name: 'iqrfDpa', success: false});
+			});
 	}
 	
 	/**
@@ -152,8 +167,7 @@ export default class IqrfDpa extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t('config.success').toString());
+		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
 }
 </script>

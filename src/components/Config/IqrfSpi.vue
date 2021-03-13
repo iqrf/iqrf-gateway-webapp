@@ -4,6 +4,9 @@
 			{{ $t('config.daemon.interfaces.iqrfSpi.title') }}
 		</CCardHeader>
 		<CCardBody>
+			<CElementCover v-if='loadFailed' style='z-index: 1;'>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -143,6 +146,7 @@ import {
 	CCardFooter,
 	CCardHeader,
 	CCol,
+	CElementCover,
 	CForm,
 	CInput,
 	CInputCheckbox,
@@ -165,6 +169,7 @@ import {IMapping} from '../../interfaces/mappings';
 		CCardFooter,
 		CCardHeader,
 		CCol,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -246,6 +251,11 @@ export default class IqrfSpi extends Vue {
 	private uartEnableGpioPin: number|null = null
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -263,16 +273,18 @@ export default class IqrfSpi extends Vue {
 	/**
 	 * Retrieves configuration of IQRF SPI interface component
 	 */
-	private getConfig(): void {
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent(this.componentName)
+	private getConfig(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
 				}
+				this.$emit('fetched', {name: 'iqrfSpi', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('fetched', {name: 'iqrfSpi', success: false});
+			});
 	}
 
 	/**
@@ -340,8 +352,7 @@ export default class IqrfSpi extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t('config.success').toString());
+		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
 
 	/**
