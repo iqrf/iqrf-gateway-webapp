@@ -142,7 +142,7 @@ export default class IqrfInfo extends Vue {
 	/**
 	 * @var {boolean} enumPeriodic Shows period input
 	 */
-	private enumPeriodic = false;
+	private enumPeriodic = false
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
@@ -197,7 +197,7 @@ export default class IqrfInfo extends Vue {
 				this.$emit('fetched', {name: 'iqrfInfo', success: true});
 			})
 			.catch(() => {
-				this.loadFailed;
+				this.loadFailed = true;
 				this.$emit('fetched', {name: 'iqrfInfo', success: false});
 			});
 	}
