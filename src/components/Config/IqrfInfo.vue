@@ -114,15 +114,16 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
  * IQRF Info component configuration
  */
 export default class IqrfInfo extends Vue {
-	/**
-	 * @var {string} instance IQRF Info component instance name
-	 */
-	private instance = ''
 
 	/**
 	 * @constant {string} name IQRF Info component name
 	 */
 	private name = 'iqrf::IqrfInfo'
+
+	/**
+	 * @var {string} instance IQRF Info component instance name
+	 */
+	private instance = ''
 
 	/**
 	 * @var {IIqrfInfo} configuration IQRF Info component instance configuration
