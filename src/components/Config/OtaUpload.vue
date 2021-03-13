@@ -5,7 +5,7 @@
 		</CCardHeader>
 		<CCardBody>
 			<CElementCover v-if='loadFailed'>
-				{{ $t('config.daemon.misc.messages.failedElement') }}
+				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveInstance'>
