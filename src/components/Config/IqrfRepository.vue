@@ -201,6 +201,7 @@ export default class IqrfRepository extends Vue {
 				this.$emit('fetched', {name: 'iqrfRepository', success: true});
 			})
 			.catch(() => {
+				this.loadFailed = true;
 				this.$emit('fetched', {name: 'iqrfRepository', success: false});
 			});
 	}

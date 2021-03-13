@@ -1,42 +1,47 @@
 <template>
 	<CCard body-wrapper class='border-0 card-margin-bottom'>
+		<CElementCover v-if='loadFailed'>
+			{{ $t('config.daemon.misc.messages.failedElement') }}
+		</CElementCover>
 		<ValidationObserver
 			v-slot='{invalid}'
 		>
 			<CForm @submit.prevent='saveConfig'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: "config.daemon.misc.jsonSplitter.errors.insId"
-					}'
-				>
-					<CInput
-						v-model='insId'
-						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+				<fieldset :disabled='loadFailed'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: "config.daemon.misc.jsonSplitter.errors.insId"
+						}'
+					>
+						<CInput
+							v-model='insId'
+							:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='metaDataToMessages'
+						:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
 					/>
-				</ValidationProvider>
-				<CInputCheckbox
-					:checked.sync='metaDataToMessages'
-					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='asyncDpaMessage'
-					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='validateJsonResponse'
-					:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
-				/>
-				<CButton
-					type='submit'
-					color='primary'
-					:disabled='invalid'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
+					<CInputCheckbox
+						:checked.sync='asyncDpaMessage'
+						:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
+					/>
+					<CInputCheckbox
+						:checked.sync='validateJsonResponse'
+						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
+					/>
+					<CButton
+						type='submit'
+						color='primary'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</CButton>
+				</fieldset>
 			</CForm>
 		</ValidationObserver>
 	</CCard>
@@ -44,7 +49,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
@@ -61,6 +66,7 @@ import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -118,6 +124,11 @@ export default class JsonApi extends Vue {
 	private validateJsonResponse = false
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -151,6 +162,7 @@ export default class JsonApi extends Vue {
 				this.$emit('fetched', {name: 'jsonApi', success: true});
 			})
 			.catch(() => {
+				this.loadFailed = true;
 				this.$emit('fetched', {name: 'jsonApi', success: false});
 			});
 	}
