@@ -196,9 +196,11 @@ export default class IqrfRepository extends Vue {
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
 				}
-				this.$emit('fetched', 'repository');
+				this.$emit('fetched', {name: 'iqrfRepository', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'iqrfRepository', success: false});
+			});
 	}
 
 	/**

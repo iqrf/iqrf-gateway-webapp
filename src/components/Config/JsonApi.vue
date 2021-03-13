@@ -148,9 +148,11 @@ export default class JsonApi extends Vue {
 				this.splitter = responses[2].data.instances[0];
 				this.insId = responses[2].data.instances[0].insId;
 				this.validateJsonResponse = responses[2].data.instances[0].validateJsonResponse;
-				this.$emit('fetched', 'jsonApi');
+				this.$emit('fetched', {name: 'jsonApi', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'jsonApi', success: false});
+			});
 	}
 
 	/**

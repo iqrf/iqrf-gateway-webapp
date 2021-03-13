@@ -775,7 +775,14 @@
 							"level": "Please select the verbosity level."
 						}
 					}
+				},
+				"messages": {
+					"configFetchFailed": "Failed to retrieve configuration for {children}.",
+					"failedElement": "Failed to retrieve component configuration."
 				}
+			},
+			"messages": {
+				"configFailed": "An unexpected error has occured: {error}"
 			}
 		},
 		"translator": {

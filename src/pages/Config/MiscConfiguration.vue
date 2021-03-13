@@ -6,28 +6,28 @@
 				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
 					<JsonApi 
 						v-if='!powerUser'
-						@fetched='configFetched'
+						@fetched='configFetch'
 					/>
 					<div v-else>
-						<JsonMngMetaDataApi @fetched='configFetched' />
-						<JsonRawApi @fetched='configFetched' />
-						<JsonSplitter @fetched='configFetched' />
+						<JsonMngMetaDataApi @fetched='configFetch' />
+						<JsonRawApi @fetched='configFetch' />
+						<JsonSplitter @fetched='configFetch' />
 					</div>
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
-					<IqrfRepository @fetched='configFetched' />
+					<IqrfRepository @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
-					<IqrfInfo @fetched='configFetched' />
+					<IqrfInfo @fetched='configFetch' />
 				</CTab>
 				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh.title")'>
-					<IqmeshServices @fetched='configFetched' />
+					<IqmeshServices @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
-					<MonitorList @fetched='configFetched' />
+					<MonitorList @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.tracer.title")'>
-					<TracerList @fetched='configFetched' />
+					<TracerList @fetched='configFetch' />
 				</CTab>
 			</CTabs>
 		</CCard>
@@ -46,6 +46,11 @@ import JsonRawApi from '../../components/Config/JsonRawApi.vue';
 import JsonSplitter from '../../components/Config/JsonSplitter.vue';
 import MonitorList from '../../components/Config/MonitorList.vue';
 import TracerList from '../../components/Config/TracerList.vue';
+
+interface IConfigFetch {
+	name: string
+	success: boolean,
+}
 
 @Component({
 	components: {
@@ -95,14 +100,19 @@ export default class MiscConfiguration extends Vue {
 	private powerUser = false;
 
 	/**
-	 * @var {Array<string>} childrenLoading Children components
+	 * @var {Array<string>} children Children components loading configuration
 	 */
-	private childrenLoading = [
-		'repository',
-		'info',
+	private children: Array<string> = [
+		'iqrfInfo',
+		'iqrfRepository',
 		'monitor',
 		'tracer',
 	]
+
+	/**
+	 * @var {Array<string>} failed Children components config fetch failed
+	 */
+	private failed: Array<string> = []
 
 	/**
 	 * Vue lifecycle hook created
@@ -110,9 +120,9 @@ export default class MiscConfiguration extends Vue {
 	created(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
-			this.childrenLoading.unshift('jsonMng', 'jsonRaw', 'jsonSplitter');
+			this.children.push('jsonMngMetaDataApi', 'jsonRawApi', 'jsonSplitter');
 		} else {
-			this.childrenLoading.unshift('jsonApi');
+			this.children.push('jsonApi');
 		}
 	}
 
@@ -131,15 +141,27 @@ export default class MiscConfiguration extends Vue {
 
 	/**
 	 * Handles successful child component config fetch event
-	 * @param {string} name Component name
+	 * @param {IConfigFetch} data Component fetch meta
 	 */
-	private configFetched(name: string): void {
-		this.childrenLoading = this.childrenLoading.filter((item: string) => {
-			return item !== name;
-		});
-		if (this.childrenLoading.length === 0) {
-			this.$store.commit('spinner/HIDE');
+	private configFetch(data: IConfigFetch): void {
+		this.children = this.children.filter((item: string) => item !== data.name);
+		if (!data.success) {
+			this.failed.push(this.$t('config.daemon.misc.' + data.name + '.title').toString());
 		}
+		if (this.children.length > 0) {
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		if (this.failed.length === 0) {
+			return;
+		}
+		this.$toast.error(
+			this.$t(
+				'config.daemon.misc.messages.configFetchFailed',
+				{children: this.failed.sort().join(', ')},
+			).toString()
+		);
 	}
+
 }
 </script>

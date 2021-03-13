@@ -259,9 +259,11 @@ export default class MonitorList extends Vue {
 					}
 				}
 				this.instances = instances;
-				this.$emit('fetched', 'monitor');
+				this.$emit('fetched', {name: 'monitor', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'monitor', success: false});
+			});
 	}
 
 	/**
