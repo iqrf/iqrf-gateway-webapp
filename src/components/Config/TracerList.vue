@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<CCard class='border-0'>
+		<CCard class='border-0 card-margin-bottom'>
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'

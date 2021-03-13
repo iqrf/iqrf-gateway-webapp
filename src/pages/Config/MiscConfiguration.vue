@@ -20,8 +20,8 @@
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
 					<IqrfInfo @fetched='configFetch' />
 				</CTab>
-				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh.title")'>
-					<IqmeshServices @fetched='configFetch' />
+				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh")'>
+					<OtaUpload @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
 					<MonitorList @fetched='configFetch' />
@@ -39,12 +39,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import IqrfInfo from '../../components/Config/IqrfInfo.vue';
 import IqrfRepository from '../../components/Config/IqrfRepository.vue';
-import IqmeshServices from '../../components/Config/IqmeshServices.vue';
 import JsonApi from '../../components/Config/JsonApi.vue';
 import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
 import JsonRawApi from '../../components/Config/JsonRawApi.vue';
 import JsonSplitter from '../../components/Config/JsonSplitter.vue';
 import MonitorList from '../../components/Config/MonitorList.vue';
+import OtaUpload from '../../components/Config/OtaUpload.vue';
 import TracerList from '../../components/Config/TracerList.vue';
 
 interface IConfigFetch {
@@ -59,7 +59,6 @@ interface IConfigFetch {
 		CCardHeader,
 		CTab,
 		CTabs,
-		IqmeshServices,
 		IqrfInfo,
 		IqrfRepository,
 		JsonApi,
@@ -67,6 +66,7 @@ interface IConfigFetch {
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
+		OtaUpload,
 		TracerList
 	},
 	metaInfo: {

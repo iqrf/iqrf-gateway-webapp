@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<CCard class='border-0'>
+		<CCard class='border-0 card-margin-bottom'>
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
@@ -111,14 +111,16 @@
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {mapGetters} from 'vuex';
+import {versionHigherEqual} from '../../helpers/versionChecker';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
-import {AxiosError, AxiosResponse} from 'axios';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {

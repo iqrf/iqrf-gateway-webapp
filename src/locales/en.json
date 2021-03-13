@@ -697,18 +697,15 @@
 						"enumPeriod": "Period must be greater or equal to 0."
 					}
 				},
-				"iqmesh": {
-					"title": "IQMESH services",
-					"description": "Manage IQMESH services.",
-					"otaUpload": {
-						"title": "IQRF OTA upload service",
-						"form": {
-							"uploadPath": "Path to a directory with files to upload"
-						},
-						"errors": {
-							"instance": "Please enter name of OTA upload service instance.",
-							"uploadPath": "Please enter path to a directory with files to upload."
-						}
+				"iqmesh": "IQMESH services",
+				"otaUpload": {
+					"title": "IQRF OTA upload service",
+					"form": {
+						"uploadPath": "Path to a directory with files to upload"
+					},
+					"errors": {
+						"instance": "Please enter name of OTA upload service instance.",
+						"uploadPath": "Please enter path to a directory with files to upload."
 					}
 				},
 				"monitor": {
