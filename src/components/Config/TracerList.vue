@@ -162,9 +162,11 @@ export default class TracerList extends Vue {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				this.instances = response.data.instances;
-				this.$emit('fetched', 'tracer');
+				this.$emit('fetched', {name: 'tracer', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'tracer', success: false});
+			});
 	}
 	
 	/**

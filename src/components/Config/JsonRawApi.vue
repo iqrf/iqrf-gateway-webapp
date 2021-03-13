@@ -101,8 +101,11 @@ export default class JsonRawApi extends Vue {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
+				this.$emit('fetched', {name: 'jsonRawApi', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'jsonRawApi', success: false});
+			});
 	}
 
 	/**
