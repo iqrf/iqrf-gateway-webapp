@@ -77,6 +77,9 @@ class FeatureManager {
 			'enabled' => false,
 			'url' => 'supervisord/',
 		],
+		'systemdJournal' => [
+			'enabled' => false,
+		],
 		'trUpload' => [
 			'enabled' => false,
 		],

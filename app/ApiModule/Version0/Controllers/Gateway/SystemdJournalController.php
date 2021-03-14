@@ -32,13 +32,13 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
-use App\GatewayModule\Models\SystemdLogManager;
+use App\GatewayModule\Models\SystemdJournalManager;
 
 /**
- * System log controller
- * @Path("/syslog")
+ * System journald controller
+ * @Path("/journal")
  */
-class SystemdLogController extends GatewayController {
+class SystemdJournalController extends GatewayController {
 
 	/**
 	 * @var FeatureManager Feature manager
@@ -79,7 +79,7 @@ class SystemdLogController extends GatewayController {
 			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
-			return $response->writeJsonBody(SystemdLogManager::getConfig());
+			return $response->writeJsonBody(SystemdJournalManager::getConfig());
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -103,7 +103,7 @@ class SystemdLogController extends GatewayController {
 			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
-			SystemdLogManager::changePersistence(false);
+			SystemdJournalManager::changePersistence(false);
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -128,7 +128,7 @@ class SystemdLogController extends GatewayController {
 			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
-			SystemdLogManager::changePersistence(true);
+			SystemdJournalManager::changePersistence(true);
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
