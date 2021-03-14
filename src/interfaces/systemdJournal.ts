@@ -1,7 +1,7 @@
 /**
- * Systemd log configuration interface
+ * Systemd journal configuration interface
  */
-export interface ISystemdLog {
+export interface ISystemdJournal {
     /**
      * Should logs be persistent?
      */

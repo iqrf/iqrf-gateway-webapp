@@ -66,21 +66,21 @@ class GatewayService {
 	 * Retrieves systemd log configuration
 	 */
 	systemdLog(): Promise<AxiosResponse> {
-		return axios.get('gateway/syslog', {headers: authorizationHeader()});
+		return axios.get('gateway/journal', {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Enables systemd log persistence
 	 */
 	enablePersistence(): Promise<AxiosResponse> {
-		return axios.post('gateway/syslog/persistence/enable', null, {headers: authorizationHeader()});
+		return axios.post('gateway/journal/persistence/enable', null, {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Enables systemd log persistence
 	 */
 	disablePersistence(): Promise<AxiosResponse> {
-		return axios.post('gateway/syslog/persistence/disable', null, {headers: authorizationHeader()});
+		return axios.post('gateway/journal/persistence/disable', null, {headers: authorizationHeader()});
 	}
 }
 
