@@ -58,6 +58,7 @@ class ServicesController extends BaseController {
 		'iqrf-gateway-translator',
 		'mender-client',
 		'ssh',
+		'systemd-journald',
 		'unattended-upgrades',
 	];
 

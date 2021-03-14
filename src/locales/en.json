@@ -1068,19 +1068,25 @@
 			"title": "Logs",
 			"description": "Shows gateway logs.",
 			"download": "Download",
-			"systemd": {
+			"systemdJournal": {
 				"title": "Systemd journal",
-				"persistence": "Journal persistence"
+				"persistence": "Journal persistence",
+				"restart": "Restart service",
+				"messages": {
+					"journalFetchFailure": "Failed to retrieve systemd journal configuration.",
+					"journalFetchFailureError": "Failed to retrieve systemd journal configuration: {error}",
+					"disablePersistenceFailure": "Failed to disable systemd log persistence: {error}",
+					"disablePersistenceSuccess": "Systemd log persistence has been successfully disabled.",
+					"enablePersistenceFailure": "Failed to enable systemd log persistence: {error}",
+					"enablePersistenceSuccess": "Systemd log persistence has been successfully enabled.",
+					"restartFailed": "Failed to restart systemd journal service: {error}.",
+					"restartSuccess": "Systemd journal service has been successfully restarted."
+				}
 			},
 			"messages": {
 				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
 				"readError": "Cannot read IQRF Gateway's log file.",
-				"notFound": "IQRF Gateway log file cannot be found.",
-				"journalFetchFailure": "Failed to retrieve systemd journal configuration: {error}",
-				"disablePersistenceFailure": "Failed to disable systemd log persistence: {error}",
-				"disablePersistenceSuccess": "Systemd log persistence has been successfully disabled.",
-				"enablePersistenceFailure": "Failed to enable systemd log persistence: {error}",
-				"enablePersistenceSuccess": "Systemd log persistence has been successfully enabled."
+				"notFound": "IQRF Gateway log file cannot be found."
 			}
 		},
 		"mode": {

@@ -10,6 +10,7 @@ features:
 	rootpass: Root password change
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
+	systemdJournal: Systemd Journald configuration
 	trUpload: IQRF TR native upload
 	updater: System updater
 	unattendedUpgrades: Unattended upgrades

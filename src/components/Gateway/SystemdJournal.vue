@@ -1,13 +1,26 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('gateway.log.systemd.title') }}
+			{{ $t('gateway.log.systemdJournal.title') }}
+			<CButton
+				style='float: right;'
+				color='primary'
+				@click='restartJournalService'
+			>
+				{{ $t('gateway.log.systemdJournal.restart') }}
+			</CButton>
 		</CCardHeader>
 		<CCardBody>
+			<CElementCover v-if='loading'>
+				<CSpinner size='5xl' />
+			</CElementCover>
+			<CElementCover v-if='failed'>
+				{{ $t('gateway.log.systemdJournal.messages.journalFetchFailure') }}
+			</CElementCover>
 			<table v-if='config !== null' class='table table-striped'>
 				<tbody>
 					<tr>
-						<th>{{ $t('gateway.log.systemd.persistence') }}</th>
+						<th>{{ $t('gateway.log.systemdJournal.persistence') }}</th>
 						<td>
 							<CDropdown
 								:color='config.persistent ? "success" : "danger"'
@@ -33,12 +46,13 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
+import {CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem, CElementCover, CSpinner} from '@coreui/vue/src';
 
 import GatewayService from '../../services/GatewayService';
+import ServiceService from '../../services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ISystemdLog} from '../../interfaces/systemdLog';
+import {ISystemdJournal} from '../../interfaces/systemdJournal';
 
 @Component({
 	components: {
@@ -47,38 +61,53 @@ import {ISystemdLog} from '../../interfaces/systemdLog';
 		CCardHeader,
 		CDropdown,
 		CDropdownItem,
+		CElementCover,
+		CSpinner,
 	},
 })
 
 /**
- * Gateway system log configuration component
+ * Gateway systemd journal configuration component
  */
-export default class SystemdLog extends Vue {
+export default class SystemdJournal extends Vue {
 
 	/**
-	 * @var {ISystemdLog|null} config Systemd log configuration
+	 * @var {ISystemdJournal|null} config Systemd journal configuration
 	 */
-	private config: ISystemdLog|null = null
+	private config: ISystemdJournal|null = null
 
 	/**
-	 * Retrieves systemd log configuration
+	 * @var {boolean} loading Indicates whether configuration fetch is in progress
+	 */
+	private loading = true;
+
+	/**
+	 * @var {boolean} failed Indicates whether configuraiton fetch failed
+	 */
+	private failed = false;
+
+	/**
+	 * Retrieves systemd journal configuration
 	 */
 	mounted(): void {
 		this.getConfig();
 	}
 
 	/**
-	 * Retrieves systemd log configuration
+	 * Retrieves systemd journal configuration
 	 */
 	private getConfig(): Promise<void> {
 		return GatewayService.systemdLog()
 			.then((response: AxiosResponse) => {
 				this.config = response.data;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
+				this.failed = true;
 				this.$toast.error(
 					this.$t(
-						'gateway.log.messages.journalFetchFailure',
+						'gateway.log.systemdJournal.messages.journalFetchFailureError',
 						{error: error.response !== undefined ? error.response.data.message : error.message}
 					).toString()
 				);
@@ -86,24 +115,48 @@ export default class SystemdLog extends Vue {
 	}
 
 	/**
-	 * Disables systemd log persistence
+	 * Restarts systemd journal service
+	 */
+	private restartJournalService(): Promise<void> {
+		return ServiceService.restart('systemd-journald')
+			.then(() => {
+				this.loading = false;
+				this.$toast.success(
+					this.$t('gateway.log.systemdJournal.messages.restartSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				this.$toast.error(
+					this.$t(
+						'gateway.log.systemdJournal.messages.restartFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message}
+					).toString()
+				);
+			});
+	}
+
+	/**
+	 * Disables systemd journal persistence
 	 */
 	private disablePersistence(): void {
 		if (this.config === null || !this.config.persistent) {
 			return;
 		}
+		this.loading = true;
 		GatewayService.disablePersistence()
 			.then(() => this.persistenceSuccess(false))
 			.catch((error: AxiosError) => this.persistenceError(error, false));
 	}
 
 	/**
-	 * Enables systemd log persistence
+	 * Enables systemd journal persistence
 	 */
 	private enablePersistence(): void {
 		if (this.config === null || this.config.persistent) {
 			return;
 		}
+		this.loading = true;
 		GatewayService.enablePersistence()
 			.then(() => this.persistenceSuccess(true))
 			.catch((error: AxiosError) => this.persistenceError(error, true));
@@ -116,7 +169,7 @@ export default class SystemdLog extends Vue {
 	private persistenceSuccess(enabled: boolean): void {
 		this.getConfig().then(() => 
 			this.$toast.success(
-				this.$t('gateway.log.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceSuccess').toString()
+				this.$t('gateway.log.systemdJournal.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceSuccess').toString()
 			)
 		);
 	}
@@ -127,9 +180,10 @@ export default class SystemdLog extends Vue {
 	 * @param {boolean} enabled Persistence enabled?
 	 */
 	private persistenceError(error: AxiosError, enabled: boolean): void {
+		this.loading = false;
 		this.$toast.error(
 			this.$t(
-				'gateway.log.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceFailure',
+				'gateway.log.systemdJournal.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceFailure',
 				{error: error.response !== undefined ? error.response.data.message : error.message}
 			).toString()
 		);

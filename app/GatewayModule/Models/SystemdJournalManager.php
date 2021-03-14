@@ -25,12 +25,12 @@ use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
 
 /**
- * Systemd log manager
+ * Systemd journal manager
  */
-class SystemdLogManager {
+class SystemdJournalManager {
 
 	/**
-	 * Paths to  journald conf file
+	 * Paths to journald conf file
 	 */
 	private const CONF_FILE = '/data/lib/systemd/journald.conf.d/00-systemd-conf.conf';
 
@@ -82,7 +82,7 @@ class SystemdLogManager {
 			throw new InvalidConfFormatException('Journal section missing in configuration file.');
 		}
 		$conf['Journal']['Storage'] = $enabled ? self::PERSISTENCE['enabled'] : self::PERSISTENCE['disabled'];
-		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, self::toIni($conf)));
+		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, self::toIni($conf)) . PHP_EOL);
 	}
 
 	/**
