@@ -31,7 +31,7 @@ class FormErrorHandler {
 	configError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
-			console.error(error);
+			Vue.$toast.error(i18n.t('config.daemon.messages.configFailed', {error: error.message}).toString());
 			return;
 		}
 		if (error.response.status === 400) {

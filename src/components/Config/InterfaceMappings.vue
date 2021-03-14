@@ -144,7 +144,6 @@ export default class InterfaceMappings extends Vue {
 	 * Retrieves list of mappings
 	 */
 	private getMappings(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
 		return MappingService.getMappings()
 			.then((response: AxiosResponse) => this.handleMappingResponse(response.data))
 			.catch((error: AxiosError) => FormErrorHandler.mappingError(error));
@@ -155,7 +154,6 @@ export default class InterfaceMappings extends Vue {
 	 * @param {Array<IMapping>} mappings Array of mappings from REST API response
 	 */
 	private handleMappingResponse(mappings: Array<IMapping>): void {
-		this.$store.commit('spinner/HIDE');
 		let filteredMappings: Array<IMapping> = [];
 		mappings.forEach((mapping: IMapping) => {
 			if (mapping.type !== this.interfaceType) {

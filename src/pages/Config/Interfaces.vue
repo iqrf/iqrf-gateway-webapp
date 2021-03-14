@@ -2,7 +2,11 @@
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<CCard body-wrapper>
+			<CElementCover v-if='loadFailed'>
+				{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
+			</CElementCover>
 			<CSelect
+				v-else
 				:value.sync='iqrfInterface'
 				:label='$t("config.daemon.interfaces.form.interface")'
 				:options='interfaceSelect'
@@ -13,10 +17,12 @@
 		<CCard v-if='iqrfInterface === "noInterface"' body-wrapper>
 			{{ $t('config.daemon.interfaces.messages.noInterface') }}
 		</CCard>
-		<IqrfSpi v-if='iqrfInterface === "iqrf::IqrfSpi"' />
-		<IqrfCdc v-if='iqrfInterface === "iqrf::IqrfCdc"' />
-		<IqrfUart v-if='iqrfInterface === "iqrf::IqrfUart"' />
-		<IqrfDpa />
+		<div v-if='!loadFailed'>
+			<IqrfSpi v-if='iqrfInterface === "iqrf::IqrfSpi"' @fetched='configFetched' />
+			<IqrfCdc v-if='iqrfInterface === "iqrf::IqrfCdc"' @fetched='configFetched' />
+			<IqrfUart v-if='iqrfInterface === "iqrf::IqrfUart"' @fetched='configFetched' />
+			<IqrfDpa @fetched='configFetched' />
+		</div>
 	</div>
 </template>
 
@@ -27,11 +33,13 @@ import IqrfSpi from '../../components/Config/IqrfSpi.vue';
 import IqrfCdc from '../../components/Config/IqrfCdc.vue';
 import IqrfUart from '../../components/Config/IqrfUart.vue';
 import IqrfDpa from '../../components/Config/IqrfDpa.vue';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import {AxiosError, AxiosResponse} from 'axios';
-import {IChangeComponent, IComponent} from '../../interfaces/daemonComponent';
-import { IOption } from '../../interfaces/coreui';
+import {IChangeComponent, IComponent, IConfigFetch} from '../../interfaces/daemonComponent';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -96,6 +104,24 @@ export default class Interfaces extends Vue {
 	]
 
 	/**
+	 * @var {Array<string>} children Array of components loading configuration
+	 */
+	private children: Array<string> = [
+		'iface',
+		'iqrfDpa'
+	]
+
+	/**
+	 * @var {Array<string>} failed Array of components that failed configuration fetch
+	 */
+	private failed: Array<string> = []
+
+	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
@@ -109,14 +135,18 @@ export default class Interfaces extends Vue {
 	 * Retrieves list of components
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		if (!this.$store.getters['spinner/isActive']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		return DaemonConfigurationService.getComponent('')
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.storeInterfaces(response.data.components);
 				this.findActiveInterface();
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				this.loadFailed = true;
+				FormErrorHandler.configError(error);
+			});
 	}
 
 	/**
@@ -161,7 +191,6 @@ export default class Interfaces extends Vue {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.changeComponent(updateInterfaces)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
 				this.getConfig().then(() => 
 					this.$toast.success(
 						this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()
@@ -190,6 +219,34 @@ export default class Interfaces extends Vue {
 			return 'UART';
 		}
 		return '';
+	}
+
+	/**
+	 * Handles configuration fetch events
+	 */
+	private configFetched(data: IConfigFetch): void {
+		if (['iqrfCdc', 'iqrfSpi', 'iqrfUart'].includes(data.name)) {
+			this.children = this.children.filter((item: string) => item !== 'iface');
+		} else {
+			this.children = this.children.filter((item: string) => item !== data.name);
+		}
+		if (!data.success) {
+			this.failed.push(this.$t('config.daemon.' + data.name + '.title').toString());
+		}
+		if (this.children.length > 0) {
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		if (this.failed.length === 0) {
+			return;
+		}
+		this.$toast.error(
+			this.$t(
+				'config.daemon.messages.configFetchFailed',
+				{children: this.failed.sort().join(', ')},
+			).toString()
+		);
+		this.failed = [];
 	}
 
 }
