@@ -1567,6 +1567,7 @@
 									"        'iqrf-gateway-translator',",
 									"        'mender-client',",
 									"        'ssh',",
+									"        'systemd-journald',",
 									"        'unattended-upgrades'",
 									"    ];",
 									"    pm.expect(jsonData.services).to.eql(services);",
