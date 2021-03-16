@@ -227,10 +227,18 @@ class WireguardController extends NetworkController {
 	public function remove(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$id = (int) $request->getParameter('id');
+			$service = $this->tunnelService($this->wireguardManager->getInterface($id));
+			if ($this->serviceManager->isActive($service) || $this->serviceManager->isEnabled($service)) {
+				$this->serviceManager->disable($service);
+			}
 			$this->wireguardManager->removeInterface($id);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (UnsupportedInitSystemException $e) {
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
