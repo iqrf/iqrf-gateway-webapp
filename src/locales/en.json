@@ -1119,11 +1119,11 @@
 				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
-		"rootPass": {
-			"title": "Change root password",
+		"password": {
+			"title": "Change default gateway user password",
 			"messages": {
-				"success": "Gateway root password has been successfully changed.",
-				"failure": "Failed to change root password."
+				"success": "Default gateway user password has been successfully changed.",
+				"failure": "Failed to change default gateway user password: {error}"
 			}
 		},
 		"updater": {

@@ -140,7 +140,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	 */
 	public function testValidateEndpointInvalid(): void {
 		Assert::exception(function (): void {
-			$this->manager->validateEndpoint('nonexistentdomain.org');
+			$this->manager->validateEndpoint('nonexistenttestdomain.org');
 		}, WireguardInvalidEndpointException::class);
 	}
 

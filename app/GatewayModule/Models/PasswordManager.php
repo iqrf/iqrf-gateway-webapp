@@ -22,11 +22,12 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
+use Nette\Utils\Strings;
 
 /**
- * Root account manager
+ * Gateway password manager
  */
-class RootManager {
+class PasswordManager {
 
 	/**
 	 * @var CommandManager CommandManager
@@ -42,14 +43,21 @@ class RootManager {
 	}
 
 	/**
-	 * Changes root account password
+	 * Change gateway account password
 	 * @param string $password New password to set
 	 */
 	public function setPassword(string $password): void {
-		$input = 'root:' . $password;
-		$output = $this->commandManager->run('chpasswd', true, $input);
-		if ($output->getExitCode() !== 0) {
-			throw new ChpasswdErrorException($output->getStderr());
+		$command = $this->commandManager->run('cat /etc/os-release | grep -e "^ID="');
+		if ($command->getExitCode() !== 0) {
+			throw new ChpasswdErrorException($command->getStderr());
+		}
+		$pattern = '/^(ID=)([0-9a-zA-Z\-]+)/';
+		$matches = Strings::match(trim($command->getStdout()), $pattern);
+		$distro = $matches[2] ?? '';
+		$input = ($distro === 'iqrf-gw-os' ? 'admin:' : 'root:') . $password;
+		$command = $this->commandManager->run('chpasswd', true, $input);
+		if ($command->getExitCode() !== 0) {
+			throw new ChpasswdErrorException($command->getStderr());
 		}
 	}
 

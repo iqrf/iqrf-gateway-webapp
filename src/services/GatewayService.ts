@@ -55,11 +55,11 @@ class GatewayService {
 	}
 
 	/**
-	 * Sets gateway root password
-	 * @param {RootPassword} data New root gateway password
+	 * Sets default gateway user password
+	 * @param {RootPassword} data New password
 	 */
-	setRootPass(data: RootPassword): Promise<AxiosResponse> {
-		return axios.put('gateway/rootpass', data, {headers: authorizationHeader()});
+	setGatewayPassword(data: RootPassword): Promise<AxiosResponse> {
+		return axios.put('gateway/password', data, {headers: authorizationHeader()});
 	}
 
 	/**

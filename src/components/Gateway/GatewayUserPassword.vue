@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('gateway.rootPass.title') }}
+			{{ $t('gateway.password.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
@@ -47,10 +47,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import ServiceControl from '../../pages/Gateway/ServiceControl.vue';
 
+import {required} from 'vee-validate/dist/rules';
 import GatewayService from '../../services/GatewayService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -68,12 +70,12 @@ import GatewayService from '../../services/GatewayService';
 })
 
 /**
- * Gateway root password change component
+ * Gateway user password change component
  */
-export default class GatewayRootPassword extends Vue {
+export default class GatewayUserPassword extends Vue {
 	
 	/**
-	 * @var {string} password Root password
+	 * @var {string} password Password
 	 */
 	private password = ''
 
@@ -93,15 +95,18 @@ export default class GatewayRootPassword extends Vue {
 	 * Sets new gateway root account password
 	 */
 	private handleSubmit(): void {
-		GatewayService.setRootPass({password: this.password})
+		GatewayService.setGatewayPassword({password: this.password})
 			.then(() => {
 				this.$toast.success(
-					this.$t('gateway.rootPass.messages.success').toString()
+					this.$t('gateway.password.messages.success').toString()
 				);
 			})
-			.catch(() => {
+			.catch((error: AxiosError) => {
 				this.$toast.error(
-					this.$t('gateway.rootPass.messages.failure').toString()
+					this.$t(
+						'gateway.password.messages.failure',
+						{error: error.response !== undefined ? error.response.data.message : error.message}
+					).toString()
 				);
 			});
 	}
