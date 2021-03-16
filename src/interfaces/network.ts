@@ -124,8 +124,10 @@ export interface IWifiWep {
  * Wireguard VPN list entry interface
  */
 export interface IWG {
+	id: number
 	name: string
-	state: string
+	active: boolean
+	enabled: boolean
 }
 
 /**
