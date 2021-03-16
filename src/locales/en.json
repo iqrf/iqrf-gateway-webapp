@@ -804,7 +804,8 @@
 			},
 			"messages": {
 				"disabled": "IQRF Gateway Translator service is disabled.",
-				"loadFailed": "Failed to retrieve Translator configuration."
+				"saveFailed": "Failed to save Translator configuration: {error}",
+				"fetchFailed": "Failed to retrieve Translator configuration: {error}"
 			},
 			"errors": {
 				"port": "Please enter an integer between 1 and 49151 for port number.",
@@ -860,7 +861,6 @@
 				}
 			},
 			"errors": {
-				"disabled": "IQRF Gateway Controller service is disabled.",
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
 				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
@@ -876,8 +876,11 @@
 				}
 			},
 			"messages": {
-				"successRestart": "IQRF controller configuration has been successfully saved. Controller service has been restarted.",
-				"loadFailed": "Failed to retrieve Controller configuration."
+				"disabled": "IQRF Gateway Controller service is disabled.",
+				"saveFailed": "Failed to save Controller configuration: {error}",
+				"restartSuccess": "Controller configuration has been successfully saved. Controller service has been restarted.",
+				"restartFailed": "Failed to restart Controller service: {error}",
+				"fetchFailed": "Failed to retrieve Controller configuration: {error}"
 			}
 		},
 		"selectedComponents": {
