@@ -5,50 +5,52 @@
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
 			</CCardHeader>
 			<CCardBody>
+				<CElementCover 
+					v-if='loadFailed'
+					style='z-index: 1;'
+				>
+					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFail') }}
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='upgradeOs()'>
-						<p>
-							<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-								<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
-							</span>
+						<fieldset :disabled='loadFailed'>
+							<p>
+								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
+									<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+								</span>
+							</p>
+							<div v-if='selectVersions.length > 0'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: "iqrfnet.trUpload.osUpload.errors.version"
+									}'
+								>
+									<CSelect
+										:value.sync='osVersion'
+										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
+										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
+										:options='selectVersions'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<CButton
+									color='primary'
+									type='submit'
+									:disabled='invalid'
+								>
+									{{ $t('forms.upload') }}
+								</CButton>
+							</div>
 							<CAlert
-								v-else
-								color='danger'
+								v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
+								color='success'
 							>
-								{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFail') }}
+								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
 							</CAlert>
-						</p>
-						<div v-if='selectVersions.length > 0'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: "iqrfnet.trUpload.osUpload.errors.version"
-								}'
-							>
-								<CSelect
-									:value.sync='osVersion'
-									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
-									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-									:options='selectVersions'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton
-								color='primary'
-								type='submit'
-								:disabled='invalid'
-							>
-								{{ $t('forms.upload') }}
-							</CButton>
-						</div>
-						<CAlert 
-							v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
-							color='success'
-						>
-							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-						</CAlert>
+						</fieldset>
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
@@ -58,7 +60,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {IOption} from '../../interfaces/coreui';
@@ -71,11 +73,11 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CModal,
 		CSelect,
@@ -132,6 +134,11 @@ export default class OsUpdater extends Vue {
 	 * @var {string} uploadeMessage Upload message for spinner
 	 */
 	private uploadMessage = ''
+
+	/**
+	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
+	 */
+	private loadFailed = false
 	
 	/**
 	 * Vue lifecycle hook created
@@ -165,11 +172,14 @@ export default class OsUpdater extends Vue {
 	 * Retrieves list of IQRF OS patches from database
 	 */
 	private getOsUpgrades(data: Dictionary<string|number>): void {
-		this.$store.commit('spinner/SHOW');
 		IqrfService.getUpgrades(data)
 			.then((response: AxiosResponse) => {
 				this.upgrades = response.data;
 				this.updateVersions();
+			})
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('loaded', {name: 'OS', success: false});
 			});
 	}
 
@@ -187,6 +197,7 @@ export default class OsUpdater extends Vue {
 			});
 		}
 		this.selectVersions = versions.sort().reverse();
+		this.$emit('loaded', {name: 'OS', success: true});
 	}
 
 	/**
