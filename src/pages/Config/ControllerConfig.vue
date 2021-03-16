@@ -252,9 +252,6 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
-				<CAlert v-else color='danger'>
-					{{ $t('config.controller.messages.loadFailed') }}
-				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -263,7 +260,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -275,7 +272,6 @@ import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -291,7 +287,7 @@ import {IOption} from '../../interfaces/coreui';
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(
-					vm.$t('config.controller.errors.disabled').toString()
+					vm.$t('config.controller.messages.disabled').toString()
 				);
 				vm.$router.push(from.path);
 			}
@@ -384,6 +380,9 @@ export default class ControllerConfig extends Vue {
 	 * Retrieves configuration of IQRF Gateway Controller
 	 */
 	private getConfig(): void {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
 			.then((response: AxiosResponse) => {
@@ -391,7 +390,14 @@ export default class ControllerConfig extends Vue {
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'config.controller.messages.fetchFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message},
+					).toString()
+				);
+				this.$router.push('/');
 			});
 	}
 
@@ -405,7 +411,13 @@ export default class ControllerConfig extends Vue {
 				this.restartController();	
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'config.controller.messages.saveFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message},
+					).toString()
+				);
 			});
 	}
 
@@ -416,9 +428,19 @@ export default class ControllerConfig extends Vue {
 		ServiceService.restart('iqrf-gateway-controller')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('config.controller.messages.successRestart').toString());
+				this.$toast.success(
+					this.$t('config.controller.messages.restartSuccess').toString()
+				);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'config.controller.messages.restartFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message},
+					).toString()
+				);
+			});
 	}
 
 }

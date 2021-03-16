@@ -3,9 +3,6 @@
 		<h1>{{ $t('config.translator.title') }}</h1>
 		<CCard>
 			<CCardBody>
-				<CElementCover v-if='loadFailed && config === null' color='danger'>
-					{{ $t('config.translator.messages.loadFailed') }}
-				</CElementCover>
 				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
 					<CForm @submit.prevent='processSubmit'>
 						<CRow>
@@ -295,11 +292,6 @@ export default class TranslatorConfig extends Vue {
 	private visibility = 'password'
 
 	/**
-	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
-	 */
-	private loadFailed = false
-
-	/**
 	 * @var {ITranslator|null} config IQRF Gateway Translator service configuration
 	 */
 	private config: ITranslator|null = null
@@ -349,8 +341,14 @@ export default class TranslatorConfig extends Vue {
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.loadFailed = true;
-				FormErrorHandler.configError(error);
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'config.translator.messages.fetchFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message},
+					).toString()
+				);
+				this.$router.push('/');
 			});
 	}
 
@@ -367,7 +365,13 @@ export default class TranslatorConfig extends Vue {
 				});
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'config.translator.messages.saveFailed',
+						{error: error.response !== undefined ? error.response.data.message : error.message},
+					).toString()
+				);
 			});
 	}
 }
