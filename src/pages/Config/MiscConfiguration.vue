@@ -4,25 +4,30 @@
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
-					<JsonApi v-if='!powerUser' />
-					<JsonMngMetaDataApi v-if='powerUser' />
-					<JsonRawApi v-if='powerUser' />
-					<JsonSplitter v-if='powerUser' />
+					<JsonApi 
+						v-if='!powerUser'
+						@fetched='configFetch'
+					/>
+					<div v-else>
+						<JsonMngMetaDataApi @fetched='configFetch' />
+						<JsonRawApi @fetched='configFetch' />
+						<JsonSplitter @fetched='configFetch' />
+					</div>
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
-					<IqrfRepository />
+					<IqrfRepository @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
-					<IqrfInfo />
+					<IqrfInfo @fetched='configFetch' />
 				</CTab>
-				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh.title")'>
-					<IqmeshServices />
+				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh")'>
+					<OtaUpload @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
-					<MonitorList />
+					<MonitorList @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.tracer.title")'>
-					<TracerList />
+					<TracerList @fetched='configFetch' />
 				</CTab>
 			</CTabs>
 		</CCard>
@@ -32,15 +37,17 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
-import JsonRawApi from '../../components/Config/JsonRawApi.vue';
-import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
-import JsonSplitter from '../../components/Config/JsonSplitter.vue';
-import JsonApi from '../../components/Config/JsonApi.vue';
-import TracerList from '../../components/Config/TracerList.vue';
-import MonitorList from '../../components/Config/MonitorList.vue';
-import IqrfRepository from '../../components/Config/IqrfRepository.vue';
 import IqrfInfo from '../../components/Config/IqrfInfo.vue';
-import IqmeshServices from '../../components/Config/IqmeshServices.vue';
+import IqrfRepository from '../../components/Config/IqrfRepository.vue';
+import JsonApi from '../../components/Config/JsonApi.vue';
+import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
+import JsonRawApi from '../../components/Config/JsonRawApi.vue';
+import JsonSplitter from '../../components/Config/JsonSplitter.vue';
+import MonitorList from '../../components/Config/MonitorList.vue';
+import OtaUpload from '../../components/Config/OtaUpload.vue';
+import TracerList from '../../components/Config/TracerList.vue';
+
+import {IConfigFetch} from '../../interfaces/daemonComponent';
 
 @Component({
 	components: {
@@ -49,7 +56,6 @@ import IqmeshServices from '../../components/Config/IqmeshServices.vue';
 		CCardHeader,
 		CTab,
 		CTabs,
-		IqmeshServices,
 		IqrfInfo,
 		IqrfRepository,
 		JsonApi,
@@ -57,6 +63,7 @@ import IqmeshServices from '../../components/Config/IqmeshServices.vue';
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
+		OtaUpload,
 		TracerList
 	},
 	metaInfo: {
@@ -90,11 +97,29 @@ export default class MiscConfiguration extends Vue {
 	private powerUser = false;
 
 	/**
+	 * @var {Array<string>} children Children components loading configuration
+	 */
+	private children: Array<string> = [
+		'iqrfInfo',
+		'iqrfRepository',
+		'monitor',
+		'tracer',
+	]
+
+	/**
+	 * @var {Array<string>} failed Children components config fetch failed
+	 */
+	private failed: Array<string> = []
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
+			this.children.push('jsonMngMetaDataApi', 'jsonRawApi', 'jsonSplitter');
+		} else {
+			this.children.push('jsonApi');
 		}
 	}
 
@@ -108,6 +133,33 @@ export default class MiscConfiguration extends Vue {
 		if (this.$attrs.tabName !== undefined) {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
+		this.$store.commit('spinner/SHOW');
 	}
+
+	/**
+	 * Handles successful child component config fetch event
+	 * @param {IConfigFetch} data Component fetch meta
+	 */
+	private configFetch(data: IConfigFetch): void {
+		this.children = this.children.filter((item: string) => item !== data.name);
+		if (!data.success) {
+			this.failed.push(this.$t('config.daemon.misc.' + data.name + '.title').toString());
+		}
+		if (this.children.length > 0) {
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		if (this.failed.length === 0) {
+			return;
+		}
+		this.$toast.error(
+			this.$t(
+				'config.daemon.messages.configFetchFailed',
+				{children: this.failed.sort().join(', ')},
+			).toString()
+		);
+		this.failed = [];
+	}
+
 }
 </script>

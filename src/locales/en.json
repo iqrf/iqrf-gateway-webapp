@@ -263,6 +263,7 @@
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
 				"messages": {
+					"fetchFailed": "Failed to retrieve interfaces configuration.",
 					"noInterface": "All IQRF communication interfaces are disabled.",
 					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
 					"updateFailed": "An error occured while updating interface settings."
@@ -370,28 +371,35 @@
 				}
 			},
 			"messagings": {
+				"tlsTitle": "TLS",
 				"title": "Messagings",
 				"description": "Configuration of messagings.",
 				"mqtt": {
 					"title": "MQTT interface",
 					"description": "MQTT interface settings.",
+					"legend": "MQTT interface instance",
 					"add": "Add MQTT interface",
 					"edit": "Edit MQTT interface",
 					"form": {
 						"BrokerAddr": "Broker address",
 						"Persistence": "Persistence",
+						"Persistences": {
+							"0": "In-memory",
+							"1": "File system-based",
+							"2": "Application-specific"
+						},
 						"QoS": "QoS",
 						"QoSes": {
-							"0": "QoS 0 - At most once",
-							"1": "QoS 1 - At least once",
-							"2": "QoS 2 - Exactly once"
+							"0": "QoS 0",
+							"1": "QoS 1",
+							"2": "QoS 2"
 						},
 						"User": "User",
 						"EnabledSSL": "Enabled TLS",
 						"KeepAliveInterval": "Keep alive interval",
 						"ConnectTimeout": "Connection timeout",
-						"MinReconnect": "Minimal count of reconnects",
-						"MaxReconnect": "Maximal count of reconnects",
+						"MinReconnect": "Mininum number of reconnects",
+						"MaxReconnect": "Maximum number of reconnects",
 						"TrustStore": "CA certificate",
 						"PrivateKeyPassword": "Private key password",
 						"EnabledCipherSuites": "Enabled cipher suites",
@@ -402,7 +410,17 @@
 						"deletePrompt": "Do you really want to delete MQTT interface instance {instance}?",
 						"deleteTitle": "Delete MQTT interface instance",
 						"deleteSuccess": "MQTT interface instance {instance} has been deleted.",
-						"editSuccess": "MQTT interface instance {instance} has been edited."
+						"editSuccess": "MQTT interface instance {instance} has been edited.",
+						"persistence": {
+							"0": "State of in-flight messages is lost in case of a client shutsdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
+							"1": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
+							"2": "Persistence control is delegated to the application."
+						},
+						"qos": {
+							"0": "Fastest method, but the delivery of a message is not guaranteed.",
+							"1": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
+							"2": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
+						}
 					},
 					"errors": {
 						"instance": "Please enter name of MQTT instance.",
@@ -421,7 +439,7 @@
 					"form": {
 						"WebsocketPort": "WebSocket port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost",
-						"tlsEnabled": "Enable TLS",
+						"tlsEnabled": "TLS",
 						"tlsMode": "TLS mode",
 						"tlsModes": {
 							"intermediate": "Intermediate",
@@ -442,7 +460,8 @@
 						}
 					},
 					"interface": {
-						"title": "Websocket interfaces",
+						"title": "WebSocket interfaces",
+						"legend": "WebSocket interface instance",
 						"add": "Add WebSocket interface",
 						"edit": "Edit WebSocket interface"
 					},
@@ -460,6 +479,7 @@
 					},
 					"service": {
 						"title": "WebSocket services",
+						"legend": "WebSocket service instance",
 						"add": "Add WebSocket service",
 						"edit": "Edit WebSocket service",
 						"messages": {
@@ -549,6 +569,12 @@
 				"form": {
 					"task": {
 						"taskId": "Task ID",
+						"timeSpec": "Start time type",
+						"timeSpecTypes": {
+							"exact": "Oneshot - execute task once at specified time",
+							"periodic": "Periodic - frequency of task execution in seconds",
+							"cron": "Cron time expression - specifies when and how often a task is executed"
+						},
 						"cronTime": "Time in cron format",
 						"exactTime": "Exact time",
 						"periodic": "Periodic",
@@ -569,7 +595,8 @@
 					"service": "Please select service.",
 					"messaging": "Please select messaging.",
 					"message": "Please enter a message.",
-					"period": "Period should be an integer greater than 0."
+					"period": "Period should be an integer greater than 0.",
+					"cron": "Please enter a valid 7 field cron time expression."
 				},
 				"import": {
 					"title": "Import task(s)",
@@ -647,6 +674,7 @@
 					"description": "Manage IQRF Repository's settings.",
 					"form": {
 						"urlRepo": "IQRF Repository URL",
+						"enableCheck": "Check for updates periodically",
 						"checkPeriod": "Check period in minutes",
 						"downloadIfEmpty": "Download if repository cache is empty"
 					},
@@ -660,27 +688,25 @@
 					"title": "Lite DB",
 					"description": "IQRF Info database settings.",
 					"form": {
-						"enumAtStartUp": "Initialize network full enumeration just after startup",
-						"enumPeriod": "Enumeration check period in minutes",
-						"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
+						"enumAtStartUp": "Enumerate network on startup",
+						"enablePeriodic": "Enumerate network periodically",
+						"enumPeriod": "Enumeration period in minutes",
+						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes"
 					},
 					"errors": {
 						"instance": "Please enter name of IQRF Info instance.",
 						"enumPeriod": "Period must be greater or equal to 0."
 					}
 				},
-				"iqmesh": {
-					"title": "IQMESH services",
-					"description": "Manage IQMESH services.",
-					"otaUpload": {
-						"title": "IQRF OTA upload service",
-						"form": {
-							"uploadPath": "Path to a directory with files to upload"
-						},
-						"errors": {
-							"instance": "Please enter name of OTA upload service instance.",
-							"uploadPath": "Please enter path to a directory with files to upload."
-						}
+				"iqmesh": "IQMESH services",
+				"otaUpload": {
+					"title": "IQRF OTA upload service",
+					"form": {
+						"uploadPath": "Path to a directory with files to upload"
+					},
+					"errors": {
+						"instance": "Please enter name of OTA upload service instance.",
+						"uploadPath": "Please enter path to a directory with files to upload."
 					}
 				},
 				"monitor": {
@@ -689,6 +715,7 @@
 					"add": "Add a new monitoring service",
 					"edit": "Edit the monitoring service",
 					"form": {
+						"title": "Monitoring instance",
 						"reportPeriod": "Reporting period in seconds",
 						"WebsocketPort": "WebSocket server port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost"
@@ -712,14 +739,15 @@
 					"add": "Add logging service configuration",
 					"edit": "Edit logging service configuration",
 					"form": {
+						"title": "Logging instance",
 						"path": "Path to directory with logs",
 						"filename": "File name",
 						"maxSize": "Maximum size in bytes",
 						"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
 						"maxNumber": "Maximum number of timestamped files",
-						"timestampFiles": "Enable timestamp files",
+						"timestampFiles": "Enable timestamps in files",
 						"verbosityLevels": {
-							"title": "Verbosity levels",
+							"title": "Logging verbosity",
 							"add": "Add verbosity level",
 							"remove": "Remove verbosity level"
 						},
@@ -746,6 +774,11 @@
 						}
 					}
 				}
+			},
+			"messages": {
+				"configFailed": "An unexpected error has occured: {error}",
+				"configFetchFailed": "Failed to retrieve configuration for {children}.",
+				"failedElement": "Failed to retrieve component configuration."
 			}
 		},
 		"translator": {

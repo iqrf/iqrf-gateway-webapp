@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<CCard class='border-0'>
+		<CCard class='border-0 card-margin-bottom'>
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
@@ -159,22 +159,23 @@ export default class TracerList extends Vue {
 	 * Retrieves configuration of logging service component
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.$emit('fetched', {name: 'tracer', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'tracer', success: false});
+			});
 	}
 	
 	/**
 	 * Removes instance of logging service component
 	 */
 	private removeInstance(): void {
-		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;
 		this.deleteInstance = '';
+		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.deleteInstance(this.componentName, instance)
 			.then(() => {
 				this.getConfig().then(() => {
