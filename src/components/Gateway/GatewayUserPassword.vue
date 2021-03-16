@@ -95,13 +95,16 @@ export default class GatewayUserPassword extends Vue {
 	 * Sets new gateway root account password
 	 */
 	private handleSubmit(): void {
+		this.$store.commit('spinner/SHOW');
 		GatewayService.setGatewayPassword({password: this.password})
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t('gateway.password.messages.success').toString()
 				);
 			})
 			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
 					this.$t(
 						'gateway.password.messages.failure',
