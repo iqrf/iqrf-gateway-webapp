@@ -31,13 +31,13 @@ use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
-use App\GatewayModule\Models\RootManager;
+use App\GatewayModule\Models\PasswordManager;
 
 /**
- * Gateway root controller
+ * Gateway password controller
  * @Path("/")
  */
-class RootController extends GatewayController {
+class PasswordController extends GatewayController {
 
 	/**
 	 * @var FeatureManager Feature manager
@@ -45,33 +45,33 @@ class RootController extends GatewayController {
 	private $featureManager;
 
 	/**
-	 * @var RootManager Root manager
+	 * @var PasswordManager Gateway password manager
 	 */
-	private $rootManager;
+	private $manager;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
-	 * @param RootManager $rootManager Root manager
+	 * @param PasswordManager $manager Gateway password manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, RootManager $rootManager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, PasswordManager $manager, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
-		$this->rootManager = $rootManager;
+		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/rootpass")
+	 * @Path("/password")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Sets root password
+	 *  summary: Sets default gateway user password
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/RootPassword'
+	 *                  $ref: '#/components/schemas/GatewayPassword'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -84,13 +84,13 @@ class RootController extends GatewayController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function setRootPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		if (!$this->featureManager->isEnabled('rootpass')) {
-			throw new ClientErrorException('Root password feature is not enabled', ApiResponse::S400_BAD_REQUEST);
+	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!$this->featureManager->isEnabled('gatewayPass')) {
+			throw new ClientErrorException('Gateway password feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
-		$this->validator->validateRequest('rootPassword', $request);
+		$this->validator->validateRequest('gatewayPassword', $request);
 		try {
-			$this->rootManager->setPassword($request->getJsonBody(true)['password']);
+			$this->manager->setPassword($request->getJsonBody(true)['password']);
 			return $response->writeBody('Workaround');
 		} catch (ChpasswdErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

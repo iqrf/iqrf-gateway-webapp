@@ -2,6 +2,9 @@
 docs:
 	enabled: true
 	url: https://docs.iqrf.org/iqrf-gateway/
+# Default gateway user password change
+gatewayPass:
+	enabled: false
 grafana:
 	enabled: false
 	url: /grafana/
@@ -23,9 +26,6 @@ nodeRed:
 	url: /node-red/
 # PIXLA mamagement system
 pixla:
-	enabled: false
-# Root password change
-rootpass:
 	enabled: false
 # SSH daemon manager
 ssh:
