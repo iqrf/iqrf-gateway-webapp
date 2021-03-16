@@ -2,8 +2,8 @@
 	<div>
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
 		<HexUpload />
-		<DpaUpdater ref='dpaUpdater' />
-		<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />
+		<DpaUpdater ref='dpaUpdater' @loaded='osDpaLoaded' />
+		<OsUpdater ref='osUpdater' @loaded='osDpaLoaded' @os-upload='osInfoUpload' />
 	</div>
 </template>
 
@@ -16,6 +16,7 @@ import OsService from '../../services/DaemonApi/OsService';
 import DpaUpdater from '../../components/IqrfNet/DpaUpdater.vue';
 import HexUpload from '../../components/IqrfNet/HexUpload.vue';
 import OsUpdater from '../../components/IqrfNet/OsUpdater.vue';
+import {IConfigFetch} from '../../interfaces/daemonComponent';
 
 @Component({
 	components: {
@@ -52,6 +53,13 @@ export default class TrUpload extends Vue {
 	 */
 	private msgId: string|null = null
 
+	private loading: Array<string> = [
+		'DPA',
+		'OS'
+	]
+
+	private failed: Array<string> = []
+
 	/**
 	 * Component unsubscribe function
 	 */
@@ -74,7 +82,6 @@ export default class TrUpload extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				this.handleOsInfoResponse(mutation.payload);
@@ -109,8 +116,8 @@ export default class TrUpload extends Vue {
 	 * Sends a Daemon API request to retrieve OS information
 	 */
 	private getOsInfo(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+		this.$store.commit('spinner/SHOW');
+		OsService.sendRead(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -123,13 +130,17 @@ export default class TrUpload extends Vue {
 			(this.$refs.dpaUpdater as DpaUpdater).handleOsInfoResponse(response);
 			(this.$refs.osUpdater as OsUpdater).handleOsInfoResponse(response.data.rsp.result);
 		} else {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
 				this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
 			);
-			console.error(response);
+			this.$router.push('/iqrfnet');
 		}
 	}
 
+	/**
+	 * Reloads OsInfo after upload
+	 */
 	private osInfoUpload(): void {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit(
@@ -145,6 +156,32 @@ export default class TrUpload extends Vue {
 				}
 			}
 		);
+	}
+
+	/**
+	 * Handles DPA and OS upgrade fetch events
+	 */
+	private osDpaLoaded(data: IConfigFetch): void {
+		if (this.loading.includes(data.name)) {
+			this.loading = this.loading.filter((item: string) => item !== data.name);
+		}
+		if (!data.success) {
+			this.failed.push(data.name);
+		}
+		if (this.loading.length > 0) {
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		if (this.failed.length === 0) {
+			return;
+		}
+		this.$toast.error(
+			this.$t(
+				'iqrfnet.trUpload.messages.fetchFailed',
+				{children: this.failed.sort().join(', ')},
+			).toString()
+		);
+		this.failed = [];
 	}
 
 }
