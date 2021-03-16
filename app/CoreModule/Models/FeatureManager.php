@@ -44,6 +44,9 @@ class FeatureManager {
 			'enabled' => true,
 			'url' => 'https://docs.iqrf.org/iqrf-gateway/',
 		],
+		'gatewayPass' => [
+			'enabled' => false,
+		],
 		'grafana' => [
 			'enabled' => false,
 			'url' => '/grafana/',
@@ -65,9 +68,6 @@ class FeatureManager {
 			'url' => '/node-red/',
 		],
 		'pixla' => [
-			'enabled' => false,
-		],
-		'rootpass' => [
 			'enabled' => false,
 		],
 		'ssh' => [
