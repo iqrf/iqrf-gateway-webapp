@@ -334,7 +334,7 @@ export default class SchedulerForm extends Vue {
 			maxValue: 31,
 		},
 		months: {
-			minValue: 0,
+			minValue: 1,
 			maxValue: 12,
 		},
 		daysOfWeek: {
@@ -404,6 +404,10 @@ export default class SchedulerForm extends Vue {
 			return {}.hasOwnProperty.call(object, 'mType');
 		});
 		extend('cron', (cronstring: string) => {
+			if (this.timeSpec.exactTime || this.timeSpec.periodic) {
+				this.cronMessage = null;
+				return true;
+			}
 			if (cronstring[0] === '@') {
 				const cronAlias = this.getCronAlias(cronstring);
 				if (cronAlias !== undefined) {
@@ -439,13 +443,9 @@ export default class SchedulerForm extends Vue {
 						let rsp = mutation.payload.data.rsp;
 						this.taskId = rsp.taskId;
 						this.clientId = rsp.clientId;
-						const day = Number.parseInt(rsp.timeSpec.cronTime[5]);
-						if (!isNaN(day)) {
-							rsp.timeSpec.cronTime[5] = (day + 1).toString();
-						}
 						this.timeSpec = rsp.timeSpec;
 						if (Array.isArray(this.timeSpec.cronTime)) {
-							this.timeSpec.cronTime = this.timeSpec.cronTime.join(' ');
+							this.timeSpec.cronTime = this.timeSpec.cronTime.join(' ').trim();
 						}
 						if (Array.isArray(rsp.task)) {
 							let tasks: Array<LocalTask> = [];
@@ -587,12 +587,6 @@ export default class SchedulerForm extends Vue {
 					this.$store.commit('spinner/HIDE');
 					this.taskId = response.data.taskId;
 					this.clientId = response.data.clientId;
-					let cronTime = response.data.timeSpec.cronTime.split(' ');
-					const cronDay = Number.parseInt(cronTime[5]);
-					if (!isNaN(cronDay)) {
-						cronTime[5] = (cronDay + 1).toString();
-					}
-					response.data.timeSpec.cronTime = cronTime.join(' ');
 					this.timeSpec = response.data.timeSpec;
 					let tasks: Array<LocalTask> = [];
 					response.data.task.forEach(item => {
@@ -674,14 +668,6 @@ export default class SchedulerForm extends Vue {
 		}
 		if (this.dayAliases.includes(timeSpec.cronTime[5])) {
 			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
-		}
-		try {
-			const cronDay = Number.parseInt(timeSpec.cronTime[5]);
-			if (!isNaN(cronDay)) {
-				timeSpec.cronTime[5] = (cronDay - 1).toString();
-			}
-		} catch (err) {
-			//
 		}
 		if (this.monthAliases.includes(timeSpec.cronTime[4])) {
 			timeSpec.cronTime[4] = (this.monthAliases.indexOf(timeSpec.cronTime[4]) + 1).toString();
