@@ -488,7 +488,7 @@ export default class SchedulerForm extends Vue {
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
-						this.$t('config.daemon.scheduler.messagess.processError').toString()
+						this.$t('config.daemon.scheduler.messages.processError').toString()
 					);
 				}
 			}
@@ -666,10 +666,14 @@ export default class SchedulerForm extends Vue {
 		timeSpec.cronTime = timeSpec.cronTime.replace('?', '*').split(' ');
 		if (timeSpec.cronTime.length === 1) {
 			const alias = this.getCronAlias(timeSpec.cronTime[0]);
+			console.warn(alias);
 			if (alias !== undefined) {
 				timeSpec.cronTime = [alias, '', '', '', '', '', ''];
+			} else {
+				timeSpec.cronTime = Array(7).fill('');
 			}
 		}
+		console.warn(timeSpec.cronTime);
 		if (this.dayAliases.includes(timeSpec.cronTime[5])) {
 			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
 		}
