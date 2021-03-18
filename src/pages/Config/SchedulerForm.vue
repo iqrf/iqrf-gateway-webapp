@@ -351,13 +351,13 @@ export default class SchedulerForm extends Vue {
 	 * @constant {Array<string>} dayAliases Array of day aliases
 	 */
 	private dayAliases = [
+		'sun',
 		'mon',
 		'tue',
 		'wed',
 		'thu',
 		'fri',
-		'sat',
-		'sun'
+		'sat'
 	]
 
 	/**
@@ -412,6 +412,7 @@ export default class SchedulerForm extends Vue {
 				const cronAlias = this.getCronAlias(cronstring);
 				if (cronAlias !== undefined) {
 					this.cronMessage = cronstrue.toString(cronAlias);
+					return true;
 				}
 				this.cronMessage = null;
 				return false;
@@ -661,13 +662,13 @@ export default class SchedulerForm extends Vue {
 		if (timeSpec.cronTime.length === 1) {
 			const alias = this.getCronAlias(timeSpec.cronTime[0]);
 			if (alias !== undefined) {
-				timeSpec.cronTime = [alias, '', '', '', '', '', ''];
+				timeSpec.cronTime = alias.split(' ');
 			} else {
 				timeSpec.cronTime = Array(7).fill('');
 			}
 		}
 		if (this.dayAliases.includes(timeSpec.cronTime[5])) {
-			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
+			timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]).toString();
 		}
 		if (this.monthAliases.includes(timeSpec.cronTime[4])) {
 			timeSpec.cronTime[4] = (this.monthAliases.indexOf(timeSpec.cronTime[4]) + 1).toString();
