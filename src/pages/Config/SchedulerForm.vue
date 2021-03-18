@@ -433,6 +433,7 @@ export default class SchedulerForm extends Vue {
 				const cronAlias = this.getCronAlias(cronstring);
 				if (cronAlias !== undefined) {
 					this.cronMessage = cronstrue.toString(cronAlias);
+					return true;
 				}
 				this.cronMessage = null;
 				return false;
@@ -718,7 +719,9 @@ export default class SchedulerForm extends Vue {
 			if (timeSpec.cronTime.length === 1) { // potentially using alias
 				const alias = this.getCronAlias(timeSpec.cronTime[0]);
 				if (alias !== undefined) {
-					timeSpec.cronTime = [alias, '', '', '', '', '', ''];
+					timeSpec.cronTime = alias.split(' ');
+				} else {
+					timeSpec.cronTime = Array(7).fill('');
 				}
 			}
 			if (this.dayAliases.includes(timeSpec.cronTime[5])) { // day alias translation
