@@ -350,12 +350,7 @@ export default class SchedulerList extends Vue {
 						if (this.tasks === null) {
 							return;
 						}
-						let rsp = mutation.payload.data.rsp;
-						const day = Number.parseInt(rsp.timeSpec.cronTime[5]);
-						if (!isNaN(day)) {
-							rsp.timeSpec.cronTime[5] = (day + 1).toString();
-						}
-						this.tasks.push(rsp);
+						this.tasks.push(mutation.payload.data.rsp);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
 							this.msgIds.includes(mutation.payload.data.msgId)) {
@@ -462,16 +457,7 @@ export default class SchedulerList extends Vue {
 			SchedulerService.listTasksREST()
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
-					let tasks = response.data;
-					for (let idx in tasks) {
-						let cronTime = tasks[idx].timeSpec.cronTime.split(' ');
-						const day = Number.parseInt(cronTime[5]);
-						if (!isNaN(day)) {
-							cronTime[5] = (day + 1).toString();
-							tasks[idx].timeSpec.cronTime = cronTime.join(' ');
-						}
-					}
-					this.tasks = tasks;
+					this.tasks = response.data;
 					this.retrieved = 'rest';
 				})
 				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));

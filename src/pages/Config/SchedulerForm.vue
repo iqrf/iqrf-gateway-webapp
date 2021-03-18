@@ -376,7 +376,7 @@ export default class SchedulerForm extends Vue {
 			maxValue: 31,
 		},
 		months: {
-			minValue: 0,
+			minValue: 1,
 			maxValue: 12,
 		},
 		daysOfWeek: {
@@ -390,14 +390,14 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * @constant {Array<string>} dayAliases Array of day aliases
+	 * @constant {Array<string>} dayAliases Array of day aliases for day of week range 0-6
 	 */
 	private dayAliases = [
-		'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
+		'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
 	]
 
 	/**
-	 * @constant {Array<string>} monthAliases Array of month aliases
+	 * @constant {Array<string>} monthAliases Array of month aliases for month range 1-12
 	 */
 	private monthAliases = [
 		'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
@@ -460,7 +460,7 @@ export default class SchedulerForm extends Vue {
 					if (mutation.payload.mType === 'messageError') {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.error(
-							this.$t('config.daemon.scheduler.messagess.processError').toString()
+							this.$t('config.daemon.scheduler.messages.processError').toString()
 						);
 					}
 					return;
@@ -475,7 +475,7 @@ export default class SchedulerForm extends Vue {
 					this.handleRemoveTask(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
-						this.$t('config.daemon.scheduler.messagess.processError').toString()
+						this.$t('config.daemon.scheduler.messages.processError').toString()
 					);
 				}
 			}
@@ -601,7 +601,9 @@ export default class SchedulerForm extends Vue {
 			return;
 		}
 		let taskDaemon: ITaskDaemon = response.rsp;
-		taskDaemon.timeSpec.cronTime = this.fixUpCron(taskDaemon.timeSpec.cronTime);
+		if (Array.isArray(taskDaemon.timeSpec.cronTime)) {
+			taskDaemon.timeSpec.cronTime = taskDaemon.timeSpec.cronTime.join(' ').trim();
+		}
 		this.taskId = taskDaemon.taskId;
 		this.clientId = taskDaemon.clientId;
 		if (!taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
@@ -632,7 +634,6 @@ export default class SchedulerForm extends Vue {
 	 * @param {ITaskRest} taskRest Task retrieved from REST API
 	 */
 	private handleGetTaskRest(taskRest: ITaskRest): void {
-		taskRest.timeSpec.cronTime = this.fixUpCron(taskRest.timeSpec.cronTime);
 		this.taskId = taskRest.taskId;
 		this.clientId = taskRest.clientId;
 		if (!taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
@@ -647,20 +648,6 @@ export default class SchedulerForm extends Vue {
 			messaging: item.messaging,
 			message: JSON.stringify(item.message, null, 2),
 		}));
-	}
-
-	/**
-	 * Fixes up cron time string to 1-7 day range
-	 * @param {string|Array<string>} cron cron time string or array of cron time items
-	 * @returns {string} cron time string with day in 1-7 range
-	 */
-	private fixUpCron(cron: string|Array<string>): string {
-		let cronArray = Array.isArray(cron) ? cron : cron.split(' ');
-		const cronDay = Number.parseInt(cronArray[5]);
-		if (!isNaN(cronDay)) {
-			cronArray[5] = (cronDay + 1).toString();
-		}
-		return cronArray.join(' ').trim();
 	}
 
 	/**
@@ -735,11 +722,7 @@ export default class SchedulerForm extends Vue {
 				}
 			}
 			if (this.dayAliases.includes(timeSpec.cronTime[5])) { // day alias translation
-				timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]);
-			}
-			const cronDay = Number.parseInt(timeSpec.cronTime[5]);
-			if (!isNaN(cronDay)) {
-				timeSpec.cronTime[5] = (cronDay - 1).toString();
+				timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]).toString();
 			}
 			if (this.monthAliases.includes(timeSpec.cronTime[4])) {
 				timeSpec.cronTime[4] = (this.monthAliases.indexOf(timeSpec.cronTime[4]) + 1).toString();
