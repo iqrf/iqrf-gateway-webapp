@@ -40,18 +40,19 @@ export default class LoadingSpinner extends Vue {}
 	text-align: center;
 	&:before {
 		content: '';
-		display: inline flow-root;
+		display: inline-block;
 		height: 100%;
 		vertical-align: middle;
 	}
 }
 
 .loading-group {
-	display: inline flow-root;
+	display: inline-block;
 	vertical-align: middle;
 }
 
 .loading-text {
+	margin-top: 20pt;
 	font-size: 20pt;
 	position: relative;
 	z-index: 10000;
