@@ -1672,7 +1672,8 @@
 				"messages": {
 					"success": "IQMESH security has been successfully set. Device restarted.",
 					"failure": "Could not update IQMESH security settings.",
-					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted."
+					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted.",
+					"invalid": "Password string is not valid for the selected format."
 				}
 			},
 			"form": {

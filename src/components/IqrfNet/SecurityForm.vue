@@ -2,37 +2,49 @@
 	<CCard>
 		<CCardHeader>{{ $t('iqrfnet.trConfiguration.security.title') }}</CCardHeader>
 		<CCardBody>
-			<CForm>
-				<CSelect
-					:value.sync='format'
-					:options='selectOptions'
-					:label='$t("iqrfnet.trConfiguration.security.form.format")'
-				/>
-				<CInput
-					v-model='password'
-					:label='$t("forms.fields.password")'
-					:type='visibility'
-				>
-					<template #append-content>
-						<span @click='changeVisibility'>
-							<FontAwesomeIcon
-								:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
-							/>
-						</span>
-					</template>
-				</CInput>
-				<CButton
-					color='primary'
-					@click='save(true)'
-				>
-					{{ $t("iqrfnet.trConfiguration.security.form.setPassword") }}
-				</CButton> <CButton
-					color='primary'
-					@click='save(false)'
-				>
-					{{ $t("iqrfnet.trConfiguration.security.form.setKey") }}
-				</CButton>
-			</CForm>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm>
+					<CSelect
+						:value.sync='format'
+						:options='selectOptions'
+						:label='$t("iqrfnet.trConfiguration.security.form.format")'
+					/>
+					<ValidationProvider
+						v-slot='{ valid, touched, errors }'
+						:rules='{regex: validationPattern}'
+						:custom-messages='{regex: "iqrfnet.trConfiguration.security.messages.invalid"}'
+					>
+						<CInput
+							v-model='password'
+							:label='$t("forms.fields.password")'
+							:type='visibility'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						>
+							<template #append-content>
+								<span @click='changeVisibility'>
+									<FontAwesomeIcon
+										:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+									/>
+								</span>
+							</template>
+						</CInput>
+					</ValidationProvider>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click='save(true)'
+					>
+						{{ $t("iqrfnet.trConfiguration.security.form.setPassword") }}
+					</CButton> <CButton
+						color='primary'
+						:disabled='invalid'
+						@click='save(false)'
+					>
+						{{ $t("iqrfnet.trConfiguration.security.form.setKey") }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
 		</CCardBody>
 	</CCard>
 </template>
@@ -46,6 +58,8 @@ import SecurityService from '../../services/SecurityService';
 import OsService from '../../services/DaemonApi/OsService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {regex} from 'vee-validate/dist/rules';
 
 @Component({
 	components: {
@@ -56,7 +70,9 @@ import {IOption} from '../../interfaces/coreui';
 		CForm,
 		CInput,
 		CSelect,
-		FontAwesomeIcon
+		FontAwesomeIcon,
+		ValidationObserver,
+		ValidationProvider,
 	}
 })
 
@@ -109,9 +125,21 @@ export default class SecurityForm extends Vue {
 	@Prop({required: true}) address!: number
 
 	/**
+	 * Returns regex pattern for validation
+	 */
+	get validationPattern(): string {
+		if (this.format === SecurityFormat.ASCII) {
+			return '^[ -~]{0,16}$';
+		} else {
+			return '^[a-fA-F0-9]{0,32}$';
+		}
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
+		extend('regex', regex);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
@@ -142,15 +170,9 @@ export default class SecurityForm extends Vue {
 	 * @param {boolean} password Is the new security setting a password?
 	 */
 	private save(password: boolean): void {
-		let pattern = '';
-		if (this.format === SecurityFormat.ASCII) {
-			pattern = '^[ -~]{0,16}$';
-		} else {
-			pattern = '^[a-fA-F0-9]{0,32}$';
-		}
-		const regex = RegExp(pattern);
+		const regex = RegExp(this.validationPattern);
 		if (!regex.test(this.password)) {
-			this.$toast.error('Password string is not valid for the selected format.');
+			this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.invalid'));
 			return;
 		}
 		this.$store.dispatch('spinner/show', {timeout: 15000});
