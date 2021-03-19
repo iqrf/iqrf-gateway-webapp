@@ -304,13 +304,6 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
-								name: this.$t('config.mender.title'),
-								to: '/config/mender/',
-								feature: 'mender',
-								roles: ['power', 'normal']
-							},
-							{
-								_name: 'CSidebarNavItem',
 								name: this.$t('config.migration.title'),
 								to: '/config/migration/',
 								roles: ['power', 'normal']
@@ -422,6 +415,12 @@ export default class TheSidebar extends Vue {
 								to: '/cloud/pixla/',
 								feature: 'pixla',
 								roles: ['power', 'normal'],
+							},
+							{
+								name: this.$t('cloud.mender.title'),
+								to: '/cloud/mender/',
+								feature: 'mender',
+								roles: ['power', 'normal']
 							},
 						],
 					},

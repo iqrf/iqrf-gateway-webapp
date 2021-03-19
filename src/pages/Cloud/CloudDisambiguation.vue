@@ -54,6 +54,17 @@
 						{{ $t('cloud.pixla.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("mender")'
+					to='/cloud/mender/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('cloud.mender.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('cloud.mender.description') }}
+					</p>
+				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>
