@@ -96,6 +96,44 @@
 				"token": "Please enter PIXLA platform token."
 			}
 		},
+		"mender": {
+			"title": "Mender update management",
+			"description": "Manages Mender client service and configuration.",
+			"form": {
+				"inventoryPollInterval": "Inventory update interval (seconds)",
+				"retryPollInterval": "Communication retry interval (seconds)",
+				"server": "Server address",
+				"tenantToken": "Tenant token",
+				"updatePollInterval": "Update check interval (seconds)",
+				"placeholders": {
+					"inventoryPollInterval": 28000,
+					"retryPollInterval": 300,
+					"server": "https://hosted.mender.io",
+					"tenantToken": "exampleToken",
+					"updatePollInterval": 1800
+				}
+			},
+			"messages": {
+				"disabled": "Mender service is disabled.",
+				"fetchFailed": "Failed to retrieve Mender configuration: {error}",
+				"saveFailed": "Failed to save Mender configuration: {error}",
+				"saveSuccess": "Mender configuration has been successfully saved.",
+				"serviceStatusFailed": "Failed to retrieve service status: {error}",
+				"serviceFailed": "Failed to change service state: {error}"
+			},
+			"errors": {
+				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+				"missing": {
+					"server": "Please enter the server address.",
+					"tenantToken": "Please enter the tenant token."
+				},
+				"invalid": {
+					"server": "Server address should contain the HTTP protocol."
+				}
+			}
+		},
 		"guides": {
 			"pdf": "PDF guide",
 			"video": "Video guide"
@@ -886,40 +924,6 @@
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
-		},
-		"mender": {
-			"title": "Mender client",
-			"description": "Mender client configuration",
-			"form": {
-				"inventoryPollInterval": "Inventory update interval (seconds)",
-				"retryPollInterval": "Communication retry interval (seconds)",
-				"server": "Server address",
-				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"placeholders": {
-					"inventoryPollInterval": 28000,
-					"retryPollInterval": 300,
-					"server": "https://hosted.mender.io",
-					"tenantToken": "exampleToken",
-					"updatePollInterval": 1800
-				}
-			},
-			"messages": {
-				"disabled": "Mender service is disabled.",
-				"loadFailed": "Failed to retrieve Mender configuration."
-			},
-			"errors": {
-				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-				"missing": {
-					"server": "Please enter the server address.",
-					"tenantToken": "Please enter the tenant token."
-				},
-				"invalid": {
-					"server": "Server address should contain the HTTP protocol."
-				}
-			}
 		}
 	},
 	"core": {

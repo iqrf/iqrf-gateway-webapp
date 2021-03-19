@@ -11,6 +11,7 @@ const HexioCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud
 const IbmCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/IbmCreator.vue');
 const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/InteliGlueCreator.vue');
 const PixlaControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/PixlaControl.vue');
+const MenderControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/MenderControl.vue');
 
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
@@ -54,7 +55,6 @@ const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/page
 const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
-const MenderConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MenderConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
 const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
@@ -169,6 +169,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: PixlaControl,
 						path: 'pixla',
+					},
+					{
+						component: MenderControl,
+						path: 'mender',
 					},
 				]
 			},
@@ -623,10 +627,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: ConfigMigration,
 						path: 'migration',
-					},
-					{
-						component: MenderConfig,
-						path: 'mender',
 					},
 					{
 						component: TranslatorConfig,

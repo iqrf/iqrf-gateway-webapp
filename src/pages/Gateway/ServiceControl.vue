@@ -82,7 +82,6 @@ const whitelisted = [
 	'iqrf-gateway-translator',
 	'ssh',
 	'unattended-upgrades',
-	'mender-client',
 ];
 
 const features = {
@@ -90,7 +89,6 @@ const features = {
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',
 	'unattended-upgrades': 'unattendedUpgrades',
-	'mender-client': 'mender',
 };
 
 interface IService {
