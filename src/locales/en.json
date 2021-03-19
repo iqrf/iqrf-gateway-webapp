@@ -1156,10 +1156,10 @@
 			}
 		},
 		"password": {
-			"title": "Change default gateway user password",
+			"title": "Change {user} account password",
 			"messages": {
-				"success": "Default gateway user password has been successfully changed.",
-				"failure": "Failed to change default gateway user password: {error}"
+				"success": "{user} account password has been successfully changed.",
+				"failure": "Failed to change {user} account password: {error}"
 			}
 		},
 		"updater": {
