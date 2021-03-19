@@ -2,55 +2,90 @@
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
-			<CRow style='margin-bottom: 1.25rem'>
-				<CCol>
-					<b>
-						{{ $t('gateway.info.gwMode') }}
-					</b>
-				</CCol>
-				<CCol>
-					{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
-				</CCol>
-			</CRow>
-			<div v-if='mode !== "unknown"'>
-				<CButton
-					color='primary'
-					@click='setMode(modes.operational)'
-				>
-					{{ $t('gateway.mode.modes.operational') }}
-				</CButton> <CButton
-					color='primary'
-					@click='setMode(modes.service)'
-				>
-					{{ $t('gateway.mode.modes.service') }}
-				</CButton> <CButton
-					color='primary'
-					@click='setMode(modes.forwarding)'
-				>
-					{{ $t('gateway.mode.modes.forwarding') }}
-				</CButton>
-			</div>
+			<table class='table table-striped'>
+				<tbody>
+					<tr>
+						<th>{{ $t('gateway.info.gwMode') }}</th>
+						<td style='text-align: right;'>
+							<div 
+								v-if='!loaded && mode === "unknown"'
+							>
+								{{ $t('gateway.mode.modes.unknown') }}
+							</div>
+							<div 
+								v-else-if='loaded && mode === "unknown"'
+							>
+								{{ $t('gateway.mode.messages.getFailed') }}
+							</div>
+							<CDropdown
+								v-else
+								color='primary'
+								:toggler-text='$t("gateway.mode.modes." + mode)'
+								size='sm'
+							>
+								<CDropdownItem @click='setMode(modes.operational)'>
+									{{ $t('gateway.mode.modes.operational') }}
+								</CDropdownItem>
+								<CDropdownItem @click='setMode(modes.service)'>
+									{{ $t('gateway.mode.modes.service') }}
+								</CDropdownItem>
+								<CDropdownItem @click='setMode(modes.forwarding)'>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</CDropdownItem>
+							</CDropdown>
+						</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.mode.startupMode') }}</th>
+						<td style='text-align: right;'>
+							<CDropdown
+								v-if='ideConfiguration !== null'
+								color='primary'
+								:toggler-text='$t("gateway.mode.modes." + ideConfiguration.operMode)'
+								size='sm'
+							>
+								<CDropdownItem @click='setStartupMode(modes.operational)'>
+									{{ $t('gateway.mode.modes.operational') }}
+								</CDropdownItem>
+								<CDropdownItem @click='setStartupMode(modes.service)'>
+									{{ $t('gateway.mode.modes.service') }}
+								</CDropdownItem>
+								<CDropdownItem @click='setStartupMode(modes.forwarding)'>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</CDropdownItem>
+							</CDropdown>
+							<div
+								v-else
+							>
+								{{ $t('gateway.mode.modes.unknown') }}
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</CCard>
-		<DaemonStartupMode />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
-import DaemonStartupMode from '../../components/Gateway/DaemonStartupMode.vue';
+import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
 
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
-		DaemonStartupMode,
+		CDropdown,
+		CDropdownItem
 	},
 	metaInfo: {
 		title: 'gateway.mode.title',
@@ -68,6 +103,16 @@ export default class DaemonMode extends Vue {
 		'mngDaemon_Mode',
 		'messageError'
 	]
+
+	/**
+	 * @constant {string} component IDE counterpart component name
+	 */
+	private ideComponent = 'iqrf::IdeCounterpart'
+
+	/**
+	 * @var {IIdeCounterpart|null} ideConfiguration IDE counterpart component configuration
+	 */
+	private ideConfiguration: IIdeCounterpart|null = null
 
 	/**
 	 * @var {boolean} loaded Auxiliary property to help choose correct message
@@ -143,23 +188,10 @@ export default class DaemonMode extends Vue {
 	}
 
 	/**
-	 * Daemon api response handler
+	 * Retrieves Daemon startup mode
 	 */
-	private handleResponse(response: any): void {
-		this.mode = DaemonModeService.parse(response);
-		this.$store.commit('spinner/HIDE');
-		if (this.mode === DaemonModeEnum.unknown) {
-			this.$toast.error(
-				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'Failed')
-					.toString()
-			);
-		} else if (this.loaded) {
-			this.$toast.success(
-				this.$t('gateway.mode.messages.' + this.mode).toString()
-			);
-		} else {
-			this.loaded = true;
-		}
+	mounted(): void {
+		this.getStartupMode();
 	}
 
 	/**
@@ -175,9 +207,83 @@ export default class DaemonMode extends Vue {
 	 * @param {DaemonModeEnum} newMode New Daemon mode to set
 	 */
 	private setMode(newMode: DaemonModeEnum): void {
-		this.$store.dispatch('spinner/hide');
 		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Daemon api response handler
+	 */
+	private handleResponse(response: any): void {
+		this.mode = DaemonModeService.parse(response);
+		if (this.mode === DaemonModeEnum.unknown) {
+			this.$toast.error(
+				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'Failed')
+					.toString()
+			);
+		} else if (this.loaded) {
+			this.$toast.success(
+				this.$t('gateway.mode.messages.' + this.mode).toString()
+			);
+			this.$store.dispatch('daemonStatusMode', 'unknown');
+		} else {
+			this.loaded = true;
+		}
+	}
+
+	/**
+	 * Retrieves IDE counterpart component configuration
+	 */
+	private getStartupMode(): Promise<void> {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
+		return DaemonConfigurationService.getComponent(this.ideComponent)
+			.then((response: AxiosResponse) => {
+				this.ideConfiguration = response.data.instances[0];
+				if (this.ideConfiguration?.operMode === undefined) {
+					Object.assign(this.ideConfiguration, {operMode: this.modes.operational});
+				}
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'gateway.mode.messages.startupFetchFailed',
+						{error: error.response === undefined ? error.message : error.response.data.message},
+					).toString()
+				);
+			});
+	}
+
+	/**
+	 * Saves updated IDE counterpart component configuration
+	 * @param {DaemonModeEnum} enum Startup mode to set
+	 */
+	private setStartupMode(mode: DaemonModeEnum): void {
+		if (this.ideConfiguration === null || this.ideConfiguration.operMode === mode) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		this.ideConfiguration.operMode = mode;
+		DaemonConfigurationService.updateInstance(this.ideComponent, this.ideConfiguration.instance, this.ideConfiguration)
+			.then(() => {
+				this.getStartupMode().then(() => {
+					this.$toast.success(
+						this.$t('gateway.mode.messages.startupSaveSuccess').toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'gateway.mode.messages.startupSaveFailed',
+						{error: error.response === undefined ? error.message : error.response.data.message},
+					).toString()
+				);
+			});
 	}
 }
 </script>
