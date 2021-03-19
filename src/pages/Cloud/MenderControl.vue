@@ -51,16 +51,15 @@
 				<CForm @submit.prevent='processSubmit'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
-						rules='addr|required'
+						rules='required'
 						:custom-messages='{
-							addr: "cloud.mender.errors.invalid.server",
-							required: "cloud.mender.errors.missing.server"
+							required: "cloud.mender.errors.server"
 						}'
 					>
 						<CInput
 							v-model='configuration.ServerURL'
 							:label='$t("cloud.mender.form.server")'
-							:placeholder='$t("cloud.mender.form.serverPlaceholder")'
+							:placeholder='$t("cloud.mender.form.placeholders.server")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -69,13 +68,13 @@
 						v-slot='{errors, touched, valid}'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.mender.errors.missing.tenantToken"
+							required: "cloud.mender.errors.tenantToken"
 						}'
 					>
 						<CInput
 							v-model='configuration.TenantToken'
 							:label='$t("cloud.mender.form.tenantToken")'
-							:placeholder='$t("cloud.mender.form.tenantTokenPlaceholder")'
+							:placeholder='$t("cloud.mender.form.placeholders.tenantToken")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
