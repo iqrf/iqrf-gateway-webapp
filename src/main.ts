@@ -28,6 +28,7 @@ import Clipboard from 'v-clipboard';
 import store from './store';
 import router from './router';
 import i18n from './i18n';
+import UrlBuilder from './helpers/urlBuilder';
 
 import App from './App.vue';
 
@@ -64,17 +65,9 @@ if (process.env.NODE_ENV === 'production') {
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
-const isHttps: boolean = window.location.protocol === 'https:';
-const hostname: string = window.location.hostname;
-let port: string = window.location.port;
-const isDev: boolean = port === '8081';
-if (port !== '') {
-	port = ':' + port;
-}
+const urlBuilder: UrlBuilder = new UrlBuilder();
 
-const wsApi: string = (isHttps ? 'wss://' : 'ws://') + hostname + (isDev ? ':1338': port + '/ws');
-
-Vue.use(VueNativeSock, wsApi, {
+Vue.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
 	store: store,
 	format: 'json',
 	reconnection: true,
@@ -88,7 +81,7 @@ Vue.use(VueToast,{
 });
 Vue.use(Clipboard);
 
-axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+axios.defaults.baseURL = urlBuilder.getRestApiUrl();
 axios.defaults.timeout = 30000;
 
 axios.interceptors.response.use(
