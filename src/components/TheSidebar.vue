@@ -10,7 +10,10 @@
 			<LogoSmall class='c-sidebar-brand-minimized' :alt='$t("core.title")' />
 		</CSidebarBrand>
 		<CRenderFunction flat :content-to-render='getNav' />
-		<table v-if='!$store.getters["sidebar/isMinimized"]'>
+		<table 
+			v-if='!$store.getters["sidebar/isMinimized"]'
+			class='table'
+		>
 			<tbody>
 				<tr>
 					<td class='item'>
