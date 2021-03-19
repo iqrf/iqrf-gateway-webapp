@@ -46,6 +46,7 @@ class FeatureManager {
 		],
 		'gatewayPass' => [
 			'enabled' => false,
+			'user' => 'root',
 		],
 		'grafana' => [
 			'enabled' => false,

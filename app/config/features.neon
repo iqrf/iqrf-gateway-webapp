@@ -5,6 +5,7 @@ docs:
 # Default gateway user password change
 gatewayPass:
 	enabled: false
+	user: root
 grafana:
 	enabled: false
 	url: /grafana/

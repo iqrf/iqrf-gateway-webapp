@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
-use Nette\Utils\Strings;
 
 /**
  * Gateway password manager
@@ -30,16 +30,23 @@ use Nette\Utils\Strings;
 class PasswordManager {
 
 	/**
-	 * @var CommandManager CommandManager
+	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
 
 	/**
-	 * Constructor
-	 * @param CommandManager $commandManager CommandManager
+	 * @var FeatureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	private $featureManager;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 * @param FeatureManager $featureManager Feature manager
+	 */
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
 		$this->commandManager = $commandManager;
+		$this->featureManager = $featureManager;
 	}
 
 	/**
@@ -47,14 +54,8 @@ class PasswordManager {
 	 * @param string $password New password to set
 	 */
 	public function setPassword(string $password): void {
-		$command = $this->commandManager->run('cat /etc/os-release | grep -e "^ID="');
-		if ($command->getExitCode() !== 0) {
-			throw new ChpasswdErrorException($command->getStderr());
-		}
-		$pattern = '/^(ID=)([0-9a-zA-Z\-]+)/';
-		$matches = Strings::match(trim($command->getStdout()), $pattern);
-		$distro = $matches[2] ?? '';
-		$input = ($distro === 'iqrf-gw-os' ? 'admin:' : 'root:') . $password;
+		$feature = $this->featureManager->get('gatewayPass');
+		$input = $feature['user'] . ':' . $password;
 		$command = $this->commandManager->run('chpasswd', true, $input);
 		if ($command->getExitCode() !== 0) {
 			throw new ChpasswdErrorException($command->getStderr());

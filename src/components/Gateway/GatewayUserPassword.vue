@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('gateway.password.title') }}
+			{{ $t('gateway.password.title', {user: user}) }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
@@ -53,6 +53,7 @@ import {required} from 'vee-validate/dist/rules';
 import GatewayService from '../../services/GatewayService';
 
 import {AxiosError} from 'axios';
+import {GatewayPasswordFeature} from '../../services/FeatureService';
 
 @Component({
 	components: {
@@ -85,10 +86,26 @@ export default class GatewayUserPassword extends Vue {
 	private visibility = 'password'
 
 	/**
+	 * @var {string} user Gateway user name
+	 */
+	private user = 'root'
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('required', required);
+		this.updateUser();
+	}
+
+	/**
+	 * Updates gateway user name from features
+	 */
+	private updateUser(): void {
+		const feature: GatewayPasswordFeature|undefined = this.$store.getters['features/configuration']('gatewayPass');
+		if (feature !== undefined) {
+			this.user = feature.user;
+		}
 	}
 
 	/**
@@ -100,7 +117,10 @@ export default class GatewayUserPassword extends Vue {
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('gateway.password.messages.success').toString()
+					this.$t(
+						'gateway.password.messages.success',
+						{user: this.user},
+					).toString()
 				);
 			})
 			.catch((error: AxiosError) => {
@@ -108,7 +128,10 @@ export default class GatewayUserPassword extends Vue {
 				this.$toast.error(
 					this.$t(
 						'gateway.password.messages.failure',
-						{error: error.response !== undefined ? error.response.data.message : error.message}
+						{
+							user: this.user,
+							error: error.response !== undefined ? error.response.data.message : error.message
+						}
 					).toString()
 				);
 			});
