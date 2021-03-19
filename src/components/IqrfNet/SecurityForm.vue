@@ -172,7 +172,9 @@ export default class SecurityForm extends Vue {
 	private save(password: boolean): void {
 		const regex = RegExp(this.validationPattern);
 		if (!regex.test(this.password)) {
-			this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.invalid'));
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.security.messages.invalid').toString()
+			);
 			return;
 		}
 		this.$store.dispatch('spinner/show', {timeout: 15000});
