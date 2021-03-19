@@ -1,4 +1,4 @@
-import {MutationTree} from 'vuex';
+import {GetterTree, MutationTree} from 'vuex';
 
 /**
  * Sidebar state
@@ -22,6 +22,12 @@ const state: SidebarState = {
 	minimize: false,
 };
 
+const getters: GetterTree<SidebarState, any> = {
+	isMinimized(state: SidebarState): boolean {
+		return state.minimize;
+	},
+};
+
 const mutations: MutationTree<SidebarState> = {
 	toggleSidebarDesktop (state: SidebarState) {
 		const sidebarOpened = [true, 'responsive'].includes(state.show);
@@ -39,5 +45,6 @@ const mutations: MutationTree<SidebarState> = {
 export default {
 	namespaced: true,
 	state,
+	getters,
 	mutations
 };
