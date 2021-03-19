@@ -106,11 +106,8 @@
 				"tenantToken": "Tenant token",
 				"updatePollInterval": "Update check interval (seconds)",
 				"placeholders": {
-					"inventoryPollInterval": 28000,
-					"retryPollInterval": 300,
 					"server": "https://hosted.mender.io",
-					"tenantToken": "exampleToken",
-					"updatePollInterval": 1800
+					"tenantToken": "exampleToken"
 				}
 			},
 			"messages": {
@@ -125,13 +122,8 @@
 				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
 				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
 				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-				"missing": {
-					"server": "Please enter the server address.",
-					"tenantToken": "Please enter the tenant token."
-				},
-				"invalid": {
-					"server": "Server address should contain the HTTP protocol."
-				}
+				"server": "Please enter the server address.",
+				"tenantToken": "Please enter the tenant token."
 			}
 		},
 		"guides": {
