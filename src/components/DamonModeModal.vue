@@ -24,6 +24,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
+import UrlBuilder from '../helpers/urlBuilder';
 
 interface IMonitorMsgData {
 	num: number
@@ -78,10 +79,8 @@ export default class DaemonModeModal extends Vue {
 	 * Creates websocket connection to daemon monitor server and sets callbacks
 	 */
 	private setSocket(): void {
-		this.webSocket = new WebSocket(
-			(window.location.protocol === 'https:' ? 'wss://' : 'ws://')
-			+ window.location.hostname
-			+ (window.location.port === '8081' ? ':1438' : ':' + window.location.port + '/wsMonitor'));
+		const urlBuilder: UrlBuilder = new UrlBuilder();
+		this.webSocket = new WebSocket(urlBuilder.getWsMonitorUrl());
 		this.webSocket.onmessage = (event) => {
 			this.parseMonitor(JSON.parse(event.data));
 		};
