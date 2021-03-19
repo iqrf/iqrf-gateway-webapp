@@ -916,6 +916,10 @@ router.beforeEach((to, from, next) => {
 			return;
 		}
 	}
+	if(to.name === 'signIn' && store.getters['user/isLoggedIn']) {
+		next((to.query.redirect as string|undefined) ?? '/');
+		return;
+	}
 	next();
 });
 
