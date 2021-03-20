@@ -508,17 +508,15 @@ export default class SendDpaPacket extends Vue {
 	 */
 	private handleMessageError(response): void {
 		if (this.autoRepeat) {
+			this.responses.unshift(JSON.stringify(response, null, 4));
 			this.autoRepeat = false;
 			clearTimeout(this.intervalId);
+		} else {
+			this.responses = [JSON.stringify(response, null, 4)];
 		}
 		if (this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
-		}
-		if (this.autoRepeat) {
-			this.responses.unshift(JSON.stringify(response, null, 4));
-		} else {
-			this.responses = [JSON.stringify(response, null, 4)];
 		}
 		this.$toast.clear();
 		this.$toast.error(
