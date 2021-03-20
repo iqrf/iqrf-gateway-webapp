@@ -24,6 +24,8 @@ import VueMeta from 'vue-meta';
 import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
+import {config, library} from '@fortawesome/fontawesome-svg-core';
+import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
 
 import store from './store';
 import router from './router';
@@ -35,10 +37,9 @@ import App from './App.vue';
 import './css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
-
+config.autoAddCss = false;
 library.add(faEye);
 library.add(faEyeSlash);
 
