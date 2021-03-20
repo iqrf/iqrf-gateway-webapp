@@ -376,13 +376,14 @@ export default class SendDpaPacket extends Vue {
 	@Watch('isSocketConnected')
 	private errorRecovery(): void {
 		if (!this.$store.getters.isSocketConnected) {
-			this.autoRepeat = false;
-			clearTimeout(this.intervalId);
-			if (this.$store.getters['spinner/isEnabled']) {
+			if (this.autoRepeat) {
+				this.autoRepeat = false;
+				clearTimeout(this.intervalId);
+			} else {
 				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.requests.shift();
 			}
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.requests.shift();
 		}
 	}
 
@@ -417,8 +418,7 @@ export default class SendDpaPacket extends Vue {
 			return re.test(pdata);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND' &&
-				mutation.payload.mType === 'iqrfRaw') {
+			if (mutation.type === 'SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
 				if (this.autoRepeat) {
 					this.requests.unshift(JSON.stringify(mutation.payload, null, 4));
 				} else {
@@ -496,7 +496,9 @@ export default class SendDpaPacket extends Vue {
 		} else {
 			options.timeout = 60000;
 			options.message = 'iqrfnet.sendPacket.messages.failure';
-			this.$store.commit('spinner/SHOW');
+			if (!this.autoRepeat) {
+				this.$store.commit('spinner/SHOW');
+			}
 		}
 		options.callback = () => this.msgId = '';
 		return this.$store.dispatch('sendRequest', options)
@@ -514,10 +516,7 @@ export default class SendDpaPacket extends Vue {
 		} else {
 			this.responses = [JSON.stringify(response, null, 4)];
 		}
-		if (this.$store.getters['spinner/isEnabled']) {
-			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
-		}
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.$toast.clear();
 		this.$toast.error(
 			this.$t('iqrfnet.sendPacket.messages.queueFull').toString()
