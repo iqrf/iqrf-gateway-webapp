@@ -431,7 +431,7 @@ export default class SendDpaPacket extends Vue {
 			}
 			this.$store.commit('spinner/HIDE');
 			if (mutation.payload.mType === 'messageError') {
-				this.handleMessageError();
+				this.handleMessageError(mutation.payload);
 				return;
 			}
 			if (mutation.payload.data.msgId === this.msgId && mutation.payload.mType === 'iqrfRaw') {
@@ -506,15 +506,19 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * Handles Daemon API messageError response
 	 */
-	private handleMessageError(): void {
+	private handleMessageError(response): void {
 		if (this.autoRepeat) {
 			this.autoRepeat = false;
 			clearTimeout(this.intervalId);
-			if (this.$store.getters['spinner/isEnabled']) {
-				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.requests.shift();
-			}
+		}
+		if (this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+		}
+		if (this.autoRepeat) {
+			this.responses.unshift(JSON.stringify(response, null, 4));
+		} else {
+			this.responses = [JSON.stringify(response, null, 4)];
 		}
 		this.$toast.clear();
 		this.$toast.error(
