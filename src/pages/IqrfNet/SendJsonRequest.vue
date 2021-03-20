@@ -17,33 +17,34 @@
 					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 					<span class='validation-errors'>{{ validatorErrors }}</span>
 				</CAlert>
-				<CElementCover v-if='!$store.getters["isSocketConnected"]'>
-					{{ $t('iqrfnet.sendJson.messages.socketError') }}
+				<CElementCover 
+					v-if='!isSocketConnected'
+					style='z-index: 1;'
+				>
+					{{ $t('iqrfnet.messages.socketError') }}
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='processSubmit'>
-						<fieldset :disabled='!$store.getters["isSocketConnected"]'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|json|mType'
-								:custom-messages='{
-									required: "iqrfnet.sendJson.messages.missing",
-									json: "iqrfnet.sendJson.messages.invalid",
-									mType: "iqrfnet.sendJson.messages.mType"
-								}'
-							>
-								<CTextarea
-									v-model='json'
-									v-autogrow
-									:label='$t("iqrfnet.sendJson.form.json")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton color='primary' type='submit' :disabled='invalid'>
-								{{ $t('forms.send') }}
-							</CButton>
-						</fieldset>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|json|mType'
+							:custom-messages='{
+								required: "iqrfnet.sendJson.messages.missing",
+								json: "iqrfnet.sendJson.messages.invalid",
+								mType: "iqrfnet.sendJson.messages.mType"
+							}'
+						>
+							<CTextarea
+								v-model='json'
+								v-autogrow
+								:label='$t("iqrfnet.sendJson.form.json")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton color='primary' type='submit' :disabled='invalid'>
+							{{ $t('forms.send') }}
+						</CButton>
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
@@ -76,7 +77,7 @@ import {v4 as uuidv4} from 'uuid';
 import IqrfNetService from '../../services/IqrfNetService';
 import validate from '../../helpers/validate_daemonRequest';
 
-import {MutationPayload} from 'vuex';
+import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
@@ -91,6 +92,11 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			isSocketConnected: 'isSocketConnected',
+		}),
 	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective

@@ -2,7 +2,13 @@
 	<div>
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
 		<CCard body-wrapper>
-			<ValidationObserver v-slot='{ invalid }'>
+			<CElementCover 
+				v-if='!isSocketConnected'
+				style='z-index: 1;'
+			>
+				{{ $t('iqrfnet.messages.socketError') }}
+			</CElementCover>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='handleSubmit'>
 					<CRow>
 						<CCol md='6'>
@@ -106,7 +112,7 @@
 								:label='$t("iqrfnet.sendPacket.form.addressOverwrite")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, touched, errors }'
+								v-slot='{valid, touched, errors}'
 								:disabled='!addressOverwrite'
 								:rules='addressOverwrite ? "integer|between:0,239|required" : ""'
 								:custom-messages='{
@@ -133,7 +139,7 @@
 								:label='$t("iqrfnet.sendPacket.form.timeoutOverwrite")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, touched, errors }'
+								v-slot='{valid, touched, errors}'
 								:rules='timeoutOverwrite ? "integer|min:0|required" : ""'
 								:custom-messages='{
 									integer: "iqrfnet.sendPacket.form.messages.invalid.timeout",
@@ -162,7 +168,7 @@
 							/> 
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='integer|required|between:1,36000'
+								rules='integer|required|between:10,36000'
 								:custom-messages='{
 									integer: "forms.errors.integer",
 									between: "iqrfnet.sendPacket.form.messages.invalid.autoRepeatInterval",
@@ -172,6 +178,8 @@
 								<CInput
 									v-model.number='autoRepeatInterval'
 									type='number'
+									min='10'
+									max='36000'
 									:label='$t("iqrfnet.sendPacket.form.autoRepeatInterval")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -218,8 +226,8 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
+import {Component, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CCol, CElementCover, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
@@ -229,7 +237,7 @@ import {between, integer, min_value, required, min, max} from 'vee-validate/dist
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import sendPacket from '../../iqrfNet/sendPacket';
 
-import {MutationPayload} from 'vuex';
+import {mapGetters, MutationPayload} from 'vuex';
 import {RawMessage} from '../../interfaces/dpa';
 
 @Component({
@@ -239,6 +247,7 @@ import {RawMessage} from '../../interfaces/dpa';
 		CCardBody,
 		CCardHeader,
 		CCol,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -247,6 +256,11 @@ import {RawMessage} from '../../interfaces/dpa';
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			isSocketConnected: 'isSocketConnected',
+		}),
 	},
 	directives: {
 		'maska': maska,
@@ -352,10 +366,24 @@ export default class SendDpaPacket extends Vue {
 	}
 
 	/**
-	 * 
+	 * Generates packet pdata pmask
+	 * @returns {string} packet pdata mask
 	 */
 	get generateMask(): string {
 		return 'HH.'.repeat(56) + 'HH';
+	}
+
+	@Watch('isSocketConnected')
+	private errorRecovery(): void {
+		if (!this.$store.getters.isSocketConnected) {
+			this.autoRepeat = false;
+			clearTimeout(this.intervalId);
+			if (this.$store.getters['spinner/isEnabled']) {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.requests.shift();
+			}
+		}
 	}
 
 	/**
@@ -398,10 +426,15 @@ export default class SendDpaPacket extends Vue {
 					this.responses = [];
 				}
 			}
-			if (mutation.type === 'SOCKET_ONMESSAGE' &&
-				mutation.payload.mType === 'iqrfRaw' &&
-				mutation.payload.data.msgId === this.msgId) {
-				this.$store.commit('spinner/HIDE');
+			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+				return;
+			}
+			this.$store.commit('spinner/HIDE');
+			if (mutation.payload.mType === 'messageError') {
+				this.handleMessageError();
+				return;
+			}
+			if (mutation.payload.data.msgId === this.msgId && mutation.payload.mType === 'iqrfRaw') {
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleResponse(mutation.payload);
 			}
@@ -471,10 +504,29 @@ export default class SendDpaPacket extends Vue {
 	}
 
 	/**
-	 * Handles Daemon API Raw message responses
-	 * @param {any} response Daemon API response payload
+	 * Handles Daemon API messageError response
 	 */
-	private handleResponse(response: any): void {
+	private handleMessageError(): void {
+		if (this.autoRepeat) {
+			this.autoRepeat = false;
+			clearTimeout(this.intervalId);
+			if (this.$store.getters['spinner/isEnabled']) {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.requests.shift();
+			}
+		}
+		this.$toast.clear();
+		this.$toast.error(
+			this.$t('iqrfnet.sendPacket.messages.queueFull').toString()
+		);
+	}
+
+	/**
+	 * Handles Daemon API Raw message responses
+	 * @param response Daemon API response payload
+	 */
+	private handleResponse(response): void {
 		if (this.autoRepeat) {
 			this.responses.unshift(JSON.stringify(response, null, 4));
 		} else {
@@ -512,12 +564,13 @@ export default class SendDpaPacket extends Vue {
 				message = this.$t('iqrfnet.sendPacket.messages.failure').toString();
 				break;
 		}
+		this.$toast.clear();
 		this.$toast.open({
 			message: message,
 			type: (error ? 'error': 'success'),
 			position: 'top',
 			dismissible: true,
-			duration: (this.autoRepeat ? this.autoRepeatInterval * 100 : 5000),
+			duration: 5000,
 			pauseOnHover: true
 		});
 	}
