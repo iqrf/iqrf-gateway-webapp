@@ -1462,31 +1462,31 @@
 			"title": "Send JSON request",
 			"description": "Send JSON request.",
 			"documentation": "Show API documentation.",
-			"notAvailable": "The IQRF Gateway Daemon service is currently not available, attempting reconnect ({attempt}).",
 			"form": {
-				"json": "JSON request",
-				"messages": {
-					"timeout": "Daemon API request timed out.",
-					"invalid": "Invalid JSON API request.",
-					"missing": "Please enter JSON request.",
-					"mType": "JSON object does not have mType key.",
-					"success": "JSON request has been sent successfully.",
-					"autoNetworkStart": "AutoNetwork request sent, multiple responses will be received.",
-					"autoNetworkFinish": "The AutoNetwork process has concluded.",
-					"error": {
-						"timeout": "Request timed out.",
-						"fail": "An error occurred while processing JSON request.",
-						"pcmd": "Sent JSON request contains incorrect PCMD.",
-						"pnum": "Sent JSON request contains incorrect PNUM.",
-						"addr": "Sent JSON request contains incorrect address parameter.",
-						"dataLen": "Sent JSON request contains incorrect data length.",
-						"data": "Sent JSON request contains incorrect data.",
-						"hwpid": "Sent JSON request contains incorrect HWPID.",
-						"nadr": "Sent JSON request contains incorrect NADR.",
-						"invalidMessage": "Sent JSON request is not valid.",
-						"messageQueueFull": "The IQRF Gateway Daemon message queue is full.",
-						"validatorErrors": "JSON request is not valid, detected violations:"
-					}
+				"json": "JSON request"
+			},
+			"messages": {
+				"socketError": "IQRF Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect...",
+				"timeout": "Daemon API request timed out.",
+				"invalid": "Invalid JSON API request.",
+				"missing": "Please enter JSON request.",
+				"mType": "JSON object does not have mType key.",
+				"success": "JSON request has been sent successfully.",
+				"autoNetworkStart": "AutoNetwork request sent, multiple responses will be received.",
+				"autoNetworkFinish": "The AutoNetwork process has concluded.",
+				"error": {
+					"timeout": "Request timed out.",
+					"fail": "An error occurred while processing JSON request.",
+					"pcmd": "Sent JSON request contains incorrect PCMD.",
+					"pnum": "Sent JSON request contains incorrect PNUM.",
+					"addr": "Sent JSON request contains incorrect address parameter.",
+					"dataLen": "Sent JSON request contains incorrect data length.",
+					"data": "Sent JSON request contains incorrect data.",
+					"hwpid": "Sent JSON request contains incorrect HWPID.",
+					"nadr": "Sent JSON request contains incorrect NADR.",
+					"invalidMessage": "Sent JSON request is not valid.",
+					"messageQueueFull": "The IQRF Gateway Daemon message queue is full.",
+					"validatorErrors": "JSON request is not valid, detected violations:"
 				}
 			}
 		},
