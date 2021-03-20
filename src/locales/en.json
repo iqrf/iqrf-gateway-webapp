@@ -1191,6 +1191,9 @@
 				"address": "Address has to be an integer from 0 to 239."
 			}
 		},
+		"messages": {
+			"socketError": "IQRF Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
+		},
 		"enumeration": {
 			"title": "Device enumeration",
 			"deviceInfo": "Device info",
@@ -1466,7 +1469,6 @@
 				"json": "JSON request"
 			},
 			"messages": {
-				"socketError": "IQRF Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect...",
 				"timeout": "Daemon API request timed out.",
 				"invalid": "Invalid JSON API request.",
 				"missing": "Please enter JSON request.",
@@ -1518,7 +1520,7 @@
 						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
 						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
 						"pdata": "PDATA should be 0 to 57 hexadecimal bytes long, separated by a dot.",
-						"autoRepeatInterval": "Auto repeat interval should be an integer between 1 and 36000."
+						"autoRepeatInterval": "Auto repeat interval should be an integer between 10 and 36000."
 					},
 					"missing": {
 						"address": "Please enter the custom NADR.",
@@ -1528,7 +1530,8 @@
 				}
 			},
 			"messages": {
-				"failure": "An error occurred while DPA packet sending. The device may be offline.",
+				"queueFull": "IQRF Daemon message queue full, DPA request discarded.",
+				"failure": "An error has occured while processing DPA request.",
 				"success": "DPA packet has been sent successfully.",
 				"incorrect": {
 					"pcmd": "Sent DPA packet contains incorrect PCMD.",
