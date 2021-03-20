@@ -20,7 +20,7 @@
 						</td>
 						<td
 							v-if='service !== null'
-							style='text-align: right;'
+							style='text-align: right; white-space:nowrap;'
 						>
 							<CButton
 								v-if='!service.enabled'
