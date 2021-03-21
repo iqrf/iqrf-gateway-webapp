@@ -48,6 +48,9 @@
 				"deviceId": "Please enter the device ID.",
 				"token": "Please enter the authentication token.",
 				"eventId": "Please enter command and event ID."
+			},
+			"messages": {
+				"saveFailed": "Failed to save IBM Cloud MQTT connection configuration: {error}"
 			}
 		},
 		"intelimentsInteliGlue": {
