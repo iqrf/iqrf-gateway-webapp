@@ -20,12 +20,14 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Exceptions\ApiKeyExpirationPassedException;
+use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Attributes\TId;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use JsonSerializable;
 use Nette\Utils\Strings;
+use Throwable;
 use function base64_encode;
 use function password_hash;
 use function random_bytes;
@@ -130,19 +132,28 @@ class ApiKey implements JsonSerializable {
 	 */
 	public function setExpiration(?DateTime $expiration): void {
 		$this->expiration = $expiration;
+		if ($this->isExpired()) {
+			throw new ApiKeyExpirationPassedException('Expiration date has already passed');
+		}
 	}
 
 	/**
 	 * Sets API key expiration from string
 	 * @param string|null $expiration API key expiration
-	 * @throws Exception
 	 */
 	public function setExpirationFromString(?string $expiration): void {
 		if ($expiration === null) {
 			$this->expiration = null;
 			return;
 		}
-		$this->expiration = new DateTime($expiration);
+		try {
+			$this->expiration = new DateTime($expiration);
+		} catch (Throwable $e) {
+			throw new ApiKeyInvalidExpirationException('Invalid expiration date');
+		}
+		if ($this->isExpired()) {
+			throw new ApiKeyExpirationPassedException('Expiration date has already passed');
+		}
 	}
 
 	/**

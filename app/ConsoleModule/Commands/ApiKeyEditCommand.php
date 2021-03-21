@@ -20,13 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Exceptions\ApiKeyExpirationPassedException;
+use App\Exceptions\ApiKeyInvalidExpirationException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Throwable;
 
 /**
  * CLI command for editing API keys
@@ -64,11 +65,14 @@ class ApiKeyEditCommand extends ApiKeyCommand {
 		$apiKey->setDescription($description);
 		try {
 			$expiration = $this->askExpiration($input, $output);
-		} catch (Throwable $e) {
+			$apiKey->setExpiration($expiration);
+		} catch (ApiKeyInvalidExpirationException $e) {
 			$style->error('Invalid time and date format.');
 			return Command::FAILURE;
+		} catch (ApiKeyExpirationPassedException $e) {
+			$style->error('Expiration date has already passed.');
+			return Command::FAILURE;
 		}
-		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		$style->success('API key "' . $apiKey->getDescription() . '" has been edited.');
