@@ -122,7 +122,7 @@ class UsersController extends BaseController {
 		try {
 			$user = $this->repository->findOneByUserName($json['username']);
 			if ($user !== null) {
-				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
+				throw new ClientErrorException('User already exists', ApiResponse::S409_CONFLICT);
 			}
 			$user = new User($json['username'], $json['password'], $json['role'], $json['language']);
 			$this->entityManager->persist($user);
@@ -239,7 +239,7 @@ class UsersController extends BaseController {
 		if (array_key_exists('username', $json)) {
 			$userWithName = $this->repository->findOneByUserName($json['username']);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {
-				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
+				throw new ClientErrorException('User already exists', ApiResponse::S409_CONFLICT);
 			}
 			$user->setUserName($json['username']);
 		}

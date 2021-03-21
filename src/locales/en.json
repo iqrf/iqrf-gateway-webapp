@@ -1016,12 +1016,16 @@
 			"messages": {
 				"usernameExists": "Username is already used.",
 				"oldPassMismatch": "The old password is incorrect.",
-				"addSuccess": "User {username} has been added successfully.",
-				"deletePrompt": "Do you really want to delete user {username}?",
+				"addFailed": "Failed to create new user: {error}",
+				"addSuccess": "User {user} has been added successfully.",
+				"deleteFailed": "Failed to delete user {user}: {error}",
+				"deletePrompt": "Do you really want to delete user {user}?",
+				"deleteSuccess": "User {user} has been deleted successfully.",
 				"deleteTitle": "Delete user",
-				"deleteSuccess": "User {username} has been deleted successfully.",
-				"editSuccess": "User {username} has been edited successfully.",
-				"notFound": "User not found."
+				"editFailed": "Failed to update user ID {user}: {error}",
+				"editSuccess": "User {user} has been edited successfully.",
+				"fetchFailed": "Failed to retrieve information of user ID {user}: {error}",
+				"listFetchFailed": "Failed to retrieve list of users: {error}"
 			},
 			"errors": {
 				"oldPassword": "Please enter the old password.",

@@ -123,7 +123,7 @@ class UserController extends BaseController {
 		$this->validator->validateRequest('passwordChange', $request);
 		$body = $request->getJsonBody();
 		if (!$user->verifyPassword($body['old'])) {
-			throw new ClientErrorException('Invalid old password', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
 		}
 		$user->setPassword($body['new']);
 		$this->entityManager->persist($user);

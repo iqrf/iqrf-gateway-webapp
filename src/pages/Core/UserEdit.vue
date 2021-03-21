@@ -2,10 +2,10 @@
 	<div>
 		<h1>{{ $t('core.user.edit') }}</h1>
 		<CCard body-wrapper>
-			<ValidationObserver v-if='loaded' v-slot='{ invalid }'>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='handleSubmit'>
 					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "forms.errors.username",
@@ -19,7 +19,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "core.user.errors.role",
@@ -39,7 +39,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "core.user.errors.language",
@@ -59,8 +59,8 @@
 					</ValidationProvider>
 					<div v-if='$store.getters["user/getId"] === userId'>
 						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
-							:rules='newPassword !== null ? "required" : ""'
+							v-slot='{valid, touched, errors}'
+							:rules='newPassword !== "" ? "required" : ""'
 							:custom-messages='{
 								required: "core.user.errors.oldPassword",
 							}'
@@ -75,8 +75,8 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
-							:rules='oldPassword !== null ? "required" : ""'
+							v-slot='{valid, touched, errors}'
+							:rules='oldPassword !== "" ? "required" : ""'
 							:custom-messages='{
 								required: "core.user.errors.newPassword",
 							}'
@@ -102,11 +102,13 @@
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {required,} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -171,22 +173,20 @@ export default class UserEdit extends Vue {
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
 			.then((response: AxiosResponse) => {
-				this.loaded = true;
 				this.username = response.data.username;
 				this.language = response.data.language;
 				this.role = response.data.role;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				this.loaded = false;
 				this.$store.commit('spinner/HIDE');
-				if (error.response === undefined) {
-					return;
-				}
-				if (error.response.status === 404) {
-					this.$router.push('/user/');
-					this.$toast.error(this.$t('core.user.messages.notFound').toString());
-				}
+				this.$toast.error(
+					this.$t(
+						'core.user.messages.fetchFailed',
+						{error: error.response ? error.response.data.message : error.message, user: this.userId},
+					).toString()
+				);
+				this.$router.push('/user/');
 			});
 	}
 
@@ -194,23 +194,30 @@ export default class UserEdit extends Vue {
 	 * Updates user's password, if the old password is valid, the rest of the settings are then updated and signout is performed
 	 */
 	private handleSubmit(): void {
+		this.$store.commit('spinner/SHOW');
 		if (this.$store.getters['user/getId'] === this.userId &&
-				this.oldPassword !== '' && this.newPassword !== '') {
+			this.oldPassword !== '' && this.newPassword !== '') {
 			UserService.changePassword(this.oldPassword, this.newPassword)
 				.then(() => {
-					this.performEdit();
-					this.signOut();
+					this.performEdit().then(() => this.signOut());
 				})
-				.catch(() => {
+				.catch((error: AxiosError) => {
+					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
-						this.$t('core.user.messages.oldPassMismatch').toString()
+						this.$t(
+							'core.user.messages.editFailed',
+							{error: error.response ? error.response.data.message : error.message, user: this.userId},
+						).toString()
 					);
 				});
 		} else {
-			this.performEdit();
-			if (this.$store.getters['user/getId'] === this.userId) {
-				this.signOut();
-			}
+			this.performEdit().then(() => {
+				if (this.$store.getters['user/getId'] === this.userId) {
+					this.signOut();
+				} else {
+					this.$router.push('/user/');
+				}
+			});
 		}
 
 	}
@@ -219,27 +226,24 @@ export default class UserEdit extends Vue {
 	 * Updates user information
 	 */
 	private performEdit(): Promise<void> {
-		return UserService.edit(this.userId, {
-			username: this.username,
-			language: this.language,
-			role: this.role,
-		})
+		return UserService.edit(this.userId, {username: this.username, language: this.language, role: this.role})
 			.then(() => {
-				this.$router.push('/user/');
 				this.$toast.success(
-					this.$t('core.user.messages.editSuccess', {username: this.username})
-						.toString()
+					this.$t(
+						'core.user.messages.editSuccess',
+						{username: this.username}
+					).toString()
 				);
 			})
 			.catch((error: AxiosError) => {
-				if (error.response === undefined) {
-					return;
-				}
-				if (error.response.status === 409) {
-					this.$toast.error(
-						this.$t('core.user.messages.usernameExists').toString()
-					);
-				}
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'core.user.messages.editFailed',
+						{error: error.response ? error.response.data.message : error.message, user: this.userId},
+					).toString()
+				);
+				return Promise.reject();
 			});
 	}
 
