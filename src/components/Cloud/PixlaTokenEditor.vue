@@ -42,8 +42,11 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {required} from 'vee-validate/dist/rules';
 import PixlaService from '../../services/PixlaService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -98,9 +101,12 @@ export default class PixlaTokenEditor extends Vue {
 					this.$t('cloud.pixla.messages.success').toString()
 				);
 			})
-			.catch(() => {
+			.catch((error: AxiosError) => {
 				this.$toast.error(
-					this.$t('cloud.pixla.messages.failure').toString()
+					this.$t(
+						'cloud.pixla.messages.failure',
+						{error: error.response ? error.response.data.message : error.message}
+					).toString()
 				);
 			});
 	}

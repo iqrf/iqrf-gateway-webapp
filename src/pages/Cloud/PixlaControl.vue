@@ -202,7 +202,15 @@ export default class PixlaControl extends Vue {
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(this.handleError);
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'cloud.pixla.messages.serviceStatusError',
+						{error: error.response === undefined ? error.message : error.response.data.message}
+					).toString()
+				);
+			});
 	}
 
 	/**
@@ -227,6 +235,12 @@ export default class PixlaControl extends Vue {
 	private handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
 		if (error.response === undefined) {
+			this.$toast.error(
+				this.$t(
+					'cloud.pixla.messages.serviceError',
+					{error: error.message}
+				).toString()
+			);
 			return;
 		}
 		const response: AxiosResponse = error.response;
