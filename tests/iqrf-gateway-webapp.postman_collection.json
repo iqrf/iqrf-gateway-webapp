@@ -451,7 +451,7 @@
 											"});",
 											"pm.test('Error message is \\'User already exists\\'', function () {",
 											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Username already exists');",
+											"    pm.expect(jsonData.message).to.eql('User already exists');",
 											"});"
 										],
 										"type": "text/javascript"
