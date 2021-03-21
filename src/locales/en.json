@@ -81,6 +81,7 @@
 				"connectionString": "IoT Hub Connection String for Device"
 			},
 			"messages": {
+				"saveFailed": "Failed to save Azure IoT hub connection configuration: {error}",
 				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."
 			},
 			"errors": {

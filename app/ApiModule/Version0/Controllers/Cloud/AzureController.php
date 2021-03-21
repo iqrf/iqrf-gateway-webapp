@@ -93,7 +93,7 @@ class AzureController extends CloudsController {
 		} catch (IOException $e) {
 			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
