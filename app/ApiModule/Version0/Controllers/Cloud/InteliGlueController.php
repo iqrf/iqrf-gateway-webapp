@@ -92,7 +92,7 @@ class InteliGlueController extends CloudsController {
 		} catch (GuzzleException $e) {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
