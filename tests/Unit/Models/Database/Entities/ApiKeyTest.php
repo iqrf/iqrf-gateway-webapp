@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\Exceptions\ApiKeyExpirationPassedException;
+use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
 use DateTime;
 use Nette\Utils\Strings;
@@ -35,9 +37,14 @@ class ApiKeyTest extends TestCase {
 	private const DESCRIPTION = 'Example API key';
 
 	/**
-	 * API key expiration date
+	 * API key expiration date in past
 	 */
-	private const EXPIRATION = '2020-01-01T00:00:00+02:00';
+	private const PAST_EXPIRATION = '2020-01-01T00:00:00+02:00';
+
+	/**
+	 * API key expiration date in future
+	 */
+	private const FUTURE_EXPIRATION = '2025-01-01T00:00:00+02:00';
 
 	/**
 	 * @var string API key
@@ -54,7 +61,7 @@ class ApiKeyTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->expiration = new DateTime(self::EXPIRATION);
+		$this->expiration = new DateTime(self::FUTURE_EXPIRATION);
 		$this->entity = new ApiKey(self::DESCRIPTION, $this->expiration);
 		$this->key = $this->entity->getKey();
 	}
@@ -88,18 +95,27 @@ class ApiKeyTest extends TestCase {
 	public function testSetExpiration(): void {
 		$this->entity->setExpiration(null);
 		Assert::null($this->entity->getExpiration());
+		Assert::exception(function (): void {
+			$this->entity->setExpiration(new DateTime(self::PAST_EXPIRATION));
+		}, ApiKeyExpirationPassedException::class, 'Expiration date has already passed');
 	}
 
 	/**
 	 * Tests the function to set API key expiration from string
 	 */
 	public function testSetExpirationFromString(): void {
-		$expiration = '2021-01-01T00:00:00+02:00';
+		$expiration = '2030-01-01T00:00:00+02:00';
 		$expected = new DateTime($expiration);
 		$this->entity->setExpirationFromString($expiration);
 		Assert::equal($expected, $this->entity->getExpiration());
 		$this->entity->setExpirationFromString(null);
 		Assert::null($this->entity->getExpiration());
+		Assert::exception(function (): void {
+			$this->entity->setExpirationFromString(self::PAST_EXPIRATION);
+		}, ApiKeyExpirationPassedException::class, 'Expiration date has already passed');
+		Assert::exception(function (): void {
+			$this->entity->setExpirationFromString('Invalid expiration format');
+		}, ApiKeyInvalidExpirationException::class, 'Invalid expiration date');
 	}
 
 	/**
@@ -114,11 +130,11 @@ class ApiKeyTest extends TestCase {
 	 * Tests the function to check if the API key is expired
 	 */
 	public function testIsExpired(): void {
-		Assert::true($this->entity->isExpired());
+		Assert::false($this->entity->isExpired());
 		$entity = new ApiKey(self::DESCRIPTION, null);
 		Assert::false($entity->isExpired());
-		$entity = new ApiKey(self::DESCRIPTION, new DateTime('2050-01-01T00:00'));
-		Assert::false($entity->isExpired());
+		$entity = new ApiKey(self::DESCRIPTION, new DateTime(self::PAST_EXPIRATION));
+		Assert::true($entity->isExpired());
 	}
 
 	/**
@@ -135,7 +151,7 @@ class ApiKeyTest extends TestCase {
 		$expected = [
 			'id' => null,
 			'description' => self::DESCRIPTION,
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::FUTURE_EXPIRATION,
 		];
 		$actual = $this->entity->jsonSerialize();
 		Assert::match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $actual['key']);
