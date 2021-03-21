@@ -62,6 +62,9 @@
 				"rootTopic": "Please enter the root topic.",
 				"assignedPort": "Please enter the assigned port.",
 				"assignedPortRange": "Port has to be an integer in range from 0 to 65535."
+			},
+			"messages": {
+				"saveFailed": "Failed to save InteliGlue MQTT connection configuration: {error}"
 			}
 		},
 		"msAzure": {
@@ -2216,6 +2219,7 @@
 			}
 		},
 		"gwman-client": {
+			"title": "PIXLA service",
 			"messages": {
 				"disabled": "PIXLA service is disabled.",
 				"disable": "PIXLA client service has been disabled.",
@@ -2285,7 +2289,12 @@
 			"unsupportedService": "Unsupported service"
 		},
 		"messages": {
-			"refreshSuccess": "Service status successfully refreshed."
+			"refreshSuccess": "Service status successfully refreshed.",
+			"disableFailed": "Failed to disable {service} service: {error}",
+			"enableFailed": "Failed to enable {service} service: {error}",
+			"start": "Failed to start {service} service: {error}",
+			"stop": "Failed to stop {service} service: {error}",
+			"restartFailed": "Failed to restart {service} service: {error}"
 		}
 	},
 	"table": {

@@ -168,8 +168,14 @@ export default class InteliGlueCreator extends Vue {
 				this.$toast.success(this.$t('cloud.messages.success').toString());
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.cloudError(error);
-				return Promise.reject(error);
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'cloud.intelimentsInteliGlue.messages.saveFailed',
+						{error: error.response ? error.response.data.message : error.message}
+					).toString()
+				);
+				return Promise.reject();
 			});
 	}
 
@@ -177,22 +183,26 @@ export default class InteliGlueCreator extends Vue {
 	 * Stores new inteliglue cloud connection configuration in the gateway filesystem and restarts Daemon
 	 */
 	private saveAndRestart(): void {
-		this.save()
-			.then(() => {
-				this.$store.commit('spinner/SHOW');
-				ServiceService.restart('iqrf-gateway-daemon')
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('service.iqrf-gateway-daemon.messages.restart')
-								.toString()
-						);
-					})
-					.catch((error: AxiosError) => {
-						FormErrorHandler.serviceError(error);
-					});
-			})
-			.catch(() => {return;});
+		this.save().then(() => {
+			this.$store.commit('spinner/SHOW');
+			ServiceService.restart('iqrf-gateway-daemon')
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('service.iqrf-gateway-daemon.messages.restart')
+							.toString()
+					);
+				})
+				.catch((error: AxiosError) => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.error(
+						this.$t(
+							'service.messages.restartFailed',
+							{error: error.response ? error.response.data.message : error.message, service: 'IQRF Daemon'}
+						).toString()
+					);
+				});
+		});
 	}
 
 	/**
