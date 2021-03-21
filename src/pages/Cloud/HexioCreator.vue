@@ -106,14 +106,15 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
 import {required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
+
+import {AxiosError} from 'axios';
 import {IHexioCloud} from '../../interfaces/clouds';
 
 @Component({

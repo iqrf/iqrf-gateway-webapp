@@ -73,12 +73,14 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard} from '@coreui/vue/src';
-import {NavigationGuardNext, Route} from 'vue-router';
 import PixlaTokenEditor from '../../components/Cloud/PixlaTokenEditor.vue';
+
+import {NavigationGuardNext, Route} from 'vue-router';
 import PixlaService from '../../services/PixlaService';
 import ServiceService, {ServiceStatus} from '../../services/ServiceService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {

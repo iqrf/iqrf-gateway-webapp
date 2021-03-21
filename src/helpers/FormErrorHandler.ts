@@ -7,22 +7,6 @@ import Vue from 'vue';
  * Form error handler
  */
 class FormErrorHandler {
-	/**
-	 * Handles Cloud errors
-	 * @param error caught axios error
-	 */
-	cloudError(error: AxiosError): void {
-		store.commit('spinner/HIDE');
-		if (error.response === undefined) {
-			console.error(error);
-			return;
-		}
-		if (error.response.status === 400) {
-			Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
-		} else if (error.response.status) {
-			Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
-		}
-	}
 
 	/**
 	 * Handles Config errors
