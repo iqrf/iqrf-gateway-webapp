@@ -29,6 +29,9 @@
 			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
 			"form": {
 				"title": "Hexio IoT Platform MQTT connection wizard"
+			},
+			"messages": {
+				"saveFailed": "Failed to save Hexio IoT Platform MQTT connection configuration: {error}"
 			}
 		},
 		"ibmCloud": {
