@@ -16,6 +16,7 @@
 				"endpoint": "Endpoint"
 			},
 			"messages": {
+				"saveFailed": "Failed to save Amazon AWS IoT MQTT connection configuration: {error}",
 				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
 			},
 			"errors": {
