@@ -449,9 +449,9 @@
 											"    pm.response.to.have.header('Content-Type');",
 											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
 											"});",
-											"pm.test('Error message is \\'Username is already used.\\'', function () {",
+											"pm.test('Error message is \\'User already exists\\'', function () {",
 											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Username is already used');",
+											"    pm.expect(jsonData.message).to.eql('Username already exists');",
 											"});"
 										],
 										"type": "text/javascript"
