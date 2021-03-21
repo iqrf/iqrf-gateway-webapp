@@ -172,8 +172,14 @@ export default class ApiKeyForm extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'core.apiKey.messages.fetchFailed',
+						{error: error.response ? error.response.data.message : error.message, key: this.keyId},
+					).toString()
+				);
 				this.$router.push('/api-key/');
-				FormErrorHandler.apiKeyError(error);
 			});
 	}
 
@@ -185,11 +191,11 @@ export default class ApiKeyForm extends Vue {
 		if (this.keyId !== null) {
 			ApiKeyService.editApiKey(this.keyId, this.metadata)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+				.catch(this.handleSaveError);
 		} else {
 			ApiKeyService.addApiKey(this.metadata)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+				.catch(this.handleSaveError);
 		}
 	}
 
@@ -210,6 +216,20 @@ export default class ApiKeyForm extends Vue {
 			);
 		}
 		this.$router.push('/api-key/');
+	}
+
+	/**
+	 * Handles REST API save error response
+	 * @param {AxiosError} error Axios error
+	 */
+	private handleSaveError(error: AxiosError): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(
+			this.$t(
+				'core.apiKey.messages.' + (this.$route.path === '/api-key/add' ? 'add' : 'edit') + 'Failed',
+				{error: error.response ? error.response.data.message : error.message, key: this.keyId},
+			).toString()
+		);
 	}
 }
 </script>

@@ -185,13 +185,23 @@ export default class ApiKeyList extends Vue {
 	 * Retrieves list of existing API keys
 	 */
 	private getKeys(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		return ApiKeyService.getApiKeys()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.keys = response.data;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'core.apiKey.messages.listFetchFailed',
+						{error: error.response ? error.response.data.message : error.message},
+					).toString()
+				);
+			});
 	}
 
 	/**
@@ -210,7 +220,15 @@ export default class ApiKeyList extends Vue {
 					this.$toast.success(this.$t('core.apiKey.messages.deleteSuccess', {key: key}).toString());
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'core.apiKey.messages.deleteFailed',
+						{key: key, error: error.response ? error.response.data.message : error.message},
+					).toString()
+				);
+			});
 	}
 
 	/**
