@@ -981,11 +981,16 @@
 			"messages": {
 				"invalid": "Invalid API key metadata.",
 				"notFound": "API key with this ID does not exist.",
-				"deleteTitle": "Delete API key",
+				"addFailed": "Failed to create new API key: {error}",
+				"addSuccess": "New API key has been successfully added.",
+				"deleteFailed": "Failed to delete API key ID {key}: {error}",
 				"deletePrompt": "Do you really want to delete API key ID {key}?",
 				"deleteSuccess": "API key ID {key} has been successfully deleted.",
-				"editSuccess": "API key ID {key} metadata have been successfully changed.",
-				"addSuccess": "New API key has been successfully added."
+				"deleteTitle": "Delete API key",
+				"editFailed": "Failed to change API key ID {key}: {error}",
+				"editSuccess": "API key ID {key} has been successfully updated.",
+				"fetchFailed": "Failed to retrieve API key {key}: {error}",
+				"listFetchFailed": "Failed to retrieve the list of API keys: {error}"
 			},
 			"errors": {
 				"description": "Please enter API key description."
