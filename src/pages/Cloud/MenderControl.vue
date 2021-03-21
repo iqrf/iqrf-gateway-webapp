@@ -355,33 +355,57 @@ export default class MenderControl extends Vue {
 	}
 
 	/**
-	 * Enables the Pixla service
+	 * Enables the Mender service
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
 			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.enable'))
-			.catch(this.handleServiceError);
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'service.messages.enableFailed',
+						{error: error.response ? error.response.data.message : error.message, service: 'Mender'}
+					).toString()
+				);
+			});
 	}
 
 	/**
-	 * Disables the Pixla service
+	 * Disables the Mender service
 	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
 			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.disable'))
-			.catch(this.handleServiceError);
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'service.messages.disableFailed',
+						{error: error.response ? error.response.data.message : error.message, service: 'Mender'}
+					).toString()
+				);
+			});
 	}
 
 	/**
-	 * Restarts the Pixla service
+	 * Restarts the Mender service
 	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.restart(this.serviceName)
 			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.restart'))
-			.catch(this.handleServiceError);
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'service.messages.restartFailed',
+						{error: error.response ? error.response.data.message : error.message, service: 'Mender'}
+					).toString()
+				);
+			});
 	}
 
 	/**
@@ -394,20 +418,6 @@ export default class MenderControl extends Vue {
 				this.$t(message).toString()
 			);
 		});
-	}
-
-	/**
-	 * Handles Service axios errors
-	 * @param {AxiosError} error Axios error
-	 */
-	private handleServiceError(error: AxiosError): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t(
-				'cloud.mender.messages.serviceFailed',
-				{error: error.response === undefined ? error.message : error.response.data.message},
-			).toString()
-		);
 	}
 
 	/**
