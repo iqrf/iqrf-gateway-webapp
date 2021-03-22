@@ -165,7 +165,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
-import {ITaskDaemon, ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
@@ -313,7 +313,7 @@ export default class SchedulerList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
-				this.useRest = false; 
+				this.useRest = false;
 				if (this.untouched) { // retrieve task only when the page is loaded
 					this.getTasks();
 				}
@@ -441,7 +441,7 @@ export default class SchedulerList extends Vue {
 				return message.slice(0, -2);
 			} else { // task retrieved from daemon API and has only one message
 				return item.message.mType;
-			} 
+			}
 		} catch(err) {
 			return '';
 		}

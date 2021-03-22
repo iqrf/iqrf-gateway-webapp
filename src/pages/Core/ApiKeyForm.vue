@@ -59,7 +59,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import ApiKeyService from '../../services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {Dictionary} from 'vue-router/types/router';
 import {MetaInfo} from 'vue-meta';
 import {AxiosError, AxiosResponse} from 'axios';
@@ -112,7 +111,7 @@ export default class ApiKeyForm extends Vue {
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false
-	
+
 	/**
 	 * @property {number} keyId API key id
 	 */
@@ -154,7 +153,7 @@ export default class ApiKeyForm extends Vue {
 			this.metadata.expiration = null;
 		}
 	}
-	
+
 	/**
 	 * Retrieves API key specified by id
 	 */

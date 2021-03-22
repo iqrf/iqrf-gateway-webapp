@@ -23,7 +23,7 @@
 		"coverage:unit": "vue-cli-service test:unit --coverage",
 		"coverage:unit-ci": "vue-cli-service test:unit --ci --coverage --reporters=default --reporters=jest-junit",
 		"test:unit": "vue-cli-service test:unit",
-		"lint": "vue-cli-service lint",
+		"lint": "vue-cli-service lint src",
 		"lint:css": "stylelint \"src/**/*.{css,scss,sass}\"",
 		"newman": "newman run tests/iqrf-gateway-webapp.postman_collection.json",
 		"test": "jest",

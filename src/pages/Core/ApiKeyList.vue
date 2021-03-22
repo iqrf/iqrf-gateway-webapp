@@ -88,7 +88,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import ApiKeyService from '../../services/ApiKeyService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {DateTime} from 'luxon';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';

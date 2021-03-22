@@ -1,4 +1,4 @@
-import {ActionTree, GetterTree, MutationTree} from 'vuex';
+import {GetterTree, MutationTree} from 'vuex';
 
 export interface InstallationState {
 

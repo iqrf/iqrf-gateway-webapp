@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import jwt_decode, {JwtPayload} from 'jwt-decode';
 
 import TheDashboard from '../components/TheDashboard.vue';
 
@@ -82,7 +81,6 @@ const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 import store from '../store';
-import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 
