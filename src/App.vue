@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<router-view />
+		<LoadingSpinner />
+		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
 	</div>
 </template>
@@ -10,10 +11,18 @@ import {Component, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
 import {AxiosError} from 'axios';
 import DaemonModeModal from './components/DamonModeModal.vue';
+import LoadingSpinner from './components/LoadingSpinner.vue';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
 		DaemonModeModal,
+		LoadingSpinner,
+	},
+	computed: {
+		...mapGetters({
+			installationChecked: 'installation/isChecked',
+		}),
 	},
 })
 
@@ -42,9 +51,9 @@ export default class App extends Vue {
 					this.$router.push({
 						name: 'sudo-error',
 						params: {
-							user: check.sudo!.user,
-							exists: check.sudo!.exists.toString(),
-							userSudo: check.sudo!.userSudo.toString(),
+							user: check.sudo.user,
+							exists: check.sudo.exists.toString(),
+							userSudo: check.sudo.userSudo.toString(),
 						}
 					});
 				} else if (!check.allMigrationsExecuted) {
