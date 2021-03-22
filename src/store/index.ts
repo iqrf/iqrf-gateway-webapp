@@ -3,6 +3,7 @@ import Vuex, {Store} from 'vuex';
 import createPersistentState from 'vuex-persistedstate';
 
 import features from './modules/features.module';
+import installation from './modules/installation.module';
 import sidebar from './modules/sidebar.module';
 import spinner from './modules/spinner.module';
 import user from './modules/user.module';
@@ -13,6 +14,7 @@ Vue.use(Vuex);
 const store: Store<any> = new Vuex.Store({
 	modules: {
 		features,
+		installation,
 		sidebar,
 		spinner,
 		user,
