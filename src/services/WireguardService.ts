@@ -1,7 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
-import {Dictionary} from 'vue-router/types/router';
 import {IWGTunnel} from '../interfaces/network';
 
 /**

@@ -16,13 +16,13 @@
 									}'
 								>
 									<CInput
-										v-model='config.rest.addr' 
-										:label='$t("forms.fields.address")' 
+										v-model='config.rest.addr'
+										:label='$t("forms.fields.address")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
+								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
@@ -36,13 +36,13 @@
 										type='number'
 										min='1'
 										max='49151'
-										:label='$t("config.translator.form.rest.port")' 
+										:label='$t("config.translator.form.rest.port")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required|apiKey'
 									:custom-messages='{
 										required: "config.translator.errors.apiKey",
@@ -50,7 +50,7 @@
 									}'
 								>
 									<CInput
-										v-model='config.rest.api_key' 
+										v-model='config.rest.api_key'
 										:label='$t("config.translator.form.rest.apiKey")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
@@ -59,8 +59,8 @@
 							</CCol>
 						</CRow>
 						<legend>{{ $t("config.translator.form.mqtt.title") }}</legend>
-						<ValidationProvider 
-							v-slot='{errors, touched, valid}' 
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
 							rules='required|clientId'
 							:custom-messages='{
 								required: "config.translator.errors.clientId",
@@ -71,13 +71,13 @@
 								v-model='config.mqtt.cid'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'								
+								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CRow>
 							<CCol md='6'>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
 										required: "config.translator.errors.brokerAddr"
@@ -92,8 +92,8 @@
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
 										integer: "forms.errors.integer",
@@ -113,8 +113,8 @@
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required|requestTopic'
 									:custom-messages='{
 										required: "config.translator.errors.requestTopic",
@@ -147,7 +147,7 @@
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<ValidationProvider 
+								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
 									<CInput
@@ -159,7 +159,7 @@
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<ValidationProvider 
+								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
 									<CInput
@@ -239,7 +239,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';

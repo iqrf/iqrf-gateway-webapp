@@ -263,7 +263,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
 import ServiceService from '../../services/ServiceService';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
@@ -408,7 +407,7 @@ export default class ControllerConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
-				this.restartController();	
+				this.restartController();
 			})
 			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');

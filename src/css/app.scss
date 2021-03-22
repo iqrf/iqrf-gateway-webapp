@@ -40,13 +40,13 @@ $theme-colors: (
 	}
 	.c-sidebar-nav-dropdown {
 		.c-sidebar-nav-dropdown {
+			.c-sidebar-nav-dropdown-items {
+				text-indent: 0.3rem;
+			}
 			.c-sidebar-nav-dropdown {
 				.c-sidebar-nav-dropdown-items {
 					text-indent: 0.6rem;
 				}
-			}
-			.c-sidebar-nav-dropdown-items {
-				text-indent: 0.3rem;
 			}
 		}
 	}
@@ -80,9 +80,9 @@ $theme-colors: (
 }
 
 .table {
-  th, td {
-	vertical-align: middle;
-  }
+	th, td {
+		vertical-align: middle;
+	}
 }
 
 .card-margin-bottom {
