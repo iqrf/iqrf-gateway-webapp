@@ -22,6 +22,7 @@ namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
+use Nette\Utils\Strings;
 
 /**
  * Tool for managing services (systemD init daemon)
@@ -89,6 +90,9 @@ class SystemDManager implements IServiceManager {
 		$serviceName = $serviceName ?? $this->serviceName;
 		$cmd = 'systemctl is-active ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() === 4) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
 		return $command->getStdout() === 'active';
 	}
 
@@ -102,7 +106,8 @@ class SystemDManager implements IServiceManager {
 		$serviceName = $serviceName ?? $this->serviceName;
 		$cmd = 'systemctl is-enabled ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
-		if ($command->getStderr() !== '') {
+		if ($command->getExitCode() === 1 &&
+			Strings::contains($command->getStderr(), 'No such file or directory')) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout() === 'enabled';
@@ -160,7 +165,7 @@ class SystemDManager implements IServiceManager {
 		$serviceName = $serviceName ?? $this->serviceName;
 		$cmd = 'systemctl status ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
-		if ($command->getStderr() !== '') {
+		if ($command->getExitCode() === 4) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout();

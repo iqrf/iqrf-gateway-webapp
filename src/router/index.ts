@@ -9,8 +9,6 @@ const AwsCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/A
 const HexioCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/HexioCreator.vue');
 const IbmCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/IbmCreator.vue');
 const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/InteliGlueCreator.vue');
-const PixlaControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/PixlaControl.vue');
-const MenderControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/MenderControl.vue');
 
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
@@ -79,6 +77,11 @@ const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pa
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
+
+const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
+const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
+const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
+const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
 import store from '../store';
 
@@ -163,14 +166,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: InteliGlueCreator,
 						path: 'inteli-glue',
-					},
-					{
-						component: PixlaControl,
-						path: 'pixla',
-					},
-					{
-						component: MenderControl,
-						path: 'mender',
 					},
 				]
 			},
@@ -826,6 +821,32 @@ const routes: Array<RouteConfig> = [
 								},
 							},
 						],
+					},
+				]
+			},
+			{
+				path: '/maintenance',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: MaintenanceDisambiguation,
+						path: '',
+					},
+					{
+						component: PixlaControl,
+						path: 'pixla',
+					},
+					{
+						component: MenderControl,
+						path: 'mender',
+					},
+					{
+						component: MonitControl,
+						path: 'monit',
 					},
 				]
 			},

@@ -89,56 +89,6 @@
 				"connectionString": "Please enter IoT Hub Connection String for Device."
 			}
 		},
-		"pixla": {
-			"title": "PIXLA device management",
-			"description": "Manages PIXLA client service.",
-			"dashboard": "Visit dashboard",
-			"editModal": {
-				"title": "Set new PIXLA platform token",
-				"token": "New PIXLA token"
-			},
-			"token": "Token",
-			"messages": {
-				"disabled": "PIXLA manager is disabled.",
-				"failure": "Failed to change PIXLA token: {error}.",
-				"success": "New PIXLA token has been successfully saved.",
-				"serviceStatusError": "Failed to retrieve PIXLA service status: {error}",
-				"serviceError": "Failed to change PIXLA service state: {error}"
-			},
-			"errors": {
-				"token": "Please enter PIXLA platform token."
-			}
-		},
-		"mender": {
-			"title": "Mender update management",
-			"description": "Manages Mender client service and configuration.",
-			"form": {
-				"inventoryPollInterval": "Inventory update interval (seconds)",
-				"retryPollInterval": "Communication retry interval (seconds)",
-				"server": "Server address",
-				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"placeholders": {
-					"server": "https://hosted.mender.io",
-					"tenantToken": "exampleToken"
-				}
-			},
-			"messages": {
-				"disabled": "Mender service is disabled.",
-				"fetchFailed": "Failed to retrieve Mender configuration: {error}",
-				"saveFailed": "Failed to save Mender configuration: {error}",
-				"saveSuccess": "Mender configuration has been successfully saved.",
-				"serviceStatusFailed": "Failed to retrieve service status: {error}",
-				"serviceFailed": "Failed to change service state: {error}"
-			},
-			"errors": {
-				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-				"server": "Please enter the server address.",
-				"tenantToken": "Please enter the tenant token."
-			}
-		},
 		"guides": {
 			"pdf": "PDF guide",
 			"video": "Video guide"
@@ -1907,7 +1857,7 @@
 			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection",
 			"messages": {
-				"noInterfaces": "No ethernet network interface detected."
+				"noInterfaces": "No active ethernet network interface detected."
 			}
 		},
 		"wireless": {
@@ -1976,7 +1926,7 @@
 				}
 			},
 			"messages": {
-				"noInterfaces": "No Wi-Fi network interface detected.",
+				"noInterfaces": "No active Wi-Fi network interface detected.",
 				"interfacesFailed": "Failed to retrieve list of interfaces",
 				"listFailed": "Failed to retrieve list of available access points.",
 				"connectionsFailed": "Failed to retrieve access point connection details."
@@ -2181,6 +2131,66 @@
 			"disconnect": "Disconnect"
 		}
 	},
+	"maintenance": {
+		"title": "Device maintenance",
+		"description": "Tools for device management, maintenance and monitoring.",
+		"disabled": "Maintenance feature is disabled.",
+		"pixla": {
+			"title": "PIXLA device management",
+			"description": "Manages PIXLA client service.",
+			"dashboard": "Visit dashboard",
+			"editModal": {
+				"title": "Set new PIXLA platform token",
+				"token": "New PIXLA token"
+			},
+			"token": "Token",
+			"messages": {
+				"fetchFailed": "Failed to retrieve PIXLA token: {error}",
+				"disabled": "PIXLA manager is disabled.",
+				"failure": "Failed to change PIXLA token: {error}.",
+				"success": "New PIXLA token has been successfully saved.",
+				"serviceStatusError": "Failed to retrieve PIXLA service status: {error}",
+				"serviceError": "Failed to change PIXLA service state: {error}"
+			},
+			"errors": {
+				"token": "Please enter PIXLA platform token."
+			}
+		},
+		"mender": {
+			"title": "Mender update management",
+			"description": "Manages Mender client service and configuration.",
+			"form": {
+				"inventoryPollInterval": "Inventory update interval (seconds)",
+				"retryPollInterval": "Communication retry interval (seconds)",
+				"server": "Server address",
+				"tenantToken": "Tenant token",
+				"updatePollInterval": "Update check interval (seconds)",
+				"placeholders": {
+					"server": "https://hosted.mender.io",
+					"tenantToken": "exampleToken"
+				}
+			},
+			"messages": {
+				"disabled": "Mender service is disabled.",
+				"fetchFailed": "Failed to retrieve Mender configuration: {error}",
+				"saveFailed": "Failed to save Mender configuration: {error}",
+				"saveSuccess": "Mender configuration has been successfully saved.",
+				"serviceStatusFailed": "Failed to retrieve service status: {error}",
+				"serviceFailed": "Failed to change service state: {error}"
+			},
+			"errors": {
+				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+				"server": "Please enter the server address.",
+				"tenantToken": "Please enter the tenant token."
+			}
+		},
+		"monit": {
+			"title": "M/Monit monitoring",
+			"description": "Manager M/Monit monitoring service and configuration."
+		}
+	},
 	"service": {
 		"actions": {
 			"disable": "Disable",
@@ -2196,7 +2206,9 @@
 			"inactive": "inactive",
 			"missing": "Missing",
 			"unsupported": "Unsupported",
-			"unknown": "Unknown"
+			"unknown": "Unknown",
+			"running": "Running",
+			"stopped": "Stopped"
 		},
 		"iqrf": {
 			"title": "IQRF services",
@@ -2250,11 +2262,24 @@
 			"title": "Mender service",
 			"description": "Control the Mender service.",
 			"messages": {
+				"disabled": "Mender service is disabled.",
 				"disable": "Mender service has been disabled.",
 				"enable": "Mender service has been enabled.",
 				"start": "Mender service has been started.",
 				"stop": "Mender service has been stopped.",
 				"restart": "Mender service has been restarted."
+			}
+		},
+		"monit": {
+			"title": "Monit service",
+			"description": "Control the Monit service.",
+			"messages": {
+				"disabled": "Monit service is disabled.",
+				"disable": "Monit service has been disabled.",
+				"enable": "Monit service has been enabled.",
+				"start": "Monit service has been started.",
+				"stop": "Monit service has been stopped.",
+				"restart": "Monit service has been restarted."
 			}
 		},
 		"ssh": {
@@ -2306,6 +2331,7 @@
 			"unsupportedService": "Unsupported service"
 		},
 		"messages": {
+			"statusFailed": "Failed to retrieve {service} service status: {error}",
 			"refreshSuccess": "Service status successfully refreshed.",
 			"disableFailed": "Failed to disable {service} service: {error}",
 			"enableFailed": "Failed to enable {service} service: {error}",

@@ -2,7 +2,7 @@
 	<div>
 		<header class='d-flex'>
 			<h1 class='mr-auto'>
-				{{ $t('cloud.pixla.title') }}
+				{{ $t('maintenance.pixla.title') }}
 			</h1>
 			<div v-if='!missing && !unsupported'>
 				<CButton
@@ -10,62 +10,62 @@
 					href='https://www.pixla.online/'
 					target='_blank'
 				>
-					{{ $t('cloud.pixla.dashboard') }}
+					{{ $t('maintenance.pixla.dashboard') }}
 				</CButton>
 			</div>
 		</header>
 		<CCard body-wrapper>
-			<table class='table table-striped'>
-				<tbody>
-					<tr>
-						<th>{{ $t('cloud.pixla.token') }}</th>
-						<td class='d-flex'>
-							<div class='mr-auto'>
-								{{ token }}
-							</div>
-							<CButton color='primary' size='sm' @click='showEditor = true'>
-								{{ $t('forms.edit') }}
-							</CButton>
-						</td>
-					</tr>
-					<tr>
-						<th>{{ $t('service.status') }}</th>
-						<td v-if='missing'>
-							{{ $t('service.states.missing') }}
-						</td>
-						<td v-if='unsupported'>
-							{{ $t('service.states.unsupported') }}
-						</td>
-						<td v-if='service !== null' class='d-flex'>
-							<div class='mr-auto'>
-								{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
-								{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
-							</div>
-							<CButton
-								v-if='!service.enabled'
-								color='success'
-								size='sm'
-								@click='enable()'
-							>
-								{{ $t('service.actions.enable') }}
-							</CButton> <CButton
-								v-if='service.enabled'
-								color='danger'
-								size='sm'
-								@click='disable()'
-							>
-								{{ $t('service.actions.disable') }}
-							</CButton> <CButton
-								color='primary'
-								size='sm'
-								@click='restart()'
-							>
-								{{ $t('service.actions.restart') }}
-							</CButton>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class='box'>
+				<div>
+					<b>{{ $t('service.status') }}</b>
+				</div>
+				<div v-if='missing'>
+					{{ $t('service.states.missing') }}
+				</div>
+				<div v-if='unsupported'>
+					{{ $t('service.states.unsupported') }}
+				</div>
+				<div v-if='service !== null'>
+					{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
+					{{ $t('service.states.' + (service.active ? 'running' : 'stopped')) }}
+				</div>
+				<div v-if='service !== null'>
+					<CButton
+						v-if='!service.enabled'
+						color='success'
+						size='sm'
+						@click='enable()'
+					>
+						{{ $t('service.actions.enable') }}
+					</CButton> <CButton
+						v-if='service.enabled'
+						color='danger'
+						size='sm'
+						@click='disable()'
+					>
+						{{ $t('service.actions.disable') }}
+					</CButton> <CButton
+						color='primary'
+						size='sm'
+						@click='restart()'
+					>
+						{{ $t('service.actions.restart') }}
+					</CButton>
+				</div>
+			</div>
+			<div class='box'>
+				<div>
+					<b>{{ $t('maintenance.pixla.token') }}</b>
+				</div>
+				<div>
+					{{ token }}
+				</div>
+				<div>
+					<CButton color='primary' size='sm' @click='showEditor = true'>
+						{{ $t('forms.edit') }}
+					</CButton>
+				</div>
+			</div>
 			<PixlaTokenEditor :show.sync='showEditor' @token-updated='getToken' />
 		</CCard>
 	</div>
@@ -74,13 +74,14 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import PixlaTokenEditor from '../../components/Cloud/PixlaTokenEditor.vue';
+import PixlaTokenEditor from '../../components/Maintenance/PixlaTokenEditor.vue';
 
+import {extendedErrorToast, pixlaErrorToast} from '../../helpers/errorToast';
 import {NavigationGuardNext, Route} from 'vue-router';
 import PixlaService from '../../services/PixlaService';
 import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -90,21 +91,25 @@ import {AxiosError, AxiosResponse} from 'axios';
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
-			if (!vm.$store.getters['features/isEnabled']('pixla')) {
-				vm.$toast.error(
-					vm.$t('service.gwman-client.messages.disabled').toString()
-				);
+			let message = '';
+			if (!vm.$store.getters['features/isEnabled']('maintenance')) {
+				message = vm.$t('maintenance.disabled').toString();
+			} else if (!vm.$store.getters['features/isEnabled']('pixla')) {
+				message = vm.$t('service.gwman-client.messages.disabled').toString();
+			}
+			if (message !== '') {
+				vm.$toast.error(message);
 				vm.$router.push(from.path);
 			}
 		});
 	},
 	metaInfo: {
-		title: 'cloud.pixla.title',
+		title: 'maintenance.pixla.title',
 	},
 })
 
 /**
- * Pixla cloud service manager card
+ * Pixla maintenance service manager card
  */
 export default class PixlaControl extends Vue {
 	/**
@@ -159,7 +164,7 @@ export default class PixlaControl extends Vue {
 						.toString()
 				);
 			})
-			.catch(this.handleError);
+			.catch((error: AxiosError) => pixlaErrorToast(error, 'service.messages.enableFailed'));
 	}
 
 	/**
@@ -175,7 +180,7 @@ export default class PixlaControl extends Vue {
 						.toString()
 				);
 			})
-			.catch(this.handleError);
+			.catch((error: AxiosError) => pixlaErrorToast(error, 'service.messages.disableFailed'));
 	}
 
 	/**
@@ -191,7 +196,7 @@ export default class PixlaControl extends Vue {
 						.toString()
 				);
 			})
-			.catch(this.handleError);
+			.catch((error: AxiosError) => pixlaErrorToast(error, 'service.messages.restartFailed'));
 	}
 
 	/**
@@ -204,15 +209,7 @@ export default class PixlaControl extends Vue {
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'cloud.pixla.messages.serviceStatusError',
-						{error: error.response === undefined ? error.message : error.response.data.message}
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => pixlaErrorToast(error, 'service.messages.statusFailed'));
 	}
 
 	/**
@@ -224,38 +221,8 @@ export default class PixlaControl extends Vue {
 				this.token = token;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(() => {
-				this.token = null;
-				this.$store.commit('spinner/HIDE');
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.pixla.messages.fetchFailed'));
 	}
 
-	/**
-	 * Axios response error handler
-	 * @param {AxiosError} error Axios response error
-	 */
-	private handleError(error: AxiosError): void {
-		this.$store.commit('spinner/HIDE');
-		if (error.response === undefined) {
-			this.$toast.error(
-				this.$t(
-					'cloud.pixla.messages.serviceError',
-					{error: error.message}
-				).toString()
-			);
-			return;
-		}
-		const response: AxiosResponse = error.response;
-		if (response.status === 404) {
-			this.missing = true;
-			this.$toast.error(this.$t('service.errors.missingService').toString());
-		}
-		if (response.status === 500 &&
-				response.data.message === 'Unsupported init system') {
-			this.unsupported = false;
-			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
-		}
-	}
-	
 }
 </script>
