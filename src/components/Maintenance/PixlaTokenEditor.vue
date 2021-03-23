@@ -7,7 +7,7 @@
 			>
 				<template #header>
 					<h5 class='modal-title'>
-						{{ $t('cloud.pixla.editModal.title') }}
+						{{ $t('maintenance.pixla.editModal.title') }}
 					</h5>
 					<CButtonClose class='text-white' @click='close' />
 				</template>
@@ -15,12 +15,12 @@
 					v-slot='{ errors, touched, valid }'
 					rules='required'
 					:custom-messages='{
-						required: "cloud.pixla.errors.token"
+						required: "maintenance.pixla.errors.token"
 					}'
 				>
 					<CInput
 						v-model='token'
-						:label='$t("cloud.pixla.editModal.token")'
+						:label='$t("maintenance.pixla.editModal.token")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -45,6 +45,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
 import PixlaService from '../../services/PixlaService';
+import {extendedErrorToast} from '../../helpers/errorToast';
 
 import {AxiosError} from 'axios';
 
@@ -98,16 +99,11 @@ export default class PixlaTokenEditor extends Vue {
 				this.$emit('update:show', false);
 				this.$emit('token-updated');
 				this.$toast.success(
-					this.$t('cloud.pixla.messages.success').toString()
+					this.$t('maintenance.pixla.messages.success').toString()
 				);
 			})
 			.catch((error: AxiosError) => {
-				this.$toast.error(
-					this.$t(
-						'cloud.pixla.messages.failure',
-						{error: error.response ? error.response.data.message : error.message}
-					).toString()
-				);
+				extendedErrorToast(error, 'maintenance.pixla.messages.failure');
 			});
 	}
 }

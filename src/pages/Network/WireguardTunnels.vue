@@ -83,7 +83,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
-import {cilLink, cilLinkBroken, cilPlus, cilPencil, cilSync, cilTrash, cilXCircle} from '@coreui/icons';
+import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
 
 import WireguardService from '../../services/WireguardService';
 
@@ -120,7 +120,7 @@ export default class WireguardTunnels extends Vue {
 		remove: cilTrash,
 		activate: cilLink,
 		deactivate: cilLinkBroken,
-		enable: cilSync,
+		enable: cilCheckCircle,
 		disable: cilXCircle,
 	}
 

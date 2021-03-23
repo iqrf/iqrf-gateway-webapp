@@ -61,6 +61,7 @@ import {
 	cilLockLocked,
 	cilStorage,
 	cilSettings,
+	cilSync,
 	cilToggleOff,
 	cilUser,
 	cilWifiSignal4,
@@ -437,19 +438,35 @@ export default class TheSidebar extends Vue {
 								to: '/cloud/inteli-glue/',
 								roles: ['power', 'normal'],
 							},
+						],
+					},
+					{
+						_name: 'CSidebarNavDropdown',
+						name: this.$t('maintenance.title'),
+						to: '/maintenance/',
+						route: '/maintenance/',
+						feature: 'maintenance',
+						icon: {content: cilSync},
+						items: [
 							{
-								name: this.$t('cloud.pixla.title'),
-								to: '/cloud/pixla/',
+								name: this.$t('maintenance.pixla.title'),
+								to: '/maintenance/pixla/',
 								feature: 'pixla',
 								roles: ['power', 'normal'],
 							},
 							{
-								name: this.$t('cloud.mender.title'),
-								to: '/cloud/mender/',
+								name: this.$t('maintenance.mender.title'),
+								to: '/maintenance/mender/',
 								feature: 'mender',
-								roles: ['power', 'normal']
+								roles: ['power', 'normal'],
 							},
-						],
+							{
+								name: this.$t('maintenance.monit.title'),
+								to: '/maintenance/monit/',
+								feature: 'monit',
+								roles: ['power', 'normal'],
+							},
+						]
 					},
 					{
 						_name: 'CSidebarNavItem',

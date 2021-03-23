@@ -44,6 +44,14 @@
 							{{ $t('cloud.description') }}
 						</p>
 					</CListGroupItem>
+					<CListGroupItem to='/maintenance/'>
+						<header class='list-group-item-heading'>
+							{{ $t('maintenance.title') }}
+						</header>
+						<p class='list-group-item-text'>
+							{{ $t('maintenance.description') }}
+						</p>
+					</CListGroupItem>
 					<CListGroupItem
 						v-if='$store.getters["features/isEnabled"]("grafana")'
 						:href='$store.getters["features/configuration"]("grafana").url'
