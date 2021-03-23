@@ -212,13 +212,25 @@
 										required: "network.connection.ipv4.errors.method"
 									}'
 								>
+									<b>
+										<label for='ipv4MethodSelect'>
+											{{ $t('network.connection.ipv4.method') }}
+										</label>
+									</b> <CBadge 
+										v-if='ipv4Notice !== null' 
+										color='info'
+										class='text-wrap'
+									>
+										{{ ipv4Notice }}
+									</CBadge>
 									<CSelect
+										id='ipv4MethodSelect'
 										:value.sync='connection.ipv4.method'
-										:label='$t("network.connection.ipv4.method")'
 										:options='ipv4Methods'
 										:placeholder='$t("network.connection.ipv4.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
+										@change='updateIpv4Notice'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
@@ -236,6 +248,7 @@
 											:label='$t("network.connection.ipv4.address")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
+											@input='updateIpv4Notice'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -449,7 +462,7 @@
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
@@ -476,6 +489,7 @@ enum WepKeyType {
 
 @Component({
 	components: {
+		CBadge,
 		CButton,
 		CCard,
 		CCardBody,
@@ -517,6 +531,11 @@ export default class ConnectionFormBasic extends Vue {
 			method: 'auto',
 		}
 	}
+
+	/**
+	 * @var {string|null} ipv4Notice
+	 */
+	private ipv4Notice: string|null = null
 
 	/**
 	 * @var {string} ifname Interface name
@@ -624,7 +643,7 @@ export default class ConnectionFormBasic extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('ipv4', (address: string) => {
-			return ip.v4({exact: true}).test(address);
+			return ip.v4({exact: true}).test(address); 
 		});
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
@@ -711,6 +730,26 @@ export default class ConnectionFormBasic extends Vue {
 			});
 		}
 		return methodOptions;
+	}
+
+	/**
+	 * Updates IPv4 notice message
+	 */
+	private updateIpv4Notice(): void {
+		if (this.connection.ipv4.method === 'manual') {
+			if (!ip.v4({exact: true}).test(this.connection.ipv4.addresses[0].address)) {
+				this.ipv4Notice = null;
+				return;
+			}
+			this.ipv4Notice = this.$t(
+				'network.connection.messages.staticNotice', 
+				{address: this.connection.ipv4.addresses[0].address}
+			).toString();
+		} else if (this.connection.ipv4.method === 'auto') {
+			this.ipv4Notice = this.$t('network.connection.messages.autoNotice').toString();
+		} else {
+			this.ipv4Notice = null;
+		}
 	}
 
 	/**

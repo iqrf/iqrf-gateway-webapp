@@ -2105,6 +2105,8 @@
 				"notConnected": "Not connected"
 			},
 			"messages": {
+				"staticNotice": "The web interface will be available at address {address} after switching to static method.",
+				"autoNotice": "Changing method from static to auto may result in the web interface being available at different address.",
 				"interfacesFetchFailed": "Failed to retrieve interfaces.",
 				"connectionFetchFailed": "Failed to retrieve connection details.",
 				"createFailed": "Failed to create connection {connection}.",
