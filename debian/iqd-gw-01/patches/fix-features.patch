@@ -9,7 +9,7 @@
  # Default gateway user password change
  gatewayPass:
  	enabled: false
-@@ -11,7 +11,7 @@ grafana:
+@@ -11,13 +11,13 @@ grafana:
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -18,7 +18,14 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -27,10 +27,10 @@ nodeRed:
+ # Device maintenance
+ maintenance:
+-	enabled: false
++	enabled: true
+ # Mender client configuration
+ mender:
+ 	enabled: false
+@@ -33,10 +33,10 @@ nodeRed:
  	url: /node-red/
  # PIXLA mamagement system
  pixla:
@@ -31,7 +38,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -43,10 +43,10 @@ updater:
+@@ -49,10 +49,10 @@ updater:
  	enabled: false
  # IQRF TR native upload
  trUpload:
