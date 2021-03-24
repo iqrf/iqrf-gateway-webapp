@@ -5,6 +5,7 @@
 			<CElementCover 
 				v-if='!isSocketConnected'
 				style='z-index: 1;'
+				:opacity='0.85'
 			>
 				{{ $t('iqrfnet.messages.socketError') }}
 			</CElementCover>
