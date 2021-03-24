@@ -204,7 +204,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 	},
 	daemonStatusMode({commit}, mode: string): void {
 		commit('DAEMON_STATUS_MODE', mode);
-	}
+	},
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
@@ -266,7 +266,19 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	DAEMON_STATUS_MODE(state: WebSocketClientState, mode: string) {
 		state.daemonStatus.mode = mode;
-	}
+	},
+	TRIM_MESSAGE_QUEUE(state: WebSocketClientState) {
+		const overload = state.messages.slice(32, state.messages.length - 1);
+		state.messages.splice(32, state.messages.length - 1);
+		overload.forEach((item: WebSocketMessage) => {
+			if (item.msgId in state.requests) {
+				delete state.requests[item.msgId];
+			}
+			if (item.msgId in state.responses) {
+				delete state.responses[item.msgId];
+			}
+		});
+	},
 };
 
 export default {
