@@ -1164,7 +1164,7 @@
 			}
 		},
 		"messages": {
-			"socketError": "IQRF Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
+			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
 		},
 		"enumeration": {
 			"title": "Device enumeration",
@@ -1482,6 +1482,7 @@
 				"autoRepeat": "Auto Repeat",
 				"autoRepeatInterval": "Repeat interval",
 				"autoRepeatTime": "x 100 ms",
+				"activeMessage": "Current message",
 				"messages": {
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",

@@ -1,6 +1,10 @@
 <template>
 	<CCard body-wrapper class='border-0 card-margin-bottom'>
-		<CElementCover v-if='loadFailed'>
+		<CElementCover 
+			v-if='loadFailed'
+			style='z-index: 1;'
+			:opacity='0.85'
+		>
 			{{ $t('config.daemon.messages.failedElement') }}
 		</CElementCover>
 		<ValidationObserver

@@ -2,7 +2,11 @@
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover v-if='loadFailed'>
+			<CElementCover 
+				v-if='loadFailed'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
 				{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
 			</CElementCover>
 			<CSelect

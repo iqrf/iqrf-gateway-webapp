@@ -5,7 +5,11 @@
 				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
 			</CCardHeader>
 			<CCardBody>
-				<CElementCover v-if='loadFailed' style='z-index: 1;'>
+				<CElementCover 
+					v-if='loadFailed'
+					style='z-index: 1;'
+					:opacity='0.85'
+				>
 					{{ $t('config.daemon.messages.failedElement') }}
 				</CElementCover>
 				<ValidationObserver v-slot='{ invalid }'>

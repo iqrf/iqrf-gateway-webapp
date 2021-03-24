@@ -11,10 +11,18 @@
 			</CButton>
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover v-if='loading'>
+			<CElementCover 
+				v-if='loading'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
 				<CSpinner size='5xl' />
 			</CElementCover>
-			<CElementCover v-if='failed'>
+			<CElementCover 
+				v-if='failed'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
 				{{ $t('gateway.log.systemdJournal.messages.journalFetchFailure') }}
 			</CElementCover>
 			<table v-if='config !== null' class='table table-striped'>
