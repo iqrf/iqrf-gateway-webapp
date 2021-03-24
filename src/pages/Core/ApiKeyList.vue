@@ -86,12 +86,16 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+
 import ApiKeyService from '../../services/ApiKeyService';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {DateTime} from 'luxon';
-import { Dictionary } from 'vue-router/types/router';
-import { IField } from '../../interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
+import {extendedErrorToast} from '../../helpers/errorToast';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+
 
 interface ApiKey {
 	description: string
@@ -192,15 +196,7 @@ export default class ApiKeyList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.keys = response.data;
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.apiKey.messages.listFetchFailed',
-						{error: error.response ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.apiKey.messages.listFetchFailed'));
 	}
 
 	/**
@@ -219,15 +215,7 @@ export default class ApiKeyList extends Vue {
 					this.$toast.success(this.$t('core.apiKey.messages.deleteSuccess', {key: key}).toString());
 				});
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.apiKey.messages.deleteFailed',
-						{key: key, error: error.response ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.apiKey.messages.deleteFailed', {key: key}));
 	}
 
 	/**

@@ -124,12 +124,14 @@ import {
 } from '@coreui/vue/src';
 
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
+import { extend } from 'vee-validate';
 
 @Component({
 	components: {
@@ -241,15 +243,7 @@ export default class UserList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.users = response.data;
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.listFetchFailed',
-						{error: error.response ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.listFetchFailed'));
 	}
 
 	/**
@@ -302,15 +296,7 @@ export default class UserList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.editFailed',
-						{error: error.response ? error.response.data.message : error.message, user: user.username},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username}));
 	}
 
 	/**
@@ -335,15 +321,7 @@ export default class UserList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		UserService.delete(user.id)
 			.then(() => this.handleDeleteSuccess(user))
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.deleteFailed',
-						{error: error.response ? error.response.data.message : error.message, user: user.username},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: user.username}));
 	}
 
 	/**

@@ -9,9 +9,9 @@ import {Dictionary} from 'vue-router/types/router';
  * Shows error toast with assignable parameters
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
+ * @param {Dict<string|number>|undefined} params Partial translations for message placeholders
  */
-export function extendedErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function extendedErrorToast(error: AxiosError, message: string, params: Dictionary<string|number>|undefined = undefined): void {
 	const translations = {
 		error: error.response ? error.response.data.message : error.message
 	};

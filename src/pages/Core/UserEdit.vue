@@ -105,6 +105,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 
@@ -179,13 +180,7 @@ export default class UserEdit extends Vue {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.fetchFailed',
-						{error: error.response ? error.response.data.message : error.message, user: this.userId},
-					).toString()
-				);
+				extendedErrorToast(error, 'core.user.messages.fetchFailed', {user: this.userId});
 				this.$router.push('/user/');
 			});
 	}
@@ -201,15 +196,7 @@ export default class UserEdit extends Vue {
 				.then(() => {
 					this.performEdit().then(() => this.signOut());
 				})
-				.catch((error: AxiosError) => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.error(
-						this.$t(
-							'core.user.messages.editFailed',
-							{error: error.response ? error.response.data.message : error.message, user: this.userId},
-						).toString()
-					);
-				});
+				.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.userId}));
 		} else {
 			this.performEdit().then(() => {
 				if (this.$store.getters['user/getId'] === this.userId) {
@@ -236,13 +223,7 @@ export default class UserEdit extends Vue {
 				);
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.editFailed',
-						{error: error.response ? error.response.data.message : error.message, user: this.userId},
-					).toString()
-				);
+				extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.userId});
 				return Promise.reject();
 			});
 	}
