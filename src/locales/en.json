@@ -2138,7 +2138,7 @@
 		"description": "Tools for device management, maintenance and monitoring.",
 		"disabled": "Maintenance feature is disabled.",
 		"pixla": {
-			"title": "PIXLA device management",
+			"title": "PIXLA management",
 			"description": "Manages PIXLA client service.",
 			"dashboard": "Visit dashboard",
 			"editModal": {
@@ -2159,7 +2159,7 @@
 			}
 		},
 		"mender": {
-			"title": "Mender update management",
+			"title": "Mender update",
 			"description": "Manages Mender client service and configuration.",
 			"form": {
 				"inventoryPollInterval": "Inventory update interval (seconds)",
