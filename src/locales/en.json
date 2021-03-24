@@ -103,7 +103,7 @@
 			"unknown": "Unknown"
 		},
 		"websocket": {
-			"title": "Websocket status",
+			"title": "Daemon status",
 			"connected": "Connected",
 			"notConnected": "Not connected"
 		},
@@ -2134,8 +2134,8 @@
 		}
 	},
 	"maintenance": {
-		"title": "Device maintenance",
-		"description": "Tools for device management, maintenance and monitoring.",
+		"title": "Maintenance",
+		"description": "Tools for gateway management, updates and monitoring.",
 		"disabled": "Maintenance feature is disabled.",
 		"pixla": {
 			"title": "PIXLA management",
