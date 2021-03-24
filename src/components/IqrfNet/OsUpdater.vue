@@ -8,6 +8,7 @@
 				<CElementCover 
 					v-if='loadFailed'
 					style='z-index: 1;'
+					:opacity='0.85'
 				>
 					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFail') }}
 				</CElementCover>
