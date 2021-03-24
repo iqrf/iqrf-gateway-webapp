@@ -115,6 +115,9 @@ export default class MonitControl extends Vue {
 	 * Retrieves status of the Monit service
 	 */
 	private getStatus(): Promise<void> {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		return ServiceService.getStatus(this.serviceName)
 			.then((status: ServiceStatus) => {
 				this.service = status;
