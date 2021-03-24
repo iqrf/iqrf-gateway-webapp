@@ -140,7 +140,7 @@
 							/>
 							<ValidationProvider
 								v-slot='{valid, touched, errors}'
-								:rules='timeoutOverwrite ? "integer|min:0|required" : ""'
+								:rules='timeoutOverwrite ? "integer|min:1000|required" : ""'
 								:custom-messages='{
 									integer: "iqrfnet.sendPacket.form.messages.invalid.timeout",
 									min: "iqrfnet.sendPacket.form.messages.invalid.timeout",
@@ -149,6 +149,7 @@
 							>
 								<CInput
 									v-model.number='timeout'
+									min='1000'
 									:disabled='!timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.timeout")'
 									:is-valid='timeoutOverwrite && touched ? valid : null'
@@ -180,6 +181,7 @@
 									type='number'
 									min='10'
 									max='36000'
+									:disabled='timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.autoRepeatInterval")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -300,9 +302,9 @@ export default class SendDpaPacket extends Vue {
 	private intervalId = 0
 
 	/**
-	 * @var {string} msgId Daemon api message id
+	 * @var {Array<string>} msgIds Array of active Daemon API message IDs
 	 */
-	private msgId = ''
+	private msgIds: Array<string> = []
 
 	/**
 	 * @var {string} packetNadr Packet NADR bytes
@@ -382,7 +384,9 @@ export default class SendDpaPacket extends Vue {
 			} else {
 				this.$store.commit('spinner/HIDE');
 			}
-			this.$store.dispatch('removeMessage', this.msgId);
+			if (this.msgIds.length > 0) {
+				this.removeMessage(this.msgIds[this.msgIds.length - 1]);
+			}
 			this.requests.shift();
 		}
 	}
@@ -434,8 +438,8 @@ export default class SendDpaPacket extends Vue {
 				this.handleMessageError(mutation.payload);
 				return;
 			}
-			if (mutation.payload.data.msgId === this.msgId && mutation.payload.mType === 'iqrfRaw') {
-				this.$store.dispatch('removeMessage', this.msgId);
+			if (this.msgIds.includes(mutation.payload.data.msgId) && mutation.payload.mType === 'iqrfRaw') {
+				this.removeMessage(mutation.payload.data.msgId);
 				this.handleResponse(mutation.payload);
 			}
 		});
@@ -445,7 +449,7 @@ export default class SendDpaPacket extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.msgIds.forEach((item: string) => this.removeMessage(item));
 		clearTimeout(this.intervalId);
 		this.unsubscribe();
 	}
@@ -458,7 +462,11 @@ export default class SendDpaPacket extends Vue {
 		if (this.autoRepeat) {
 			this.requests = [];
 			this.responses = [];
-			this.intervalId = window.setInterval(this.handleSubmit, this.autoRepeatInterval*100);
+			this.handleSubmit();
+			this.intervalId = window.setInterval(
+				this.handleSubmit, 
+				this.timeoutOverwrite ? this.timeout : this.autoRepeatInterval*100
+			);
 			return;
 		}
 		clearInterval(this.intervalId);
@@ -467,7 +475,7 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * Handles Send DPA packet form submit event
 	 */
-	private handleSubmit(): Promise<string>|void {
+	private handleSubmit(): void {
 		if (this.packet === '') {
 			this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet').toString());
 			return;
@@ -500,9 +508,8 @@ export default class SendDpaPacket extends Vue {
 				this.$store.commit('spinner/SHOW');
 			}
 		}
-		options.callback = () => this.msgId = '';
-		return this.$store.dispatch('sendRequest', options)
-			.then((msgId: string) => this.msgId = msgId);
+		this.$store.dispatch('sendRequest', options)
+			.then((msgId: string) => this.msgIds.push(msgId));
 	}
 
 	/**
@@ -516,7 +523,7 @@ export default class SendDpaPacket extends Vue {
 		} else {
 			this.responses = [JSON.stringify(response, null, 4)];
 		}
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.removeMessage(response.data.msgId);
 		this.$toast.clear();
 		this.$toast.error(
 			this.$t('iqrfnet.sendPacket.messages.queueFull').toString()
@@ -615,6 +622,18 @@ export default class SendDpaPacket extends Vue {
 			this.timeoutOverwrite = true;
 			this.timeout = newTimeout;
 		}
+	}
+
+	/**
+	 * Removes a satified or failed request from active requests
+	 * @param {string} msgId Daemon API message ID
+	 */
+	private removeMessage(msgId: string): void {
+		let idx = this.msgIds.indexOf(msgId);
+		if (idx !== -1) {
+			this.msgIds.splice(idx, 1);
+		}
+		this.$store.dispatch('removeMessage', msgId);
 	}
 }
 </script>
