@@ -39,7 +39,7 @@ class SystemdJournalManager {
 	 */
 	private const PERSISTENCE = [
 		'enabled' => 'persistent',
-		'disabled' => 'none',
+		'disabled' => 'volatile',
 	];
 
 	/**
