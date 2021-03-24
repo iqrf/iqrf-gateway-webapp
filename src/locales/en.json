@@ -1045,7 +1045,7 @@
 				"swap": "Swap usage",
 				"used": "Used"
 			},
-			"gwMode": "Gateway mode",
+			"gwMode": "Current Daemon mode",
 			"diagnostics": "Download diagnostics"
 		},
 		"datetime": {
@@ -1102,7 +1102,7 @@
 				"service": "Service mode",
 				"unknown": "Unknown"
 			},
-			"startupMode": "Startup mode",
+			"startupMode": "Startup Daemon mode",
 			"messages": {
 				"getFailed": "Failed to retrieve the current gateway mode.",
 				"setFailed": "An error occurred while setting a new gateway mode.",

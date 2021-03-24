@@ -56,12 +56,15 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+
 import ApiKeyService from '../../services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {MetaInfo} from 'vue-meta';
-import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -171,13 +174,7 @@ export default class ApiKeyForm extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.apiKey.messages.fetchFailed',
-						{error: error.response ? error.response.data.message : error.message, key: this.keyId},
-					).toString()
-				);
+				extendedErrorToast(error, 'core.apiKey.messages.fetchFailed', {key: this.keyId});
 				this.$router.push('/api-key/');
 			});
 	}
@@ -222,12 +219,10 @@ export default class ApiKeyForm extends Vue {
 	 * @param {AxiosError} error Axios error
 	 */
 	private handleSaveError(error: AxiosError): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t(
-				'core.apiKey.messages.' + (this.$route.path === '/api-key/add' ? 'add' : 'edit') + 'Failed',
-				{error: error.response ? error.response.data.message : error.message, key: this.keyId},
-			).toString()
+		extendedErrorToast(
+			error,
+			'core.apiKey.messages.' + (this.$route.path === '/api-key/add' ? 'add' : 'edit') + 'Failed',
+			{key: this.keyId}
 		);
 	}
 }

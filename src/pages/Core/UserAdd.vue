@@ -86,6 +86,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 
@@ -155,15 +156,7 @@ export default class UserAdd extends Vue {
 				);
 				this.$router.push('/user/');
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'core.user.messages.addFailed',
-						{error: error.response ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.addFailed'));
 	}
 }
 </script>
