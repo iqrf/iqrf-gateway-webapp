@@ -23,16 +23,16 @@ export function extendedErrorToast(error: AxiosError, message: string, params: D
 }
 
 /**
- * Calls extended error toast with Pixla argument
+ * Calls extended error toast with IQRF Gateway Daemon argument
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function pixlaErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function daemonErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
 	if (params === undefined) {
-		params = {service: 'PIXLA'};
+		params = {service: 'IQRF Gateway Daemon'};
 	} else {
-		Object.assign(params, {service: 'PIXLA'});
+		Object.assign(params, {service: 'IQRF Gateway Daemon'});
 	}
 	extendedErrorToast(error, message, params);
 }
@@ -63,6 +63,21 @@ export function monitErrorToast(error: AxiosError, message: string, params: Dict
 		params = {service: 'Monit'};
 	} else {
 		Object.assign(params, {service: 'Monit'});
+	}
+	extendedErrorToast(error, message, params);
+}
+
+/**
+ * Calls extended error toast with Pixla argument
+ * @param {AxiosError} error Axios error
+ * @param {string} message Path to translation message
+ * @param {Dict<string>|undefined} params Partial translations for message placeholders
+ */
+export function pixlaErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+	if (params === undefined) {
+		params = {service: 'PIXLA'};
+	} else {
+		Object.assign(params, {service: 'PIXLA'});
 	}
 	extendedErrorToast(error, message, params);
 }

@@ -18,10 +18,10 @@
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.msAzure.errors.connectionString"
@@ -59,6 +59,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
@@ -114,13 +115,7 @@ export default class AzureCreator extends Vue {
 				this.$toast.success(this.$t('cloud.messages.success').toString());
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'cloud.msAzure.messages.saveFailed',
-						{error: error.response ? error.response.data.message : error.message}
-					).toString()
-				);
+				extendedErrorToast(error, 'cloud.msAzure.messages.saveFailed');
 				return Promise.reject();
 			});
 	}
@@ -139,15 +134,7 @@ export default class AzureCreator extends Vue {
 							.toString()
 					);
 				})
-				.catch((error: AxiosError) => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.error(
-						this.$t(
-							'service.messages.restartFailed',
-							{error: error.response ? error.response.data.message : error.message, service: 'IQRF Daemon'}
-						).toString()
-					);
-				});
+				.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
 		});
 	}
 }
