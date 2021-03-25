@@ -14,7 +14,7 @@ export interface MqInstance {
 /**
  * MqttMessaging instance interface
  */
-export interface MqttInstance {
+export interface IMqttInstance {
 	acceptAsyncMsg: boolean
 	component: string
 	instance: string

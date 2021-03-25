@@ -304,13 +304,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {MqttInstance} from '../../interfaces/messagingInterfaces';
+import {IMqttInstance} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -344,9 +344,9 @@ export default class MqttMessagingForm extends Vue {
 	private componentName = 'iqrf::MqttMessaging'
 
 	/**
-	 * @var {MqttInstance} configuration MQTT messaging component instance configuration
+	 * @var {IMqttInstance} configuration MQTT messaging component instance configuration
 	 */
-	private configuration: MqttInstance = {
+	private configuration: IMqttInstance = {
 		component: '',
 		instance: '',
 		BrokerAddr: '',
@@ -457,9 +457,8 @@ export default class MqttMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
+				extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.fetchFailed', {instance: this.instance});
 				this.$router.push('/config/daemon/messagings/mqtt');
-				FormErrorHandler.configError(error);
 			});
 	}
 
@@ -471,11 +470,11 @@ export default class MqttMessagingForm extends Vue {
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.editFailed', {instance: this.instance}));
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.addFailed'));
 		}
 	}
 
