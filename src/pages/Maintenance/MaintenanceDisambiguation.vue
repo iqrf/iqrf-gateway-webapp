@@ -25,6 +25,17 @@
 						{{ $t('maintenance.mender.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("monit")'
+					to='/maintenance/monit/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('maintenance.monit.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('maintenance.monit.description') }}
+					</p>
+				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>
