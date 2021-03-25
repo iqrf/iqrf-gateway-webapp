@@ -10,33 +10,7 @@
 			<LogoSmall class='c-sidebar-brand-minimized' :alt='$t("core.title")' />
 		</CSidebarBrand>
 		<CRenderFunction flat :content-to-render='getNav' />
-		<table 
-			v-if='!$store.getters["sidebar/isMinimized"]'
-			class='table'
-		>
-			<tbody>
-				<tr>
-					<td class='item'>
-						{{ $t('daemonStatus.mode') }}
-					</td>
-					<td class='status'>
-						<CBadge :color='daemonBadgeColor'>
-							{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonStatus.mode : 'unknown')) }}
-						</CBadge>
-					</td>
-				</tr>
-				<tr>
-					<td class='item'>
-						{{ $t('daemonStatus.websocket.title') }}
-					</td>
-					<td class='status'>
-						<CBadge :color='isSocketConnected ? "success": "danger"'>
-							{{ $t('daemonStatus.websocket.' + (isSocketConnected ? 'connected' : 'notConnected')) }}
-						</CBadge>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<SidebarIndication />
 		<CSidebarMinimizer
 			class='d-md-down-none'
 			@click.native='$store.commit("sidebar/set", ["minimize", !minimize])'
@@ -52,6 +26,7 @@ import {
 	CSidebarBrand,
 	CSidebarMinimizer,
 } from '@coreui/vue/src';
+import SidebarIndication from './SidebarIndication.vue';
 import {
 	cibGrafana,
 	cibNodeRed,
@@ -69,7 +44,6 @@ import {
 import LogoBig from '../assets/logo-big.svg';
 import LogoSmall from '../assets/logo-small.svg';
 import VueI18n from 'vue-i18n';
-import {mapGetters} from 'vuex';
 
 interface NavMemberItem {
 	component?: string
@@ -112,12 +86,7 @@ interface NavData {
 		CSidebarMinimizer,
 		LogoBig,
 		LogoSmall,
-	},
-	computed: {
-		...mapGetters({
-			daemonStatus: 'daemonStatus',
-			isSocketConnected: 'isSocketConnected',
-		}),
+		SidebarIndication,
 	},
 })
 
@@ -552,26 +521,6 @@ export default class TheSidebar extends Vue {
 		});
 	}
 
-	/**
-	 * Computes Daemon mode badge color
-	 * @returns {string} Daemon mode badge color
-	 */
-	get daemonBadgeColor(): string {
-		const daemonStatus = this.$store.getters.daemonStatus;
-		const socketConnected = this.$store.getters.isSocketConnected;
-		if (!socketConnected) {
-			return 'secondary';
-		}
-		if (daemonStatus.mode === 'unknown') {
-			return 'secondary';
-		} else if (daemonStatus.mode === 'operational' ||
-			daemonStatus.mode === 'forwarding') {
-			return 'success';
-		} else {
-			return 'danger';
-		}
-	}
-
 	private filterChildren(children: Array<NavMember>): Array<NavMember> {
 		let filteredChildren: Array<NavMember> = [];
 		children.forEach((child: NavMember) => {
@@ -612,24 +561,3 @@ export default class TheSidebar extends Vue {
 
 }
 </script>
-
-<style scoped>
-table {
-	color: white;
-	margin-bottom: 0.5rem;
-}
-
-.item {
-	border-top: 0;
-	text-align: left;
-	padding: 0;
-	padding-left: 1.25rem;
-}
-
-.status {
-	border-top: 0;
-	text-align: right;
-	padding: 0;
-	padding-right: 1.25rem
-}
-</style>

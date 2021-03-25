@@ -89,6 +89,7 @@ export interface WebSocketClientState {
 export interface DaemonStatus {
 	mode: string;
 	modal: boolean;
+	queueLen: number;
 }
 
 /**
@@ -119,6 +120,7 @@ const state: WebSocketClientState = {
 	daemonStatus: {
 		mode: 'unknown',
 		modal: false,
+		queueLen: 0,
 	},
 	version: {
 		daemonVersion: '',
@@ -278,6 +280,9 @@ const mutations: MutationTree<WebSocketClientState> = {
 				delete state.responses[item.msgId];
 			}
 		});
+	},
+	UPDATE_DAEMON_QUEUE_LEN(state: WebSocketClientState, len: number) {
+		state.daemonStatus.queueLen = len;
 	},
 };
 

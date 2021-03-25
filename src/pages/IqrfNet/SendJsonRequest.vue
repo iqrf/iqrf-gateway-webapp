@@ -75,7 +75,7 @@
 					>
 						<JsonMessage
 							v-for='rsp of activeMessagePair.response'
-							:key='activeMessagePair.response.indexOf(rsp)'
+							:key='i = activeMessagePair.response.indexOf(rsp)'
 							:message='rsp'
 							type='response'
 							source='sendJson'
