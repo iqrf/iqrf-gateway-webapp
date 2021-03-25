@@ -368,11 +368,11 @@
 				"title": "Messagings",
 				"description": "Configuration of messagings.",
 				"mqtt": {
-					"title": "MQTT interface",
-					"description": "MQTT interface settings.",
-					"legend": "MQTT interface instance",
-					"add": "Add MQTT interface",
-					"edit": "Edit MQTT interface",
+					"title": "MQTT messaging",
+					"description": "MQTT messaging settings.",
+					"legend": "MQTT messaging instance",
+					"add": "Add MQTT messaging instance",
+					"edit": "Edit MQTT messaging instance",
 					"form": {
 						"BrokerAddr": "Broker address",
 						"Persistence": "Persistence",
@@ -509,20 +509,25 @@
 					}
 				},
 				"mq": {
-					"title": "MQ interface",
-					"description": "MQ interface settings.",
-					"add": "Add MQ interface",
-					"edit": "Edit MQ interface",
+					"title": "MQ messaging",
+					"description": "MQ messaging settings.",
+					"add": "Add MQ messaging instance",
+					"edit": "Edit MQ messaging instance",
 					"form": {
 						"LocalMqName": "Local MQ name",
 						"RemoteMqName": "Remote MQ name"
 					},
 					"messages": {
-						"addSuccess": "MQ interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete MQ interface instance {instance}?",
-						"deleteTitle": "Delete MQ interface instance",
-						"deleteSuccess": "MQ interface instance {instance} has been deleted.",
-						"editSuccess": "MQ interface instance {instance} has been edited."
+						"addFailed": "Failed to create new MQ messaging instance: {error}",
+						"addSuccess": "MQ messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete MQ messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete MQ messaging instance {instance}?",
+						"deleteSuccess": "MQ messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete MQ messaging instance",
+						"editFailed": "Failed to edit MQ messaging instance {instance}: {error}",
+						"editSuccess": "MQ messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve MQ messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of MQ messaging instances: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of MQ instance.",

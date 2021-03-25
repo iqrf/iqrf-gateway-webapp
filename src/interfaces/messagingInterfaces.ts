@@ -3,7 +3,7 @@ import {RequiredInterface} from './requiredInterfaces';
 /**
  * MqMessaging instance interface
  */
-export interface MqInstance {
+export interface IMqInstance {
 	acceptAsyncMsg: boolean
 	component: string
 	instance: string
