@@ -212,16 +212,10 @@ import {between, integer, min_value, required, min, max} from 'vee-validate/dist
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import sendPacket from '../../iqrfNet/sendPacket';
 
+import {IMessagePairPacket} from '../../interfaces/iqrfnet';
+import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {RawMessage} from '../../interfaces/dpa';
-import {IOption} from '../../interfaces/coreui';
-
-interface IMessagePair {
-	msgId: string
-	request: string
-	response: string|undefined
-	label: string
-}
 
 @Component({
 	components: {
@@ -309,7 +303,7 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
 	 */
-	private activeMessagePair: IMessagePair|null = null
+	private activeMessagePair: IMessagePairPacket|null = null
 
 	/**
 	 * @var {number} activeIdx Indec of active message pair
@@ -319,7 +313,7 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * @var {Array<IMessagePair>} messages Array of Daemon API request and response pairs
 	 */
-	private messages: Array<IMessagePair> = []
+	private messages: Array<IMessagePairPacket> = []
 
 	/**
 	 * @var {Array<string>} msgIds Array of active Daemon API message IDs
@@ -337,7 +331,7 @@ export default class SendDpaPacket extends Vue {
 	 */
 	get messageOptions(): Array<IOption> {
 		let options: Array<IOption> = [];
-		this.messages.forEach((item: IMessagePair) => {
+		this.messages.forEach((item: IMessagePairPacket) => {
 			options.push({
 				label: item.label,
 				value: this.messages.indexOf(item),
@@ -470,7 +464,7 @@ export default class SendDpaPacket extends Vue {
 	 * Handles Daemon API messageError response
 	 */
 	private handleMessageError(response): void {
-		let idx = this.messages.findIndex((item: IMessagePair) => item.msgId === response.data.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
@@ -487,7 +481,7 @@ export default class SendDpaPacket extends Vue {
 	 * @param response Daemon API response payload
 	 */
 	private handleResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePair) => item.msgId === response.data.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
