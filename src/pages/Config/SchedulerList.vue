@@ -155,20 +155,22 @@
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
-import {fileDownloader} from '../../helpers/fileDownloader';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
-import SchedulerService from '../../services/SchedulerService';
-import ServiceService from '../../services/ServiceService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import {DateTime, Duration} from 'luxon';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import {Dictionary} from 'vue-router/types/router';
-import {IField} from '../../interfaces/coreui';
-import {AxiosError, AxiosResponse} from 'axios';
-import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
-import {MutationPayload} from 'vuex';
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
+import {fileDownloader} from '../../helpers/fileDownloader';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
+import ServiceService from '../../services/ServiceService';
+import SchedulerService from '../../services/SchedulerService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -460,7 +462,7 @@ export default class SchedulerList extends Vue {
 					this.tasks = response.data;
 					this.retrieved = 'rest';
 				})
-				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest'));
 		} else {
 			SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 				.then((msgId: string) => this.storeId(msgId));
@@ -495,7 +497,7 @@ export default class SchedulerList extends Vue {
 					);
 					this.getTasks();
 				})
-				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: task}));
 		} else {
 			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
@@ -525,7 +527,8 @@ export default class SchedulerList extends Vue {
 				const fileName = 'iqrf-gateway-scheduler_' + + new Date().toISOString();
 				const file = fileDownloader(response, 'application/zip', fileName);
 				file.click();
-			});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.exportFailed'));
 	}
 
 	/**
@@ -537,36 +540,21 @@ export default class SchedulerList extends Vue {
 		const files = this.getFile();
 		SchedulerService.importConfig(files[0])
 			.then(() => {
+				this.$toast.success(
+					this.$t('config.daemon.scheduler.messages.importSuccess').toString()
+				);
 				ServiceService.restart('iqrf-gateway-daemon')
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('config.daemon.scheduler.messages.importSuccess').toString()
-						);
 						this.$toast.info(
 							this.$t('service.iqrf-gateway-daemon.messages.restart')
 								.toString()
 						);
 						this.getTasks();
 					})
-					.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				if (error.response === undefined) {
-					return;
-				}
-				if (error.response.status === 400) {
-					this.$toast.error(
-						this.$t('config.daemon.scheduler.messages.importInvalidFile').toString()
-					);
-				} else if (error.response.status === 415) {
-					this.$toast.error(
-						this.$t('config.daemon.scheduler.messages.importInvalidFormat')
-							.toString()
-					);
-				}
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
 	}
 
 	/**
