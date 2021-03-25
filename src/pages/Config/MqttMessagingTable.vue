@@ -231,7 +231,7 @@ export default class MqttMessagingTable extends Vue {
 
 	/**
 	 * Assigns name of MQTT messaging instance selected to remove to the remove modal
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {IMqttInstance} instance MQTT messaging instance
 	 */
 	private confirmDelete(instance: IMqttInstance): void {
 		this.deleteInstance = instance.instance;
@@ -239,7 +239,7 @@ export default class MqttMessagingTable extends Vue {
 
 	/**
 	 * Updates message accepting configuration of MQTT messaging component instance
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {IMqttInstance} instance MQTT messaging instance
 	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
 	 */
 	private changeAcceptAsyncMsg(instance: IMqttInstance, acceptAsyncMsg: boolean): void {
@@ -251,7 +251,7 @@ export default class MqttMessagingTable extends Vue {
 
 	/**
 	 * Updates SSL configuratin of MQTT messaging component instance
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {IMqttInstance} instance MQTT messaging instance
 	 * @param {boolean} enabledSsl SSL setting
 	 */
 	private changeEnabledSSL(instance: IMqttInstance, enabledSsl: boolean) : void{
@@ -263,7 +263,7 @@ export default class MqttMessagingTable extends Vue {
 
 	/**
 	 * Saves changes in MQTT messaging instance configuration
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {IMqttInstance} instance MQTT messaging instance
 	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
 	 */
 	private edit(instance: IMqttInstance, newSettings: Dictionary<boolean>): void {

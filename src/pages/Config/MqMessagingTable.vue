@@ -112,12 +112,14 @@ import {
 	CModal
 } from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import { Dictionary } from 'vue-router/types/router';
-import { IField } from '../../interfaces/coreui';
-import { MqInstance } from '../../interfaces/messagingInterfaces';
-import { AxiosResponse } from 'axios';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {IMqInstance} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -192,7 +194,7 @@ export default class MqMessagingTable extends Vue {
 	/**
 	 * @var {Array<MqInstance>} instances Array of MQ messaging component instances
 	 */
-	private instances: Array<MqInstance> = []
+	private instances: Array<IMqInstance> = []
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -204,32 +206,36 @@ export default class MqMessagingTable extends Vue {
 	
 	/**
 	 * Assigns name of MQ messaging instance selected to remove to the remove modal
-	 * @param {MqInstance} instance MQ messaging instance
+	 * @param {IMqInstance} instance MQ messaging instance
 	 */
-	private confirmDelete(instance: MqInstance): void {
+	private confirmDelete(instance: IMqInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
 	/**
 	 * Updates configuration of MQ messaging component instance
-	 * @param {MqInstance} instance MQ messaging instance
+	 * @param {IMqInstance} instance MQ messaging instance
 	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
 	 */
-	private changeAcceptAsyncMsg(instance: MqInstance, acceptAsyncMsg: boolean): void {
+	private changeAcceptAsyncMsg(instance: IMqInstance, acceptAsyncMsg: boolean): void {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
 		}
+		let settings = {
+			...instance
+		};
+		settings.acceptAsyncMsg = acceptAsyncMsg;
 		this.$store.commit('spinner/SHOW');
-		instance.acceptAsyncMsg = acceptAsyncMsg;
-		DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
+		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, instance)
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: instance.instance})
+						this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: settings.instance})
 							.toString()
 					);
 				});
-			});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: settings.instance}));
 	}
 
 	/**
@@ -242,7 +248,7 @@ export default class MqMessagingTable extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed'));
 	}
 
 	/**
@@ -261,7 +267,7 @@ export default class MqMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.deleteFailed', {instance: instance}));
 	}	
 }
 </script>
