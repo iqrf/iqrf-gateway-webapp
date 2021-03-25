@@ -18,6 +18,9 @@ interface IMessagePair {
 	label: string
 }
 
+/**
+ * DPA packet message pair interface
+ */
 export interface IMessagePairPacket extends IMessagePair {
 	/**
 	 * Response string
@@ -25,8 +28,12 @@ export interface IMessagePairPacket extends IMessagePair {
 	response: string|undefined
 }
 
+/**
+ * JSON request message pair interface
+ */
 export interface IMessagePairRequest extends IMessagePair {
 	/**
 	 * Array of responses
 	 */
 	response: Array<string>
+}

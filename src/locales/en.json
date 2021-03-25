@@ -107,7 +107,7 @@
 			"connected": "Connected",
 			"notConnected": "Not connected"
 		},
-		"queue": "Daemon queue length",
+		"queue": "Daemon queue",
 		"modalTitle": "Daemon mode notice",
 		"modalPrompt": "IQRF GW Daemon is in service mode. Change Daemon mode to operational or forwarding before using this feature."
 	},
@@ -1065,7 +1065,7 @@
 				"swap": "Swap usage",
 				"used": "Used"
 			},
-			"gwMode": "Current Daemon mode",
+			"gwMode": "Daemon mode",
 			"diagnostics": "Download diagnostics"
 		},
 		"datetime": {
@@ -1122,6 +1122,7 @@
 				"service": "Service mode",
 				"unknown": "Unknown"
 			},
+			"currentMode": "Current Daemon mode",
 			"startupMode": "Startup Daemon mode",
 			"messages": {
 				"getFailed": "Failed to retrieve the current gateway mode.",
