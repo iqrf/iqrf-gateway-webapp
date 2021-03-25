@@ -399,11 +399,16 @@
 						"EnableServerCertAuth": "Enable server certificate authentication"
 					},
 					"messages": {
-						"addSuccess": "MQTT interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete MQTT interface instance {instance}?",
-						"deleteTitle": "Delete MQTT interface instance",
-						"deleteSuccess": "MQTT interface instance {instance} has been deleted.",
-						"editSuccess": "MQTT interface instance {instance} has been edited.",
+						"addFailed": "Failed to create new MQTT messaging instance: {error}",
+						"addSuccess": "MQTT messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete MQTT messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete MQTT messaging instance {instance}?",
+						"deleteSuccess": "MQTT messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete MQTT messaging instance",
+						"editFailed": "Failed to edit MQTT messaging instance {instance}: {error}",
+						"editSuccess": "MQTT messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of MQTT messaging instances: {error}",
 						"persistence": {
 							"0": "State of in-flight messages is lost in case of a client shutsdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
 							"1": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
