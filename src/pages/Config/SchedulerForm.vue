@@ -196,6 +196,7 @@ import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskTimeSpec} from '../../interfa
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 interface ILocalTask {
 	message: string
@@ -575,12 +576,9 @@ export default class SchedulerForm extends Vue {
 					this.handleGetTaskRest(response.data);
 					this.$store.commit('spinner/HIDE');
 				})
-				.catch(() => {
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'config.daemon.scheduler.messages.getFail', {task: this.id});
 					this.$router.push('/config/daemon/scheduler/');
-					this.$toast.error(
-						this.$t('config.daemon.scheduler.messages.getFail', {task: this.id})
-							.toString()
-					);
 				});
 		} else {
 			SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000, null, () => this.$router.push('/config/scheduler/')))
@@ -686,12 +684,9 @@ export default class SchedulerForm extends Vue {
 					}
 				});
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.scheduler.messages.messagingFailed');
 				this.$router.push('/config/daemon/scheduler/');
-				this.$toast.error(
-					this.$t('config.daemon.scheduler.messages.rest.messagingFail').toString()
-				);
 			});
 	}
 
@@ -746,7 +741,7 @@ export default class SchedulerForm extends Vue {
 			if (this.useRest) {
 				SchedulerService.addTaskREST(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit())
 					.then(() => this.successfulSave())
-					.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.addFailedRest'));
 			} else {
 				SchedulerService.addTask(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit(), new WebSocketOptions(
 					null, 30000, 'config.daemon.scheduler.messages.processError'))
@@ -756,7 +751,7 @@ export default class SchedulerForm extends Vue {
 			if (this.useRest) {
 				SchedulerService.editTaskREST(this.id, this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit())
 					.then(() => this.successfulSave())
-					.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.editFailedRest'));
 			} else {
 				SchedulerService.removeTask(this.id, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 					.then((msgId: string) => this.storeId(msgId));

@@ -599,24 +599,28 @@
 					}
 				},
 				"messages": {
+					"exportFailed": "Failed to export scheduler tasks: {error}",
+					"importFailed": "Failed to import scheduler task(s): {error}",
 					"importSuccess": "The tasks has been imported successfully.",
-					"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
-					"importInvalidFile": "The uploaded file is invalid.",
 					"deleteTitle": "Delete scheduler task",
 					"deletePrompt": "Do you really want to delete scheduler task {task}?",
 					"deleteSuccess": "Scheduler task has been successfully deleted.",
 					"deleteFail": "An error occurred while removing task.",
-					"getFail": "Could not retrieve task {task}.",
+					"deleteFailedRest": "Failed to delete task {task}: {error}",
+					"getFail": "Failed to retrieve task {task}: {error}",
 					"listFailed": "Failed to retrieve list of scheduler tasks",
+					"listFailedRest": "Failed to retrieve list of scheduler tasks: {error}",
+					"addFailedRest": "Failed to create new scheduler task: {error}",
 					"addSuccess": "Scheduler task has been successfully added.",
+					"editFailedRest": "Failed to edit scheduler task: {error}",
 					"editSuccess": "Scheduler task {task} has been successfully edited.",
 					"processError": "An error has occurred while processing Daemon API request.",
+					"messagingFailed": "Failed to retrieve messaging services: {error}",
 					"rest": {
 						"invalidTask": "Task configuration is not valid.",
 						"invalidFile": "Imported scheduler configuration is not valid.",
 						"notFound": "Task does not exist.",
-						"exists": "Task with this ID already exists.",
-						"messagingFail": "Failed to retrieve messaging services."
+						"exists": "Task with this ID already exists."
 					}
 				}
 			},
@@ -1062,10 +1066,10 @@
 				"timezone": "Please select a timezone."
 			},
 			"messages": {
-				"timeSuccess": "Gateway time has been successfully changed.",
-				"timeFailure": "An error has occured while changing gateway time",
-				"timezoneSuccess": "Gateway timezone has been successfully changed.",
-				"timezoneFailure": "An error has occured while changing gateway timezone."
+				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
+				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
+				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
+				"timezoneSetFailed": "Failed to change timezone: {error}."
 			}
 		},
 		"log": {

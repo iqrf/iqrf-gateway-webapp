@@ -71,13 +71,15 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {DateTime} from 'luxon';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
-import {ITime, ITimezone} from '../../interfaces/gatewayTime';
+
 import {AxiosError, AxiosResponse} from 'axios';
-import ToastClear from '../../helpers/ToastClear';
+import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {IOption} from '../../interfaces/coreui';
-import {DateTime} from 'luxon';
 
 @Component({
 	components: {
@@ -200,10 +202,7 @@ export default class GatewayTime extends Vue {
 				}, 1000);
 				this.getTimezones();
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				console.error(error);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timeGetFailed'));
 	}
 
 	/**
@@ -215,10 +214,7 @@ export default class GatewayTime extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.readTimezones(response.data.timezones);
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				console.error(error);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timezoneGetFailed'));
 	}
 
 	/**
@@ -243,16 +239,18 @@ export default class GatewayTime extends Vue {
 		this.$store.commit('spinner/SHOW');
 		TimeService.setTimezone({timezone: this.timezone})
 			.then(() => {
-				ToastClear.success('gateway.datetime.messages.timezoneSuccess');
+				this.$toast.success(
+					this.$t('gateway.datetime.messages.timezoneSetSuccess').toString()
+				);
 				this.clearActiveInterval();
 				this.getTime();
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				console.error(error);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timezoneSetFailed'));
 	}
 
+	/**
+	 * Clears active time refresh interval
+	 */
 	private clearActiveInterval(): void {
 		if (this.timeRefreshInterval !== null) {
 			clearInterval(this.timeRefreshInterval);
