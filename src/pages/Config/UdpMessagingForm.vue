@@ -72,12 +72,14 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import {between, required} from 'vee-validate/dist/rules';
-import { UdpInstance } from '../../interfaces/messagingInterfaces';
-import { MetaInfo } from 'vue-meta';
-import { AxiosError, AxiosResponse } from 'axios';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IUdpInstance} from '../../interfaces/messagingInterfaces';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
@@ -107,9 +109,9 @@ export default class UdpMessagingForm extends Vue {
 	private componentName = 'iqrf::UdpMessaging'
 
 	/**
-	 * @var {UdpInstance} configuration UDP messaging component instance configuration
+	 * @var {IUdpInstance} configuration UDP messaging component instance configuration
 	 */
-	private configuration: UdpInstance = {
+	private configuration: IUdpInstance = {
 		component: '',
 		instance: '',
 		RemotePort: 55000,
@@ -140,7 +142,7 @@ export default class UdpMessagingForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules and retrieves component config
 	 */
 	created(): void {
 		extend('between', between);
@@ -161,8 +163,8 @@ export default class UdpMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.udp.messages.fetchFailed', {instance: this.instance});
 				this.$router.push('/config/daemon/messagings/udp');
-				FormErrorHandler.configError(error);
 			});
 	}
 
@@ -174,11 +176,11 @@ export default class UdpMessagingForm extends Vue {
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.editFailed', {instance: this.instance}));
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.addFailed'));
 		}
 	}
 

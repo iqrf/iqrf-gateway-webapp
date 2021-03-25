@@ -192,7 +192,7 @@ export default class MqMessagingTable extends Vue {
 	}
 
 	/**
-	 * @var {Array<MqInstance>} instances Array of MQ messaging component instances
+	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances
 	 */
 	private instances: Array<IMqInstance> = []
 

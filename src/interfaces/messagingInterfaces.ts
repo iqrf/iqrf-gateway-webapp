@@ -118,7 +118,7 @@ export interface IWsService {
 /**
  * UdpMessaging instance interface
  */
-export interface UdpInstance {
+export interface IUdpInstance {
 	component: string
 	instance: string
 	LocalPort: number

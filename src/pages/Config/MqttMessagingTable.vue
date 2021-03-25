@@ -217,7 +217,7 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	/**
-	 * @var {Array<MqttInstance>} instances Array of MQTT messaging component instances
+	 * @var {Array<IMqttInstance>} instances Array of MQTT messaging component instances
 	 */
 	private instances: Array<IMqttInstance> = []
 

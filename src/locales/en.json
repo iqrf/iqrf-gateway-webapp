@@ -536,23 +536,28 @@
 					}
 				},
 				"udp": {
-					"title": "UDP interface",
-					"description": "IQRF UDP interface settings.",
-					"add": "Add UDP interface",
-					"edit": "Edit UDP interface",
+					"title": "UDP messaging",
+					"description": "IQRF UDP messaging settings.",
+					"add": "Add UDP messaging instance",
+					"edit": "Edit UDP messaging instance",
 					"form": {
 						"RemotePort": "Remote port",
 						"LocalPort": "Local port"
 					},
 					"messages": {
-						"addSuccess": "UDP interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete UDP interface instance {instance}?",
-						"deleteTitle": "Delete UDP interface instance",
-						"deleteSuccess": "UDP interface instance {instance} has been deleted.",
-						"editSuccess": "UDP interface instance {instance} has been edited."
+						"addFailed": "Failed to create new UDP messaging instance: {error}",
+						"addSuccess": "UDP messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete UDP messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete UDP messaging instance {instance}?",
+						"deleteSuccess": "UDP messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete UDP messaging instance",
+						"editFailed": "Failed to edit UDP messaging instance {instance}: {error}",
+						"editSuccess": "UDP messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve UDP messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of UDP messaging instances: {error}"
 					},
 					"errors": {
-						"instance": "Please enter name of UDP interface.",
+						"instance": "Please enter name of UDP messaging instance.",
 						"RemotePort": "Please enter remote port - integer between 1 and 65535.",
 						"LocalPort": "Please enter local port - integer between 1 and 65535."
 					}
