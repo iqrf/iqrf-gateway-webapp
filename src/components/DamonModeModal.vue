@@ -85,7 +85,7 @@ export default class DaemonModeModal extends Vue {
 			this.parseMonitor(JSON.parse(event.data));
 		};
 		this.webSocket.onerror = ()=> {
-			this.webSocket!.close();
+			this.webSocket?.close();
 		};
 		this.webSocket.onopen = () => {
 			window.clearInterval(this.reconnectInterval);
@@ -106,6 +106,7 @@ export default class DaemonModeModal extends Vue {
 		if (mode !== this.$store.getters.daemonStatus.mode) {
 			this.$store.dispatch('daemonStatusMode', mode);
 		}
+		this.$store.commit('UPDATE_DAEMON_QUEUE_LEN', message.data.msgQueueLen);
 	}
 
 	/**
