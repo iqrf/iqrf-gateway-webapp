@@ -160,43 +160,7 @@
 							</ValidationProvider>
 						</CCol>
 					</CRow>
-					<CRow>
-						<CCol md='6'>
-							<CInputCheckbox
-								:checked.sync='autoRepeat'
-								:label='$t("iqrfnet.sendPacket.form.autoRepeat")'
-								:disabled='invalid'
-								@change='handleInterval'
-							/> 
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='integer|required|between:10,36000'
-								:custom-messages='{
-									integer: "forms.errors.integer",
-									between: "iqrfnet.sendPacket.form.messages.invalid.autoRepeatInterval",
-									required: "iqrfnet.sendPacket.form.messages.invalid.autoRepeatInterval"
-								}'
-							>
-								<CInput
-									v-model.number='autoRepeatInterval'
-									type='number'
-									min='10'
-									max='36000'
-									:disabled='timeoutOverwrite'
-									:label='$t("iqrfnet.sendPacket.form.autoRepeatInterval")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								>
-									<template #append-content>
-										<span>
-											{{ $t('iqrfnet.sendPacket.form.autoRepeatTime') }}
-										</span>
-									</template>
-								</CInput>
-							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CButton color='primary' type='submit' :disabled='invalid || autoRepeat'>
+					<CButton color='primary' type='submit' :disabled='invalid'>
 						{{ $t('forms.send') }}
 					</CButton>
 				</CForm>
@@ -237,7 +201,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
@@ -256,6 +220,7 @@ interface IMessagePair {
 	msgId: string
 	request: string
 	response: string|undefined
+	label: string
 }
 
 @Component({
@@ -300,16 +265,6 @@ export default class SendDpaPacket extends Vue {
 	 * @var {boolean} addressOverwrite Controls whether packet address bytes should be overwritten
 	 */
 	private addressOverwrite = false
-
-	/**
-	 * @var {boolean} autoRepeat Send request repeatedly in specified interval
-	 */
-	private autoRepeat = false
-
-	/**
-	 * @var {number} autoRepeatInterval Interval in ms * 100
-	 */
-	private autoRepeatInterval = 10
 
 	/**
 	 * @var {number} intervalId Interval ID
@@ -384,7 +339,7 @@ export default class SendDpaPacket extends Vue {
 		let options: Array<IOption> = [];
 		this.messages.forEach((item: IMessagePair) => {
 			options.push({
-				label: item.msgId,
+				label: item.label,
 				value: this.messages.indexOf(item),
 			});
 		});
@@ -408,22 +363,6 @@ export default class SendDpaPacket extends Vue {
 	 */
 	get generateMask(): string {
 		return 'HH.'.repeat(56) + 'HH';
-	}
-
-	@Watch('isSocketConnected')
-	private errorRecovery(): void {
-		if (!this.$store.getters.isSocketConnected) {
-			if (this.autoRepeat) {
-				this.autoRepeat = false;
-				clearTimeout(this.intervalId);
-			} else {
-				this.$store.commit('spinner/HIDE');
-			}
-			if (this.msgIds.length > 0) {
-				this.removeMessage(this.msgIds[this.msgIds.length - 1]);
-			}
-			this.messages.shift();
-		}
 	}
 
 	/**
@@ -458,19 +397,12 @@ export default class SendDpaPacket extends Vue {
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
-				if (this.autoRepeat) {
-					this.messages.unshift({
-						msgId: mutation.payload.data.msgId,
-						request: JSON.stringify(mutation.payload, null, 4),
-						response: undefined
-					});
-				} else {
-					this.messages = [{
-						msgId: mutation.payload.data.msgId,
-						request: JSON.stringify(mutation.payload, null, 4),
-						response: undefined
-					}];
-				}
+				this.messages.unshift({
+					msgId: mutation.payload.data.msgId,
+					request: JSON.stringify(mutation.payload, null, 4),
+					response: undefined,
+					label: '[' + new Date().toLocaleString() + ']: ' + sendPacket.Packet.parse(this.packet).toCompactString() + ' (' + mutation.payload.data.msgId + ')',
+				});
 				this.activeMessagePair = this.messages[0];
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
@@ -493,25 +425,7 @@ export default class SendDpaPacket extends Vue {
 	 */
 	beforeDestroy(): void {
 		this.msgIds.forEach((item: string) => this.removeMessage(item));
-		clearTimeout(this.intervalId);
 		this.unsubscribe();
-	}
-
-	/**
-	 * Sets interval and asynchronous DPA packet sending if auto repeat checkbox is set to true.
-	 * Clears interval otherwise.
-	 */
-	private handleInterval(): void {
-		if (this.autoRepeat) {
-			this.messages = [];
-			this.handleSubmit();
-			this.intervalId = window.setInterval(
-				this.handleSubmit, 
-				this.timeoutOverwrite ? this.timeout : this.autoRepeatInterval*100
-			);
-			return;
-		}
-		clearInterval(this.intervalId);
 	}
 
 	/**
@@ -546,9 +460,7 @@ export default class SendDpaPacket extends Vue {
 		} else {
 			options.timeout = 60000;
 			options.message = 'iqrfnet.sendPacket.messages.failure';
-			if (!this.autoRepeat) {
-				this.$store.commit('spinner/SHOW');
-			}
+			this.$store.commit('spinner/SHOW');
 		}
 		this.$store.dispatch('sendRequest', options)
 			.then((msgId: string) => this.msgIds.push(msgId));
@@ -561,10 +473,6 @@ export default class SendDpaPacket extends Vue {
 		let idx = this.messages.findIndex((item: IMessagePair) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
-		}
-		if (this.autoRepeat) {
-			this.autoRepeat = false;
-			clearTimeout(this.intervalId);
 		}
 		this.removeMessage(response.data.msgId);
 		this.$store.commit('TRIM_MESSAGE_QUEUE');

@@ -109,6 +109,16 @@ class Packet {
 			this.hwpid & 255, this.hwpid >> 8, ...this.pdata
 		].map(int => int.toString(16).padStart(2, '0')).join('.');
 	}
+
+	/**
+	 * Retuyrns DPA packet string without PDATA
+	 * @returns 
+	 */
+	toCompactString(): string {
+		return [
+			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd, this.hwpid & 255, this.hwpid >> 8
+		].map(int => int.toString(16).padStart(2, '0')).join('.');
+	}
 }
 
 /**
