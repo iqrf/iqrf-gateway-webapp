@@ -5,7 +5,7 @@
 			<table class='table table-striped'>
 				<tbody>
 					<tr>
-						<th>{{ $t('gateway.info.gwMode') }}</th>
+						<th>{{ $t('gateway.mode.currentMode') }}</th>
 						<td style='text-align: right;'>
 							<div 
 								v-if='!loaded && mode === "unknown"'
@@ -198,7 +198,7 @@ export default class DaemonMode extends Vue {
 	 * Retrieves Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.msgId = null)
+		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = null; this.loaded = true;})
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

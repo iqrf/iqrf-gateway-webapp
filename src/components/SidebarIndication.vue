@@ -30,7 +30,7 @@
 				</td>
 				<td class='status'>
 					<CBadge :color='daemonQueueBadgeColor'>
-						{{ daemonStatus.queueLen }}
+						{{ 'Length: ' + daemonStatus.queueLen }}
 					</CBadge>
 				</td>
 			</tr>
