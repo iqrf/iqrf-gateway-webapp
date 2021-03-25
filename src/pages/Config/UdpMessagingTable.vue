@@ -86,24 +86,16 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CButtonClose,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-	CModal
-} from '@coreui/vue/src';
+import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService
-	from '../../services/DaemonConfigurationService';
-import { IField } from '../../interfaces/coreui';
-import { Dictionary } from 'vue-router/types/router';
-import { AxiosError, AxiosResponse } from 'axios';
-import { UdpInstance } from '../../interfaces/messagingInterfaces';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {IUdpInstance} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -169,9 +161,9 @@ export default class UdpMessagingTable extends Vue {
 	}
 
 	/**
-	 * @var {Array<UdpInstance>} instances Array of UDP messaging component instances
+	 * @var {Array<IUdpInstance>} instances Array of UDP messaging component instances
 	 */
-	private instances: Array<UdpInstance> = []
+	private instances: Array<IUdpInstance> = []
 
 	/**
 	 * Vue lifecycle hook created
@@ -189,9 +181,9 @@ export default class UdpMessagingTable extends Vue {
 
 	/**
 	 * Assigns name of UDP messaging instances selected to remove to the remove modal
-	 * @param {UdpInstance} instance UDP messaging instance
+	 * @param {IUdpInstance} instance UDP messaging instance
 	 */
-	private confirmDelete(instance: UdpInstance): void {
+	private confirmDelete(instance: IUdpInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
@@ -205,7 +197,7 @@ export default class UdpMessagingTable extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.listFailed'));
 	}
 
 	/**
@@ -224,7 +216,7 @@ export default class UdpMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.deleteFailed', {instance: instance}));
 	}
 }
 </script>
