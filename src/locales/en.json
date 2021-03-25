@@ -1457,7 +1457,8 @@
 			"description": "Send JSON request.",
 			"documentation": "Show API documentation.",
 			"form": {
-				"json": "JSON request"
+				"json": "JSON request",
+				"activeMessage": "Request history"
 			},
 			"messages": {
 				"timeout": "Daemon API request timed out.",
@@ -1501,7 +1502,7 @@
 				"autoRepeat": "Auto Repeat",
 				"autoRepeatInterval": "Repeat interval",
 				"autoRepeatTime": "x 100 ms",
-				"activeMessage": "Current message",
+				"activeMessage": "Packet history",
 				"messages": {
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",

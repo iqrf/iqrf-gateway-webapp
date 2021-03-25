@@ -50,16 +50,40 @@
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<div>
-			<CRow>
-				<CCol v-if='request !== ""' md='6'>
-					<JsonMessage :message='request' type='request' source='sendJson' />
-				</CCol>
-				<CCol v-if='response !== ""' md='6'>
-					<JsonMessage :message='response' type='response' source='sendJson' />
-				</CCol>
-			</CRow>
-		</div>
+		<CCard 
+			v-if='messages.length !== 0'
+			body-wrapper
+		>
+			<CSelect
+				:value.sync='activeIdx'
+				:label='$t("iqrfnet.sendJson.form.activeMessage")'
+				:options='messageOptions'
+				@change='activeMessagePair = messages[activeIdx]'
+			/>
+			<div v-if='activeMessagePair !== null'>
+				<CRow>
+					<CCol md='6'>
+						<JsonMessage
+							:message='activeMessagePair.request'
+							type='request'
+							source='sendJson'
+						/>
+					</CCol>
+					<CCol 
+						v-if='activeMessagePair.response !== []'
+						md='6'
+					>
+						<JsonMessage
+							v-for='rsp of activeMessagePair.response'
+							:key='activeMessagePair.response.indexOf(rsp)'
+							:message='rsp'
+							type='response'
+							source='sendJson'
+						/>
+					</CCol>
+				</CRow>
+			</div>
+		</CCard>
 	</div>
 </template>
 
@@ -78,6 +102,8 @@ import {v4 as uuidv4} from 'uuid';
 import IqrfNetService from '../../services/IqrfNetService';
 import validate from '../../helpers/validate_daemonRequest';
 
+import {IMessagePairRequest} from '../../interfaces/iqrfnet';
+import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -123,19 +149,24 @@ export default class SendJsonRequest extends Vue {
 	private msgId: string|null = null
 
 	/**
-	 * @var {string} request Daemon api request message, used in message card
+	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
 	 */
-	private request = ''
+	private activeMessagePair: IMessagePairRequest|null = null
+
+	/**
+	 * @var {number} activeIdx Indec of active message pair
+	 */
+	private activeIdx = 0;
+
+	/**
+	 * @var {Array<IMessagePair>} messages Array of Daemon API request and response pairs
+	 */
+	private messages: Array<IMessagePairRequest> = []
 
 	/**
 	 * @constant {string} requestSchema Daemon API request JSON schema for validator
 	 */
 	private requestSchema = require('../../schemas/genericDaemonRequest.json')
-
-	/**
-	 * @var {string} response Daemon api response message, used in message card
-	 */
-	private response = ''
 
 	/**
 	 * @var validator JSON schema validator function
@@ -174,6 +205,16 @@ export default class SendJsonRequest extends Vue {
 			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
+				return;
+			}
+			if (mutation.type === 'SOCKET_ONSEND') {
+				this.messages.unshift({
+					msgId: mutation.payload.data.msgId,
+					request: JSON.stringify(mutation.payload, null, 4),
+					response: [],
+					label: '[' + new Date().toLocaleString() + ']: ' + mutation.payload.mType + ' (' + mutation.payload.data.msgId + ')',
+				});
+				this.activeMessagePair = this.messages[0];
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
@@ -204,6 +245,21 @@ export default class SendJsonRequest extends Vue {
 	}
 
 	/**
+	 * Generates array of message options to select from to show
+	 * @returns {Array<IOption>} Array of options
+	 */
+	get messageOptions(): Array<IOption> {
+		let options: Array<IOption> = [];
+		this.messages.forEach((item: IMessagePairRequest) => {
+			options.push({
+				label: item.label,
+				value: this.messages.indexOf(item),
+			});
+		});
+		return options;
+	}
+
+	/**
 	 * Sends daemon api json message
 	 */
 	private processSubmit(): void {
@@ -213,8 +269,6 @@ export default class SendJsonRequest extends Vue {
 		if (this.validator === null) {
 			return;
 		}
-		this.request = '';
-		this.response = '';
 		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
 		if (json.data.msgId === undefined) {
@@ -267,8 +321,6 @@ export default class SendJsonRequest extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		options.callback = () => this.msgId = null;
-		this.request = JSON.stringify(request, null, 4);
-		this.response = '';
 		IqrfNetService.sendJson(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -278,7 +330,10 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		this.response = JSON.stringify(response, null, 4);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
 		this.$store.commit('spinner/HIDE');		
 		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
 			this.$toast.error(
@@ -296,7 +351,10 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleAutoNetworkResponse(response): void {
-		this.response = JSON.stringify(response, null, 4);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
 		this.$store.commit('spinner/HIDE');
 		if (response.data.rsp.lastWave && response.data.rsp.progress === 100) { // autonetwork finished
 			this.$store.dispatch('removeMessage', this.msgId);
@@ -311,7 +369,10 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleResponse(response): void {
-		this.response = JSON.stringify(response, null, 4);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
 		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
 			this.$toast.success(
