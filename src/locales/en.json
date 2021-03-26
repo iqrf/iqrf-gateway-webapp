@@ -2122,14 +2122,18 @@
 					"prefixInvalid": "IPv6 prefix should be between 48 and 128 bits."
 				}
 			},
+			"modal": {
+				"title": "Connection method changed",
+				"autoIpv4": "IPv4 connection method changed to auto, this may result in the web interface being available at a different address.",
+				"staticIpv4": "IPv4 connection method change to auto, the web interface will be available at the following address:",
+				"confirmPrompt": "Do you wish to still wish to save connection configuration?"
+			},
 			"state": "Connection state",
 			"states": {
 				"connected": "Connected",
 				"notConnected": "Not connected"
 			},
 			"messages": {
-				"staticNotice": "The web interface will be available at address {address} after switching to static method.",
-				"autoNotice": "Changing method from static to auto may result in the web interface being available at different address.",
 				"interfacesFetchFailed": "Failed to retrieve interfaces.",
 				"connectionFetchFailed": "Failed to retrieve connection details.",
 				"createFailed": "Failed to create connection {connection}.",

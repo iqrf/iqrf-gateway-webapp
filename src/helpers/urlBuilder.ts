@@ -39,6 +39,20 @@ export default class UrlBuilder {
 	}
 
 	/**
+	 * Returns hostname
+	 */
+	getHostname(): string {
+		return this.hostname;
+	}
+
+	/**
+	 * Returns port
+	 */
+	getPort(): string {
+		return this.port;
+	}
+
+	/**
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
