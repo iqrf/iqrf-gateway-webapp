@@ -2003,7 +2003,8 @@
 					"keepaliveNote": "* 0 = disabled",
 					"endpoint": "Endpoint",
 					"allowedIPv4Addrs": "Allowed peer IPv4 addresses",
-					"allowedIPv6Addrs": "Allowed peer IPv6 addresses"
+					"allowedIPv6Addrs": "Allowed peer IPv6 addresses",
+					"copyPublicKey": "Copy key to clipboard"
 				},
 				"errors": {
 					"name": "Please enter interface name.",
@@ -2042,7 +2043,8 @@
 					"getFailed": "Failed to retrieve configuraiton of Wireguard tunnel {tunnel}.",
 					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
 					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
-					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}."
+					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}.",
+					"copyPublicKey": "Public key has been successfully copied to clipboard."
 				}
 			}
 		},

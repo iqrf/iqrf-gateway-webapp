@@ -17,6 +17,7 @@
 								<CInput
 									v-model='tunnel.name'
 									:label='$t("network.wireguard.tunnels.form.name")'
+									placeholder='wg0'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -51,6 +52,15 @@
 								<label>
 									{{ $t('network.wireguard.tunnels.form.publicKeyIface') }}
 								</label>
+								<CButton
+									v-clipboard='updateClipboard'
+									v-clipboard:success='successClipboard'
+									style='float: right;'
+									size='sm'
+									color='primary'
+								>
+									{{ $t("network.wireguard.tunnels.form.copyPublicKey") }}
+								</CButton>
 								<p>
 									{{ tunnel.publicKey }}
 								</p>
@@ -565,6 +575,26 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
+	 * Stores public key to clipboard
+	 * @returns {string} Public key or empty string
+	 */
+	private updateClipboard(): string {
+		if (this.tunnel.publicKey !== undefined) {
+			return this.tunnel.publicKey;
+		}
+		return '';
+	}
+
+	/**
+	 * Shows public key clipboard copy success message
+	 */
+	private successClipboard(): void {
+		this.$toast.success(
+			this.$t('network.wireguard.tunnels.messages.copyPublicKey').toString()
+		);
+	}
+
+	/**
 	 * Retrieves Wireguard tunnel configuration
 	 */
 	private getTunnel(): void {
@@ -647,7 +677,7 @@ export default class WireguardTunnel extends Vue {
 	 * @param {number} index Peer index
 	 */
 	private addIPv4(index: number): void {
-		this.tunnel.peers[index].allowedIPs.ipv4!.push({address: '', prefix: 24});
+		this.tunnel.peers[index].allowedIPs.ipv4?.push({address: '', prefix: 24});
 	}
 
 	/**
@@ -656,7 +686,7 @@ export default class WireguardTunnel extends Vue {
 	 * @param {number} index Address index
 	 */
 	private removeIPv4(peer: number, index: number): void {
-		this.tunnel.peers[peer].allowedIPs.ipv4!.splice(index, 1);
+		this.tunnel.peers[peer].allowedIPs.ipv4?.splice(index, 1);
 	}
 
 	/**
@@ -664,7 +694,7 @@ export default class WireguardTunnel extends Vue {
 	 * @param {number} index Peer index
 	 */
 	private addIPv6(index: number): void {
-		this.tunnel.peers[index].allowedIPs.ipv6!.push({address: '', prefix: 64});
+		this.tunnel.peers[index].allowedIPs.ipv6?.push({address: '', prefix: 64});
 	}
 
 	/**
@@ -673,7 +703,7 @@ export default class WireguardTunnel extends Vue {
 	 * @param {number} index Address index
 	 */
 	private removeIPv6(peer: number, index: number): void {
-		this.tunnel.peers[peer].allowedIPs.ipv6!.splice(index, 1);
+		this.tunnel.peers[peer].allowedIPs.ipv6?.splice(index, 1);
 	}
 
 	/**
