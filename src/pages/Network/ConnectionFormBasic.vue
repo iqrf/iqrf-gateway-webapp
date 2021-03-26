@@ -4,7 +4,7 @@
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConnection'>
+					<CForm @submit.prevent='prepareModal'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -216,6 +216,7 @@
 										id='ipv4MethodSelect'
 										:value.sync='connection.ipv4.method'
 										:options='ipv4Methods'
+										:label='$t("network.connection.ipv4.method")'
 										:placeholder='$t("network.connection.ipv4.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
@@ -449,16 +450,31 @@
 		<CModal
 			:show.sync='showModal'
 			color='warning'
+			size='lg'
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					test title
+					{{ $t('network.connection.modal.title') }}
 				</h5>
 			</template>
-			test prompt
+			<div>
+				<span v-if='modalMessages.ipv4 !== null'>
+					{{ modalMessages.ipv4 }}
+				</span>
+				<a
+					v-if='modalMessages.ipv4Add !== null'
+					style='color: blue; cursor: pointer;'
+					:href='modalMessages.ipv4Addr'
+					target='_blank'
+				>
+					{{ modalMessages.ipv4Addr }}
+				</a>
+			</div>
+			{{ $t('network.connection.modal.confirmPrompt') }}
 			<template #footer>
 				<CButton
 					color='warning'
+					@click='saveConnection'
 				>
 					{{ $t('forms.save') }}
 				</CButton> <CButton
@@ -485,8 +501,10 @@ import NetworkConnectionService, {ConnectionType} from '../../services/NetworkCo
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
 import {AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
 import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
+import UrlBuilder from '../../helpers/urlBuilder';
 
 enum WepKeyLen {
 	BIT64 = '64bit',
@@ -627,6 +645,16 @@ export default class ConnectionFormBasic extends Vue {
 	 * @var {boolean} ipv6MethodChanged Indicates that ipv6 method has been changed
 	 */
 	private ipv6MethodChanged = false
+
+	/**
+	 * @var {string} modalMessages Modal IP method change messages
+	 */
+	private modalMessages: Dictionary<Array<string>|string|null> = {
+		ipv4: null,
+		ipv4Addr: null,
+		ipv6: null,
+		ipv6Addrs: [],
+	}
 
 	/**
 	 * @var {boolean} showModal Show confirmation modal?
@@ -932,9 +960,32 @@ export default class ConnectionFormBasic extends Vue {
 	 * If methods have not changed, connection is saved immediately
 	 */
 	private prepareModal(): void {
+		if (this.$route.path.includes('/add')) {
+			this.saveConnection();
+			return;
+		}
 		if (!this.ipv4MethodChanged && !this.ipv6MethodChanged) {
 			this.saveConnection();
 			return;
+		}
+		this.modalMessages = {
+			ipv4: null,
+			ipv4Addr: null,
+			ipv6: null,
+			ipv6Addrs: [],
+		};
+		const loc = new UrlBuilder();
+		if (loc.getHostname() === 'localhost') {
+			this.saveConnection();
+			return;
+		}
+		if (this.ipv4MethodChanged) {
+			if (this.connection.ipv4.method === 'auto') {
+				this.modalMessages.ipv4 = this.$t('network.connection.modal.autoIpv4').toString();
+			} else {
+				this.modalMessages.ipv4 = this.$t('network.connection.modal.staticIpv4').toString();
+				this.modalMessages.ipv4Addr = window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort();
+			}
 		}
 		this.showModal = true;
 	}
