@@ -6,7 +6,7 @@
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConnection'>
 						<ValidationProvider
-							v-slot='{errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "network.connection.errors.name"
@@ -212,17 +212,6 @@
 										required: "network.connection.ipv4.errors.method"
 									}'
 								>
-									<b>
-										<label for='ipv4MethodSelect'>
-											{{ $t('network.connection.ipv4.method') }}
-										</label>
-									</b> <CBadge 
-										v-if='ipv4Notice !== null' 
-										color='info'
-										class='text-wrap'
-									>
-										{{ ipv4Notice }}
-									</CBadge>
 									<CSelect
 										id='ipv4MethodSelect'
 										:value.sync='connection.ipv4.method'
@@ -230,7 +219,7 @@
 										:placeholder='$t("network.connection.ipv4.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										@change='updateIpv4Notice'
+										@change='ipv4MethodChanged = true'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
@@ -248,7 +237,6 @@
 											:label='$t("network.connection.ipv4.address")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
-											@input='updateIpv4Notice'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -336,6 +324,7 @@
 										:placeholder='$t("network.connection.ipv6.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
+										@change='ipv6MethodChanged'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv6.method === "manual"'>
@@ -457,12 +446,35 @@
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
+		<CModal
+			:show.sync='showModal'
+			color='warning'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					test title
+				</h5>
+			</template>
+			test prompt
+			<template #footer>
+				<CButton
+					color='warning'
+				>
+					{{ $t('forms.save') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showModal = false'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
@@ -495,6 +507,7 @@ enum WepKeyType {
 		CCardBody,
 		CForm,
 		CInput,
+		CModal,
 		CSelect,
 		FontAwesomeIcon,
 		ValidationObserver,
@@ -531,11 +544,6 @@ export default class ConnectionFormBasic extends Vue {
 			method: 'auto',
 		}
 	}
-
-	/**
-	 * @var {string|null} ipv4Notice
-	 */
-	private ipv4Notice: string|null = null
 
 	/**
 	 * @var {string} ifname Interface name
@@ -609,6 +617,21 @@ export default class ConnectionFormBasic extends Vue {
 	 * @var {string} pskInputType WPA pre-shared key input type
 	 */
 	private pskInputType = 'password'
+
+	/**
+	 * @var {boolean} ipv4MethodChanged Indicates that ipv4 method has been changed
+	 */
+	private ipv4MethodChanged = false
+
+	/**
+	 * @var {boolean} ipv6MethodChanged Indicates that ipv6 method has been changed
+	 */
+	private ipv6MethodChanged = false
+
+	/**
+	 * @var {boolean} showModal Show confirmation modal?
+	 */
+	private showModal = false
 
 	/**
 	 * @property {string} uuid Network connection configuration id
@@ -730,26 +753,6 @@ export default class ConnectionFormBasic extends Vue {
 			});
 		}
 		return methodOptions;
-	}
-
-	/**
-	 * Updates IPv4 notice message
-	 */
-	private updateIpv4Notice(): void {
-		if (this.connection.ipv4.method === 'manual') {
-			if (!ip.v4({exact: true}).test(this.connection.ipv4.addresses[0].address)) {
-				this.ipv4Notice = null;
-				return;
-			}
-			this.ipv4Notice = this.$t(
-				'network.connection.messages.staticNotice', 
-				{address: this.connection.ipv4.addresses[0].address}
-			).toString();
-		} else if (this.connection.ipv4.method === 'auto') {
-			this.ipv4Notice = this.$t('network.connection.messages.autoNotice').toString();
-		} else {
-			this.ipv4Notice = null;
-		}
 	}
 
 	/**
@@ -922,6 +925,18 @@ export default class ConnectionFormBasic extends Vue {
 			connection.ipv6.dns.push({address: ''});
 		}
 		this.connection = connection;
+	}
+
+	/**
+	 * Checks if connection methods have changed and creates warning notices for user
+	 * If methods have not changed, connection is saved immediately
+	 */
+	private prepareModal(): void {
+		if (!this.ipv4MethodChanged && !this.ipv6MethodChanged) {
+			this.saveConnection();
+			return;
+		}
+		this.showModal = true;
 	}
 
 	/**
