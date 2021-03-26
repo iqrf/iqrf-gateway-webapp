@@ -46,12 +46,19 @@ class SystemdJournalController extends GatewayController {
 	private $featureManager;
 
 	/**
+	 * @var SystemdJournalManager Systemd journal manager
+	 */
+	private $manager;
+
+	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
+	 * @param SystemdJournalManager $manager Systemd journal manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, SystemdJournalManager $manager, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
+		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
@@ -75,63 +82,39 @@ class SystemdJournalController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		if (!$this->featureManager->isEnabled('systemdJournal')) {
-			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->featureEnabled();
 		try {
-			return $response->writeJsonBody(SystemdJournalManager::getConfig());
+			return $response->writeJsonBody($this->manager->getConfig());
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/persistence/disable")
+	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Disables systemd log persistence
-	 *  responses:
-	 *      '200':
-	 *          description: Success
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function disablePersistence(ApiRequest $request, ApiResponse $response): ApiResponse {
-		if (!$this->featureManager->isEnabled('systemdJournal')) {
-			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
-		}
+	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->featureEnabled();
+		$this->validator->validateRequest('systemdJournal', $request);
 		try {
-			SystemdJournalManager::changePersistence(false);
-			return $response->writeBody('Workaround');
+			$this->manager->saveConfig($request->getJsonBody(true));
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/persistence/enable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Enables systemd log persistence
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
+	 * Checks if systemd journal feature is enabled, and returns bad request if it is not
 	 */
-	public function enablePersistence(ApiRequest $request, ApiResponse $response): ApiResponse {
+	private function featureEnabled(): void {
 		if (!$this->featureManager->isEnabled('systemdJournal')) {
 			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
-		}
-		try {
-			SystemdJournalManager::changePersistence(true);
-			return $response->writeBody('Workaround');
-		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

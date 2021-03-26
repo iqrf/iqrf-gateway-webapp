@@ -23,6 +23,8 @@ namespace App\GatewayModule\Models;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * Systemd journal manager
@@ -35,33 +37,138 @@ class SystemdJournalManager {
 	private const CONF_FILE = '/data/lib/systemd/journald.conf.d/00-systemd-conf.conf';
 
 	/**
-	 * Journal configuration persistence options
+	 * Journal configuration
 	 */
-	private const PERSISTENCE = [
-		'enabled' => 'persistent',
-		'disabled' => 'volatile',
+	private const DEFAULT_CONFIG = [
+		'ForwardToSyslog' => 'yes',
+		'Storage' => 'volatile',
+		'MaxFileSec' => '1week',
+		'SystemMaxFiles' => '5',
+        'SystemMaxFileSize' => '',
+		'SystemMaxUse' => '64M',
 	];
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+
+	}
 
 	/**
 	 * Retrieves systemd journal configuration
 	 * @return array<string, bool> Systemd journal configuration
 	 */
-	public static function getConfig(): array {
-		$conf = self::getJournalConf();
+	public function getConfig(): array {
+		$conf = $this->getJournalConf();
 		if (!array_key_exists('Journal', $conf)) {
 			throw new InvalidConfFormatException('Journal section missing in configuration file.');
 		}
 		$journal = $conf['Journal'];
 		return [
-			'persistent' => array_key_exists('Storage', $journal) ? ($journal['Storage'] === self::PERSISTENCE['enabled']) : false,
+			'ForwardToSyslog' => $this->getPropertyDefault('ForwardToSyslog', $journal),
+			'Storage' => $this->getStorage($journal),
+			'MaxFileSec' => $this->getLogFileDuration($journal),
+			'SystemMaxFiles' => $this->getMaxFiles($journal),
+			'SystemMaxFileSize' => $this->getMaxFileSize($journal),
+			'SystemMaxUse' => $this->getMaxDiskSize($journal),
 		];
+	}
+
+	/**
+	 * Parses Storage option
+	 * @param array $conf Systemd journal configuration
+	 * @return string Journal storage option method
+	 */
+	public function getStorage(array $conf): string {
+		$storage = $this->getPropertyDefault('Storage', $conf);
+		return $storage === 'persistent' ? 'persistent' : 'volatile';
+	}
+
+	/**
+	 * Parses log file duration before rotation
+	 * @param array $conf Systemd journal configuration
+	 * @return array<string, int|string> Log file duration
+	 */
+	public function getLogFileDuration(array $conf): array {
+		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
+		$pattern = '/^(\d+)(\w*$)/';
+		$matches = Strings::match($duration, $pattern);
+		return [
+			'unit' => $matches[2] === '' ? 's' : $matches[2],
+			'count' => intval($matches[1]),
+		];
+	}
+
+	/**
+	 * Parses maximum system log files option
+	 * @param array $conf Systemd journal configuration
+	 * @return int Maximum system log files
+	 */
+	public function getMaxFiles(array $conf): int {
+		$files = $this->getPropertyDefault('SystemMaxFiles', $conf);
+		return $files === '' ? 0 : intval($files);
+	}
+
+	/**
+	 * Parses maximum system log file size in megabytes
+	 * @param array $conf Systemd journal configuration
+	 * @return int Maximum system log file size
+	 */
+	public function getMaxFileSize(array $conf): int {
+		$size = $this->getPropertyDefault('SystemMaxFileSize', $conf);
+		if ($size === '') {
+			return 0;
+		}
+		$pattern = '/^(\d+)(\w*$)/';
+		$matches = Strings::match($size, $pattern);
+		return intval($matches[1]);
+	}
+
+	/**
+	 * Parses maximum system log file size in megabytes
+	 * @param array $conf Systemd journal configuration
+	 * @return int Maximum systemd journal disk size
+	 */
+	public function getMaxDiskSize(array $conf): int {
+		$size = $this->getPropertyDefault('SystemMaxUse', $conf);
+		if ($size === '') {
+			return 0;
+		}
+		$pattern = '/^(\d+)(\w*$)/';
+		$matches = Strings::match($size, $pattern);
+		return intval($matches[1]);
+	}
+
+	/**
+	 * Returns key value if it exists, or default value otherwise
+	 * @param string $key Configuration option
+	 * @param array $conf Systemd journal configuration
+	 * @return string Property value
+	 */
+	private function getPropertyDefault(string $key, array $conf): string {
+		$property = self::DEFAULT_CONFIG[$key];
+		if (array_key_exists($key, $conf)) {
+			$property = $conf[$key];
+		}
+		return $property;
+	}
+
+	/**
+	 * Stores new systemd journal configuration
+	 * @param stdClass $newConf New systemd journal configuration
+	 */
+	private function saveConfig(stdClass $newConf): void {
+		if (!file_exists(self::CONF_FILE)) {
+			throw new ConfNotFoundException('Configuration file not found.');
+		}
 	}
 
 	/**
 	 * Reads systemd journal configuration
 	 * @return array<string, array<string, mixed>> Systemd journal configuration
 	 */
-	private static function getJournalConf(): array {
+	private function getJournalConf(): array {
 		if (!file_exists(self::CONF_FILE)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
@@ -73,24 +180,11 @@ class SystemdJournalManager {
 	}
 
 	/**
-	 * Changes journal persistence
-	 * @param bool $enabled Should logs be persistent?
-	 */
-	public static function changePersistence(bool $enabled): void {
-		$conf = self::getJournalConf();
-		if (!array_key_exists('Journal', $conf)) {
-			throw new InvalidConfFormatException('Journal section missing in configuration file.');
-		}
-		$conf['Journal']['Storage'] = $enabled ? self::PERSISTENCE['enabled'] : self::PERSISTENCE['disabled'];
-		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, self::toIni($conf)) . PHP_EOL);
-	}
-
-	/**
 	 * Converts array to ini array
 	 * @param array<string, array<string, mixed>> $conf Modified configuration array
 	 * @return array<int, string> Configuration array in ini format
 	 */
-	private static function toIni(array $conf): array {
+	private function toIni(array $conf): array {
 		$output = [];
 		foreach ($conf as $key => $value) {
 			$output[] = '[' . $key . ']';
