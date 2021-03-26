@@ -35,8 +35,9 @@ import UrlBuilder from './helpers/urlBuilder';
 import App from './App.vue';
 
 import './css/app.scss';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
+import 'vue-select/dist/vue-select.css';
+import 'vue-toast-notification/dist/theme-sugar.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;

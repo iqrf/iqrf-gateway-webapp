@@ -38,29 +38,26 @@
 					<p>
 						{{ currentTimezone }}
 					</p>
-					<ValidationObserver v-slot='{invalid}'>
-						<CForm @submit.prevent='setTimezone'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: "gateway.datetime.errors.timezone"
-								}'
-							>
-								<CSelect
-									:value.sync='timezone'
-									:options='timezoneOptions'
-									:label='$t("gateway.datetime.form.timezone")'
-									:placeholder='$t("gateway.datetime.form.timezonePlaceholder")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton color='primary' type='submit' :disabled='invalid'>
-								{{ $t('forms.save') }}
-							</CButton>
-						</CForm>
-					</ValidationObserver>
+					<CForm @submit.prevent='setTimezone'>
+						<div class='form-group'>
+							<label>
+								<strong>
+									{{ $t('gateway.datetime.form.timezone') }}
+								</strong>
+							</label>
+							<vSelect
+								v-model='timezone'
+								:options='timezoneOptions'
+								label='label'
+								:autoscroll='true'
+								:clearable='false'
+								:filterable='true'
+							/>
+						</div>
+						<CButton color='primary' type='submit'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</CForm>
 				</CCol>
 			</CRow>
 		</CCardBody>
@@ -70,11 +67,10 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import vSelect from 'vue-select';
 
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -92,8 +88,7 @@ import {IOption} from '../../interfaces/coreui';
 		CRow,
 		CSelect,
 		CSwitch,
-		ValidationObserver,
-		ValidationProvider,
+		vSelect,
 	},
 	metaInfo: {
 		title: 'gateway.datetime.title'
@@ -116,9 +111,12 @@ export default class GatewayTime extends Vue {
 	private hour12 = false
 
 	/**
-	 * @var {string} timezone Currently selected timezone
+	 * @var {IOption} timezone Currently selected timezone
 	 */
-	private timezone = ''
+	private timezone: IOption = {
+		label: '',
+		value: '',
+	}
 
 	/**
 	 * @var {Array<IOption>} timezoneOptions Array of available timezones at Gateway
@@ -129,13 +127,6 @@ export default class GatewayTime extends Vue {
 	 * @var {ReturnType<typeof setInterval>} timeRefreshInterval Timestamp refresh interval
 	 */
 	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null; 
-	
-	/**
-	 * Initializes validation rules
-	 */
-	created(): void {
-		extend('required', required);
-	}
 
 	/**
 	 * Retrieves gateway time and available timezones
@@ -196,7 +187,13 @@ export default class GatewayTime extends Vue {
 		TimeService.getTime()
 			.then((response: AxiosResponse) => {
 				this.gatewayTime = response.data.time;
-				this.timezone = this.gatewayTime!.name;
+				if (this.gatewayTime === null) {
+					return;
+				}
+				this.timezone = {
+					label: this.gatewayTime.name + ' (' + this.gatewayTime.code + ', ' + this.gatewayTime.offset + ')',
+					value: this.gatewayTime?.name,
+				};
 				this.timeRefreshInterval = setInterval(() => {
 					this.gatewayTime!.timestamp++;
 				}, 1000);
@@ -237,7 +234,7 @@ export default class GatewayTime extends Vue {
 	 */
 	private setTimezone(): void {
 		this.$store.commit('spinner/SHOW');
-		TimeService.setTimezone({timezone: this.timezone})
+		TimeService.setTimezone({timezone: (this.timezone.value as string)})
 			.then(() => {
 				this.$toast.success(
 					this.$t('gateway.datetime.messages.timezoneSetSuccess').toString()
