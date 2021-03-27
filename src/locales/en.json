@@ -1774,20 +1774,21 @@
 				"form": {
 					"version": "DPA version"
 				},
+				"modal": {
+					"title": "DPA plug-in upload",
+					"prompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
+				},
 				"errors": {
 					"version": "Please select DPA version to upload."
 				},
 				"messages": {
-					"dpaFileDownloaded": "DPA file {file} has been successfully downloaded to gateway.",
-					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades.",
-					"uploadError": "An error has occured during upload: \n{error}",
-					"uploadSuccess": "DPA plug-in has been successfully changed.",
-					"downloadFailure": "The webapp has not been able to download the DPA file.",
-					"moveFailure": "The file has not been uploaded due wrong permissions.",
-					"notFound": "DPA file not found.",
-					"badRequest": "Invalid combination of DPA version and RF mode.",
-					"modalTitle": "DPA plug-in upload",
-					"modalPrompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
+					"gatewayUpload": "Downloading DPA file to gateway...",
+					"gatewayUploadFailed": "Failed to download DPA file to gateway: {error}",
+					"gatewayUploadSuccess": "DPA file successfully downloaded to gateway.",
+					"trUpload": "Uploading DPA file to TR...",
+					"trUploadFailed": "Failed to upload DPA file to TR: {error}",
+					"trUploadSuccess": "DPA file successfully uploaded to TR.",
+					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades."
 				}
 			},
 			"hexUpload": {
@@ -1799,12 +1800,13 @@
 					"file": "Please select the file to upload."
 				},
 				"messages": {
-					"gatewayUpload": "Uploading file {file} to gateway ...",
-					"gatewayUploadFailure": "An error has occured during upload to gateway.",
-					"gatewayUploadSuccess": "File {file} has been successfully uploaded to gateway.",
-					"invalidFormat": "The uploaded file is not a .hex file.",
-					"uploadSuccess": "Custom DPA handler has been successfully uploaded.",
-					"uploadSuccessTr": "Custom DPA handler has been successfully uploaded to TR."
+					"gatewayUpload": "Uploading HEX file to gateway...",
+					"gatewayUploadFailed": "Failed to upload HEX file to gateway: {error}",
+					"gatewayUploadSuccess": "Hex file sucessfully uploaded to gateway.",
+					"trUpload": "Uploading HEX file to TR...",
+					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
+					"trUploadSuccess": "Hex file successfully uploaded to TR.",
+					"invalidFormat": "The uploaded file is not a .hex file."
 				}
 			},
 			"osUpload": {
@@ -1818,10 +1820,13 @@
 				},
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
-					"fetchFail": "Failed to retrieve current version of IQRF OS or OS upgrades.",
-					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
-					"fileUploading": "Uploading {file} file to TR ...",
-					"fileUploaded": "{file} file has been successfully uploaded to TR."
+					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
+					"gatewayUpload": "Downloading OS and DPA files to gateway...",
+					"gatewayUploadFailed": "Failed to download OS and DPA files to gateway: {error}",
+					"gatewayUploadSuccess": "OS and DPA files successfully downloaded to gateway.",
+					"trUpload": "Uploading OS file to TR...",
+					"trUploadFailed": "Failed to upload OS file to TR: {error}",
+					"trUploadSuccess": "OS file successfully uploaded to TR."
 				}
 			},
 			"messages": {
@@ -2366,8 +2371,8 @@
 			"refreshSuccess": "Service status successfully refreshed.",
 			"disableFailed": "Failed to disable {service} service: {error}",
 			"enableFailed": "Failed to enable {service} service: {error}",
-			"start": "Failed to start {service} service: {error}",
-			"stop": "Failed to stop {service} service: {error}",
+			"startFailed": "Failed to start {service} service: {error}",
+			"stopFailed": "Failed to stop {service} service: {error}",
 			"restartFailed": "Failed to restart {service} service: {error}"
 		}
 	},
