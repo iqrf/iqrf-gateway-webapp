@@ -467,7 +467,14 @@
 						"title": "WebSocket interfaces",
 						"legend": "WebSocket interface instance",
 						"add": "Add WebSocket interface",
-						"edit": "Edit WebSocket interface"
+						"edit": "Edit WebSocket interface",
+						"messages": {
+							"addFailed": "Failed to create new WebSocket interface: {error}",
+							"fetchFailed": "Failed to retrieve WebSocket interface {interface}: {error}",
+							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
+							"editFailed": "Failed to edit WebSocket interface {interface}: {error}",
+							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}"
+						}
 					},
 					"messaging": {
 						"title": "WebSocket messagings",
