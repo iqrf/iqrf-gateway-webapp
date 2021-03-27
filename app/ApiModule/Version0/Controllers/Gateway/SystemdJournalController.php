@@ -100,7 +100,7 @@ class SystemdJournalController extends GatewayController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/SystemdLog
+	 *                  $ref: '#/components/schemas/SystemdLog'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
