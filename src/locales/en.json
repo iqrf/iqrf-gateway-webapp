@@ -225,6 +225,11 @@
 					"userDir": "User directory",
 					"configurationDir": "Configuration directory",
 					"deploymentDir": "Deployment directory"
+				},
+				"messages": {
+					"fetchFailed": "Failed to retrieve main configuration: {error}",
+					"saveFailed": "Failed to save main configuration: {error}",
+					"saveSuccess": "Main configuration has been successfully saved."
 				}
 			},
 			"components": {
