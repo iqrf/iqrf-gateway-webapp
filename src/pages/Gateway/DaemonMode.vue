@@ -2,67 +2,69 @@
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
-			<table class='table table-striped'>
-				<tbody>
-					<tr>
-						<th>{{ $t('gateway.mode.currentMode') }}</th>
-						<td style='text-align: right;'>
-							<div 
-								v-if='!loaded && mode === "unknown"'
-							>
-								{{ $t('gateway.mode.modes.unknown') }}
-							</div>
-							<div 
-								v-else-if='loaded && mode === "unknown"'
-							>
-								{{ $t('gateway.mode.messages.getFailed') }}
-							</div>
-							<CDropdown
-								v-else
-								color='primary'
-								:toggler-text='$t("gateway.mode.modes." + mode)'
-								size='sm'
-							>
-								<CDropdownItem @click='setMode(modes.operational)'>
-									{{ $t('gateway.mode.modes.operational') }}
-								</CDropdownItem>
-								<CDropdownItem @click='setMode(modes.service)'>
-									{{ $t('gateway.mode.modes.service') }}
-								</CDropdownItem>
-								<CDropdownItem @click='setMode(modes.forwarding)'>
-									{{ $t('gateway.mode.modes.forwarding') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</tr>
-					<tr>
-						<th>{{ $t('gateway.mode.startupMode') }}</th>
-						<td style='text-align: right;'>
-							<CDropdown
-								v-if='ideConfiguration !== null'
-								color='primary'
-								:toggler-text='$t("gateway.mode.modes." + ideConfiguration.operMode)'
-								size='sm'
-							>
-								<CDropdownItem @click='setStartupMode(modes.operational)'>
-									{{ $t('gateway.mode.modes.operational') }}
-								</CDropdownItem>
-								<CDropdownItem @click='setStartupMode(modes.service)'>
-									{{ $t('gateway.mode.modes.service') }}
-								</CDropdownItem>
-								<CDropdownItem @click='setStartupMode(modes.forwarding)'>
-									{{ $t('gateway.mode.modes.forwarding') }}
-								</CDropdownItem>
-							</CDropdown>
-							<div
-								v-else
-							>
-								{{ $t('gateway.mode.modes.unknown') }}
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class='form-group'>
+				<CRow style='margin-bottom: 1.25rem'>
+					<CCol>
+						<b>
+							{{ $t('gateway.info.gwMode') }}
+						</b>
+					</CCol>
+					<CCol>
+						{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
+					</CCol>
+				</CRow>
+				<div v-if='mode !== "unknown"'>
+					<CButton
+						color='primary'
+						@click='setMode(modes.operational)'
+					>
+						{{ $t('gateway.mode.modes.operational') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setMode(modes.service)'
+					>
+						{{ $t('gateway.mode.modes.service') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setMode(modes.forwarding)'
+					>
+						{{ $t('gateway.mode.modes.forwarding') }}
+					</CButton>
+				</div>
+			</div>
+			<div
+				v-if='ideConfiguration !== null'
+				class='form-group'
+			>
+				<CRow style='margin-bottom: 1.25rem'>
+					<CCol>
+						<b>
+							{{ $t('gateway.mode.startupMode') }}
+						</b>
+					</CCol>
+					<CCol>
+						{{ $t("gateway.mode.modes." + ideConfiguration.operMode) }}
+					</CCol>
+				</CRow>
+				<div v-if='ideConfiguration.operMode !== "unknown"'>
+					<CButton
+						color='primary'
+						@click='setStartupMode(modes.operational)'
+					>
+						{{ $t('gateway.mode.modes.operational') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setStartupMode(modes.service)'
+					>
+						{{ $t('gateway.mode.modes.service') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setStartupMode(modes.forwarding)'
+					>
+						{{ $t('gateway.mode.modes.forwarding') }}
+					</CButton>
+				</div>
+			</div>
 		</CCard>
 	</div>
 </template>
@@ -71,14 +73,16 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+
 
 @Component({
 	components: {
@@ -246,15 +250,7 @@ export default class DaemonMode extends Vue {
 				}
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'gateway.mode.messages.startupFetchFailed',
-						{error: error.response === undefined ? error.message : error.response.data.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.mode.messages.startupFetchFailed'));
 	}
 
 	/**
@@ -266,8 +262,9 @@ export default class DaemonMode extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.ideConfiguration.operMode = mode;
-		DaemonConfigurationService.updateInstance(this.ideComponent, this.ideConfiguration.instance, this.ideConfiguration)
+		let configuration = {...this.ideConfiguration};
+		configuration.operMode = mode;
+		DaemonConfigurationService.updateInstance(this.ideComponent, configuration.instance, configuration)
 			.then(() => {
 				this.getStartupMode().then(() => {
 					this.$toast.success(
@@ -275,15 +272,7 @@ export default class DaemonMode extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'gateway.mode.messages.startupSaveFailed',
-						{error: error.response === undefined ? error.message : error.response.data.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.mode.messages.startupSaveFailed'));
 	}
 }
 </script>
