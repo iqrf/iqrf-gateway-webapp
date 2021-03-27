@@ -24,7 +24,6 @@ use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use stdClass;
 
 /**
  * Systemd journal manager
@@ -44,7 +43,7 @@ class SystemdJournalManager {
 		'Storage' => 'volatile',
 		'MaxFileSec' => '1week',
 		'SystemMaxFiles' => '5',
-        'SystemMaxFileSize' => '',
+		'SystemMaxFileSize' => '',
 		'SystemMaxUse' => '64M',
 	];
 
@@ -52,12 +51,11 @@ class SystemdJournalManager {
 	 * Constructor
 	 */
 	public function __construct() {
-
 	}
 
 	/**
 	 * Retrieves systemd journal configuration
-	 * @return array<string, bool> Systemd journal configuration
+	 * @return array<string, bool|int|string|array<string, int|string>> Systemd journal configuration
 	 */
 	public function getConfig(): array {
 		$conf = $this->getJournalConf();
@@ -66,7 +64,7 @@ class SystemdJournalManager {
 		}
 		$journal = $conf['Journal'];
 		return [
-			'ForwardToSyslog' => $this->getPropertyDefault('ForwardToSyslog', $journal),
+			'ForwardToSyslog' => $this->getPropertyDefault('ForwardToSyslog', $journal) === 'yes',
 			'Storage' => $this->getStorage($journal),
 			'MaxFileSec' => $this->getLogFileDuration($journal),
 			'SystemMaxFiles' => $this->getMaxFiles($journal),
@@ -77,7 +75,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses Storage option
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return string Journal storage option method
 	 */
 	public function getStorage(array $conf): string {
@@ -87,7 +85,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses log file duration before rotation
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return array<string, int|string> Log file duration
 	 */
 	public function getLogFileDuration(array $conf): array {
@@ -102,7 +100,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log files option
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return int Maximum system log files
 	 */
 	public function getMaxFiles(array $conf): int {
@@ -112,7 +110,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log file size in megabytes
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return int Maximum system log file size
 	 */
 	public function getMaxFileSize(array $conf): int {
@@ -127,7 +125,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log file size in megabytes
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return int Maximum systemd journal disk size
 	 */
 	public function getMaxDiskSize(array $conf): int {
@@ -143,7 +141,7 @@ class SystemdJournalManager {
 	/**
 	 * Returns key value if it exists, or default value otherwise
 	 * @param string $key Configuration option
-	 * @param array $conf Systemd journal configuration
+	 * @param array<string, string> $conf Systemd journal configuration
 	 * @return string Property value
 	 */
 	private function getPropertyDefault(string $key, array $conf): string {
@@ -156,12 +154,13 @@ class SystemdJournalManager {
 
 	/**
 	 * Stores new systemd journal configuration
-	 * @param stdClass $newConf New systemd journal configuration
+	 * @param array<string, bool|int|string|array<string, int|string>> $newConf New systemd journal configuration
 	 */
-	private function saveConfig(stdClass $newConf): void {
+	public function saveConfig(array $newConf): void {
 		if (!file_exists(self::CONF_FILE)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
+		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, $this->toIni($newConf)) . PHP_EOL);
 	}
 
 	/**
