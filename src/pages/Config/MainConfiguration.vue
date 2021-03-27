@@ -41,20 +41,13 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
-interface IMainConfig {
-	applicationName: string
-	resourceDir: string
-	cacheDir: string
-	configurationDir: string
-	dataDir: string
-	deploymentDir: string
-	userDir: string
-}
+import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IMainConfig} from '../../interfaces/daemonComponent';
 
 @Component({
 	components: {
@@ -102,7 +95,7 @@ export default class MainConfiguration extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.configuration = response.data;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.main.messages.fetchFailed'));
 	}
 
 	/**
@@ -111,16 +104,13 @@ export default class MainConfiguration extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateComponent('', this.configuration)
-			.then(() => this.successfulSave())
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
-	}
-
-	/**
-	 * Handles successful REST API response
-	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t('config.success').toString());
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('config.daemon.main.messages.saveSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.main.messages.saveFailed'));
 	}
 }
 </script>

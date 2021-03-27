@@ -57,3 +57,44 @@ export interface IConfigFetch {
 	 */
 	success: boolean
 }
+
+/**
+ * Main daemon configuration interface
+ */
+export interface IMainConfig {
+	
+	/**
+	 * Application name
+	 */
+	applicationName: string
+
+	/**
+	 * Resource directory
+	 */
+	resourceDir: string
+
+	/**
+	 * Cache directory
+	 */
+	cacheDir: string
+
+	/**
+	 * Configuration directory
+	 */
+	configurationDir: string
+
+	/**
+	 * Data directory
+	 */
+	dataDir: string
+
+	/**
+	 * Deployment directory
+	 */
+	deploymentDir: string
+
+	/**
+	 * User directory
+	 */
+	userDir: string
+}
