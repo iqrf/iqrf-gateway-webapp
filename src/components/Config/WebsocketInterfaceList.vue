@@ -140,6 +140,7 @@ import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfa
 import {Dictionary} from 'vue-router/types/router';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -288,7 +289,7 @@ export default class WebsocketInterfaceList extends Vue {
 				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.websocket.interface.messages.listFailed'));
 	}
 
 	/**
@@ -335,7 +336,11 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				{interface: settings.instance}
+			));
 	}
 
 	/**
@@ -358,7 +363,11 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				{interface: instance.instance}
+			));
 	}
 
 	/**
@@ -382,7 +391,11 @@ export default class WebsocketInterfaceList extends Vue {
 				});
 				this.deleteInstance = null;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.deleteFailed',
+				{interface: this.deleteInstance!.messaging}
+			));
 	}
 }
 </script>

@@ -145,6 +145,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 
 @Component({
@@ -306,11 +307,23 @@ export default class WebsocketInterfaceForm extends Vue {
 					.then((response: AxiosResponse) => {
 						this.service = response.data;
 						this.$store.commit('spinner/HIDE');
+					})
+					.catch((error: AxiosError) => {
+						extendedErrorToast(
+							error,
+							'config.daemon.messagings.websocket.interface.messages.fetchFailed',
+							{interface: this.instances.service}
+						);
+						this.$router.push('/config/daemon/messagings/websocket');
 					});
 			})
 			.catch((error: AxiosError) => {
+				extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.fetchFailed',
+					{interface: this.instance}
+				);
 				this.$router.push('/config/daemon/messagings/websocket');
-				FormErrorHandler.configError(error);
 			});
 	}
 
@@ -342,14 +355,21 @@ export default class WebsocketInterfaceForm extends Vue {
 				DaemonConfigurationService.createInstance(this.componentNames.messaging, this.messaging),
 			])
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.addFailed'
+				));
 		} else {
 			Promise.all([
 				DaemonConfigurationService.updateInstance(this.componentNames.service, this.instances.service, this.service),
 				DaemonConfigurationService.updateInstance(this.componentNames.messaging, this.instances.messaging, this.messaging),
 			])
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.editFailed',
+					{interface: this.instance}
+				));
 		}
 	}
 
