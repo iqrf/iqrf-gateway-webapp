@@ -426,6 +426,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IWGTunnel} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 export enum StackType {
 	SINGLE_IPV4 = 'ipv4',
@@ -626,12 +627,13 @@ export default class WireguardTunnel extends Vue {
 				this.tunnel = response.data;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$router.push('/network/vpn/');
-				this.$toast.error(
-					this.$t('network.wireguard.tunnels.messages.getFailed').toString()
+			.catch((error: AxiosError) => {
+				extendedErrorToast(
+					error,
+					'network.wireguard.tunnels.messages.fetchFailed',
+					{tunnel: this.id}
 				);
+				this.$router.push('/network/vpn/');
 			});
 	}
 
@@ -714,7 +716,8 @@ export default class WireguardTunnel extends Vue {
 			.then((response: AxiosResponse) => {
 				this.tunnel.privateKey = response.data.privateKey;
 				this.tunnel.publicKey = response.data.publicKey;
-			});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.keyPairFailed'));
 	}
 
 	/**
@@ -769,14 +772,13 @@ export default class WireguardTunnel extends Vue {
 
 	/**
 	 * Handles axios errors
+	 * @param {AxiosError} error Axios error
 	 */
 	private handleError(error: AxiosError): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t(
-				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Failed',
-				{error: error.response !== undefined ? error.response.data.message : error.message}
-			).toString()
+		extendedErrorToast(
+			error,
+			'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Failed',
+			{tunnel: this.tunnel.name},
 		);
 	}
 

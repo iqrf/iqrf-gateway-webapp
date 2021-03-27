@@ -2080,22 +2080,23 @@
 				},
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
-					"addFailed": "Failed to create Wireguard tunnel: {error}",
+					"addFailed": "Failed to create new Wireguard tunnel: {error}",
 					"editSuccess": "Wireguard tunnel {tunnel} has been successfully edited.",
-					"editFailed": "Failed to edit Wireguard tunnel: {error}",
+					"editFailed": "Failed to edit Wireguard tunnel {tunnel}: {error}",
 					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
-					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
+					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}: {error}",
 					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
-					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}.",
+					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}: {error}",
 					"disableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully disabled.",
-					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}.",
+					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}: {error}",
 					"enableSuccess": "Wiregguard tunnel {tunnel} startup activation has been successfully enabled.",
-					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}.",
-					"getFailed": "Failed to retrieve configuraiton of Wireguard tunnel {tunnel}.",
-					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
+					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}: {error}",
+					"fetchFailed": "Failed to retrieve configuration of Wireguard tunnel ID {tunnel}: {error}.",
+					"listFailed": "Failed to retrieve list of existing Wireguard tunnels: {error}",
 					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
-					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}.",
-					"copyPublicKey": "Public key has been successfully copied to clipboard."
+					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}: {error}",
+					"copyPublicKey": "Public key has been successfully copied to clipboard.",
+					"keyPairFailed": "Failed to generate key pair: {error}"
 				}
 			}
 		},
