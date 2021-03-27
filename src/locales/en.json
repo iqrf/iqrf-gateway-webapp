@@ -203,12 +203,13 @@
 				"import": "Import configuration",
 				"export": "Export configuration"
 			},
+			"errors": {
+				"import": "Please select a ZIP archive with a configuration to import."
+			},
 			"messages": {
-				"importButton": "Please select a ZIP archive with a configuration to import.",
-				"imported": "The configuration has been imported.",
-				"invalidConfig": "The ZIP archive contains invalid configuration.",
-				"invalidFormat": "Uploaded invalid file format.",
-				"readConfig": "Cannot read zip archive with a configuration."
+				"exportFailed": "Failed to export IQRF gateway configuration: {error}",
+				"importFailed": "Failed to import IQRF gateway configuration: {error}",
+				"importSuccess": "The configuration has been imported."
 			}
 		},
 		"daemon": {
