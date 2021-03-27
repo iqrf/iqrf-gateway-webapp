@@ -13,7 +13,7 @@
 							@input='isEmpty'
 						/>
 						<p v-if='configEmpty && !configUntouched' class='text-danger'>
-							{{ $t("config.migration.messages.importButton") }}
+							{{ $t('config.migration.errors.import') }}
 						</p>
 					</div>
 					<CButton
@@ -40,6 +40,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile} from '@coreui/vue/src';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {fileDownloader} from '../../helpers/fileDownloader';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -89,7 +90,8 @@ export default class ConfigMigration extends Vue {
 				const file = fileDownloader(response, 'application/zip', fileName);
 				this.$store.commit('spinner/HIDE');
 				file.click();
-			});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.migration.messages.exportFailed'));
 	}
 
 	/**
@@ -108,25 +110,10 @@ export default class ConfigMigration extends Vue {
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.migration.messages.imported').toString()
+					this.$t('config.migration.messages.importSuccess').toString()
 				);
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				if (error.response === undefined) {
-					console.error(error);
-					return;
-				}
-				if (error.response.status === 400) {
-					this.$toast.error(
-						this.$t('config.migration.messages.invalidConfig').toString()
-					);
-				} else if (error.response.status === 415) {
-					this.$toast.error(
-						this.$t('config.migration.messages.invalidFormat').toString()
-					);
-				}
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.migration.messages.importFailed'));
 	}
 
 	/**
