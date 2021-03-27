@@ -12,65 +12,189 @@
 		</CCardHeader>
 		<CCardBody>
 			<CElementCover 
-				v-if='loading'
-				style='z-index: 1;'
-				:opacity='0.85'
-			>
-				<CSpinner size='5xl' />
-			</CElementCover>
-			<CElementCover 
 				v-if='failed'
 				style='z-index: 1;'
 				:opacity='0.85'
 			>
-				{{ $t('gateway.log.systemdJournal.messages.journalFetchFailure') }}
+				{{ $t('gateway.log.systemdJournal.messages.fetchFailed') }}
 			</CElementCover>
-			<table v-if='config !== null' class='table table-striped'>
-				<tbody>
-					<tr>
-						<th>{{ $t('gateway.log.systemdJournal.persistence') }}</th>
-						<td>
-							<CDropdown
-								:color='config.persistent ? "success" : "danger"'
-								:toggler-text='$t("states." + (config.persistent ? "enabled" : "disabled"))'
-								placement='top-start'
-								size='sm'
-								style='float: right;'
-							>
-								<CDropdownItem @click='enablePersistence'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='disablePersistence'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<ValidationObserver
+				v-if='config !== null'
+				v-slot='{invalid}'
+			>
+				<CForm @submit.prevent='saveConfig'>
+					<CInputCheckbox
+						:checked.sync='config.forwardToSyslog'
+						:label='$t("gateway.log.systemdJournal.form.forwardToSyslog")'
+					/>
+					<CSelect
+						:value.sync='config.persistence'
+						:label='$t("gateway.log.systemdJournal.form.storage")'
+						:options='storageOptions'
+					/>
+					<div class='form-group'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|min:0'
+							:custom-messages='{
+								required: "gateway.log.systemdJournal.errors.maxDisk",
+								integer: "gateway.log.systemdJournal.errors.maxDiskInvalid",
+								min: "gateway.log.systemdJournal.errors.maxDiskInvalid"
+							}'
+						>
+							<CInput
+								v-model.number='config.maxDiskSize'
+								type='number'
+								min='0'
+								:label='$t("gateway.log.systemdJournal.form.maxDisk")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<i>{{ $t('gateway.log.systemdJournal.form.defaultNote') }}</i>
+					</div>
+					<div class='form-group'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|min:1'
+							:custom-messages='{
+								required: "gateway.log.systemdJournal.errors.maxFiles",
+								integer: "gateway.log.systemdJournal.errors.maxFilesInvalid",
+								min: "gateway.log.systemdJournal.errors.maxFilesInvalid"
+							}'
+						>
+							<CInput
+								v-model.number='config.maxFiles'
+								type='number'
+								min='1'
+								:label='$t("gateway.log.systemdJournal.form.maxFiles")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<i>{{ $t('gateway.log.systemdJournal.form.maxFilesNote') }}</i>
+					</div>
+					<div class='form-group'>
+						<label>
+							<strong>{{ $t('gateway.log.systemdJournal.form.sizeRotation') }}</strong>
+						</label><br>
+						<CSwitch
+							:checked.sync='sizeRotation'
+							color='primary'
+							shape='pill'
+							size='lg'
+							label-on='ON'
+							label-off='OFF'
+						/>
+					</div>
+					<div
+						v-if='sizeRotation'
+						class='form-group'
+					>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|min:0'
+							:custom-messages='{
+								required: "gateway.log.systemdJournal.errors.maxFileSize",
+								integer: "gateway.log.systemdJournal.errors.maxFileSizeInvalid",
+								min: "gateway.log.systemdJournal.errors.maxFileSizeInvalid"
+							}'
+						>
+							<CInput
+								v-model.number='config.sizeRotation.maxFileSize'
+								type='number'
+								min='0'
+								:label='$t("gateway.log.systemdJournal.form.maxFileSize")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<i>{{ $t('gateway.log.systemdJournal.form.defaultNote') }}</i>
+					</div>
+					<div class='form-group'>
+						<label>
+							<strong>{{ $t('gateway.log.systemdJournal.form.timeRotation') }}</strong>
+						</label><br>
+						<CSwitch
+							:checked.sync='timeRotation'
+							color='primary'
+							shape='pill'
+							size='lg'
+							label-on='ON'
+							label-off='OFF'
+						/>
+					</div>
+					<div
+						v-if='timeRotation'
+						class='form-group'
+					>
+						<CSelect
+							:value.sync='config.timeRotation.unit'
+							:label='$t("gateway.log.systemdJournal.form.unit")'
+							:options='unitOptions'
+						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|min:1'
+							:custom-messages='{
+								required: "gateway.log.systemdJournal.errors.count",
+								integer: "gateway.log.systemdJournal.errors.countInvalid",
+								min: "gateway.log.systemdJournal.errors.countInvalid"
+							}'
+						>
+							<CInput
+								v-model.number='config.timeRotation.count'
+								type='number'
+								min='1'
+								:label='$t("gateway.log.systemdJournal.form.count")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+					</div>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
 		</CCardBody>	
 	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem, CElementCover, CSpinner} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {StorageMethod, TimeUnit} from '../../enums/gateway/SystemdJournal';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {integer, min_value, required} from 'vee-validate/dist/rules';
 import GatewayService from '../../services/GatewayService';
 import ServiceService from '../../services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '../../interfaces/coreui';
 import {ISystemdJournal} from '../../interfaces/systemdJournal';
 
 @Component({
 	components: {
+		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CDropdown,
-		CDropdownItem,
 		CElementCover,
-		CSpinner,
+		CForm,
+		CInput,
+		CInputCheckbox,
+		CSelect,
+		CSwitch,
+		ValidationObserver,
+		ValidationProvider,
 	},
 })
 
@@ -85,14 +209,76 @@ export default class SystemdJournal extends Vue {
 	private config: ISystemdJournal|null = null
 
 	/**
-	 * @var {boolean} loading Indicates whether configuration fetch is in progress
+	 * @var {boolean} sizeRotation Use size based log rotation
 	 */
-	private loading = true;
+	private sizeRotation = false
+
+	/**
+	 * @var {boolean} timeRotation Use time based log rotation
+	 */
+	private timeRotation = false
+
+	/**
+	 * @constant {Array<IOption>} storageOptions Array of coreui select storage method options
+	 */
+	private storageOptions: Array<IOption> = [
+		{
+			label: this.$t('gateway.log.systemdJournal.form.storageMethods.volatile').toString(),
+			value: StorageMethod.VOLATILE,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.storageMethods.persistent').toString(),
+			value: StorageMethod.PERSISTENT,
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} unitOptions Array of coreui select unit options
+	 */
+	private unitOptions: Array<IOption> = [
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.seconds').toString(),
+			value: TimeUnit.SECONDS,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.minutes').toString(),
+			value: TimeUnit.MINUTES,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.hours').toString(),
+			value: TimeUnit.HOURS,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.days').toString(),
+			value: TimeUnit.DAYS,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.weeks').toString(),
+			value: TimeUnit.WEEKS,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.months').toString(),
+			value: TimeUnit.MONTHS,
+		},
+		{
+			label: this.$t('gateway.log.systemdJournal.form.units.years').toString(),
+			value: TimeUnit.YEAR,
+		},
+	]
 
 	/**
 	 * @var {boolean} failed Indicates whether configuraiton fetch failed
 	 */
 	private failed = false;
+
+	/**
+	 * Initializes validation rules
+	 */
+	created(): void {
+		extend('integer', integer);
+		extend('min', min_value);
+		extend('required', required);
+	}
 
 	/**
 	 * Retrieves systemd journal configuration
@@ -105,21 +291,48 @@ export default class SystemdJournal extends Vue {
 	 * Retrieves systemd journal configuration
 	 */
 	private getConfig(): Promise<void> {
-		return GatewayService.systemdLog()
+		return GatewayService.getSystemdJournalConfig()
 			.then((response: AxiosResponse) => {
-				this.config = response.data;
-				this.loading = false;
+				const config: ISystemdJournal = response.data;
+				if (config.sizeRotation.maxFileSize !== 0) {
+					this.sizeRotation = true;
+				}
+				if (config.timeRotation.unit !== TimeUnit.MONTHS ||
+					config.timeRotation.count !== 1) {
+					this.timeRotation = true;
+				}
+				this.config = config;
 			})
 			.catch((error: AxiosError) => {
-				this.loading = false;
 				this.failed = true;
-				this.$toast.error(
-					this.$t(
-						'gateway.log.systemdJournal.messages.journalFetchFailureError',
-						{error: error.response !== undefined ? error.response.data.message : error.message}
-					).toString()
-				);
+				extendedErrorToast(error, 'gateway.log.systemdJournal.messages.fetchFailureError');
 			});
+	}
+
+	/**
+	 * Saves systemd journal configuration
+	 */
+	private saveConfig(): void {
+		if (this.config === null) {
+			return;
+		}
+		let config: ISystemdJournal = this.config;
+		if (!this.sizeRotation) {
+			config.sizeRotation.maxFileSize = 0;
+		}
+		if (!this.timeRotation) {
+			config.timeRotation.unit = TimeUnit.MONTHS;
+			config.timeRotation.count = 1;
+		}
+		this.$store.commit('spinner/SHOW');
+		GatewayService.saveSystemdJournalConfig(config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('gateway.log.systemdJournal.messages.saveSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.log.systemdJournal.messages.saveFailed'));
 	}
 
 	/**
@@ -128,73 +341,11 @@ export default class SystemdJournal extends Vue {
 	private restartJournalService(): Promise<void> {
 		return ServiceService.restart('systemd-journald')
 			.then(() => {
-				this.loading = false;
 				this.$toast.success(
 					this.$t('gateway.log.systemdJournal.messages.restartSuccess').toString()
 				);
 			})
-			.catch((error: AxiosError) => {
-				this.loading = false;
-				this.$toast.error(
-					this.$t(
-						'gateway.log.systemdJournal.messages.restartFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message}
-					).toString()
-				);
-			});
-	}
-
-	/**
-	 * Disables systemd journal persistence
-	 */
-	private disablePersistence(): void {
-		if (this.config === null || !this.config.persistent) {
-			return;
-		}
-		this.loading = true;
-		GatewayService.disablePersistence()
-			.then(() => this.persistenceSuccess(false))
-			.catch((error: AxiosError) => this.persistenceError(error, false));
-	}
-
-	/**
-	 * Enables systemd journal persistence
-	 */
-	private enablePersistence(): void {
-		if (this.config === null || this.config.persistent) {
-			return;
-		}
-		this.loading = true;
-		GatewayService.enablePersistence()
-			.then(() => this.persistenceSuccess(true))
-			.catch((error: AxiosError) => this.persistenceError(error, true));
-	}
-
-	/**
-	 * Handles persistence change success
-	 * @param {boolean} enabled Persistence enabled?
-	 */
-	private persistenceSuccess(enabled: boolean): void {
-		this.getConfig().then(() => 
-			this.$toast.success(
-				this.$t('gateway.log.systemdJournal.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceSuccess').toString()
-			)
-		);
-	}
-
-	/**
-	 * Handles persistence change failure
-	 * @param {AxiosError} error Axios error
-	 * @param {boolean} enabled Persistence enabled?
-	 */
-	private persistenceError(error: AxiosError, enabled: boolean): void {
-		this.loading = false;
-		this.$toast.error(
-			this.$t(
-				'gateway.log.systemdJournal.messages.' + (enabled ? 'enable' : 'disable') + 'PersistenceFailure',
-				{error: error.response !== undefined ? error.response.data.message : error.message}
-			).toString()
-		);
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.log.systemdJournal.messages.restartFailed'));
 	}
 
 }

@@ -24,6 +24,7 @@ use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * Systemd journal manager
@@ -39,12 +40,12 @@ class SystemdJournalManager {
 	 * Journal configuration
 	 */
 	private const DEFAULT_CONFIG = [
-		'ForwardToSyslog' => 'yes',
+		'ForwardToSyslog' => 'no',
 		'Storage' => 'volatile',
-		'MaxFileSec' => '1week',
-		'SystemMaxFiles' => '5',
+		'MaxFileSec' => '1month',
+		'SystemMaxFiles' => '100',
 		'SystemMaxFileSize' => '',
-		'SystemMaxUse' => '64M',
+		'SystemMaxUse' => '',
 	];
 
 	/**
@@ -64,12 +65,12 @@ class SystemdJournalManager {
 		}
 		$journal = $conf['Journal'];
 		return [
-			'ForwardToSyslog' => $this->getPropertyDefault('ForwardToSyslog', $journal) === 'yes',
-			'Storage' => $this->getStorage($journal),
-			'MaxFileSec' => $this->getLogFileDuration($journal),
-			'SystemMaxFiles' => $this->getMaxFiles($journal),
-			'SystemMaxFileSize' => $this->getMaxFileSize($journal),
-			'SystemMaxUse' => $this->getMaxDiskSize($journal),
+			'forwardToSyslog' => $this->getPropertyDefault('ForwardToSyslog', $journal) === 'yes',
+			'persistence' => $this->getStorage($journal),
+			'maxDiskSize' => $this->getMaxDiskSize($journal),
+			'maxFiles' => $this->getMaxFiles($journal),
+			'sizeRotation' => $this->getSizeRotation($journal),
+			'timeRotation' => $this->getTimeRotation($journal),
 		];
 	}
 
@@ -81,46 +82,6 @@ class SystemdJournalManager {
 	public function getStorage(array $conf): string {
 		$storage = $this->getPropertyDefault('Storage', $conf);
 		return $storage === 'persistent' ? 'persistent' : 'volatile';
-	}
-
-	/**
-	 * Parses log file duration before rotation
-	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return array<string, int|string> Log file duration
-	 */
-	public function getLogFileDuration(array $conf): array {
-		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
-		$pattern = '/^(\d+)(\w*$)/';
-		$matches = Strings::match($duration, $pattern);
-		return [
-			'unit' => $matches[2] === '' ? 's' : $matches[2],
-			'count' => intval($matches[1]),
-		];
-	}
-
-	/**
-	 * Parses maximum system log files option
-	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return int Maximum system log files
-	 */
-	public function getMaxFiles(array $conf): int {
-		$files = $this->getPropertyDefault('SystemMaxFiles', $conf);
-		return $files === '' ? 0 : intval($files);
-	}
-
-	/**
-	 * Parses maximum system log file size in megabytes
-	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return int Maximum system log file size
-	 */
-	public function getMaxFileSize(array $conf): int {
-		$size = $this->getPropertyDefault('SystemMaxFileSize', $conf);
-		if ($size === '') {
-			return 0;
-		}
-		$pattern = '/^(\d+)(\w*$)/';
-		$matches = Strings::match($size, $pattern);
-		return intval($matches[1]);
 	}
 
 	/**
@@ -139,6 +100,46 @@ class SystemdJournalManager {
 	}
 
 	/**
+	 * Parses maximum system log files option
+	 * @param array<string, string> $conf Systemd journal configuration
+	 * @return int Maximum system log files
+	 */
+	public function getMaxFiles(array $conf): int {
+		$files = $this->getPropertyDefault('SystemMaxFiles', $conf);
+		return $files === '' ? 0 : intval($files);
+	}
+
+	/**
+	 * Parses maximum system log file size in megabytes
+	 * @param array<string, string> $conf Systemd journal configuration
+	 * @return array<string, int> Maximum system log file size
+	 */
+	public function getSizeRotation(array $conf): array {
+		$size = $this->getPropertyDefault('SystemMaxFileSize', $conf);
+		if ($size === '') {
+			return ['maxFileSize' => 0];
+		}
+		$pattern = '/^(\d+)(\w*$)/';
+		$matches = Strings::match($size, $pattern);
+		return ['maxFileSize' => intval($matches[1])];
+	}
+
+	/**
+	 * Parses log file duration before rotation
+	 * @param array<string, string> $conf Systemd journal configuration
+	 * @return array<string, int|string> Log file duration
+	 */
+	public function getTimeRotation(array $conf): array {
+		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
+		$pattern = '/^(\d+)(\w*$)/';
+		$matches = Strings::match($duration, $pattern);
+		return [
+			'unit' => $matches[2] === '' ? 's' : $matches[2],
+			'count' => intval($matches[1]),
+		];
+	}
+
+	/**
 	 * Returns key value if it exists, or default value otherwise
 	 * @param string $key Configuration option
 	 * @param array<string, string> $conf Systemd journal configuration
@@ -154,13 +155,23 @@ class SystemdJournalManager {
 
 	/**
 	 * Stores new systemd journal configuration
-	 * @param array<string, bool|int|string|array<string, int|string>> $newConf New systemd journal configuration
+	 * @param stdClass $newConf New systemd journal configuration
 	 */
-	public function saveConfig(array $newConf): void {
+	public function saveConfig(stdClass $newConf): void {
 		if (!file_exists(self::CONF_FILE)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
-		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, $this->toIni($newConf)) . PHP_EOL);
+		$conf = [
+			'Journal' => [
+				'ForwardToSyslog' => $newConf->forwardToSyslog ? 'yes' : 'no',
+				'Storage' => $newConf->persistence,
+				'MaxTimeSec' => strval($newConf->timeRotation->count) . $newConf->timeRotation->unit,
+				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : strval($newConf->maxDiskSize) . 'M',
+				'SystemMaxFiles' => strval($newConf->maxFiles),
+				'SystemMaxFileSize' => $newConf->sizeRotation->maxFileSize === 0 ? '' : strval($newConf->sizeRotation->maxFileSize) . 'M',
+			],
+		];
+		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
 	}
 
 	/**
