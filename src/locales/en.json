@@ -1093,18 +1093,51 @@
 			"description": "Shows gateway logs.",
 			"download": "Download",
 			"systemdJournal": {
-				"title": "Systemd journal",
-				"persistence": "Journal persistence",
+				"title": "Systemd journal configuration",
 				"restart": "Restart service",
+				"form": {
+					"forwardToSyslog": "Forward journal to syslog",
+					"storage": "Storage method",
+					"storageMethods": {
+						"persistent": "In-memory persistence",
+						"volatile": "Filesystem persistence"
+					},
+					"maxDisk": "Maximum disk space used by journal in MB*",
+					"sizeRotation": "File size-based log rotation",
+					"maxFiles": "Maximum number of log files to keep *",
+					"maxFilesNote": "* Systemd default value is 100 files.",
+					"maxFileSize": "Maximum log file size in MB *",
+					"timeRotation": "Time-based log rotation",
+					"defaultNote": "* Set value to 0 to use systemd default.",
+					"unit": "Time unit",
+					"units": {
+						"seconds": "Seconds",
+						"minutes": "Minutes",
+						"hours": "Hours",
+						"days": "Days",
+						"weeks": "Weeks",
+						"months": "Months",
+						"years": "Years"
+					},
+					"count": "Unit count"
+				},
+				"errors": {
+					"maxDisk": "Please enter maximum disk space usable by journal.",
+					"maxDiskInvalid": "Maximum disk size should be an integer greater or equal to 0.",
+					"maxFiles": "Please enter maximum number of log files to keep.",
+					"maxFilesInvalid": "Maximum number of log files should be an integer greater or equal to 1.",
+					"maxFileSize": "Please enter maximum log file size.",
+					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
+					"count": "Please enter unit count.",
+					"countInvalid": "Unit count should be an integer greater or equal to 1."
+				},
 				"messages": {
-					"journalFetchFailure": "Failed to retrieve systemd journal configuration.",
-					"journalFetchFailureError": "Failed to retrieve systemd journal configuration: {error}",
-					"disablePersistenceFailure": "Failed to disable systemd log persistence: {error}",
-					"disablePersistenceSuccess": "Systemd log persistence has been successfully disabled.",
-					"enablePersistenceFailure": "Failed to enable systemd log persistence: {error}",
-					"enablePersistenceSuccess": "Systemd log persistence has been successfully enabled.",
-					"restartFailed": "Failed to restart systemd journal service: {error}.",
-					"restartSuccess": "Systemd journal service has been successfully restarted."
+					"fetchFailed": "Failed to retrieve systemd journal configuration.",
+					"fetchFailedError": "Failed to retrieve systemd journal configuration: {error}",
+					"restartFailed": "Failed to restart systemd journal service: {error}",
+					"restartSuccess": "Systemd journal service has been successfully restarted.",
+					"saveFailed": "Failed to save systemd journal configuration: {error}",
+					"saveSuccess": "Systemd journal configuration sucessfully saved."
 				}
 			},
 			"messages": {

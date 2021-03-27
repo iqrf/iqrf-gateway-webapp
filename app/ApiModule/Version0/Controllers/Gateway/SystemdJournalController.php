@@ -63,7 +63,7 @@ class SystemdJournalController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns systemd journal configuration
@@ -73,7 +73,7 @@ class SystemdJournalController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/SystemdLog'
+	 *                      $ref: '#/components/schemas/SystemdJournal'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -91,7 +91,7 @@ class SystemdJournalController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Updates systemd journal configuration
@@ -100,7 +100,7 @@ class SystemdJournalController extends GatewayController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/SystemdLog'
+	 *                  $ref: '#/components/schemas/SystemdJournal'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -117,7 +117,7 @@ class SystemdJournalController extends GatewayController {
 		$this->featureEnabled();
 		$this->validator->validateRequest('systemdJournal', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody(true));
+			$this->manager->saveConfig($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

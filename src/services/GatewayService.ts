@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import { ISystemdJournal } from '../interfaces/systemdJournal';
 
 /**
  * Root password interface
@@ -63,24 +64,18 @@ class GatewayService {
 	}
 
 	/**
-	 * Retrieves systemd log configuration
+	 * Retrieves systemd journal configuration
 	 */
-	systemdLog(): Promise<AxiosResponse> {
-		return axios.get('gateway/journal', {headers: authorizationHeader()});
+	getSystemdJournalConfig(): Promise<AxiosResponse> {
+		return axios.get('gateway/journal/config', {headers: authorizationHeader()});
 	}
 
 	/**
-	 * Enables systemd log persistence
+	 * Saves systemd journal configuration
+	 * @param {ISystemdJournal} config New configuration
 	 */
-	enablePersistence(): Promise<AxiosResponse> {
-		return axios.post('gateway/journal/persistence/enable', null, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Enables systemd log persistence
-	 */
-	disablePersistence(): Promise<AxiosResponse> {
-		return axios.post('gateway/journal/persistence/disable', null, {headers: authorizationHeader()});
+	saveSystemdJournalConfig(config: ISystemdJournal): Promise<AxiosResponse> {
+		return axios.post('gateway/journal/config', config, {headers: authorizationHeader()});
 	}
 }
 
