@@ -343,7 +343,7 @@ export default class DpaUpdater extends Vue {
 		IqrfService.uploader({name: fileName, type: 'DPA'})
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',  
-					this.$t('iqrfnet.trUpload.dpaUpload.trUploadSuccess').toString()
+					this.$t('iqrfnet.trUpload.dpaUpload.messages.trUploadSuccess').toString()
 				);
 				this.startDaemon();
 			})
