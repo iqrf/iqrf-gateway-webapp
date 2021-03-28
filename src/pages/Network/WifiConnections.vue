@@ -110,13 +110,14 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CSelect} from '@coreui/vue/src';
-import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
+import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {IAccessPoint, IAccessPointArray, NetworkInterface} from '../../interfaces/network';
@@ -241,12 +242,7 @@ export default class WifiConnections extends Vue {
 					this.getAccessPoints();
 				}
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.wireless.messages.interfacesFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed'));
 	}
 
 	/**
@@ -256,12 +252,7 @@ export default class WifiConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.listWifiAccessPoints()
 			.then((response: AxiosResponse) => this.findConnections(response.data))
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.wireless.messages.listFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireless.messages.listFailed'));
 	}
 
 	/**
@@ -297,12 +288,7 @@ export default class WifiConnections extends Vue {
 				this.accessPoints = apArray;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.wireless.messages.connectionsFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireless.messages.connectionsFailed'));
 	}
 
 	/**
@@ -326,7 +312,11 @@ export default class WifiConnections extends Vue {
 					).toString());
 				this.getAccessPoints();
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.connect.failed',
+				{connection: name}
+			));
 	}
 
 	/**
@@ -347,9 +337,17 @@ export default class WifiConnections extends Vue {
 					).toString());
 				this.getAccessPoints();
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.disconnect.failed',
+				{connection: name}
+			));
 	}
 
+	/**
+	 * Redirects to connection form with required properties
+	 * @param {IAccessPoint} ap Access point meta
+	 */
 	private addConnection(ap: IAccessPoint) {
 		this.$router.push({
 			name: 'add-wireless-connection',
@@ -399,7 +397,11 @@ export default class WifiConnections extends Vue {
 				);
 				this.getAccessPoints();
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.removeFailed',
+				{connection: name}
+			));
 	}
 }
 </script>
