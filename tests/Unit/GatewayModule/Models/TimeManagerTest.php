@@ -31,7 +31,7 @@ final class TimeManagerTest extends CommandTestCase {
 		'timestamp' => 'date +%s',
 		'timezone' => 'timedatectl | grep "Time zone"',
 		'listTimezones' => 'timedatectl list-timezones',
-		'setTimezone' => 'timedatectl set-timezone Europe/London',
+		'setTimezone' => 'timedatectl set-timezone UTC',
 		'setTimezoneNonexistent' => 'timedatectl set-timezone Nonexistent/Nonexistent',
 	];
 
@@ -55,13 +55,13 @@ final class TimeManagerTest extends CommandTestCase {
 		$expected = [
 			'time' => [
 				'timestamp' => 1613756375,
-				'name' => 'Europe/London',
-				'code' => 'GMT',
+				'name' => 'UTC',
+				'code' => 'UTC',
 				'offset' => '+0000',
 			],
 		];
 		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
-		$timezone = 'Europe/London';
+		$timezone = 'UTC';
 		$manager = Mockery::mock(TimeManager::class, [$this->commandManager])->makePartial();
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['timestamp']])
@@ -75,12 +75,12 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to get time zone
 	 */
 	public function testGetTimezone(): void {
-		$timezone = 'Time zone: Europe/London (GMT, +0000)';
+		$timezone = 'Time zone: UTC (UTC, +0000)';
 		$command = new Command(self::COMMANDS['timezone'], $timezone, '', 0);
 		$this->commandManager->shouldReceive('run')
 			->withArgs(['timedatectl | grep "Time zone"'])
 			->andReturn($command);
-		$expected = 'Europe/London';
+		$expected = 'UTC';
 		Assert::same($expected, $this->manager->getTimezone());
 	}
 
@@ -88,20 +88,15 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to retrieve available timezones
 	 */
 	public function testAvailableTimezones(): void {
-		$timezones = 'Europe/London' . PHP_EOL . 'Europe/Prague';
+		$timezones = 'UTC';
 		$command = new Command(self::COMMANDS['listTimezones'], $timezones, '', 0);
 		$this->commandManager->shouldReceive('run')
 			->andReturn($command);
 		$expected = [
 			[
-				'name' => 'Europe/London',
-				'code' => 'GMT',
+				'name' => 'UTC',
+				'code' => 'UTC',
 				'offset' => '+0000',
-			],
-			[
-				'name' => 'Europe/Prague',
-				'code' => 'CET',
-				'offset' => '+0100',
 			],
 		];
 		Assert::same($expected, $this->manager->availableTimezones());
@@ -112,11 +107,11 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	public function testTimezoneInfo(): void {
 		$expected = [
-			'name' => 'Europe/London',
-			'code' => 'GMT',
+			'name' => 'UTC',
+			'code' => 'UTC',
 			'offset' => '+0000',
 		];
-		Assert::same($expected, $this->manager->timezoneInfo('Europe/London'));
+		Assert::same($expected, $this->manager->timezoneInfo('UTC'));
 	}
 
 	/**
@@ -128,7 +123,7 @@ final class TimeManagerTest extends CommandTestCase {
 			->withArgs([self::COMMANDS['setTimezone'], true])
 			->andReturn($command);
 		Assert::noError(function (): void {
-			$this->manager->setTimezone('Europe/London');
+			$this->manager->setTimezone('UTC');
 		});
 	}
 
