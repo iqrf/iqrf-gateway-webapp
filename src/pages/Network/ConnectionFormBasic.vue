@@ -500,11 +500,12 @@ import ip from 'ip-regex';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 enum WepKeyLen {
 	BIT64 = '64bit',
@@ -707,7 +708,7 @@ export default class ConnectionFormBasic extends Vue {
 			return ip.v6({exact: true}).test(address);
 		});
 		extend('wepIndex', (index: number) => {
-			return this.connection.wifi!.security.wep.keys[index] !== '';
+			return this.connection.wifi?.security.wep.keys[index] !== '';
 		});
 		extend('wepKey', (key: string) => {
 			if (this.wepLen === WepKeyLen.BIT64) {
@@ -886,16 +887,13 @@ export default class ConnectionFormBasic extends Vue {
 					this.$store.commit('spinner/HIDE');
 				}
 			})
-			.catch(() => {
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
 				if (iftype === InterfaceType.ETHERNET) {
 					this.$router.push('/network/ethernet');
 				} else if (iftype === InterfaceType.WIFI) {
 					this.$router.push('/network/wireless');
 				}
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.connection.messages.interfacesFetchFailed').toString()
-				);
 			});
 	}
 
@@ -909,16 +907,13 @@ export default class ConnectionFormBasic extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.storeConnectionData(response.data);
 			})
-			.catch(() => {
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'network.connection.messages.fetchFailed');
 				if (this.connection.type === ConnectionType.ETHERNET) {
 					this.$router.push('/network/ethernet');
 				} else if (this.connection.type === ConnectionType.WIFI) {
 					this.$router.push('/network/wireless');
 				}
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.connection.messages.connectionFetchFailed').toString()
-				);
 			});
 	}
 
@@ -1015,12 +1010,19 @@ export default class ConnectionFormBasic extends Vue {
 		if (connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
-				.then((response: AxiosResponse) => this.connect(response.data, connection.name!))
-				.catch(this.handleConnectionError);
+				.then((response: AxiosResponse) => this.connect(response.data, connection.name))
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.connection.messages.add.failed'
+				));
 		} else {
 			NetworkConnectionService.edit(this.uuid, connection)
-				.then(() => this.connect(this.uuid, connection.name!))
-				.catch(this.handleConnectionError);
+				.then(() => this.connect(this.uuid, connection.name))
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.connection.messages.edit.failed',
+					{connection: connection.name}
+				));
 		}
 	}
 
@@ -1045,28 +1047,11 @@ export default class ConnectionFormBasic extends Vue {
 				}
 				
 			})
-			.catch(this.handleConnectError);
-	}
-
-	/**
-	 * Handles connection create or edit errors
-	 */
-	private handleConnectionError(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t('network.connection.messages.' + 
-			(this.$route.path.includes('/add') ? 'add' : 'edit') + '.failure').toString()
-		);
-	}
-
-	/**
-	 * Handle connect errors
-	 */
-	private handleConnectError(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t('network.connection.messages.edit.failure').toString()
-		);
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.connect.failed',
+				{connection: name}
+			));
 	}
 
 }

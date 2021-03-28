@@ -20,7 +20,7 @@ export interface NetworkInterface {
 
 export interface IConnection {
 	autoConnect: IConnectionAutoConnect
-	name?: string
+	name: string
 	uuid?: string
 	type?: string
 	interface?: string
