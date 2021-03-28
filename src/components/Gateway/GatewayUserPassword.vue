@@ -54,6 +54,7 @@ import GatewayService from '../../services/GatewayService';
 
 import {AxiosError} from 'axios';
 import {GatewayPasswordFeature} from '../../services/FeatureService';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -123,18 +124,11 @@ export default class GatewayUserPassword extends Vue {
 					).toString()
 				);
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'gateway.password.messages.failure',
-						{
-							user: this.user,
-							error: error.response !== undefined ? error.response.data.message : error.message
-						}
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'gateway.password.messages.failure',
+				{user: this.user}
+			));
 	}
 }
 </script>
