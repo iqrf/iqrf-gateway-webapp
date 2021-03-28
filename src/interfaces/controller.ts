@@ -161,6 +161,26 @@ interface IControllerLogger {
 	 * Logging severity level
 	 */
 	severity: string
+
+	/**
+	 * Logging sinks
+	 */
+	sinks: IControllerLoggerSinks
+}
+
+/**
+ * Controller logger sinks configuration interface
+ */
+interface IControllerLoggerSinks {
+	/**
+	 * Log to file
+	 */
+	file: boolean
+
+	/**
+	 * Log to syslog
+	 */
+	syslog: boolean
 }
 
 /**

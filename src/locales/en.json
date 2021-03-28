@@ -879,7 +879,11 @@
 				"logger": {
 					"title": "Logger",
 					"filePath": "Path to log file",
-					"severity": "Severity level"
+					"severity": "Severity level",
+					"sinks": {
+						"file": "Log to file",
+						"syslog": "Log to syslog"
+					}
 				},
 				"wsServers": {
 					"title": "Websocket",

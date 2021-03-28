@@ -69,6 +69,14 @@
 										:placeholder='$t("config.controller.errors.missing.l_severity")'
 									/>
 								</ValidationProvider>
+								<CInputCheckbox
+									:checked.sync='config.logger.sinks.file'
+									:label='$t("config.controller.form.logger.sinks.file")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.logger.sinks.syslog'
+									:label='$t("config.controller.form.logger.sinks.syslog")'
+								/>
 							</CCol>
 						</CRow><hr>
 						<CRow>

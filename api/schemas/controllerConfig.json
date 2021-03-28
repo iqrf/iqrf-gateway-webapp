@@ -33,7 +33,11 @@
 			},
 			"logger": {
 				"filePath": "/var/log/iqrf-gateway-controller.log",
-				"severity": "info"
+				"severity": "info",
+				"sinks": {
+					"file": true,
+					"syslog": false
+				}
 			},
 			"resetButton": {
 				"api": "autoNetwork"
@@ -313,7 +317,8 @@
 			],
 			"required": [
 				"filePath",
-				"severity"
+				"severity",
+				"sinks"
 			],
 			"properties": {
 				"filePath": {
@@ -335,6 +340,30 @@
 						"info",
 						"error"
 					]
+				},
+				"sinks": {
+					"$id": "#/properties/logger/properties/sinks",
+					"type": "object",
+					"title": "Logger sinks",
+					"required": [
+						"file",
+						"syslog"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"file": {
+							"$id": "#/properties/logger/properties/sinks/properties/file",
+							"type": "boolean",
+							"title": "Log to file",
+							"example": true
+						},
+						"syslog": {
+							"$id": "#/properties/logger/properties/sinks/properties/syslog",
+							"type": "boolean",
+							"title": "Log to syslog",
+							"example": false
+						}
+					}
 				}
 			},
 			"additionalProperties": false
