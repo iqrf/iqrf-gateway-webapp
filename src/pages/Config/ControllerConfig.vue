@@ -259,15 +259,18 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {controllerErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import FeatureConfigService from '../../services/FeatureConfigService';
 import ServiceService from '../../services/ServiceService';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
+import {NavigationGuardNext, Route} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -389,13 +392,7 @@ export default class ControllerConfig extends Vue {
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'config.controller.messages.fetchFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message},
-					).toString()
-				);
+				extendedErrorToast(error, 'config.controller.messages.fetchFailed');
 				this.$router.push('/');
 			});
 	}
@@ -409,15 +406,7 @@ export default class ControllerConfig extends Vue {
 			.then(() => {
 				this.restartController();
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'config.controller.messages.saveFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.controller.messages.saveFailed'));
 	}
 
 	/**
@@ -431,15 +420,7 @@ export default class ControllerConfig extends Vue {
 					this.$t('config.controller.messages.restartSuccess').toString()
 				);
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'config.controller.messages.restartFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => controllerErrorToast(error, 'service.messages.restartFailed'));
 	}
 
 }
