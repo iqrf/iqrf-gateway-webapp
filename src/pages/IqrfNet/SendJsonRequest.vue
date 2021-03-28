@@ -219,15 +219,13 @@ export default class SendJsonRequest extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.mType === 'messageError') {
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleMessageError(mutation.payload);
-				return;
-			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+			if (mutation.payload.mType === 'messageError') {
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.handleMessageError(mutation.payload);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
 				this.handleAutoNetworkResponse(mutation.payload);
 			} else {
 				this.$store.dispatch('removeMessage', this.msgId);

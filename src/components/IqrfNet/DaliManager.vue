@@ -154,37 +154,17 @@ export default class DaliManager extends Vue {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.data.msgId === this.msgId) {
-					this.$store.dispatch('spinner/hide');
-					this.$store.dispatch('removeMessage', this.msgId);
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(
-								this.$t('iqrfnet.standard.dali.messages.timeout').toString()
-							);
-							break;
-						case 0:
-							this.$toast.success(
-								this.$t('iqrfnet.standard.dali.messages.success').toString()
-							);
-							this.answers = mutation.payload.data.rsp.result.answers;
-							break;
-						case 3:
-							this.$toast.error(
-								this.$t('iqrfnet.standard.dali.messages.pnum').toString()
-							);
-							break;
-						case 8:
-							this.$toast.error(
-								this.$t('forms.messages.noDevice', {address: this.address}).toString()
-							);
-							break;
-						default:
-							this.$toast.error(
-								this.$t('iqrfnet.standard.dali.messages.failure').toString()
-							);
-							break;
-					}
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
+				if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
+				} else {
+					this.handleResponse(mutation.payload);
 				}
 			}
 		});
@@ -219,6 +199,50 @@ export default class DaliManager extends Vue {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardDaliService.send(this.address, this.commands, new WebSocketOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles DALI response
+	 * @param response Daemon API response
+	 */
+	private handleResponse(response): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.standard.dali.messages.success').toString()
+			);
+			this.answers = response.data.rsp.result.answers;
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
+	 * Handles DALI errors
+	 * @param response Daemon API response
+	 */
+	private handleError(response): void {
+		switch(response.data.status) {
+			case -1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.dali.messages.timeout').toString()
+				);
+				break;
+			case 3:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.dali.messages.pnum').toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.dali.messages.failure').toString()
+				);
+				break;
+		}
 	}
 }
 </script>

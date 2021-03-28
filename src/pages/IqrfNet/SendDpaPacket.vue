@@ -316,9 +316,9 @@ export default class SendDpaPacket extends Vue {
 	private messages: Array<IMessagePairPacket> = []
 
 	/**
-	 * @var {Array<string>} msgIds Array of active Daemon API message IDs
+	 * @var {string|null} msgId Daemon API message ID
 	 */
-	private msgIds: Array<string> = []
+	private msgId: string|null = null
 
 	/**
 	 * Component unsubscribe function
@@ -402,13 +402,16 @@ export default class SendDpaPacket extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
 			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'messageError') {
 				this.handleMessageError(mutation.payload);
 				return;
 			}
-			if (this.msgIds.includes(mutation.payload.data.msgId) && mutation.payload.mType === 'iqrfRaw') {
-				this.removeMessage(mutation.payload.data.msgId);
+			if (mutation.payload.mType === 'iqrfRaw') {
 				this.handleResponse(mutation.payload);
 			}
 		});
@@ -418,7 +421,7 @@ export default class SendDpaPacket extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.msgIds.forEach((item: string) => this.removeMessage(item));
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -457,7 +460,7 @@ export default class SendDpaPacket extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		this.$store.dispatch('sendRequest', options)
-			.then((msgId: string) => this.msgIds.push(msgId));
+			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
@@ -468,7 +471,7 @@ export default class SendDpaPacket extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
-		this.removeMessage(response.data.msgId);
+		this.$store.dispatch('removeMessage', response.data.msgId);
 		this.$store.commit('TRIM_MESSAGE_QUEUE');
 		this.$toast.clear();
 		this.$toast.error(
@@ -566,18 +569,6 @@ export default class SendDpaPacket extends Vue {
 			this.timeoutOverwrite = true;
 			this.timeout = newTimeout;
 		}
-	}
-
-	/**
-	 * Removes a satified or failed request from active requests
-	 * @param {string} msgId Daemon API message ID
-	 */
-	private removeMessage(msgId: string): void {
-		let idx = this.msgIds.indexOf(msgId);
-		if (idx !== -1) {
-			this.msgIds.splice(idx, 1);
-		}
-		this.$store.dispatch('removeMessage', msgId);
 	}
 }
 </script>
