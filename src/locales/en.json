@@ -2001,9 +2001,8 @@
 			},
 			"messages": {
 				"noInterfaces": "No active Wi-Fi network interface detected.",
-				"interfacesFailed": "Failed to retrieve list of interfaces",
-				"listFailed": "Failed to retrieve list of available access points.",
-				"connectionsFailed": "Failed to retrieve access point connection details."
+				"listFailed": "Failed to retrieve list of available access points: {error}",
+				"connectionsFailed": "Failed to retrieve access point connection details: {error}"
 			}
 		},
 		"wireguard": {
@@ -2208,7 +2207,7 @@
 					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
-				"removeFailed": "Failed to delete network connection {connection}."
+				"removeFailed": "Failed to delete network connection {connection}: {error}"
 			}
 		},
 		"table": {
