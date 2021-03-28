@@ -2188,8 +2188,8 @@
 				"notConnected": "Not connected"
 			},
 			"messages": {
-				"interfacesFetchFailed": "Failed to retrieve interfaces.",
-				"connectionFetchFailed": "Failed to retrieve connection details.",
+				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
+				"connectionFetchFailed": "Failed to retrieve list of connections: {error}",
 				"createFailed": "Failed to create connection {connection}.",
 				"add": {
 					"failure": "Failed to create new connection.",
@@ -2200,10 +2200,12 @@
 					"success": "Network connection {connection} has been edited."
 				},
 				"connect": {
-					"success": "Network connection {connection} has been connected at network interface {interface}."
+					"success": "Network connection {connection} has been activate at network interface {interface}.",
+					"failed": "Failed to activate connection {connection}: {error}"
 				},
 				"disconnect": {
-					"success": "Network connection {connection} has been disconnected at network interface {interface}."
+					"success": "Network connection {connection} has been deactivated at network interface {interface}.",
+					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
 				"removeFailed": "Failed to delete network connection {connection}."

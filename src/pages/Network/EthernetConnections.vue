@@ -78,13 +78,14 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
-import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import EthernetConnection from '../../components/Network/EthernetConnection.vue';
 
+import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
@@ -184,12 +185,7 @@ export default class EthernetConnections extends Vue {
 					this.getConnections();
 				}
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.connection.messages.interfacesFetchFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed'));
 	}
 
 	/**
@@ -203,12 +199,7 @@ export default class EthernetConnections extends Vue {
 				this.connectionsLoaded = true;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.connection.messages.connectionFetchFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.connectionFetchFailed'));
 	}
 
 	/**
@@ -227,7 +218,11 @@ export default class EthernetConnections extends Vue {
 					).toString());
 				this.getConnections();
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.connect.failed',
+				{connection: connection.name}
+			));
 	}
 
 	/**
@@ -246,7 +241,11 @@ export default class EthernetConnections extends Vue {
 					).toString());
 				this.getConnections();
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.connection.messages.disconnect.failed',
+				{connection: connection.name}
+			));
 	}
 }
 </script>
