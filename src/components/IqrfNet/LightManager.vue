@@ -157,16 +157,6 @@ export default class LightManager extends Vue {
 	private address = 1
 	
 	/**
-	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
-	 */
-	private allowedMTypes: Array<string> = [
-		'iqrfLight_Enumerate',
-		'iqrfLight_SetPower',
-		'iqrfLight_IncrementPower',
-		'iqrfLight_DecrementPower'
-	]
-	
-	/**
 	 * @var {number} index Index of light to manage
 	 */
 	private index = 0
@@ -219,47 +209,21 @@ export default class LightManager extends Vue {
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
-				switch(mutation.payload.data.status) {
-					case -1:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.light.messages.timeout').toString()
-						);
-						break;
-					case 0:
-						this.$toast.success(
-							this.$t('iqrfnet.standard.light.messages.success').toString()
-						);
-						if (mutation.payload.mType === 'iqrfLight_Enumerate') {
-							this.numLights = mutation.payload.data.rsp.result.lights;
-							this.responseType = 'enum';
-						} else {
-							this.prevPower = mutation.payload.data.rsp.result.prevVals[0];
-							this.responseType = 'power';
-						}
-						break;
-					case 3:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.light.messages.pnum').toString()
-						);
-						break;
-					case 8:
-						this.$toast.error(
-							this.$t('forms.messages.noDevice', {address: this.address}).toString()
-						);
-						break;
-					default:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.light.messages.failure').toString()
-						);
-						break;
+				if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
+				} else if (mutation.payload.mType === 'iqrfLight_Enumerate') {
+					this.handleEnumerateResponse(mutation.payload);
+				} else if (mutation.payload.mType === 'iqrfLight_SetPower' ||
+					mutation.payload.mType === 'iqrfLight_IncrementPower' ||
+					mutation.payload.mType === 'iqrfLight_DecrementPower') {
+					this.handlePowerResponse(mutation.payload);
 				}
 			}
 		});
@@ -288,6 +252,22 @@ export default class LightManager extends Vue {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.enumerate(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Enumerate response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerateResponse(response): void {
+		if (response.data.status === 0) {
+			this.numLights = response.data.rsp.result.lights;
+			this.responseType = 'enum';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.light.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
 	}
 
 	/**
@@ -324,6 +304,51 @@ export default class LightManager extends Vue {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles power response
+	 * @param response Daemon API response
+	 */
+	private handlePowerResponse(response): void {
+		if (response.data.status === 0) {
+			this.prevPower = response.data.rsp.result.prevVals[0];
+			this.responseType = 'power';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.light.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
+	 * Handles error response
+	 * @param response Daemon API response
+	 */
+	private handleError(response): void {
+		switch(response.data.status) {
+			case -1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.timeout').toString()
+				);
+				break;
+			case 3:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.pnum').toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.failure').toString()
+				);
+				break;
+		}
 	}
 }
 </script>

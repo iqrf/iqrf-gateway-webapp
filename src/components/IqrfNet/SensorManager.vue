@@ -120,14 +120,6 @@ export default class SensorManager extends Vue {
 	private address = 1
 
 	/**
-	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
-	 */
-	private allowedMTypes: Array<string> = [
-		'iqrfSensor_Enumerate',
-		'iqrfSensor_ReadSensorsWithTypes'
-	]
-
-	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
 	private msgId: string|null = null
@@ -156,47 +148,19 @@ export default class SensorManager extends Vue {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
-				switch(mutation.payload.data.status) {
-					case -1:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.sensor.messages.timeout').toString()
-						);
-						break;
-					case 0:
-						this.$toast.success(
-							this.$t('iqrfnet.standard.sensor.messages.success').toString()
-						);
-						if (mutation.payload.mType === 'iqrfSensor_Enumerate') {
-							this.parseEnumerate(mutation.payload.data.rsp.result.sensors);
-							this.responseType = 'enum';
-						} else if (mutation.payload.mType === 'iqrfSensor_ReadSensorsWithTypes') {
-							this.parseReadAll(mutation.payload.data.rsp.result.sensors);
-							this.responseType = 'read';
-						}
-						break;
-					case 3:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.sensor.messages.pnum').toString()
-						);
-						break;
-					case 8:
-						this.$toast.error(
-							this.$t('forms.messages.noDevice', {address: this.address}).toString()
-						);
-						break;
-					default:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.sensor.messages.failure').toString()
-						);
-						break;
+				if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
+				} else if (mutation.payload.mType === 'iqrfSensor_Enumerate') {
+					this.handleEnumerateResponse(mutation.payload);
+				} else if (mutation.payload.mType === 'iqrfSensor_ReadSensorsWithTypes') {
+					this.handleReadSensors(mutation.payload);
 				}
 			}
 		});
@@ -256,12 +220,73 @@ export default class SensorManager extends Vue {
 	}
 
 	/**
+	 * Handles Read Sensors response
+	 * @param response Daemon API response
+	 */
+	private handleReadSensors(response): void {
+		if (response.data.status === 0) {
+			this.parseReadAll(response.data.rsp.result.sensors);
+			this.responseType = 'read';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.sensor.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
 	 * Enumerates all sensors implemented by a device
 	 */
 	private submitEnumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardSensorService.enumerate(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Enumerate response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerateResponse(response): void {
+		if (response.data.status === 0) {
+			this.parseEnumerate(response.data.rsp.result.sensors);
+			this.responseType = 'enum';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.sensor.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
+	 * Handles error response
+	 * @param response Daemon API response
+	 */
+	private handleError(response): void {
+		switch(response.data.status) {
+			case -1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.sensor.messages.timeout').toString()
+				);
+				break;
+			case 3:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.sensor.messages.pnum').toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.sensor.messages.failure').toString()
+				);
+				break;
+		}
 	}
 }
 </script>

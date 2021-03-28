@@ -2437,5 +2437,6 @@
 		"messages": {
 			"noRecords": "No records have been found."
 		}
-	}
+	},
+	"messageError": "Request could not be processed: {error}"
 }

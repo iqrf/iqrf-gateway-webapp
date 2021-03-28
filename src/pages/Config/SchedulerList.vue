@@ -330,13 +330,15 @@ export default class SchedulerList extends Vue {
 					}
 				}
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'mngScheduler_List' &&
-					this.msgIds.includes(mutation.payload.data.msgId)) { // caught scheduler list was sent from this component
-					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
+					return;
+				}
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (mutation.payload.data.status === 0) {
 						this.taskIds = mutation.payload.data.rsp.tasks;
-						this.taskIds.forEach(item => { // fetch each task from list of task ids
+						this.taskIds.forEach(item => {
 							this.getTask(item);
 						});
 						this.retrieved = 'daemon';
@@ -345,19 +347,14 @@ export default class SchedulerList extends Vue {
 							this.$t('config.daemon.scheduler.messages.listFailed').toString()
 						);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_GetTask' &&
-							this.msgIds.includes(mutation.payload.data.msgId)) { // caught get task message was sent from this component
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					if (mutation.payload.data.status === 0) {
 						if (this.tasks === null) {
 							return;
 						}
 						this.tasks.push(mutation.payload.data.rsp);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
-							this.msgIds.includes(mutation.payload.data.msgId)) {
-					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
 					if (mutation.payload.data.status === 0) {
 						this.$toast.success(
 							this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
@@ -369,7 +366,6 @@ export default class SchedulerList extends Vue {
 						);
 					}
 				} else if (mutation.payload.mType === 'messageError') {
-					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
 						this.$toast.error(
 							this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()

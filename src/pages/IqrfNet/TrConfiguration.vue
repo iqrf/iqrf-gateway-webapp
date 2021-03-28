@@ -515,6 +515,11 @@ export default class TrConfiguration extends Vue {
 				this.handleRestartResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_WriteCfgByte') {
 				this.handleWriteByteResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.dispatch('spinner/hide');
+				this.$toast.error(
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+				);
 			}
 		});
 	}

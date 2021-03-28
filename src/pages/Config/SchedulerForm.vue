@@ -166,7 +166,6 @@
 </template>
 
 <script lang='ts'>
-// components
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -174,29 +173,22 @@ import {integer, required, min_value} from 'vee-validate/dist/rules';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive';
 import {Datetime} from 'vue-datetime';
 
-// functions and modules
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {mapGetters} from 'vuex';
-import {MetaInfo} from 'vue-meta';
+import {versionHigherEqual} from '../../helpers/versionChecker';
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
-
-// helpers
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-
-// services
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import SchedulerService from '../../services/SchedulerService';
 
-// interfaces
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IOption} from '../../interfaces/coreui';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
-import { extendedErrorToast } from '../../helpers/errorToast';
 
 interface ILocalTask {
 	message: string
@@ -459,12 +451,6 @@ export default class SchedulerForm extends Vue {
 				this.useRest = true;
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
-					if (mutation.payload.mType === 'messageError') {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.error(
-							this.$t('config.daemon.scheduler.messages.processError').toString()
-						);
-					}
 					return;
 				}
 				this.$store.commit('spinner/HIDE');

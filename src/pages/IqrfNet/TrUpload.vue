@@ -85,6 +85,11 @@ export default class TrUpload extends Vue {
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				this.handleOsInfoResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+				);
 			}
 		});
 
