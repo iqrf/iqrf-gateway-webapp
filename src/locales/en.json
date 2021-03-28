@@ -905,7 +905,6 @@
 				"disabled": "IQRF Gateway Controller service is disabled.",
 				"saveFailed": "Failed to save Controller configuration: {error}",
 				"restartSuccess": "Controller configuration has been successfully saved. Controller service has been restarted.",
-				"restartFailed": "Failed to restart Controller service: {error}",
 				"fetchFailed": "Failed to retrieve Controller configuration: {error}"
 			}
 		},

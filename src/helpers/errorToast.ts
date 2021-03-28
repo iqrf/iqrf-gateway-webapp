@@ -23,6 +23,21 @@ export function extendedErrorToast(error: AxiosError, message: string, params: D
 }
 
 /**
+ * Calls extended error toast with IQRF Gateway Controller argument
+ * @param {AxiosError} error Axios error
+ * @param {string} message Path to translation message
+ * @param {Dict<string>|undefined} params Partial translations for message placeholders
+ */
+export function controllerErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+	if (params === undefined) {
+		params = {service: 'IQRF Gateway Controller'};
+	} else {
+		Object.assign(params, {service: 'IQRF Gateway Controller'});
+	}
+	extendedErrorToast(error, message, params);
+}
+
+/**
  * Calls extended error toast with IQRF Gateway Daemon argument
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
