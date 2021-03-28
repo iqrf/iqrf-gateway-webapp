@@ -831,6 +831,7 @@
 			"messages": {
 				"disabled": "IQRF Gateway Translator service is disabled.",
 				"saveFailed": "Failed to save Translator configuration: {error}",
+				"saveSuccess": "Translator configuration has been successfully saved.",
 				"fetchFailed": "Failed to retrieve Translator configuration: {error}"
 			},
 			"errors": {

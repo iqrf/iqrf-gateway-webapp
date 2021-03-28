@@ -239,6 +239,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -340,13 +341,7 @@ export default class TranslatorConfig extends Vue {
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'config.translator.messages.fetchFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message},
-					).toString()
-				);
+				extendedErrorToast(error, 'config.translator.messages.fetchFailed');
 				this.$router.push('/');
 			});
 	}
@@ -360,18 +355,12 @@ export default class TranslatorConfig extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+					this.$toast.success(
+						this.$t('config.translator.messages.saveSuccess').toString()
+					);
 				});
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'config.translator.messages.saveFailed',
-						{error: error.response !== undefined ? error.response.data.message : error.message},
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.translator.messages.saveFailed'));
 	}
 }
 </script>
