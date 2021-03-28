@@ -908,7 +908,11 @@ export default class ConnectionFormBasic extends Vue {
 				this.storeConnectionData(response.data);
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'network.connection.messages.fetchFailed');
+				extendedErrorToast(
+					error,
+					'network.connection.messages.fetchFailed',
+					{connection: this.uuid}
+				);
 				if (this.connection.type === ConnectionType.ETHERNET) {
 					this.$router.push('/network/ethernet');
 				} else if (this.connection.type === ConnectionType.WIFI) {
