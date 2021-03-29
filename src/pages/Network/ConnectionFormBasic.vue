@@ -225,6 +225,12 @@
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
 									<hr>
+									<CAlert
+										v-if='!ipv4InSubnet'
+										color='danger'
+									>
+										{{ $t('network.connection.ipv4.notInSubnet') }}
+									</CAlert>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
@@ -782,6 +788,37 @@ export default class ConnectionFormBasic extends Vue {
 			});
 		}
 		return methodOptions;
+	}
+
+	/**
+	 * Checks if ipv4 and gateway address are in the same subnet
+	 * @returns {boolean} Are addreses in the same subnet?
+	 */
+	get ipv4InSubnet(): boolean {
+		const ipv4 = this.connection.ipv4.addresses[0].address;
+		const mask = this.connection.ipv4.addresses[0].mask;
+		const gateway = this.connection.ipv4.gateway;
+		if (gateway === null) {
+			return false;
+		}
+		if (!ip.v4({exact: true}).test(ipv4) ||
+			!ip.v4({exact: true}).test(mask) ||
+			!ip.v4({exact: true}).test(gateway)) {
+			return true;
+		}
+		const ipv4Int = this.ipv4ToInt(ipv4);
+		const maskInt = this.ipv4ToInt(mask);
+		const gatewayInt = this.ipv4ToInt(gateway);
+		return ((ipv4Int & maskInt) === (gatewayInt & maskInt));
+	}
+
+	/**
+	 * Converts dot representation of ip to integer value
+	 * @param {string} address IPv4 address string
+	 * @returns {number} integer value of ipv4
+	 */
+	private ipv4ToInt(address: string): number {
+		return address.split('.').reduce((acc, oct) => {return acc * 256 + parseInt(oct, 10);}, 0) >>> 0;
 	}
 
 	/**

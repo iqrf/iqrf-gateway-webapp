@@ -2142,7 +2142,8 @@
 					"gateway": "Please enter a valid IPv4 gateway address.",
 					"mask": "Please enter a valid IPv4 subnet mask.",
 					"maskInvalid": "Invalid subnet mask."
-				}
+				},
+				"notInSubnet": "IPv4 address and gateway address are not in the same subnet."
 			},
 			"ipv6": {
 				"title": "IPv6 configuration",
