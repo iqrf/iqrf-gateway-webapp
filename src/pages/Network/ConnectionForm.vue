@@ -299,7 +299,7 @@
 										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
-												v-if='index > 0'
+												v-if='connection.ipv4.dns.length > 1'
 												color='danger'
 												@click='deleteIpv4Dns(index)'
 											>
@@ -331,7 +331,7 @@
 										:placeholder='$t("network.connection.ipv6.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										@change='ipv6MethodChanged'
+										@change='ipv6MethodChanged = true'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv6.method === "manual"'>
@@ -375,7 +375,7 @@
 										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
-												v-if='index > 0'
+												v-if='connection.ipv6.addresses.length > 1'
 												color='danger'
 												@click='deleteIpv6Address(index)'
 											>
@@ -425,7 +425,7 @@
 										</ValidationProvider>
 										<div class='form-group'>
 											<CButton
-												v-if='index > 0'
+												v-if='connection.ipv6.dns.length > 1'
 												color='danger'
 												@click='deleteIpv6Dns(index)'
 											>
@@ -543,7 +543,7 @@ enum WepKeyType {
 	}
 })
 
-export default class ConnectionFormBasic extends Vue {
+export default class ConnectionForm extends Vue {
 
 	/**
 	 * @var {IConnection} connection Configuration of IPv4 and IPv6 connectivity

@@ -72,7 +72,7 @@ const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
-const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
+const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
@@ -756,12 +756,12 @@ const routes: Array<RouteConfig> = [
 								path: '',
 							},
 							{
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'add',
 							},
 							{
 								name: 'edit-ethernet-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
 							},
@@ -781,13 +781,13 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								name: 'add-wireless-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'add',
 								props: true,
 							},
 							{
 								name: 'edit-wireless-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
 							}
