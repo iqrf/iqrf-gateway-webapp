@@ -2213,7 +2213,8 @@
 					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
-				"removeFailed": "Failed to delete network connection {connection}: {error}"
+				"removeFailed": "Failed to delete network connection {connection}: {error}",
+				"ipChangeSuccess": "IP address successfully changed, use web interface available at the new address."
 			}
 		},
 		"table": {
