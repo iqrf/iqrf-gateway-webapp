@@ -96,84 +96,86 @@
 								:options='stackOptions'
 								:label='$t("network.wireguard.tunnels.form.stack")'
 							/>
-							<div
-								v-if='stack === "ipv4" || stack === "both"'
-								class='form-group'
-							>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|ipv4'
-									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.ipv4",
-										ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
-									}'
+							<CRow>
+								<CCol
+									v-if='stack === "ipv4" || stack === "both"'
+									:md='stack === "ipv4" ? 12 : 6'
 								>
-									<CInput
-										v-model='tunnel.ipv4.address'
-										:label='$t("network.wireguard.tunnels.form.ipv4")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|between:1,32'
-									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.ipv4Prefix",
-										integer: "network.wireguard.tunnels.errors.ipv4PrefixInvalid",
-										between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
-									}'
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|ipv4'
+										:custom-messages='{
+											required: "network.wireguard.tunnels.errors.ipv4",
+											ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
+										}'
+									>
+										<CInput
+											v-model='tunnel.ipv4.address'
+											:label='$t("network.wireguard.tunnels.form.ipv4")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|between:1,32'
+										:custom-messages='{
+											required: "network.wireguard.tunnels.errors.ipv4Prefix",
+											integer: "network.wireguard.tunnels.errors.ipv4PrefixInvalid",
+											between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
+										}'
+									>
+										<CInput
+											v-model.number='tunnel.ipv4.prefix'
+											type='number'
+											min='1'
+											max='32'
+											:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+								<CCol
+									v-if='stack === "ipv6" || stack === "both"'
+									:md='stack === "ipv6" ? 12 : 6'
 								>
-									<CInput
-										v-model.number='tunnel.ipv4.prefix'
-										type='number'
-										min='1'
-										max='32'
-										:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-							</div>
-							<div
-								v-if='stack === "ipv6" || stack === "both"'
-								class='form-group'
-							>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|ipv6'
-									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.ipv6",
-										ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
-									}'
-								>
-									<CInput
-										v-model='tunnel.ipv6.address'
-										:label='$t("network.wireguard.tunnels.form.ipv6")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|integer|between:48,128'
-									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.ipv6Prefix",
-										integer: "network.wireguard.tunnels.errors.ipv6PrefixInvalid",
-										between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
-									}'
-								>
-									<CInput
-										v-model.number='tunnel.ipv6.prefix'
-										type='number'
-										min='48'
-										max='128'
-										:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-							</div>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|ipv6'
+										:custom-messages='{
+											required: "network.wireguard.tunnels.errors.ipv6",
+											ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
+										}'
+									>
+										<CInput
+											v-model='tunnel.ipv6.address'
+											:label='$t("network.wireguard.tunnels.form.ipv6")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|integer|between:48,128'
+										:custom-messages='{
+											required: "network.wireguard.tunnels.errors.ipv6Prefix",
+											integer: "network.wireguard.tunnels.errors.ipv6PrefixInvalid",
+											between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
+										}'
+									>
+										<CInput
+											v-model.number='tunnel.ipv6.prefix'
+											type='number'
+											min='48'
+											max='128'
+											:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+							</CRow>
 						</CCol>
 					</CRow>
 					<div
@@ -503,13 +505,13 @@ export default class WireguardTunnel extends Vue {
 	 * @var {Array<StackType>} peerStacks Array of peer stacks
 	 */
 	private peerStacks: Array<StackType> = [
-		StackType.SINGLE_IPV4
-	];
+		StackType.DUAL
+	]
 
 	/**
 	 * @var {StackType} stack Interface stack
 	 */
-	private stack = StackType.SINGLE_IPV4;
+	private stack = StackType.DUAL
 
 	/**
 	 * @constant {Array<IOption>} stackOptions Array of CoreUI select stack options
