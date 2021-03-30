@@ -7,7 +7,7 @@
 					{{ $t('network.ethernet.messages.noInterfaces') }}
 				</CCardBody>
 			</div>
-			<div v-if='interfacesLoaded && connectionsLoaded && ifNameOptions.length > 0'>
+			<div v-else>
 				<CCardHeader class='border-0'>
 					{{ $t('network.connection.title') }}
 				</CCardHeader>
