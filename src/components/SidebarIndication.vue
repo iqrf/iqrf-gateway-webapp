@@ -30,7 +30,7 @@
 				</td>
 				<td class='status'>
 					<CBadge :color='daemonQueueBadgeColor'>
-						{{ 'Length: ' + daemonStatus.queueLen }}
+						{{ queueLen }}
 					</CBadge>
 				</td>
 			</tr>
@@ -87,6 +87,10 @@ export default class SidebarIndication extends Vue {
 	 */
 	get daemonQueueBadgeColor(): string {
 		const daemonStatus = this.$store.getters.daemonStatus;
+		const socketConnected = this.$store.getters.isSocketConnected;
+		if (!socketConnected || daemonStatus.queueLen === 'unknown') {
+			return 'secondary';
+		}
 		if (daemonStatus.queueLen <= 16) {
 			return 'success';
 		} else if (daemonStatus.queueLen <= 24) {
@@ -94,6 +98,19 @@ export default class SidebarIndication extends Vue {
 		} else {
 			return 'danger';
 		}
+	}
+
+	/**
+	 * Computes Daemon queue length string
+	 * @returns {string} Daemon queue length string
+	 */
+	get queueLen(): string {
+		const daemonStatus = this.$store.getters.daemonStatus;
+		const socketConnected = this.$store.getters.isSocketConnected;
+		if (!socketConnected || daemonStatus.queueLen === 'unknown') {
+			return this.$t('daemonStatus.modes.unknown').toString();
+		}
+		return 'Length: ' + daemonStatus.queueLen;
 	}
 }
 </script>
