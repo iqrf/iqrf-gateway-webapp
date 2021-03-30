@@ -445,7 +445,7 @@
 						<CButton
 							type='submit'
 							color='primary'
-							:disabled='invalid'
+							:disabled='invalid || !ipv4InSubnet'
 						>
 							{{ $t('forms.save') }}
 						</CButton>
