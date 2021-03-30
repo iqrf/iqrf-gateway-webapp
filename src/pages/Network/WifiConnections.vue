@@ -7,7 +7,7 @@
 					{{ $t('network.wireless.messages.noInterfaces') }}
 				</CCardBody>
 			</div>
-			<div v-if='interfacesLoaded && ifNameOptions.length > 0'>
+			<div v-else>
 				<CCardHeader class='border-0'>
 					{{ $t('network.wireless.table.accessPoints') }}
 					<CButton
