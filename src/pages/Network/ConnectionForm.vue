@@ -220,7 +220,7 @@
 										:placeholder='$t("network.connection.ipv4.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										@change='ipv4MethodChanged = true'
+										@change='ipv4Changed = true'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
@@ -244,6 +244,7 @@
 											:label='$t("network.connection.ipv4.address")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
+											@input='ipv4Changed = true'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -331,7 +332,6 @@
 										:placeholder='$t("network.connection.ipv6.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										@change='ipv6MethodChanged = true'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv6.method === "manual"'>
@@ -463,7 +463,7 @@
 					{{ $t('network.connection.modal.title') }}
 				</h5>
 			</template>
-			<div>
+			<div v-if='modalMessages !== null'>
 				<span v-if='modalMessages.ipv4 !== null'>
 					{{ modalMessages.ipv4 }}
 				</span>
@@ -499,19 +499,27 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required, integer, between} from 'vee-validate/dist/rules';
 
+import {sleep} from '../../helpers/sleep';
+import {between, integer, required} from 'vee-validate/dist/rules';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {v4 as uuidv4} from 'uuid';
 import ip from 'ip-regex';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+import VersionService from '../../services/VersionService';
 
-import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import {IConnection, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
-import { extendedErrorToast } from '../../helpers/errorToast';
+
+interface IModalMessages {
+	ipv4: string|null
+	ipv4Addr: string|null
+	ipv6: string|null
+	ipv6Addrs: Array<string>
+}
 
 enum WepKeyLen {
 	BIT64 = '64bit',
@@ -644,24 +652,14 @@ export default class ConnectionForm extends Vue {
 	private pskInputType = 'password'
 
 	/**
-	 * @var {boolean} ipv4MethodChanged Indicates that ipv4 method has been changed
-	 */
-	private ipv4MethodChanged = false
-
-	/**
-	 * @var {boolean} ipv6MethodChanged Indicates that ipv6 method has been changed
-	 */
-	private ipv6MethodChanged = false
-
-	/**
 	 * @var {string} modalMessages Modal IP method change messages
 	 */
-	private modalMessages: Dictionary<Array<string>|string|null> = {
-		ipv4: null,
-		ipv4Addr: null,
-		ipv6: null,
-		ipv6Addrs: [],
-	}
+	private modalMessages: IModalMessages|null = null
+
+	/**
+	 * @var {boolean} ivp4MethodChanged Indicates that IPv4 method changed
+	 */
+	private ipv4Changed = false
 
 	/**
 	 * @var {boolean} showModal Show confirmation modal?
@@ -1003,7 +1001,12 @@ export default class ConnectionForm extends Vue {
 			this.saveConnection();
 			return;
 		}
-		if (!this.ipv4MethodChanged && !this.ipv6MethodChanged) {
+		if (!this.ipv4Changed) {
+			this.saveConnection();
+			return;
+		}
+		const loc = new UrlBuilder();
+		if (loc.getHostname() === 'localhost') {
 			this.saveConnection();
 			return;
 		}
@@ -1013,15 +1016,14 @@ export default class ConnectionForm extends Vue {
 			ipv6: null,
 			ipv6Addrs: [],
 		};
-		const loc = new UrlBuilder();
-		if (loc.getHostname() === 'localhost') {
-			this.saveConnection();
-			return;
-		}
-		if (this.ipv4MethodChanged) {
+		if (this.ipv4Changed) {
 			if (this.connection.ipv4.method === 'auto') {
 				this.modalMessages.ipv4 = this.$t('network.connection.modal.autoIpv4').toString();
 			} else {
+				if (this.connection.ipv4.addresses[0].address === loc.getHostname()) {
+					this.saveConnection();
+					return;
+				}
 				this.modalMessages.ipv4 = this.$t('network.connection.modal.staticIpv4').toString();
 				this.modalMessages.ipv4Addr = window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort();
 			}
@@ -1049,6 +1051,9 @@ export default class ConnectionForm extends Vue {
 		}
 		if (connection.wifi?.bssids !== undefined) {
 			delete connection.wifi.bssids;
+		}
+		if (this.showModal) {
+			this.showModal = false;
 		}
 		this.$store.commit('spinner/SHOW');
 		if (connection.uuid === undefined) {
@@ -1091,11 +1096,23 @@ export default class ConnectionForm extends Vue {
 				}
 				
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'network.connection.messages.connect.failed',
-				{connection: name}
-			));
+			.catch(async (error: AxiosError) => {
+				if (this.ipv4Changed && this.connection.ipv4.method === 'manual') {
+					const loc = new UrlBuilder();
+					axios.defaults.baseURL = loc.getRestApiUrlFromAddr(this.connection.ipv4.addresses[0].address);
+					await sleep(10000);
+					VersionService.getWebappVersionRest()
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.success(
+								this.$t('network.connection.messages.ipChangeSuccess').toString()
+							);
+						})
+						.catch(() => extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name}));
+				} else {
+					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
+				}
+			});
 	}
 
 }

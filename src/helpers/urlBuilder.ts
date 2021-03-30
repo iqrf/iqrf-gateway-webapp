@@ -39,6 +39,13 @@ export default class UrlBuilder {
 	}
 
 	/**
+	 * Development environment?
+	 */
+	isDevEnv(): boolean {
+		return this.isDev;
+	}
+
+	/**
 	 * Returns hostname
 	 */
 	getHostname(): string {
@@ -71,6 +78,13 @@ export default class UrlBuilder {
 	 */
 	getWsMonitorUrl(): string {
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
+	}
+
+	/**
+	 * Returns REST API URL from passed hostname
+	 */
+	getRestApiUrlFromAddr(hostname: string): string {
+		return '//' + hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
 	}
 
 }
