@@ -89,7 +89,7 @@ export interface WebSocketClientState {
 export interface DaemonStatus {
 	mode: string;
 	modal: boolean;
-	queueLen: number;
+	queueLen: number|string;
 }
 
 /**
@@ -120,7 +120,7 @@ const state: WebSocketClientState = {
 	daemonStatus: {
 		mode: 'unknown',
 		modal: false,
-		queueLen: 0,
+		queueLen: 'unknown',
 	},
 	version: {
 		daemonVersion: '',
@@ -236,6 +236,7 @@ const mutations: MutationTree<WebSocketClientState> = {
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
 		state.daemonStatus.mode = 'unknown';
+		state.daemonStatus.queueLen = 'unknown';
 	},
 	SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
 		console.error(state, event);
