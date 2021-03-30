@@ -2183,7 +2183,7 @@
 			"modal": {
 				"title": "Connection method changed",
 				"autoIpv4": "IPv4 connection method changed to auto, this may result in the web interface being available at a different address.",
-				"staticIpv4": "IPv4 connection method change to auto, the web interface will be available at the following address:",
+				"staticIpv4": "IPv4 connection method change to static, the web interface will be available at the following address:",
 				"confirmPrompt": "Do you wish to still wish to save connection configuration?"
 			},
 			"state": "Connection state",
