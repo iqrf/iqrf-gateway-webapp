@@ -14,7 +14,7 @@ monolog:
 	channel:
 		default:
 			handlers:
-				- Sentry\Monolog\Handler()
+				- Sentry\Monolog\Handler(@sentryHub, \Monolog\Logger::INFO)
 			processors:
 				- Monolog\Processor\MemoryPeakUsageProcessor()
 				- Monolog\Processor\WebProcessor()
