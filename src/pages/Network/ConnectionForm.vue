@@ -795,6 +795,9 @@ export default class ConnectionForm extends Vue {
 	 * @returns {boolean} Are addreses in the same subnet?
 	 */
 	get ipv4InSubnet(): boolean {
+		if (this.connection.ipv4.method === 'auto') {
+			return true;
+		}
 		const ipv4 = this.connection.ipv4.addresses[0].address;
 		const mask = this.connection.ipv4.addresses[0].mask;
 		const gateway = this.connection.ipv4.gateway;
