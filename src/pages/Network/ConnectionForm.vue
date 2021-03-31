@@ -220,7 +220,6 @@
 										:placeholder='$t("network.connection.ipv4.methods.null")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										@change='ipv4Changed = true'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
@@ -244,7 +243,6 @@
 											:label='$t("network.connection.ipv4.address")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
-											@input='ipv4Changed = true'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -463,12 +461,12 @@
 					{{ $t('network.connection.modal.title') }}
 				</h5>
 			</template>
-			<div v-if='modalMessages !== null'>
-				<span v-if='modalMessages.ipv4 !== null'>
+			<div>
+				<span v-if='modalMessages.ipv4 !== ""'>
 					{{ modalMessages.ipv4 }}
 				</span>
 				<a
-					v-if='modalMessages.ipv4Add !== null'
+					v-if='modalMessages.ipv4Add !== ""'
 					style='color: blue; cursor: pointer;'
 					:href='modalMessages.ipv4Addr'
 					target='_blank'
@@ -517,8 +515,6 @@ import UrlBuilder from '../../helpers/urlBuilder';
 interface IModalMessages {
 	ipv4: string|null
 	ipv4Addr: string|null
-	ipv6: string|null
-	ipv6Addrs: Array<string>
 }
 
 enum WepKeyLen {
@@ -651,15 +647,25 @@ export default class ConnectionForm extends Vue {
 	 */
 	private pskInputType = 'password'
 
+	private originalIPv4 = {
+		address: '',
+		method: 'auto',
+	}
+
+	private handleIPChanged = false
+
 	/**
 	 * @var {string} modalMessages Modal IP method change messages
 	 */
-	private modalMessages: IModalMessages|null = null
+	private modalMessages: IModalMessages = {
+		ipv4: '',
+		ipv4Addr: '',
+	}
 
-	/**
-	 * @var {boolean} ivp4MethodChanged Indicates that IPv4 method changed
-	 */
-	private ipv4Changed = false
+	private blockingDiv = {
+		show: false,
+		message: ''
+	}
 
 	/**
 	 * @var {boolean} showModal Show confirmation modal?
@@ -823,51 +829,6 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
-	 * Adds a new IPv4 dns object to configuration
-	 */
-	private addIpv4Dns(): void {
-		this.connection.ipv4.dns.push({address: ''});
-	}
-
-	/**
-	 * Removes an IPv4 dns object specified by index
-	 * @param {number} index Index of dns object
-	 */
-	private deleteIpv4Dns(index: number): void {
-		this.connection.ipv4.dns.splice(index, 1);
-	}
-
-	/**
-	 * Adds a new IPv6 address object to configuration
-	 */
-	private addIpv6Address(): void {
-		this.connection.ipv6.addresses.push({address: '', prefix: 64});
-	}
-
-	/**
-	 * Removes an IPv6 address object specified by index
-	 * @param {number} index Index of address object
-	 */
-	private deleteIpv6Address(index: number): void {
-		this.connection.ipv6.addresses.splice(index, 1);
-	}
-
-	/**
-	 * Adds a new IPv6 dns object to configuration
-	 */
-	private addIpv6Dns(): void {
-		this.connection.ipv6.dns.push({address: ''});
-	}
-
-	/**
-	 * Removes an IPv6 dns object specified by index
-	 * @param {number} index Index of dns object
-	 */
-	private deleteIpv6Dns(index: number): void {
-		this.connection.ipv6.dns.splice(index, 1);
-	}
-
-	/**
 	 * Retrieves interfaces of a type
 	 * @param {InterfaceType} iftype Interface type
 	 */
@@ -970,8 +931,10 @@ export default class ConnectionForm extends Vue {
 		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
-			delete connection.ipv4.current;
+			delete connection.ipv4.current;	
 		}
+		this.originalIPv4.address = connection.ipv4.addresses[0].address;
+		this.originalIPv4.method = connection.ipv4.method;
 		if (connection.ipv4.addresses.length === 0) {
 			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
 		}
@@ -997,37 +960,31 @@ export default class ConnectionForm extends Vue {
 	 * If methods have not changed, connection is saved immediately
 	 */
 	private prepareModal(): void {
-		if (this.$route.path.includes('/add')) {
-			this.saveConnection();
-			return;
-		}
-		if (!this.ipv4Changed) {
-			this.saveConnection();
-			return;
-		}
 		const loc = new UrlBuilder();
-		if (loc.getHostname() === 'localhost') {
+		if (loc.getHostname() === 'localhost' || loc.getHostname() !== this.originalIPv4.address) {
+			// localhost, or frontend accessed at IP that is not in this connection
 			this.saveConnection();
 			return;
 		}
-		this.modalMessages = {
-			ipv4: null,
-			ipv4Addr: null,
-			ipv6: null,
-			ipv6Addrs: [],
-		};
-		if (this.ipv4Changed) {
-			if (this.connection.ipv4.method === 'auto') {
-				this.modalMessages.ipv4 = this.$t('network.connection.modal.autoIpv4').toString();
-			} else {
-				if (this.connection.ipv4.addresses[0].address === loc.getHostname()) {
-					this.saveConnection();
-					return;
-				}
-				this.modalMessages.ipv4 = this.$t('network.connection.modal.staticIpv4').toString();
-				this.modalMessages.ipv4Addr = window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort();
+		if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'auto') { // ipv4 method not changed from auto
+			this.saveConnection();
+			return;
+		} else if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'manual') { // ipv4 method changed from auto to static
+			if (this.connection.ipv4.addresses[0].address === this.originalIPv4.address) { // auto to static, but IP hasn't changed
+				this.saveConnection();
+				return;
 			}
+			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.autoToStatic').toString();
+			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
+				this.connection.ipv4.addresses[0].address + loc.getPort();
+		} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
+			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticIpChange').toString();
+			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
+				this.connection.ipv4.addresses[0].address + loc.getPort();
+		} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') { // ipv4 method changed from static to auto
+			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticToAuto').toString();
 		}
+		this.handleIPChanged = true;
 		this.showModal = true;
 	}
 
@@ -1096,23 +1053,90 @@ export default class ConnectionForm extends Vue {
 				}
 				
 			})
-			.catch(async (error: AxiosError) => {
-				if (this.ipv4Changed && this.connection.ipv4.method === 'manual') {
-					const loc = new UrlBuilder();
-					axios.defaults.baseURL = loc.getRestApiUrlFromAddr(this.connection.ipv4.addresses[0].address);
-					await sleep(10000);
-					VersionService.getWebappVersionRest()
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.success(
-								this.$t('network.connection.messages.ipChangeSuccess').toString()
-							);
-						})
-						.catch(() => extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name}));
-				} else {
+			.catch((error: AxiosError) => {
+				if (!this.handleIPChanged) {
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
+					return;
+				}
+				if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'manual') {
+					this.tryRest('network.connection.messages.ipChange.autoToStatic');
+				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
+					this.tryRest('network.connection.messages.ipChange.staticToStatic');
+				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') {
+					this.blockingDiv.message = this.$t('network.connection.messages.ipChange.staticToAuto').toString();
+					this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
 				}
 			});
+	}
+
+	/**
+	 * Attempt a REST API request to check newly selected IP address
+	 * @param {string} message Message to show in spinner
+	 */
+	private async tryRest(message: string): Promise<void> {
+		const loc = new UrlBuilder();
+		axios.defaults.baseURL = loc.getRestApiUrlFromAddr(this.connection.ipv4.addresses[0].address);
+		await sleep(10000);
+		VersionService.getWebappVersionRest()
+			.then(() => {
+				this.blockingDiv.message = this.$t(
+					message,
+					{address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
+			})
+			.catch(() => {
+				this.blockingDiv.message = this.$t('network.connection.messages.ipChange.error').toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
+			});
+	}
+
+
+	// form input control functions
+
+	/**
+	 * Adds a new IPv4 dns object to configuration
+	 */
+	private addIpv4Dns(): void {
+		this.connection.ipv4.dns.push({address: ''});
+	}
+
+	/**
+	 * Removes an IPv4 dns object specified by index
+	 * @param {number} index Index of dns object
+	 */
+	private deleteIpv4Dns(index: number): void {
+		this.connection.ipv4.dns.splice(index, 1);
+	}
+
+	/**
+	 * Adds a new IPv6 address object to configuration
+	 */
+	private addIpv6Address(): void {
+		this.connection.ipv6.addresses.push({address: '', prefix: 64});
+	}
+
+	/**
+	 * Removes an IPv6 address object specified by index
+	 * @param {number} index Index of address object
+	 */
+	private deleteIpv6Address(index: number): void {
+		this.connection.ipv6.addresses.splice(index, 1);
+	}
+
+	/**
+	 * Adds a new IPv6 dns object to configuration
+	 */
+	private addIpv6Dns(): void {
+		this.connection.ipv6.dns.push({address: ''});
+	}
+
+	/**
+	 * Removes an IPv6 dns object specified by index
+	 * @param {number} index Index of dns object
+	 */
+	private deleteIpv6Dns(index: number): void {
+		this.connection.ipv6.dns.splice(index, 1);
 	}
 
 }
