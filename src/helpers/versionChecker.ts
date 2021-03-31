@@ -13,3 +13,16 @@ export function versionHigherEqual(version: string): boolean {
 	}
 	return compareVersions.compare(daemonVersion, version, '>=');
 }
+
+/**
+ * Checks if Daemon version is lower than version passed in argument
+ * @param {string} version Version to compare Daemon version against
+ * @returns {boolean} True if Daemon version is lower than passed version
+ */
+export function versionLowerEqual(version: string): boolean {
+	const daemonVersion = store.getters.daemonVersion;
+	if (daemonVersion === '') {
+		return false;
+	}
+	return compareVersions.compare(daemonVersion, version, '<=');
+}
