@@ -11,7 +11,7 @@
 					<div class='form-group'>
 						<CInputFile
 							ref='fileInput'
-							accept='.hex'
+							accept='.hex,.iqrf'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
 							@input='fileInputEmpty'
 							@click='fileInputEmpty'
@@ -159,13 +159,14 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import NativeUploadService from '../../services/NativeUploadService';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {FileFormat} from '../../iqrfNet/fileFormat';
 import {NetworkTarget} from '../../iqrfNet/networkTarget';
 import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
 
+import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {AxiosResponse} from 'axios';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
@@ -230,6 +231,10 @@ export default class OtaUpload extends Vue {
 		{
 			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.hex'),
 			value: FileFormat.HEX
+		},
+		{
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.iqrf'),
+			value: FileFormat.IQRF
 		}
 	]
 
@@ -239,7 +244,7 @@ export default class OtaUpload extends Vue {
 	private hwpid = 65535
 
 	/**
-	 * 
+	 * @var {string|null} msgId Message ID
 	 */
 	private msgId: string|null = null
 
@@ -329,9 +334,18 @@ export default class OtaUpload extends Vue {
 		this.autoUpload = autoUpload;
 		this.fileName = '';
 		const formData = new FormData();
-		formData.append('format', FileFormat.HEX);
-		formData.append('file', this.getFiles()[0]);
-
+		const file = this.getFiles()[0];
+		if (file.name.endsWith('.hex')) {
+			formData.append('format', FileFormat.HEX);
+		} else if (file.name.endsWith('.iqrf')) {
+			formData.append('format', FileFormat.IQRF);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidFile').toString()
+			);
+			return;
+		}
+		formData.append('file', file);
 		this.$store.commit('spinner/SHOW');
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
@@ -339,12 +353,7 @@ export default class OtaUpload extends Vue {
 				this.fileName = response.data.fileName;
 				this.uploadStep();
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.gwUploadFail').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.networkManager.otaUpload.messages.gatewayUploadFailed'));
 	}
 
 	/**
