@@ -26,4 +26,9 @@ export interface IIqrfInfo {
 	 * Uniform DPA version and OS build according to coordinator?
 	 */
 	enumUniformDpaVer?: boolean
+
+	/**
+	 * Include metadata in messages?
+	 */
+	metaDataToMessages?: boolean
 }

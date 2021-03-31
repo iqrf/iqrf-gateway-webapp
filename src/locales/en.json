@@ -668,7 +668,7 @@
 					"title": "JSON Metadata API",
 					"description": "JSON Metadata API settings.",
 					"form": {
-						"metaDataToMessages": "Add metadata into the messages"
+						"metaDataToMessages": "Include metadata in messages"
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Metadata API instance."
@@ -718,7 +718,8 @@
 						"enumAtStartUp": "Enumerate network on startup",
 						"enablePeriodic": "Enumerate network periodically",
 						"enumPeriod": "Enumeration period in minutes",
-						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes"
+						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes",
+						"metaDataToMessages": "Include metadata in messages"
 					},
 					"errors": {
 						"instance": "Please enter name of IQRF Info instance.",
