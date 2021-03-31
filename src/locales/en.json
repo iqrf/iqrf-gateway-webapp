@@ -660,7 +660,8 @@
 					"title": "JSON API",
 					"messages": {
 						"success": "JSON API configuration has been successfully updated.",
-						"noChanges": "No configuration changes detected."
+						"noChanges": "No configuration changes detected.",
+						"failed": "Failed to save JSON API configuration: {error}"
 					}
 				},
 				"jsonMngMetaDataApi": {
@@ -677,7 +678,7 @@
 					"title": "JSON Raw API",
 					"description": "JSON Raw API settings.",
 					"form": {
-						"asyncDpaMessage": "Async DPA message"
+						"asyncDpaMessage": "Allow asynchronous DPA messages"
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Raw API instance."
@@ -687,7 +688,7 @@
 					"title": "JSON Splitter",
 					"description": "JSON Splitter settings.",
 					"form": {
-						"validateJsonResponse": "Validate JSON response",
+						"validateJsonResponse": "Validate JSON responses",
 						"insId": "JSON Splitter instance ID"
 					},
 					"errors": {
