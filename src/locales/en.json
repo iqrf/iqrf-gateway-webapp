@@ -1418,7 +1418,8 @@
 					"file": "File",
 					"fileType": "File type",
 					"fileTypes": {
-						"hex": "Custom DPA handler"
+						"hex": "Custom DPA handler",
+						"iqrf": "IQRF plugin"
 					},
 					"target": "Upload target",
 					"targets": {
@@ -1444,9 +1445,9 @@
 					"eeepromAddress": "Please enter an integer between 0 and 16383 for external EEPROM start address."
 				},
 				"messages": {
+					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
-					"gwUploadFail": "Failed to upload file to gateway.",
 					"invalidFile": "Uploaded file is not HEX or IQRF file.",
 					"invalidContent": "Invalid file content.",
 					"uploadRunning": "Uploading data to external EEPROM.",
