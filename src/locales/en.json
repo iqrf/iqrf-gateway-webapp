@@ -2181,9 +2181,12 @@
 				}
 			},
 			"modal": {
-				"title": "Connection method changed",
-				"autoIpv4": "IPv4 connection method changed to auto, this may result in the web interface being available at a different address.",
-				"staticIpv4": "IPv4 connection method change to static, the web interface will be available at the following address:",
+				"title": "Connection configuration changed",
+				"ipv4": {
+					"autoToStatic": "IPv4 method changed from auto to static, the web interface will be available at the following address: ",
+					"staticIpChange": "IPv4 address change detected, the web interface will be available at the following address: ",
+					"staticToAuto": "IPv4 method changed from static to auto, the web interface may be available at a different address as a result."
+				},
 				"confirmPrompt": "Do you wish to still wish to save connection configuration?"
 			},
 			"state": "Connection state",
@@ -2192,6 +2195,12 @@
 				"notConnected": "Not connected"
 			},
 			"messages": {
+				"ipChange": {
+					"error": "Unable to confirm web interface availability.",
+					"autoToStatic": "IPv4 method switched from auto to static, web interface should be available at {address}",
+					"staticToAuto": "Switching IPv4 method from static to auto resulted in the web interface no longer being available at this address.",
+					"staticToStatic": "IPv4 address changed, web interface should be available at {address}"
+				},
 				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
 				"connectionFetchFailed": "Failed to retrieve list of connections: {error}",
 				"fetchFailed": "Failed to retrieve connection {connection}: {error}",
@@ -2213,8 +2222,7 @@
 					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
-				"removeFailed": "Failed to delete network connection {connection}: {error}",
-				"ipChangeSuccess": "IP address successfully changed, use web interface available at the new address."
+				"removeFailed": "Failed to delete network connection {connection}: {error}"
 			}
 		},
 		"table": {
