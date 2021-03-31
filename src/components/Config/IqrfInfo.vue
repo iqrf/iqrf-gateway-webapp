@@ -71,6 +71,11 @@
 							:checked.sync='configuration.enumUniformDpaVer'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 						/>
+						<CInputCheckbox
+							v-if='!versionLowerEqual("2.3.6")'
+							:checked.sync='configuration.metaDataToMessages'
+							:label='$t("config.daemon.misc.iqrfInfo.form.metaDataToMessages")'
+						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ $t('forms.save') }}
 						</CButton>
@@ -83,15 +88,17 @@
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {versionHigherEqual, versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfInfo} from '../../interfaces/iqrfInfo';
 import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -111,7 +118,10 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
 		...mapGetters({
 			daemonVersion: 'daemonVersion',
 		}),
-	}
+	},
+	methods: {
+		versionLowerEqual: versionLowerEqual,
+	},
 })
 
 /**
@@ -166,6 +176,9 @@ export default class IqrfInfo extends Vue {
 		if (versionHigherEqual('2.3.0')) {
 			Object.assign(this.configuration, {enumPeriod: 0, enumUniformDpaVer: false});
 			this.daemon230 = true;
+			if (!versionLowerEqual('2.3.6')) {
+				Object.assign(this.configuration, {metaDataToMessages: false});
+			}
 		}
 	}
 
