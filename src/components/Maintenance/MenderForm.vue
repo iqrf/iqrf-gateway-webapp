@@ -120,11 +120,12 @@ import {CBadge, CButton, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
-import FeatureConfigService from '../../services/FeatureConfigService';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 
+import MaintenanceService from '../../services/MaintenanceService';
+
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMenderConfig} from '../../interfaces/mender';
+import {IMenderConfig} from '../../interfaces/maintenance';
 import {extendedErrorToast} from '../../helpers/errorToast';
 
 @Component({
@@ -144,14 +145,9 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 export default class MenderForm extends Vue {
 
 	/**
-	 * @var {IMenderConfig} configuration Mender feature configuration
+	 * @var {IMenderConfig} configuration Mender configuration
 	 */
 	private configuration: IMenderConfig|null = null
-
-	/**
-	 * @constant {string} featureName Mender feature name
-	 */
-	private featureName = 'mender'
 
 	/**
 	 * Vue lifecycle hook created
@@ -246,7 +242,7 @@ export default class MenderForm extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return FeatureConfigService.getConfig(this.featureName)
+		return MaintenanceService.getMenderConfig()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.configuration = response.data;
@@ -258,13 +254,14 @@ export default class MenderForm extends Vue {
 	 * Updates configuration of the Mender feature
 	 */
 	processSubmit(): void {
+		if (this.configuration === null) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.saveConfig(this.featureName, this.configuration)
-			.then(() => {
-				this.getConfig().then(() => this.$toast.success(
-					this.$t('maintenance.mender.messages.saveSuccess').toString())
-				);
-			})
+		MaintenanceService.saveMenderConfig(this.configuration)
+			.then(() => this.getConfig().then(() => this.$toast.success(
+				this.$t('maintenance.mender.messages.saveSuccess').toString()
+			)))
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.messages.saveFailed'));
 	}
 

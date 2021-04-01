@@ -2294,7 +2294,24 @@
 		},
 		"monit": {
 			"title": "M/Monit monitoring",
-			"description": "Manager M/Monit monitoring service and configuration."
+			"description": "Manager M/Monit monitoring service and configuration.",
+			"form": {
+				"endpoint": "M/Monit endpoint",
+				"username": "Username",
+				"password": "Password"
+			},
+			"errors": {
+				"endpoint": "Please enter M/Monit endpoint.",
+				"username": "Please enter username.",
+				"usernameInvalid": "Username should be a string of letters and digits.",
+				"password": "Please enter password.",
+				"passwordInvalid": "Password should be a string of letters and digits."
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve MMonit configuration: {error}",
+				"saveFailed": "Failed to save MMonit configuration: {error}",
+				"saveSuccess": "MMonit configuration has been successfully saved."
+			}
 		}
 	},
 	"service": {

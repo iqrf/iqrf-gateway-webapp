@@ -40,6 +40,7 @@
 					</CButton>
 				</div>
 			</div>
+			<MonitForm />
 		</CCard>
 	</div>
 </template>
@@ -47,6 +48,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
+import MonitForm from '../../components/Maintenance/MonitForm.vue';
 
 import ServiceService from '../../services/ServiceService';
 import {monitErrorToast} from '../../helpers/errorToast';
@@ -59,6 +61,7 @@ import {ServiceStatus} from '../../services/ServiceService';
 	components: {
 		CButton,
 		CCard,
+		MonitForm,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {

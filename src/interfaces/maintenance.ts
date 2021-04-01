@@ -27,3 +27,23 @@ export interface IMenderConfig {
 	 */
 	UpdatePollIntervalSeconds: number
 }
+
+/**
+ * MMonit configuration interface
+ */
+export interface IMonitConfig {
+    /**
+     * MMonit username
+     */
+    username: string
+
+    /**
+     * MMonit password
+     */
+    password: string
+
+    /**
+     * MMonit server and endpoint
+     */
+    endpoint: string
+}
