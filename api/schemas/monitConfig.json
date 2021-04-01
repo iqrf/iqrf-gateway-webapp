@@ -1,0 +1,41 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json",
+	"type": "object",
+	"title": "Monit configuration",
+	"description": "Schema of the monit configuration.",
+	"required": [
+		"endpoint",
+		"username",
+		"password"
+	],
+	"additionalProperties": false,
+	"example": {
+		"endpoint": "server/collector",
+		"username": "user",
+		"password": "password"
+	},
+	"properties": {
+		"endpoint": {
+			"$id": "#/properties/endpoint",
+			"title": "MMonit server and endpoint",
+			"type": "string",
+			"pattern": "[a-zA-Z0-9\\.-_\\/]+",
+			"example": "server/collector"
+		},
+		"username": {
+			"$id": "#/properties/user",
+			"title": "username",
+			"type": "string",
+			"pattern": "[a-zA-Z0-9]+",
+			"example": "user"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"title": "password",
+			"type": "string",
+			"pattern": "[a-zA-Z0-9]+",
+			"example": "password"
+		}
+	}
+}

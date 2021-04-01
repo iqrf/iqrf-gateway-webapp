@@ -105,6 +105,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingDetail.json
 		MenderConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/menderConfig.json
+		MonitConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json
 		NetworkConnection:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
 		NetworkConnections:

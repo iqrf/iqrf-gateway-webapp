@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017-2019 IQRF Tech s.r.o.
+ * Copyright 2017-2021 MICRORISC s.r.o.
+ * Copyright 2017-2021 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers\Config;
+namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -27,30 +27,29 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\MaintenanceModule\Models\MenderManager;
+use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
+use App\MaintenanceModule\Models\MonitManager;
 use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
- * Mender client configuration controller
- * @Path("/mender")
- * @Tag("Config manager")
+ * Monit controller
+ * @Path("/monit")
+ * @Tag("Monit")
  */
-class MenderController extends BaseConfigController {
+class MonitController extends BaseController {
 
 	/**
-	 * @var MenderManager $manager Mender client configuration manager
+	 * @var MonitManager $manager Monit manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param MenderManager $manager Mender client configuration manager
+	 * @param MonitManager $manager Monit manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MenderManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -59,27 +58,25 @@ class MenderController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns current configuration of Mender client
-	 *  responses:
+	 *  summary: Retrieves monit configuration
+	 *  response:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/MenderConfig'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
+	 *                      $ref: '#/components/schemas/MonitConfig'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
-		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON Syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MonitConfigErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -89,14 +86,14 @@ class MenderController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Saves new Mender client configuration
+	 *  summary: Saves updated monit configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/MenderConfig'
-	 *  responses:
+	 *                  $ref: '#/components/schemas/MonitConfig'
+	 *  response:
 	 *      '200':
 	 *          description: Success
 	 *      '400':
@@ -108,11 +105,13 @@ class MenderController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('menderConfig', $request);
+	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('monitConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
+		} catch (MonitConfigErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
