@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from 'axios';
+import i18n from '../i18n';
 import store from '../store';
 
 /**
@@ -43,6 +44,7 @@ class InstallationService {
 	 */
 	public check(): Promise<InstallationCheck> {
 		store.commit('spinner/SHOW');
+		store.commit('spinner/UPDATE_TEXT', i18n.t('install.messages.check').toString());
 		return axios.get('/installation')
 			.then((response: AxiosResponse) => {
 				store.commit('installation/CHECKED');

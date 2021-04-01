@@ -1926,6 +1926,9 @@
 			"title": "Some information about this gateway",
 			"button": "Show GW info",
 			"download": "Download as JSON"
+		},
+		"messages": {
+			"check": "Running installation check..."
 		}
 	},
 	"network": {
