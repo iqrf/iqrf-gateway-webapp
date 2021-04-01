@@ -1076,6 +1076,9 @@ export default class ConnectionForm extends Vue {
 	private async tryRest(message: string): Promise<void> {
 		const loc = new UrlBuilder();
 		axios.defaults.baseURL = loc.getRestApiUrlFromAddr(this.connection.ipv4.addresses[0].address);
+		this.$store.commit('spinner/UPDATE_TEXT',
+			this.$t('network.connection.messages.ipChange.backendCheck').toString()
+		);
 		await sleep(10000);
 		VersionService.getWebappVersionRest()
 			.then(() => {
