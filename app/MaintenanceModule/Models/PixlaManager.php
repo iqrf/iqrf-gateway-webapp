@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\CloudModule\Models;
+namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\FileManager;
 use Nette\IOException;

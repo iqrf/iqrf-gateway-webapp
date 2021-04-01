@@ -1,0 +1,8 @@
+services:
+	mender.fileManager:
+		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
+		autowired: false
+	mender.manager: App\MaintenanceModule\Models\MenderManager(@mender.fileManager)
+	pixla.fileManager: App\CoreModule\Models\FileManager('/etc/gwman/')
+	pixla.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'gwman-client')
+	pixla.manager: App\MaintenanceModule\Models\PixlaManager(@pixla.fileManager, @pixla.serviceManager)

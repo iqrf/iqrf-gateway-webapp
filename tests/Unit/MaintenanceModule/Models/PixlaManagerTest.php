@@ -1,17 +1,17 @@
 <?php
 /**
- * TEST: App\CloudModule\Models\PixlaManager
- * @covers App\CloudModule\Models\PixlaManager
+ * TEST: App\MaintenanceModule\Models\PixlaManager
+ * @covers App\MaintenanceModule\Models\PixlaManager
  * @phpVersion >= 7.2
  * @testCase
  */
 
 declare(strict_types = 1);
 
-namespace Tests\Unit\CloudModule\Models;
+namespace Tests\Unit\MaintenanceModule\Models;
 
-use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Models\FileManager;
+use App\MaintenanceModule\Models\PixlaManager;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\IOException;

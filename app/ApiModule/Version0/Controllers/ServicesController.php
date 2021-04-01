@@ -167,6 +167,9 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
+			if ($name === 'mender-client') {
+				$this->manager->enable('mender-connect');
+			}
 			$this->manager->enable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
@@ -202,6 +205,9 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
+			if ($name === 'mender-client') {
+				$this->manager->disable('mender-connect');
+			}
 			$this->manager->disable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
