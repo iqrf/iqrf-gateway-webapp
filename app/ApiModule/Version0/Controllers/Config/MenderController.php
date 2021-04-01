@@ -29,7 +29,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\MenderConfigManager;
+use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -41,16 +41,16 @@ use Nette\Utils\JsonException;
 class MenderController extends BaseConfigController {
 
 	/**
-	 * @var MenderConfigManager $manager Mender client configuration manager
+	 * @var MenderManager $manager Mender client configuration manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param MenderConfigManager $manager Mender client configuration manager
+	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MenderConfigManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(MenderManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}

@@ -28,7 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CloudModule\Models\PixlaManager;
+use App\MaintenanceModule\Models\PixlaManager;
 use Nette\IOException;
 
 /**

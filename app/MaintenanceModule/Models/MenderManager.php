@@ -18,14 +18,14 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 
 /**
  * Mender client configuration manager
  */
-class MenderConfigManager {
+class MenderManager {
 
 	/**
 	 * @var JsonFileManager $fileManager JSON file manager
@@ -33,9 +33,14 @@ class MenderConfigManager {
 	private $fileManager;
 
 	/**
-	 * JSON file containing Mender configuration
+	 * JSON file containing mender-client configuration
 	 */
-	private const FILE_NAME = 'mender';
+	private const CLIENT_CONF = 'mender';
+
+	/**
+	 * JSON file containing mender-connect configuration
+	 */
+	private const CONNECT_CONF = 'mender-connect';
 
 	/**
 	 * Constructior
@@ -47,19 +52,30 @@ class MenderConfigManager {
 
 	/**
 	 * Reads JSON configuration file
-	 * @return array<string, array<array<string, bool|int|string>>|string> current Mender configuration
+	 * @return array<string, int|string> current Mender configuration
 	 */
 	public function getConfig(): array {
-		return $this->fileManager->read(self::FILE_NAME, true, '.conf');
+		return $this->fileManager->read(self::CLIENT_CONF, true, '.conf');
 	}
 
 	/**
-	 * Saves updated Mender configuration file
-	 * @param array<string, array<array<string, bool|int|string>>|string> $newConfig Mender configuration
+	 * Saves updated mender-client configuration file
+	 * @param array<string, int|string> $newConfig Mender configuration
 	 */
 	public function saveConfig(array $newConfig): void {
-		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME, true, '.conf');
-		$this->fileManager->write(self::FILE_NAME, array_merge($oldConfig, $newConfig), '.conf');
+		$oldConfig = $this->getConfig();
+		$this->fileManager->write(self::CLIENT_CONF, array_merge($oldConfig, $newConfig), '.conf');
+		$this->updateConnectConfig($newConfig['ServerURL']);
+	}
+
+	/**
+	 * Updates mender-connect configuration
+	 * @param string $server mender-connect server url
+	 */
+	private function updateConnectConfig(string $server): void {
+		$config = $this->fileManager->read(self::CONNECT_CONF, true, '.conf');
+		$config['ServerURL'] = $server;
+		$this->fileManager->write(self::CONNECT_CONF, $config, '.conf');
 	}
 
 }
