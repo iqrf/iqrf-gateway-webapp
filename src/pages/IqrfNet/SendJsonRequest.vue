@@ -28,11 +28,10 @@
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required|json|mType'
+							rules='required|json'
 							:custom-messages='{
 								required: "iqrfnet.sendJson.messages.missing",
 								json: "iqrfnet.sendJson.messages.invalid",
-								mType: "iqrfnet.sendJson.messages.mType"
 							}'
 						>
 							<CTextarea
@@ -164,11 +163,6 @@ export default class SendJsonRequest extends Vue {
 	private messages: Array<IMessagePairRequest> = []
 
 	/**
-	 * @constant {string} requestSchema Daemon API request JSON schema for validator
-	 */
-	private requestSchema = require('../../schemas/genericDaemonRequest.json')
-
-	/**
 	 * @var validator JSON schema validator function
 	 */
 	private validator: any = null 
@@ -190,15 +184,18 @@ export default class SendJsonRequest extends Vue {
 		this.validator = validate;
 		extend('json', (json) => {
 			try {
-				JSON.parse(json);
-				return true;
+				this.validatorErrors = '';
+				const jsonObject = JSON.parse(json);
+				if (this.validator(jsonObject)) {
+					return true;
+				} else {
+					console.warn(this.validator.errors);
+					this.buildViolationString(this.validator.errors);
+					return false;
+				}
 			} catch (error) {
 				return false;
 			}
-		});
-		extend('mType', (json) => {
-			let object = JSON.parse(json);
-			return {}.hasOwnProperty.call(object, 'mType');
 		});
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
@@ -267,16 +264,11 @@ export default class SendJsonRequest extends Vue {
 		if (this.validator === null) {
 			return;
 		}
-		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
 		if (json.data.msgId === undefined) {
 			Object.assign(json.data, {msgId: uuidv4()});
 		}
-		if (this.validator(json)) {
-			this.sendRequest(json);
-		} else {
-			this.buildViolationString(this.validator.errors);
-		}
+		this.sendRequest(json);
 	}
 
 	/**
@@ -287,13 +279,44 @@ export default class SendJsonRequest extends Vue {
 		let message = '';
 		for (let error of errors) {
 			if (error.keyword === 'type') {
-				message += 'Type violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + ' (' + typeof error.data + '). [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.type',
+					{
+						property: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						type: (typeof error.data),
+					}
+				).toString();
 			} else if (error.keyword === 'additionalProperties') {
-				message += 'Additional property violation: Property "' + error.dataPath + '" ' + error.message + '. Additional property: ' + (error.params as AdditionalPropertiesParams).additionalProperty + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.additional',
+					{
+						object: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						property: (error.params as AdditionalPropertiesParams).additionalProperty,
+					}
+				).toString();
 			} else if (error.keyword === 'required') {
-				message += 'Required property violation: Property "' + error.dataPath + '" ' + error.message!.replace(/'/g, '"') + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.required',
+					{
+						object: (error.dataPath.length === 0 ? 'root' : error.dataPath),
+						message: error.message,
+						path: error.schemaPath,
+					}
+				).toString();
 			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
-				message += 'Value range violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.range',
+					{
+						property: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						value: error.data,
+					}
+				).toString();
 			}
 		}
 		this.validatorErrors = message.trimRight();
