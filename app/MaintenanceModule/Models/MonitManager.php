@@ -67,9 +67,9 @@ class MonitManager {
 			throw new MonitConfigErrorException('Monit configuration file contains invalid content.');
 		}
 		return [
+			'endpoint' => $matches[6],
 			'username' => $matches[2],
 			'password' => $matches[4],
-			'endpoint' => $matches[6],
 		];
 	}
 
@@ -99,7 +99,7 @@ class MonitManager {
 	 * Reads monit configuration file
 	 * @return string Monit configuration
 	 */
-	private function readConfig(): string {
+	public function readConfig(): string {
 		return $this->fileManager->read(self::CONF_FILE);
 	}
 
