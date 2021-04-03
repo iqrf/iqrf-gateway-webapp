@@ -66,15 +66,18 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
-import Device from '../../helpers/Device';
 import DeviceIcon from './DeviceIcon.vue';
+
+import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
+import {ToastOptions} from 'vue-toast-notification';
+
+import Device from '../../helpers/Device';
 import IqrfNetService from '../../services/IqrfNetService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
-import { MutationPayload } from 'vuex';
-import { ToastOptions } from 'vue-toast-notification';
+
+import {Dictionary} from 'vue-router/types/router';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -92,14 +95,6 @@ import { ToastOptions } from 'vue-toast-notification';
  * Card of devices in network for Network Manager
  */
 export default class DevicesInfo extends Vue {
-	/**
-	 * @constant {Array<string>} allowedMTypes Array of allowed Daemon api messages
-	 */
-	private allowedMTypes: Array<string> = [
-		'iqrfEmbedCoordinator_BondedDevices',
-		'iqrfEmbedCoordinator_DiscoveredDevices',
-		'iqrfEmbedFrc_Send',
-	]
 
 	/**
 	 * @var {Array<Device>} devices Array of devices in network
@@ -148,9 +143,6 @@ export default class DevicesInfo extends Vue {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
@@ -162,6 +154,10 @@ export default class DevicesInfo extends Vue {
 					this.parseDiscoveredDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
 					this.parseFrcPing(mutation.payload);
+				} else if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
 				}
 			}
 		});
