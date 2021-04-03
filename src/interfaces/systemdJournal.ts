@@ -1,4 +1,4 @@
-import {StorageMethod, TimeUnit} from '../enums/gateway/SystemdJournal';
+import {StorageMethod, TimeUnit} from '../enums/Gateway/SystemdJournal';
 
 /**
  * Systemd journal configuration interface
