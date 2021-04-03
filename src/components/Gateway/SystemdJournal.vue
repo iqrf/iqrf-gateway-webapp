@@ -170,7 +170,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {StorageMethod, TimeUnit} from '../../enums/gateway/SystemdJournal';
+import {StorageMethod, TimeUnit} from '../../enums/Gateway/SystemdJournal';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';

@@ -1304,14 +1304,15 @@
 					}
 				},
 				"messages": {
-					"timeout": "The backup process request timed out.",
-					"success": "The backup process has been successfully completed.",
-					"partialSuccess": "All online devices have been successfully backed up. Offine devices: {devices}.",
-					"statusRunning": "Backup in progress",
-					"statusInitPercentage": "Backup in progress [0 %]",
-					"statusRunningPercentage": "Backup in progress [{progress} %]",
-					"statusSuccess": "Backup of device {deviceAddr} completed.",
-					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
+					"coordinatorRunning": "Backing up coordinator device...",
+					"coordinatorSuccess": "Backup of coordinator device completed.",
+					"nodeRunning": "Backing up node device {deviceAddr}...",
+					"nodeSuccess": "Backup of node device {deviceAddr} completed.",
+					"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
+					"networkRunning": "Backing up network [{progress} %]",
+					"networkSuccess": "Network backup has been successfully completed.",
+					"networkPartialSuccess": "All online devices have been successfully backed up. Offline devices: {devices}.",
+					"timeout": "The backup process request timed out."
 				}
 			},
 			"restore": {
