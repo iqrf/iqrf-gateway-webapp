@@ -34,7 +34,7 @@ use Nette\Utils\JsonException;
 
 /**
  * Mender client configuration controller
- * @Path("/mender")
+ * @Path("/")
  * @Tag("Mender")
  */
 class MenderController extends BaseController {
@@ -55,7 +55,7 @@ class MenderController extends BaseController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config/mender")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns current configuration of Mender client
@@ -85,7 +85,7 @@ class MenderController extends BaseController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config/mender")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Saves new Mender client configuration

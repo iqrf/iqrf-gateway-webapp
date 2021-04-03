@@ -2245,11 +2245,9 @@
 			"title": "PIXLA management",
 			"description": "Manages PIXLA client service.",
 			"dashboard": "Visit dashboard",
-			"editModal": {
-				"title": "Set new PIXLA platform token",
-				"token": "New PIXLA token"
+			"form": {
+				"token": "Token"
 			},
-			"token": "Token",
 			"messages": {
 				"fetchFailed": "Failed to retrieve PIXLA token: {error}",
 				"disabled": "PIXLA manager is disabled.",

@@ -122,7 +122,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Duration} from 'luxon';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 
-import MaintenanceService from '../../services/MaintenanceService';
+import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMenderConfig} from '../../interfaces/maintenance';
@@ -143,6 +143,11 @@ import {extendedErrorToast} from '../../helpers/errorToast';
  * Mender configuration form component
  */
 export default class MenderForm extends Vue {
+
+	/**
+	 * @constant {string} featureName Feature name
+	 */
+	private featureName = 'mender'
 
 	/**
 	 * @var {IMenderConfig} configuration Mender configuration
@@ -242,7 +247,7 @@ export default class MenderForm extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return MaintenanceService.getMenderConfig()
+		return FeatureConfigService.getConfig(this.featureName)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.configuration = response.data;
@@ -258,7 +263,7 @@ export default class MenderForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		MaintenanceService.saveMenderConfig(this.configuration)
+		FeatureConfigService.saveConfig(this.featureName, this.configuration)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.messages.saveSuccess').toString()
 			)))

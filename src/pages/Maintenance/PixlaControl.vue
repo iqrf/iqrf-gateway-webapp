@@ -53,20 +53,7 @@
 					</CButton>
 				</div>
 			</div>
-			<div class='box'>
-				<div>
-					<b>{{ $t('maintenance.pixla.token') }}</b>
-				</div>
-				<div>
-					{{ token }}
-				</div>
-				<div>
-					<CButton color='primary' size='sm' @click='showEditor = true'>
-						{{ $t('forms.edit') }}
-					</CButton>
-				</div>
-			</div>
-			<PixlaTokenEditor :show.sync='showEditor' @token-updated='getToken' />
+			<PixlaForm />
 		</CCard>
 	</div>
 </template>
@@ -74,20 +61,20 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import PixlaTokenEditor from '../../components/Maintenance/PixlaTokenEditor.vue';
+import PixlaForm from '../../components/Maintenance/PixlaForm.vue';
 
-import {extendedErrorToast, pixlaErrorToast} from '../../helpers/errorToast';
-import {NavigationGuardNext, Route} from 'vue-router';
-import PixlaService from '../../services/PixlaService';
+import {pixlaErrorToast} from '../../helpers/errorToast';
+
 import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
-		PixlaTokenEditor,
+		PixlaForm,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
@@ -113,19 +100,9 @@ import {AxiosError} from 'axios';
  */
 export default class PixlaControl extends Vue {
 	/**
-	 * @var {boolean} showEditor Should pixla token editor be rendered
-	 */
-	private showEditor = false
-
-	/**
 	 * @constant {string} serviceName Pixla service name
 	 */
 	private serviceName = 'gwman-client'
-
-	/**
-	 * @var {string|null} token Pixla token
-	 */
-	private token: string|null = null
 
 	/**
 	 * @var {boolean} missing Indicates whether the pixla service is not installed
@@ -143,11 +120,9 @@ export default class PixlaControl extends Vue {
 	private service: ServiceStatus|null = null
 
 	/**
-	 * Vue lifecycle hook created
+	 * Retrieves service status
 	 */
-	created(): void {
-		this.$store.commit('spinner/SHOW');
-		this.getToken();
+	mounted(): void {
 		this.getStatus();
 	}
 
@@ -203,6 +178,9 @@ export default class PixlaControl extends Vue {
 	 * Retrieves status of the Pixla service
 	 */
 	private getStatus(): void {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		ServiceService.getStatus(this.serviceName)
 			.then((status: ServiceStatus) => {
 				this.service = status;
@@ -210,18 +188,6 @@ export default class PixlaControl extends Vue {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => pixlaErrorToast(error, 'service.messages.statusFailed'));
-	}
-
-	/**
-	 * Retrieves the Pixla service token
-	 */
-	private getToken(): void {
-		PixlaService.getToken()
-			.then((token: string) => {
-				this.token = token;
-				this.$store.commit('spinner/HIDE');
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.pixla.messages.fetchFailed'));
 	}
 
 }
