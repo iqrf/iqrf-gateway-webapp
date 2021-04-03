@@ -53,11 +53,13 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
+
+import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
@@ -111,7 +113,13 @@ export default class DiscoveryManager extends Vue {
 				}
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleDiscoveryResponse(mutation.payload);
+				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
+					this.handleDiscoveryResponse(mutation.payload);
+				} else if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
+				}
 			}
 		});
 	}
