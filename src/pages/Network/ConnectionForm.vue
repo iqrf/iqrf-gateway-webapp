@@ -933,14 +933,14 @@ export default class ConnectionForm extends Vue {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;	
 		}
-		this.originalIPv4.address = connection.ipv4.addresses[0].address;
-		this.originalIPv4.method = connection.ipv4.method;
 		if (connection.ipv4.addresses.length === 0) {
 			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
 		}
 		if (connection.ipv4.dns.length === 0) {
 			connection.ipv4.dns.push({address: ''});
 		}
+		this.originalIPv4.address = connection.ipv4.addresses[0].address;
+		this.originalIPv4.method = connection.ipv4.method;
 		// initialize ipv6 configuration objects
 		if ((connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
