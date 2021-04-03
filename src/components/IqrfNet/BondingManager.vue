@@ -142,14 +142,17 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {versionHigherEqual} from '../../helpers/versionChecker';
+
 import IqrfNetService from '../../services/IqrfNetService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { IOption } from '../../interfaces/coreui';
-import { versionHigherEqual } from '../../helpers/versionChecker';
+
+import {IOption} from '../../interfaces/coreui';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -266,8 +269,7 @@ export default class BondingManager extends Vue {
 					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
-						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
-							.toString()
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 					);
 				}
 			}
