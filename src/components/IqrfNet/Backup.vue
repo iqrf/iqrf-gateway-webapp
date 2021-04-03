@@ -159,6 +159,7 @@ export default class Backup extends Vue {
 				this.handleBackupResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
 				this.$toast.error(
 					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
