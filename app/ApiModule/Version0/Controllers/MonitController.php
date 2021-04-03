@@ -34,7 +34,7 @@ use Nette\IOException;
 
 /**
  * Monit controller
- * @Path("/monit")
+ * @Path("/")
  * @Tag("Monit")
  */
 class MonitController extends BaseController {
@@ -55,10 +55,10 @@ class MonitController extends BaseController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config/monit")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Retrieves monit configuration
+	 *  summary: Returns current monit configuration
 	 *  response:
 	 *      '200':
 	 *          description: Success
@@ -83,7 +83,7 @@ class MonitController extends BaseController {
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/config/monit")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Saves updated monit configuration

@@ -9,11 +9,8 @@ class PixlaService {
 	/**
 	 * Retrieves the device token
 	 */
-	getToken(): Promise<string> {
-		return axios.get('pixla', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => {
-				return response.data.token;
-			});
+	getToken(): Promise<AxiosResponse> {
+		return axios.get('pixla', {headers: authorizationHeader()});
 	}
 
 	/**

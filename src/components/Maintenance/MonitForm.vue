@@ -69,7 +69,7 @@ import {extend} from 'vee-validate';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import MaintenanceService from '../../services/MaintenanceService';
+import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMonitConfig} from '../../interfaces/maintenance';
@@ -88,6 +88,11 @@ import {IMonitConfig} from '../../interfaces/maintenance';
  * MMonit configuration form component
  */
 export default class MonitForm extends Vue {
+
+	/**
+	 * @constant {string} featureName Feature name
+	 */
+	private featureName = 'monit'
 
 	/**
 	 * @var {IMonitConfig|null} configuration Monit configuration
@@ -119,7 +124,7 @@ export default class MonitForm extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return MaintenanceService.getMonitConfig()
+		return FeatureConfigService.getConfig(this.featureName)
 			.then((response: AxiosResponse) => {
 				this.configuration = response.data;
 				this.$store.commit('spinner/HIDE');
@@ -134,7 +139,7 @@ export default class MonitForm extends Vue {
 		if (this.configuration === null) {
 			return;
 		}
-		MaintenanceService.saveMonitConfig(this.configuration)
+		FeatureConfigService.saveConfig(this.featureName, this.configuration)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.monit.messages.saveSuccess').toString()
 			)))
