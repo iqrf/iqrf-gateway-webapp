@@ -301,7 +301,7 @@ export default class OtaUpload extends Vue {
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
 			}
 		});
