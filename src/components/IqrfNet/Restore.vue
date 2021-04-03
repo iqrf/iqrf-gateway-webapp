@@ -32,20 +32,16 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
-import ini from '../../../node_modules/ini';
-import IqrfNetService from '../../services/IqrfNetService';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import {MutationPayload} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 
-interface BackupData {
-	Address: string
-	DataC?: string
-	DataN?: string
-	Device: string
-	Version: string
-}
+import ini from '../../../node_modules/ini';
+import IqrfNetService from '../../services/IqrfNetService';
+
+import {IRestoreData} from '../../interfaces/iqmeshServices';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -67,9 +63,9 @@ interface BackupData {
  */
 export default class Restore extends Vue {
 	/**
-	 * @var {Array<BackupData>} backupData Array of device backup data entries
+	 * @var {Array<IRestoreData>} restoreData Array of device backup data entries
 	 */
-	private backupData: Array<BackupData> = []
+	private restoreData: Array<IRestoreData> = []
 
 	/**
 	 * @var {boolean} fileUntouched Has file input been interacted with?
@@ -116,22 +112,19 @@ export default class Restore extends Vue {
 				}
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONSEND' &&
-				mutation.payload.mType === 'iqmeshNetwork_Restore') {
-				this.$store.commit('spinner/UPDATE_TEXT', this.restoreProgress());
-				return;
-			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_Restore' &&
-				mutation.payload.data.msgId === this.msgId) {
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			if (mutation.payload.mType === 'iqmeshNetwork_Restore') {
 				this.handleRestoreResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
-						.toString()
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
 			}
 		});
@@ -160,7 +153,7 @@ export default class Restore extends Vue {
 		this.requestRecovery();
 		if (data.status === 0) {
 			this.$toast.success(
-				this.$t('iqrfnet.networkManager.restore.messages.success').toString()
+				this.$t('iqrfnet.networkManager.restore.messages.coordinatorSuccess').toString()
 			);
 			return;
 		}
@@ -206,21 +199,16 @@ export default class Restore extends Vue {
 	}
 
 	/**
-	 * Creates restore status message for spinner
-	 * @returns {string} spinner message
-	 */
-	private restoreProgress(): string {
-		const message = this.$t('iqrfnet.networkManager.restore.messages.statusCoordinator').toString();
-		return message;
-	}
-
-	/**
 	 * Performs device restoration
 	 * @param {number} address device address
 	 * @param {string} data 
 	 */
 	private sendRestore(address: number, data: string) {
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit(
+			'spinner/UPDATE_TEXT',
+			this.$t('iqrfnet.networkManager.restore.messages.coordinatorRunning').toString()
+		);
 		const options = new WebSocketOptions(null);
 		IqrfNetService.restore(address, this.restartOnRestore, data, options)
 			.then((msgId: string) => this.msgId = msgId);
@@ -230,7 +218,7 @@ export default class Restore extends Vue {
 	 * Checks for valid combination of data and target device
 	 */
 	private restoreDevice(): void {
-		for (let entry of this.backupData) {
+		for (let entry of this.restoreData) {
 			if (entry.DataC) {
 				this.sendRestore(0, entry.DataC);
 				return;
@@ -279,23 +267,19 @@ export default class Restore extends Vue {
 			.then((fileContent: string) => {
 				this.parseContent(fileContent);
 			})
-			.catch((error) => {
-				console.error(error);
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.corruptedFile').toString()
-				);
-			});
-		
+			.catch(() => this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.corruptedFile').toString()
+			));
 	}
 
 	/**
 	 * Checks if backup data object contains specified property
-	 * @param {BackupData} obj backup data entry
+	 * @param {IRestoreData} obj backup data entry
 	 * @param {string} property searched property
 	 * @param {string} key backup data entry identifier
 	 * @returns {boolean} true if property exists, false otherwise
 	 */
-	private checkForProp(obj: BackupData, property: string, key: string) {
+	private checkForProp(obj: IRestoreData, property: string, key: string) {
 		if (!(property in obj)) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: property}).toString()
@@ -311,15 +295,15 @@ export default class Restore extends Vue {
 	 * @param {string} content content of uploaded file
 	 */
 	private parseContent(content: string): void {
-		const backupData = ini.parse(content);
-		if (!('Backup' in backupData)) {
+		const restoreData = ini.parse(content);
+		if (!('Backup' in restoreData)) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()
 			);
 			this.fileEmpty = true;
 		}
-		delete backupData.Backup;
-		const backupKeys = Object.keys(backupData);
+		delete restoreData.Backup;
+		const backupKeys = Object.keys(restoreData);
 		for (let key of backupKeys) {
 			if (!RegExp('^[0-9A-F]{8}$').test(key)) {
 				this.$toast.error(
@@ -327,19 +311,19 @@ export default class Restore extends Vue {
 				);
 				this.fileEmpty = true;
 			}
-			if (!this.checkForProp(backupData[key], 'Device', key) ||
-				!this.checkForProp(backupData[key], 'Version', key) ||
-				!this.checkForProp(backupData[key], 'Address', key)) {
+			if (!this.checkForProp(restoreData[key], 'Device', key) ||
+				!this.checkForProp(restoreData[key], 'Version', key) ||
+				!this.checkForProp(restoreData[key], 'Address', key)) {
 				this.fileEmpty = true;
 				return;
 			}
-			if (Number.parseInt(backupData[key]['Address']) === 0 && !('DataC' in backupData[key])) {
+			if (Number.parseInt(restoreData[key]['Address']) === 0 && !('DataC' in restoreData[key])) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataC'}).toString()
 				);
 				this.fileEmpty = true;
 				return;
-			} else if (Number.parseInt(backupData[key]['Address']) > 0 && !('DataN' in backupData[key])) {
+			} else if (Number.parseInt(restoreData[key]['Address']) > 0 && !('DataN' in restoreData[key])) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataN'}).toString()
 				);
@@ -347,7 +331,7 @@ export default class Restore extends Vue {
 				return;
 			}
 		}
-		this.backupData = Object.keys(backupData).map(key => backupData[key]);
+		this.restoreData = Object.keys(restoreData).map(key => restoreData[key]);
 	}
 }
 </script>

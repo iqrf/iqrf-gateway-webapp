@@ -29,6 +29,36 @@ export interface IBackupData {
 }
 
 /**
+ * Device restore data interface
+ */
+export interface IRestoreData {
+	/**
+	 * Device address
+	 */
+	Address: string
+	
+	/**
+	 * Coordinator data
+	 */
+	DataC?: string
+
+	/**
+	 * Node data
+	 */
+	DataN?: string
+
+	/**
+	 * Device type
+	 */
+	Device: string
+
+	/**
+	 * DPA version
+	 */
+	Version: string
+}
+
+/**
  * OTA upload configuration instance interface
  */
 export interface IOtaUpload {

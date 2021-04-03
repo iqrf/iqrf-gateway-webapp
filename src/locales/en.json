@@ -1326,14 +1326,14 @@
 					}
 				},
 				"messages": {
+					"coordinatorRunning": "Restoring coordinator device...",
+					"coordinatorSuccess": "Coordinator device has been successfully restored.",
 					"timeout": "The restore process request timed out.",
-					"success": "The restore process has been successfully completed.",
 					"corruptedFile": "The contents of uploaded file are corrupted.",
 					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
 					"missingProp": "Entry {item} does not contain property {property}.",
 					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
 					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
-					"statusCoordinator": "Restoring coordinator device.",
 					"invalidSize": "Invalid coordinator backup data size.",
 					"checksumMismatch": "Incorrect coordinator backup data checksum.",
 					"failedMessage": "Restore process not started: {message}"
