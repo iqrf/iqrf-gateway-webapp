@@ -245,11 +245,13 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 interface NodeMessages {
 	nodesNew: string
@@ -379,6 +381,9 @@ export default class AutoNetwork extends Vue {
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
 				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
 					switch(mutation.payload.data.status) {
 						case -1:
@@ -407,13 +412,11 @@ export default class AutoNetwork extends Vue {
 							);
 							break;
 					}
-				} else if (mutation.payload.mType === 'messageError' &&
-							mutation.payload.data.msgId === this.msgId) {
+				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					this.$store.dispatch('removeMessage', this.msgId);
 					this.$toast.error(
-						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
-							.toString()
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 					);
 				}
 			}
