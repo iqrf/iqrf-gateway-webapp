@@ -130,7 +130,12 @@ class ServicesController extends BaseController {
 				$status['enabled'] = $this->manager->isEnabled($name);
 				$status['active'] = $this->manager->isActive($name);
 			} catch (NotImplementedException $e) {
-				unset($status['enabled'], $status['active']);
+				if (isset($status['enabled'])) {
+					unset($status['enabled']);
+				}
+				if (isset($status['active'])) {
+					unset($status['active']);
+				}
 			}
 			$status['status'] = $this->manager->getStatus($name);
 			return $response->writeJsonBody($status);
