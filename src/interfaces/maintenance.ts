@@ -1,3 +1,5 @@
+import {MenderProtocols} from '../enums/Maintenance/Mender';
+
 /**
  * Mender configuration interface
  */
@@ -26,6 +28,11 @@ export interface IMenderConfig {
 	 * Update poll interval in seconds
 	 */
 	UpdatePollIntervalSeconds: number
+
+	/**
+	 * Mender client protocol
+	 */
+	ClientProtocol: MenderProtocols
 }
 
 /**

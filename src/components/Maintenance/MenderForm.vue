@@ -17,6 +17,11 @@
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
+			<CSelect
+				:value.sync='configuration.ClientProtocol'
+				:label='$t("maintenance.mender.form.protocol")'
+				:options='protocolOptions'
+			/>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='required'
@@ -116,17 +121,19 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CForm, CInput} from '@coreui/vue/src';
+import {CBadge, CButton, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {MenderProtocols} from '../../enums/Maintenance/Mender';
 
 import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMenderConfig} from '../../interfaces/maintenance';
 import {extendedErrorToast} from '../../helpers/errorToast';
+import { IOption } from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -134,6 +141,7 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 		CButton,
 		CForm,
 		CInput,
+		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -153,6 +161,20 @@ export default class MenderForm extends Vue {
 	 * @var {IMenderConfig} configuration Mender configuration
 	 */
 	private configuration: IMenderConfig|null = null
+
+	/**
+	 * @constant {Array<IOption>} protocolOptions Array of CoreUI select mender client protocol options
+	 */
+	private protocolOptions: Array<IOption> = [
+		{
+			label: this.$t('maintenance.mender.form.protocols.https').toString(),
+			value: MenderProtocols.HTTPS,
+		},
+		{
+			label: this.$t('maintenance.mender.form.protocols.wss').toString(),
+			value: MenderProtocols.WSS,
+		},
+	]
 
 	/**
 	 * Vue lifecycle hook created
