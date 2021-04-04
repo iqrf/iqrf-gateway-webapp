@@ -2280,6 +2280,11 @@
 				"placeholders": {
 					"server": "https://hosted.mender.io",
 					"tenantToken": "exampleToken"
+				},
+				"protocol": "Protocol",
+				"protocols": {
+					"https": "HTTPS",
+					"wss": "WSS"
 				}
 			},
 			"messages": {

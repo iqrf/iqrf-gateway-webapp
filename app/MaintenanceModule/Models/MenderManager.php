@@ -51,11 +51,30 @@ class MenderManager {
 	}
 
 	/**
-	 * Reads JSON configuration file
-	 * @return array<string, int|string> current Mender configuration
+	 * Returns mender configuration
+	 * @return array<string, int|string> current mender configuration
 	 */
 	public function getConfig(): array {
+		$clientConfig = $this->getClientConfig();
+		$connectConfig = $this->getConnectConfig();
+		$clientConfig['ClientProtocol'] = $connectConfig['ClientProtocol'] ?? 'https';
+		return $clientConfig;
+	}
+
+	/**
+	 * Reads mender-client config file
+	 * @return array<string, int|string> current mender-client configuration
+	 */
+	public function getClientConfig(): array {
 		return $this->fileManager->read(self::CLIENT_CONF, true, '.conf');
+	}
+
+	/**
+	 * Reads mender-connect config file
+	 * @return array<string, string|array<string, int|bool>> current mender-connect configuration
+	 */
+	public function getConnectConfig(): array {
+		return $this->fileManager->read(self::CONNECT_CONF, true, '.conf');
 	}
 
 	/**
@@ -63,19 +82,13 @@ class MenderManager {
 	 * @param array<string, int|string> $newConfig Mender configuration
 	 */
 	public function saveConfig(array $newConfig): void {
-		$oldConfig = $this->getConfig();
-		$this->fileManager->write(self::CLIENT_CONF, array_merge($oldConfig, $newConfig), '.conf');
-		$this->updateConnectConfig($newConfig['ServerURL']);
-	}
-
-	/**
-	 * Updates mender-connect configuration
-	 * @param string $server mender-connect server url
-	 */
-	private function updateConnectConfig(string $server): void {
-		$config = $this->fileManager->read(self::CONNECT_CONF, true, '.conf');
-		$config['ServerURL'] = $server;
-		$this->fileManager->write(self::CONNECT_CONF, $config, '.conf');
+		$clientConfig = $this->getClientConfig();
+		$connectConfig = $this->getConnectConfig();
+		$connectConfig['ServerURL'] = $newConfig['ServerURL'];
+		$connectConfig['ClientProtocol'] = $newConfig['ClientProtocol'];
+		unset($newConfig['ClientProtocol']);
+		$this->fileManager->write(self::CLIENT_CONF, array_merge($clientConfig, $newConfig), '.conf');
+		$this->fileManager->write(self::CONNECT_CONF, $connectConfig, '.conf');
 	}
 
 }
