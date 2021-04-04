@@ -228,7 +228,7 @@
 										v-if='!ipv4InSubnet'
 										color='danger'
 									>
-										{{ $t('network.connection.ipv4.notInSubnet') }}
+										{{ $t('network.connection.ipv4.ipNotInSubnet') }}
 									</CAlert>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
@@ -283,10 +283,11 @@
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+											:rules='connection.ipv4.method === "manual" ? "required|ipv4|dns4Subnet" : ""'
 											:custom-messages='{
 												required: "network.connection.ipv4.errors.dns",
 												ipv4: "network.connection.ipv4.errors.addressInvalid",
+												dns4Subnet: "network.connection.ipv4.dnsNotInSubnet"
 											}'
 										>
 											<CInput
@@ -502,31 +503,17 @@ import {sleep} from '../../helpers/sleep';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {v4 as uuidv4} from 'uuid';
+import {WepKeyLen, WepKeyType} from '../../enums/Network/WifiSecurity';
+
 import ip from 'ip-regex';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 import VersionService from '../../services/VersionService';
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, NetworkInterface} from '../../interfaces/network';
+import {IConnection, IConnectionModal, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
-
-interface IModalMessages {
-	ipv4: string|null
-	ipv4Addr: string|null
-}
-
-enum WepKeyLen {
-	BIT64 = '64bit',
-	BIT128 = '128bit',
-}
-
-enum WepKeyType {
-	KEY = 'key',
-	PASSPHRASE = 'passphrase',
-	UNKNOWN = 'unknown',
-}
 
 @Component({
 	components: {
@@ -647,24 +634,25 @@ export default class ConnectionForm extends Vue {
 	 */
 	private pskInputType = 'password'
 
+	/**
+	 * @var {Dictionary<string>} originalIPv4 IPv4 address and method before change
+	 */
 	private originalIPv4 = {
 		address: '',
 		method: 'auto',
 	}
 
+	/**
+	 * @var {bool} handleIPChanged Controls whether or not to check for IP changes if connect fails
+	 */
 	private handleIPChanged = false
 
 	/**
-	 * @var {string} modalMessages Modal IP method change messages
+	 * @var {IConnectionModal} modalMessages Modal IP method change messages
 	 */
-	private modalMessages: IModalMessages = {
+	private modalMessages: IConnectionModal = {
 		ipv4: '',
 		ipv4Addr: '',
-	}
-
-	private blockingDiv = {
-		show: false,
-		message: ''
 	}
 
 	/**
@@ -731,6 +719,9 @@ export default class ConnectionForm extends Vue {
 		});
 		extend('wpaPsk', (key: string) => {
 			return new RegExp(/^(\w{8,63}|[0-9a-fA-F]{64})$/).test(key);
+		});
+		extend('dns4Subnet', (address: string) => {
+			return this.ipv4SubnetCheck(address);
 		});
 	}
 
@@ -803,20 +794,29 @@ export default class ConnectionForm extends Vue {
 			return true;
 		}
 		const ipv4 = this.connection.ipv4.addresses[0].address;
+		return this.ipv4SubnetCheck(ipv4);
+	}
+
+	/**
+	 * Checks if passed IP is in subnet with gateway
+	 * @param {string} address Address to check
+	 * @returns {boolean} Is address in the same subnet as gateway?
+	 */
+	private ipv4SubnetCheck(address: string): boolean {
 		const mask = this.connection.ipv4.addresses[0].mask;
 		const gateway = this.connection.ipv4.gateway;
 		if (gateway === null) {
 			return false;
 		}
-		if (!ip.v4({exact: true}).test(ipv4) ||
+		if (!ip.v4({exact: true}).test(address) ||
 			!ip.v4({exact: true}).test(mask) ||
 			!ip.v4({exact: true}).test(gateway)) {
 			return true;
 		}
-		const ipv4Int = this.ipv4ToInt(ipv4);
+		const addressInt = this.ipv4ToInt(address);
 		const maskInt = this.ipv4ToInt(mask);
 		const gatewayInt = this.ipv4ToInt(gateway);
-		return ((ipv4Int & maskInt) === (gatewayInt & maskInt));
+		return ((addressInt & maskInt) === (gatewayInt & maskInt));
 	}
 
 	/**
@@ -1063,8 +1063,10 @@ export default class ConnectionForm extends Vue {
 				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
 					this.tryRest('network.connection.messages.ipChange.staticToStatic');
 				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') {
-					this.blockingDiv.message = this.$t('network.connection.messages.ipChange.staticToAuto').toString();
-					this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
+					this.$store.commit(
+						'spinner/UPDATE_TEXT',
+						this.$t('network.connection.messages.ipChange.staticToAuto').toString()
+					);
 				}
 			});
 	}
@@ -1081,17 +1083,14 @@ export default class ConnectionForm extends Vue {
 		);
 		await sleep(10000);
 		VersionService.getWebappVersionRest()
-			.then(() => {
-				this.blockingDiv.message = this.$t(
-					message,
-					{address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
-			})
-			.catch(() => {
-				this.blockingDiv.message = this.$t('network.connection.messages.ipChange.error').toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.blockingDiv.message);
-			});
+			.then(() => this.$store.commit(
+				'spinner/UPDATE_TEXT',
+				this.$t(message, {address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}).toString()
+			))
+			.catch(() => this.$store.commit(
+				'spinner/UPDATE_TEXT',
+				this.$t('network.connection.messages.ipChange.error').toString()
+			));
 	}
 
 

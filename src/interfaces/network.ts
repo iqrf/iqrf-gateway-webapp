@@ -18,6 +18,14 @@ export interface NetworkInterface {
 	type: string
 }
 
+/**
+ * Connection modal interface
+ */
+export interface IConnectionModal {
+	ipv4: string|null
+	ipv4Addr: string|null
+}
+
 export interface IConnection {
 	autoConnect: IConnectionAutoConnect
 	name: string
