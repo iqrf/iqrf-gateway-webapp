@@ -90,6 +90,7 @@ export default class TrUpload extends Vue {
 				this.$toast.error(
 					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
+				this.$router.push('/iqrfnet');
 			}
 		});
 
