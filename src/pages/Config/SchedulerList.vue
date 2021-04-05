@@ -152,7 +152,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
@@ -160,8 +160,7 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/Vue
 import {DateTime, Duration} from 'luxon';
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {fileDownloader} from '../../helpers/fileDownloader';
-import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+
 import ServiceService from '../../services/ServiceService';
 import SchedulerService from '../../services/SchedulerService';
 
@@ -183,11 +182,6 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CInputFile,
 		CModal,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
-	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective
 	},
@@ -200,10 +194,6 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
  * List of Daemon scheduler tasks
  */
 export default class SchedulerList extends Vue {
-	/**
-	 * @var {boolean} daemon230 Indicates that Daemon is version 2.3.0 or higher
-	 */
-	private daemon230 = false
 
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
@@ -381,20 +371,9 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateDaemonVersion();
 		setTimeout(() => {
 			if (this.$store.state.webSocketClient.socket.isConnected) {
 				this.useRest = false;
