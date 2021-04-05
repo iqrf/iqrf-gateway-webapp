@@ -749,11 +749,15 @@
 						"acceptOnlyLocalhost": "Accept only connection from localhost"
 					},
 					"messages": {
-						"addEuccess": "Monitoring service instance {instance} has been added.",
+						"addFailed": "Failed to create new Monitoring instance: {error}",
+						"addSuccess": "Monitoring service instance {instance} has been added.",
+						"deleteFailed": "Failed to delete Monitoring instance {instance}: {error}",
 						"deletePrompt": "Do you really want to delete Monitoring service instance {instance}?",
 						"deleteTitle": "Delete Monitoring service instance",
 						"deleteSuccess": "Monitoring service instance {instance} has been deleted.",
-						"editSuccess": "Monitoring service instance {instance} has been edited."
+						"editFailed": "Failed to edit Monitoring instance {instance}: {error}",
+						"editSuccess": "Monitoring service instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve Monitoring instance {instance} configuration: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of monitor instance.",
@@ -784,11 +788,15 @@
 					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",
-						"removeItem": "Do you really want to delete Tracer file instance {instance}?",
-						"removeTitle": "Delete Tracer file instance",
-						"removeSuccess": "Tracer file instance {instance} has been removed.",
-						"addSuccess": "Tracer file instance {instance} has been added.",
-						"editSuccess": "Tracer file instance {instance} has been edited."
+						"removeFailed": "Faled to delete Logging instance {instance}: {error}",
+						"removeItem": "Do you really want to delete Logging instance {instance}?",
+						"removeTitle": "Delete Logging instance",
+						"removeSuccess": "Logging instance {instance} has been removed.",
+						"addFailed": "Failed to create new Logging instance: {error}",
+						"addSuccess": "Logging instance {instance} has been added.",
+						"editFailed": "Failed to edit Logging instance {instance}: {error}",
+						"editSuccess": "Logging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve Logging instance {instance} configuration: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of logging service interface.",

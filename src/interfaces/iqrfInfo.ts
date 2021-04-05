@@ -20,12 +20,12 @@ export interface IIqrfInfo {
 	/**
 	 * Enumeration period in minutes
 	 */
-	enumPeriod?: number
+	enumPeriod: number
 	
 	/**
 	 * Uniform DPA version and OS build according to coordinator?
 	 */
-	enumUniformDpaVer?: boolean
+	enumUniformDpaVer: boolean
 
 	/**
 	 * Include metadata in messages?

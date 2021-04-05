@@ -64,7 +64,7 @@
 							/>
 						</CCol>
 						<CCol md='6'>
-							<div v-if='daemon230'>
+							<div>
 								<label style='font-size: 1.5rem'>
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
@@ -146,7 +146,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -155,9 +155,9 @@ import {between, integer, required, min_value} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
 import {RequiredInterface} from '../../interfaces/requiredInterfaces';
 import {AxiosError, AxiosResponse} from 'axios';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters} from 'vuex';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 interface MonitorComponents {
 	monitor: string
@@ -218,11 +218,6 @@ export default class MonitorForm extends Vue {
 	}
 
 	/**
-	 * @var {boolean} daemon230 Indicates that Daemon is version 2.3.0 or higher
-	 */
-	private daemon230 = false;
-
-	/**
 	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
 	 */
 	private instances: MonitorComponents = {
@@ -246,11 +241,6 @@ export default class MonitorForm extends Vue {
 	private powerUser = false;
 
 	/**
-	 * @var {Array<IOption>} tlsModeOptions Array of CoreUI select options for TLS mode
-	 */
-	private tlsModeOptions: Array<IOption> = []
-
-	/**
 	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
 	 */
 	private webSocket: MonitorWebSocket = {
@@ -262,6 +252,24 @@ export default class MonitorForm extends Vue {
 		certificate: '',
 		privateKey: ''
 	}
+
+	/**
+	 * @var {Array<IOption>} tlsModeOptions Array of CoreUI select options for TLS mode
+	 */
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
+		},
+	]
 
 	/**
 	 * @property {string} instance Monitoring service instance name
@@ -289,30 +297,6 @@ export default class MonitorForm extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-			this.tlsModeOptions = [
-				{
-					value: 'intermediate',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
-				},
-				{
-					value: 'modern',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
-				},
-				{
-					value: 'old',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
-				},
-			];
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -326,7 +310,6 @@ export default class MonitorForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
@@ -355,7 +338,11 @@ export default class MonitorForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				extendedErrorToast(
+					error,
+					'config.daemon.misc.monitor.messages.fetchFailed',
+					{instance: this.instance}
+				);
 				this.$router.push({
 					name: 'misc',
 					params: {
@@ -370,12 +357,6 @@ export default class MonitorForm extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (!this.daemon230) {
-			delete this.webSocket.tlsEnabled;
-			delete this.webSocket.tlsMode;
-			delete this.webSocket.certificate;
-			delete this.webSocket.privateKey;
-		}
 		this.webSocket.instance = this.monitor.instance;
 		if (this.monitor.RequiredInterfaces.length === 0) {
 			this.monitor.RequiredInterfaces[0] = {
@@ -393,14 +374,18 @@ export default class MonitorForm extends Vue {
 				DaemonConfigurationService.createInstance(this.componentNames.monitor, this.monitor),
 			])
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.misc.monitor.messages.addFailed'));
 		} else {
 			Promise.all([
 				DaemonConfigurationService.updateInstance(this.componentNames.webSocket, this.instances.webSocket, this.webSocket),
 				DaemonConfigurationService.updateInstance(this.componentNames.monitor, this.instances.monitor, this.monitor),
 			])
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'config.daemon.misc.monitor.messages.editFailed',
+					{instance: this.instance}
+				));
 		}
 	}
 

@@ -26,7 +26,7 @@
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
-					v-if='daemon236'
+					v-if='daemonLowerEqual236'
 					:checked.sync='metaDataToMessages'
 					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
 				/>
@@ -133,9 +133,9 @@ export default class JsonApi extends Vue {
 	private loadFailed = false
 
 	/**
-	 * @var {boolean} daemon236 Indicates whether daemon version is 2.3.6 or older
+	 * @var {boolean} daemonLowerEqual236 Indicates whether daemon version is 2.3.6 or older
 	 */
-	private daemon236 = false
+	private daemonLowerEqual236 = false
 
 	/**
 	 * Initializes validation rules
@@ -143,7 +143,7 @@ export default class JsonApi extends Vue {
 	created(): void {
 		extend('required', required);
 		if (versionLowerEqual('2.3.6')) {
-			this.daemon236 = true;
+			this.daemonLowerEqual236 = true;
 		}
 	}
 
@@ -162,7 +162,7 @@ export default class JsonApi extends Vue {
 			DaemonConfigurationService.getComponent(this.componentNames.rawApi),
 			DaemonConfigurationService.getComponent(this.componentNames.splitter),
 		];
-		if (this.daemon236) {
+		if (this.daemonLowerEqual236) {
 			requests.push(DaemonConfigurationService.getComponent(this.componentNames.metaData));
 		}
 		return Promise.all(requests)
@@ -172,7 +172,7 @@ export default class JsonApi extends Vue {
 				this.splitter = responses[1].data.instances[0];
 				this.insId = responses[1].data.instances[0].insId;
 				this.validateJsonResponse = responses[1].data.instances[0].validateJsonResponse;
-				if (this.daemon236) {
+				if (this.daemonLowerEqual236) {
 					this.metaData = responses[2].data.instances[0];
 					this.metaDataToMessages = responses[2].data.instances[0].metaDataToMessages;
 				}

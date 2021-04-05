@@ -25,5 +25,5 @@ export interface IIqrfRepository {
     /**
      * Download date if repository cache is empty?
      */
-	downloadIfRepoCacheEmpty?: boolean
+	downloadIfRepoCacheEmpty: boolean
 }
