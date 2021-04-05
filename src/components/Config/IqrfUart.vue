@@ -94,7 +94,6 @@
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='daemon230'
 									v-slot='{errors, touched, valid}'
 									rules='required|integer'
 									:custom-messages='{
@@ -247,11 +246,6 @@ export default class IqrfUart extends Vue {
 	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
 	 * @var {number|null} i2cEnableGpioPin I2C interface enable pin
 	 */
 	private i2cEnableGpioPin: number|null = null
@@ -309,16 +303,6 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-
-	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-		}
-	}
 	
 	/**
 	 * Vue lifecycle hook created
@@ -332,7 +316,6 @@ export default class IqrfUart extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
@@ -367,13 +350,11 @@ export default class IqrfUart extends Vue {
 		this.baudRate = response.baudRate;
 		this.powerEnableGpioPin = response.powerEnableGpioPin;
 		this.busEnableGpioPin = response.busEnableGpioPin;
-		if (this.daemon230) {
-			if (response.pgmSwitchGpioPin !== undefined) {
-				this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
-			}
-			if (response.uartReset !== undefined) {
-				this.uartReset = response.uartReset;
-			}
+		if (response.pgmSwitchGpioPin !== undefined) {
+			this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
+		}
+		if (response.uartReset !== undefined) {
+			this.uartReset = response.uartReset;
 		}
 		if (response.i2cEnableGpioPin !== undefined) {
 			this.i2cEnableGpioPin = response.i2cEnableGpioPin;
@@ -397,11 +378,10 @@ export default class IqrfUart extends Vue {
 			IqrfInterface: this.IqrfInterface,
 			baudRate: this.baudRate,
 			powerEnableGpioPin: this.powerEnableGpioPin,
-			busEnableGpioPin: this.busEnableGpioPin
+			busEnableGpioPin: this.busEnableGpioPin,
+			pgmSwitchGpioPin: this.pgmSwitchGpioPin,
+			uartReset: this.uartReset
 		};
-		if (this.daemon230) {
-			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
-		}
 		if (this.i2cEnableGpioPin !== null) {
 			Object.assign(configuration, {i2cEnableGpioPin: this.i2cEnableGpioPin});
 		}
@@ -448,9 +428,7 @@ export default class IqrfUart extends Vue {
 		}
 		this.busEnableGpioPin = mapping.busEnableGpioPin;
 		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
-		if (this.daemon230) {
-			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
-		}
+		this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
 		if (mapping.i2cEnableGpioPin !== undefined) {
 			this.i2cEnableGpioPin = mapping.i2cEnableGpioPin;
 		} else {
