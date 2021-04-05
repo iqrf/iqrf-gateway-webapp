@@ -48,7 +48,7 @@
 								/>
 							</CCol>
 							<CCol md='6'>
-								<div v-if='daemon230'>
+								<div>
 									<label style='font-size: 1.5rem'>
 										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
 									</label>
@@ -200,11 +200,6 @@ export default class WebsocketServiceForm extends Vue {
 	private componentName = 'shape::WebsocketCppService'
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
 	 * @var {string} privateKey Path to private key for TLS
 	 */
 	private privateKey = ''
@@ -222,7 +217,20 @@ export default class WebsocketServiceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = []
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
+		},
+	]
 
 	/**
 	 * @var {number} WebsocketPort Websocket port
@@ -253,30 +261,6 @@ export default class WebsocketServiceForm extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-			this.tlsModeOptions = [
-				{
-					value: 'intermediate',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
-				},
-				{
-					value: 'modern',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
-				},
-				{
-					value: 'old',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
-				}
-			];
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -289,7 +273,6 @@ export default class WebsocketServiceForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.instance) {
 			this.getInstance();
 		}
@@ -320,19 +303,17 @@ export default class WebsocketServiceForm extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.WebsocketPort = response.WebsocketPort;
 		this.acceptOnlyLocalhost = response.acceptOnlyLocalhost;
-		if (this.daemon230) {
-			if (response.tlsEnabled !== undefined) {
-				this.tlsEnabled = response.tlsEnabled;
-			}
-			if (response.tlsMode !== undefined) {
-				this.tlsMode = response.tlsMode;
-			}
-			if (response.certificate !== undefined) {
-				this.certificate = response.certificate;
-			}
-			if (response.privateKey !== undefined) {
-				this.privateKey = response.privateKey;
-			}
+		if (response.tlsEnabled !== undefined) {
+			this.tlsEnabled = response.tlsEnabled;
+		}
+		if (response.tlsMode !== undefined) {
+			this.tlsMode = response.tlsMode;
+		}
+		if (response.certificate !== undefined) {
+			this.certificate = response.certificate;
+		}
+		if (response.privateKey !== undefined) {
+			this.privateKey = response.privateKey;
 		}
 	}
 
@@ -345,11 +326,12 @@ export default class WebsocketServiceForm extends Vue {
 			component: this.component,
 			instance: this.componentInstance,
 			WebsocketPort: this.WebsocketPort,
-			acceptOnlyLocalhost: this.acceptOnlyLocalhost
+			acceptOnlyLocalhost: this.acceptOnlyLocalhost,
+			tlsEnabled: this.tlsEnabled,
+			tlsMode: this.tlsMode,
+			certificate: this.certificate,
+			privateKey: this.privateKey
 		};
-		if (this.daemon230) {
-			Object.assign(configuration, {tlsEnabled: this.tlsEnabled, tlsMode: this.tlsMode, certificate: this.certificate, privateKey: this.privateKey});
-		}
 		return configuration;
 	}
 

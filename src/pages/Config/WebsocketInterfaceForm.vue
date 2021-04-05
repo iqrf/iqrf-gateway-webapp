@@ -51,7 +51,7 @@
 							/>
 						</CCol>
 						<CCol>
-							<div v-if='daemon230'>
+							<div>
 								<label style='font-size: 1.5rem'>
 									{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
 								</label>
@@ -133,20 +133,20 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
-import {MetaInfo} from 'vue-meta';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import {mapGetters} from 'vuex';
-import { extendedErrorToast } from '../../helpers/errorToast';
-
+import {MetaInfo} from 'vue-meta';
+import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -186,11 +186,6 @@ export default class WebsocketInterfaceForm extends Vue {
 	}
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
 	 * @var {ModalInstance} instances Names of websocket messaging and service instances
 	 */
 	private instances: ModalInstance = {
@@ -225,7 +220,20 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = []
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
+		},
+	]
 
 	/**
 	 * @property {string} instance WebSocket interface instance name
@@ -251,30 +259,6 @@ export default class WebsocketInterfaceForm extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-			this.tlsModeOptions = [
-				{
-					value: 'intermediate',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
-				},
-				{
-					value: 'modern',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
-				},
-				{
-					value: 'old',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
-				}
-			];
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -287,7 +271,6 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -331,12 +314,6 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
 	private saveConfig(): void {
-		if (!this.daemon230) {
-			delete this.service.tlsEnabled;
-			delete this.service.tlsMode;
-			delete this.service.certificate;
-			delete this.service.privateKey;
-		}
 		this.$store.commit('spinner/SHOW');
 		this.service.instance = this.messaging.instance;
 		if (this.messaging.RequiredInterfaces.length === 0) {
