@@ -166,7 +166,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
@@ -174,8 +174,7 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive';
 import {Datetime} from 'vue-datetime';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -220,11 +219,6 @@ enum TimeSpecTypes {
 	directives: {
 		'autogrow': TextareaAutogrowDirective,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
-	},
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as unknown as SchedulerForm).pageTitle
@@ -254,11 +248,6 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null
-
-	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
 	
 	/**
 	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
@@ -472,20 +461,9 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateDaemonVersion();
 		setTimeout(() => {
 			if (this.$store.state.webSocketClient.socket.isConnected) {
 				this.useRest = false;
@@ -556,7 +534,7 @@ export default class SchedulerForm extends Vue {
 	private getTask(taskId: number): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
-		if (this.useRest || !this.daemon230) {
+		if (this.useRest) {
 			SchedulerService.getTaskREST(taskId)
 				.then((response: AxiosResponse) => {
 					this.handleGetTaskRest(response.data);
