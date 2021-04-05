@@ -83,6 +83,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/coreui';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Dictionary } from 'vue-router/types/router';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -185,7 +186,11 @@ export default class TracerList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.misc.tracer.messages.removeFailed',
+				{instance: instance}
+			));
 	}
 }
 </script>

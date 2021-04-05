@@ -70,7 +70,6 @@
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
-							v-if='daemon230'
 							:checked.sync='configuration.downloadIfRepoCacheEmpty'
 							:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
 						/>
@@ -85,7 +84,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -93,7 +92,6 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -139,18 +137,14 @@ export default class IqrfRepository extends Vue {
 		component: '',
 		instance: '',
 		urlRepo: '',
-		checkPeriodInMinutes: 0
+		checkPeriodInMinutes: 0,
+		downloadIfRepoCacheEmpty: true,
 	}
 
 	/**
 	 * @var {boolean} checkEnabled Enable periodical update check
 	 */
 	private checkEnabled = false
-
-	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
@@ -161,17 +155,6 @@ export default class IqrfRepository extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false
-
-	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			Object.assign(this.configuration, {downloadIfRepoCacheEmpty: false});
-			this.daemon230 = true;
-		}
-	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -186,7 +169,6 @@ export default class IqrfRepository extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
@@ -226,7 +208,7 @@ export default class IqrfRepository extends Vue {
 	 * Saves new or updates existing configuration of IQRF Repository component instance
 	 */
 	private saveConfig(): void {
-		if (this.daemon230 && !this.checkEnabled) {
+		if (!this.checkEnabled) {
 			this.configuration.checkPeriodInMinutes = 0;
 		}
 		this.$store.commit('spinner/SHOW');

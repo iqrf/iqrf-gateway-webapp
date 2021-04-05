@@ -17,7 +17,9 @@
 							v-if='powerUser'
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.misc.iqrfInfo.errors.instance"}'
+							:custom-messages='{
+								required: "config.daemon.misc.iqrfInfo.errors.instance"
+							}'
 						>
 							<CInput
 								v-model='configuration.instance'
@@ -27,7 +29,6 @@
 							/>
 						</ValidationProvider>
 						<div
-							v-if='daemon230'
 							class='form-group'
 						>
 							<label for='enumPeriodicEnable'>
@@ -67,7 +68,6 @@
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 						/>
 						<CInputCheckbox
-							v-if='daemon230'
 							:checked.sync='configuration.enumUniformDpaVer'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 						/>
@@ -92,7 +92,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CI
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {versionHigherEqual, versionLowerEqual} from '../../helpers/versionChecker';
+import {versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
@@ -146,12 +146,9 @@ export default class IqrfInfo extends Vue {
 		component: '',
 		instance: '',
 		enumAtStartUp: false,
+		enumPeriod: 0,
+		enumUniformDpaVer: false,
 	}
-
-	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
 
 	/**
 	 * @var {boolean} enumPeriodic Shows period input
@@ -173,12 +170,8 @@ export default class IqrfInfo extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			Object.assign(this.configuration, {enumPeriod: 0, enumUniformDpaVer: false});
-			this.daemon230 = true;
-			if (!versionLowerEqual('2.3.6')) {
-				Object.assign(this.configuration, {metaDataToMessages: false});
-			}
+		if (!versionLowerEqual('2.3.6')) {
+			Object.assign(this.configuration, {metaDataToMessages: false});
 		}
 	}
 
@@ -226,10 +219,7 @@ export default class IqrfInfo extends Vue {
 	private parseConfiguration(response: IIqrfInfo): void {
 		this.instance = response.instance;
 		this.configuration = response;
-		if (!this.daemon230) {
-			return;
-		}
-		if (this.configuration.enumPeriod !== undefined && this.configuration.enumPeriod > 0) {
+		if (this.configuration.enumPeriod > 0) {
 			this.enumPeriodic = true;
 		}
 	}
@@ -238,7 +228,7 @@ export default class IqrfInfo extends Vue {
 	 * Saves new or updates existing configuration of IQRF Info component instance
 	 */
 	private saveConfig(): void {
-		if (this.daemon230 && !this.enumPeriodic) {
+		if (!this.enumPeriodic) {
 			this.configuration.enumPeriod = 0;
 		}
 		this.$store.commit('spinner/SHOW');
