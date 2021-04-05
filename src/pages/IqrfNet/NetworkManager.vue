@@ -9,10 +9,10 @@
 							<BondingManager @update-devices='updateDevices' />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
-						<CTab v-if='daemon230' :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
+						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
-						<CTab v-if='daemon230' :title='$t("iqrfnet.networkManager.backupRestore")'>
+						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
 							<Backup />
 							<Restore />
 						</CTab>
@@ -76,11 +76,6 @@ export default class NetworkManager extends Vue {
 	private activeTab = 0
 
 	/**
-	 * @var {boolean} daemon230 Indicates that Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false;
-
-	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
 	private daemon236 = false;
@@ -90,9 +85,6 @@ export default class NetworkManager extends Vue {
 	 */
 	@Watch('daemonVersion')
 	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-		}
 		if (versionHigherEqual('2.3.6')) {
 			this.daemon236 = true;
 		}
