@@ -106,7 +106,7 @@ class VersionManager {
 		if (!$this->commandManager->commandExist('iqrfgd2')) {
 			return 'none';
 		}
-		$result = $this->commandManager->run('iqrfgd2 version')->getStdout();
+		$result = $this->commandManager->run('iqrfgd2 -v')->getStdout();
 		if ($result !== '') {
 			return $result;
 		}
