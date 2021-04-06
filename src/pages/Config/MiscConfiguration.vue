@@ -133,7 +133,9 @@ export default class MiscConfiguration extends Vue {
 		if (this.$attrs.tabName !== undefined) {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/SHOW',
+			this.$t('config.daemon.messages.configMiscFetch').toString()
+		);
 	}
 
 	/**
