@@ -63,7 +63,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * IQRF Gateway Daemon's version command
 	 */
-	private const DAEMON_VERSION_CMD = 'iqrfgd2 version';
+	private const DAEMON_VERSION_CMD = 'iqrfgd2 -v';
 
 	/**
 	 * IQRF Gateway Daemon's version with build time
