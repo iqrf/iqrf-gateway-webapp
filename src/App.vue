@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<Blocking />
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
@@ -10,12 +11,15 @@
 import {Component, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
 import {AxiosError} from 'axios';
+
+import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
+		Blocking,
 		DaemonModeModal,
 		LoadingSpinner,
 	},

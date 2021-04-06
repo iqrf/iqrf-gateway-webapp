@@ -1063,10 +1063,8 @@ export default class ConnectionForm extends Vue {
 				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
 					this.tryRest('network.connection.messages.ipChange.staticToStatic');
 				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') {
-					this.$store.commit(
-						'spinner/UPDATE_TEXT',
-						this.$t('network.connection.messages.ipChange.staticToAuto').toString()
-					);
+					this.$store.commit('spinner/HIDE');
+					this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.staticToAuto').toString());
 				}
 			});
 	}
@@ -1083,14 +1081,16 @@ export default class ConnectionForm extends Vue {
 		);
 		await sleep(10000);
 		VersionService.getWebappVersionRest()
-			.then(() => this.$store.commit(
-				'spinner/UPDATE_TEXT',
-				this.$t(message, {address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}).toString()
-			))
-			.catch(() => this.$store.commit(
-				'spinner/UPDATE_TEXT',
-				this.$t('network.connection.messages.ipChange.error').toString()
-			));
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$store.commit('blocking/SHOW',
+					this.$t(message, {address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}).toString()
+				);	
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.error').toString());
+			});
 	}
 
 

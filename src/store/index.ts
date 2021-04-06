@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex, {Store} from 'vuex';
 import createPersistentState from 'vuex-persistedstate';
 
+import blocking from './modules/blocking.module';
 import features from './modules/features.module';
 import installation from './modules/installation.module';
 import sidebar from './modules/sidebar.module';
@@ -13,6 +14,7 @@ Vue.use(Vuex);
 
 const store: Store<any> = new Vuex.Store({
 	modules: {
+		blocking,
 		features,
 		installation,
 		sidebar,
