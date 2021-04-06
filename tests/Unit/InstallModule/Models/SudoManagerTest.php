@@ -42,7 +42,7 @@ final class SudoManagerTest extends CommandTestCase {
 	 * Tests the function to check sudo and if webapp can use sudo
 	 */
 	public function testCheckSudo(): void {
-		Environment::lock('sudo_check');
+		Environment::lock('sudo_check', __DIR__ . '/../../../temp/');
 		$command = new Command(self::COMMAND, '', '', 0);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['sudo'])
@@ -50,23 +50,33 @@ final class SudoManagerTest extends CommandTestCase {
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMAND])
 			->andReturn($command);
-		$user_info = posix_getpwnam('www-data');
-		posix_seteuid($user_info['uid']);
-		posix_setegid($user_info['gid']);
+		$userId = posix_geteuid();
+		$groupId = posix_getegid();
+		$username = posix_getpwuid($userId)['name'];
+		if ($username === 'root') {
+			$username = 'www-data';
+			$user_info = posix_getpwnam($username);
+			posix_seteuid($user_info['uid']);
+			posix_setegid($user_info['gid']);
+		}
 		$expected = [
-			'user' => 'www-data',
+			'user' => $username,
 			'exists' => true,
 			'userSudo' => true,
 		];
 		Assert::same($expected, $this->manager->checkSudo());
-		posix_seteuid(0);
-		posix_setegid(0);
+		posix_seteuid($userId);
+		posix_setegid($groupId);
 	}
 
 	/**
 	 * Tests the function to check sudo and if webapp can use sudo with root
 	 */
 	public function testCheckSudoRoot(): void {
+		$username = posix_getpwuid(posix_geteuid())['name'];
+		if ($username !== 'root') {
+			Environment::skip('This test has to be run under root.');
+		}
 		Assert::same([], $this->manager->checkSudo());
 	}
 
