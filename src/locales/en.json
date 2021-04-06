@@ -812,6 +812,7 @@
 				}
 			},
 			"messages": {
+				"configMiscFetch": "Retrieving miscellaneous components configuration...",
 				"configFailed": "An unexpected error has occured: {error}",
 				"configFetchFailed": "Failed to retrieve configuration for {children}.",
 				"failedElement": "Failed to retrieve component configuration."
@@ -2217,6 +2218,7 @@
 				"notConnected": "Not connected"
 			},
 			"messages": {
+				"submit": "Saving configuration and attempting to connect...",
 				"ipChange": {
 					"error": "Unable to confirm web interface availability.",
 					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",

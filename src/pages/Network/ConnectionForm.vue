@@ -1012,7 +1012,9 @@ export default class ConnectionForm extends Vue {
 		if (this.showModal) {
 			this.showModal = false;
 		}
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/SHOW',
+			this.$t('network.connection.messages.submit').toString()
+		);
 		if (connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
