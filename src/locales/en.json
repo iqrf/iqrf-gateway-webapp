@@ -2219,9 +2219,9 @@
 			"messages": {
 				"ipChange": {
 					"error": "Unable to confirm web interface availability.",
-					"autoToStatic": "IPv4 method switched from auto to static, web interface should be available at {address}",
+					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",
 					"staticToAuto": "Switching IPv4 method from static to auto resulted in the web interface no longer being available at this address.",
-					"staticToStatic": "IPv4 address changed, web interface should be available at {address}",
+					"staticToStatic": "IPv4 address changed, web interface is available at {address}",
 					"backendCheck": "Checking availability of web interface..."
 				},
 				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
