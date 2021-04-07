@@ -25,7 +25,15 @@
  # Mender client configuration
  mender:
  	enabled: false
-@@ -33,10 +33,10 @@ nodeRed:
+@@ -26,17 +26,17 @@ monit:
+ 	enabled: false
+ # Network manager
+ networkManager:
+-	enabled: false
++	enabled: true
+ # Node-RED
+ nodeRed:
+ 	enabled: false
  	url: /node-red/
  # PIXLA mamagement system
  pixla:
