@@ -15,6 +15,7 @@ use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -27,7 +28,17 @@ final class FeatureManagerTest extends TestCase {
 	/**
 	 * Path to the temporary directory
 	 */
-	private const TMP_PATH = __DIR__ . '/../../../../temp/tests';
+	private const TEMP_DIR = __DIR__ . '/../../../../temp/tests';
+
+	/**
+	 * Path to the temporary file
+	 */
+	private const PATH_TEMP = self::TEMP_DIR . '/features.neon';
+
+	/**
+	 * Path to the original file
+	 */
+	private const PATH = __DIR__ . '/../../../data/features.neon';
 
 	/**
 	 * @var FeatureManager Optional feature manager
@@ -35,20 +46,30 @@ final class FeatureManagerTest extends TestCase {
 	private $manager;
 
 	/**
+	 * @var FeatureManager Optional feature manager
+	 */
+	private $managerTemp;
+
+	/**
+	 * Copies the original file
+	 */
+	private function copy(): void {
+		FileSystem::copy(self::PATH, self::PATH_TEMP);
+	}
+
+	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$original = __DIR__ . '/../../../data/features.neon';
-		$path = self::TMP_PATH . '/features.neon';
-		FileSystem::copy($original, $path);
-		$this->manager = new FeatureManager($path);
+		$this->manager = new FeatureManager(self::PATH);
+		$this->managerTemp = new FeatureManager(self::PATH_TEMP);
 	}
 
 	/**
 	 * Tests the constructor with nonexistent path
 	 */
 	public function testConstructorNonexistent(): void {
-		$manager = new FeatureManager(self::TMP_PATH . '/nonsense');
+		$manager = new FeatureManager(self::TEMP_DIR . '/nonsense');
 		Assert::same(['docs'], $manager->listEnabled());
 	}
 
@@ -56,14 +77,16 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the function to edit feature configuration
 	 */
 	public function testEdit(): void {
+		Environment::lock('feature', self::TEMP_DIR);
+		$this->copy();
 		$expected = [
 			'enabled' => true,
 			'url' => '/grafana/',
 		];
 		Assert::noError(function () use ($expected): void {
-			$this->manager->edit('grafana', $expected);
+			$this->managerTemp->edit('grafana', $expected);
 		});
-		Assert::same($expected, $this->manager->get('grafana'));
+		Assert::same($expected, $this->managerTemp->get('grafana'));
 	}
 
 	/**
@@ -126,11 +149,13 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the function to set feature enablement
 	 */
 	public function testSetEnabled(): void {
+		Environment::lock('feature', self::TEMP_DIR);
+		$this->copy();
 		$expected = ['docs'];
-		Assert::same($expected, $this->manager->listEnabled());
-		$this->manager->setEnabled(['pixla', 'ssh'], true);
+		Assert::same($expected, $this->managerTemp->listEnabled());
+		$this->managerTemp->setEnabled(['pixla', 'ssh'], true);
 		$expected = ['docs', 'pixla', 'ssh'];
-		Assert::same($expected, $this->manager->listEnabled());
+		Assert::same($expected, $this->managerTemp->listEnabled());
 	}
 
 	/**
