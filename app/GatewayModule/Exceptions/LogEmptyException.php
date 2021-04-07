@@ -16,29 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types = 1);
 
-use App\Kernel;
+namespace App\GatewayModule\Exceptions;
 
-require __DIR__ . '/../vendor/autoload.php';
+use Exception;
 
-$configurator = Kernel::boot();
-$configurator->setDebugMode(false);
-$configurator->setTempDirectory(__DIR__ . '/../temp/tests');
+/**
+ * The exception that indicates an empty file
+ */
+class LogEmptyException extends Exception {
 
-Tester\Environment::setup();
-if (basename(__DIR__) === 'tests') {
-	$tempDir = __DIR__ . '/temp/';
-	@mkdir($tempDir);
-	@mkdir($tempDir . 'certificates/');
-	@mkdir($tempDir . 'configuration/');
-	@mkdir($tempDir . 'configuration/scheduler/');
-	@mkdir($tempDir . 'controller/');
-	@mkdir($tempDir . 'maintenance/');
-	@mkdir($tempDir . 'translator/');
-	@mkdir($tempDir . 'zip/');
 }
-date_default_timezone_set('Etc/GMT-2');
-
-return $configurator->createContainer();

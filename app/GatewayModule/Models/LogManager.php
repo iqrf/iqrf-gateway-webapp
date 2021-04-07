@@ -22,6 +22,7 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -75,9 +76,14 @@ class LogManager {
 	 * @throws LogNotFoundException
 	 */
 	public function load(): array {
-		$logs = [
-			'daemon' => FileSystem::read($this->getLatestDaemonLog()),
-		];
+		$logs = [];
+		try {
+			$logs['daemon'] = FileSystem::read($this->getLatestDaemonLog());
+		} catch (LogEmptyException $e) {
+			$logs['daemon'] = '';
+		} catch (LogNotFoundException $e) {
+			$logs['daemon'] = null;
+		}
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
 			$logs['controller'] = FileSystem::read($this->getLatestControllerLog());
 		}
@@ -89,7 +95,7 @@ class LogManager {
 	 */
 	public function getLatestControllerLog(): string {
 		$logFile = $this->controllerLogDir . self::CONTROLLER_LOG;
-		if (!file_exists($logFile) || filesize($logFile) === 0) {
+		if (!file_exists($logFile)) {
 			throw new LogNotFoundException('Controller log file not found');
 		}
 		return $logFile;
@@ -102,16 +108,21 @@ class LogManager {
 	 */
 	public function getLatestDaemonLog(): string {
 		$logFiles = [];
+		$emptyLogFound = false;
 		/**
 		 * @var SplFileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->daemonLogDir) as $file) {
 			if ($file->getSize() === 0) {
+				$emptyLogFound = true;
 				continue;
 			}
 			$logFiles[$file->getMTime()] = $file->getRealPath();
 		}
 		if ($logFiles === []) {
+			if ($emptyLogFound) {
+				throw new LogEmptyException('Daemon log file is empty.');
+			}
 			throw new LogNotFoundException('Daemon log files not found');
 		}
 		krsort($logFiles);

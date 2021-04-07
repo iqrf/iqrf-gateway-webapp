@@ -1169,6 +1169,9 @@
 				}
 			},
 			"messages": {
+				"logEmpty": "Log file is empty.",
+				"logNotFound": "Log file does not exist.",
+				"fetchFailed": "Failed to retrieve Gateway logs.",
 				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
 				"readError": "Cannot read IQRF Gateway's log file.",
 				"notFound": "IQRF Gateway log file cannot be found."
