@@ -139,6 +139,7 @@ export default class MonitForm extends Vue {
 		if (this.configuration === null) {
 			return;
 		}
+		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.featureName, this.configuration)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.monit.messages.saveSuccess').toString()
