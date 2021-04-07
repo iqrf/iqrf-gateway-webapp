@@ -106,9 +106,15 @@ class VersionManager {
 		if (!$this->commandManager->commandExist('iqrfgd2')) {
 			return 'none';
 		}
-		$result = $this->commandManager->run('iqrfgd2 -v')->getStdout();
-		if ($result !== '') {
-			return $result;
+		$command = $this->commandManager->run('iqrfgd2 version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return $stdout;
+		}
+		$command = $this->commandManager->run('iqrfgd2 --version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return Strings::replace($stdout, '~^IQRF\ Gateway\ Daemon\ ~', '');
 		}
 		return 'unknown';
 	}
@@ -133,14 +139,24 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Gateway Daemon's version as JSON
+	 * @return array<string, string> IQRF Gateway Webapp version JSON
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function getWebappJson(): array {
+		$json = FileSystem::read(__DIR__ . '/../../../version.json');
+		return Json::decode($json, Json::FORCE_ARRAY);
+	}
+
+	/**
 	 * Returns IQRF Gateway Daemon's version
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string IQRF Gateway Webapp's version
 	 */
 	public function getWebapp(bool $verbose = false): string {
 		try {
-			$json = FileSystem::read(__DIR__ . '/../../../version.json');
-			$array = Json::decode($json, Json::FORCE_ARRAY);
+			$array = $this->getWebappJson();
 		} catch (IOException | JsonException $e) {
 			return 'unknown';
 		}
