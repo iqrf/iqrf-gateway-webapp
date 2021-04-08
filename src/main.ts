@@ -86,6 +86,11 @@ Vue.use(Clipboard);
 axios.defaults.baseURL = urlBuilder.getRestApiUrl();
 axios.defaults.timeout = 30000;
 
+// Enable sending cookie to the backend (to enable xdebug)
+if (process.env.NODE_ENV === 'development') {
+	axios.defaults.withCredentials = true;
+}
+
 axios.interceptors.response.use(
 	(response: AxiosResponse) => {
 		return response;
