@@ -535,7 +535,7 @@ export default class TheSidebar extends Vue {
 			}
 			filteredMembers.push(member);
 		});
-		return filteredMembers;		
+		return filteredMembers;
 	}
 
 	/**
