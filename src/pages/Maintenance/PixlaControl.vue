@@ -78,14 +78,8 @@ import {NavigationGuardNext, Route} from 'vue-router';
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
-			let message = '';
-			if (!vm.$store.getters['features/isEnabled']('maintenance')) {
-				message = vm.$t('maintenance.disabled').toString();
-			} else if (!vm.$store.getters['features/isEnabled']('pixla')) {
-				message = vm.$t('service.gwman-client.messages.disabled').toString();
-			}
-			if (message !== '') {
-				vm.$toast.error(message);
+			if (!vm.$store.getters['features/isEnabled']('pixla')) {
+				vm.$toast.error(vm.$t('service.gwman-client.messages.disabled').toString());
 				vm.$router.push(from.path);
 			}
 		});

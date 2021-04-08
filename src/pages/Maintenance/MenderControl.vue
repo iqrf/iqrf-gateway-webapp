@@ -65,16 +65,10 @@ import {ServiceStatus} from '../../services/ServiceService';
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
-			let message = '';
-			if (!vm.$store.getters['features/isEnabled']('maintenance')) {
-				message = vm.$t('maintenance.disabled').toString();
-			} else if (!vm.$store.getters['features/isEnabled']('mender')) {
-				message = vm.$t('service.mender-client.messages.disabled').toString();
-			}
-			if (message !== '') {
-				vm.$toast.error(message);
+			if (!vm.$store.getters['features/isEnabled']('mender')) {
+				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());
 				vm.$router.push(from.path);
-			}
+			}	
 		});
 	},
 	metaInfo: {

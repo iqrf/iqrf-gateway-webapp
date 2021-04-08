@@ -45,11 +45,23 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {NavigationGuardNext, Route} from 'vue-router';
+
 @Component({
 	components: {
 		CCard,
 		CListGroup,
 		CListGroupItem,
+	},
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
+			if (!vm.$store.getters['features/isEnabled']('mender') &&
+				!vm.$store.getters['features/isEnabled']('monit') &&
+				!vm.$store.getters['features/isEnabled']('pixla')) {
+				vm.$toast.error(vm.$t('maintenance.disabled').toString());
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	metaInfo: {
 		title: 'maintenance.title',
