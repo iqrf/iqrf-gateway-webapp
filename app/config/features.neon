@@ -15,9 +15,6 @@ iqrfGatewayController:
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: false
-# Device maintenance
-maintenance:
-	enabled: false
 # Mender client configuration
 mender:
 	enabled: false

@@ -2261,7 +2261,7 @@
 	"maintenance": {
 		"title": "Maintenance",
 		"description": "Tools for gateway management, updates and monitoring.",
-		"disabled": "Maintenance feature is disabled.",
+		"disabled": "No maintenance feature enabled.",
 		"pixla": {
 			"title": "PIXLA management",
 			"description": "Manages PIXLA client service.",

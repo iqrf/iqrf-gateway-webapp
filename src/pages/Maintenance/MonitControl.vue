@@ -65,14 +65,8 @@ import {ServiceStatus} from '../../services/ServiceService';
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
-			let message = '';
-			if (!vm.$store.getters['features/isEnabled']('maintenance')) {
-				message = vm.$t('maintenance.disabled').toString();
-			} else if (!vm.$store.getters['features/isEnabled']('monit')) {
-				message = vm.$t('service.monit.messages.disabled').toString();
-			}
-			if (message !== '') {
-				vm.$toast.error(message);
+			if (!vm.$store.getters['features/isEnabled']('monit')) {
+				vm.$toast.error(vm.$t('service.monit.messages.disabled').toString());
 				vm.$router.push(from.path);
 			}
 		});

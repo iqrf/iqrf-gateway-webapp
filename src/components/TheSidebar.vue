@@ -414,7 +414,6 @@ export default class TheSidebar extends Vue {
 						name: this.$t('maintenance.title'),
 						to: '/maintenance/',
 						route: '/maintenance/',
-						feature: 'maintenance',
 						icon: {content: cilSync},
 						items: [
 							{
@@ -500,50 +499,51 @@ export default class TheSidebar extends Vue {
 			},
 		];
 		return data.filter((element: NavData) => {
-			element._children = element._children.filter((element: NavMember) => {
-				if (element.roles !== undefined &&
-						!element.roles.includes(this.$store.getters['user/getRole'])) {
-					return null;
-				}
-				if (element.feature !== undefined &&
-						!this.$store.getters['features/isEnabled'](element.feature)) {
-					return null;
-				}
-				if (element.items !== undefined) {
-					element.items = this.filterItems(element.items);
-				}
-				if (element._children !== undefined) {
-					element._children = this.filterChildren(element._children);
-				}
-				return element;
-			});
+			element._children = this.filterNavMembers(element._children);
 			return element;
 		});
 	}
 
-	private filterChildren(children: Array<NavMember>): Array<NavMember> {
-		let filteredChildren: Array<NavMember> = [];
-		children.forEach((child: NavMember) => {
-			if (child.roles !== undefined &&
-				!child.roles.includes(this.$store.getters['user/getRole'])) {
-				return null;
+	/**
+	 * Filters sidebar nav members
+	 * @param {Array<NavMember>} members Member children
+	 * @returns {Array<NavMember>} Member children filtered by user role and enabled features
+	 */
+	private filterNavMembers(members: Array<NavMember>): Array<NavMember> {
+		let filteredMembers: Array<NavMember> = [];
+		members.forEach((member: NavMember) => {
+			let children, items = false;
+			if (member.roles !== undefined && !member.roles.includes(this.$store.getters['user/getRole'])) {
+				return;
 			}
-			if (child.feature !== undefined &&
-				!this.$store.getters['features/isEnabled'](child.feature)) {
-				return null;
+			if (member.feature !== undefined && !this.$store.getters['features/isEnabled'](member.feature)) {
+				return;
 			}
-			if (child.items !== undefined) {
-				child.items = this.filterItems(child.items);
+			if (member._children !== undefined) {
+				children = true;
+				member._children = this.filterNavMembers(member._children);
 			}
-			if (child._children !== undefined) {
-				child._children = this.filterChildren(child._children);
+			if (member.items !== undefined) {
+				items = true;
+				member.items = this.filterNavMemberItems(member.items);
 			}
-			filteredChildren.push(child);
+			if (children && member._children?.length === 0) {
+				return;
+			}
+			if (items && member.items?.length === 0) {
+				return;
+			}
+			filteredMembers.push(member);
 		});
-		return filteredChildren;
+		return filteredMembers;		
 	}
 
-	private filterItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
+	/**
+	 * Filters sidebar nav items
+	 * @param {Array<NavMemberItems>} items Member items
+	 * @returns {Array<NavMemberItems>} Member items filtered by user role and enabled features
+	 */
+	private filterNavMemberItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
 		let filteredItems: Array<NavMemberItem> = [];
 		items.forEach((item: NavMemberItem) => {
 			if (item.roles !== undefined &&
