@@ -25,14 +25,13 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use function assert;
-use function strpos;
 
 class BearerAuthenticator implements IAuthenticator {
 
@@ -58,6 +57,7 @@ class BearerAuthenticator implements IAuthenticator {
 
 	/**
 	 * @inheritDoc
+	 * @throws InvalidArgumentException
 	 */
 	public function authenticate(ServerRequestInterface $request) {
 		$header = $request->getHeader('Authorization')[0] ?? '';
@@ -86,10 +86,10 @@ class BearerAuthenticator implements IAuthenticator {
 	 * Authenticates the user
 	 * @param string $jwt JWT
 	 * @return User|null User entity
+	 * @throws InvalidArgumentException
 	 */
 	private function authenticateUser(string $jwt): ?User {
-		$token = $this->configuration->getParser()->parse($jwt);
-		assert($token instanceof Plain);
+		$token = $this->configuration->parser()->parse($jwt);
 		if (!$this->isJwtValid($token)) {
 			return null;
 		}
@@ -114,9 +114,9 @@ class BearerAuthenticator implements IAuthenticator {
 	private function isJwtValid(Plain $token): bool {
 		$hostname = gethostname();
 		$now = new DateTimeImmutable();
-		$validator = $this->configuration->getValidator();
-		$signer = $this->configuration->getSigner();
-		$verificationKey = $this->configuration->getVerificationKey();
+		$validator = $this->configuration->validator();
+		$signer = $this->configuration->signer();
+		$verificationKey = $this->configuration->verificationKey();
 		$signedWith = new SignedWith($signer, $verificationKey);
 		return $validator->validate($token, $signedWith) &&
 			!$token->isExpired($now) &&
@@ -132,7 +132,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return string|null JWT
 	 */
 	protected function parseAuthorizationHeader(string $header): ?string {
-		if (strpos($header, 'Bearer') !== 0) {
+		if (!Strings::startsWith($header, 'Bearer')) {
 			return null;
 		}
 		$str = Strings::substring($header, 7);

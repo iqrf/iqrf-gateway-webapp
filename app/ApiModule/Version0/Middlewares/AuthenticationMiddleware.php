@@ -28,7 +28,6 @@ use App\Models\Database\EntityManager;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
-use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -83,7 +82,7 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		try {
 			$identity = $this->authenticator->authenticate($request);
-		} catch (JwtParsingException | InvalidArgumentException $e) {
+		} catch (InvalidArgumentException $e) {
 			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
 		}
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
