@@ -127,6 +127,7 @@ export default class SignIn extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+		this.$store.commit('spinner/HIDE');
 	}
 
 	/**
