@@ -178,7 +178,7 @@ class GenericManager {
 	 */
 	public function getInstanceByProperty(string $type, $value): ?string {
 		$dir = $this->fileManager->getDirectory();
-		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
+		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
 			try {
 				$json = $this->fileManager->read($fileName);
