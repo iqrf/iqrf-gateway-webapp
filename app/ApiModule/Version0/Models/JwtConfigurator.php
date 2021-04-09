@@ -61,7 +61,7 @@ class JwtConfigurator {
 					$signer = new RsaSha256();
 					break;
 				case OPENSSL_KEYTYPE_EC:
-					$signer = EcdsaSha256::create();
+					$signer = new EcdsaSha256();
 					break;
 				default:
 					return Configuration::forUnsecuredSigner();
