@@ -12,9 +12,10 @@
 					<CForm @submit.prevent='saveInstance'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.websocket.errors.messagingInstance"
+								required: "config.daemon.messagings.websocket.errors.messagingInstance",
+								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
 							<CInput
@@ -195,14 +196,18 @@ export default class WebsocketMessagingForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves component instance configuration
 	 */
 	mounted(): void {
 		if (this.instance) {

@@ -587,7 +587,8 @@
 						"LocalPort": "Please enter local port - integer between 1 and 65535."
 					}
 				},
-				"acceptAsyncMsg": "Accept asynchronous messages"
+				"acceptAsyncMsg": "Accept asynchronous messages",
+				"instanceInvalid": "Messaging instance name cannot contain the ampersand symbol (&)."
 			},
 			"scheduler": {
 				"title": "Scheduler",
