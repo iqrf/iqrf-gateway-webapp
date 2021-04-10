@@ -167,6 +167,9 @@ class SchedulerManager {
 	 */
 	private function getTaskMessagings(array $tasks): string {
 		$messagings = array_map(function (stdClass $task): string {
+			if (is_array($task->messaging)) {
+				return implode(', ', $task->messaging);
+			}
 			return $task->messaging;
 		}, $tasks);
 		return implode(', ', $messagings);
