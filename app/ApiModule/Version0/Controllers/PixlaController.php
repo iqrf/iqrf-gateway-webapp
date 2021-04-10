@@ -57,7 +57,7 @@ class PixlaController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns status of PIXLA client service and PIXLA token
+	 *  summary: Returns PIXLA token
 	 *  responses:
 	 *      '200':
 	 *          description: Success
