@@ -610,6 +610,10 @@
 						"messagingPlaceholder": "Select messaging",
 						"add": "Add another message",
 						"remove": "Remove message"
+					},
+					"messagings": {
+						"add": "Add another messaging",
+						"remove": "Remove messaging"
 					}
 				},
 				"errors": {
