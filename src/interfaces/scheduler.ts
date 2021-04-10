@@ -49,3 +49,11 @@ export interface ITaskRest extends ITaskBase {
 export interface ITaskDaemon extends ITaskBase {
 	task: Array<ITaskMessage>|ITaskMessage
 }
+
+/**
+ * Scheduler task messaging data for form interface
+ */
+export interface ITaskMessaging {
+	message: string
+	messaging: Array<string>
+}
