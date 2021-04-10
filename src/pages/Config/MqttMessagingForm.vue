@@ -13,9 +13,10 @@
 						<legend>{{ $t('config.daemon.messagings.mqtt.legend') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.mqtt.errors.instance"
+								required: "config.daemon.messagings.mqtt.errors.instance",
+								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
 							<CInput
@@ -428,13 +429,17 @@ export default class MqttMessagingForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**

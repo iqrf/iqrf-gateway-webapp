@@ -14,8 +14,11 @@
 							<legend>{{ $t('config.daemon.messagings.websocket.interface.legend') }}</legend>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{required: "config.daemon.messagings.websocket.errors.instance"}'
+								rules='required|instance'
+								:custom-messages='{
+									required: "config.daemon.messagings.websocket.errors.instance",
+									instance: "config.daemon.messagings.instanceInvalid"
+								}'
 							>
 								<CInput
 									v-model='messaging.instance'
@@ -259,16 +262,20 @@ export default class WebsocketInterfaceForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves component instance configuration
 	 */
 	mounted(): void {
 		if (this.instance !== '') {
