@@ -8,12 +8,15 @@
 		</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.udp.errors.instance"}'
+							v-slot='{errors, touched, valid}'
+							rules='required|instance'
+							:custom-messages='{
+								required: "config.daemon.messagings.udp.errors.instance",
+								instance: "config.daemon.messagings.instanceInvalid"
+							}'
 						>
 							<CInput
 								v-model='configuration.instance'
@@ -23,7 +26,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required|between:1,65535'
 							:custom-messages='{
 								between: "config.daemon.messagings.udp.errors.RemotePort",
@@ -41,7 +44,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required|between:1,65535'
 							:custom-messages='{
 								between: "config.daemon.messagings.udp.errors.LocalPort",
@@ -142,11 +145,21 @@ export default class UdpMessagingForm extends Vue {
 	}
 
 	/**
-	 * Initializes validation rules and retrieves component config
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('between', between);
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
+	}
+
+	/**
+	 * Retrieves component instance configuration
+	 */
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getConfig();
 		}
