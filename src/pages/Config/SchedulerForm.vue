@@ -121,6 +121,7 @@
 								{{ $t("iqrfnet.sendJson.documentation") }}
 							</CButton>
 						</div>
+						<h3>{{ $t('config.daemon.scheduler.form.messages.title') }}</h3>
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
 							<hr v-if='i > 1'>
 							<CRow>
