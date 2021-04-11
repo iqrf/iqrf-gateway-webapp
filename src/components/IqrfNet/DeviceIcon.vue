@@ -10,12 +10,14 @@
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import Device from '../../helpers/Device';
+
 import {CIcon} from '@coreui/vue/src';
+
+import Device from '../../helpers/Device';
 
 @Component({
 	components: {
-		CIcon
+		CIcon,
 	}
 })
 
@@ -24,7 +26,7 @@ import {CIcon} from '@coreui/vue/src';
  */
 export default class DeviceIcon extends Vue {
 	/**
-	 * @property {Device} device Network device
+	 * @property {Device|StandardDevice} device Network device
 	 */
 	@Prop({required: true}) device!: Device
 }

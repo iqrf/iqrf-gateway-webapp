@@ -52,6 +52,14 @@ $theme-colors: (
 	}
 }
 
+.tooltip-old {
+	.tooltip-old-inner {
+		text-align: left;
+		white-space: pre-wrap;
+		max-width: none;
+	}
+}
+
 .dropdown-item {
 	padding: 0.25rem 1.25rem;
 }

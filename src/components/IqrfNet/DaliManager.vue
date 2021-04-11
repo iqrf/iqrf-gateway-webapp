@@ -1,11 +1,10 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.standard.dali.title') }}</CCardHeader>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
 							between: "iqrfnet.standard.form.messages.address",
@@ -25,7 +24,7 @@
 					</ValidationProvider>
 					<div v-for='i of commands.length' :key='i' class='form-group'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='integer|required|between:0,65535'
 							:custom-messages='{
 								between: "iqrfnet.standard.dali.form.messages.command",
