@@ -1,11 +1,10 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.standard.binaryOutput.title') }}</CCardHeader>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
 							integer: "forms.errors.integer",
@@ -24,7 +23,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,31'
 						:custom-messages='{
 							integer: "forms.errors.integer",
@@ -125,13 +124,16 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue/src';
-import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {cilCheckAlt, cilX} from '@coreui/icons';
+
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
-import { MutationPayload } from 'vuex';
+
+import {Dictionary} from 'vue-router/types/router';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {

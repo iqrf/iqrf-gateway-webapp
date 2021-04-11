@@ -1,11 +1,10 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.standard.sensor.title') }}</CCardHeader>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
 							integer: "forms.errors.integer",
@@ -71,30 +70,16 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardFooter, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+
 import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
-interface Sensor {
-	type: string
-	value?: number
-	unit: string
-}
-
-interface StandardSensor {
-	breakdown?: StandardSensor
-	decimalPlaces: number
-	frcs: Array<number>
-	id: string
-	name: string
-	shortName: string
-	type: number
-	unit: string
-	value: number
-}
+import {ISensor, IStandardSensor} from '../../interfaces/standard';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -102,7 +87,6 @@ interface StandardSensor {
 		CCard,
 		CCardBody,
 		CCardFooter,
-		CCardHeader,
 		CForm,
 		CInput,
 		ValidationObserver,
@@ -130,9 +114,9 @@ export default class SensorManager extends Vue {
 	private responseType: string|null = null
 
 	/**
-	 * @var {Array<Sensor>} sensors Array of Sensor standard objects
+	 * @var {Array<ISensor>} sensors Array of Sensor standard objects
 	 */
-	private sensors: Array<Sensor> = []
+	private sensors: Array<ISensor> = []
 
 	/**
 	 * Component unsubscribe function
@@ -176,11 +160,11 @@ export default class SensorManager extends Vue {
 
 	/**
 	 * Parses Sensor enumerate request response
-	 * @var {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 * @var {Array<IStandardSensor>} sensors Array of Sensor standard objects from response
 	 */
-	private parseEnumerate(sensors: Array<StandardSensor>): void {
+	private parseEnumerate(sensors: Array<IStandardSensor>): void {
 		this.sensors = [];
-		sensors.forEach((item: StandardSensor) => {
+		sensors.forEach((item: IStandardSensor) => {
 			if (item.breakdown !== undefined && (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30')) {
 				item = item.breakdown[0];
 			}
@@ -190,11 +174,11 @@ export default class SensorManager extends Vue {
 
 	/**
 	 * Parses Sensor read request response
-	 * @param {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 * @param {Array<IStandardSensor>} sensors Array of Sensor standard objects from response
 	 */
-	private parseReadAll(sensors: Array<StandardSensor>): void {
+	private parseReadAll(sensors: Array<IStandardSensor>): void {
 		this.sensors = [];
-		sensors.forEach((item: StandardSensor) => {
+		sensors.forEach((item: IStandardSensor) => {
 			if (item.breakdown !== undefined && (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30')) {
 				item = item.breakdown[0];
 			}
