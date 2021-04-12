@@ -5,17 +5,17 @@
 			<CCol md='6'>
 				<CCard>
 					<CTabs variant='tabs'>
+						<CTab :title='$t("iqrfnet.standard.sensor.title")'>
+							<SensorManager />
+						</CTab>
 						<CTab :title='$t("iqrfnet.standard.binaryOutput.title")'>
 							<BinaryOutputManager />
-						</CTab>
-						<CTab :title='$t("iqrfnet.standard.dali.title")'>
-							<DaliManager />
 						</CTab>
 						<CTab :title='$t("iqrfnet.standard.light.title")'>
 							<LightManager />
 						</CTab>
-						<CTab :title='$t("iqrfnet.standard.sensor.title")'>
-							<SensorManager />
+						<CTab :title='$t("iqrfnet.standard.dali.title")'>
+							<DaliManager />
 						</CTab>
 					</CTabs>
 				</CCard>

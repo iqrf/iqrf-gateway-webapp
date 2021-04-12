@@ -108,7 +108,7 @@
 									{{ col }}
 								</th>
 							</tr>
-							<tr v-for='row of Array(24).keys()' :key='row'>
+							<tr v-for='row of Array(5).keys()' :key='row'>
 								<th>{{ row }}0</th>
 								<td v-for='col of Array(10).keys()' :key='col'>
 									<CIcon
