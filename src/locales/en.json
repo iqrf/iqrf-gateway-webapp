@@ -1443,6 +1443,8 @@
 					"hwpidFilter": "Filter nodes by HWPID*",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
+					"uploadEeprom": "Upload EEPROM data",
+					"uploadEeeprom": "Upload EEEPROM data",
 					"manualUpload": "Manual upload",
 					"automaticUpload": "Automatic upload",
 					"uploadSteps": {
@@ -1455,14 +1457,16 @@
 					"file": "Please select a file to upload.",
 					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
-					"eeepromAddress": "Please enter an integer between 0 and 16383 for external EEPROM start address."
+					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
 				"messages": {
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
-					"invalidFile": "Uploaded file is not HEX or IQRF file.",
-					"invalidContent": "Invalid file content.",
+					"invalidRequest": "OTA upload request is not valid: {error}",
+					"invalidFile": "Invalid OTA upload file: {error}",
+					"invalidContent": "An error has occured during file content parsing: {error}",
+					"invalidMemory": "Invalid memory operation: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",
