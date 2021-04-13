@@ -70,12 +70,20 @@ class StandardDevice {
 		this.lights = 0;
 	}
 
-	/**
-	 * Returns device address
-	 * @returns {number} Device address
-	 */
 	getAddress(): number {
 		return this.address;
+	}
+
+	getMid(): number {
+		return this.mid;
+	}
+
+	getHwpid(): number {
+		return this.hwpid;
+	}
+
+	isOnline(): boolean {
+		return this.online;
 	}
 
 	hasBinout(): boolean {
@@ -162,33 +170,27 @@ class StandardDevice {
 		return 'text-info';
 	}
 
-	/**
-	 * Returns standard device details for tooltip
-	 * @returns Device details string
-	 */
-	getDetails(): string {
-		let message = '';
-		message = i18n.t(
-			'iqrfnet.standard.grid.messages.device.general',
-			{hwpid: this.hwpid, mid: this.mid}
-		).toString();
-		message += '\n\n' + i18n.t('iqrfnet.standard.binaryOutput.title').toString();
-		message += '\n' + i18n.t(
+	getBinoutDetails(): string {
+		return i18n.t(
 			'iqrfnet.standard.grid.messages.binout.' + (this.binouts > 0 ? 'implemented' : 'notImplemented'),
 			{binouts: this.binouts}
 		).toString();
-		message += '\n\n' + i18n.t('iqrfnet.standard.dali.title').toString();
-		message += '\n' + i18n.t(
-			'iqrfnet.standard.grid.messages.dali.' + (this.dali ? 'implemented' : 'notImplemented')
-		).toString();
-		message += '\n\n' + i18n.t('iqrfnet.standard.light.title').toString();
-		message += '\n' + i18n.t(
+	}
+
+	getDaliDetails(): string {
+		return i18n.t('iqrfnet.standard.grid.messages.dali.' + (this.dali ? 'implemented' : 'notImplemented')).toString();
+	}
+
+	getLightDetails(): string {
+		return i18n.t(
 			'iqrfnet.standard.grid.messages.light.' + (this.lights > 0 ? 'implemented' : 'notImplemented'),
 			{lights: this.lights}
 		).toString();
-		message += '\n\n' + i18n.t('iqrfnet.standard.sensor.title').toString();
+	}
+
+	getSensorDetails(): string {
 		if (this.sensors.length > 0) {
-			message += '\n' + i18n.t('iqrfnet.standard.grid.messages.sensor.implemented').toString();
+			let message = i18n.t('iqrfnet.standard.grid.messages.sensor.implemented').toString();
 			this.sensors.forEach((sensor: IInfoSensorDetail) => {
 				message += '\n\n' + i18n.t(
 					'iqrfnet.standard.grid.messages.sensor.detail',
@@ -200,9 +202,30 @@ class StandardDevice {
 					},
 				).toString();
 			});
+			return message;
 		} else {
-			message += '\n' + i18n.t('iqrfnet.standard.grid.messages.sensor.notImplemented').toString();
+			return i18n.t('iqrfnet.standard.grid.messages.sensor.notImplemented').toString();
 		}
+	}
+
+	/**
+	 * Returns standard device details for tooltip
+	 * @returns Device details string
+	 */
+	getDetails(): string {
+		let message = '';
+		message = i18n.t(
+			'iqrfnet.standard.grid.messages.device.general',
+			{hwpid: this.hwpid, mid: this.mid}
+		).toString();
+		message += '\n\n' + i18n.t('iqrfnet.standard.binaryOutput.title').toString();
+		message += '\n' + this.getBinoutDetails();
+		message += '\n\n' + i18n.t('iqrfnet.standard.dali.title').toString();
+		message += '\n' + this.getDaliDetails();
+		message += '\n\n' + i18n.t('iqrfnet.standard.light.title').toString();
+		message += '\n' + this.getLightDetails();
+		message += '\n\n' + i18n.t('iqrfnet.standard.sensor.title').toString();
+		message += '\n' + this.getSensorDetails();
 		return message;
 	}
 }

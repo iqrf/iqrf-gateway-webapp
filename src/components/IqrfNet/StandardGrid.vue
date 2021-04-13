@@ -108,7 +108,7 @@
 									{{ col }}
 								</th>
 							</tr>
-							<tr v-for='row of Array(5).keys()' :key='row'>
+							<tr v-for='row of Array(1).keys()' :key='row'>
 								<th>{{ row }}0</th>
 								<td v-for='col of Array(10).keys()' :key='col'>
 									<CIcon
@@ -157,14 +157,126 @@
 				</div>
 			</CCardBody>
 		</CCard>
+		<CCard>
+			<CCardHeader class='datatable-header'>
+				<div>
+					{{ $t('iqrfnet.standard.grid.title') }}
+				</div>
+				<div>
+					<CButton
+						color='primary'
+						@click='enumerateNetwork'
+					>
+						<CIcon :content='icons.enumerate' size='sm' />
+						{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
+					</CButton> <CButton
+						color='primary'
+						@click='getDevices'
+					>
+						<CIcon :content='icons.refresh' size='sm' />
+						{{ $t('iqrfnet.standard.grid.actions.refresh') }}
+					</CButton>
+				</div>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:fields='fields'
+					:items='auxDevices'
+					:column-filter='true'
+					:pagination='true'
+					:items-per-page='10'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('iqrfnet.standard.grid.table.noDevices') }}
+					</template>
+					<template #address='{item}'>
+						<td>
+							{{ item.getAddress() }}
+						</td>
+					</template>
+					<template #mid='{item}'>
+						<td>
+							{{ item.getMid() }}
+						</td>
+					</template>
+					<template #hwpid='{item}'>
+						<td>
+							{{ item.getHwpid() }}
+						</td>
+					</template>
+					<template #status='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.getIconColor()'
+								:content='item.getIcon()'
+							/>
+						</td>
+					</template>
+					<template #sensor='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getSensorDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasSensor() ? "text-info" : "text-danger"'
+								:content='item.hasSensor() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #binout='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getBinoutDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasBinout() ? "text-info" : "text-danger"'
+								:content='item.hasBinout() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #light='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getLightDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasLight() ? "text-info" : "text-danger"'
+								:content='item.hasLight() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #dali='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getDaliDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasDali() ? "text-info" : "text-danger"'
+								:content='item.hasDali() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CIcon, CProgress, CProgressBar} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CProgressBar} from '@coreui/vue/src';
 
-import {cilCheckAlt, cilHome, cilSignalCellular4, cilX} from '@coreui/icons';
+import {cilCheckAlt, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilX} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -173,6 +285,7 @@ import InfoService from '../../services/DaemonApi/InfoService';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
 import {MutationPayload} from 'vuex';
 
@@ -182,6 +295,7 @@ import {MutationPayload} from 'vuex';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CDataTable,
 		CIcon,
 		CProgress,
 		CProgressBar,
@@ -215,8 +329,61 @@ export default class StandardGrid extends Vue {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
-		unbonded: cilX
+		unbonded: cilX,
+		info: cilInfo,
+		enumerate: cilSpreadsheet,
+		refresh: cilReload,
 	}
+
+	private tableItems: Array<Dictionary<number|string|boolean>> = []
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table fields
+	 */
+	private fields: Array<IField> = [
+		{
+			key: 'address',
+			label: this.$t('iqrfnet.standard.grid.table.address'),
+		},
+		{
+			key: 'mid',
+			label: this.$t('iqrfnet.standard.grid.table.mid'),
+		},
+		{
+			key: 'hwpid',
+			label: this.$t('iqrfnet.standard.grid.table.hwpid'),
+		},
+		{
+			key: 'status',
+			label: this.$t('iqrfnet.standard.grid.table.status'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'sensor',
+			label: this.$t('iqrfnet.standard.grid.table.sensor'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'binout',
+			label: this.$t('iqrfnet.standard.grid.table.binout'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'light',
+			label: this.$t('iqrfnet.standard.grid.table.light'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'dali',
+			label: this.$t('iqrfnet.standard.grid.table.dali'),
+			filter: false,
+			sorter: false,
+		},
+	]
 
 	/**
 	 * Websocket store unsubscribe function
@@ -529,6 +696,19 @@ export default class StandardGrid extends Vue {
 				this.devices[idx * 8 + i]?.setOnline((bitString[(7 - i)] === '1'));
 			}
 		});
+		let items: Array<Dictionary<number|string|boolean>> = [];
+		this.devices.forEach((device: StandardDevice|null) => {
+			if (device === null) {
+				return;
+			}
+			items.push({
+				address: device.getAddress(),
+				mid: device.getMid(),
+				hwpid: device.getHwpid(),
+				dali: device.hasDali(),
+			});
+		});
+		this.tableItems = items;
 		this.$store.commit('spinner/HIDE');
 	}
 
@@ -578,5 +758,10 @@ td span {
    vertical-align: middle;
 }
 
+.datatable-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
 
 </style>

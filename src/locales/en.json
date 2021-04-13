@@ -1732,7 +1732,18 @@
 				"title": "Standard devices",
 				"actions": {
 					"enumerate": "Enumerate",
-					"refresh": "Refresh grid"
+					"refresh": "Refresh"
+				},
+				"table": {
+					"address": "Address",
+					"mid": "Module ID",
+					"hwpid": "HWPID",
+					"status": "Status",
+					"sensor": "Sensor",
+					"binout": "Binary Output",
+					"light": "Light",
+					"dali": "DALI",
+					"noDevices": "No devices implementing standards detected."
 				},
 				"messages": {
 					"device": {
