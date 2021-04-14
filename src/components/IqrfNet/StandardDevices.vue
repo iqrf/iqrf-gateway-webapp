@@ -8,12 +8,14 @@
 				<div>
 					<CButton
 						color='primary'
+						size='sm'
 						@click='enumerateNetwork'
 					>
 						<CIcon :content='icons.enumerate' size='sm' />
 						{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
 					</CButton> <CButton
 						color='primary'
+						size='sm'
 						@click='getDevices'
 					>
 						<CIcon :content='icons.refresh' size='sm' />
@@ -24,24 +26,65 @@
 			<CCardBody>
 				<div class='datatable-legend'>
 					<div>
-						test
+						<CIcon 
+							class='text-info' 
+							:content='icons.coordinator'
+							size='lg'
+						/>
+						{{ $t('forms.fields.coordinator') }}
 					</div>
 					<div>
-						test
+						<CIcon 
+							class='text-danger'
+							:content='icons.unbonded'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 					</div>
 					<div>
-						test
+						<CIcon 
+							class='text-info'
+							:content='icons.bonded'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 					</div>
 					<div>
-						test
+						<CIcon 
+							class='text-info'
+							:content='icons.discovered'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 					</div>
 					<div>
-						test
+						<CIcon 
+							class='text-success'
+							:content='icons.bonded'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
+					</div>
+					<div>
+						<CIcon 
+							class='text-success'
+							:content='icons.discovered'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
+					</div>
+					<div>
+						<CIcon 
+							class='text-info'
+							:content='icons.info'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.standard.grid.info') }}
 					</div>
 				</div>
 				<CDataTable
 					:fields='fields'
-					:items='auxDevices'
+					:items='devices'
 					:column-filter='true'
 					:pagination='true'
 					:items-per-page='10'
@@ -53,6 +96,11 @@
 					<template #address='{item}'>
 						<td>
 							{{ item.getAddress() }}
+						</td>
+					</template>
+					<template #product='{item}'>
+						<td>
+							{{ item.getProductName() }}
 						</td>
 					</template>
 					<template #mid='{item}'>
@@ -68,6 +116,10 @@
 					<template #status='{item}'>
 						<td>
 							<CIcon
+								v-c-tooltip='{
+									content: item.getGeneralDetails(),
+									placement: "left",
+								}'
 								size='xl'
 								:class='item.getIconColor()'
 								:content='item.getIcon()'
@@ -129,163 +181,6 @@
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CCard class='card-margin-bottom'>
-			<CCardHeader>
-				{{ $t('iqrfnet.standard.grid.title') }}
-				<CButton
-					color='primary'
-					@click='enumerateNetwork'
-				>
-					{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<table class='table text-center'>
-					<tbody>
-						<tr>
-							<td class='table-toprow'>
-								<CIcon class='text-info' :content='icons.coordinator' />
-								{{ $t('forms.fields.coordinator') }}
-							</td>
-							<td class='table-toprow'>
-								<CIcon class='text-danger' :content='icons.unbonded' />
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<CIcon class='text-info' :content='icons.bonded' />
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
-							</td>
-							<td>
-								<CIcon class='text-info' :content='icons.discovered' />
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<CIcon class='text-success' :content='icons.bonded' />
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
-							</td>
-							<td>
-								<CIcon class='text-success' :content='icons.discovered' />
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<CProgress
-									size='xs'
-									color='info'
-									class='progress-legend'
-									:value='100'
-								/>
-								<span>
-									{{ $t('iqrfnet.standard.binaryOutput.title') }}
-								</span>
-							</td>
-							<td>
-								<CProgress
-									size='xs'
-									color='success'
-									class='progress-legend'
-									:value='100'
-								/>
-								<span>
-									{{ $t('iqrfnet.standard.dali.title') }}
-								</span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<CProgress
-									size='xs'
-									color='warning'
-									class='progress-legend'
-									:value='100'
-								/>
-								<span>
-									{{ $t('iqrfnet.standard.light.title') }}
-								</span>
-							</td>
-							<td>
-								<CProgress
-									size='xs'
-									color='danger'
-									class='progress-legend'
-									:value='100'
-								/> <span>
-									{{ $t('iqrfnet.standard.sensor.title') }}
-								</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<CButton
-					class='w-100'
-					color='primary'
-					@click='getDevices'
-				>
-					{{ $t('iqrfnet.standard.grid.actions.refresh') }}
-				</CButton>
-				<div v-if='devices.length !== 0' class='table-responsive'>
-					<table class='table table-striped device-info card-margin-bottom'>
-						<tbody>
-							<tr>
-								<th />
-								<th v-for='col of Array(10).keys()' :key='col'>
-									{{ col }}
-								</th>
-							</tr>
-							<tr v-for='row of Array(1).keys()' :key='row'>
-								<th>{{ row }}0</th>
-								<td v-for='col of Array(10).keys()' :key='col'>
-									<CIcon
-										v-if='devices[getAddress(row, col)] === null'
-										class='text-danger'
-										:content='icons.unbonded'
-									/>
-									<div v-else>
-										<CIcon
-											v-c-tooltip='{
-												content: devices[getAddress(row, col)].getDetails(),
-												placement: "left",
-											}'
-											:class='devices[getAddress(row, col)].getIconColor()'
-											:content='devices[getAddress(row, col)].getIcon()'
-										/>
-										<CProgress
-											v-if='devices[getAddress(row, col)].hasBinout()'
-											size='xs'
-											color='info'
-											:value='100'
-										/>
-										<CProgress
-											v-if='devices[getAddress(row, col)].hasDali()'
-											size='xs'
-											color='success'
-											:value='100'
-										/>
-										<CProgress
-											v-if='devices[getAddress(row, col)].hasLight()'
-											size='xs'
-											color='warning'
-											:value='100'
-										/>
-										<CProgress
-											v-if='devices[getAddress(row, col)].hasSensor()'
-											size='xs'
-											color='danger'
-											:value='100'
-										/>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</CCardBody>
-		</CCard>
 	</div>
 </template>
 
@@ -300,10 +195,13 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import StandardDevice from '../../iqrfNet/StandardDevice';
 import InfoService from '../../services/DaemonApi/InfoService';
 import IqrfNetService from '../../services/IqrfNetService';
+import ProductService from '../../services/IqrfRepository/ProductService';
 
+import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
+import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
 
 @Component({
@@ -325,14 +223,14 @@ import {MutationPayload} from 'vuex';
 export default class StandardDevices extends Vue {
 
 	/**
-	 * @var {Array<standardDevice>} auxDevices Auxiliary array of devices before the final grid is rendered
+	 * @var {Array<standardDevice>} devices Auxiliary array of devices before the final grid is rendered
 	 */
 	private auxDevices: Array<StandardDevice> = []
 
 	/**
-	 * @var {Array<StandardDevice|null>} devices Array of devices implementing standards
+	 * @var {Array<standardDevice>} devices Standard devices for datatable
 	 */
-	private devices: Array<StandardDevice|null> = []
+	private devices: Array<StandardDevice> = []
 
 	/**
 	 * @var {string|null} msgId Daemon API message ID
@@ -352,8 +250,6 @@ export default class StandardDevices extends Vue {
 		refresh: cilReload,
 	}
 
-	private tableItems: Array<Dictionary<number|string|boolean>> = []
-
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table fields
 	 */
@@ -361,6 +257,10 @@ export default class StandardDevices extends Vue {
 		{
 			key: 'address',
 			label: this.$t('iqrfnet.standard.grid.table.address'),
+		},
+		{
+			key: 'product',
+			label: this.$t('iqrfnet.standard.grid.table.product'),
 		},
 		{
 			key: 'mid',
@@ -457,23 +357,6 @@ export default class StandardDevices extends Vue {
 	}
 
 	/**
-	 * Computes index of device based on row and column number
-	 * @param {number} row Row number
-	 * @param {number} col Column number
-	 * @returns {number} Device array index
-	 */
-	private getAddress(row: number, col: number): number {
-		return row * 10 + col;
-	}
-
-	/**
-	 * Generates a fresh grid for devices
-	 */
-	private generateGrid(): void {
-		this.devices = new Array(240).fill(null);
-	}
-
-	/**
 	 * Executes network enumeration to populate database tables
 	 */
 	private enumerateNetwork(): void {
@@ -522,7 +405,6 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.grid.messages.device.fetch').toString()
 		);
-		this.generateGrid();
 		InfoService.nodes()
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -666,14 +548,32 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		this.generateGrid();
 		response.rsp.sensorDevices.forEach((device: IInfoSensor) => {
 			this.auxDevices[device.nAdr]?.setSensors(device.sensors);
 		});
-		this.auxDevices.forEach((device: StandardDevice) => {
-			this.devices[device.getAddress()] = device;
-		});
+		this.filterStandards();
 		this.pingDevices();
+	}
+
+	/**
+	 * Filters devices that do not implement any standards from the array
+	 */
+	private async filterStandards(): Promise<void> {
+		for (let i = 0; i < this.auxDevices.length; i++) {
+			if (!this.auxDevices[i].hasStandard()) {
+				this.auxDevices.splice(i, 1);
+			}
+		}
+		for (let i = 0; i < this.auxDevices.length; i++) {
+			await ProductService.get(this.auxDevices[i].getHwpid())
+				.then((response: AxiosResponse) => {
+					const product: IProduct = response.data;
+					this.auxDevices[i].setProductName(product.name);
+				});
+			//todo error handling
+		}
+		this.devices = this.auxDevices;
+		this.auxDevices = [];
 	}
 
 	/**
@@ -706,25 +606,16 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		const map = response.rsp.result.frcData.slice(0, 30);
+		const addrs = this.devices.map((device: StandardDevice) => {return device.getAddress();});
 		map.forEach((byte: number, idx: number) => {
 			const bitString = byte.toString(2).padStart(8, '0');
 			for (let i = 0; i < 8; i++) {
-				this.devices[idx * 8 + i]?.setOnline((bitString[(7 - i)] === '1'));
+				let addr = idx * 8 + i;
+				if (addrs.includes(addr)) {
+					this.devices[addrs.indexOf(addr)].setOnline((bitString[(7 - i)] === '1'));
+				}
 			}
 		});
-		let items: Array<Dictionary<number|string|boolean>> = [];
-		this.devices.forEach((device: StandardDevice|null) => {
-			if (device === null) {
-				return;
-			}
-			items.push({
-				address: device.getAddress(),
-				mid: device.getMid(),
-				hwpid: device.getHwpid(),
-				dali: device.hasDali(),
-			});
-		});
-		this.tableItems = items;
 		this.$store.commit('spinner/HIDE');
 	}
 
@@ -744,46 +635,19 @@ export default class StandardDevices extends Vue {
 </script>
 
 <style scoped lang='scss'>
-@media (min-width: 440px) and (max-width: 1400px) {
-	.device-info {
-		td, th {
-			padding: 0.5rem;
-		}
-	}
-}
-
-@media (max-width: 440px) {
-	.device-info {
-		td, th {
-			padding: 0.25rem;
-		}
-	}
-}
-
-.table-toprow {
-	border: none;
-}
-
-td span {
-   width: 90%;
-   text-align: center;
-}
-.progress-legend {
-   width: 10%;
-   align-self: center;
-   vertical-align: middle;
-}
-
 .datatable-header {
 	display: flex;
+	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
 }
 
 .datatable-legend {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-evenly;
+	margin-bottom: 1.25em;
 }
 
 </style>
