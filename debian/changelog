@@ -1,10 +1,691 @@
-iqrf-gateway-webapp (2.3.0~alpha~1.gbp4eeed7) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.3.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @4eeed730ec83c5d68d93dd5690304c92cbf7af1a **
+  * Prepare for version v2.3.0-alpha
+  * IqrfNet: senddpa-clear pdata field if request macro has no pdata, sendjson-generate msgId before validating
+  * Localization update: cloud, api key, user and gateway
+  * Localization update: partial deduplication
+  * Localization: update iqrfinfo title
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Vue.js: add JWT expiration validation
+  * Vue.js: fix TypeScript errors
 
- -- Karel Hanák <karel.hanak@microrisc.com>  Mon, 16 Nov 2020 09:42:14 +0100
+  [ Karel Hanák ]
+  * fix install wizard localization, user add form
+  * fixed gateway power localization, added api key item to main disambiguation
+
+  [ Roman Ondráček ]
+  * Core: fix username placeholder at Sign in page
+
+  [ Karel Hanák ]
+  * Gateway: added IQRF services disambiguation, added Controller and Translator service sidebar entries and routes
+  * Gateway: fix sidebar route for IQRF services
+
+  [ Roman Ondráček ]
+  * Resource usage: fix background color and add space before %
+  * Gateway: fix empty MAC address handling
+  * Gateway: fix gateway mode failure messages
+  * Gateway: update resource usage bars, exclude overlays from disk usage
+
+  [ Karel Hanák ]
+  * IqrfNet: trconfig offline and unbonded device error handling, localization dedup
+  * IqrfNet: Coordinator upload - allow upload of current DPA version
+  * IqrfNet: Coordinator upload - refresh version options after upload
+  * Debian package: update docs link for gateway in patch
+  * Gateway: reset unknown service status, Iqrfnet: trconfig baudrate label, reload conf
+  * Config: fix messagings and misc form routes, unify form buttons
+  * Iqrfnet: update list of dpa versions after upload
+  * ConfigModule: test cases for controller and translator managers
+  * IqrfNet: DPAUpdater update current version for modal
+  * IqrfNet: update list only if version has changed
+  * IqrfNet: dpa version list update fix
+  * IqrfNet: dpa updater fix
+  * IqrfNet: restart daemon after writing trconf or setting security
+  * IqrfNet: reset OS upon trconf write or security setting
+  * composer: drop php7.2 support
+  * composer: bump required php version
+  * IqrfNet: removed Discovery timeout, updated localization
+  * IqrfNet: refactor bondingManager error handling and messages, updated localization
+  * IqrfNet: fixed packet parsing, toast message stacking and error handling in SendDpaPacket
+  * Config: fixed period field constraints and error message in SchedulerForm
+  * Config: Controller change network label, hide coordinator
+  * Interfaces: basic Daemon API response interface
+  * Config: add periodic field min value validation rule in SchedulerForm
+  * Config: controller re-enable coordinator reset checkbox
+  * Config: restart controller service on config change, update npm packages
+  * Config: restart controller service upon config update
+  * Config: interface change request sequence
+
+  [ Roman Ondráček ]
+  * COmposer: update dependencies
+  * GitLab CI: add base Postman API tests
+  * GitLab CI: fix configuration
+
+  [ Karel Hanák ]
+  * Config: fix clipboard content updating, disable interfaces, then enable
+  * Config: add interface code to success toast
+
+  [ Roman Ondráček ]
+  * IQRF net: update DPA macros
+
+  [ Karel Hanák ]
+  * Vue.js: custom base url
+  * add base url
+  * nginx: update configuration
+  * Debian package: iqaros patch and package
+  * CI: fix iqaros release package build
+  * Debian package: update nginx configuration for iqaros
+  * nginx: re-order system location
+  * nginx: update / location
+  * nginx: remove csp and x-frame header for iqaros
+  * Debian package: update iqaros postinst
+  * Core: signIn route error dump
+  * nginx: fix system location try_files
+  * nginx: add headers to frontend location
+  * Debian package: update postinst for iqaros
+  * nginx: update symlinks, move installation checker
+  * Debian package: fix syntax in postinst
+  * Debian package: remove default nginx enabled sites
+  * CI: iqaros package deployment stages
+  * Helpers: Self-clearing Toast notification class
+  * NetworkModule: nonexistant connection error handling
+  * NetworkModule: nonexistent network interface error handling, fix connections response codes
+  * Gateway: Apt configuration component, updated api schema, AptManager
+  * ConfigModule: AptManager write extended configuration, updated interfaces and vue component
+  * Gateway: add mender service
+  * Config: missing feature configuration error handling
+  * Localization: dictionary deduplication
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * Postman: fix test for list of supported services
+
+  [ Karel Hanák ]
+  * Gateway: time controller, manager, basic vue component
+  * Gateway: get time and timezone
+  * Gateway: set timezone
+  * Iqrfnet: fix enabled, not detected custom dpa handler issue
+  * Gateway: set time and refactor timezone, added interfaces, updated api schemas, controller and manager
+  * GatewayModule: fix phpdoc
+  * GatewayModule: TimeManager setTime process timeout workaround
+  * Gateway: sync time option
+  * TimeManager: added missing phpdoc
+  * Gateway: Add controller log to log viewer, updated controller, manager and tests
+  * ConfigController: endpoint for interface change, apischema, updated vue component
+  * TimeController: fix reference to api schema
+  * Gateway: include date and time in disambiguation component, update api schema
+  * ConfigController: fix phpstan errors
+  * Tests: fix log manager test
+  * Console module: added patch list command; Models: patch json serialization, tests
+  * IqrfNet: Coordinator upload refactor
+  * API: update os patch schema; fix os patch model and tests
+  * IqrfNet: OsUploader OS info and patch processing, basic form logic
+  * IqrfNet: OsUpdater fetch interface type
+  * Upload util integration with IqrfOsManager
+  * IqrfOsManager refactor, UploadUtilManager base, IqrfOsController, OsUpdater refactor
+  * IqrfNetModule: UploadUtil execution, error handling
+  * IqrfNetModule: UploadUtilManager fix phpdoc param type hint
+  * IqrfNet: DpaUpdater error handling
+  * IqrfNetModule: run Upload Util as superuser
+  * IqrfNet: DpaUpdater docs, spinner, update versions on upload
+  * IqrfNetModule: DPa file fetch error handling
+  * IqrfNet: OsUpdater file upload, iqrfOs interfaces, refactor error handling
+  * IqrfNetModule: upload util workaround for parentheses in names, FileUpload to HexUpload
+  * IqrfNetModule add delay between uploaded files, HexUpload prep
+  * HexUpload: util upload, error handling; UploadUtilManager hex file upload
+  * IqrfNet: hexupload hide spinner on success
+  * IqrfNetModule: UploadUtilManager increase delay between file uploads
+  * IqrfNetModule UploadUtilManager timestamps
+  * IqrfNet: OsUpload available to power user only
+  * IqrfNetModule: remove timestamps and sleep
+  * OsUpdater: send individual requests
+  * OsUpload: chain upload requests
+  * OsUpload: extract filename from path in spinner text
+  * IqrfNet: update Os Upload spinner, fix TrUpload references
+  * Models: IqrOsPatch return array
+  * Debian package: remove default uploader dependency
+  * Debian package: uploader dependency patch
+  * IqrfNetModule: remove config from command
+  * IqrfNetModule: UploadUtilManager update uploader name
+  * IqrfNet: DpaUpdater stop daemon before upload and start after
+  * TrUpload: refresh OS info after upload
+  * ApiModule: updated iqrf upload api specification, added api schemas, updated vue components
+  * Iqrfnet: update spinner messages during hex and dpa upload
+  * IqrfNet: OsUpdate remove redundant fetch
+  * IqrfNet: TrUpload re-enable watch on TR upload
+  * TrUpload: refresh OS info with delay
+  * DpaUpdater: var docstring
+  * Vue: check daemon mode and notify user before sending iqmesh service request
+  * Refactor daemon mode monitoring, daemon mode and websocket status badges
+  * Gateway: updated time vue component, manager, controller and api
+  * Gateway: time formatting using luxon module
+  * IqrfNet: autonetwork use single variable for both node count stop conditions
+  * IqrfNet: TrUpload post upload spinner status text
+  * localization: add missing translation
+
+  [ Roman Ondráček ]
+  * Add mailmap
+  * Network: add interface type for WireGuard
+
+  [ Karel Hanák ]
+  * Daemon mode: fix websocket connection for production
+  * Daemon mode: indicate unknown if websocket is not connected
+
+  [ Roman Ondráček ]
+  * Tests: add first jest unit test
+  * GitLab CI: fix jest coverage stage
+
+  [ Karel Hanák ]
+  * Gateway: default clock format, switch; daemon status refactor
+  * Daemon status: update mode only if it changed
+
+  [ Roman Ondráček ]
+  * GitLab CI: report coverage from jest
+
+  [ Karel Hanák ]
+  * CoordinatorUpload: update spinner messages
+  * update npm packages
+  * npm downgrade typescript parser
+  * IqrfNet: OtaUpload component, form, validation, gateway upload and upload steps
+  * Gateway time: smaller time text, update date format; simplified daemon mode badge color, fixed translations
+  * OtaUpload: manual and auto upload, error handling, localization updated
+  * CoordinatorUpload: updated DPA updater messages, removed redundant OS updater message
+  * OtaUpload: invalid file and file content error handling
+
+  [ Roman Ondráček ]
+  * Tests: add E2E tests for sign in and sign out
+
+  [ Karel Hanák ]
+  * Install: spaced buttons out, assigned IDs to signin fields, selenium new user testcase
+  * Gateway time: column sizes
+  * IqrfNet: added OtaUpload spinner status messages
+
+  [ Roman Ondráček ]
+  * NPM: fix jest configuration
+  * Tests: fix jest configuration
+  * GitLab CI: replace dependencies with needs
+  * Rector: update configuration
+
+  [ Karel Hanák ]
+  * Config: generalized component configuration patching endpoint, extended translator configuration
+  * Config: fixed response code in controller
+
+  [ Roman Ondráček ]
+  * CI: remove Travis CI
+  * Remove removed PHP 7.2 support
+  * GitLab CI: add cache for npm
+
+  [ Karel Hanák ]
+  * Gateway: set timezone with sudo
+  * Gateway: refactor log viewer component
+  * Network: basic connection form
+  * npm: updated packages
+  * NetworkManager: EthernetConnections form for basic user, get current configuration ip method is auto
+  * Network: Connection form ipv6 fields validation, multiple ipv6 addresses, netmask validation fix
+  * Network: wifi list component, interfaces, localization
+  * Network: wifi connect, disconnect, delete, edit, wifi base form, jsonschema
+  * Network: endpoint to create connection, connections controller and manager update, fixed jsonschema
+  * Network: fix connection manager test
+  * Network: update ethernet connection table
+  * Network: indicate active connection, update dictionary
+  * Network: connected wifi endpoint badge
+  * Network: expanded wifi form
+  * Network: WEP connection, form validation; EAP entity base, authentication methods enums
+  * Network: EAP entity methods
+  * Network: fix wifi security serialization
+  * Network: update open wifi serializaton test
+  * Network: simplify wifi access point connect, disconnect, remove connection
+  * Network: refresh available APs, disconnect before connecting
+  * Network: wifi component interfaces, form and validation extended, fixed wifi list for older NM versions
+  * Network: include interface in nmcli serialized connection
+  * Network: WPA pre-shared key validation and localization update
+  * Network: Wifi WEP additional validation
+  * Network: remove connection type property when editing connection, open and wpa wifi config in form
+  * Install & SignIn: sleep before redirecting
+  * Network: fixed fetching auto configuration for connection not in use
+  * Debian package: allow only php7.3 and 7.4; nginx: increase proxy timeout
+  * Debian package: updated iqube/iqaros dependencies patch
+  * Network: refactor fetch of current IPv4 configuration
+
+  [ Roman Ondráček ]
+  * Network: refactor nmcli decoder
+  * Network: refactor entities
+
+  [ Karel Hanák ]
+  * Network: EAP security prefix in entity
+  * Network: IPv6 current configuration
+  * Network: fixed network connection api schema, use current config gateway string
+  * Network: moved IPv6 gateway to connection entity, fixed tests and vue component
+  * Network: pass interface name as prop to connection form
+  * Network: use prop interface if connection interface is missing
+
+  [ Roman Ondráček ]
+  * Network: fix IPv6 multiple address setting, set reference to previous exception while throwing a new exception in the catch block
+  * Network: fix IPv6 address adding
+  * Network: fix IPv6 address object
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * Network: fix prefix range in api schema, use prefix to build IPv4 entity
+  * Network: add prefix to ipv4 connection test array
+  * Network: add prefix to test data
+  * Network: create ipv4 entity from prefix or mask
+  * Network: update network routes, select interface type in connection
+  * Network: serialize and deserialize EAP, redirect to wireless connections after saving connection
+  * Daemon config: allow user to change json splitter insId
+  * Network: let user select wifi interface before creating wifi connection
+  * Network: fix interface check for wifi
+  * Network: add simplified ethernet connections page
+  * Network: ethernet connections select and use interface for connection
+  * Network: allow user to select wireless interface, border styling
+
+  [ Roman Ondráček ]
+  * Rector: fix configuration
+  * Backend: refactoring
+  * GitLab CI: deploy API docs (fix #270)
+  * GitLab CI: fix typo
+  * API testing: add tests for features
+  * GitLab CI: remove behat
+
+  [ Karel Hanák ]
+  * Network: use simplified ethernet component, use connection component to create wifi connection
+  * Network: fixed wifi creation, wep and wpa validation fix
+  * Network: filter wifi access points on gateway
+  * Network: fix wifi leap mapping
+  * Network: show ethernet interface options only if multiple interfaces are available
+  * Gateway: show gateway image version if available
+  * Network: connection form fix assignment in security type condition
+  * Gateway: fix gateway info tests
+  * Network: EAP form fields validation
+  * Config: fix features defaults
+  * Network: use wifi connection bssid to determine matches
+  * Network: remove bssids from connection edit
+  * Network: stop api request chain if no interfaces are found, vpn component base
+  * Network: attempt to fetch interface from general object if missing in connection object
+  * Network: wifi show only interface if it exists, update form to fix missing interface
+  * Network: wifi connect insert interface
+  * Network: wifi list ap info tooltip fix
+  * Network: remove vpn from sidebar and routes
+  * Network: Wireguard interface management, key management
+  * Network: Wireguard manager key generation fix, vpn tunnel form
+  * Network: restore VPN entry in sidebar
+  * Gateway: display detailed service status only if it is available
+  * Install: root password change
+  * Install: root password component
+  * Features: add root password change feature
+  * Debian: update gateway features patch
+  * CI: add webapp package for yocto
+  * CI: fix script indentation
+  * CI: fix codestyle
+  * Install: include SSH service control on root password setting page
+  * CI: remove package
+  * Install: fetch features upon entering installation wizard
+  * Console: add localization for rootpass feature
+  * InstallModule: use passwd and echo with newline
+  * Revert "InstallModule: use passwd and echo with newline"
+  * Network: wireguard vpn tunnel form, field validation, localization, interfaces
+  * Network: fix codestyle errors
+  * Api keys: fixed database datetime type, delete command non-interactive handling
+  * ConsoleModule: treat api key empty expiration string as invalid, handle datetime exception
+  * Tests: update phpdoc
+  * InstallModule: pass user and password as command input
+  * Network: wireguard entity classes, api jsonschema for wireguard tunnel
+
+  [ Roman Ondráček ]
+  * Frontend: add release to Sentry reports
+
+  [ Karel Hanák ]
+  * Features: moved rootpass from installation to gateway
+  * Network: wireguard wg serialization, conf format generation
+  * Network: wireguard conf, tunnel start and teardown, updated table, services, interfaces
+  * Network: wireguard remove tunnel, change tunnel state, refactor activate/deactivate
+  * Network: wireguard peer ips tests, conf file fetch
+  * Network: use database entities for wireguard interfaces and peers
+  * Network: fixed ManyToOne relationship between wg interface and peer
+  * Debian package: update nettrine db path patch
+  * Network: wireguard peer addresses entity, edit and remove tunnels, updated controller and vue component
+
+  [ Roman Ondráček ]
+  * Network: fix WireGuard interface edit
+
+  [ Karel Hanák ]
+  * Network: wireguard interface listen port optional, check endpoint dns records, multi address entity
+  * Network: wireguard single stack interface option
+  * Network: MultiAddress entity tests
+  * Tests: added tests for wireguard entities
+  * Network: select peer stack type, ConsoleModule: Wireguard tunnel list command
+  * ConsoleModule: wireguard activate and deactivate commands, Models: wg utility serialization
+  * Tests: added tests for wg entity serialization into wg util command
+  * Tests: EAP entity tests
+  * Network: fix missing wireguard peer addresses on edit
+  * ConsoleModule: updated wireguard activation command, implemented use of PSK, Database: fixed wireguard migrations
+  * Debian package: systemd unit file for wireguard tunnel
+  * Network: updated wireguard tunnel table, endpoints for tunnel management, fixed debian install and make install target
+  * Network: remove unused jsonschema, add wireguard vpn to network disambiguation
+  * Iqrfnet: fixed timeouts in components, fixed autonetwork node count parsing
+  * Wireguard: moved command logic to manager, simplified jsonschema, exception passing in controller
+  * Network: fixed wireguard tunnel form edit toast message
+  * IqrfNet: pass bonding and discovery actions success messages to devices info to project upon refreshing grid
+  * Wireguard: use entities for interface addresses, updated migration
+  * Iqrfnet: TR configuration network type select instead of checkbox, reload configuration
+  * Gateway: added uptime to info page, updated tests and jsonschema
+  * Network: added tests for wireguard interface address entities
+  * Network: group wifi access points
+  * Network: added tests for wireguard manager
+  * Debian package: add wireguard dependencies
+  * Tests: simplified wireguard manager tests, added root manager tests
+  * Debian package: updated patch with wireguard dependencies
+  * Gateway: added error handling when setting nonexistent timezone, time manager tests
+  * Tests: fixed current time test
+
+  [ Roman Ondráček ]
+  * GitLab CI: deploy to another server
+
+  [ Karel Hanák ]
+  * Debian package: added wireguard commands to cli manpage
+  * Scheduler: cron time refactor, validation, error handling
+  * added missing package, fixed scheduler period validation rule
+  * Wireguard: key fields validation, keepalive range validation
+  * Installation check: php extensions and sudo
+  * npm: downgrade typescript until vue-i18n fixes date options interface
+
+  [ Roman Ondráček ]
+  * Tests: fix API test for retrieving optional features configuration
+
+  [ Karel Hanák ]
+  * Iqrfnet: backup refactor error handling
+  * Iqrfnet: Restore error handling refactor
+  * Iqrfnet: TR configuration error handling refactor
+  * Iqrfnet: TR configuration fixed conf reload
+  * Iqrfnet: bond node and smartconnect error handling refactor
+  * Iqrfnet: remove bond error handling refactor
+
+  [ Roman Ondráček ]
+  * Daemon monitor: fix HTTPS detection
+
+  [ Karel Hanák ]
+  * Install: check sudo for non-root user only
+  * reorder checks
+  * Install: php extensions show fix only for debian based distribution, get extensions and package names
+  * App: fix sudo condition
+  * Install: simplified packages logic
+  * App: fixed sudo check condition
+
+  [ Roman Ondráček ]
+  * Docker: add images for backend and frontend
+  * Docker: add skeleton for E2E testing images
+  * IQRF net: fix IQRF Standard Sensor table overflow
+  * Docker: fix images for backend, frontend and E2E testing
+  * GitLab CI: attempt to fix Nette Tester coverage job
+
+  [ Karel Hanák ]
+  * Iqrfnet: fix bonding manager unbond node button disabled condition
+  * User module: fixed token expiration validation
+
+  [ Roman Ondráček ]
+  * GitLab CI: remove broken Docker image build
+
+  [ Karel Hanák ]
+  * Scheduler: fix crontime day projection
+  * Scheduler: fixed get task rest
+  * Mappings: fixed uart baud rate translation
+
+  [ Roman Ondráček ]
+  * nginx: fix WebSocket proxy read timeout
+
+  [ Karel Hanák ]
+  * TimeManager: read timezone from timedatectl output, updated tests
+  * Network: include ip tunnel interface and connection types
+  * Config: updated translator configuration form
+  * Wireguard: fix tunnel create and edit error translation
+  * Cloud: updated hexio and inteliglue pass icon
+  * Use FontAwesome icons for password input field visibility
+
+  [ Roman Ondráček ]
+  * Config: add missing paths for TLS certificate and private key in WebSocket interface configuration form
+
+  [ Karel Hanák ]
+  * Gateway info: unknown mode translation
+  * Pixla: fixed service state translation
+  * Scheduler: fixed messaging translations
+  * Udp messaging: fixed local and remote port error translations
+  * Iqrfnet: standards translation fix
+
+  [ Roman Ondráček ]
+  * Config: add missing paths for certificate and private key for WebSocket servers and missing validations
+
+  [ Karel Hanák ]
+  * Wifi: remove bssid filtering
+  * Iqrfnet: send dpa packet fixed pdata fixup
+  * InstallModule models tests
+  * fixed sudo test, added missing wireguard interface test
+  * Iqrfnet: bonding manager fix autoaddress toast message
+  * Config: fix spi pin input type
+  * Gateway: added option to set startup mode
+  * Gateway: systemd journal persistence
+  * updated gateway features patch
+  * Gateway: systemd journal fixed coding style
+
+  [ Roman Ondráček ]
+  * Postman: update features
+  * NPM: update development dependencies
+  * Docker: fix image for API testing
+
+  [ Karel Hanák ]
+  * Scheduler: refactor form logic and handling
+  * Scheduler: updated localization, cron field validation rules and feedback
+  * Scheduler: refactor form logic and handling
+  * Network: wireguard tunnel form update
+  * Messagings and Misc forms rework
+  * Config: MQTT form md update
+  * Config: SPI form md update
+  * Config: UART form md update
+  * remove bottom margin from card components within a component page
+  * Config: mqtt qos and persistence notes
+  * Misc config: control spinner for child components from parent component
+  * move local loading spinner to css
+  * moved iqrf gateway note
+  * Misc: child component success and failure handling, IqrfInfo form disabled on failure
+  * Misc: IqrfRepository config fetch rework, disable form on failure
+  * Misc: JsonApi disable form on failure, fix info and repo disable
+  * Misc: disabled form on failure, fetch config on save
+  * Misc: JsonRawApi disable form on failure, fetch config on save
+  * Misc: removed imqeshService component, updated translation for otaUpload, disable form on failure, fetch config on save
+  * MqttMessagingForm: added password visibility
+  * Translator: updated mqtt client config form layout, added password visibility
+  * MqttMessagingForm: move tls switch
+  * Config: interfaces config fetch and spinner handling rework, interface components updated
+  * Gateway: systemd journal update, service restart
+  * WireguardManager: validate endpoint if dns function exists
+  * Tests: updated supported services
+  * Gateway: updated rootpass feature to gatewaypass
+  * Updated featureManager, fixed newman optional features test
+  * Config: updated controller and translator error handling
+  * Gateway: user password added spinner
+  * Iqrfnet: updated coordinator upload upgrades fetch and error handling
+  * Wireguard: disable and deactivate tunnel before removing it
+  * Scheduler: use cron 0-6 and 1-12 range
+  * Scheduler: fixed cron alias field mapping
+
+  [ Roman Ondráček ]
+  * Frontend: add URL builder
+  * Router: add the missing redirect from Sign in page when the user is logged in
+  * IQRF net: add missing input validation in IQMESH Security form
+  * Core: fix loading spinner in Chromium-based browsers
+
+  [ Karel Hanák ]
+  * Gateway password: get account user name from features
+  * Debian package: updated gateway features patch
+  * IqrfNet: fixed toast type error in security form
+  * IqrfNet: render OTA upload for Daemon 2.3.6 or higher
+  * Gateway mode: unify child components to table
+  * Mender: merged configuration and service control into a cloud component
+  * Mender: removed service entry from gateway, fixed field placeholders translations
+  * websocket indication moved from header to sidebar
+  * sidebar: removed unused styles
+  * Sidebar: added table style
+  * Iqrfnet: send json message error handling refactor, disable on websocket close or error
+  * Mender: fix table row for smaller devices
+  * FontAwesome: import styles and disable automatic insertion
+  * Iqrfnet: send dpa packet updated error handling, recovery from offline daemon or full queue
+  * Iqrfnet: send dpa packet store messageError response
+  * Iqrfnet: send dpa packet message error autorepeat response fix
+  * Iqrfnet: send dpa packet use spinner only for manual requests, updated handling
+  * Cloud: updated pixla error handling
+  * Cloud: updated inteliglue error handling
+  * Mender: updated error handling
+  * Cloud: updated ibm cloud error handling
+  * Cloud: updated hexio error handling
+  * Cloud: updated msAzure error handling
+  * Cloud: update aws error handling
+  * Cloud: removed generic cloud error handler
+  * Core: api key error handling updated
+  * Core: updated user error handling
+  * tests: fixed newman user message
+  * tests: fixed newman user edit message
+  * Api keys: added expiration date check, updated tests and console commands
+
+  [ Roman Ondráček ]
+  * Installation check: add spinner
+  * Frontend: fix coding style
+  * GitLab CI: add ESLint and StyleLint
+
+  [ Karel Hanák ]
+  * moved pixla and mender components to maintenance, added monit component, fixed systemd manager functions and tests
+  * debian package: updated features patch
+  * Network: added ipv4 method switch notice to connection form, fixed newman services test
+  * updated error toast helper, updated mode translations
+  * SendDPA: use custom timeout for autointerval if set
+  * maintenance: updated pixla and mender titles
+  * SystemdJournal: use volatile instead of none
+  * updated localization for maintenance and daemon status
+  * updated box styles, added monit spinner
+  * increased element cover opacity
+  * WebsocketModule: added message queue trim mutation
+  * Send DPA packet: reworked autorepeat request and response handling
+  * Cloud: use extended error toast; added Monit to maintenance disambiguation
+  * Scheduler: used extended error toast, updated error localization; Gateway time updated error localization
+  * Messagings: use extended error toast in mqtt, updated error localization
+  * Messagings: use extended error toast in mq, updated error localization, fixed table async change
+  * Messagings: use extended error toast in udp, updated error localization
+  * Send DPA packet: removed autorepeat, implemented packet history
+  * Send JSON request: implemented request history
+  * Sidebar: moved mode and websocket indication into separate component, added daemon mode queue length indication
+  * interfaces: fixed iqrfnet message pair interface, fixed gateway info unknown mode message
+  * Connection form: removed notice badges, prep for modal
+  * Connection form: add ipv4 method change notice, confirmation
+  * Gateway time: use vue-select instead of coreui select
+  * Wireguard form: added clipboard copy button for public key, tunnel name placeholder
+  * Systemd journal: parse rotation options, updated controller, updated api schema
+  * Iqrfnet: updated localization and error handling in hexUpload, dpaUpload and osUpload
+  * Systemd journal: fixed errors in controller and manager
+  * Systemd journal controller: fixed endpoint api schema spec
+  * DpaUpdater: fixed tr upload success translation
+  * Systemd journal: added endpoint to save configuration, manager save configuration, frontend form component, validation
+  * Daemon mode: updated daemon mode component layout
+  * Main config: updated error handling
+  * Websocket messagings: updated error handling, updated localization
+  * Config migration: updated error handling, updated localization
+  * Wireguard: updated error localization, updated error handling
+  * Gateway info: fixed daemon mode indication
+  * Controller: updated error handling and localization
+  * Translator: updated error handling and localization
+  * Ethernet connections: updated error handling and localization
+  * Wifi connections: updated error handling and localization
+  * TimeManagerTest: fixed tests for summer time timezones
+  * Connection form: updated error handling and localization, removed non-null assertions
+  * Connection from: fixed connection fetch error translation
+  * Gateway user password error handling updated
+  * added error handling for messageError response
+  * Controller config: added logger sinks properties to component form, updated api schema
+  * Connection form: added validation for ipv4 and gateway subnet
+
+  [ Roman Ondráček ]
+  * Monolog: filter out debug reports to Sentry
+
+  [ Karel Hanák ]
+  * Daemon status: updated daemon queue length indication
+  * Wireguard: use dual stack by default in form, updated interface stack layout
+  * Wifi connections: show empty table if access points could not be retrieved
+  * Ethernet connections: show empty table if connections could not be retrieved
+  * Connection form: fixed input remove button conditions
+  * Connection form: disable save option if ipv4 is not in subnet
+  * Connection form: fixed static ip change notice localization
+  * Connection form: fixed save disabled condition for dynamic ipv4 method
+  * Connection form: updated modal check, attempt a rest api request to new ipv4 address after change
+  * Connection form: updated IPv4 method and address change error handling
+  * Misc config: do not include json metadata if daemon version is higher than 2.3.6
+  * IqrfInfo config: include metadata option for daemon versions newer than 2.3.6
+  * OtaUpload: added option to upload IQRF plugins
+  * Connection form: added spinner message for sleep before checking new address
+  * Installation check: added spinner message
+  * Mender: update server url in mender-connect when updating mender-client configuration
+  * Added maintenance module, monit manager, monit endpoints and form component
+  * Monit form: show spinner before attempting to save configuration
+  * unified pixla frontend component with other maintenance components, updated api endpoints for maintenance configs
+  * Iqrfnet backup: updated error handling and translations
+  * Iqrfnet restore: updated error handling and translations
+  * Iqrfnet devices: updated error handling
+  * Iqrfnet discovery: updated error handling
+  * Iqrfnet autonetwork: updated error handling
+  * Iqrfnet otaupload: updated error handling
+  * Iqrfnet bonding: updated error handling
+  * Monit: updated manager get method, added tests
+  * Iqrfnet send json: fixed validation, schema, updated localization and logic
+  * Connection form: fixed new connection initialization error
+  * Services controller: check if property is set before unsetting
+  * Connection form: check if IPv4 dns is in subnet, removed unnecessary aux variables
+  * Mender: added option to change client protocol
+  * Mender: updated config json schema
+  * Misc config: removed daemon 2.3.0 workarounds
+  * Iqrfnet: removed daemon 2.3.0 workarounds
+  * Websocket messaging: removed daemon 2.3.0 workarounds
+  * Uart interface: removed daemon 2.3.0 workarounds
+  * Scheduler: removed daemon 2.3.0 workarounds
+  * added blocking element, updated connection form
+  * added spinner messages to connection form and misc configuration
+  * Gateway info: updated daemon version command and test
+
+  [ Roman Ondráček ]
+  * Tests: fix sudo manager tests
+
+  [ Karel Hanák ]
+  * Monit form: enable spinner when saving configuration
+  * debian package: enable network manager in features patch
+
+  [ Roman Ondráček ]
+  * Gateway: add support for daemon version fetching for versions v2.3.x and v2.4.0+
+
+  [ Karel Hanák ]
+  * Fixed gateway log fetch and log viewer
+
+  [ Roman Ondráček ]
+  * Tests: fix tests for feature manager
+  * Tests: fix IQRF Gateway Controller configuration manager tests
+
+  [ Karel Hanák ]
+  * removed maintenance feature, updated sidebar filtering
+  * removed maintenance feature from gw patch
+  * removed extra whitespace from sidebar
+  * ControllerConfig: fixed phpdoc type hint
+
+  [ Roman Ondráček ]
+  * Config: remove the search for component configuration files in subdirectories
+  * Frontend: enable sending cookie to the backend (to enable xdebug)
+  * Composer: update dependencies
+  * Config: remove the search for component configuration files in subdirectories
+  * Coding style: update ruleset
+  * NPM: update dependencies
+  * Helpers: refactor daemon version checker
+  * Sign in: hide spinners after the component is created
+
+  [ Karel Hanák ]
+  * IqrfSpi: fixed pin model
+  * OtaUpload: updated form, added additional constraints, updated localization and error handling
+  * debian package: specify daemon version in dependencies
+  * debian package: updated uploader dependency patch
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 14 Apr 2021 13:50:03 +0200
 
 iqrf-gateway-webapp (2.2.0) stable; urgency=medium
 
