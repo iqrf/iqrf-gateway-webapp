@@ -1,5 +1,134 @@
 <template>
 	<div>
+		<CCard>
+			<CCardHeader class='datatable-header'>
+				<div>
+					{{ $t('iqrfnet.standard.grid.title') }}
+				</div>
+				<div>
+					<CButton
+						color='primary'
+						@click='enumerateNetwork'
+					>
+						<CIcon :content='icons.enumerate' size='sm' />
+						{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
+					</CButton> <CButton
+						color='primary'
+						@click='getDevices'
+					>
+						<CIcon :content='icons.refresh' size='sm' />
+						{{ $t('iqrfnet.standard.grid.actions.refresh') }}
+					</CButton>
+				</div>
+			</CCardHeader>
+			<CCardBody>
+				<div class='datatable-legend'>
+					<div>
+						test
+					</div>
+					<div>
+						test
+					</div>
+					<div>
+						test
+					</div>
+					<div>
+						test
+					</div>
+					<div>
+						test
+					</div>
+				</div>
+				<CDataTable
+					:fields='fields'
+					:items='auxDevices'
+					:column-filter='true'
+					:pagination='true'
+					:items-per-page='10'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('iqrfnet.standard.grid.table.noDevices') }}
+					</template>
+					<template #address='{item}'>
+						<td>
+							{{ item.getAddress() }}
+						</td>
+					</template>
+					<template #mid='{item}'>
+						<td>
+							{{ item.getMid() }}
+						</td>
+					</template>
+					<template #hwpid='{item}'>
+						<td>
+							{{ item.getHwpid() }}
+						</td>
+					</template>
+					<template #status='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.getIconColor()'
+								:content='item.getIcon()'
+							/>
+						</td>
+					</template>
+					<template #sensor='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getSensorDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasSensor() ? "text-info" : "text-danger"'
+								:content='item.hasSensor() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #binout='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getBinoutDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasBinout() ? "text-info" : "text-danger"'
+								:content='item.hasBinout() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #light='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getLightDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasLight() ? "text-info" : "text-danger"'
+								:content='item.hasLight() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+					<template #dali='{item}'>
+						<td>
+							<CIcon
+								v-c-tooltip='{
+									content: item.getDaliDetails(),
+									placement: "left",
+								}'
+								size='xl'
+								:class='item.hasDali() ? "text-info" : "text-danger"'
+								:content='item.hasDali() ? icons.info : icons.unbonded'
+							/>
+						</td>
+					</template>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
 		<CCard class='card-margin-bottom'>
 			<CCardHeader>
 				{{ $t('iqrfnet.standard.grid.title') }}
@@ -157,118 +286,6 @@
 				</div>
 			</CCardBody>
 		</CCard>
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				<div>
-					{{ $t('iqrfnet.standard.grid.title') }}
-				</div>
-				<div>
-					<CButton
-						color='primary'
-						@click='enumerateNetwork'
-					>
-						<CIcon :content='icons.enumerate' size='sm' />
-						{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
-					</CButton> <CButton
-						color='primary'
-						@click='getDevices'
-					>
-						<CIcon :content='icons.refresh' size='sm' />
-						{{ $t('iqrfnet.standard.grid.actions.refresh') }}
-					</CButton>
-				</div>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
-					:items='auxDevices'
-					:column-filter='true'
-					:pagination='true'
-					:items-per-page='10'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('iqrfnet.standard.grid.table.noDevices') }}
-					</template>
-					<template #address='{item}'>
-						<td>
-							{{ item.getAddress() }}
-						</td>
-					</template>
-					<template #mid='{item}'>
-						<td>
-							{{ item.getMid() }}
-						</td>
-					</template>
-					<template #hwpid='{item}'>
-						<td>
-							{{ item.getHwpid() }}
-						</td>
-					</template>
-					<template #status='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.getIconColor()'
-								:content='item.getIcon()'
-							/>
-						</td>
-					</template>
-					<template #sensor='{item}'>
-						<td>
-							<CIcon
-								v-c-tooltip='{
-									content: item.getSensorDetails(),
-									placement: "left",
-								}'
-								size='xl'
-								:class='item.hasSensor() ? "text-info" : "text-danger"'
-								:content='item.hasSensor() ? icons.info : icons.unbonded'
-							/>
-						</td>
-					</template>
-					<template #binout='{item}'>
-						<td>
-							<CIcon
-								v-c-tooltip='{
-									content: item.getBinoutDetails(),
-									placement: "left",
-								}'
-								size='xl'
-								:class='item.hasBinout() ? "text-info" : "text-danger"'
-								:content='item.hasBinout() ? icons.info : icons.unbonded'
-							/>
-						</td>
-					</template>
-					<template #light='{item}'>
-						<td>
-							<CIcon
-								v-c-tooltip='{
-									content: item.getLightDetails(),
-									placement: "left",
-								}'
-								size='xl'
-								:class='item.hasLight() ? "text-info" : "text-danger"'
-								:content='item.hasLight() ? icons.info : icons.unbonded'
-							/>
-						</td>
-					</template>
-					<template #dali='{item}'>
-						<td>
-							<CIcon
-								v-c-tooltip='{
-									content: item.getDaliDetails(),
-									placement: "left",
-								}'
-								size='xl'
-								:class='item.hasDali() ? "text-info" : "text-danger"'
-								:content='item.hasDali() ? icons.info : icons.unbonded'
-							/>
-						</td>
-					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
 	</div>
 </template>
 
@@ -303,9 +320,9 @@ import {MutationPayload} from 'vuex';
 })
 
 /**
- * Standard devices grid component
+ * Standard devices component
  */
-export default class StandardGrid extends Vue {
+export default class StandardDevices extends Vue {
 
 	/**
 	 * @var {Array<standardDevice>} auxDevices Auxiliary array of devices before the final grid is rendered
@@ -524,9 +541,8 @@ export default class StandardGrid extends Vue {
 			return;
 		}
 		let devices: Array<StandardDevice> = [];
-		devices.push(new StandardDevice(0, 0, 0));
 		response.rsp.nodes.forEach((device: IInfoNode) => {
-			devices[device.nAdr] = new StandardDevice(device.nAdr, device.hwpid, device.mid, device.disc);
+			devices[device.nAdr] = new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc);
 		});
 		this.auxDevices = devices;
 		this.getBinouts();
@@ -762,6 +778,12 @@ td span {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.datatable-legend {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
 }
 
 </style>

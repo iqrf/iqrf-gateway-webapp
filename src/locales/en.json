@@ -1748,6 +1748,7 @@
 				"messages": {
 					"device": {
 						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
+						"details": "MID: {mid}\nHWPID: {hwpid}\nHWPID version: {hwpidVer}\nOS build: {os}\nDPA: {dpa}",
 						"fetch": "Retrieving devices in network...",
 						"fetchFailed": "Failed to retrieve devices in network."
 					},

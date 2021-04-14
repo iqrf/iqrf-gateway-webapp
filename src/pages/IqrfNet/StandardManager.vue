@@ -17,7 +17,7 @@
 				</CTab>
 			</CTabs>
 		</CCard>
-		<StandardGrid />
+		<StandardDevices />
 	</div>
 </template>
 
@@ -28,7 +28,7 @@ import BinaryOutputManager from '../../components/IqrfNet/BinaryOutputManager.vu
 import DaliManager from '../../components/IqrfNet/DaliManager.vue';
 import LightManager from '../../components/IqrfNet/LightManager.vue';
 import SensorManager from '../../components/IqrfNet/SensorManager.vue';
-import StandardGrid from '../../components/IqrfNet/StandardGrid.vue';
+import StandardDevices from '../../components/IqrfNet/StandardDevices.vue';
 
 @Component({
 	components: {
@@ -38,7 +38,7 @@ import StandardGrid from '../../components/IqrfNet/StandardGrid.vue';
 		DaliManager,
 		LightManager,
 		SensorManager,
-		StandardGrid,
+		StandardDevices,
 	},
 	metaInfo: {
 		title: 'iqrfnet.standard.title',
