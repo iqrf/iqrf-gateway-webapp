@@ -12,14 +12,29 @@ class StandardDevice {
 	private address: number
 
 	/**
+	 * Device module ID
+	 */
+	private mid: number
+
+	/**
 	 * Device hwpid
 	 */
 	private hwpid: number
 
 	/**
-	 * Device module ID
+	 * Device hwpid version
 	 */
-	private mid: number
+	private hwpidVer: number
+
+	/**
+	 * Device DPA version
+	 */
+	private dpa: number
+
+	/**
+	 * Device OS build
+	 */
+	private os: number
 
 	/**
 	 * Is device discovered?
@@ -58,10 +73,13 @@ class StandardDevice {
 	 * @param mid Device MID
 	 * @param discovered Is device discovered?
 	 */
-	constructor(address: number, hwpid: number, mid: number, discovered = false) {
+	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
 		this.address = address;
-		this.hwpid = hwpid;
 		this.mid = mid;
+		this.hwpid = hwpid;
+		this.hwpidVer = hwpidVer;
+		this.dpa = dpa;
+		this.os = os;
 		this.discovered = discovered;
 		this.online = false;
 		this.dali = false;
@@ -168,6 +186,25 @@ class StandardDevice {
 			return 'text-success';
 		}
 		return 'text-info';
+	}
+
+	getGeneralDetails(): string {
+		let dpa = this.dpa.toString();
+		if (dpa.startsWith('0')) {
+			dpa = dpa[1] + '.' + dpa.substr(2, 2);
+		} else {
+			dpa = dpa.substr(0, 2) + '.' + dpa.substr(2, 2);
+		}
+		return i18n.t(
+			'iqrfnet.standard.grid.messages.device.details',
+			{
+				mid: this.mid,
+				hwpid: this.hwpid,
+				hwpidVer: this.hwpidVer,
+				os: this.os.toString(16).padStart(4, '0').toUpperCase(),
+				dpa: dpa
+			}
+		).toString();
 	}
 
 	getBinoutDetails(): string {
