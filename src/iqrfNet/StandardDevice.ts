@@ -12,6 +12,11 @@ class StandardDevice {
 	private address: number
 
 	/**
+	 * Product name
+	 */
+	private productName: string
+
+	/**
 	 * Device module ID
 	 */
 	private mid: number
@@ -86,10 +91,15 @@ class StandardDevice {
 		this.sensors = [];
 		this.binouts = 0;
 		this.lights = 0;
+		this.productName = 'unknown';
 	}
 
 	getAddress(): number {
 		return this.address;
+	}
+
+	getProductName(): string {
+		return this.productName;
 	}
 
 	getMid(): number {
@@ -118,6 +128,10 @@ class StandardDevice {
 
 	hasSensor(): boolean {
 		return this.sensors.length > 0;
+	}
+
+	hasStandard(): boolean {
+		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
 	}
 
 	/**
@@ -160,6 +174,10 @@ class StandardDevice {
 		this.sensors = sensors;
 	}
 
+	setProductName(name: string): void {
+		this.productName = name;
+	}
+
 	/**
 	 * Returns device icon
 	 * @returns Icon to render
@@ -189,7 +207,7 @@ class StandardDevice {
 	}
 
 	getGeneralDetails(): string {
-		let dpa = this.dpa.toString();
+		let dpa = this.dpa.toString(16).padStart(4, '0');
 		if (dpa.startsWith('0')) {
 			dpa = dpa[1] + '.' + dpa.substr(2, 2);
 		} else {

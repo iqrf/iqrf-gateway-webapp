@@ -1734,8 +1734,10 @@
 					"enumerate": "Enumerate",
 					"refresh": "Refresh"
 				},
+				"info": "Standard details",
 				"table": {
 					"address": "Address",
+					"product": "Product name",
 					"mid": "Module ID",
 					"hwpid": "HWPID",
 					"status": "Status",
