@@ -1,6 +1,7 @@
 import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
 import {IInfoSensorDetail} from '../interfaces/iqrfInfo';
 import i18n from '../i18n';
+import { IProduct } from '../interfaces/repository';
 
 /**
  * Standard device object
@@ -10,11 +11,6 @@ class StandardDevice {
 	 * Device address
 	 */
 	private address: number
-
-	/**
-	 * Product name
-	 */
-	private productName: string
 
 	/**
 	 * Device module ID
@@ -72,6 +68,31 @@ class StandardDevice {
 	private lights: number
 
 	/**
+	 * Show device details
+	 */
+	public showDetails = false
+
+	/**
+	 * Product name
+	 */
+	private productName: string
+
+	/**
+	 * Company name
+	 */
+	private company: string
+
+	/**
+	 * Product image
+	 */
+	private img: string
+
+	/**
+	 * Product url
+	 */
+	private url: string
+
+	/**
 	 * Constructor
 	 * @param address Device address 
 	 * @param hwpid Device HWPID
@@ -92,46 +113,59 @@ class StandardDevice {
 		this.binouts = 0;
 		this.lights = 0;
 		this.productName = 'unknown';
+		this.company = 'unknown';
+		this.img = '';
+		this.url = '';
 	}
 
 	getAddress(): number {
 		return this.address;
 	}
 
+	getDpa(): string {
+		let dpa = this.dpa.toString(16).padStart(4, '0');
+		if (dpa.startsWith('0')) {
+			dpa = dpa[1] + '.' + dpa.substr(2, 2);
+		} else {
+			dpa = dpa.substr(0, 2) + '.' + dpa.substr(2, 2);
+		}
+		return dpa;
+	}
+
+	getOs(): string {
+		return this.os.toString(16).padStart(4, '0').toUpperCase();
+	}
+
 	getProductName(): string {
 		return this.productName;
+	}
+
+	getManufacturer(): string {
+		return this.company;
+	}
+
+	getImg(): string {
+		return this.img;
 	}
 
 	getMid(): number {
 		return this.mid;
 	}
 
+	getMidHex(): string {
+		return this.mid.toString(16).toUpperCase();
+	}
+
 	getHwpid(): number {
 		return this.hwpid;
 	}
 
-	isOnline(): boolean {
-		return this.online;
+	getHwpidVer(): number {
+		return this.hwpidVer;
 	}
 
-	hasBinout(): boolean {
-		return this.binouts > 0;
-	}
-
-	hasDali(): boolean {
-		return this.dali;
-	}
-
-	hasLight(): boolean {
-		return this.lights > 0;
-	}
-
-	hasSensor(): boolean {
-		return this.sensors.length > 0;
-	}
-
-	hasStandard(): boolean {
-		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
+	getHwpidHex(): string {
+		return this.hwpid.toString(16).toUpperCase();
 	}
 
 	/**
@@ -140,6 +174,10 @@ class StandardDevice {
 	 */
 	setOnline(online: boolean): void {
 		this.online = online;
+	}
+
+	getBinouts(): number {
+		return this.binouts;
 	}
 
 	/**
@@ -158,6 +196,10 @@ class StandardDevice {
 		this.dali = dali;
 	}
 
+	getLights(): number {
+		return this.lights;
+	}
+
 	/**
 	 * Sets number of implemented lights
 	 * @param {number} lights Number of implemented lights
@@ -174,8 +216,15 @@ class StandardDevice {
 		this.sensors = sensors;
 	}
 
-	setProductName(name: string): void {
-		this.productName = name;
+	/**
+	 * Sets product information
+	 * @param {IProduct} product Product information
+	 */
+	setProduct(product: IProduct): void {
+		this.productName = product.name;
+		this.company = product.companyName;
+		this.img = product.picture;
+		this.url = product.homePage;
 	}
 
 	/**
@@ -206,49 +255,31 @@ class StandardDevice {
 		return 'text-info';
 	}
 
-	getGeneralDetails(): string {
-		let dpa = this.dpa.toString(16).padStart(4, '0');
-		if (dpa.startsWith('0')) {
-			dpa = dpa[1] + '.' + dpa.substr(2, 2);
-		} else {
-			dpa = dpa.substr(0, 2) + '.' + dpa.substr(2, 2);
-		}
-		return i18n.t(
-			'iqrfnet.standard.grid.messages.device.details',
-			{
-				mid: this.mid,
-				hwpid: this.hwpid,
-				hwpidVer: this.hwpidVer,
-				os: this.os.toString(16).padStart(4, '0').toUpperCase(),
-				dpa: dpa
-			}
-		).toString();
-	}
-
 	getBinoutDetails(): string {
 		return i18n.t(
-			'iqrfnet.standard.grid.messages.binout.' + (this.binouts > 0 ? 'implemented' : 'notImplemented'),
+			'iqrfnet.standard.table.messages.binout.' + (this.binouts > 0 ? 'implemented' : 'notImplemented'),
 			{binouts: this.binouts}
 		).toString();
 	}
 
 	getDaliDetails(): string {
-		return i18n.t('iqrfnet.standard.grid.messages.dali.' + (this.dali ? 'implemented' : 'notImplemented')).toString();
+		return i18n.t('iqrfnet.standard.table.messages.dali.' + (this.dali ? 'implemented' : 'notImplemented')).toString();
+
 	}
 
 	getLightDetails(): string {
 		return i18n.t(
-			'iqrfnet.standard.grid.messages.light.' + (this.lights > 0 ? 'implemented' : 'notImplemented'),
+			'iqrfnet.standard.table.messages.light.' + (this.lights > 0 ? 'implemented' : 'notImplemented'),
 			{lights: this.lights}
 		).toString();
 	}
 
 	getSensorDetails(): string {
 		if (this.sensors.length > 0) {
-			let message = i18n.t('iqrfnet.standard.grid.messages.sensor.implemented').toString();
+			let message = '';
 			this.sensors.forEach((sensor: IInfoSensorDetail) => {
 				message += '\n\n' + i18n.t(
-					'iqrfnet.standard.grid.messages.sensor.detail',
+					'iqrfnet.standard.table.messages.sensor.detail',
 					{
 						name: sensor.name,
 						short: sensor.shortName,
@@ -257,31 +288,58 @@ class StandardDevice {
 					},
 				).toString();
 			});
-			return message;
+			return message.trim();
 		} else {
-			return i18n.t('iqrfnet.standard.grid.messages.sensor.notImplemented').toString();
+			return i18n.t('iqrfnet.standard.table.messages.sensor.notImplemented').toString();
 		}
 	}
 
 	/**
-	 * Returns standard device details for tooltip
-	 * @returns Device details string
+	 * Checks if device is online
+	 * @returns Is device online?
 	 */
-	getDetails(): string {
-		let message = '';
-		message = i18n.t(
-			'iqrfnet.standard.grid.messages.device.general',
-			{hwpid: this.hwpid, mid: this.mid}
-		).toString();
-		message += '\n\n' + i18n.t('iqrfnet.standard.binaryOutput.title').toString();
-		message += '\n' + this.getBinoutDetails();
-		message += '\n\n' + i18n.t('iqrfnet.standard.dali.title').toString();
-		message += '\n' + this.getDaliDetails();
-		message += '\n\n' + i18n.t('iqrfnet.standard.light.title').toString();
-		message += '\n' + this.getLightDetails();
-		message += '\n\n' + i18n.t('iqrfnet.standard.sensor.title').toString();
-		message += '\n' + this.getSensorDetails();
-		return message;
+	isOnline(): boolean {
+		return this.online;
+	}
+
+	/**
+	 * Checks if device implements the Binary output standard
+	 * @returns Does device implement binout?
+	 */
+	hasBinout(): boolean {
+		return this.binouts > 0;
+	}
+
+	/**
+	 * Checks if device implements the DALI standard
+	 * @returns Does device implement dali?
+	 */
+	hasDali(): boolean {
+		return this.dali;
+	}
+
+	/**
+	 * Checks if device implements the light standard
+	 * @returns Does device implement light?
+	 */
+	hasLight(): boolean {
+		return this.lights > 0;
+	}
+
+	/**
+	 * Checks if device implements the sensor standard
+	 * @returns Does device implement sensor?
+	 */
+	hasSensor(): boolean {
+		return this.sensors.length > 0;
+	}
+
+	/**
+	 * Checks if device implements any standard
+	 * @returns Does device implement any standard?
+	 */
+	hasStandard(): boolean {
+		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
 	}
 }
 

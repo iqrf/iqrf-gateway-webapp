@@ -1728,18 +1728,25 @@
 					"pnum": "Device does not support the Sensor standard."
 				}
 			},
-			"grid": {
+			"table": {
 				"title": "Standard devices",
 				"actions": {
 					"enumerate": "Enumerate",
 					"refresh": "Refresh"
 				},
-				"info": "Standard details",
-				"table": {
+				"info": "Product details",
+				"supported": "Supported",
+				"unsupported": "Unsupported",
+				"fields": {
 					"address": "Address",
-					"product": "Product name",
+					"manufacturer": "Manufacturer",
+					"product": "Product",
+					"name": "Product name",
+					"dpa": "DPA",
+					"os": "OS",
 					"mid": "Module ID",
 					"hwpid": "HWPID",
+					"hwpidVer": "HWPID ver.",
 					"status": "Status",
 					"sensor": "Sensor",
 					"binout": "Binary Output",
