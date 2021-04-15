@@ -23,6 +23,11 @@ export interface IProduct {
 	companyName: string
 
 	/**
+	 * Product url
+	 */
+	homePage: string
+
+	/**
 	 * Product image url
 	 */
 	picture: string

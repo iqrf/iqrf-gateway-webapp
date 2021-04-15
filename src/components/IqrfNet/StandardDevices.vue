@@ -3,7 +3,7 @@
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				<div>
-					{{ $t('iqrfnet.standard.grid.title') }}
+					{{ $t('iqrfnet.standard.table.title') }}
 				</div>
 				<div>
 					<CButton
@@ -12,19 +12,27 @@
 						@click='enumerateNetwork'
 					>
 						<CIcon :content='icons.enumerate' size='sm' />
-						{{ $t('iqrfnet.standard.grid.actions.enumerate') }}
+						{{ $t('iqrfnet.standard.table.actions.enumerate') }}
 					</CButton> <CButton
 						color='primary'
 						size='sm'
 						@click='getDevices'
 					>
 						<CIcon :content='icons.refresh' size='sm' />
-						{{ $t('iqrfnet.standard.grid.actions.refresh') }}
+						{{ $t('iqrfnet.standard.table.actions.refresh') }}
 					</CButton>
 				</div>
 			</CCardHeader>
 			<CCardBody>
 				<div class='datatable-legend'>
+					<div>
+						<CIcon
+							class='text-info'
+							:content='icons.details'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.standard.table.info') }}
+					</div>
 					<div>
 						<CIcon 
 							class='text-info' 
@@ -32,14 +40,6 @@
 							size='lg'
 						/>
 						{{ $t('forms.fields.coordinator') }}
-					</div>
-					<div>
-						<CIcon 
-							class='text-danger'
-							:content='icons.unbonded'
-							size='lg'
-						/>
-						{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 					</div>
 					<div>
 						<CIcon 
@@ -75,11 +75,19 @@
 					</div>
 					<div>
 						<CIcon 
-							class='text-info'
-							:content='icons.info'
+							class='text-success'
+							:content='icons.supported'
 							size='lg'
 						/>
-						{{ $t('iqrfnet.standard.grid.info') }}
+						{{ $t('iqrfnet.standard.table.supported') }}
+					</div>
+					<div>
+						<CIcon 
+							class='text-danger'
+							:content='icons.unsupported'
+							size='lg'
+						/>
+						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
 				<CDataTable
@@ -91,7 +99,7 @@
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
-						{{ $t('iqrfnet.standard.grid.table.noDevices') }}
+						{{ $t('iqrfnet.standard.table.fields.noDevices') }}
 					</template>
 					<template #address='{item}'>
 						<td>
@@ -99,27 +107,33 @@
 						</td>
 					</template>
 					<template #product='{item}'>
-						<td>
+						<td class='datatable-details'>
 							{{ item.getProductName() }}
+							<span
+								style='cursor: pointer;'
+								@click='item.showDetails = !item.showDetails'
+							>
+								<CIcon
+									class='text-info'
+									:content='icons.details'
+									size='xl'
+								/>
+							</span>
 						</td>
 					</template>
-					<template #mid='{item}'>
+					<template #os='{item}'>
 						<td>
-							{{ item.getMid() }}
+							{{ item.getOs() }}
 						</td>
 					</template>
-					<template #hwpid='{item}'>
+					<template #dpa='{item}'>
 						<td>
-							{{ item.getHwpid() }}
+							{{ item.getDpa() }}
 						</td>
 					</template>
 					<template #status='{item}'>
 						<td>
 							<CIcon
-								v-c-tooltip='{
-									content: item.getGeneralDetails(),
-									placement: "left",
-								}'
 								size='xl'
 								:class='item.getIconColor()'
 								:content='item.getIcon()'
@@ -129,54 +143,116 @@
 					<template #sensor='{item}'>
 						<td>
 							<CIcon
-								v-c-tooltip='{
-									content: item.getSensorDetails(),
-									placement: "left",
-								}'
 								size='xl'
-								:class='item.hasSensor() ? "text-info" : "text-danger"'
-								:content='item.hasSensor() ? icons.info : icons.unbonded'
+								:class='item.hasSensor() ? "text-success" : "text-danger"'
+								:content='item.hasSensor() ? icons.supported : icons.unsupported'
 							/>
 						</td>
 					</template>
 					<template #binout='{item}'>
 						<td>
 							<CIcon
-								v-c-tooltip='{
-									content: item.getBinoutDetails(),
-									placement: "left",
-								}'
 								size='xl'
-								:class='item.hasBinout() ? "text-info" : "text-danger"'
-								:content='item.hasBinout() ? icons.info : icons.unbonded'
+								:class='item.hasBinout() ? "text-success" : "text-danger"'
+								:content='item.hasBinout() ? icons.supported : icons.unsupported'
 							/>
 						</td>
 					</template>
 					<template #light='{item}'>
 						<td>
 							<CIcon
-								v-c-tooltip='{
-									content: item.getLightDetails(),
-									placement: "left",
-								}'
 								size='xl'
-								:class='item.hasLight() ? "text-info" : "text-danger"'
-								:content='item.hasLight() ? icons.info : icons.unbonded'
+								:class='item.hasLight() ? "text-success" : "text-danger"'
+								:content='item.hasLight() ? icons.supported : icons.unsupported'
 							/>
 						</td>
 					</template>
 					<template #dali='{item}'>
 						<td>
 							<CIcon
-								v-c-tooltip='{
-									content: item.getDaliDetails(),
-									placement: "left",
-								}'
 								size='xl'
-								:class='item.hasDali() ? "text-info" : "text-danger"'
-								:content='item.hasDali() ? icons.info : icons.unbonded'
+								:class='item.hasDali() ? "text-success" : "text-danger"'
+								:content='item.hasDali() ? icons.supported : icons.unsupported'
 							/>
 						</td>
+					</template>
+					<template #details='{item}'>
+						<CCollapse :show='item.showDetails'>
+							<CCardBody>
+								<CMedia
+									:aside-image-props='{
+										src: item.getImg(),
+										block: true,
+										width: "150px",
+										height: "150px",
+									}'
+									aside-vertical-position='center'
+								>
+									<div
+										class='details-table'
+									>
+										<table>
+											<tbody>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
+													</th>
+													<td>
+														{{ item.getManufacturer() }}
+													</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
+													</th>
+													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.hwpidVer') }}
+													</th>
+													<td>{{ item.getHwpidVer() }}</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.mid') }}
+													</th>
+													<td>
+														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table>
+											<tbody>
+												<tr v-if='item.hasBinout()'>
+													<th>
+														{{ $t('iqrfnet.standard.binaryOutput.title') }}
+													</th>
+													<td>
+														{{ item.getBinouts() }}
+													</td>
+												</tr>
+												<tr v-if='item.hasLight()'>
+													<th>
+														{{ $t('iqrfnet.standard.light.title') }}
+													</th>
+													<td>
+														{{ item.getLights() }}
+													</td>
+												</tr>
+												<tr v-if='item.hasSensor()'>
+													<th>
+														{{ $t('iqrfnet.standard.sensor.title') }}
+													</th>
+													<td style='white-space: pre-wrap;'>{{ item.getSensorDetails() }}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</CMedia>
+							</CCardBody>
+						</CCollapse>
 					</template>
 				</CDataTable>
 			</CCardBody>
@@ -186,9 +262,9 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CProgressBar} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
-import {cilCheckAlt, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilX} from '@coreui/icons';
+import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -201,7 +277,6 @@ import {AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
-import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
 
 @Component({
@@ -210,10 +285,10 @@ import {MutationPayload} from 'vuex';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCollapse,
 		CDataTable,
 		CIcon,
-		CProgress,
-		CProgressBar,
+		CMedia,
 	},
 })
 
@@ -244,8 +319,9 @@ export default class StandardDevices extends Vue {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
-		unbonded: cilX,
-		info: cilInfo,
+		supported: cilCheckCircle,
+		unsupported: cilXCircle,
+		details: cilInfo,
 		enumerate: cilSpreadsheet,
 		refresh: cilReload,
 	}
@@ -256,51 +332,53 @@ export default class StandardDevices extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'address',
-			label: this.$t('iqrfnet.standard.grid.table.address'),
+			label: this.$t('iqrfnet.standard.table.fields.address'),
 		},
 		{
 			key: 'product',
-			label: this.$t('iqrfnet.standard.grid.table.product'),
+			label: this.$t('iqrfnet.standard.table.fields.product'),
 		},
 		{
-			key: 'mid',
-			label: this.$t('iqrfnet.standard.grid.table.mid'),
+			key: 'os',
+			label: this.$t('iqrfnet.standard.table.fields.os'),
 		},
 		{
-			key: 'hwpid',
-			label: this.$t('iqrfnet.standard.grid.table.hwpid'),
+			key: 'dpa',
+			label: this.$t('iqrfnet.standard.table.fields.dpa'),
 		},
 		{
 			key: 'status',
-			label: this.$t('iqrfnet.standard.grid.table.status'),
+			label: this.$t('iqrfnet.standard.table.fields.status'),
 			filter: false,
 			sorter: false,
 		},
 		{
 			key: 'sensor',
-			label: this.$t('iqrfnet.standard.grid.table.sensor'),
+			label: this.$t('iqrfnet.standard.table.fields.sensor'),
 			filter: false,
 			sorter: false,
 		},
 		{
 			key: 'binout',
-			label: this.$t('iqrfnet.standard.grid.table.binout'),
+			label: this.$t('iqrfnet.standard.table.fields.binout'),
 			filter: false,
 			sorter: false,
 		},
 		{
 			key: 'light',
-			label: this.$t('iqrfnet.standard.grid.table.light'),
+			label: this.$t('iqrfnet.standard.table.fields.light'),
 			filter: false,
 			sorter: false,
 		},
 		{
 			key: 'dali',
-			label: this.$t('iqrfnet.standard.grid.table.dali'),
+			label: this.$t('iqrfnet.standard.table.fields.dali'),
 			filter: false,
 			sorter: false,
 		},
 	]
+
+	private collapse = false;
 
 	/**
 	 * Websocket store unsubscribe function
@@ -379,13 +457,13 @@ export default class StandardDevices extends Vue {
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
-				this.$t('iqrfnet.standard.grid.messages.enumNowSuccess').toString()
+				this.$t('iqrfnet.standard.table.messages.enumNowSuccess').toString()
 			);
 			return;
 		}
 		this.$store.commit('spinner/UPDATE_TEXT',
 			this.$t(
-				'iqrfnet.standard.grid.messages.enumNowProgress',
+				'iqrfnet.standard.table.messages.enumNowProgress',
 				{
 					progress: process.percentage,
 					phase: process.enumPhase,
@@ -403,7 +481,7 @@ export default class StandardDevices extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.device.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.device.fetch').toString()
 		);
 		InfoService.nodes()
 			.then((msgId: string) => this.msgId = msgId);
@@ -418,7 +496,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.device.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.device.fetchFailed').toString()
 			);
 			return;
 		}
@@ -436,7 +514,7 @@ export default class StandardDevices extends Vue {
 	private getBinouts(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.binout.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.binout.fetch').toString()
 		);
 		InfoService.binouts()
 			.then((msgId: string) => this.msgId = msgId);
@@ -451,7 +529,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.binout.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.binout.fetchFailed').toString()
 			);
 			return;
 		}
@@ -467,7 +545,7 @@ export default class StandardDevices extends Vue {
 	private getDalis(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.dali.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.dali.fetch').toString()
 		);
 		InfoService.dalis()
 			.then((msgId: string) => this.msgId = msgId);
@@ -482,7 +560,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.dali.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.dali.fetchFailed').toString()
 			);
 			return;
 		}
@@ -498,7 +576,7 @@ export default class StandardDevices extends Vue {
 	private getLights(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.light.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.light.fetch').toString()
 		);
 		InfoService.lights()
 			.then((msgId: string) => this.msgId = msgId);
@@ -513,7 +591,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.light.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.light.fetchFailed').toString()
 			);
 			return;
 		}
@@ -529,7 +607,7 @@ export default class StandardDevices extends Vue {
 	private getSensors(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.sensor.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.sensor.fetch').toString()
 		);
 		InfoService.sensors()
 			.then((msgId: string) => this.msgId = msgId);
@@ -544,7 +622,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.sensor.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.sensor.fetchFailed').toString()
 			);
 			return;
 		}
@@ -559,7 +637,7 @@ export default class StandardDevices extends Vue {
 	 * Filters devices that do not implement any standards from the array
 	 */
 	private async filterStandards(): Promise<void> {
-		for (let i = 0; i < this.auxDevices.length; i++) {
+		for (let i = 1; i < this.auxDevices.length; i++) {
 			if (!this.auxDevices[i].hasStandard()) {
 				this.auxDevices.splice(i, 1);
 			}
@@ -567,8 +645,7 @@ export default class StandardDevices extends Vue {
 		for (let i = 0; i < this.auxDevices.length; i++) {
 			await ProductService.get(this.auxDevices[i].getHwpid())
 				.then((response: AxiosResponse) => {
-					const product: IProduct = response.data;
-					this.auxDevices[i].setProductName(product.name);
+					this.auxDevices[i].setProduct(response.data);
 				});
 			//todo error handling
 		}
@@ -585,9 +662,9 @@ export default class StandardDevices extends Vue {
 		}
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.grid.messages.ping.fetch').toString()
+			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
-		const options = new WebSocketOptions(null, 90000, 'iqrfnet.standard.grid.messages.ping.fetchFailed');
+		const options = new WebSocketOptions(null, 90000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
 		IqrfNetService.ping(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -601,7 +678,7 @@ export default class StandardDevices extends Vue {
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.standard.grid.messages.ping.fetchFailed').toString()
+				this.$t('iqrfnet.standard.table.messages.ping.fetchFailed').toString()
 			);
 			return;
 		}
@@ -648,6 +725,29 @@ export default class StandardDevices extends Vue {
 	align-items: center;
 	justify-content: space-evenly;
 	margin-bottom: 1.25em;
+}
+
+.datatable-details {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: -1px;
+}
+
+.details-table {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+}
+
+.details-table > table {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+.table th, td {
+	vertical-align: top;
+	border: 0px;
 }
 
 </style>
