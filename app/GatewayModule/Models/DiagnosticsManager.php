@@ -112,6 +112,7 @@ class DiagnosticsManager {
 		$this->addSpi();
 		$this->addUsb();
 		$this->addControllerLog();
+		$this->addUploaderLog();
 		$this->addWebappLog();
 		$this->addInstalledPackages();
 		$this->zipManager->close();
@@ -213,6 +214,17 @@ class DiagnosticsManager {
 		$command = $this->commandManager->run('journalctl --unit iqrf-gateway-controller.service --no-pager', true);
 		if ($command->getExitCode() === 0) {
 			$this->zipManager->addFileFromText('logs/iqrf-gateway-controller.log', $command->getStdout());
+		}
+	}
+
+	/**
+	 * Adds logs of IQRF Gateway Uploader
+	 */
+	public function addUploaderLog(): void {
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			if (file_exists('/var/log/iqrf-gateway-uploader.log')) {
+				$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
+			}
 		}
 	}
 
