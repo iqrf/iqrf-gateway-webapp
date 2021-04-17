@@ -3,7 +3,7 @@ services:
 	certificateManager: App\GatewayModule\Models\CertificateManager
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
-	- App\GatewayModule\Models\LogManager(%controller.logDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager

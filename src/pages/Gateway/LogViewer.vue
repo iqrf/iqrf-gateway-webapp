@@ -16,12 +16,7 @@
 						>
 							{{ $t('gateway.log.messages.logEmpty') }}
 						</CAlert>
-						<pre 
-							v-else 
-							class='log'
-						>
-							{{ controllerLog }}
-						</pre>
+						<pre v-else class='log'>{{ controllerLog }}</pre>
 					</CCardBody>
 				</CTab>
 				<CTab
