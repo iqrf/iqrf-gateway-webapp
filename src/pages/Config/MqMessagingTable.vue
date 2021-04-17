@@ -226,7 +226,7 @@ export default class MqMessagingTable extends Vue {
 		};
 		settings.acceptAsyncMsg = acceptAsyncMsg;
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, instance)
+		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
