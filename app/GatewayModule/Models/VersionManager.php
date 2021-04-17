@@ -79,6 +79,21 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Gateway Uploader's version
+	 * @return string|null IQRF Gateway Uploader's version
+	 */
+	public function getUploader(): ?string {
+		if (!$this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			return null;
+		}
+		$result = $this->commandManager->run('iqrf-gateway-uploader --version')->getStdout();
+		if ($result !== '') {
+			return $result;
+		}
+		return null;
+	}
+
+	/**
 	 * Returns IQRF Gateway Daemon's version
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string IQRF Gateway Daemon's version

@@ -1072,6 +1072,7 @@
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},
 			"hostname": "Hostname",

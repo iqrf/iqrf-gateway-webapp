@@ -86,6 +86,16 @@ final class VersionManagerTest extends WebSocketTestCase {
 	private const NEW_DAEMON_VERSION_STR = 'IQRF Gateway Daemon v2.4.0';
 
 	/**
+	 * IQRF Gateway Uploader's version
+	 */
+	private const UPLOADER_VERSION = 'v1.0.0';
+
+	/**
+	 * IQRF Gateway Uploader's version command
+	 */
+	private const UPLOADER_VERSION_CMD = 'iqrf-gateway-uploader --version';
+
+	/**
 	 * IQRF Gateway Webapp's version
 	 */
 	private const WEBAPP_VERSION = 'v2.3.0-rc1';
@@ -246,6 +256,29 @@ final class VersionManagerTest extends WebSocketTestCase {
 			->withAnyArgs()
 			->andThrow(EmptyResponseException::class);
 		Assert::same('unknown', $this->manager->getDaemon());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway Uploader's version (not installed)
+	 */
+	public function testGetUploaderNotInstalled(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-uploader')
+			->andReturnFalse();
+		Assert::null($this->manager->getUploader());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway Webapp's version
+	 */
+	public function testGetUploader(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-uploader')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::UPLOADER_VERSION_CMD)
+			->andReturn(new Command(self::UPLOADER_VERSION_CMD, 'v1.0.0', '', 0));
+		Assert::same(self::UPLOADER_VERSION, $this->manager->getUploader());
 	}
 
 	/**
