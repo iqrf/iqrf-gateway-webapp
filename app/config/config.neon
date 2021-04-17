@@ -21,6 +21,7 @@ parameters:
 		# URL to IQRF Gateway Daemon's WebSocket server
 		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
+	logDir: '/var/log/'
 	sentry:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 	# Translator configuration
