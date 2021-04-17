@@ -240,7 +240,6 @@ export default class WebsocketInterfaceList extends Vue {
 	 * Retrieves instances of Websocket daemon components
 	 */
 	private getConfig(): Promise<void> {
-		this.instances = [];
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.messaging),
 			DaemonConfigurationService.getComponent(this.componentNames.service),
