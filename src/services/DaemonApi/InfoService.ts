@@ -96,6 +96,19 @@ class InfoService {
 		const options = new WebSocketOptions(request, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}
+
+	reset(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+		const request = {
+			'mType': 'infoDaemon_Reset',
+			'data': {
+				'msgId': 'test',
+				'req': {},
+				'returnVerbose': true,
+			},
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
+	}
 }
 
 export default new InfoService();

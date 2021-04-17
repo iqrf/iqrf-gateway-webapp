@@ -1,7 +1,7 @@
 import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
 import {IInfoSensorDetail} from '../interfaces/iqrfInfo';
+import {IProduct} from '../interfaces/repository';
 import i18n from '../i18n';
-import { IProduct } from '../interfaces/repository';
 
 /**
  * Standard device object
@@ -45,27 +45,27 @@ class StandardDevice {
 	/**
 	 * Is device online?
 	 */
-	private online: boolean
+	private online = false
 
 	/**
 	 * Indicates that device implements the DALI standard
 	 */
-	private dali: boolean
+	private dali = false
 
 	/**
 	 * Array of implemented standard sensors
 	 */
-	private sensors: Array<IInfoSensorDetail>
+	private sensors: Array<IInfoSensorDetail> = []
 
 	/**
 	 * Array of implemented binary outputs
 	 */
-	private binouts: number
+	private binouts = 0
 
 	/**
 	 * Array of implemented lights
 	 */
-	private lights: number
+	private lights = 0
 
 	/**
 	 * Show device details
@@ -73,30 +73,18 @@ class StandardDevice {
 	public showDetails = false
 
 	/**
-	 * Product name
+	 * Product details
 	 */
-	private productName: string
-
-	/**
-	 * Company name
-	 */
-	private company: string
-
-	/**
-	 * Product image
-	 */
-	private img: string
-
-	/**
-	 * Product url
-	 */
-	private url: string
+	private product: IProduct
 
 	/**
 	 * Constructor
-	 * @param address Device address 
-	 * @param hwpid Device HWPID
+	 * @param address Device address
 	 * @param mid Device MID
+	 * @param hwpid Device HWPID
+	 * @param hwpidVer Device HWPID version
+	 * @param DPA Device DPA version
+	 * @param OS Device OS build
 	 * @param discovered Is device discovered?
 	 */
 	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
@@ -107,21 +95,70 @@ class StandardDevice {
 		this.dpa = dpa;
 		this.os = os;
 		this.discovered = discovered;
-		this.online = false;
-		this.dali = false;
-		this.sensors = [];
-		this.binouts = 0;
-		this.lights = 0;
-		this.productName = 'unknown';
-		this.company = 'unknown';
-		this.img = '';
-		this.url = '';
+		this.product = {
+			name: 'Unknown',
+			hwpid: this.hwpid,
+			manufacturerID: -1,
+			companyName: 'Unknown',
+			homePage: '',
+			picture: '',
+			rfMode: -1,
+			pictureOriginal: ''
+		};
 	}
 
+	/**
+	 * Returns device address
+	 * @returns Device address
+	 */
 	getAddress(): number {
 		return this.address;
 	}
 
+	/**
+	 * Returns device MID
+	 * @returns Device MID
+	 */
+	getMid(): number {
+		return this.mid;
+	}
+
+	/**
+	 * Returns device mid as hex string
+	 * @returns Device MID hex
+	 */
+	getMidHex(): string {
+		return this.mid.toString(16).toUpperCase();
+	}
+
+	/**
+	 * Returns device HWPID
+	 * @returns Device HWPID
+	 */
+	getHwpid(): number {
+		return this.hwpid;
+	}
+
+	/**
+	 * Returns device HWPID as hex string
+	 * @returns Device HWPID hex
+	 */
+	getHwpidHex(): string {
+		return this.hwpid.toString(16).toUpperCase();
+	}
+
+	/**
+	 * Returns device HWPID version
+	 * @returns Device HWPID version
+	 */
+	getHwpidVer(): number {
+		return this.hwpidVer;
+	}
+
+	/**
+	 * Returns formatted device DPA version
+	 * @returns Device DPA version
+	 */
 	getDpa(): string {
 		let dpa = this.dpa.toString(16).padStart(4, '0');
 		if (dpa.startsWith('0')) {
@@ -132,40 +169,44 @@ class StandardDevice {
 		return dpa;
 	}
 
+	/**
+	 * Returns device OS build
+	 * @returns Device OS build
+	 */
 	getOs(): string {
 		return this.os.toString(16).padStart(4, '0').toUpperCase();
 	}
 
+	/**
+	 * Sets product information
+	 * @param {IProduct} product Product information
+	 */
+	setProduct(product: IProduct): void {
+		this.product = product;
+	}
+
+	/**
+	 * Returns product name
+	 * @returns Product name
+	 */
 	getProductName(): string {
-		return this.productName;
+		return this.product.name;
 	}
 
+	/**
+	 * Returns product manufacturer
+	 * @returns Product manufacturer
+	 */
 	getManufacturer(): string {
-		return this.company;
+		return this.product.companyName;
 	}
 
+	/**
+	 * Returns product image url
+	 * @returns Product image url
+	 */
 	getImg(): string {
-		return this.img;
-	}
-
-	getMid(): number {
-		return this.mid;
-	}
-
-	getMidHex(): string {
-		return this.mid.toString(16).toUpperCase();
-	}
-
-	getHwpid(): number {
-		return this.hwpid;
-	}
-
-	getHwpidVer(): number {
-		return this.hwpidVer;
-	}
-
-	getHwpidHex(): string {
-		return this.hwpid.toString(16).toUpperCase();
+		return this.product.picture;
 	}
 
 	/**
@@ -176,6 +217,10 @@ class StandardDevice {
 		this.online = online;
 	}
 
+	/**
+	 * Returns number of implemented binouts
+	 * @returns Implemented binouts
+	 */
 	getBinouts(): number {
 		return this.binouts;
 	}
@@ -196,6 +241,10 @@ class StandardDevice {
 		this.dali = dali;
 	}
 
+	/**
+	 * Returns number of implemented lights
+	 * @returns Implemented lights
+	 */
 	getLights(): number {
 		return this.lights;
 	}
@@ -214,17 +263,6 @@ class StandardDevice {
 	 */
 	setSensors(sensors: Array<IInfoSensorDetail>): void {
 		this.sensors = sensors;
-	}
-
-	/**
-	 * Sets product information
-	 * @param {IProduct} product Product information
-	 */
-	setProduct(product: IProduct): void {
-		this.productName = product.name;
-		this.company = product.companyName;
-		this.img = product.picture;
-		this.url = product.homePage;
 	}
 
 	/**
@@ -255,25 +293,10 @@ class StandardDevice {
 		return 'text-info';
 	}
 
-	getBinoutDetails(): string {
-		return i18n.t(
-			'iqrfnet.standard.table.messages.binout.' + (this.binouts > 0 ? 'implemented' : 'notImplemented'),
-			{binouts: this.binouts}
-		).toString();
-	}
-
-	getDaliDetails(): string {
-		return i18n.t('iqrfnet.standard.table.messages.dali.' + (this.dali ? 'implemented' : 'notImplemented')).toString();
-
-	}
-
-	getLightDetails(): string {
-		return i18n.t(
-			'iqrfnet.standard.table.messages.light.' + (this.lights > 0 ? 'implemented' : 'notImplemented'),
-			{lights: this.lights}
-		).toString();
-	}
-
+	/**
+	 * Returns breakdown of implemented sensors
+	 * @returns Implemented sensors details
+	 */
 	getSensorDetails(): string {
 		if (this.sensors.length > 0) {
 			let message = '';
@@ -283,6 +306,7 @@ class StandardDevice {
 					{
 						name: sensor.name,
 						short: sensor.shortName,
+						type: sensor.type,
 						unit: sensor.unit === '?' ? 'N/A' : sensor.unit,
 						commands: sensor.frcs.join(', '),
 					},
