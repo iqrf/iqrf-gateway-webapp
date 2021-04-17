@@ -6,8 +6,6 @@ parameters:
 	controller:
 		# Path to directory containing IQRF Gateway Controller's configuration
 		configDir: '/etc/iqrf-gateway-controller/'
-		# Path to directory containing IQRF Gateway Controller's log
-		logDir: '/var/log/'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas

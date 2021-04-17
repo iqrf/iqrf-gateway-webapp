@@ -39,14 +39,19 @@ class LogManager {
 	private $commandManager;
 
 	/**
+	 * Path to general log directory
+	 */
+	private const LOG_DIR = '/var/log/';
+
+	/**
 	 * IQRF Gateway Controller log file name
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * @var string Path to a directory with log of IQRF Gateway Controller
+	 * IQRF Gateway Uploader log file name
 	 */
-	private $controllerLogDir;
+	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
@@ -60,12 +65,10 @@ class LogManager {
 
 	/**
 	 * Constructor
-	 * @param string $controllerLogDir Path to latest IQRF Gateway Controller log file
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $controllerLogDir, string $daemonLogDir, CommandManager $commandManager) {
-		$this->controllerLogDir = $controllerLogDir;
+	public function __construct(string $daemonLogDir, CommandManager $commandManager) {
 		$this->daemonLogDir = $daemonLogDir;
 		$this->commandManager = $commandManager;
 	}
@@ -94,7 +97,7 @@ class LogManager {
 	 * Returns IQRF Gateway Controller's latest log file path
 	 */
 	public function getLatestControllerLog(): string {
-		$logFile = $this->controllerLogDir . self::CONTROLLER_LOG;
+		$logFile = self::LOG_DIR . self::CONTROLLER_LOG;
 		if (!file_exists($logFile)) {
 			throw new LogNotFoundException('Controller log file not found');
 		}
@@ -136,8 +139,12 @@ class LogManager {
 	public function createArchive(): string {
 		$zipManager = new ZipArchiveManager($this->path);
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
-			$zipManager->addFolder($this->controllerLogDir . 'iqrf-gateway-controller', 'controller');
-			$zipManager->addFile($this->controllerLogDir . self::CONTROLLER_LOG, 'controller/iqrf-gateway-controller.log');
+			$zipManager->addFolder(self::LOG_DIR . 'iqrf-gateway-controller', 'controller');
+			$zipManager->addFile(self::LOG_DIR . self::CONTROLLER_LOG, 'controller/' . self::CONTROLLER_LOG);
+		}
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			$zipManager->addFolder(self::LOG_DIR . 'iqrf-gateway-uploader', 'uploader');
+			$zipManager->addFile(self::LOG_DIR . self::UPLOADER_LOG, 'uploader/' . self::UPLOADER_LOG);
 		}
 		$zipManager->addFolder($this->daemonLogDir, 'daemon');
 		$zipManager->close();
