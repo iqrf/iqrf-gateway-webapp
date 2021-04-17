@@ -20,6 +20,13 @@
 					>
 						<CIcon :content='icons.refresh' size='sm' />
 						{{ $t('iqrfnet.standard.table.actions.refresh') }}
+					</CButton> <CButton
+						color='primary'
+						size='sm'
+						@click='resetDb'
+					>
+						<CIcon :content='icons.reset' size='sm' />
+						{{ $t('iqrfnet.standard.table.actions.reset') }}
 					</CButton>
 				</div>
 			</CCardHeader>
@@ -186,7 +193,6 @@
 										width: "150px",
 										height: "150px",
 									}'
-									aside-vertical-position='center'
 								>
 									<div
 										class='details-table'
@@ -264,7 +270,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
-import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilXCircle} from '@coreui/icons';
+import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -323,7 +329,8 @@ export default class StandardDevices extends Vue {
 		unsupported: cilXCircle,
 		details: cilInfo,
 		enumerate: cilSpreadsheet,
-		refresh: cilReload,
+		refresh: cilSync,
+		reset: cilReload,
 	}
 
 	/**
@@ -378,8 +385,6 @@ export default class StandardDevices extends Vue {
 		},
 	]
 
-	private collapse = false;
-
 	/**
 	 * Websocket store unsubscribe function
 	 */
@@ -415,6 +420,8 @@ export default class StandardDevices extends Vue {
 				this.handleGetSensors(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
 				this.handlePingDevices(mutation.payload.data);
+			} else if (mutation.payload.mType === 'infoDaemon_Reset') {
+				this.handleReset(mutation.payload.data);
 			}
 		});
 	}
@@ -449,7 +456,14 @@ export default class StandardDevices extends Vue {
 	 */
 	private handleEnumerationNow(response): void {
 		if (response.status !== 0) {
-			//TODO: error handling
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(
+				this.$t(
+					'iqrfnet.standard.table.messages.enumNowFailed',
+					{error: response.rsp.errorStr},
+				).toString()
+			);
 			return;
 		}
 		let process = response.rsp;
@@ -646,8 +660,10 @@ export default class StandardDevices extends Vue {
 			await ProductService.get(this.auxDevices[i].getHwpid())
 				.then((response: AxiosResponse) => {
 					this.auxDevices[i].setProduct(response.data);
+				})
+				.catch(() => {
+					// Device not found in repository, ignore
 				});
-			//todo error handling
 		}
 		this.devices = this.auxDevices;
 		this.auxDevices = [];
@@ -694,6 +710,33 @@ export default class StandardDevices extends Vue {
 			}
 		});
 		this.$store.commit('spinner/HIDE');
+	}
+
+	/**
+	 * Resets the IqrfInfo database
+	 */
+	private resetDb(): void {
+		this.$store.commit('spinner/SHOW');
+		InfoService.reset()
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Reset Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleReset(response): void {
+		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.commit('spinner/HIDE');
+		if (response.status !== 0) {
+			this.$toast.error(
+				this.$t('iqrfnet.standard.table.messages.resetFailed', {error: response.rsp.errorStr}).toString()
+			);
+			return;
+		}
+		this.$toast.success(
+			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
+		);
 	}
 
 	/**

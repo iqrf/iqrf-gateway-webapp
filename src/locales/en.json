@@ -1732,7 +1732,8 @@
 				"title": "Standard devices",
 				"actions": {
 					"enumerate": "Enumerate",
-					"refresh": "Refresh"
+					"refresh": "Refresh",
+					"reset": "Reset"
 				},
 				"info": "Product details",
 				"supported": "Supported",
@@ -1780,7 +1781,7 @@
 						"notImplemented": "Device does not implement the Light standard."
 					},
 					"sensor": {
-						"detail": "Name: {name} [{short}]\nUnit: {unit}\nFRC commands: {commands}",
+						"detail": "Name: {name} [{short}]\nType: {type}\nUnit: {unit}\nFRC commands: {commands}",
 						"fetch": "Retrieving devices implementing Sensor standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Sensor standard.",
 						"implemented": "Device implements the following sensor types:",
@@ -1790,8 +1791,11 @@
 						"fetch": "Checking online status of devices...",
 						"fetchFailed": "Failed to retrieve status of devices."
 					},
+					"enumNowFailed": "Network enumeration process failed: {error}",
 					"enumNowProgress": "Enumerating network [{progress} %]\nPhase: {phase}\nStep: {current}/{total}",
-					"enumNowSuccess": "Network enumeration has been successfully completed."
+					"enumNowSuccess": "Network enumeration has been successfully completed.",
+					"resetFailed": "Failed to reset database: {error}",
+					"resetSuccess": "Database has been successfully reset."
 				}
 			}
 		},
