@@ -384,6 +384,9 @@ export default class SendJsonRequest extends Vue {
 		if (response.rsp.lastWave && response.rsp.progress === 100) { // autonetwork finished
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.autoNetworkFinish').toString()
+			);
 		}
 	}
 
@@ -399,6 +402,9 @@ export default class SendJsonRequest extends Vue {
 		if (response.rsp.progress === 100) {
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.backupFinish').toString()
+			);
 		}
 	}
 
@@ -414,6 +420,9 @@ export default class SendJsonRequest extends Vue {
 		if (response.rsp.percentage === 100) { // enumeration finished
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.enumerationFinish').toString()
+			);
 		}
 	}
 
