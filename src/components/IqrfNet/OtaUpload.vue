@@ -7,26 +7,23 @@
 						:value.sync='fileType'
 						:options='fileTypeOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
+						@change='checkSelectedFile'
 					/>
-					<div class='form-group'>
-						<CInputFile
-							ref='fileInput'
-							accept='.hex,.iqrf'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
-							@input='fileInputEmpty'
-							@click='fileInputEmpty'
-						/>
-						<p v-if='fileEmpty && fileTouched' style='color: red;'>
-							{{ $t('iqrfnet.networkManager.otaUpload.errors.file') }}
-						</p>
-					</div><hr>
+					<CInputFile
+						ref='fileInput'
+						accept='.hex,.iqrf'
+						:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
+						@input='checkSelectedFile'
+						@click='fileInputEmpty'
+					/>
+					<hr>
 					<CSelect
 						:value.sync='target'
 						:options='targetOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
 					/>
 					<ValidationProvider
-						v-if='target === targetEnum.NODE'
+						v-if='target === "node"'
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
@@ -46,7 +43,7 @@
 						/>
 					</ValidationProvider>
 					<div 
-						v-if='target === targetEnum.NETWORK'
+						v-if='target === "network"'
 						class='form-group'
 					>
 						<ValidationProvider
@@ -109,13 +106,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.uploadEeeprom') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='uploadFile(false)'
-						>
-							{{ $t('forms.upload') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty'
+								@click='uploadFile(false)'
+							>
+								{{ $t('forms.upload') }}
+							</CButton> <CIcon 
+								v-if='checks.upload'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div>
 					<div class='form-group'>
 						<div>
@@ -123,13 +127,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.verifyEeeprom') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='verifyStep'
-						>
-							{{ $t('forms.verify') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty || !checks.upload'
+								@click='verifyStep'
+							>
+								{{ $t('forms.verify') }}
+							</CButton> <CIcon 
+								v-if='checks.verify'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div>
 					<div class='form-group'>
 						<div>
@@ -137,13 +148,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.loadFlash') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='flashLoadStep'
-						>
-							{{ $t('forms.load') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty || !checks.verify'
+								@click='flashLoadStep'
+							>
+								{{ $t('forms.load') }}
+							</CButton> <CIcon 
+								v-if='checks.flash'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div><hr>
 					<h4>{{ $t('iqrfnet.networkManager.otaUpload.form.automaticUpload') }}</h4>
 					<CButton
@@ -163,8 +181,9 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {between, integer, required} from 'vee-validate/dist/rules';
 
+import {cilCheckCircle} from '@coreui/icons';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import NativeUploadService from '../../services/NativeUploadService';
 
@@ -177,6 +196,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -198,6 +218,11 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
  * OTA upload component for IQRF network manager
  */
 export default class OtaUpload extends Vue {
+
+	/**
+	 * @constant {Array<string>} checkIcon Check icon for steps
+	 */
+	private checkIcon = cilCheckCircle;
 
 	/**
 	 * @var {number} address Target device address for node target option
@@ -223,11 +248,6 @@ export default class OtaUpload extends Vue {
 	 * @var {string} fileName Name of file uploaded to gateway
 	 */
 	private fileName = ''
-
-	/**
-	 * @var {boolean} fileTouched Indicates whether file has been touched
-	 */
-	private fileTouched = false
 
 	/**
 	 * @var {FileFormat} fileType Type of IQRF file to upload
@@ -274,12 +294,7 @@ export default class OtaUpload extends Vue {
 	private target: NetworkTarget = NetworkTarget.COORDINATOR
 
 	/**
-	 * @constant {enum} targetEnum IQRF network target enum for template
-	 */
-	private targetEnum = NetworkTarget
-
-	/**
-	 * @var {Array<IOption>} targetOptions Array of CoreUI select options for upload target
+	 * @constant {Array<IOption>} targetOptions Array of CoreUI select options for upload target
 	 */
 	private targetOptions: Array<IOption> = [
 		{
@@ -295,6 +310,15 @@ export default class OtaUpload extends Vue {
 			value: NetworkTarget.NETWORK,
 		},
 	]
+
+	/**
+	 * @var {Dictionary<boolean>} checks Upload step checks
+	 */
+	private checks: Dictionary<boolean> = {
+		upload: false,
+		verify: false,
+		flash: false,
+	}
 
 	/**
 	 * Component unsubscribe function
@@ -337,13 +361,46 @@ export default class OtaUpload extends Vue {
 	}
 
 	/**
+	 * Resets file input content
+	 */
+	private resetFileInput(): void {
+		((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+	}
+
+	/**
 	 * Checks if file input is empty
 	 */
 	private fileInputEmpty(): void {
-		if (!this.fileTouched) {
-			this.fileTouched = true;
-		}
 		this.fileEmpty = this.getFiles().length === 0;
+	}
+
+	/**
+	 * Checks selected file
+	 */
+	private checkSelectedFile(): void {
+		const file = this.getFiles()[0];
+		if (!file) {
+			return;
+		}
+		if (this.fileType === FileFormat.HEX && !file.name.endsWith('.hex')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.notHexFile').toString()
+			);
+			this.resetFileInput();
+			this.fileEmpty = true;
+			return;
+		}
+		if (this.fileType === FileFormat.IQRF && !file.name.endsWith('.iqrf')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.notIqrfFile').toString()
+			);
+			this.resetFileInput();
+			this.fileEmpty = true;
+			
+			return;
+		}
+		this.checks.upload = this.checks.verify = this.checks.flash = false;
+		this.fileEmpty = false;
 	}
 
 	/**
@@ -385,6 +442,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the upload step
 	 */
 	private uploadStep(): void {
+		this.checks.upload = this.checks.verify = this.checks.flash = false;
 		this.executeStep(OtaUploadAction.UPLOAD, 'iqrfnet.networkManager.otaUpload.messages.uploadStepFail');
 	}
 
@@ -392,6 +450,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the verification step
 	 */
 	private verifyStep(): void {
+		this.checks.verify = this.checks.flash = false;
 		this.executeStep(OtaUploadAction.VERIFY, 'iqrfnet.networkManager.otaUpload.messages.verifyStepFail');
 	}
 
@@ -399,6 +458,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the flash load step
 	 */
 	private flashLoadStep(): void {
+		this.checks.flash = false;
 		this.executeStep(OtaUploadAction.LOAD, 'iqrfnet.networkManager.otaUpload.messages.loadStepFail');
 	}
 
@@ -494,6 +554,7 @@ export default class OtaUpload extends Vue {
 					this.verifyStep();
 				} else {
 					this.$store.commit('spinner/HIDE');
+					this.checks.upload = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.uploadStepSuccess':
@@ -506,6 +567,7 @@ export default class OtaUpload extends Vue {
 					this.flashLoadStep();
 				} else {
 					this.$store.commit('spinner/HIDE');
+					this.checks.verify = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
@@ -523,6 +585,7 @@ export default class OtaUpload extends Vue {
 						).toString()
 					);
 				} else {
+					this.checks.flash = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
@@ -605,3 +668,13 @@ export default class OtaUpload extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.step-check {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+</style>

@@ -1464,6 +1464,8 @@
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
+					"notHexFile": "Selected file is not .hex file.",
+					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occured during file content parsing: {error}",

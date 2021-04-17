@@ -96,7 +96,7 @@ export default class DaemonModeInfo extends Vue {
 	 * Retrieves current Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.modes.unknown', () => this.timedOut())
+		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.timedOut())
 			.then((msgId: string) => this.msgId = msgId);
 		this.requestRunning = true;
 	}
