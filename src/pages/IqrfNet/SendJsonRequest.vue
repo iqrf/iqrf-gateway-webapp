@@ -221,16 +221,16 @@ export default class SendJsonRequest extends Vue {
 			}
 			if (mutation.payload.mType === 'messageError') {
 				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleMessageError(mutation.payload.data);
+				this.handleMessageError(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
-				this.handleAutoNetworkResponse(mutation.payload.data);
+				this.handleAutoNetworkResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
-				this.handleBackup(mutation.payload.data);
+				this.handleBackup(mutation.payload);
 			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
-				this.handleEnumerationNow(mutation.payload.data);
+				this.handleEnumerationNow(mutation.payload);
 			} else {
 				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleResponse(mutation.payload.data);
+				this.handleResponse(mutation.payload);
 			}
 		});
 	}
@@ -356,12 +356,12 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
 		this.$store.commit('spinner/HIDE');		
-		if (response.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
+		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
 			this.$toast.error(
 				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()
 			);
@@ -377,11 +377,11 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleAutoNetworkResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		if (response.rsp.lastWave && response.rsp.progress === 100) { // autonetwork finished
+		if (response.data.rsp.lastWave && response.data.rsp.progress === 100) { // autonetwork finished
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.info(
@@ -395,11 +395,11 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleBackup(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		if (response.rsp.progress === 100) {
+		if (response.data.rsp.progress === 100) {
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.info(
@@ -413,11 +413,11 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleEnumerationNow(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		if (response.rsp.percentage === 100) { // enumeration finished
+		if (response.data.rsp.percentage === 100) { // enumeration finished
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.info(
@@ -431,18 +431,18 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.msgId);
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
 		this.$store.commit('spinner/HIDE');
-		if (response.status === 0) {
+		if (response.data.status === 0) {
 			this.$toast.success(
 				this.$t('iqrfnet.sendJson.messages.success').toString()
 			);
 			return;
 		}
-		if (response.status in StatusMessages) {
+		if (response.data.status in StatusMessages) {
 			this.$toast.error(
 				this.$t(StatusMessages[response.status]).toString()
 			);
