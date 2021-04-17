@@ -1544,8 +1544,9 @@
 				"missing": "Please enter JSON request.",
 				"mType": "JSON object does not have mType key.",
 				"success": "JSON request has been sent successfully.",
-				"autoNetworkStart": "AutoNetwork request sent, multiple responses will be received.",
 				"autoNetworkFinish": "The AutoNetwork process has concluded.",
+				"backupFinish": "The Backup process has concluded.",
+				"enumerationFinish": "The database enumeration process has concluded.",
 				"error": {
 					"timeout": "Request timed out.",
 					"fail": "An error occurred while processing JSON request.",
