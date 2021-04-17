@@ -48,7 +48,7 @@
 							:options='timeSpecOptions'
 						/>
 						<div
-							v-if='timeSpecSelected === "cron"' 
+							v-if='timeSpecSelected === "cron"'
 							class='form-group'
 						>
 							<ValidationProvider
@@ -60,7 +60,7 @@
 								}'
 							>
 								<label for='cronTime'>
-									{{ $t("config.daemon.scheduler.form.task.cronTime") }}
+									<b>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</b>
 								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
 									{{ cronMessage }}
 								</CBadge>
@@ -93,7 +93,7 @@
 							/>
 						</ValidationProvider>
 						<div
-							v-if='timeSpecSelected === "exact"' 
+							v-if='timeSpecSelected === "exact"'
 							class='form-group'
 						>
 							<label for='exactTime'>
@@ -107,8 +107,20 @@
 								:min-datetime='new Date().toISOString()'
 								input-class='form-control'
 							/>
+						</div><hr>
+						<div class='messages-header'>
+							<h3>
+								{{ $t('config.daemon.scheduler.form.messages.title') }}
+							</h3>
+							<CButton
+								color='primary'
+								size='sm'
+								href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
+								target='_blank'
+							>
+								{{ $t("iqrfnet.sendJson.documentation") }}
+							</CButton>
 						</div>
-						<h3>{{ $t('config.daemon.scheduler.form.messages.title') }}</h3>
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
 							<hr>
 							<CRow>
@@ -132,7 +144,7 @@
 									</ValidationProvider>
 								</CCol>
 								<CCol md='6'>
-									<div 
+									<div
 										v-for='(messaging, j) of tasks[i-1].messaging'
 										:key='j'
 										class='form-group'
@@ -271,7 +283,7 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null
-	
+
 	/**
 	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
 	 */
@@ -348,7 +360,7 @@ export default class SchedulerForm extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-	
+
 	/**
 	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
 	 */
@@ -835,7 +847,17 @@ export default class SchedulerForm extends Vue {
 			);
 		}
 		this.$router.push('/config/daemon/scheduler/');
-		
+
 	}
 }
 </script>
+
+<style scoped>
+
+.messages-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+</style>
