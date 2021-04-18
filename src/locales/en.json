@@ -1486,10 +1486,19 @@
 						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
 					},
 					"network": {
-						"uploadStepSuccess": "Upload step has been successfully completed for all online devices.",
-						"verifyStepSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+						"uploadStepSuccess": "Upload step has been successfully completed.",
+						"verifyStepSuccess": "Verification step has been successfully completed for all devices.",
+						"verifyStepHwpidSuccess": "Verification step has been successfully completed for all devices with HWPID {hwpid}.",
+						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
+						"loadStepHwpidSuccess": "Flash load step has been sucessfully completed for all devices with HWPID {hwpid}.",
+						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
+						"runAllHwpidSuccess": "All OTA upload steps have been successfully completed for all devices with HWPID {hwpid}.",
+						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
 					},
 					"uploadStepFail": "An error has occured during the upload step.",
 					"verifyStepFail": "An error has occured during the verification step.",

@@ -628,7 +628,8 @@ export default class OtaUpload extends Vue {
 				this.verifyStep();
 			} else {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.info(
+				this.checks.upload = true;
+				this.$toast.success(
 					this.$t('iqrfnet.networkManager.otaUpload.messages.network.uploadStepSuccess').toString()
 				);
 			}
@@ -636,19 +637,45 @@ export default class OtaUpload extends Vue {
 			if (this.autoUpload) {
 				this.flashLoadStep();
 			} else {
-				this.$store.commit('spinner/HIDE');
 				const devices: Array<number> = [];
 				response.rsp.verifyResult.forEach((item) => {
 					if (!item.result) {
 						devices.push(item.address);
 					}
 				});
-				this.$toast.info(
-					this.$t(
-						'iqrfnet.networkManager.otaUpload.messages.network.verifyStepSuccess',
-						{devices: devices.length > 0 ? devices.join(', ') : 'None'}
-					).toString()
-				);
+				this.$store.commit('spinner/HIDE');
+				this.checks.verify = true;
+				if (devices.length > 0) {
+					if (this.hwpid === 65535) {
+						this.$toast.info(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepPartialSuccess',
+								{devices: devices.join(', ')}
+							).toString()
+						);
+					} else {
+						this.$toast.info(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepHwpidPartialSuccess',
+								{devices: devices.join(', '), hwpid: this.hwpid}
+							).toString()
+						);
+					}
+				} else {
+					if (this.hwpid === 65535) {
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.otaUpload.messages.network.verifyStepSuccess').toString()
+						);
+					} else {
+						this.$toast.success(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepHwpidSuccess',
+								{hwpid: this.hwpid}
+							).toString()
+						);
+					}
+				}
+				
 			}
 		} else {
 			const devices: Array<number> = [];
@@ -658,12 +685,39 @@ export default class OtaUpload extends Vue {
 				}
 			});
 			this.$store.commit('spinner/HIDE');
-			this.$toast.info(
-				this.$t(
-					'iqrfnet.networkManager.otaUpload.messages.network.' + (this.autoUpload ? 'runAllSuccess' : 'loadStepSuccess'),
-					{devices: devices.length > 0 ? devices.join(', ') : 'None'}
-				).toString()
-			);
+			if (!this.autoUpload) {
+				this.checks.flash = true;
+			}
+			if (devices.length > 0) {
+				if (this.hwpid === 65535) {
+					this.$toast.info(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepPartialSuccess',
+							{devices: devices.join(', ')}
+						).toString()
+					);
+				} else {
+					this.$toast.info(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepHwpidPartialSuccess',
+							{devices: devices.join(', '), hwpid: this.hwpid}
+						).toString()
+					);
+				}
+			} else {
+				if (this.hwpid === 65535) {
+					this.$toast.success(
+						this.$t('iqrfnet.networkManager.otaUpload.messages.network.loadStepSuccess').toString()
+					);
+				} else {
+					this.$toast.success(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepHwpidSuccess',
+							{hwpid: this.hwpid}
+						).toString()
+					);
+				}
+			}
 		}
 	}
 }
