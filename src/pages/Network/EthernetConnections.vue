@@ -54,7 +54,7 @@
 									v-else
 									color='danger'
 									size='sm'
-									@click='disconnect(item)'
+									@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
 								>
 									<CIcon :content='icons.disconnect' size='sm' />
 									{{ $t('network.table.disconnect') }}
@@ -72,6 +72,31 @@
 				</CCardBody>
 			</div>
 		</CCard>
+		<CModal
+			:show='connectionModal !== null'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.ethernet.modal.title') }}
+				</h5>
+			</template>
+			{{ $t('network.ethernet.modal.prompt') }}
+			<template #footer>
+				<CButton
+					color='warning'
+					@click='disconnect(connectionModal)'
+				>
+					{{ $t('network.table.disconnect') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='connectionModal = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
@@ -89,6 +114,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
+import VersionService from '../../services/VersionService';
 
 @Component({
 	components: {
@@ -114,6 +140,11 @@ export default class EthernetConnections extends Vue {
 	 * @var {boolean} connectionsLoaded Indicates whether connections have been loaded
 	 */
 	private connectionsLoaded = false
+
+	/**
+	 * @var {NetworkConnection|null} connectionModal Auxiliary connection variable for disconnect modal
+	 */
+	private connectionModal: NetworkConnection|null = null
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
@@ -159,9 +190,15 @@ export default class EthernetConnections extends Vue {
 	}
 
 	/**
+	 * @var {string} hostname Window hostname
+	 */
+	private hostname = ''
+
+	/**
 	 * Retrieves interfaces and connections
 	 */
 	mounted(): void {
+		this.hostname = window.location.hostname;
 		this.getInterfaces();
 	}
 
@@ -214,7 +251,7 @@ export default class EthernetConnections extends Vue {
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: connection.interfaceName, connection: connection.name}
+						{connection: connection.name}
 					).toString());
 				this.getConnections();
 			})
@@ -230,6 +267,7 @@ export default class EthernetConnections extends Vue {
 	 * @param {NetworkConnection} connection Network connection configuration
 	 */
 	private disconnect(connection: NetworkConnection): void {
+		this.connectionModal = null;
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.disconnect(connection.uuid)
 			.then(() => {
@@ -241,11 +279,46 @@ export default class EthernetConnections extends Vue {
 					).toString());
 				this.getConnections();
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'network.connection.messages.disconnect.failed',
-				{connection: connection.name}
-			));
+			.catch((error: AxiosError) => {
+				if (this.hostname === 'localhost') {
+					extendedErrorToast(
+						error,
+						'network.connection.messages.disconnect.failed',
+						{connection: connection.name}
+					);
+				} else {
+					this.tryRest(error, connection.name);
+				}
+			});
+	}
+
+	/**
+	 * Attempts a REST API request to check availability of this address
+	 * @param {AxiosError} disconnectError Axios error from disconnect request
+	 * @param {string} name Connection name
+	 */
+	private tryRest(disconnectError: AxiosError, name: string): void {
+		VersionService.getWebappVersionRest()
+			.then(() => {
+				extendedErrorToast(
+					disconnectError,
+					'network.connection.messages.disconnect.failed',
+					{connection: name}
+				);
+			})
+			.catch((error: AxiosError) => {
+				if (error.response === undefined) {
+					this.$store.commit('spinner/HIDE');
+					this.$store.commit('blocking/SHOW', this.$t('network.ethernet.messages.disconnectUnavailable').toString());
+				} else {
+					extendedErrorToast(
+						disconnectError,
+						'network.connection.messages.disconnect.failed',
+						{connection: name}
+					);
+				}
+			});
+		
 	}
 }
 </script>
