@@ -41,42 +41,51 @@
 							</CCol>
 							<CCol md='6'>
 								<h3>{{ $t("config.controller.form.logger.title") }}</h3>
-								<ValidationProvider
-									v-slot='{ errors, touched, valid }'
-									rules='required'
-									:custom-messages='{required: "config.controller.errors.missing.l_file"}'
-								>
-									<CInput
-										v-model='config.logger.filePath'
-										:label='$t("config.controller.form.logger.filePath")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
-									rules='required'
-									:custom-messages='{
-										required: "config.controller.errors.missing.l_severity",
-									}'
-								>
-									<CSelect
-										:value.sync='config.logger.severity'
-										:options='severityOptions'
-										:label='$t("config.controller.form.logger.severity")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t("config.controller.errors.missing.l_severity")'
-									/>
-								</ValidationProvider>
-								<CInputCheckbox
-									:checked.sync='config.logger.sinks.file'
-									:label='$t("config.controller.form.logger.sinks.file")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.logger.sinks.syslog'
-									:label='$t("config.controller.form.logger.sinks.syslog")'
-								/>
+								<CRow>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{ errors, touched, valid }'
+											rules='required'
+											:custom-messages='{required: "config.controller.errors.missing.l_file"}'
+										>
+											<CInput
+												v-model='config.logger.filePath'
+												:label='$t("config.controller.form.logger.filePath")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<ValidationProvider
+											v-slot='{ valid, touched, errors }'
+											rules='required'
+											:custom-messages='{
+												required: "config.controller.errors.missing.l_severity",
+											}'
+										>
+											<CSelect
+												:value.sync='config.logger.severity'
+												:options='severityOptions'
+												:label='$t("config.controller.form.logger.severity")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+												:placeholder='$t("config.controller.errors.missing.l_severity")'
+											/>
+										</ValidationProvider>
+									</CCol>
+									<CCol md='6'>
+										<label>
+											<b>{{ $t('config.controller.form.logger.sink') }}</b>
+										</label>
+										<CInputCheckbox
+											:checked.sync='config.logger.sinks.file'
+											:label='$t("config.controller.form.logger.sinks.file")'
+										/>
+										<CInputCheckbox
+											:checked.sync='config.logger.sinks.syslog'
+											:label='$t("config.controller.form.logger.sinks.syslog")'
+										/>
+									</CCol>
+								</CRow>
 							</CCol>
 						</CRow><hr>
 						<CRow>
