@@ -229,7 +229,7 @@ class IqrfNetService {
 				'repeat': 1,
 				'req': {
 					'deviceAddr': deviceAddr,
-					'hwpid': hwpid,
+					'hwpId': hwpid,
 					'fileName': file,
 					'startMemAddr': eeepromAddr,
 					'loadingAction': action,
