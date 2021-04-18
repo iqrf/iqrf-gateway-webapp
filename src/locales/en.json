@@ -891,6 +891,7 @@
 					"title": "Logger",
 					"filePath": "Path to log file",
 					"severity": "Severity level",
+					"sink": "Logging sinks",
 					"sinks": {
 						"file": "Log to file",
 						"syslog": "Log to syslog"
