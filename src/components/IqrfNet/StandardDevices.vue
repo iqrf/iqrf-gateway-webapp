@@ -516,7 +516,7 @@ export default class StandardDevices extends Vue {
 		}
 		let devices: Array<StandardDevice> = [];
 		response.rsp.nodes.forEach((device: IInfoNode) => {
-			devices[device.nAdr] = new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc);
+			devices.push(new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc));
 		});
 		this.auxDevices = devices;
 		this.getBinouts();
@@ -548,7 +548,10 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		response.rsp.binOutDevices.forEach((device: IInfoBinout) => {
-			this.auxDevices[device.nAdr]?.setBinouts(device.binOuts);
+			const idx = this.getDeviceIndex(device.nAdr);
+			if (idx !== -1) {
+				this.auxDevices[idx]?.setBinouts(device.binOuts);
+			}
 		});
 		this.getDalis();
 	}
@@ -579,7 +582,10 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		response.rsp.daliDevices.forEach((device: IInfoDevice) => {
-			this.auxDevices[device.nAdr]?.setDali(true);
+			const idx = this.getDeviceIndex(device.nAdr);
+			if (idx !== -1) {
+				this.auxDevices[idx]?.setDali(true);
+			}
 		});
 		this.getLights();
 	}
@@ -610,7 +616,10 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		response.rsp.lightDevices.forEach((device: IInfoLight) => {
-			this.auxDevices[device.nAdr]?.setLights(device.lights);
+			const idx = this.getDeviceIndex(device.nAdr);
+			if (idx !== -1) {
+				this.auxDevices[idx]?.setLights(device.lights);
+			}
 		});
 		this.getSensors();
 	}
@@ -641,7 +650,10 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		response.rsp.sensorDevices.forEach((device: IInfoSensor) => {
-			this.auxDevices[device.nAdr]?.setSensors(device.sensors);
+			const idx = this.getDeviceIndex(device.nAdr);
+			if (idx !== -1) {
+				this.auxDevices[idx]?.setSensors(device.sensors);
+			}
 		});
 		this.filterStandards();
 		this.pingDevices();
@@ -666,7 +678,7 @@ export default class StandardDevices extends Vue {
 				});
 		}
 		this.devices = this.auxDevices;
-		this.auxDevices = [];
+		//this.auxDevices = [];
 	}
 
 	/**
@@ -749,6 +761,15 @@ export default class StandardDevices extends Vue {
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()
 		);
+	}
+
+	/**
+	 * Finds index of device in auxDevices array
+	 * @param {number} address Address of device from response
+	 * @returns {number} Index of device in auxDevices array
+	 */
+	private getDeviceIndex(address: number): number {
+		return this.auxDevices.findIndex((device: StandardDevice) => address === device.getAddress());
 	}
 
 }
