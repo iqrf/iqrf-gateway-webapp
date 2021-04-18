@@ -224,6 +224,10 @@ export default class SendJsonRequest extends Vue {
 				this.handleMessageError(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
 				this.handleAutoNetworkResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
+				this.handleBackup(mutation.payload);
+			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
+				this.handleEnumerationNow(mutation.payload);
 			} else {
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleResponse(mutation.payload);
@@ -332,10 +336,11 @@ export default class SendJsonRequest extends Vue {
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
 			options.timeout = 1000;
-		} else if (request.mType === 'iqmeshNetwork_AutoNetwork') { // autonetwork request has multiple responses, do not timeout
-			this.$toast.info(
-				this.$t('iqrfnet.sendJson.messages.autoNetworkStart').toString()
-			);
+		} else if (request.mType === 'iqmeshNetwork_AutoNetwork' ||
+			request.mType === 'iqmeshNetwork_Backup' ||
+			(request.mType === 'infoDaemon_Enumeration' && request.data.req.command === 'now') ||
+			request.mType === 'otaUpload') { // requests without timeout
+			this.$store.commit('spinner/SHOW');
 		} else { // regular messages have a minute timeout
 			options.timeout = 60000;
 			options.message = 'iqrfnet.sendJson.messages.error.fail';
@@ -376,11 +381,47 @@ export default class SendJsonRequest extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		this.$store.commit('spinner/HIDE');
 		if (response.data.rsp.lastWave && response.data.rsp.progress === 100) { // autonetwork finished
+			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.messages.autoNetworkFinish').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles Backup Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleBackup(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		if (response.data.rsp.progress === 100) {
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.backupFinish').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles Enumeration now Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerationNow(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		if (response.data.rsp.percentage === 100) { // enumeration finished
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.enumerationFinish').toString()
 			);
 		}
 	}
@@ -403,7 +444,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		if (response.data.status in StatusMessages) {
 			this.$toast.error(
-				this.$t(StatusMessages[response.data.status]).toString()
+				this.$t(StatusMessages[response.status]).toString()
 			);
 			return;
 		}

@@ -60,7 +60,7 @@
 								}'
 							>
 								<label for='cronTime'>
-									{{ $t("config.daemon.scheduler.form.task.cronTime") }}
+									<b>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</b>
 								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
 									{{ cronMessage }}
 								</CBadge>
@@ -107,8 +107,20 @@
 								:min-datetime='new Date().toISOString()'
 								input-class='form-control'
 							/>
+						</div><hr>
+						<div class='messages-header'>
+							<h3>
+								{{ $t('config.daemon.scheduler.form.messages.title') }}
+							</h3>
+							<CButton
+								color='primary'
+								size='sm' 
+								href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
+								target='_blank'
+							>
+								{{ $t("iqrfnet.sendJson.documentation") }}
+							</CButton>
 						</div>
-						<h3>{{ $t('config.daemon.scheduler.form.messages.title') }}</h3>
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
 							<hr>
 							<CRow>
@@ -839,3 +851,13 @@ export default class SchedulerForm extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.messages-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+</style>

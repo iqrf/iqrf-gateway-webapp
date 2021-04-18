@@ -896,6 +896,7 @@
 					"title": "Logger",
 					"filePath": "Path to log file",
 					"severity": "Severity level",
+					"sink": "Logging sinks",
 					"sinks": {
 						"file": "Log to file",
 						"syslog": "Log to syslog"
@@ -1072,6 +1073,7 @@
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},
 			"hostname": "Hostname",
@@ -1313,6 +1315,7 @@
 			"backup": {
 				"title": "Network backup",
 				"form": {
+					"target": "Backup target",
 					"node": "Node",
 					"network": "Whole network",
 					"messages": {
@@ -1343,14 +1346,22 @@
 					}
 				},
 				"messages": {
+					"invalidDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
+					"invalidAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",
+					"invalidCoordinatorAddr": "Device property of entry {entry} is Coordinator, but address is not 0. Address: {address}.",
+					"invalidCoordinatorDataC": "Device property of entry {entry} is Coordinator, but DataC entry is missing.",
+					"invalidCoordinatorDataN": "Device property of entry {entry} is Coordinator, but entry contains property DataN.",
+					"invalidNodeAddr": "Device property of entry {entry} is Node, but address is 0.",
+					"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
+					"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
+					"invalidDataContent": "Data{device} property of entry {entry} contains nonhexadecimal characters.",
 					"coordinatorRunning": "Restoring coordinator device...",
 					"coordinatorSuccess": "Coordinator device has been successfully restored.",
-					"timeout": "The restore process request timed out.",
-					"corruptedFile": "The contents of uploaded file are corrupted.",
+					"readFailed": "Failed to read contents of selected file.",
+					"parsingContent": "Reading and parsing content of selected file.",
 					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
 					"missingProp": "Entry {item} does not contain property {property}.",
-					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
-					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
+					"missingCoordinator": "Selected file does not contain coordinator device backup data entry.",
 					"invalidSize": "Invalid coordinator backup data size.",
 					"checksumMismatch": "Incorrect coordinator backup data checksum.",
 					"failedMessage": "Restore process not started: {message}"
@@ -1468,6 +1479,8 @@
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
+					"notHexFile": "Selected file is not .hex file.",
+					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occured during file content parsing: {error}",
@@ -1488,10 +1501,19 @@
 						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
 					},
 					"network": {
-						"uploadStepSuccess": "Upload step has been successfully completed for all online devices.",
-						"verifyStepSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+						"uploadStepSuccess": "Upload step has been successfully completed.",
+						"verifyStepSuccess": "Verification step has been successfully completed for all devices.",
+						"verifyStepHwpidSuccess": "Verification step has been successfully completed for all devices with HWPID {hwpid}.",
+						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
+						"loadStepHwpidSuccess": "Flash load step has been sucessfully completed for all devices with HWPID {hwpid}.",
+						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
+						"runAllHwpidSuccess": "All OTA upload steps have been successfully completed for all devices with HWPID {hwpid}.",
+						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
 					},
 					"uploadStepFail": "An error has occured during the upload step.",
 					"verifyStepFail": "An error has occured during the verification step.",
@@ -1543,8 +1565,9 @@
 				"missing": "Please enter JSON request.",
 				"mType": "JSON object does not have mType key.",
 				"success": "JSON request has been sent successfully.",
-				"autoNetworkStart": "AutoNetwork request sent, multiple responses will be received.",
 				"autoNetworkFinish": "The AutoNetwork process has concluded.",
+				"backupFinish": "The Backup process has concluded.",
+				"enumerationFinish": "The database enumeration process has concluded.",
 				"error": {
 					"timeout": "Request timed out.",
 					"fail": "An error occurred while processing JSON request.",
@@ -2033,13 +2056,17 @@
 		"title": "IP network",
 		"description": "IP network management.",
 		"ethernet": {
-			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
 			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection",
 			"messages": {
-				"noInterfaces": "No active ethernet network interface detected."
+				"noInterfaces": "No active ethernet network interface detected.",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address."
+			},
+			"modal": {
+				"title": "Ethernet connection disconnect warning",
+				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?"
 			}
 		},
 		"wireless": {
@@ -2054,63 +2081,68 @@
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
+				"titleDisconnect": "Wi-Fi connection disconnect warning",
+				"titleDelete": "Wi-Fi connection delete warning",
+				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?",
+				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Do you wish to delete connection?"
+			},
+			"form": {
 				"title": "Wi-Fi configuration",
-				"modalTitle": "Connect to {accessPoint}",
-				"form": {
-					"security": "Security",
-					"securityTypes": {
-						"open": "Open",
-						"wep": "Wep",
-						"wpa-psk": "WPA-Personal",
-						"wpa-eap": "WPA-Enterprise"
-					},
-					"authPhaseOne": "Phase one authentication",
-					"phaseOneAlgorithm": {
-						"peap": "Protected EAP"
-					},
-					"phaseTwoAlgorithm": {
-						"mschapv2": "MSCHAPv2"
-					},
-					"wep": {
-						"length": "WEP key length",
-						"lengths": {
-							"64bit": "64 bit (5 ASCII / 10 hex)",
-							"128bit": "128 bit (13 ASCII / 26 hex)"
-						},
-						"type": "Type",
-						"types": {
-							"key": "Key",
-							"passphrase": "Passphrase"
-						},
-						"index": "Default WEP key",
-						"keyNum": "WEP Key {index}"
-					},
-					"noCaCert": "No CA certificate required",
-					"caCert": "CA certificate",
-					"authPhaseTwo": "Phase two authentication",
-					"anonymousIdentity": "Anonymous identity",
-					"username": "Username",
-					"password": "Password",
-					"psk": "Pre-shared key"
+				"security": "Security",
+				"securityTypes": {
+					"open": "Open",
+					"wep": "Wep",
+					"wpa-psk": "WPA-Personal",
+					"wpa-eap": "WPA-Enterprise"
 				},
-				"errors": {
-					"password": "Please enter the password.",
-					"psk": "Please enter pre-shared key.",
-					"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
-					"wepKeyType": "Please select WEP security type.",
-					"wepIndex": "Please enter default key index.",
-					"wepIndexInvalid": "Default key index should be between 0 and 3.",
-					"wepIndexKeyMissing": "WEP key at specified index missing.",
-					"wepKey": "Please enter a WEP key.",
-					"wepPassphrase": "Please enter a WEP passphrase",
-					"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
-					"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
-				}
+				"authPhaseOne": "Phase one authentication",
+				"phaseOneAlgorithm": {
+					"peap": "Protected EAP"
+				},
+				"phaseTwoAlgorithm": {
+					"mschapv2": "MSCHAPv2"
+				},
+				"wep": {
+					"length": "WEP key length",
+					"lengths": {
+						"64bit": "64 bit (5 ASCII / 10 hex)",
+						"128bit": "128 bit (13 ASCII / 26 hex)"
+					},
+					"type": "Type",
+					"types": {
+						"key": "Key",
+						"passphrase": "Passphrase"
+					},
+					"index": "Default WEP key",
+					"keyNum": "WEP Key {index}"
+				},
+				"noCaCert": "No CA certificate required",
+				"caCert": "CA certificate",
+				"authPhaseTwo": "Phase two authentication",
+				"anonymousIdentity": "Anonymous identity",
+				"username": "Username",
+				"password": "Password",
+				"psk": "Pre-shared key"
+			},
+			"errors": {
+				"password": "Please enter the password.",
+				"psk": "Please enter pre-shared key.",
+				"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
+				"wepKeyType": "Please select WEP security type.",
+				"wepIndex": "Please enter default key index.",
+				"wepIndexInvalid": "Default key index should be between 0 and 3.",
+				"wepIndexKeyMissing": "WEP key at specified index missing.",
+				"wepKey": "Please enter a WEP key.",
+				"wepPassphrase": "Please enter a WEP passphrase",
+				"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
+				"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
 			},
 			"messages": {
 				"noInterfaces": "No active Wi-Fi network interface detected.",
 				"listFailed": "Failed to retrieve list of available access points: {error}",
-				"connectionsFailed": "Failed to retrieve access point connection details: {error}"
+				"connectionsFailed": "Failed to retrieve access point connection details: {error}",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address.",
+				"removeUnavailable": "Web interface is no longer available at this address as the removed connection profile used this address."
 			}
 		},
 		"wireguard": {
@@ -2321,7 +2353,7 @@
 					"success": "Network connection {connection} has been edited."
 				},
 				"connect": {
-					"success": "Network connection {connection} has been activate at network interface {interface}.",
+					"success": "Network connection {connection} has been activated.",
 					"failed": "Failed to activate connection {connection}: {error}"
 				},
 				"disconnect": {

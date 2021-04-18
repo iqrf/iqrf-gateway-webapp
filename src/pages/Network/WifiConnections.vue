@@ -75,7 +75,7 @@
 								<CButton
 									size='sm'
 									:color='item.aps[0].inUse ? "danger" : "success"'
-									@click='item.aps[0].inUse ? disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
+									@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
 										item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
 										addConnection(item.aps[0])'
 								>
@@ -93,7 +93,7 @@
 									v-if='item.aps[0].uuid'
 									size='sm'
 									color='danger'
-									@click='removeConnection(item.aps[0].uuid, item.aps[0].ssid)'
+									@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
 								>
 									<CIcon :content='icons.remove' size='sm' />
 									{{ $t('table.actions.delete') }}
@@ -104,18 +104,69 @@
 				</CCardBody>
 			</div>
 		</CCard>
+		<CModal
+			:show='disconnectAp !== null'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.wireless.modal.titleDisconnect') }}
+				</h5>
+			</template>
+			{{ $t('network.wireless.modal.promptDisconnect') }}
+			<template #footer>
+				<CButton
+					color='warning'
+					@click='disconnect(disconnectAp.uuid, disconnectAp.ssid, disconnectAp.interfaceName)'
+				>
+					{{ $t('network.table.disconnect') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='disconnectAp = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
+		<CModal
+			:show='deleteAp !== null'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.wireless.modal.titleDelete') }}
+				</h5>
+			</template>
+			{{ $t('network.wireless.modal.promptDelete') }}
+			<template #footer>
+				<CButton
+					color='warning'
+					@click='removeConnection(deleteAp.uuid, deleteAp.ssid)'
+				>
+					{{ $t('table.actions.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteAp = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress, CSelect} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
 import WifiForm from '../../components/Network/WifiForm.vue';
 
 import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+import VersionService from '../../services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
@@ -130,6 +181,7 @@ import {IAccessPoint, IAccessPointArray, NetworkInterface} from '../../interface
 		CCardHeader,
 		CDataTable,
 		CIcon,
+		CModal,
 		CProgress,
 		CSelect,
 		WifiForm,
@@ -205,9 +257,30 @@ export default class WifiConnections extends Vue {
 	]
 
 	/**
+	 * @var {IAccessPoint|null} disconnectAp Access point used in disconnect modal
+	 */
+	private disconnectAp: IAccessPoint|null = null
+
+	/**
+	 * @var {IAccessPoint|null} deleteAp Access point used in delete modal
+	 */
+	private deleteAp: IAccessPoint|null = null
+
+	/**
+	 * @var {boolean} deletedAP Indicates that AP has just been deleted
+	 */
+	private deletedAp = false
+
+	/**
+	 * @var {string} Hostname Window hostname
+	 */
+	private hostname = ''
+
+	/**
 	 * Retrieves data for table
 	 */
 	mounted(): void {
+		this.hostname = window.location.hostname;
 		this.getInterfaces();
 	}
 
@@ -242,7 +315,12 @@ export default class WifiConnections extends Vue {
 					this.getAccessPoints();
 				}
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed'));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(
+					error, 
+					'network.connection.messages.interfacesFetchFailed'
+				);
+			});
 	}
 
 	/**
@@ -252,7 +330,24 @@ export default class WifiConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.listWifiAccessPoints()
 			.then((response: AxiosResponse) => this.findConnections(response.data))
-			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireless.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				if (!this.deletedAp) {
+					extendedErrorToast(
+						error, 
+						'network.wireless.messages.listFailed'
+					);
+				} else {
+					if (this.hostname === 'localhost') {
+						extendedErrorToast(
+							error, 
+							'network.wireless.messages.listFailed'
+						);
+					} else {
+						this.tryRest(error, 'unknown', 'network.connection.messages.removeFailed', 'network.wireless.messages.removeUnavailable');
+					}
+					this.deletedAp = false;
+				}
+			});
 	}
 
 	/**
@@ -326,6 +421,7 @@ export default class WifiConnections extends Vue {
 	 * @param {string} ifname Network interface name
 	 */
 	private disconnect(uuid: string, name: string, ifname: string): void {
+		this.disconnectAp = null;
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.disconnect(uuid)
 			.then(() => {
@@ -337,11 +433,46 @@ export default class WifiConnections extends Vue {
 					).toString());
 				this.getAccessPoints();
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'network.connection.messages.disconnect.failed',
-				{connection: name}
-			));
+			.catch((error: AxiosError) => {
+				if (this.hostname === 'localhost') {
+					extendedErrorToast(
+						error,
+						'network.connection.messages.disconnect.failed',
+						{connection: name}
+					);
+				} else {
+					this.tryRest(error, name, 'network.connection.messages.disconnect.failed', 'network.wireless.messages.disconnectUnavailable');
+				}
+			});
+	}
+
+	/**
+	 * Attempts a REST API request to check if web interface is available
+	 * @param {AxiosError} triggerError Axios error from previous request
+	 * @param {string} name Connection name
+	 * @param {string} message Toast message from previous request
+	 */
+	private tryRest(triggerError: AxiosError, name: string, errorMessage: string, divMessage: string): void {
+		VersionService.getWebappVersionRest()
+			.then(() => {
+				extendedErrorToast(
+					triggerError,
+					errorMessage,
+					{connection: name}
+				);
+			})
+			.catch((error: AxiosError) => {
+				if (error.response === undefined) {
+					this.$store.commit('spinner/HIDE');
+					this.$store.commit('blocking/SHOW', this.$t(divMessage).toString());
+				} else {
+					extendedErrorToast(
+						triggerError,
+						errorMessage,
+						{connection: name}
+					);
+				}
+			});
 	}
 
 	/**
@@ -385,6 +516,7 @@ export default class WifiConnections extends Vue {
 	 * @param {string} name Network connection name
 	 */
 	private removeConnection(uuid: string, name: string): void {
+		this.deleteAp = null;
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.remove(uuid)
 			.then(() => {
@@ -395,6 +527,7 @@ export default class WifiConnections extends Vue {
 						{connection: name}
 					).toString()
 				);
+				this.deletedAp = true;
 				this.getAccessPoints();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(

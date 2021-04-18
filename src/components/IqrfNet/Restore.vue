@@ -11,9 +11,6 @@
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
-						<p v-if='fileEmpty && !fileUntouched' style='color:red'>
-							{{ $t('iqrfnet.networkManager.restore.form.messages.backupFile') }}
-						</p>
 					</div>			
 					<CButton
 						type='submit'
@@ -66,11 +63,6 @@ export default class Restore extends Vue {
 	 * @var {Array<IRestoreData>} restoreData Array of device backup data entries
 	 */
 	private restoreData: Array<IRestoreData> = []
-
-	/**
-	 * @var {boolean} fileUntouched Has file input been interacted with?
-	 */
-	private fileUntouched = true
 	
 	/**
 	 * @var {boolean} fileEmpty Is file input empty?
@@ -241,11 +233,17 @@ export default class Restore extends Vue {
 	 * Checks if file input element is empty
 	 */
 	private isEmpty(): void {
-		if (this.fileUntouched) {
-			this.fileUntouched = false;
-		}
 		const files = this.getFiles();
 		this.fileEmpty = files === null || files.length === 0;
+	}
+
+	/**
+	 * Clears file input content
+	 */
+	private clearInput(): void {
+		((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		this.fileEmpty = true;
+		this.$store.commit('spinner/HIDE');
 	}
 
 	/**
@@ -263,13 +261,21 @@ export default class Restore extends Vue {
 	 * Attempts to read file content of uploaded file
 	 */
 	private readContents(): void {
+		this.$store.commit('spinner/SHOW');
+		this.$store.commit(
+			'spinner/UPDATE_TEXT',
+			this.$t('iqrfnet.networkManager.restore.messages.parsingContent').toString()
+		);
 		this.getFiles()[0].text()
 			.then((fileContent: string) => {
 				this.parseContent(fileContent);
 			})
-			.catch(() => this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.corruptedFile').toString()
-			));
+			.catch(() => {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.restore.messages.readFailed').toString()
+				);
+				this.clearInput();
+			});
 	}
 
 	/**
@@ -284,7 +290,6 @@ export default class Restore extends Vue {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: property}).toString()
 			);
-			this.fileEmpty = true;
 			return false;
 		}
 		return true;
@@ -300,38 +305,139 @@ export default class Restore extends Vue {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()
 			);
-			this.fileEmpty = true;
+			this.clearInput();
+			return;
 		}
 		delete restoreData.Backup;
 		const backupKeys = Object.keys(restoreData);
 		for (let key of backupKeys) {
-			if (!RegExp('^[0-9A-F]{8}$').test(key)) {
+			if (!RegExp(/^[0-9A-F]{8}$/i).test(key)) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()
 				);
-				this.fileEmpty = true;
-			}
-			if (!this.checkForProp(restoreData[key], 'Device', key) ||
-				!this.checkForProp(restoreData[key], 'Version', key) ||
-				!this.checkForProp(restoreData[key], 'Address', key)) {
-				this.fileEmpty = true;
+				this.clearInput();
 				return;
 			}
-			if (Number.parseInt(restoreData[key]['Address']) === 0 && !('DataC' in restoreData[key])) {
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataC'}).toString()
-				);
-				this.fileEmpty = true;
-				return;
-			} else if (Number.parseInt(restoreData[key]['Address']) > 0 && !('DataN' in restoreData[key])) {
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataN'}).toString()
-				);
-				this.fileEmpty = true;
+			if (!this.validateEntry(restoreData[key], key)) {
+				this.clearInput();
 				return;
 			}
 		}
 		this.restoreData = Object.keys(restoreData).map(key => restoreData[key]);
+		this.$store.commit('spinner/HIDE');
+	}
+
+	/**
+	 * Validates device backup entry
+	 * @param {IRestoreData} entry Device backup entry
+	 * @param {string} key Device key (MID hex)
+	 */
+	private validateEntry(entry: IRestoreData, key: string): boolean {
+		if (!this.checkForProp(entry, 'Device', key)) {
+			return false;
+		}
+		if (!this.checkForProp(entry, 'Version', key)) {
+			return false;
+		}
+		if (!this.checkForProp(entry, 'Address', key)) {
+			return false;
+		}
+		const device = entry.Device;
+		if (device !== 'Coordinator' && device !== 'Node') { // Check device prop value
+			this.$toast.error(
+				this.$t(
+					'iqrfnet.networkManager.restore.messages.invalidDevice',
+					{entry: key, device: device}
+				).toString()
+			);
+			return false;
+		}
+		const addr = Number.parseInt(entry.Address);
+		if (addr < 0 || addr > 239) { // Check address prop range
+			this.$toast.error(
+				this.$t(
+					'iqrfnet.networkManager.restore.messages.invalidAddr',
+					{entry: key, address: addr}
+				).toString()
+			);
+			return false;
+		}
+		if (device === 'Coordinator') {
+			if (addr !== 0) { // Check invalid coodinator address
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidCoordinatorAddr',
+						{entry: key, address: addr}
+					).toString()
+				);
+				return false;
+			}
+			if (!entry.DataC) { // Check for missing coordinator data
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidCoordinatorDataC',
+						{entry: key}
+					).toString()
+				);
+				return false;
+			}
+			if (!RegExp(/^[0-9A-F]+$/i).test(entry.DataC)) { // Check for invalid charset
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidDataContent',
+						{entry: key, device: 'C'}
+					).toString()
+				);
+				return false;
+			}
+			if (entry.DataN) { // Check for extra node data
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidCoordinatorDataN',
+						{entry: key}
+					).toString()
+				);
+				return false;
+			}
+		}
+		if (device === 'Node') {
+			if (addr === 0) { // Check invalid node address
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidNodeAddr',
+						{entry: key, address: addr}
+					).toString()
+				);
+				return false;
+			}
+			if (!entry.DataN) { // Check for missing node data
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidNodeDataN',
+						{entry: key}
+					).toString()
+				);
+				return false;
+			}
+			if (!RegExp(/^[0-9A-F]+$/i).test(entry.DataN)) { // Check for invalid charset
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidDataContent',
+						{entry: key, device: 'N'}
+					).toString()
+				);
+				return false;
+			}
+			if (entry.DataC) { // Check for extre coordinator data
+				this.$toast.error(
+					this.$t(
+						'iqrfnet.networkManager.restore.messages.invalidNodeDataC',
+						{entry: key}
+					).toString()
+				);
+			}
+		}
+		return true;
 	}
 }
 </script>

@@ -29,6 +29,10 @@
 							<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
 							<td>{{ info.versions.daemon }}</td>
 						</tr>
+						<tr v-if='info.versions.uploader'>
+							<th>{{ $t('gateway.info.version.iqrfGatewayUploader') }}</th>
+							<td>{{ info.versions.uploader }}</td>
+						</tr>
 						<tr>
 							<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
 							<td>{{ info.versions.webapp }}</td>
