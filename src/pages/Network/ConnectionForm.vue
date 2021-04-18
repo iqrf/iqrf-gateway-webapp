@@ -37,11 +37,11 @@
 						</ValidationProvider>
 						<CRow v-if='connection.type === "802-11-wireless"'>
 							<CCol md='6'>
-								<legend>{{ $t('network.wireless.modal.title') }}</legend>
+								<legend>{{ $t('network.wireless.form.title') }}</legend>
 								<div class='form-group'>
 									<b>
-										<span>{{ $t('network.wireless.modal.form.security') }}</span>
-									</b> {{ $t('network.wireless.modal.form.securityTypes.' + connection.wifi.security.type) }}
+										<span>{{ $t('network.wireless.form.security') }}</span>
+									</b> {{ $t('network.wireless.form.securityTypes.' + connection.wifi.security.type) }}
 								</div>
 								<div
 									v-if='connection.wifi.security.type === "ieee8021x"'
@@ -49,11 +49,11 @@
 								>
 									<CInput
 										v-model='connection.wifi.security.leap.username'
-										:label='$t("network.wireless.modal.form.username")'
+										:label='$t("network.wireless.form.username")'
 									/>
 									<CInput
 										v-model='connection.wifi.security.leap.password'
-										:label='$t("network.wireless.modal.form.password")'
+										:label='$t("network.wireless.form.password")'
 									/>
 								</div>
 								<div 
@@ -64,15 +64,15 @@
 										v-slot='{errors, touched, valid}'
 										rules='required|wepKeyType'
 										:custom-messages='{
-											required: "network.wireless.modal.errors.wepKeyType",
-											wepKeyType: "network.wireless.modal.errors.wepKeyType"
+											required: "network.wireless.errors.wepKeyType",
+											wepKeyType: "network.wireless.errors.wepKeyType"
 										}'
 									>
 										<CSelect
 											:value.sync='connection.wifi.security.wep.type'
 											:options='wepKeyOptions'
-											:label='$t("network.wireless.modal.form.wep.type")'
-											:placeholder='$t("network.wireless.modal.errors.wepKeyType")'
+											:label='$t("network.wireless.form.wep.type")'
+											:placeholder='$t("network.wireless.errors.wepKeyType")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
@@ -81,16 +81,16 @@
 										v-if='connection.wifi.security.wep.type === "key"'
 										:value.sync='wepLen'
 										:options='wepLenOptions'
-										:label='$t("network.wireless.modal.form.wep.length")'
+										:label='$t("network.wireless.form.wep.length")'
 									/>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|integer|between:0,3|wepIndex'
 										:custom-messages='{
-											required: "network.wireless.modal.errors.wepIndex",
+											required: "network.wireless.errors.wepIndex",
 											integer: "forms.errors.integer",
-											between: "network.wireless.modal.errors.wepIndexInvalid",
-											wepIndex: "network.wireless.modal.errors.wepIndexKeyMissing"
+											between: "network.wireless.errors.wepIndexInvalid",
+											wepIndex: "network.wireless.errors.wepIndexKeyMissing"
 										}'
 									>
 										<CInput
@@ -98,7 +98,7 @@
 											type='number'
 											min='0'
 											max='3'
-											:label='$t("network.wireless.modal.form.wep.index")'
+											:label='$t("network.wireless.form.wep.index")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
@@ -110,13 +110,13 @@
 										:rules='connection.wifi.security.wep.type === "key" ? "wepKey" : ""'
 										:custom-messages='{
 											wepKey: wepLen === "64bit" ?
-												"network.wireless.modal.errors.wepKey64Invalid":
-												"network.wireless.modal.errors.wepKey128Invalid"
+												"network.wireless.errors.wepKey64Invalid":
+												"network.wireless.errors.wepKey128Invalid"
 										}'
 									>
 										<CInput							
 											v-model='connection.wifi.security.wep.keys[index]'
-											:label='$t("network.wireless.modal.form.wep.keyNum", {index: index})'
+											:label='$t("network.wireless.form.wep.keyNum", {index: index})'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
@@ -127,15 +127,15 @@
 									v-slot='{errors, touched, valid}'
 									rules='required|wpaPsk'
 									:custom-messages='{
-										required: "network.wireless.modal.errors.psk",
-										wpaPsk: "network.wireless.modal.errors.pskInvalid"
+										required: "network.wireless.errors.psk",
+										wpaPsk: "network.wireless.errors.pskInvalid"
 									}'
 								>
 									<CInput
 										v-model='connection.wifi.security.psk'
 										:type='pskInputType'
 										visibility
-										:label='$t("network.wireless.modal.form.psk")'
+										:label='$t("network.wireless.form.psk")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									>
@@ -155,21 +155,21 @@
 									<CSelect
 										:value.sync='connection.wifi.security.eap.phaseOne'
 										:options='authOneOptions'
-										:label='$t("network.wireless.modal.form.authPhaseOne")'
+										:label='$t("network.wireless.form.authPhaseOne")'
 									/>
 									<CInput
 										v-model='connection.wifi.security.eap.anonymousIdentity'
-										:label='$t("network.wireless.modal.form.anonymousIdentity")'
+										:label='$t("network.wireless.form.anonymousIdentity")'
 									/>
 									<CInput
 										v-model='connection.wifi.security.eap.cert'
-										:label='$t("network.wireless.modal.form.caCert")'
+										:label='$t("network.wireless.form.caCert")'
 										:disabled='connection.wifi.security.eap.noCert'
 									/>
 									<CSelect
 										:value.sync='connection.wifi.security.eap.phaseTwo'
 										:options='authTwoOptions'
-										:label='$t("network.wireless.modal.form.authPhaseTwo")'
+										:label='$t("network.wireless.form.authPhaseTwo")'
 									/>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
@@ -180,7 +180,7 @@
 									>
 										<CInput
 											v-model='connection.wifi.security.eap.identity'
-											:label='$t("network.wireless.modal.form.username")'
+											:label='$t("network.wireless.form.username")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
@@ -194,7 +194,7 @@
 									>
 										<CInput
 											v-model='connection.wifi.security.eap.password'
-											:label='$t("network.wireless.modal.form.password")'
+											:label='$t("network.wireless.form.password")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
@@ -581,7 +581,7 @@ export default class ConnectionForm extends Vue {
 	 */
 	private authOneOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.modal.form.phaseOneAlgorithm.peap'),
+			label: this.$t('network.wireless.form.phaseOneAlgorithm.peap'),
 			value: 'peap'
 		},
 	]
@@ -591,7 +591,7 @@ export default class ConnectionForm extends Vue {
 	 */
 	private authTwoOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.modal.form.phaseTwoAlgorithm.mschapv2'),
+			label: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2'),
 			value: 'mschapv2'
 		},
 	]
@@ -601,11 +601,11 @@ export default class ConnectionForm extends Vue {
 	 */
 	private wepKeyOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.modal.form.wep.types.key'),
+			label: this.$t('network.wireless.form.wep.types.key'),
 			value: WepKeyType.KEY
 		},
 		{
-			label: this.$t('network.wireless.modal.form.wep.types.passphrase'),
+			label: this.$t('network.wireless.form.wep.types.passphrase'),
 			value: WepKeyType.PASSPHRASE
 		},
 	]
@@ -620,11 +620,11 @@ export default class ConnectionForm extends Vue {
 	 */
 	private wepLenOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.modal.form.wep.lengths.64bit'),
+			label: this.$t('network.wireless.form.wep.lengths.64bit'),
 			value: WepKeyLen.BIT64,
 		},
 		{
-			label: this.$t('network.wireless.modal.form.wep.lengths.128bit'),
+			label: this.$t('network.wireless.form.wep.lengths.128bit'),
 			value: WepKeyLen.BIT128,
 		},
 	]

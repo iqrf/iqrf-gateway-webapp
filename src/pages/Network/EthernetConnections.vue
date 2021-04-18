@@ -102,19 +102,19 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CModal} from '@coreui/vue/src';
 import EthernetConnection from '../../components/Network/EthernetConnection.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
+import VersionService from '../../services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
-import VersionService from '../../services/VersionService';
 
 @Component({
 	components: {
@@ -122,6 +122,7 @@ import VersionService from '../../services/VersionService';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CModal,
 		EthernetConnection
 	},
 	metaInfo: {

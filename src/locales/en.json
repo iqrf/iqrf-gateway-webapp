@@ -2064,7 +2064,7 @@
 				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses the address."
 			},
 			"modal": {
-				"title": "Connection disconnect warning",
+				"title": "Ethernet connection disconnect warning",
 				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect?"
 			}
 		},
@@ -2080,58 +2080,59 @@
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
+				"title": "Wi-Fi connection disconnect warning",
+				"prompt": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address."
+			},
+			"form": {
 				"title": "Wi-Fi configuration",
-				"modalTitle": "Connect to {accessPoint}",
-				"form": {
-					"security": "Security",
-					"securityTypes": {
-						"open": "Open",
-						"wep": "Wep",
-						"wpa-psk": "WPA-Personal",
-						"wpa-eap": "WPA-Enterprise"
-					},
-					"authPhaseOne": "Phase one authentication",
-					"phaseOneAlgorithm": {
-						"peap": "Protected EAP"
-					},
-					"phaseTwoAlgorithm": {
-						"mschapv2": "MSCHAPv2"
-					},
-					"wep": {
-						"length": "WEP key length",
-						"lengths": {
-							"64bit": "64 bit (5 ASCII / 10 hex)",
-							"128bit": "128 bit (13 ASCII / 26 hex)"
-						},
-						"type": "Type",
-						"types": {
-							"key": "Key",
-							"passphrase": "Passphrase"
-						},
-						"index": "Default WEP key",
-						"keyNum": "WEP Key {index}"
-					},
-					"noCaCert": "No CA certificate required",
-					"caCert": "CA certificate",
-					"authPhaseTwo": "Phase two authentication",
-					"anonymousIdentity": "Anonymous identity",
-					"username": "Username",
-					"password": "Password",
-					"psk": "Pre-shared key"
+				"security": "Security",
+				"securityTypes": {
+					"open": "Open",
+					"wep": "Wep",
+					"wpa-psk": "WPA-Personal",
+					"wpa-eap": "WPA-Enterprise"
 				},
-				"errors": {
-					"password": "Please enter the password.",
-					"psk": "Please enter pre-shared key.",
-					"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
-					"wepKeyType": "Please select WEP security type.",
-					"wepIndex": "Please enter default key index.",
-					"wepIndexInvalid": "Default key index should be between 0 and 3.",
-					"wepIndexKeyMissing": "WEP key at specified index missing.",
-					"wepKey": "Please enter a WEP key.",
-					"wepPassphrase": "Please enter a WEP passphrase",
-					"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
-					"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
-				}
+				"authPhaseOne": "Phase one authentication",
+				"phaseOneAlgorithm": {
+					"peap": "Protected EAP"
+				},
+				"phaseTwoAlgorithm": {
+					"mschapv2": "MSCHAPv2"
+				},
+				"wep": {
+					"length": "WEP key length",
+					"lengths": {
+						"64bit": "64 bit (5 ASCII / 10 hex)",
+						"128bit": "128 bit (13 ASCII / 26 hex)"
+					},
+					"type": "Type",
+					"types": {
+						"key": "Key",
+						"passphrase": "Passphrase"
+					},
+					"index": "Default WEP key",
+					"keyNum": "WEP Key {index}"
+				},
+				"noCaCert": "No CA certificate required",
+				"caCert": "CA certificate",
+				"authPhaseTwo": "Phase two authentication",
+				"anonymousIdentity": "Anonymous identity",
+				"username": "Username",
+				"password": "Password",
+				"psk": "Pre-shared key"
+			},
+			"errors": {
+				"password": "Please enter the password.",
+				"psk": "Please enter pre-shared key.",
+				"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
+				"wepKeyType": "Please select WEP security type.",
+				"wepIndex": "Please enter default key index.",
+				"wepIndexInvalid": "Default key index should be between 0 and 3.",
+				"wepIndexKeyMissing": "WEP key at specified index missing.",
+				"wepKey": "Please enter a WEP key.",
+				"wepPassphrase": "Please enter a WEP passphrase",
+				"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
+				"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
 			},
 			"messages": {
 				"noInterfaces": "No active Wi-Fi network interface detected.",
