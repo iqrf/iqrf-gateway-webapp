@@ -1980,13 +1980,17 @@
 		"title": "IP network",
 		"description": "IP network management.",
 		"ethernet": {
-			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
 			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection",
 			"messages": {
-				"noInterfaces": "No active ethernet network interface detected."
+				"noInterfaces": "No active ethernet network interface detected.",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses the address."
+			},
+			"modal": {
+				"title": "Connection disconnect warning",
+				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect?"
 			}
 		},
 		"wireless": {
@@ -2268,7 +2272,7 @@
 					"success": "Network connection {connection} has been edited."
 				},
 				"connect": {
-					"success": "Network connection {connection} has been activate at network interface {interface}.",
+					"success": "Network connection {connection} has been activated.",
 					"failed": "Failed to activate connection {connection}: {error}"
 				},
 				"disconnect": {
