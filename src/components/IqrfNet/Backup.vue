@@ -6,6 +6,7 @@
 				<CForm @submit.prevent='backupDevice'>
 					<CSelect
 						:value.sync='target'
+						:label='$t("iqrfnet.networkManager.backup.form.target")'
 						:options='selectOptions'
 						:placeholder='$t("iqrfnet.networkManager.backup.form.messages.select")'
 					/>
