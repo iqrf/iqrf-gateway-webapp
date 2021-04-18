@@ -2062,11 +2062,11 @@
 			"edit": "Edit Ethernet connection",
 			"messages": {
 				"noInterfaces": "No active ethernet network interface detected.",
-				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses the address."
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address."
 			},
 			"modal": {
 				"title": "Ethernet connection disconnect warning",
-				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect?"
+				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?"
 			}
 		},
 		"wireless": {
@@ -2081,8 +2081,10 @@
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
-				"title": "Wi-Fi connection disconnect warning",
-				"prompt": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address."
+				"titleDisconnect": "Wi-Fi connection disconnect warning",
+				"titleDelete": "Wi-Fi connection delete warning",
+				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?",
+				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Do you wish to delete connection?"
 			},
 			"form": {
 				"title": "Wi-Fi configuration",
@@ -2138,7 +2140,9 @@
 			"messages": {
 				"noInterfaces": "No active Wi-Fi network interface detected.",
 				"listFailed": "Failed to retrieve list of available access points: {error}",
-				"connectionsFailed": "Failed to retrieve access point connection details: {error}"
+				"connectionsFailed": "Failed to retrieve access point connection details: {error}",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address.",
+				"removeUnavailable": "Web interface is no longer available at this address as the removed connection profile used this address."
 			}
 		},
 		"wireguard": {
