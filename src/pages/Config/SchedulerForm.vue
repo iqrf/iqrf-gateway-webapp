@@ -123,7 +123,7 @@
 						</div>
 						<h3>{{ $t('config.daemon.scheduler.form.messages.title') }}</h3>
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
-							<hr>
+							<hr v-if='i > 1'>
 							<CRow>
 								<CCol md='6'>
 									<ValidationProvider
