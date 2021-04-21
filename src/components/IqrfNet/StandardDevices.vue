@@ -473,6 +473,7 @@ export default class StandardDevices extends Vue {
 			this.$toast.success(
 				this.$t('iqrfnet.standard.table.messages.enumNowSuccess').toString()
 			);
+			this.getDevices();
 			return;
 		}
 		this.$store.commit('spinner/UPDATE_TEXT',
@@ -749,6 +750,7 @@ export default class StandardDevices extends Vue {
 		this.$toast.success(
 			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
 		);
+		this.getDevices();
 	}
 
 	/**
