@@ -21,7 +21,7 @@
 						:value.sync='target'
 						:options='targetOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
-						@change='clearForm'
+						@change='resetChecks'
 					/>
 					<ValidationProvider
 						v-if='target === "node"'
@@ -41,7 +41,7 @@
 							:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							@input='clearForm'
+							@input='resetChecks'
 						/>
 					</ValidationProvider>
 					<div 
@@ -65,7 +65,7 @@
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-								@input='clearForm'
+								@input='resetChecks'
 							/>
 						</ValidationProvider>
 						<p>
@@ -91,7 +91,7 @@
 							:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							@input='clearForm'
+							@input='resetChecks'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
