@@ -1,3 +1,30 @@
+iqrf-gateway-webapp (2.3.0~rc2) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * Gateway log: fixed controller log formatting, include uploader log in logs zip if it exists
+  * DiagnosticsManager: add uploader log if it exists
+  * Gateway info: uploader version, added uploader version tests, fixed log tests
+  * Interfaces: changed spi pin input fields to number type
+  * Websocket messagings: update table when new config is fetched, omit instances clearing
+  * MQ messagings: fixed async accept change in table
+  * Scheduler: added API docs button, fixed task and message splitter, fixed cron label
+  * Send JSON: added spinner for autonetwork, backup, enumeration and ota upload without timeout
+  * SendJson: added conclude messages for autonetwork, backup and enumeration
+  * SendJson: fixed response object projecting
+  * Gateway info: fixed daemon mode fetch error; OtaUpload: file input validation, clearing, upload button checkmarks and conditional availability
+  * OTA upload: updated localization, added new toast messages for network upload and hwpid filtering, fixed checks
+  * Iqrfnet backup: added missing network target label, Iqrfnet restore: backup data file parsing refactor, error handling
+  * Ethernet connections: added disconnect modal window and blocking element
+  * Network: updated localization
+  * Wireless connections: updated localization, added disconnect and remove modal window, blocking div
+  * Install: include uploader version in install gateway info
+  * Controller config: updated logger layout
+  * OtaUpload service: fixed request hwpid property
+  * OtaUpload: clear input and checks on form manipulation
+  * OtaUpload: do not clear input on target, address or hwpid change
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 21 Apr 2021 11:17:39 +0200
+
 iqrf-gateway-webapp (2.3.0~rc1) testing; urgency=medium
 
   * Prepare for version v2.3.0-alpha
