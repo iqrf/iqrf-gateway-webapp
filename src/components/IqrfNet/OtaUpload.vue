@@ -21,6 +21,7 @@
 						:value.sync='target'
 						:options='targetOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
+						@change='clearForm'
 					/>
 					<ValidationProvider
 						v-if='target === "node"'
@@ -40,6 +41,7 @@
 							:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
+							@input='clearForm'
 						/>
 					</ValidationProvider>
 					<div 
@@ -63,6 +65,7 @@
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								@input='clearForm'
 							/>
 						</ValidationProvider>
 						<p>
@@ -88,6 +91,7 @@
 							:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
+							@input='clearForm'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
@@ -365,6 +369,7 @@ export default class OtaUpload extends Vue {
 	 */
 	private resetFileInput(): void {
 		((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		this.fileInputEmpty();
 	}
 
 	/**
@@ -372,6 +377,21 @@ export default class OtaUpload extends Vue {
 	 */
 	private fileInputEmpty(): void {
 		this.fileEmpty = this.getFiles().length === 0;
+	}
+
+	/**
+	 * Resets step checks
+	 */
+	private resetChecks(): void {
+		this.checks.upload = this.checks.verify = this.checks.flash = false;
+	}
+
+	/**
+	 * Resets the inputs and checks if target, address or filtering has changed
+	 */
+	private clearForm(): void {
+		this.resetFileInput();
+		this.resetChecks();
 	}
 
 	/**
@@ -386,20 +406,17 @@ export default class OtaUpload extends Vue {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.otaUpload.messages.notHexFile').toString()
 			);
-			this.resetFileInput();
-			this.fileEmpty = true;
+			this.clearForm();
 			return;
 		}
 		if (this.fileType === FileFormat.IQRF && !file.name.endsWith('.iqrf')) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.otaUpload.messages.notIqrfFile').toString()
 			);
-			this.resetFileInput();
-			this.fileEmpty = true;
-			
+			this.clearForm();
 			return;
 		}
-		this.checks.upload = this.checks.verify = this.checks.flash = false;
+		this.resetChecks();
 		this.fileEmpty = false;
 	}
 
@@ -442,7 +459,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the upload step
 	 */
 	private uploadStep(): void {
-		this.checks.upload = this.checks.verify = this.checks.flash = false;
+		this.resetChecks();
 		this.executeStep(OtaUploadAction.UPLOAD, 'iqrfnet.networkManager.otaUpload.messages.uploadStepFail');
 	}
 
