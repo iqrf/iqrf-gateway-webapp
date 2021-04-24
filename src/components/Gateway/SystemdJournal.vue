@@ -305,7 +305,7 @@ export default class SystemdJournal extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.failed = true;
-				extendedErrorToast(error, 'gateway.log.systemdJournal.messages.fetchFailureError');
+				extendedErrorToast(error, 'gateway.log.systemdJournal.messages.fetchFailedError');
 			});
 	}
 
