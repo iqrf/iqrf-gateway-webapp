@@ -122,37 +122,65 @@
 							</CButton>
 						</div>
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{required: "config.daemon.scheduler.errors.service"}'
-							>
-								<CSelect
-									:value.sync='tasks[i-1].messaging'
-									:label='$t("config.daemon.scheduler.form.messages.messaging")'
-									:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
-									:options='messagings'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|json|mType'
-								:custom-messages='{
-									required: "config.daemon.scheduler.errors.message",
-									json: "iqrfnet.sendJson.form.messages.invalid",
-									mType: "iqrfnet.sendJson.form.messages.mType"
-								}'
-							>
-								<CTextarea
-									v-model='tasks[i-1].message'
-									v-autogrow
-									:label='$t("config.daemon.scheduler.form.messages.label")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
+							<hr v-if='i > 1'>
+							<CRow>
+								<CCol md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|json|mType'
+										:custom-messages='{
+											required: "config.daemon.scheduler.errors.message",
+											json: "iqrfnet.sendJson.form.messages.invalid",
+											mType: "iqrfnet.sendJson.form.messages.mType"
+										}'
+									>
+										<CTextarea
+											v-model='tasks[i-1].message'
+											v-autogrow
+											:label='$t("config.daemon.scheduler.form.messages.label")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+								<CCol md='6'>
+									<div 
+										v-for='(messaging, j) of tasks[i-1].messaging'
+										:key='j'
+										class='form-group'
+									>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='required'
+											:custom-messages='{
+												required: "config.daemon.scheduler.errors.service"
+											}'
+										>
+											<CSelect
+												:value.sync='tasks[i-1].messaging[j]'
+												:label='$t("config.daemon.scheduler.form.messages.messaging")'
+												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
+												:options='messagings'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<CButton
+											v-if='tasks[i-1].messaging.length > 1'
+											color='danger'
+											@click='removeTaskMessaging(i-1, j)'
+										>
+											{{ $t('config.daemon.scheduler.form.messagings.remove') }}
+										</CButton> <CButton
+											v-if='j === (tasks[i-1].messaging.length - 1)'
+											color='success'
+											@click='addTaskMessaging(i-1)'
+										>
+											{{ $t('config.daemon.scheduler.form.messagings.add') }}
+										</CButton>
+									</div>
+								</CCol>
+							</CRow>
 							<CButton
 								v-if='tasks.length > 1'
 								color='danger'
@@ -195,16 +223,11 @@ import SchedulerService from '../../services/SchedulerService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IOption} from '../../interfaces/coreui';
-import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
-
-interface ILocalTask {
-	message: string
-	messaging: string
-}
 
 enum TimeSpecTypes {
 	CRON = 'cron',
@@ -292,7 +315,12 @@ export default class SchedulerForm extends Vue {
 	/**
 	 * @var {Array<ILocalTask>} tasks Array of scheduler task messages
 	 */
-	private tasks: Array<ILocalTask> = [{message: '', messaging: ''}]
+	private tasks: Array<ITaskMessaging> = [
+		{
+			message: '',
+			messaging: [''],
+		},
+	]
 
 	/**
 	 * @var {ITaskTimeSpec} timeSpec Scheduler task time specification
@@ -528,15 +556,32 @@ export default class SchedulerForm extends Vue {
 	 * Adds another scheduler task message object
 	 */
 	private addMessage(): void {
-		this.tasks.push({message: '', messaging: ''});
+		this.tasks.push({message: '', messaging: ['']});
+	}
+
+	/**
+	 * Adds another scheduler task messaging
+	 * @param {number} index Task index
+	 */
+	private addTaskMessaging(index: number): void {
+		this.tasks[index].messaging.push('');
 	}
 
 	/**
 	 * Removes a scheduler task message object specified by index
 	 * @param {number} index Index of scheduler task message
 	 */
-	private removeMessage(index): void {
+	private removeMessage(index: number): void {
 		this.tasks.splice(index, 1);
+	}
+
+	/**
+	 * Removes a scheduler task messaging specified
+	 * @param {number} tIndex Task index
+	 * @param {number} mIndex Messaging index
+	 */
+	private removeTaskMessaging(tIndex: number, mIndex: number): void {
+		this.tasks[tIndex].messaging.splice(mIndex, 1);
 	}
 
 	/**
@@ -591,13 +636,13 @@ export default class SchedulerForm extends Vue {
 		this.timeSpec = taskDaemon.timeSpec;
 		if (Array.isArray(taskDaemon.task)) {
 			this.tasks = taskDaemon.task.map((item: ITaskMessage) => ({
-				messaging: item.messaging,
+				messaging: Array.isArray(item.messaging) ? item.messaging : item.messaging.split('&'),
 				message: JSON.stringify(item.message, null, 2),
 			}));
 		} else {
 			this.tasks = [
 				{
-					messaging: taskDaemon.task.messaging,
+					messaging: Array.isArray(taskDaemon.task.messaging) ? taskDaemon.task.messaging : taskDaemon.task.messaging.split('&'),
 					message: JSON.stringify(taskDaemon.task.message, null, 2),
 				}
 			];
@@ -620,7 +665,7 @@ export default class SchedulerForm extends Vue {
 		}
 		this.timeSpec = taskRest.timeSpec;
 		this.tasks = taskRest.task.map((item: ITaskMessage) => ({
-			messaging: item.messaging,
+			messaging: Array.isArray(item.messaging) ? item.messaging : item.messaging.split('&'),
 			message: JSON.stringify(item.message, null, 2),
 		}));
 	}

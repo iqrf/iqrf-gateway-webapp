@@ -8,12 +8,15 @@
 		</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mq.errors.instance"}'
+							v-slot='{errors, touched, valid}'
+							rules='required|instance'
+							:custom-messages='{
+								required: "config.daemon.messagings.mq.errors.instance",
+								instance: "config.daemon.messagings.instanceInvalid"
+							}'
 						>
 							<CInput
 								v-model='configuration.instance'
@@ -23,7 +26,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.LocalMqName"}'
 						>
@@ -35,7 +38,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.RemoteMqName"}'
 						>
@@ -137,10 +140,14 @@ export default class MqMessagingForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initialize validation rules
 	 */
 	created(): void {
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**

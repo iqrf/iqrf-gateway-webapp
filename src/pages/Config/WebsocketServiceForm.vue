@@ -15,8 +15,11 @@
 								<legend>{{ $t('config.daemon.messagings.websocket.service.legend') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{required: "config.daemon.messagings.websocket.errors.serviceInstance"}'
+									rules='required|instance'
+									:custom-messages='{
+										required: "config.daemon.messagings.websocket.errors.serviceInstance",
+										instance: "config.daemon.messagings.instanceInvalid"
+									}'
 								>
 									<CInput
 										v-model='componentInstance'
@@ -131,7 +134,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -141,7 +144,6 @@ import {IWsService} from '../../interfaces/messagingInterfaces';
 import {AxiosError, AxiosResponse } from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -261,16 +263,20 @@ export default class WebsocketServiceForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves component instance configuration
 	 */
 	mounted(): void {
 		if (this.instance) {

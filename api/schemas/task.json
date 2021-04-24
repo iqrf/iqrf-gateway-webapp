@@ -89,7 +89,8 @@
 			"title": "Task(s)",
 			"items": {
 				"$id": "#/properties/task/items",
-				"$ref": "#/definitions/task"
+				"$ref": "#/definitions/task",
+				"additionalItems": false
 			},
 			"example": [
 				{
@@ -120,9 +121,25 @@
 			"properties": {
 				"messaging": {
 					"$id": "#/definitions/task/messaging",
-					"type": "string",
-					"title": "Task messaging type",
-					"example": "MqttMessaging"
+					"title": "Task messaging type(s)",
+					"oneOf": [
+						{
+							"type": "string",
+							"example": "MqttMessaging"
+						},
+						{
+							"type": "array",
+							"items": {
+								"$id": "#/definitions/task/messaging/items",
+								"type": "string",
+								"pattern": "^[^&]+$"
+							},
+							"example": [
+								"MqMessaging",
+								"MqttMessaging"
+							]
+						}
+					]
 				},
 				"message": {
 					"$id": "#/definitions/task/message",
