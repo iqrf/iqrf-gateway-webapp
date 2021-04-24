@@ -493,12 +493,12 @@ export default class StandardDevices extends Vue {
 	 * Retrieves information about devices stored in database
 	 */
 	private getDevices(): void {
-		this.$store.commit('spinner/SHOW');
+		this.$store.dispatch('spinner/show', {timeout: 90000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.device.fetch').toString()
 		);
-		InfoService.nodes()
+		InfoService.nodes(11000, 'iqrfnet.standard.table.messages.device.fetchTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -509,7 +509,7 @@ export default class StandardDevices extends Vue {
 	private handleGetDevices(response): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.device.fetchFailed').toString()
 			);
@@ -531,7 +531,7 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.binout.fetch').toString()
 		);
-		InfoService.binouts()
+		InfoService.binouts(11000, 'iqrfnet.standard.table.messages.binout.fetchTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -565,7 +565,7 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.dali.fetch').toString()
 		);
-		InfoService.dalis()
+		InfoService.dalis(11000, 'iqrfnet.standard.table.messages.dali.fetchTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -599,7 +599,7 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.light.fetch').toString()
 		);
-		InfoService.lights()
+		InfoService.lights(11000, 'iqrfnet.standard.table.messages.light.fetchTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -633,7 +633,7 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.sensor.fetch').toString()
 		);
-		InfoService.sensors()
+		InfoService.sensors(11000, 'iqrfnet.standard.table.messages.sensor.fetchTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -656,19 +656,15 @@ export default class StandardDevices extends Vue {
 				this.auxDevices[idx]?.setSensors(device.sensors);
 			}
 		});
-		this.filterStandards();
+		this.fetchDeviceDetails();
+		this.$store.dispatch('spinner/hide');
 		this.pingDevices();
 	}
 
 	/**
 	 * Filters devices that do not implement any standards from the array
 	 */
-	private async filterStandards(): Promise<void> {
-		for (let i = 1; i < this.auxDevices.length; i++) {
-			if (!this.auxDevices[i].hasStandard()) {
-				this.auxDevices.splice(i, 1);
-			}
-		}
+	private async fetchDeviceDetails(): Promise<void> {
 		for (let i = 0; i < this.auxDevices.length; i++) {
 			await ProductService.get(this.auxDevices[i].getHwpid())
 				.then((response: AxiosResponse) => {
@@ -679,21 +675,18 @@ export default class StandardDevices extends Vue {
 				});
 		}
 		this.devices = this.auxDevices;
-		//this.auxDevices = [];
 	}
 
 	/**
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
-		if (!this.$store.getters['spinner/isEnabled']) {
-			this.$store.commit('spinner/SHOW');
-		}
+		this.$store.dispatch('spinner/show', {timeout: 100000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
-		const options = new WebSocketOptions(null, 90000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
+		const options = new WebSocketOptions(null, 100000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
 		IqrfNetService.ping(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -705,7 +698,7 @@ export default class StandardDevices extends Vue {
 	private handlePingDevices(response): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.ping.fetchFailed').toString()
 			);
@@ -722,15 +715,15 @@ export default class StandardDevices extends Vue {
 				}
 			}
 		});
-		this.$store.commit('spinner/HIDE');
+		this.$store.dispatch('spinner/hide');
 	}
 
 	/**
 	 * Resets the IqrfInfo database
 	 */
 	private resetDb(): void {
-		this.$store.commit('spinner/SHOW');
-		InfoService.reset()
+		this.$store.dispatch('spinner/show', {timeout: 10000});
+		InfoService.reset(10000, 'iqrfnet.standard.table.message.resetTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -740,7 +733,7 @@ export default class StandardDevices extends Vue {
 	 */
 	private handleReset(response): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		this.$store.commit('spinner/HIDE');
+		this.$store.dispatch('spinner/hide');
 		if (response.status !== 0) {
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.resetFailed', {error: response.rsp.errorStr}).toString()
@@ -759,7 +752,7 @@ export default class StandardDevices extends Vue {
 	 */
 	private handleMessageError(response): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		this.$store.commit('spinner/HIDE');
+		this.$store.dispatch('spinner/hide');
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()
 		);
