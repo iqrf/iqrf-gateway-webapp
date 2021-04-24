@@ -67,6 +67,11 @@ class DiagnosticsManager {
 	private $confDir;
 
 	/**
+	 * @var string Path to a directory with IQRF Gateway Daemon's data
+	 */
+	private $dataDir;
+
+	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
 	private $logDir;
@@ -84,6 +89,7 @@ class DiagnosticsManager {
 		$this->infoManager = $infoManager;
 		$this->cacheDir = $mainManager->getCacheDir();
 		$this->confDir = $confDir;
+		$this->dataDir = $mainManager->getDataDir();
 		$this->logDir = $logDir;
 		$this->gwInfo = $gwInfo;
 	}
@@ -103,6 +109,7 @@ class DiagnosticsManager {
 		}
 		$this->zipManager = new ZipArchiveManager($path);
 		$this->addConfiguration();
+		$this->addDatabase();
 		$this->addMetadata();
 		$this->addScheduler();
 		$this->addDaemonLog();
@@ -124,6 +131,13 @@ class DiagnosticsManager {
 	 */
 	public function addConfiguration(): void {
 		$this->zipManager->addFolder($this->confDir, 'configuration');
+	}
+
+	/**
+	 * Adds IQRF Gateway Daemon database and scripts
+	 */
+	public function addDatabase(): void {
+		$this->zipManager->addFolder($this->dataDir . '/DB', 'DB');
 	}
 
 	/**
