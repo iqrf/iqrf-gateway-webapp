@@ -2,7 +2,7 @@
 	<CCard>
 		<CCardHeader>{{ $t('iqrfnet.trUpload.hexUpload.title') }}</CCardHeader>
 		<CCardBody>
-			<CForm @submit.prevent='submitUpload'>
+			<CForm @submit.prevent='gatewayUpload'>
 				<div class='form-group'>
 					<CInputFile
 						ref='fileUpload'
@@ -31,15 +31,14 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from '@coreui/vue/src';
 
-import {AxiosResponse, AxiosError} from 'axios';
-import {FileUpload} from '../../interfaces/trUpload';
-
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {FileFormat} from '../../iqrfNet/fileFormat';
-
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import IqrfService from '../../services/IqrfService';
 import NativeUploadService from '../../services/NativeUploadService';
 import ServiceService from '../../services/ServiceService';
+
+import {AxiosResponse, AxiosError} from 'axios';
+import {FileUpload} from '../../interfaces/trUpload';
 
 @Component({
 	components: {
@@ -73,11 +72,6 @@ export default class HexUpload extends Vue {
 	private fileUntouched = true
 
 	/**
-	 * @var {boolean} uploadMessage Spinner text
-	 */
-	private uploadMessage = '';
-
-	/**
 	 * Extracts uploaded files from form file input
 	 * @returns {Filelist} list of uploaded files
 	 */
@@ -89,7 +83,7 @@ export default class HexUpload extends Vue {
 	/**
 	 * Attempts to upload provided file to the gateway file storage
 	 */
-	private submitUpload(): void {
+	private gatewayUpload(): void {
 		// build form data
 		const formData = new FormData();
 		formData.append('format', FileFormat.HEX);
@@ -102,54 +96,36 @@ export default class HexUpload extends Vue {
 		}
 		formData.append('file', files[0]);
 
-		// status message and spinner update
-		this.uploadMessage = this.$t(
-			'iqrfnet.trUpload.hexUpload.messages.gatewayUpload',
-			{file: files[0].name}
-		).toString();
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-
-		// REST API upload
+		this.$store.commit('spinner/UPDATE_TEXT',
+			this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUpload').toString()
+		);
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
-				this.uploadMessage = this.$t(
-					'iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess',
-					{file: files[0].name}
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.$store.commit('spinner/UPDATE_TEXT', 
+					this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess').toString()
+				);
 				this.stopDaemon(response.data);
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('iqrfnet.trUpload.messages.gatewayUploadFailure').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.hexUpload.messages.gatewayUploadFailed'));
 	}
 
 	/**
 	 * Sends IQRF Gateway Uploader REST API request to upload Custom DPA handler
 	 * @param {FileUpload} response REST API response containing uploaded file metadata
 	 */
-	private uploadTr(response: FileUpload): void {
-		// update spinner status
-		this.uploadMessage = this.$t(
-			'iqrfnet.trUpload.osUpload.messages.fileUploading',
-			{file: response.fileName}
-		).toString();
-		this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-
-		// run uploader
+	private trUpload(response: FileUpload): void {
+		this.$store.commit('spinner/UPDATE_TEXT',
+			this.$t('iqrfnet.trUpload.hexUpload.messages.trUpload').toString()
+		);
 		IqrfService.uploader({name: response.fileName, type: 'HEX'})
 			.then(() => {
-				this.uploadMessage = this.$t(
-					'iqrfnet.trUpload.hexUpload.messages.uploadSuccessTr'
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.$store.commit('spinner/UPDATE_TEXT',
+					this.$t('iqrfnet.trUpload.hexUpload.messages.trUploadSuccess').toString()
+				);
 				this.startDaemon();
 			})
-			.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.hexUpload.messages.trUploadFailed'));
 	}
 
 	/**
@@ -159,11 +135,12 @@ export default class HexUpload extends Vue {
 	private stopDaemon(response: FileUpload): void {
 		ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.uploadMessage = this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-				this.uploadTr(response);
+				this.$store.commit('spinner/UPDATE_TEXT',
+					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
+				);
+				this.trUpload(response);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+			.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.stopFailed'));
 	}
 
 	/**
@@ -173,11 +150,8 @@ export default class HexUpload extends Vue {
 		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t('iqrfnet.trUpload.hexUpload.messages.uploadSuccess').toString()
-				);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+			.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.startFailed'));
 	}
 
 	/**

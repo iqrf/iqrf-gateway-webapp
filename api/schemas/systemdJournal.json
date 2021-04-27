@@ -1,0 +1,104 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdJournal.json",
+	"type": "object",
+	"title": "Systemd log configuration",
+	"example": {
+		"enabled": false
+	},
+	"required": [
+		"forwardToSyslog",
+		"persistence",
+		"maxDiskSize",
+		"maxFiles",
+		"sizeRotation",
+		"timeRotation"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"forwardToSyslog": {
+			"$id": "#/properties/forwardToSyslog",
+			"title": "Forward journal logs to syslog",
+			"type": "boolean",
+			"example": false
+		},
+		"persistence": {
+			"$id": "#/properties/persistence",
+			"title": "Log storage method",
+			"type": "string",
+			"enum": [
+				"persistent",
+				"volatile"
+			],
+			"example": "volatile"
+		},
+		"maxDiskSize": {
+			"$id": "#/properties/maxDiskSize",
+			"title": "Maximum disk space in MB that journal can use",
+			"description": "Setting 0 uses systemd default",
+			"type": "integer",
+			"min": 0,
+			"example": 0
+		},
+		"maxFiles": {
+			"$id": "#/properties/maxFiles",
+			"title": "Number of log files to keep",
+			"type": "integer",
+			"min": 1,
+			"example": 100
+		},
+		"sizeRotation": {
+			"$id": "#/properties/sizeRotation",
+			"title": "Size-based log rotation",
+			"type": "object",
+			"required": [
+				"maxFileSize"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"maxFileSize": {
+					"$id": "#/properties/maxFileSize",
+					"title": "Maximum log file size in MB",
+					"description": "Setting 0 uses systemd default",
+					"type": "integer",
+					"min": 0,
+					"example": 0
+				}
+			}
+		},
+		"timeRotation": {
+			"$id": "#/properties/timeRotation",
+			"title": "Time-based log rotation",
+			"type": "object",
+			"required": [
+				"count",
+				"unit"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"unit": {
+					"$id": "#/properties/MaxFileSec/properties/unit",
+					"title": "Time unit",
+					"type": "string",
+					"enum": [
+						"s",
+						"m",
+						"h",
+						"day",
+						"week",
+						"month",
+						"year"
+					],
+					"example": "month"
+				},
+				"count": {
+					"$id": "#/properties/MaxFileSec/properties/count",
+					"title": "Unit count",
+					"type": "integer",
+					"minimum": 1,
+					"example": 1
+				}
+			}
+		}
+	}
+}

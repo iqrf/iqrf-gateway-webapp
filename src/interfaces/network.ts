@@ -18,9 +18,17 @@ export interface NetworkInterface {
 	type: string
 }
 
+/**
+ * Connection modal interface
+ */
+export interface IConnectionModal {
+	ipv4: string|null
+	ipv4Addr: string|null
+}
+
 export interface IConnection {
 	autoConnect: IConnectionAutoConnect
-	name?: string
+	name: string
 	uuid?: string
 	type?: string
 	interface?: string
@@ -124,8 +132,10 @@ export interface IWifiWep {
  * Wireguard VPN list entry interface
  */
 export interface IWG {
+	id: number
 	name: string
-	state: string
+	active: boolean
+	enabled: boolean
 }
 
 /**

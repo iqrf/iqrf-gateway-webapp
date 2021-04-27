@@ -69,12 +69,11 @@ final class LogManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$controllerLogDir = realpath(__DIR__ . '/../../../data/logs/controller/');
 		$logDir = realpath(__DIR__ . '/../../../data/logs/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);
-		$this->manager = new LogManager($controllerLogDir . '/', $logDir . '/daemon/', $commandManager);
+		$this->manager = new LogManager($logDir . '/', $logDir . '/daemon/', $commandManager);
 		$modifyDates = [
 			'2018-08-13T13:37:13.107090' => 'daemon/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
 			'2018-08-13T13:37:18.262028' => 'daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log',

@@ -1,5 +1,5 @@
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0'>
+	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
 		<CCardBody>
 			<h4>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</h4><br>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -142,14 +142,17 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {versionHigherEqual} from '../../helpers/versionChecker';
+
 import IqrfNetService from '../../services/IqrfNetService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { IOption } from '../../interfaces/coreui';
-import { versionHigherEqual } from '../../helpers/versionChecker';
+
+import {IOption} from '../../interfaces/coreui';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -266,8 +269,7 @@ export default class BondingManager extends Vue {
 					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
-						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
-							.toString()
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 					);
 				}
 			}
@@ -320,7 +322,7 @@ export default class BondingManager extends Vue {
 	 */
 	private handleBondResponse(response): void {
 		if (response.status === 0) {
-			let bondAddr = this.autoAddress ? this.address : response.rsp.assignedAddr;
+			let bondAddr = this.autoAddress ? response.rsp.assignedAddr : this.address;
 			this.$emit('update-devices', {
 				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
 				type: 'success',
@@ -361,7 +363,7 @@ export default class BondingManager extends Vue {
 	 */
 	private handleSmartConnectResponse(response) {
 		if (response.status === 0) {
-			let bondAddr = this.autoAddress ? this.address : response.rsp.assignedAddr;
+			let bondAddr = this.autoAddress ? response.rsp.assignedAddr: this.address;
 			this.$emit('update-devices', {
 				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
 				type: 'success',

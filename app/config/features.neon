@@ -2,6 +2,10 @@
 docs:
 	enabled: true
 	url: https://docs.iqrf.org/iqrf-gateway/
+# Default gateway user password change
+gatewayPass:
+	enabled: false
+	user: root
 grafana:
 	enabled: false
 	url: /grafana/
@@ -14,6 +18,9 @@ iqrfGatewayTranslator:
 # Mender client configuration
 mender:
 	enabled: false
+# Monitoring service
+monit:
+	enabled: false
 # Network manager
 networkManager:
 	enabled: false
@@ -24,9 +31,6 @@ nodeRed:
 # PIXLA mamagement system
 pixla:
 	enabled: false
-# Root password change
-rootpass:
-	enabled: false
 # SSH daemon manager
 ssh:
 	enabled: false
@@ -34,6 +38,9 @@ ssh:
 supervisord:
 	enabled: false
 	url: /supervisord/
+# Systemd journal configuration
+systemdJournal:
+	enabled: false
 # System updater
 updater:
 	enabled: false

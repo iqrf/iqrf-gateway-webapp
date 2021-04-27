@@ -89,6 +89,7 @@ export interface WebSocketClientState {
 export interface DaemonStatus {
 	mode: string;
 	modal: boolean;
+	queueLen: number|string;
 }
 
 /**
@@ -119,6 +120,7 @@ const state: WebSocketClientState = {
 	daemonStatus: {
 		mode: 'unknown',
 		modal: false,
+		queueLen: 'unknown',
 	},
 	version: {
 		daemonVersion: '',
@@ -204,7 +206,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 	},
 	daemonStatusMode({commit}, mode: string): void {
 		commit('DAEMON_STATUS_MODE', mode);
-	}
+	},
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
@@ -233,6 +235,8 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
+		state.daemonStatus.mode = 'unknown';
+		state.daemonStatus.queueLen = 'unknown';
 	},
 	SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
 		console.error(state, event);
@@ -265,7 +269,22 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	DAEMON_STATUS_MODE(state: WebSocketClientState, mode: string) {
 		state.daemonStatus.mode = mode;
-	}
+	},
+	TRIM_MESSAGE_QUEUE(state: WebSocketClientState) {
+		const overload = state.messages.slice(32, state.messages.length - 1);
+		state.messages.splice(32, state.messages.length - 1);
+		overload.forEach((item: WebSocketMessage) => {
+			if (item.msgId in state.requests) {
+				delete state.requests[item.msgId];
+			}
+			if (item.msgId in state.responses) {
+				delete state.responses[item.msgId];
+			}
+		});
+	},
+	UPDATE_DAEMON_QUEUE_LEN(state: WebSocketClientState, len: number) {
+		state.daemonStatus.queueLen = len;
+	},
 };
 
 export default {

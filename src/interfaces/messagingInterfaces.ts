@@ -3,7 +3,7 @@ import {RequiredInterface} from './requiredInterfaces';
 /**
  * MqMessaging instance interface
  */
-export interface MqInstance {
+export interface IMqInstance {
 	acceptAsyncMsg: boolean
 	component: string
 	instance: string
@@ -14,7 +14,7 @@ export interface MqInstance {
 /**
  * MqttMessaging instance interface
  */
-export interface MqttInstance {
+export interface IMqttInstance {
 	acceptAsyncMsg: boolean
 	component: string
 	instance: string
@@ -118,7 +118,7 @@ export interface IWsService {
 /**
  * UdpMessaging instance interface
  */
-export interface UdpInstance {
+export interface IUdpInstance {
 	component: string
 	instance: string
 	LocalPort: number

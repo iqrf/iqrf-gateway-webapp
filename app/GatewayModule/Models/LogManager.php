@@ -22,6 +22,7 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -43,14 +44,19 @@ class LogManager {
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * @var string Path to a directory with log of IQRF Gateway Controller
+	 * IQRF Gateway Uploader log file name
 	 */
-	private $controllerLogDir;
+	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
 	private $daemonLogDir;
+
+	/**
+	 * @var string Path to a general directory with log files
+	 */
+	private $logDir;
 
 	/**
 	 * @var string Path to ZIP archive
@@ -59,12 +65,12 @@ class LogManager {
 
 	/**
 	 * Constructor
-	 * @param string $controllerLogDir Path to latest IQRF Gateway Controller log file
+	 * @param string $logDir Path to a general directory with log files
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $controllerLogDir, string $daemonLogDir, CommandManager $commandManager) {
-		$this->controllerLogDir = $controllerLogDir;
+	public function __construct(string $logDir, string $daemonLogDir, CommandManager $commandManager) {
+		$this->logDir = $logDir;
 		$this->daemonLogDir = $daemonLogDir;
 		$this->commandManager = $commandManager;
 	}
@@ -75,9 +81,14 @@ class LogManager {
 	 * @throws LogNotFoundException
 	 */
 	public function load(): array {
-		$logs = [
-			'daemon' => FileSystem::read($this->getLatestDaemonLog()),
-		];
+		$logs = [];
+		try {
+			$logs['daemon'] = FileSystem::read($this->getLatestDaemonLog());
+		} catch (LogEmptyException $e) {
+			$logs['daemon'] = '';
+		} catch (LogNotFoundException $e) {
+			$logs['daemon'] = null;
+		}
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
 			$logs['controller'] = FileSystem::read($this->getLatestControllerLog());
 		}
@@ -88,8 +99,8 @@ class LogManager {
 	 * Returns IQRF Gateway Controller's latest log file path
 	 */
 	public function getLatestControllerLog(): string {
-		$logFile = $this->controllerLogDir . self::CONTROLLER_LOG;
-		if (!file_exists($logFile) || filesize($logFile) === 0) {
+		$logFile = $this->logDir . self::CONTROLLER_LOG;
+		if (!file_exists($logFile)) {
 			throw new LogNotFoundException('Controller log file not found');
 		}
 		return $logFile;
@@ -102,16 +113,21 @@ class LogManager {
 	 */
 	public function getLatestDaemonLog(): string {
 		$logFiles = [];
+		$emptyLogFound = false;
 		/**
 		 * @var SplFileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->daemonLogDir) as $file) {
 			if ($file->getSize() === 0) {
+				$emptyLogFound = true;
 				continue;
 			}
 			$logFiles[$file->getMTime()] = $file->getRealPath();
 		}
 		if ($logFiles === []) {
+			if ($emptyLogFound) {
+				throw new LogEmptyException('Daemon log file is empty.');
+			}
 			throw new LogNotFoundException('Daemon log files not found');
 		}
 		krsort($logFiles);
@@ -125,8 +141,12 @@ class LogManager {
 	public function createArchive(): string {
 		$zipManager = new ZipArchiveManager($this->path);
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
-			$zipManager->addFolder($this->controllerLogDir . 'iqrf-gateway-controller', 'controller');
-			$zipManager->addFile($this->controllerLogDir . self::CONTROLLER_LOG, 'controller/iqrf-gateway-controller.log');
+			$zipManager->addFolder($this->logDir . 'iqrf-gateway-controller', 'controller');
+			$zipManager->addFile($this->logDir . self::CONTROLLER_LOG, 'controller/' . self::CONTROLLER_LOG);
+		}
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			$zipManager->addFolder($this->logDir . 'iqrf-gateway-uploader', 'uploader');
+			$zipManager->addFile($this->logDir . self::UPLOADER_LOG, 'uploader/' . self::UPLOADER_LOG);
 		}
 		$zipManager->addFolder($this->daemonLogDir, 'daemon');
 		$zipManager->close();

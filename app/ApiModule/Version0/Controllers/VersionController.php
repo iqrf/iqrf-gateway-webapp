@@ -27,11 +27,9 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\GatewayModule\Models\VersionManager;
 use Nette\IOException;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 /**
@@ -40,6 +38,21 @@ use Nette\Utils\JsonException;
  * @Tag("Version")
  */
 class VersionController extends BaseController {
+
+	/**
+	 * @var VersionManager Version manager
+	 */
+	private $versionManager;
+
+	/**
+	 * Constructor
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param VersionManager $versionManager Version manager
+	 */
+	public function __construct(RestApiSchemaValidator $validator, VersionManager $versionManager) {
+		parent::__construct($validator);
+		$this->versionManager = $versionManager;
+	}
 
 	/**
 	 * @Path("/daemon")
@@ -61,10 +74,9 @@ class VersionController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$commandManager = new CommandManager(false, new CommandStack());
-		if ($commandManager->commandExist('iqrfgd2')) {
-			$commandResult = $commandManager->run('iqrfgd2 version', false)->getStdout();
-			return $response->writeJsonBody(['version' => $commandResult]);
+		$version = $this->versionManager->getDaemon();
+		if ($version !== 'none' && $version !== 'unknown') {
+			return $response->writeJsonBody(['version' => $version]);
 		}
 		throw new ServerErrorException('IQRF Gateway Daemon not installed', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 	}
@@ -90,8 +102,7 @@ class VersionController extends BaseController {
 	 */
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
-			return $response->writeJsonBody($json);
+			return $response->writeJsonBody($this->versionManager->getWebappJson());
 		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

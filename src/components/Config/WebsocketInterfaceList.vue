@@ -129,17 +129,19 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { AxiosError, AxiosResponse } from 'axios';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -173,11 +175,6 @@ export default class WebsocketInterfaceList extends Vue {
 	}
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
 	 * @var {ModalInstance|null} deleteInstance Websocket interface instance used in remove modal
 	 */
 	private deleteInstance: ModalInstance|null = null
@@ -205,6 +202,11 @@ export default class WebsocketInterfaceList extends Vue {
 			filter: false,
 		},
 		{
+			key: 'tlsEnabled',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
+			filter: false
+		},
+		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -227,24 +229,9 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateTable(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.fields.splice(4, 0, {
-				key: 'tlsEnabled',
-				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
-				filter: false
-			});
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {
-		this.updateTable();		
+	mounted(): void {	
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -253,7 +240,6 @@ export default class WebsocketInterfaceList extends Vue {
 	 * Retrieves instances of Websocket daemon components
 	 */
 	private getConfig(): Promise<void> {
-		this.instances = [];
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.messaging),
 			DaemonConfigurationService.getComponent(this.componentNames.service),
@@ -288,7 +274,7 @@ export default class WebsocketInterfaceList extends Vue {
 				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.websocket.interface.messages.listFailed'));
 	}
 
 	/**
@@ -335,7 +321,11 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				{interface: settings.instance}
+			));
 	}
 
 	/**
@@ -358,7 +348,11 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				{interface: instance.instance}
+			));
 	}
 
 	/**
@@ -382,7 +376,11 @@ export default class WebsocketInterfaceList extends Vue {
 				});
 				this.deleteInstance = null;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.messagings.websocket.interface.messages.deleteFailed',
+				{interface: this.deleteInstance!.messaging}
+			));
 	}
 }
 </script>

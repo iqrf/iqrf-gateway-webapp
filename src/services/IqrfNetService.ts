@@ -222,17 +222,19 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @returns Message ID
 	 */
-	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, action: OtaUploadAction, options: WebSocketOptions): Promise<string> {
+	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_OtaUpload',
 			'data': {
 				'repeat': 1,
 				'req': {
 					'deviceAddr': deviceAddr,
-					'hwpid': hwpid,
+					'hwpId': hwpid,
 					'fileName': file,
 					'startMemAddr': eeepromAddr,
 					'loadingAction': action,
+					'uploadEepromData': uploadEeprom,
+					'uploadEeepromData': uploadEeeprom,
 				},
 				'returnVerbose': true,
 			},

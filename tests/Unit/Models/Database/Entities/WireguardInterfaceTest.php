@@ -272,6 +272,15 @@ class WireguardInterfaceTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to serialize wg interface configuration into wg utility string with peer
+	 */
+	public function testWgSerializePeer(): void {
+		$expected = sprintf('wg set %s private-key %s listen-port %u peer Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI= endpoint vpn.example.org:51280 persistent-keepalive 25 allowed-ips ', self::NAME, self::PRIVATE_KEY, self::PORT);
+		$this->entity->addPeer($this->peerEntity);
+		Assert::same($expected, $this->entity->wgSerialize());
+	}
+
+	/**
 	 * Tests the function to create command to delete Wireguard tunnel using the ip utility
 	 */
 	public function testIpDelete(): void {

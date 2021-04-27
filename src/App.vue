@@ -1,6 +1,8 @@
 <template>
 	<div>
-		<router-view />
+		<Blocking />
+		<LoadingSpinner />
+		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
 	</div>
 </template>
@@ -9,11 +11,22 @@
 import {Component, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
 import {AxiosError} from 'axios';
+
+import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
+import LoadingSpinner from './components/LoadingSpinner.vue';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
+		Blocking,
 		DaemonModeModal,
+		LoadingSpinner,
+	},
+	computed: {
+		...mapGetters({
+			installationChecked: 'installation/isChecked',
+		}),
 	},
 })
 
@@ -27,7 +40,6 @@ export default class App extends Vue {
 	 * Vue lifecycle hook before created
 	 */
 	beforeCreate(): void {
-		this.$store.commit('spinner/SHOW');
 		InstallationService.check()
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
@@ -43,9 +55,9 @@ export default class App extends Vue {
 					this.$router.push({
 						name: 'sudo-error',
 						params: {
-							user: check.sudo!.user,
-							exists: check.sudo!.exists.toString(),
-							userSudo: check.sudo!.userSudo.toString(),
+							user: check.sudo.user,
+							exists: check.sudo.exists.toString(),
+							userSudo: check.sudo.userSudo.toString(),
 						}
 					});
 				} else if (!check.allMigrationsExecuted) {
@@ -55,10 +67,8 @@ export default class App extends Vue {
 				} else if (check.hasUsers && installUrl) {
 					this.$router.push('/sign/in/');
 				}
-				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
 				console.error(error);
 			});
 	}

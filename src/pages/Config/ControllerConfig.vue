@@ -41,34 +41,51 @@
 							</CCol>
 							<CCol md='6'>
 								<h3>{{ $t("config.controller.form.logger.title") }}</h3>
-								<ValidationProvider
-									v-slot='{ errors, touched, valid }'
-									rules='required'
-									:custom-messages='{required: "config.controller.errors.missing.l_file"}'
-								>
-									<CInput
-										v-model='config.logger.filePath'
-										:label='$t("config.controller.form.logger.filePath")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
-									rules='required'
-									:custom-messages='{
-										required: "config.controller.errors.missing.l_severity",
-									}'
-								>
-									<CSelect
-										:value.sync='config.logger.severity'
-										:options='severityOptions'
-										:label='$t("config.controller.form.logger.severity")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t("config.controller.errors.missing.l_severity")'
-									/>
-								</ValidationProvider>
+								<CRow>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{ errors, touched, valid }'
+											rules='required'
+											:custom-messages='{required: "config.controller.errors.missing.l_file"}'
+										>
+											<CInput
+												v-model='config.logger.filePath'
+												:label='$t("config.controller.form.logger.filePath")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+										<ValidationProvider
+											v-slot='{ valid, touched, errors }'
+											rules='required'
+											:custom-messages='{
+												required: "config.controller.errors.missing.l_severity",
+											}'
+										>
+											<CSelect
+												:value.sync='config.logger.severity'
+												:options='severityOptions'
+												:label='$t("config.controller.form.logger.severity")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+												:placeholder='$t("config.controller.errors.missing.l_severity")'
+											/>
+										</ValidationProvider>
+									</CCol>
+									<CCol md='6'>
+										<label>
+											<b>{{ $t('config.controller.form.logger.sink') }}</b>
+										</label>
+										<CInputCheckbox
+											:checked.sync='config.logger.sinks.file'
+											:label='$t("config.controller.form.logger.sinks.file")'
+										/>
+										<CInputCheckbox
+											:checked.sync='config.logger.sinks.syslog'
+											:label='$t("config.controller.form.logger.sinks.syslog")'
+										/>
+									</CCol>
+								</CRow>
 							</CCol>
 						</CRow><hr>
 						<CRow>
@@ -252,9 +269,6 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
-				<CAlert v-else color='danger'>
-					{{ $t('config.controller.messages.loadFailed') }}
-				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -262,20 +276,21 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {controllerErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import FeatureConfigService from '../../services/FeatureConfigService';
 import ServiceService from '../../services/ServiceService';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
+import {NavigationGuardNext, Route} from 'vue-router/types/router';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -291,7 +306,7 @@ import {IOption} from '../../interfaces/coreui';
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(
-					vm.$t('config.controller.errors.disabled').toString()
+					vm.$t('config.controller.messages.disabled').toString()
 				);
 				vm.$router.push(from.path);
 			}
@@ -384,6 +399,9 @@ export default class ControllerConfig extends Vue {
 	 * Retrieves configuration of IQRF Gateway Controller
 	 */
 	private getConfig(): void {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
 			.then((response: AxiosResponse) => {
@@ -391,7 +409,8 @@ export default class ControllerConfig extends Vue {
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				extendedErrorToast(error, 'config.controller.messages.fetchFailed');
+				this.$router.push('/');
 			});
 	}
 
@@ -402,11 +421,9 @@ export default class ControllerConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
-				this.restartController();	
+				this.restartController();
 			})
-			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.controller.messages.saveFailed'));
 	}
 
 	/**
@@ -416,9 +433,11 @@ export default class ControllerConfig extends Vue {
 		ServiceService.restart('iqrf-gateway-controller')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('config.controller.messages.successRestart').toString());
+				this.$toast.success(
+					this.$t('config.controller.messages.restartSuccess').toString()
+				);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => controllerErrorToast(error, 'service.messages.restartFailed'));
 	}
 
 }

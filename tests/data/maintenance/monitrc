@@ -1,0 +1,23 @@
+###############################################################################
+## Monit control file
+###############################################################################
+##
+## Comments begin with a '#' and extend through the end of the line. Keywords
+## are case insensitive. All path's MUST BE FULLY QUALIFIED, starting with '/'.
+##
+## Below you will find examples of some frequently used statements. For
+## information about the control file and a complete list of statements and
+## options, please have a look in the Monit manual.
+##
+##
+###############################################################################
+## Global section
+###############################################################################
+##
+set mmonit https://testuser:testpass@testendpoint
+    # with timeout 30 seconds              # Default timeout is 5 seconds
+    # and register without credentials     # Don't register credentials
+#
+###############################################################################
+## Services
+###############################################################################

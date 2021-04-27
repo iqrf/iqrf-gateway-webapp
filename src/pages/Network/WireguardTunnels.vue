@@ -83,14 +83,16 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
-import {cilLink, cilLinkBroken, cilPlus, cilPencil, cilSync, cilTrash, cilXCircle} from '@coreui/icons';
 
+import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import WireguardService from '../../services/WireguardService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IWG} from '../../interfaces/network';
-import {Dictionary} from 'vue-router/types/router';
+import { extend } from 'vee-validate';
 
 @Component({
 	components: {
@@ -120,7 +122,7 @@ export default class WireguardTunnels extends Vue {
 		remove: cilTrash,
 		activate: cilLink,
 		deactivate: cilLinkBroken,
-		enable: cilSync,
+		enable: cilCheckCircle,
 		disable: cilXCircle,
 	}
 
@@ -168,12 +170,7 @@ export default class WireguardTunnels extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.tunnels = response.data;
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('network.wireguard.tunnels.messages.listFailed').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.listFailed'));
 	}
 
 	/**
@@ -187,11 +184,19 @@ export default class WireguardTunnels extends Vue {
 		if (state) {
 			WireguardService.activateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
-				.catch(() => this.handleActiveError(name, state));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.wireguard.tunnels.messages.activateFailed',
+					{tunnel: name}
+				));
 		} else {
 			WireguardService.deactivateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
-				.catch(() => this.handleActiveError(name, state));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.wireguard.tunnels.messages.deactivateFailed',
+					{tunnel: name}
+				));
 		}
 	}
 
@@ -208,21 +213,6 @@ export default class WireguardTunnels extends Vue {
 			).toString()
 		));
 	}
-	
-	/**
-	 * Handles tunnel activation error
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
-	 */
-	private handleActiveError(name: string, state: boolean): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t(
-				'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateFailed',
-				{tunnel: name}
-			).toString()
-		);
-	}
 
 	/**
 	 * Changes enabled state of Wireguard tunnel
@@ -235,11 +225,19 @@ export default class WireguardTunnels extends Vue {
 		if (state) {
 			WireguardService.enableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
-				.catch(() => this.handleEnableError(name, state));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.wireguard.tunnels.messages.enableFailed',
+					{tunnel: name}
+				));
 		} else {
 			WireguardService.disableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
-				.catch(() => this.handleEnableError(name, state));
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'network.wireguard.tunnels.messages.disableFailed',
+					{tunnel: name}
+				));
 		}
 	}
 
@@ -255,21 +253,6 @@ export default class WireguardTunnels extends Vue {
 				{tunnel: name}
 			).toString()
 		));
-	}
-	
-	/**
-	 * Handles tunnel enable error
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
-	 */
-	private handleEnableError(name: string, state: boolean): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(
-			this.$t(
-				'network.wireguard.tunnels.messages.' + (state ? 'enableFailed' : 'disableFailed'),
-				{tunnel: name}
-			).toString()
-		);
 	}
 
 	/**
@@ -287,15 +270,11 @@ export default class WireguardTunnels extends Vue {
 					).toString()
 				));
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t(
-						'network.wireguard.tunnels.messages.removeFailed',
-						{tunnel: name}
-					).toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'network.wireguard.tunnels.messages.removeFailed',
+				{tunnel: name}
+			));
 	}
 }
 </script>

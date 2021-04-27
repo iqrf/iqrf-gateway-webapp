@@ -6,10 +6,78 @@
 				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
 					<CForm @submit.prevent='processSubmit'>
 						<CRow>
+							<CCol>
+								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: "config.translator.errors.restAddr"
+									}'
+								>
+									<CInput
+										v-model='config.rest.addr'
+										:label='$t("forms.fields.address")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|integer|between:1,49151'
+									:custom-messages='{
+										integer: "forms.errors.integer",
+										required: "config.translator.errors.port",
+										between: "config.translator.errors.port"
+									}'
+								>
+									<CInput
+										v-model.number='config.rest.port'
+										type='number'
+										min='1'
+										max='49151'
+										:label='$t("config.translator.form.rest.port")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|apiKey'
+									:custom-messages='{
+										required: "config.translator.errors.apiKey",
+										apiKey: "config.translator.errors.apiKeyInvalid"
+									}'
+								>
+									<CInput
+										v-model='config.rest.api_key'
+										:label='$t("config.translator.form.rest.apiKey")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
+						<legend>{{ $t("config.translator.form.mqtt.title") }}</legend>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|clientId'
+							:custom-messages='{
+								required: "config.translator.errors.clientId",
+								clientId: "config.translator.errors.clientIdInvalid"
+							}'
+						>
+							<CInput
+								v-model='config.mqtt.cid'
+								:label='$t("forms.fields.clientId")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CRow>
 							<CCol md='6'>
-								<h3>{{ $t("config.translator.form.mqtt.title") }}</h3>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
 										required: "config.translator.errors.brokerAddr"
@@ -22,8 +90,10 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
 										integer: "forms.errors.integer",
@@ -41,23 +111,10 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
-									rules='required|clientId'
-									:custom-messages='{
-										required: "config.translator.errors.clientId",
-										clientId: "config.translator.errors.clientIdInvalid"
-									}'
-								>
-									<CInput
-										v-model='config.mqtt.cid'
-										:label='$t("forms.fields.clientId")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'								
-									/>
-								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
 									rules='required|requestTopic'
 									:custom-messages='{
 										required: "config.translator.errors.requestTopic",
@@ -71,6 +128,8 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
+							</CCol>
+							<CCol md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|responseTopic'
@@ -86,7 +145,9 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
 									<CInput
@@ -96,7 +157,9 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider 
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
 									<CInput
@@ -107,67 +170,56 @@
 										:type='visibility'
 									>
 										<template #append-content>
-											<span @click='changeVisibility'>
-												<CIcon
-													v-if='visibility ==="password"'
-													:content='icons.hidden'
+											<span @click='visibility = (visibility === "password" ? "text" : "password")'>
+												<FontAwesomeIcon
+													:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
 												/>
-												<CIcon v-else :content='icons.shown' />
 											</span>
 										</template>
 									</CInput>
 								</ValidationProvider>
 							</CCol>
+						</CRow>
+						<CRow>
+							<CCol>
+								<h3 style='font-size: 1.5rem; float: left;'>
+									{{ $t('config.daemon.messagings.tlsTitle') }}
+								</h3>
+								<CSwitch
+									color='primary'
+									size='lg'
+									shape='pill'
+									label-on='ON'
+									label-off='OFF'
+									:checked.sync='config.mqtt.tls.enabled'
+									style='float: right;'
+								/>
+							</CCol>
+						</CRow>
+						<CRow v-if='config.mqtt.tls.enabled'>
 							<CCol md='6'>
-								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: "config.translator.errors.restAddr"
-									}'
-								>
-									<CInput
-										v-model='config.rest.addr' 
-										:label='$t("forms.fields.address")' 
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}'
-									rules='required|integer|between:1,49151'
-									:custom-messages='{
-										integer: "forms.errors.integer",
-										required: "config.translator.errors.port",
-										between: "config.translator.errors.port"
-									}'
-								>
-									<CInput
-										v-model.number='config.rest.port'
-										type='number'
-										min='1'
-										max='49151'
-										:label='$t("config.translator.form.rest.port")' 
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
-								<ValidationProvider 
-									v-slot='{errors, touched, valid}' 
-									rules='required|apiKey'
-									:custom-messages='{
-										required: "config.translator.errors.apiKey",
-										apiKey: "config.translator.errors.apiKeyInvalid"
-									}'
-								>
-									<CInput
-										v-model='config.rest.api_key' 
-										:label='$t("config.translator.form.rest.apiKey")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
-								</ValidationProvider>
+								<CInput
+									v-model='config.mqtt.tls.trust_store'
+									:label='$t("config.translator.form.mqtt.tls.trustStore")'
+								/>
+							</CCol>
+							<CCol md='6'>
+								<CInput
+									v-model='config.mqtt.tls.key_store'
+									:label='$t("config.translator.form.mqtt.tls.keyStore")'
+								/>
+							</CCol>
+							<CCol md='6'>
+								<CInput
+									v-model='config.mqtt.tls.private_key'
+									:label='$t("config.translator.form.mqtt.tls.privateKey")'
+								/>
+							</CCol>
+							<CCol md='6'>
+								<CInputCheckbox
+									:checked.sync='config.mqtt.tls.require_broker_certificate'
+									:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
+								/>
 							</CCol>
 						</CRow>
 						<CButton color='primary' type='submit' :disabled='invalid'>
@@ -175,9 +227,6 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
-				<CAlert v-else color='danger'>
-					{{ $t('config.translator.messages.loadFailed') }}
-				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -185,27 +234,31 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
-import {between, integer, required} from 'vee-validate/dist/rules';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
+import {between, integer, required} from 'vee-validate/dist/rules';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import FeatureConfigService from '../../services/FeatureConfigService';
-import {NavigationGuardNext, Route} from 'vue-router';
-import {Dictionary} from 'vue-router/types/router';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITranslator} from '../../interfaces/translator';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CIcon,
 		CInput,
+		CInputCheckbox,
+		CSwitch,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -244,14 +297,6 @@ export default class TranslatorConfig extends Vue {
 	private config: ITranslator|null = null
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -286,15 +331,18 @@ export default class TranslatorConfig extends Vue {
 	/**
 	 * Retrieves configuration of IQRF Gateway Translator
 	 */
-	private getConfig(): void {
-		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.getConfig(this.name)
+	private getConfig(): Promise<void> {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
+		return FeatureConfigService.getConfig(this.name)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.config = response.data;
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
+				extendedErrorToast(error, 'config.translator.messages.fetchFailed');
+				this.$router.push('/');
 			});
 	}
 
@@ -305,19 +353,14 @@ export default class TranslatorConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+				this.getConfig().then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('config.translator.messages.saveSuccess').toString()
+					);
+				});
 			})
-			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
-			});
-	}
-
-	/**
-	 * Changes password input field visibility
-	 */
-	private changeVisibility(): void {
-		this.visibility = this.visibility === 'password' ? 'text' : 'password';
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.translator.messages.saveFailed'));
 	}
 }
 </script>

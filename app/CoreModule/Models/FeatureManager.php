@@ -44,6 +44,10 @@ class FeatureManager {
 			'enabled' => true,
 			'url' => 'https://docs.iqrf.org/iqrf-gateway/',
 		],
+		'gatewayPass' => [
+			'enabled' => false,
+			'user' => 'root',
+		],
 		'grafana' => [
 			'enabled' => false,
 			'url' => '/grafana/',
@@ -57,6 +61,9 @@ class FeatureManager {
 		'mender' => [
 			'enabled' => false,
 		],
+		'monit' => [
+			'enabled' => false,
+		],
 		'networkManager' => [
 			'enabled' => false,
 		],
@@ -67,15 +74,15 @@ class FeatureManager {
 		'pixla' => [
 			'enabled' => false,
 		],
-		'rootpass' => [
-			'enabled' => false,
-		],
 		'ssh' => [
 			'enabled' => false,
 		],
 		'supervisord' => [
 			'enabled' => false,
 			'url' => 'supervisord/',
+		],
+		'systemdJournal' => [
+			'enabled' => false,
 		],
 		'trUpload' => [
 			'enabled' => false,

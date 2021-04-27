@@ -9,22 +9,24 @@ services:
 	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
 	- App\ApiModule\Version0\Controllers\ConfigController
 	- App\ApiModule\Version0\Controllers\Config\ControllerController
-	- App\ApiModule\Version0\Controllers\Config\MenderController
 	- App\ApiModule\Version0\Controllers\Config\MigrationController
 	- App\ApiModule\Version0\Controllers\Config\TranslatorController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController
 	- App\ApiModule\Version0\Controllers\FeatureController
 	- App\ApiModule\Version0\Controllers\Gateway\InfoController
 	- App\ApiModule\Version0\Controllers\Gateway\LogController
+	- App\ApiModule\Version0\Controllers\Gateway\PasswordController
 	- App\ApiModule\Version0\Controllers\Gateway\PowerController
-	- App\ApiModule\Version0\Controllers\Gateway\RootController
+	- App\ApiModule\Version0\Controllers\Gateway\SystemdJournalController
 	- App\ApiModule\Version0\Controllers\Gateway\TimeController
 	- App\ApiModule\Version0\Controllers\InstallationController
-	- App\ApiModule\Version0\Controllers\MappingController
 	- App\ApiModule\Version0\Controllers\Iqrf\InterfacesController
 	- App\ApiModule\Version0\Controllers\Iqrf\IqrfOsController
 	- App\ApiModule\Version0\Controllers\Iqrf\MacrosController
 	- App\ApiModule\Version0\Controllers\Iqrf\UploadController
+	- App\ApiModule\Version0\Controllers\MappingController
+	- App\ApiModule\Version0\Controllers\MenderController
+	- App\ApiModule\Version0\Controllers\MonitController
 	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
 	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
 	- App\ApiModule\Version0\Controllers\Network\InterfacesController

@@ -8,12 +8,15 @@
 		</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mq.errors.instance"}'
+							v-slot='{errors, touched, valid}'
+							rules='required|instance'
+							:custom-messages='{
+								required: "config.daemon.messagings.mq.errors.instance",
+								instance: "config.daemon.messagings.instanceInvalid"
+							}'
 						>
 							<CInput
 								v-model='configuration.instance'
@@ -23,7 +26,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.LocalMqName"}'
 						>
@@ -35,7 +38,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.RemoteMqName"}'
 						>
@@ -64,12 +67,15 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import { MqInstance } from '../../interfaces/messagingInterfaces';
-import { MetaInfo } from 'vue-meta';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
 import {AxiosError, AxiosResponse} from 'axios';
+import {IMqInstance} from '../../interfaces/messagingInterfaces';
+import {MetaInfo} from 'vue-meta';
+
 
 @Component({
 	components: {
@@ -102,7 +108,7 @@ export default class MqMessagingForm extends Vue {
 	/**
 	 * @var {MqInstance} configuration MQ messaging component instance configuration
 	 */
-	private configuration: MqInstance = {
+	private configuration: IMqInstance = {
 		component: '',
 		instance: '',
 		LocalMqName: '',
@@ -134,10 +140,14 @@ export default class MqMessagingForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initialize validation rules
 	 */
 	created(): void {
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**
@@ -160,8 +170,8 @@ export default class MqMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.fetchFailed', {instance: this.instance});
 				this.$router.push('/config/daemon/messagings/mq');
-				FormErrorHandler.configError(error);
 			});
 	}
 
@@ -173,11 +183,11 @@ export default class MqMessagingForm extends Vue {
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: this.instance}));
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.addFailed'));
 		}
 	}
 

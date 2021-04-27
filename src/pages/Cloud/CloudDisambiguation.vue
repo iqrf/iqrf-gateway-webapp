@@ -43,17 +43,6 @@
 						{{ $t('cloud.intelimentsInteliGlue.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("pixla")'
-					to='/cloud/pixla/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('cloud.pixla.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('cloud.pixla.description') }}
-					</p>
-				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>

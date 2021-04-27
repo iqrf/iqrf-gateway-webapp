@@ -15,7 +15,17 @@ export interface Feature {
 	 * Feature URL
 	 */
 	url?: string;
+}
 
+/**
+ * Gateway password feature
+ */
+export interface GatewayPasswordFeature extends Feature {
+	
+	/**
+	 * Gateway user name
+	 */
+	user: string
 }
 
 /**

@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use DateTime;
 use DateTimeZone;
+use Nette\Utils\Strings;
 
 /**
  * Time manager
@@ -53,10 +54,20 @@ class TimeManager {
 		$timestamp = [
 			'timestamp' => intval($command->getStdout()),
 		];
-		$command = $this->commandManager->run('cat /etc/timezone');
-		$timezone = $this->timezoneInfo($command->getStdout());
+		$timezone = $this->timezoneInfo($this->getTimezone());
 		$array['time'] = array_merge($timestamp, $timezone);
 		return $array;
+	}
+
+	/**
+	 * Parses time zone from timedatectl output
+	 * @return string Time zone string
+	 */
+	public function getTimezone(): string {
+		$output = $this->commandManager->run('timedatectl | grep "Time zone"')->getStdout();
+		$pattern = '/^(Time\szone:\s)([a-zA-Z\/\_]+)(\s.*$)/';
+		$matches = Strings::match(trim($output), $pattern);
+		return $matches[2];
 	}
 
 	/**

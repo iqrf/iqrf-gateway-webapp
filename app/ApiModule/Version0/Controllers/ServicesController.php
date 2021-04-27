@@ -57,7 +57,9 @@ class ServicesController extends BaseController {
 		'iqrf-gateway-daemon',
 		'iqrf-gateway-translator',
 		'mender-client',
+		'monit',
 		'ssh',
+		'systemd-journald',
 		'unattended-upgrades',
 	];
 
@@ -128,7 +130,12 @@ class ServicesController extends BaseController {
 				$status['enabled'] = $this->manager->isEnabled($name);
 				$status['active'] = $this->manager->isActive($name);
 			} catch (NotImplementedException $e) {
-				unset($status['enabled'], $status['active']);
+				if (isset($status['enabled'])) {
+					unset($status['enabled']);
+				}
+				if (isset($status['active'])) {
+					unset($status['active']);
+				}
 			}
 			$status['status'] = $this->manager->getStatus($name);
 			return $response->writeJsonBody($status);
@@ -165,6 +172,9 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
+			if ($name === 'mender-client') {
+				$this->manager->enable('mender-connect');
+			}
 			$this->manager->enable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
@@ -200,6 +210,9 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
+			if ($name === 'mender-client') {
+				$this->manager->disable('mender-connect');
+			}
 			$this->manager->disable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {

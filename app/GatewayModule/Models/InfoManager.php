@@ -92,6 +92,7 @@ class InfoManager {
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
+				'uploader' => $this->versionManager->getUploader(),
 				'webapp' => $this->versionManager->getWebapp($verbose),
 			],
 			'hostname' => $this->networkManager->getHostname(),

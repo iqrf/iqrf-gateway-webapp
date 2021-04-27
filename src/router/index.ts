@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import jwt_decode, {JwtPayload} from 'jwt-decode';
 
 import TheDashboard from '../components/TheDashboard.vue';
 
@@ -10,7 +9,6 @@ const AwsCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/A
 const HexioCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/HexioCreator.vue');
 const IbmCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/IbmCreator.vue');
 const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/InteliGlueCreator.vue');
-const PixlaControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/PixlaControl.vue');
 
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
@@ -54,7 +52,6 @@ const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/page
 const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
-const MenderConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MenderConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
 const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
@@ -75,14 +72,18 @@ const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
-const ConnectionFormBasic = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionFormBasic.vue');
+const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
+const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
+const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
+const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
+const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
+
 import store from '../store';
-import { component } from 'vue/types/umd';
 
 Vue.use(VueRouter);
 
@@ -165,10 +166,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: InteliGlueCreator,
 						path: 'inteli-glue',
-					},
-					{
-						component: PixlaControl,
-						path: 'pixla',
 					},
 				]
 			},
@@ -625,10 +622,6 @@ const routes: Array<RouteConfig> = [
 						path: 'migration',
 					},
 					{
-						component: MenderConfig,
-						path: 'mender',
-					},
-					{
 						component: TranslatorConfig,
 						path: 'translator',
 					},
@@ -763,12 +756,12 @@ const routes: Array<RouteConfig> = [
 								path: '',
 							},
 							{
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'add',
 							},
 							{
 								name: 'edit-ethernet-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
 							},
@@ -788,13 +781,13 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								name: 'add-wireless-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'add',
 								props: true,
 							},
 							{
 								name: 'edit-wireless-connection',
-								component: ConnectionFormBasic,
+								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
 							}
@@ -828,6 +821,32 @@ const routes: Array<RouteConfig> = [
 								},
 							},
 						],
+					},
+				]
+			},
+			{
+				path: '/maintenance',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: MaintenanceDisambiguation,
+						path: '',
+					},
+					{
+						component: PixlaControl,
+						path: 'pixla',
+					},
+					{
+						component: MenderControl,
+						path: 'mender',
+					},
+					{
+						component: MonitControl,
+						path: 'monit',
 					},
 				]
 			},
@@ -915,6 +934,10 @@ router.beforeEach((to, from, next) => {
 			});
 			return;
 		}
+	}
+	if(to.name === 'signIn' && store.getters['user/isLoggedIn']) {
+		next((to.query.redirect as string|undefined) ?? '/');
+		return;
 	}
 	next();
 });

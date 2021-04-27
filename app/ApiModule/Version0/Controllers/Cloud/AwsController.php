@@ -109,7 +109,7 @@ class AwsController extends CloudsController {
 		} catch (GuzzleException $e) {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (RuntimeException $e) {
 			throw new ClientErrorException('Invalid files', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidPrivateKeyForCertificateException $e) {

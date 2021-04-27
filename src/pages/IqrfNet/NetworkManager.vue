@@ -10,17 +10,13 @@
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
-							<AutoNetwork v-if='daemon230' ref='autonetwork' @update-devices='updateDevices' />
-							<VersionAlert v-else />
+							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
-							<div v-if='daemon230'>
-								<Backup />
-								<Restore />
-							</div>
-							<VersionAlert v-else />
+							<Backup />
+							<Restore />
 						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
+						<CTab v-if='daemon236' :title='$t("iqrfnet.networkManager.otaUpload.title")'>
 							<OtaUpload />
 						</CTab>
 					</CTabs>
@@ -45,7 +41,6 @@ import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
 import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
 import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 import OtaUpload from '../../components/IqrfNet/OtaUpload.vue';
-import VersionAlert from '../../components/IqrfNet/VersionAlert.vue';
 import {ToastOptions} from 'vue-toast-notification';
 
 @Component({
@@ -60,7 +55,6 @@ import {ToastOptions} from 'vue-toast-notification';
 		DiscoveryManager,
 		OtaUpload,
 		Restore,
-		VersionAlert,
 	},
 	computed: {
 		...mapGetters({
@@ -82,17 +76,17 @@ export default class NetworkManager extends Vue {
 	private activeTab = 0
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon230 = false;
+	private daemon236 = false;
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
 	@Watch('daemonVersion')
 	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
+		if (versionHigherEqual('2.3.6')) {
+			this.daemon236 = true;
 		}
 	}
 

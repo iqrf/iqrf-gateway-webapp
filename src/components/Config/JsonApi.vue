@@ -1,5 +1,12 @@
 <template>
-	<CCard body-wrapper class='border-0'>
+	<CCard body-wrapper class='border-0 card-margin-bottom'>
+		<CElementCover 
+			v-if='loadFailed'
+			style='z-index: 1;'
+			:opacity='0.85'
+		>
+			{{ $t('config.daemon.messages.failedElement') }}
+		</CElementCover>
 		<ValidationObserver
 			v-slot='{invalid}'
 		>
@@ -19,6 +26,7 @@
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
+					v-if='daemonLowerEqual236'
 					:checked.sync='metaDataToMessages'
 					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
 				/>
@@ -44,16 +52,17 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 
+import {required} from 'vee-validate/dist/rules';
+import {versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 import {Dictionary} from 'vue-router/types/router';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -61,6 +70,7 @@ import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -118,10 +128,23 @@ export default class JsonApi extends Vue {
 	private validateJsonResponse = false
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
+	 * @var {boolean} daemonLowerEqual236 Indicates whether daemon version is 2.3.6 or older
+	 */
+	private daemonLowerEqual236 = false
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('required', required);
+		if (versionLowerEqual('2.3.6')) {
+			this.daemonLowerEqual236 = true;
+		}
 	}
 
 	/**
@@ -135,23 +158,30 @@ export default class JsonApi extends Vue {
 	 * Retrieves configuration of JSON API components
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
-		return Promise.all([
-			DaemonConfigurationService.getComponent(this.componentNames.metaData),
+		let requests = [
 			DaemonConfigurationService.getComponent(this.componentNames.rawApi),
 			DaemonConfigurationService.getComponent(this.componentNames.splitter),
-		])
+		];
+		if (this.daemonLowerEqual236) {
+			requests.push(DaemonConfigurationService.getComponent(this.componentNames.metaData));
+		}
+		return Promise.all(requests)
 			.then((responses: Array<AxiosResponse>) => {
-				this.$store.commit('spinner/HIDE');
-				this.metaData = responses[0].data.instances[0];
-				this.metaDataToMessages = responses[0].data.instances[0].metaDataToMessages;
-				this.rawApi = responses[1].data.instances[0];
-				this.asyncDpaMessage = responses[1].data.instances[0].asyncDpaMessage;
-				this.splitter = responses[2].data.instances[0];
-				this.insId = responses[2].data.instances[0].insId;
-				this.validateJsonResponse = responses[2].data.instances[0].validateJsonResponse;
+				this.rawApi = responses[0].data.instances[0];
+				this.asyncDpaMessage = responses[0].data.instances[0].asyncDpaMessage;
+				this.splitter = responses[1].data.instances[0];
+				this.insId = responses[1].data.instances[0].insId;
+				this.validateJsonResponse = responses[1].data.instances[0].validateJsonResponse;
+				if (this.daemonLowerEqual236) {
+					this.metaData = responses[2].data.instances[0];
+					this.metaDataToMessages = responses[2].data.instances[0].metaDataToMessages;
+				}
+				this.$emit('fetched', {name: 'jsonApi', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('fetched', {name: 'jsonApi', success: false});
+			});
 	}
 
 	/**
@@ -194,7 +224,7 @@ export default class JsonApi extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.misc.jsonApi.messages.failed'));
 	}
 }
 </script>

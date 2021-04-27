@@ -152,24 +152,24 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
-import {fileDownloader} from '../../helpers/fileDownloader';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
-import SchedulerService from '../../services/SchedulerService';
-import ServiceService from '../../services/ServiceService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import {DateTime, Duration} from 'luxon';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
+import {fileDownloader} from '../../helpers/fileDownloader';
+
+import ServiceService from '../../services/ServiceService';
+import SchedulerService from '../../services/SchedulerService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
-import {AxiosError, AxiosResponse} from 'axios';
-import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
+import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
-import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import { parse } from 'uuid';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -181,11 +181,6 @@ import { parse } from 'uuid';
 		CIcon,
 		CInputFile,
 		CModal,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
 	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective
@@ -199,10 +194,6 @@ import { parse } from 'uuid';
  * List of Daemon scheduler tasks
  */
 export default class SchedulerList extends Vue {
-	/**
-	 * @var {boolean} daemon230 Indicates that Daemon is version 2.3.0 or higher
-	 */
-	private daemon230 = false
 
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
@@ -290,7 +281,7 @@ export default class SchedulerList extends Vue {
 	/**
 	 * @var {Array<Task>} tasks Array of scheduler tasks
 	 */
-	private tasks: Array<Task>|null = null
+	private tasks: Array<ITaskRest>|null = null
 
 	/**
 	 * @var {boolean} untouched Indicates whether or not scheduler tasks have been retrieved
@@ -314,7 +305,7 @@ export default class SchedulerList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
-				this.useRest = false; 
+				this.useRest = false;
 				if (this.untouched) { // retrieve task only when the page is loaded
 					this.getTasks();
 				}
@@ -329,13 +320,15 @@ export default class SchedulerList extends Vue {
 					}
 				}
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'mngScheduler_List' &&
-					this.msgIds.includes(mutation.payload.data.msgId)) { // caught scheduler list was sent from this component
-					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
+					return;
+				}
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (mutation.payload.data.status === 0) {
 						this.taskIds = mutation.payload.data.rsp.tasks;
-						this.taskIds.forEach(item => { // fetch each task from list of task ids
+						this.taskIds.forEach(item => {
 							this.getTask(item);
 						});
 						this.retrieved = 'daemon';
@@ -344,19 +337,14 @@ export default class SchedulerList extends Vue {
 							this.$t('config.daemon.scheduler.messages.listFailed').toString()
 						);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_GetTask' &&
-							this.msgIds.includes(mutation.payload.data.msgId)) { // caught get task message was sent from this component
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					if (mutation.payload.data.status === 0) {
 						if (this.tasks === null) {
 							return;
 						}
 						this.tasks.push(mutation.payload.data.rsp);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
-							this.msgIds.includes(mutation.payload.data.msgId)) {
-					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
 					if (mutation.payload.data.status === 0) {
 						this.$toast.success(
 							this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
@@ -368,7 +356,6 @@ export default class SchedulerList extends Vue {
 						);
 					}
 				} else if (mutation.payload.mType === 'messageError') {
-					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
 						this.$toast.error(
 							this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()
@@ -384,20 +371,9 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.updateDaemonVersion();
 		setTimeout(() => {
 			if (this.$store.state.webSocketClient.socket.isConnected) {
 				this.useRest = false;
@@ -442,7 +418,7 @@ export default class SchedulerList extends Vue {
 				return message.slice(0, -2);
 			} else { // task retrieved from daemon API and has only one message
 				return item.message.mType;
-			} 
+			}
 		} catch(err) {
 			return '';
 		}
@@ -461,7 +437,7 @@ export default class SchedulerList extends Vue {
 					this.tasks = response.data;
 					this.retrieved = 'rest';
 				})
-				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest'));
 		} else {
 			SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 				.then((msgId: string) => this.storeId(msgId));
@@ -496,7 +472,7 @@ export default class SchedulerList extends Vue {
 					);
 					this.getTasks();
 				})
-				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: task}));
 		} else {
 			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
@@ -526,7 +502,8 @@ export default class SchedulerList extends Vue {
 				const fileName = 'iqrf-gateway-scheduler_' + + new Date().toISOString();
 				const file = fileDownloader(response, 'application/zip', fileName);
 				file.click();
-			});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.exportFailed'));
 	}
 
 	/**
@@ -538,36 +515,21 @@ export default class SchedulerList extends Vue {
 		const files = this.getFile();
 		SchedulerService.importConfig(files[0])
 			.then(() => {
+				this.$toast.success(
+					this.$t('config.daemon.scheduler.messages.importSuccess').toString()
+				);
 				ServiceService.restart('iqrf-gateway-daemon')
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('config.daemon.scheduler.messages.importSuccess').toString()
-						);
 						this.$toast.info(
 							this.$t('service.iqrf-gateway-daemon.messages.restart')
 								.toString()
 						);
 						this.getTasks();
 					})
-					.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				if (error.response === undefined) {
-					return;
-				}
-				if (error.response.status === 400) {
-					this.$toast.error(
-						this.$t('config.daemon.scheduler.messages.importInvalidFile').toString()
-					);
-				} else if (error.response.status === 415) {
-					this.$toast.error(
-						this.$t('config.daemon.scheduler.messages.importInvalidFormat')
-							.toString()
-					);
-				}
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
 	}
 
 	/**
@@ -595,7 +557,7 @@ export default class SchedulerList extends Vue {
 	 * @param {TaskTimeSpec} item Scheduler task time specification
 	 * @returns {string} Human readable time message
 	 */
-	private timeString(item: TaskTimeSpec): string|undefined {
+	private timeString(item: ITaskTimeSpec): string|undefined {
 		try {
 			if (item.exactTime) {
 				return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(this.dateFormat) + ')';
@@ -616,7 +578,6 @@ export default class SchedulerList extends Vue {
 				if (typeof item.cronTime === 'string') {
 					return item.cronTime;
 				}
-				item.cronTime[5] = (parseInt(item.cronTime[5]) + 1).toString();
 				return item.cronTime.join(' ').trim();
 			}
 		} catch (err) {

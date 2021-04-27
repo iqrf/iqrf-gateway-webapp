@@ -17,7 +17,8 @@
 		"RetryPollIntervalSeconds",
 		"ServerURL",
 		"TenantToken",
-		"UpdatePollIntervalSeconds"
+		"UpdatePollIntervalSeconds",
+		"ClientProtocol"
 	],
 	"properties": {
 		"InventoryPollIntervalSeconds": {
@@ -54,7 +55,17 @@
 			"title": "Update check interval",
 			"description": "Number of seconds to wait between each check for a new update.",
 			"example": 1800
+		},
+		"ClientProtocol": {
+			"$id": "#/properties/ClientProtocol",
+			"title": "Client protocol",
+			"type": "string",
+			"enum": [
+				"https",
+				"wss"
+			],
+			"example": "https"
 		}
 	},
-	"additionalProperties": true
+	"additionalProperties": false
 }

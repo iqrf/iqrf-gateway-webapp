@@ -30,10 +30,11 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\Exceptions\ApiKeyExpirationPassedException;
+use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use Throwable;
 use function assert;
 
 /**
@@ -124,8 +125,8 @@ class ApiKeyController extends BaseController {
 		$apiKey = new ApiKey($json->description, null);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
-		} catch (Throwable $e) {
-			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
@@ -233,8 +234,8 @@ class ApiKeyController extends BaseController {
 		$apiKey->setDescription($json->description);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
-		} catch (Throwable $e) {
-			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();

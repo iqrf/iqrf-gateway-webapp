@@ -2,31 +2,68 @@
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
-			<CRow style='margin-bottom: 1.25rem'>
-				<CCol>
-					{{ $t('gateway.info.gwMode') }}
-				</CCol>
-				<CCol>
-					{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
-				</CCol>
-			</CRow>
-			<div v-if='mode !== "unknown"'>
-				<CButton
-					color='primary'
-					@click='setMode(modes.operational)'
-				>
-					{{ $t('gateway.mode.modes.operational') }}
-				</CButton> <CButton
-					color='primary'
-					@click='setMode(modes.service)'
-				>
-					{{ $t('gateway.mode.modes.service') }}
-				</CButton> <CButton
-					color='primary'
-					@click='setMode(modes.forwarding)'
-				>
-					{{ $t('gateway.mode.modes.forwarding') }}
-				</CButton>
+			<div class='form-group'>
+				<CRow style='margin-bottom: 1.25rem'>
+					<CCol>
+						<b>
+							{{ $t('gateway.info.gwMode') }}
+						</b>
+					</CCol>
+					<CCol>
+						{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
+					</CCol>
+				</CRow>
+				<div v-if='mode !== "unknown"'>
+					<CButton
+						color='primary'
+						@click='setMode(modes.operational)'
+					>
+						{{ $t('gateway.mode.modes.operational') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setMode(modes.service)'
+					>
+						{{ $t('gateway.mode.modes.service') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setMode(modes.forwarding)'
+					>
+						{{ $t('gateway.mode.modes.forwarding') }}
+					</CButton>
+				</div>
+			</div>
+			<div
+				v-if='ideConfiguration !== null'
+				class='form-group'
+			>
+				<CRow style='margin-bottom: 1.25rem'>
+					<CCol>
+						<b>
+							{{ $t('gateway.mode.startupMode') }}
+						</b>
+					</CCol>
+					<CCol>
+						{{ $t("gateway.mode.modes." + ideConfiguration.operMode) }}
+					</CCol>
+				</CRow>
+				<div v-if='ideConfiguration.operMode !== "unknown"'>
+					<CButton
+						color='primary'
+						@click='setStartupMode(modes.operational)'
+					>
+						{{ $t('gateway.mode.modes.operational') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setStartupMode(modes.service)'
+					>
+						{{ $t('gateway.mode.modes.service') }}
+					</CButton> <CButton
+						color='primary'
+						@click='setStartupMode(modes.forwarding)'
+					>
+						{{ $t('gateway.mode.modes.forwarding') }}
+					</CButton>
+				</div>
 			</div>
 		</CCard>
 	</div>
@@ -34,16 +71,25 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
-import {CButton, CCard} from '@coreui/vue/src';
+import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {MutationPayload} from 'vuex';
+import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CDropdown,
+		CDropdownItem
 	},
 	metaInfo: {
 		title: 'gateway.mode.title',
@@ -61,6 +107,16 @@ export default class DaemonMode extends Vue {
 		'mngDaemon_Mode',
 		'messageError'
 	]
+
+	/**
+	 * @constant {string} component IDE counterpart component name
+	 */
+	private ideComponent = 'iqrf::IdeCounterpart'
+
+	/**
+	 * @var {IIdeCounterpart|null} ideConfiguration IDE counterpart component configuration
+	 */
+	private ideConfiguration: IIdeCounterpart|null = null
 
 	/**
 	 * @var {boolean} loaded Auxiliary property to help choose correct message
@@ -136,11 +192,34 @@ export default class DaemonMode extends Vue {
 	}
 
 	/**
+	 * Retrieves Daemon startup mode
+	 */
+	mounted(): void {
+		this.getStartupMode();
+	}
+
+	/**
+	 * Retrieves Daemon mode
+	 */
+	private getMode(): void {
+		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = null; this.loaded = true;})
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Sets new Daemon mode
+	 * @param {DaemonModeEnum} newMode New Daemon mode to set
+	 */
+	private setMode(newMode: DaemonModeEnum): void {
+		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
 	 * Daemon api response handler
 	 */
 	private handleResponse(response: any): void {
 		this.mode = DaemonModeService.parse(response);
-		this.$store.commit('spinner/HIDE');
 		if (this.mode === DaemonModeEnum.unknown) {
 			this.$toast.error(
 				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'Failed')
@@ -150,27 +229,50 @@ export default class DaemonMode extends Vue {
 			this.$toast.success(
 				this.$t('gateway.mode.messages.' + this.mode).toString()
 			);
+			this.$store.dispatch('daemonStatusMode', 'unknown');
 		} else {
 			this.loaded = true;
 		}
 	}
 
 	/**
-	 * Retrieves Daemon mode
+	 * Retrieves IDE counterpart component configuration
 	 */
-	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
+	private getStartupMode(): Promise<void> {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
+		return DaemonConfigurationService.getComponent(this.ideComponent)
+			.then((response: AxiosResponse) => {
+				this.ideConfiguration = response.data.instances[0];
+				if (this.ideConfiguration?.operMode === undefined) {
+					Object.assign(this.ideConfiguration, {operMode: this.modes.operational});
+				}
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.mode.messages.startupFetchFailed'));
 	}
 
 	/**
-	 * Sets new Daemon mode
-	 * @param {DaemonModeEnum} newMode New Daemon mode to set
+	 * Saves updated IDE counterpart component configuration
+	 * @param {DaemonModeEnum} enum Startup mode to set
 	 */
-	private setMode(newMode: DaemonModeEnum): void {
-		this.$store.dispatch('spinner/hide');
-		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
+	private setStartupMode(mode: DaemonModeEnum): void {
+		if (this.ideConfiguration === null || this.ideConfiguration.operMode === mode) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		let configuration = {...this.ideConfiguration};
+		configuration.operMode = mode;
+		DaemonConfigurationService.updateInstance(this.ideComponent, configuration.instance, configuration)
+			.then(() => {
+				this.getStartupMode().then(() => {
+					this.$toast.success(
+						this.$t('gateway.mode.messages.startupSaveSuccess').toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.mode.messages.startupSaveFailed'));
 	}
 }
 </script>

@@ -122,18 +122,16 @@ import {
 	CIcon,
 	CModal
 } from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import UserService from '../../services/UserService';
-import { Dictionary } from 'vue-router/types/router';
-import { IField } from '../../interfaces/coreui';
-import { AxiosResponse } from 'axios';
 
-interface User {
-	id?: number
-	language: string
-	role: string
-	username: string
-}
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import UserService from '../../services/UserService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {IUser} from '../../interfaces/user';
+import { extend } from 'vee-validate';
 
 @Component({
 	components: {
@@ -158,9 +156,9 @@ interface User {
  */
 export default class UserList extends Vue {
 	/**
-	 * @var {User|null} deleteUser User object used in remove modal
+	 * @var {IUser|null} deleteUser User object used in remove modal
 	 */
-	private deleteUser: User|null = null
+	private deleteUser: IUser|null = null
 
 	/**
 	 * @var {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
@@ -179,10 +177,10 @@ export default class UserList extends Vue {
 	/**
 	 * @var {Array<User>} users Array of user objects
 	 */
-	private users: Array<User> = []
+	private users: Array<IUser> = []
 	
 	/**
-	 * Vue lifecycle hook created
+	 * Updates table fields by user rolr
 	 */
 	created(): void {
 		if (this.$store.getters['user/getRole'] === 'normal') {
@@ -224,28 +222,36 @@ export default class UserList extends Vue {
 				},
 			];
 		}
-		this.$store.commit('spinner/SHOW');
+	}
+
+	/**
+	 * Retrieves list of existing user
+	 */
+	mounted(): void {
 		this.getUsers();
 	}
 
 	/**
 	 * Retrieves list of existing users
 	 */
-	private getUsers() {
+	private getUsers(): Promise<void> {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
 		return UserService.list()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.users = response.data;
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.listFetchFailed'));
 	}
 
 	/**
 	 * Changes user's role from table
+	 * @param {IUser} user User object
+	 * @param {string} newRole New user role
 	 */
-	private changeRole(user: User, newRole: string): void {
+	private changeRole(user: IUser, newRole: string): void {
 		if (user.role === newRole) {
 			return;
 		}
@@ -254,8 +260,10 @@ export default class UserList extends Vue {
 
 	/**
 	 * Changes user's language from table
+	 * @param {IUser} user User object
+	 * @param {string} newLanguage New user language
 	 */
-	private changeLanguage(user: User, newLanguage: string): void {
+	private changeLanguage(user: IUser, newLanguage: string): void {
 		if (user.language === newLanguage) {
 			return;
 		}
@@ -264,35 +272,37 @@ export default class UserList extends Vue {
 
 	/**
 	 * Updates settings of a user object and then stores new values
+	 * @param {IUser} user User object
+	 * @param {Dictionary<string>} newSettings Settings to apply to the user obhect
 	 */
-	private edit(user: User, newSettings: Dictionary<string>) {
+	private edit(user: IUser, newSettings: Dictionary<string>) {
 		if (user.id === undefined) {
 			return;
 		}
-		this.$store.commit('spinner/SHOW');
 		let settings = {
 			...user,
 			...newSettings,
 		};
 		delete settings.id;
+		this.$store.commit('spinner/SHOW');
 		return UserService.edit(user.id, settings)
 			.then(() => {
 				this.getUsers().then(() => {
 					this.$toast.success(
-						this.$t('core.user.messages.editSuccess', {username: user.username})
-							.toString()
+						this.$t(
+							'core.user.messages.editSuccess',
+							{user: user.username},
+						).toString()
 					);
 				});
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username}));
 	}
 
 	/**
 	 * Assigns user object to remove modal variable
 	 */
-	private confirmDelete(user: User): void {
+	private confirmDelete(user: IUser): void {
 		this.deleteUser = user;
 	}
 
@@ -310,31 +320,39 @@ export default class UserList extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		UserService.delete(user.id)
-			.then(() => {
-				if (user.id === this.$store.getters['user/getId']) {
-					this.$store.dispatch('user/signOut');
-					this.$toast.success(
-						this.$t('core.user.messages.deleteSuccess', {username: user.username})
-							.toString()
-					);
-					this.$store.commit('spinner/HIDE');
-					if (this.users.length === 1) {
-						this.$router.push('/install/');
-						return;
-					}
-					this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
-					return;
-				}
-				this.getUsers().then(() => {
-					this.$toast.success(
-						this.$t('core.user.messages.deleteSuccess', {username: user.username})
-							.toString()
-					);
-				});
-			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-			});
+			.then(() => this.handleDeleteSuccess(user))
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: user.username}));
+	}
+
+	/**
+	 * Handles user delete success REST API response
+	 * @param {IUser} user Removed user object
+	 */
+	private handleDeleteSuccess(user: IUser): void {
+		if (user.id === this.$store.getters['user/getId']) {
+			this.$store.dispatch('user/signOut');
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(
+				this.$t(
+					'core.user.messages.deleteSuccess',
+					{user: user.username}
+				).toString()
+			);
+			if (this.users.length === 1) {
+				this.$router.push('/install/');
+			} else {
+				this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
+			}
+			return;
+		}
+		this.getUsers().then(() => {
+			this.$toast.success(
+				this.$t(
+					'core.user.messages.deleteSuccess', 
+					{user: user.username}
+				).toString()
+			);
+		});
 	}
 }
 </script>

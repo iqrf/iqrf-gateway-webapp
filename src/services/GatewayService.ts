@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import { ISystemdJournal } from '../interfaces/systemdJournal';
 
 /**
  * Root password interface
@@ -55,11 +56,26 @@ class GatewayService {
 	}
 
 	/**
-	 * Sets gateway root password
-	 * @param {RootPassword} data New root gateway password
+	 * Sets default gateway user password
+	 * @param {RootPassword} data New password
 	 */
-	setRootPass(data: RootPassword): Promise<AxiosResponse> {
-		return axios.put('gateway/rootpass', data, {headers: authorizationHeader()});
+	setGatewayPassword(data: RootPassword): Promise<AxiosResponse> {
+		return axios.put('gateway/password', data, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves systemd journal configuration
+	 */
+	getSystemdJournalConfig(): Promise<AxiosResponse> {
+		return axios.get('gateway/journal/config', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Saves systemd journal configuration
+	 * @param {ISystemdJournal} config New configuration
+	 */
+	saveSystemdJournalConfig(config: ISystemdJournal): Promise<AxiosResponse> {
+		return axios.post('gateway/journal/config', config, {headers: authorizationHeader()});
 	}
 }
 

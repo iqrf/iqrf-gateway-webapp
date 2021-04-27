@@ -35,6 +35,7 @@ if (basename(__DIR__) === 'tests') {
 	@mkdir($tempDir . 'configuration/');
 	@mkdir($tempDir . 'configuration/scheduler/');
 	@mkdir($tempDir . 'controller/');
+	@mkdir($tempDir . 'maintenance/');
 	@mkdir($tempDir . 'translator/');
 	@mkdir($tempDir . 'zip/');
 }

@@ -2,9 +2,28 @@
 docs:
 	enabled: true
 	url: https://docs.iqrf.org/iqrf-gateway/
+# Default gateway user password change
+gatewayPass:
+	enabled: false
+	user: root
 grafana:
 	enabled: false
 	url: /grafana/
+# IQRF Gateway Controller configuration
+iqrfGatewayController:
+	enabled: false
+# IQRF Gateway Translator configuration
+iqrfGatewayTranslator:
+	enabled: false
+# Device maintenance
+maintenance:
+	enabled: false
+# Mender client configuration
+mender:
+	enabled: false
+# Monitoring service
+monit:
+	enabled: false
 # Network manager
 networkManager:
 	enabled: false
@@ -22,11 +41,14 @@ ssh:
 supervisord:
 	enabled: false
 	url: /supervisord/
-# IQRF TR native upload
-trUpload:
+# Systemd journal configuration
+systemdJournal:
 	enabled: false
 # System updater
 updater:
+	enabled: false
+# IQRF TR native upload
+trUpload:
 	enabled: false
 # Unattended upgrades
 unattendedUpgrades:

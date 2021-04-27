@@ -83,11 +83,14 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError} from 'axios';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -141,22 +144,19 @@ export default class UserAdd extends Vue {
 	private handleSubmit(): void {
 		const language = this.language === '' ? 'en' : this.language;
 		const role = this.role === '' ? 'normal' : this.role;
+		this.$store.commit('spinner/SHOW');
 		UserService.add(this.username, this.password, language, role)
 			.then(() => {
-				this.$router.push('/user/');
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('core.user.messages.addSuccess', {username: this.username})
-						.toString());
-			}).catch((error: AxiosError) => {
-				if (error.response === undefined) {
-					return;
-				}
-				if (error.response.status === 409) {
-					this.$toast.error(
-						this.$t('core.user.messages.usernameExists').toString()
-					);
-				}
-			});
+					this.$t(
+						'core.user.messages.addSuccess',
+						{username: this.username}
+					).toString()
+				);
+				this.$router.push('/user/');
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.addFailed'));
 	}
 }
 </script>

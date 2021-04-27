@@ -16,6 +16,7 @@
 				"endpoint": "Endpoint"
 			},
 			"messages": {
+				"saveFailed": "Failed to save Amazon AWS IoT MQTT connection configuration: {error}",
 				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
 			},
 			"errors": {
@@ -29,6 +30,9 @@
 			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
 			"form": {
 				"title": "Hexio IoT Platform MQTT connection wizard"
+			},
+			"messages": {
+				"saveFailed": "Failed to save Hexio IoT Platform MQTT connection configuration: {error}"
 			}
 		},
 		"ibmCloud": {
@@ -48,6 +52,9 @@
 				"deviceId": "Please enter the device ID.",
 				"token": "Please enter the authentication token.",
 				"eventId": "Please enter command and event ID."
+			},
+			"messages": {
+				"saveFailed": "Failed to save IBM Cloud MQTT connection configuration: {error}"
 			}
 		},
 		"intelimentsInteliGlue": {
@@ -62,6 +69,9 @@
 				"rootTopic": "Please enter the root topic.",
 				"assignedPort": "Please enter the assigned port.",
 				"assignedPortRange": "Port has to be an integer in range from 0 to 65535."
+			},
+			"messages": {
+				"saveFailed": "Failed to save InteliGlue MQTT connection configuration: {error}"
 			}
 		},
 		"msAzure": {
@@ -72,28 +82,11 @@
 				"connectionString": "IoT Hub Connection String for Device"
 			},
 			"messages": {
+				"saveFailed": "Failed to save Azure IoT hub connection configuration: {error}",
 				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."
 			},
 			"errors": {
 				"connectionString": "Please enter IoT Hub Connection String for Device."
-			}
-		},
-		"pixla": {
-			"title": "PIXLA device management",
-			"description": "Manages PIXLA client service.",
-			"dashboard": "Visit dashboard",
-			"editModal": {
-				"title": "Set new PIXLA platform token",
-				"token": "New PIXLA token"
-			},
-			"token": "Token",
-			"messages": {
-				"disabled": "PIXLA manager is disabled.",
-				"failure": "An error occurred while saving the new PIXLA token.",
-				"success": "New PIXLA token has been successfully saved."
-			},
-			"errors": {
-				"token": "Please enter PIXLA platform token."
 			}
 		},
 		"guides": {
@@ -110,10 +103,11 @@
 			"unknown": "Unknown"
 		},
 		"websocket": {
-			"title": "Websocket status",
+			"title": "Daemon status",
 			"connected": "Connected",
 			"notConnected": "Not connected"
 		},
+		"queue": "Daemon queue",
 		"modalTitle": "Daemon mode notice",
 		"modalPrompt": "IQRF GW Daemon is in service mode. Change Daemon mode to operational or forwarding before using this feature."
 	},
@@ -209,12 +203,13 @@
 				"import": "Import configuration",
 				"export": "Export configuration"
 			},
+			"errors": {
+				"import": "Please select a ZIP archive with a configuration to import."
+			},
 			"messages": {
-				"importButton": "Please select a ZIP archive with a configuration to import.",
-				"imported": "The configuration has been imported.",
-				"invalidConfig": "The ZIP archive contains invalid configuration.",
-				"invalidFormat": "Uploaded invalid file format.",
-				"readConfig": "Cannot read zip archive with a configuration."
+				"exportFailed": "Failed to export IQRF gateway configuration: {error}",
+				"importFailed": "Failed to import IQRF gateway configuration: {error}",
+				"importSuccess": "The configuration has been imported."
 			}
 		},
 		"daemon": {
@@ -231,6 +226,11 @@
 					"userDir": "User directory",
 					"configurationDir": "Configuration directory",
 					"deploymentDir": "Deployment directory"
+				},
+				"messages": {
+					"fetchFailed": "Failed to retrieve main configuration: {error}",
+					"saveFailed": "Failed to save main configuration: {error}",
+					"saveSuccess": "Main configuration has been successfully saved."
 				}
 			},
 			"components": {
@@ -263,6 +263,7 @@
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
 				"messages": {
+					"fetchFailed": "Failed to retrieve interfaces configuration.",
 					"noInterface": "All IQRF communication interfaces are disabled.",
 					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
 					"updateFailed": "An error occured while updating interface settings."
@@ -345,7 +346,8 @@
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
 						"uartPin": "UART interface enable GPIO pin *",
-						"gwOnly": "* IQRF Gateway only"
+						"gwOnly": "* IQRF Gateway only",
+						"baudRate": "UART baud rate"
 					},
 					"errors": {
 						"typeSelect": "Please select mapping type.",
@@ -369,39 +371,61 @@
 				}
 			},
 			"messagings": {
+				"tlsTitle": "TLS",
 				"title": "Messagings",
 				"description": "Configuration of messagings.",
 				"mqtt": {
-					"title": "MQTT interface",
-					"description": "MQTT interface settings.",
-					"add": "Add MQTT interface",
-					"edit": "Edit MQTT interface",
+					"title": "MQTT messaging",
+					"description": "MQTT messaging settings.",
+					"legend": "MQTT messaging instance",
+					"add": "Add MQTT messaging instance",
+					"edit": "Edit MQTT messaging instance",
 					"form": {
 						"BrokerAddr": "Broker address",
 						"Persistence": "Persistence",
+						"Persistences": {
+							"0": "In-memory",
+							"1": "File system-based",
+							"2": "Application-specific"
+						},
 						"QoS": "QoS",
 						"QoSes": {
-							"0": "QoS 0 - At most once",
-							"1": "QoS 1 - At least once",
-							"2": "QoS 2 - Exactly once"
+							"0": "QoS 0",
+							"1": "QoS 1",
+							"2": "QoS 2"
 						},
 						"User": "User",
 						"EnabledSSL": "Enabled TLS",
 						"KeepAliveInterval": "Keep alive interval",
 						"ConnectTimeout": "Connection timeout",
-						"MinReconnect": "Minimal count of reconnects",
-						"MaxReconnect": "Maximal count of reconnects",
+						"MinReconnect": "Mininum number of reconnects",
+						"MaxReconnect": "Maximum number of reconnects",
 						"TrustStore": "CA certificate",
 						"PrivateKeyPassword": "Private key password",
 						"EnabledCipherSuites": "Enabled cipher suites",
 						"EnableServerCertAuth": "Enable server certificate authentication"
 					},
 					"messages": {
-						"addSuccess": "MQTT interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete MQTT interface instance {instance}?",
-						"deleteTitle": "Delete MQTT interface instance",
-						"deleteSuccess": "MQTT interface instance {instance} has been deleted.",
-						"editSuccess": "MQTT interface instance {instance} has been edited."
+						"addFailed": "Failed to create new MQTT messaging instance: {error}",
+						"addSuccess": "MQTT messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete MQTT messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete MQTT messaging instance {instance}?",
+						"deleteSuccess": "MQTT messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete MQTT messaging instance",
+						"editFailed": "Failed to edit MQTT messaging instance {instance}: {error}",
+						"editSuccess": "MQTT messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of MQTT messaging instances: {error}",
+						"persistence": {
+							"0": "State of in-flight messages is lost in case of a client shutsdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
+							"1": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
+							"2": "Persistence control is delegated to the application."
+						},
+						"qos": {
+							"0": "Fastest method, but the delivery of a message is not guaranteed.",
+							"1": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
+							"2": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
+						}
 					},
 					"errors": {
 						"instance": "Please enter name of MQTT instance.",
@@ -420,7 +444,7 @@
 					"form": {
 						"WebsocketPort": "WebSocket port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost",
-						"tlsEnabled": "Enable TLS",
+						"tlsEnabled": "TLS",
 						"tlsMode": "TLS mode",
 						"tlsModes": {
 							"intermediate": "Intermediate",
@@ -441,9 +465,17 @@
 						}
 					},
 					"interface": {
-						"title": "Websocket interfaces",
+						"title": "WebSocket interfaces",
+						"legend": "WebSocket interface instance",
 						"add": "Add WebSocket interface",
-						"edit": "Edit WebSocket interface"
+						"edit": "Edit WebSocket interface",
+						"messages": {
+							"addFailed": "Failed to create new WebSocket interface: {error}",
+							"fetchFailed": "Failed to retrieve WebSocket interface {interface}: {error}",
+							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
+							"editFailed": "Failed to edit WebSocket interface {interface}: {error}",
+							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}"
+						}
 					},
 					"messaging": {
 						"title": "WebSocket messagings",
@@ -459,6 +491,7 @@
 					},
 					"service": {
 						"title": "WebSocket services",
+						"legend": "WebSocket service instance",
 						"add": "Add WebSocket service",
 						"edit": "Edit WebSocket service",
 						"messages": {
@@ -481,26 +514,34 @@
 						"messagingInstance": "Please enter name of WebSocket messaging.",
 						"serviceInstance": "Please enter name of WebSocket service.",
 						"WebsocketPort": "Please enter WebSocket port number.",
+						"WebsocketPortRange": "Please enter valid WebSocket port number - an integer between 1 and 65535.",
 						"interfaceName": "Please select the name of required interface.",
 						"interfaceInstance": "Please select the required WebSocket service instance.",
-						"tlsMode": "Please select TLS mode."
+						"tlsMode": "Please select TLS mode.",
+						"certificate": "Please enter path to the TLS certificate.",
+						"privateKey": "Please enter path to the private key."
 					}
 				},
 				"mq": {
-					"title": "MQ interface",
-					"description": "MQ interface settings.",
-					"add": "Add MQ interface",
-					"edit": "Edit MQ interface",
+					"title": "MQ messaging",
+					"description": "MQ messaging settings.",
+					"add": "Add MQ messaging instance",
+					"edit": "Edit MQ messaging instance",
 					"form": {
 						"LocalMqName": "Local MQ name",
 						"RemoteMqName": "Remote MQ name"
 					},
 					"messages": {
-						"addSuccess": "MQ interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete MQ interface instance {instance}?",
-						"deleteTitle": "Delete MQ interface instance",
-						"deleteSuccess": "MQ interface instance {instance} has been deleted.",
-						"editSuccess": "MQ interface instance {instance} has been edited."
+						"addFailed": "Failed to create new MQ messaging instance: {error}",
+						"addSuccess": "MQ messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete MQ messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete MQ messaging instance {instance}?",
+						"deleteSuccess": "MQ messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete MQ messaging instance",
+						"editFailed": "Failed to edit MQ messaging instance {instance}: {error}",
+						"editSuccess": "MQ messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve MQ messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of MQ messaging instances: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of MQ instance.",
@@ -509,28 +550,34 @@
 					}
 				},
 				"udp": {
-					"title": "UDP interface",
-					"description": "IQRF UDP interface settings.",
-					"add": "Add UDP interface",
-					"edit": "Edit UDP interface",
+					"title": "UDP messaging",
+					"description": "IQRF UDP messaging settings.",
+					"add": "Add UDP messaging instance",
+					"edit": "Edit UDP messaging instance",
 					"form": {
 						"RemotePort": "Remote port",
 						"LocalPort": "Local port"
 					},
 					"messages": {
-						"addSuccess": "UDP interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete UDP interface instance {instance}?",
-						"deleteTitle": "Delete UDP interface instance",
-						"deleteSuccess": "UDP interface instance {instance} has been deleted.",
-						"editSuccess": "UDP interface instance {instance} has been edited."
+						"addFailed": "Failed to create new UDP messaging instance: {error}",
+						"addSuccess": "UDP messaging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete UDP messaging instance {instance}: {error}",
+						"deletePrompt": "Do you really want to delete UDP messaging instance {instance}?",
+						"deleteSuccess": "UDP messaging instance {instance} has been deleted.",
+						"deleteTitle": "Delete UDP messaging instance",
+						"editFailed": "Failed to edit UDP messaging instance {instance}: {error}",
+						"editSuccess": "UDP messaging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve UDP messaging instance {instance}: {error}",
+						"listFailed": "Failed to retrieve list of UDP messaging instances: {error}"
 					},
 					"errors": {
-						"instance": "Please enter name of UDP interface.",
-						"RemotePort": "Please enter remote port - integer between 1 and 49151.",
-						"LocalPort": "Please enter local port - integer between 1 and 49151."
+						"instance": "Please enter name of UDP messaging instance.",
+						"RemotePort": "Please enter remote port - integer between 1 and 65535.",
+						"LocalPort": "Please enter local port - integer between 1 and 65535."
 					}
 				},
-				"acceptAsyncMsg": "Accept asynchronous messages"
+				"acceptAsyncMsg": "Accept asynchronous messages",
+				"instanceInvalid": "Messaging instance name cannot contain the ampersand symbol (&)."
 			},
 			"scheduler": {
 				"title": "Scheduler",
@@ -545,18 +592,29 @@
 				"form": {
 					"task": {
 						"taskId": "Task ID",
+						"timeSpec": "Start time type",
+						"timeSpecTypes": {
+							"exact": "Oneshot - execute task once at specified time",
+							"periodic": "Periodic - frequency of task execution in seconds",
+							"cron": "Cron time expression - specifies when and how often a task is executed"
+						},
 						"cronTime": "Time in cron format",
 						"exactTime": "Exact time",
 						"periodic": "Periodic",
 						"period": "Period in seconds",
 						"startTime": "Start time"
 					},
-					"message": {
+					"messages": {
 						"title": "Messages",
 						"label": "Message (JSON request)",
-						"messagePlaceholder": "Select message",
+						"messaging": "Messaging",
+						"messagingPlaceholder": "Select messaging",
 						"add": "Add another message",
 						"remove": "Remove message"
+					},
+					"messagings": {
+						"add": "Add another messaging",
+						"remove": "Remove messaging"
 					}
 				},
 				"errors": {
@@ -564,7 +622,8 @@
 					"service": "Please select service.",
 					"messaging": "Please select messaging.",
 					"message": "Please enter a message.",
-					"period": "Period should be an integer greater than 0."
+					"period": "Period should be an integer greater than 0.",
+					"cron": "Please enter a valid 7 field cron time expression."
 				},
 				"import": {
 					"title": "Import task(s)",
@@ -574,24 +633,28 @@
 					}
 				},
 				"messages": {
+					"exportFailed": "Failed to export scheduler tasks: {error}",
+					"importFailed": "Failed to import scheduler task(s): {error}",
 					"importSuccess": "The tasks has been imported successfully.",
-					"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
-					"importInvalidFile": "The uploaded file is invalid.",
 					"deleteTitle": "Delete scheduler task",
 					"deletePrompt": "Do you really want to delete scheduler task {task}?",
 					"deleteSuccess": "Scheduler task has been successfully deleted.",
 					"deleteFail": "An error occurred while removing task.",
-					"getFail": "Could not retrieve task {task}.",
+					"deleteFailedRest": "Failed to delete task {task}: {error}",
+					"getFail": "Failed to retrieve task {task}: {error}",
 					"listFailed": "Failed to retrieve list of scheduler tasks",
+					"listFailedRest": "Failed to retrieve list of scheduler tasks: {error}",
+					"addFailedRest": "Failed to create new scheduler task: {error}",
 					"addSuccess": "Scheduler task has been successfully added.",
+					"editFailedRest": "Failed to edit scheduler task: {error}",
 					"editSuccess": "Scheduler task {task} has been successfully edited.",
 					"processError": "An error has occurred while processing Daemon API request.",
+					"messagingFailed": "Failed to retrieve messaging services: {error}",
 					"rest": {
 						"invalidTask": "Task configuration is not valid.",
 						"invalidFile": "Imported scheduler configuration is not valid.",
 						"notFound": "Task does not exist.",
-						"exists": "Task with this ID already exists.",
-						"messagingFail": "Failed to retrieve messaging services."
+						"exists": "Task with this ID already exists."
 					}
 				}
 			},
@@ -602,14 +665,15 @@
 					"title": "JSON API",
 					"messages": {
 						"success": "JSON API configuration has been successfully updated.",
-						"noChanges": "No configuration changes detected."
+						"noChanges": "No configuration changes detected.",
+						"failed": "Failed to save JSON API configuration: {error}"
 					}
 				},
 				"jsonMngMetaDataApi": {
 					"title": "JSON Metadata API",
 					"description": "JSON Metadata API settings.",
 					"form": {
-						"metaDataToMessages": "Add metadata into the messages"
+						"metaDataToMessages": "Include metadata in messages"
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Metadata API instance."
@@ -619,7 +683,7 @@
 					"title": "JSON Raw API",
 					"description": "JSON Raw API settings.",
 					"form": {
-						"asyncDpaMessage": "Async DPA message"
+						"asyncDpaMessage": "Allow asynchronous DPA messages"
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Raw API instance."
@@ -629,7 +693,7 @@
 					"title": "JSON Splitter",
 					"description": "JSON Splitter settings.",
 					"form": {
-						"validateJsonResponse": "Validate JSON response",
+						"validateJsonResponse": "Validate JSON responses",
 						"insId": "JSON Splitter instance ID"
 					},
 					"errors": {
@@ -642,6 +706,7 @@
 					"description": "Manage IQRF Repository's settings.",
 					"form": {
 						"urlRepo": "IQRF Repository URL",
+						"enableCheck": "Check for updates periodically",
 						"checkPeriod": "Check period in minutes",
 						"downloadIfEmpty": "Download if repository cache is empty"
 					},
@@ -655,27 +720,26 @@
 					"title": "Lite DB",
 					"description": "IQRF Info database settings.",
 					"form": {
-						"enumAtStartUp": "Initialize network full enumeration just after startup",
-						"enumPeriod": "Enumeration check period in minutes",
-						"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
+						"enumAtStartUp": "Enumerate network on startup",
+						"enablePeriodic": "Enumerate network periodically",
+						"enumPeriod": "Enumeration period in minutes",
+						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes",
+						"metaDataToMessages": "Include metadata in messages"
 					},
 					"errors": {
 						"instance": "Please enter name of IQRF Info instance.",
 						"enumPeriod": "Period must be greater or equal to 0."
 					}
 				},
-				"iqmesh": {
-					"title": "IQMESH services",
-					"description": "Manage IQMESH services.",
-					"otaUpload": {
-						"title": "IQRF OTA upload service",
-						"form": {
-							"uploadPath": "Path to a directory with files to upload"
-						},
-						"errors": {
-							"instance": "Please enter name of OTA upload service instance.",
-							"uploadPath": "Please enter path to a directory with files to upload."
-						}
+				"iqmesh": "IQMESH services",
+				"otaUpload": {
+					"title": "IQRF OTA upload service",
+					"form": {
+						"uploadPath": "Path to a directory with files to upload"
+					},
+					"errors": {
+						"instance": "Please enter name of OTA upload service instance.",
+						"uploadPath": "Please enter path to a directory with files to upload."
 					}
 				},
 				"monitor": {
@@ -684,16 +748,21 @@
 					"add": "Add a new monitoring service",
 					"edit": "Edit the monitoring service",
 					"form": {
+						"title": "Monitoring instance",
 						"reportPeriod": "Reporting period in seconds",
 						"WebsocketPort": "WebSocket server port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost"
 					},
 					"messages": {
-						"addEuccess": "Monitoring service instance {instance} has been added.",
+						"addFailed": "Failed to create new Monitoring instance: {error}",
+						"addSuccess": "Monitoring service instance {instance} has been added.",
+						"deleteFailed": "Failed to delete Monitoring instance {instance}: {error}",
 						"deletePrompt": "Do you really want to delete Monitoring service instance {instance}?",
 						"deleteTitle": "Delete Monitoring service instance",
 						"deleteSuccess": "Monitoring service instance {instance} has been deleted.",
-						"editSuccess": "Monitoring service instance {instance} has been edited."
+						"editFailed": "Failed to edit Monitoring instance {instance}: {error}",
+						"editSuccess": "Monitoring service instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve Monitoring instance {instance} configuration: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of monitor instance.",
@@ -707,14 +776,15 @@
 					"add": "Add logging service configuration",
 					"edit": "Edit logging service configuration",
 					"form": {
+						"title": "Logging instance",
 						"path": "Path to directory with logs",
 						"filename": "File name",
 						"maxSize": "Maximum size in bytes",
 						"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
 						"maxNumber": "Maximum number of timestamped files",
-						"timestampFiles": "Enable timestamp files",
+						"timestampFiles": "Enable timestamps in files",
 						"verbosityLevels": {
-							"title": "Verbosity levels",
+							"title": "Logging verbosity",
 							"add": "Add verbosity level",
 							"remove": "Remove verbosity level"
 						},
@@ -723,11 +793,15 @@
 					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",
-						"removeItem": "Do you really want to delete Tracer file instance {instance}?",
-						"removeTitle": "Delete Tracer file instance",
-						"removeSuccess": "Tracer file instance {instance} has been removed.",
-						"addSuccess": "Tracer file instance {instance} has been added.",
-						"editSuccess": "Tracer file instance {instance} has been edited."
+						"removeFailed": "Faled to delete Logging instance {instance}: {error}",
+						"removeItem": "Do you really want to delete Logging instance {instance}?",
+						"removeTitle": "Delete Logging instance",
+						"removeSuccess": "Logging instance {instance} has been removed.",
+						"addFailed": "Failed to create new Logging instance: {error}",
+						"addSuccess": "Logging instance {instance} has been added.",
+						"editFailed": "Failed to edit Logging instance {instance}: {error}",
+						"editSuccess": "Logging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve Logging instance {instance} configuration: {error}"
 					},
 					"errors": {
 						"instance": "Please enter name of logging service interface.",
@@ -741,6 +815,12 @@
 						}
 					}
 				}
+			},
+			"messages": {
+				"configMiscFetch": "Retrieving miscellaneous components configuration...",
+				"configFailed": "An unexpected error has occured: {error}",
+				"configFetchFailed": "Failed to retrieve configuration for {children}.",
+				"failedElement": "Failed to retrieve component configuration."
 			}
 		},
 		"translator": {
@@ -754,12 +834,21 @@
 				},
 				"mqtt": {
 					"title": "MQTT client configuration",
-					"port": "Broker port"
+					"port": "Broker port",
+					"tls": {
+						"enable": "Enable TLS",
+						"trustStore": "CA certificate",
+						"keyStore": "Client certificate",
+						"privateKey": "Client private key",
+						"requireBrokerCert": "Broker certificate required"
+					}
 				}
 			},
 			"messages": {
 				"disabled": "IQRF Gateway Translator service is disabled.",
-				"loadFailed": "Failed to retrieve Translator configuration."
+				"saveFailed": "Failed to save Translator configuration: {error}",
+				"saveSuccess": "Translator configuration has been successfully saved.",
+				"fetchFailed": "Failed to retrieve Translator configuration: {error}"
 			},
 			"errors": {
 				"port": "Please enter an integer between 1 and 49151 for port number.",
@@ -806,7 +895,12 @@
 				"logger": {
 					"title": "Logger",
 					"filePath": "Path to log file",
-					"severity": "Severity level"
+					"severity": "Severity level",
+					"sink": "Logging sinks",
+					"sinks": {
+						"file": "Log to file",
+						"syslog": "Log to syslog"
+					}
 				},
 				"wsServers": {
 					"title": "Websocket",
@@ -815,7 +909,6 @@
 				}
 			},
 			"errors": {
-				"disabled": "IQRF Gateway Controller service is disabled.",
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
 				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
@@ -831,47 +924,15 @@
 				}
 			},
 			"messages": {
-				"successRestart": "IQRF controller configuration has been successfully saved. Controller service has been restarted.",
-				"loadFailed": "Failed to retrieve Controller configuration."
+				"disabled": "IQRF Gateway Controller service is disabled.",
+				"saveFailed": "Failed to save Controller configuration: {error}",
+				"restartSuccess": "Controller configuration has been successfully saved. Controller service has been restarted.",
+				"fetchFailed": "Failed to retrieve Controller configuration: {error}"
 			}
 		},
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
-		},
-		"mender": {
-			"title": "Mender client",
-			"description": "Mender client configuration",
-			"form": {
-				"inventoryPollInterval": "Inventory update interval (seconds)",
-				"retryPollInterval": "Communication retry interval (seconds)",
-				"server": "Server address",
-				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"placeholders": {
-					"inventoryPollInterval": 28000,
-					"retryPollInterval": 300,
-					"server": "https://hosted.mender.io",
-					"tenantToken": "exampleToken",
-					"updatePollInterval": 1800
-				}
-			},
-			"messages": {
-				"disabled": "Mender service is disabled.",
-				"loadFailed": "Failed to retrieve Mender configuration."
-			},
-			"errors": {
-				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-				"missing": {
-					"server": "Please enter the server address.",
-					"tenantToken": "Please enter the tenant token."
-				},
-				"invalid": {
-					"server": "Server address should contain the HTTP protocol."
-				}
-			}
 		}
 	},
 	"core": {
@@ -924,11 +985,16 @@
 			"messages": {
 				"invalid": "Invalid API key metadata.",
 				"notFound": "API key with this ID does not exist.",
-				"deleteTitle": "Delete API key",
+				"addFailed": "Failed to create new API key: {error}",
+				"addSuccess": "New API key has been successfully added.",
+				"deleteFailed": "Failed to delete API key ID {key}: {error}",
 				"deletePrompt": "Do you really want to delete API key ID {key}?",
 				"deleteSuccess": "API key ID {key} has been successfully deleted.",
-				"editSuccess": "API key ID {key} metadata have been successfully changed.",
-				"addSuccess": "New API key has been successfully added."
+				"deleteTitle": "Delete API key",
+				"editFailed": "Failed to change API key ID {key}: {error}",
+				"editSuccess": "API key ID {key} has been successfully updated.",
+				"fetchFailed": "Failed to retrieve API key {key}: {error}",
+				"listFetchFailed": "Failed to retrieve the list of API keys: {error}"
 			},
 			"errors": {
 				"description": "Please enter API key description."
@@ -954,12 +1020,16 @@
 			"messages": {
 				"usernameExists": "Username is already used.",
 				"oldPassMismatch": "The old password is incorrect.",
-				"addSuccess": "User {username} has been added successfully.",
-				"deletePrompt": "Do you really want to delete user {username}?",
+				"addFailed": "Failed to create new user: {error}",
+				"addSuccess": "User {user} has been added successfully.",
+				"deleteFailed": "Failed to delete user {user}: {error}",
+				"deletePrompt": "Do you really want to delete user {user}?",
+				"deleteSuccess": "User {user} has been deleted successfully.",
 				"deleteTitle": "Delete user",
-				"deleteSuccess": "User {username} has been deleted successfully.",
-				"editSuccess": "User {username} has been edited successfully.",
-				"notFound": "User not found."
+				"editFailed": "Failed to update user ID {user}: {error}",
+				"editSuccess": "User {user} has been edited successfully.",
+				"fetchFailed": "Failed to retrieve information of user ID {user}: {error}",
+				"listFetchFailed": "Failed to retrieve list of users: {error}"
 			},
 			"errors": {
 				"oldPassword": "Please enter the old password.",
@@ -1003,6 +1073,7 @@
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},
 			"hostname": "Hostname",
@@ -1029,7 +1100,7 @@
 				"swap": "Swap usage",
 				"used": "Used"
 			},
-			"gwMode": "Gateway mode",
+			"gwMode": "Daemon mode",
 			"diagnostics": "Download diagnostics"
 		},
 		"datetime": {
@@ -1046,17 +1117,68 @@
 				"timezone": "Please select a timezone."
 			},
 			"messages": {
-				"timeSuccess": "Gateway time has been successfully changed.",
-				"timeFailure": "An error has occured while changing gateway time",
-				"timezoneSuccess": "Gateway timezone has been successfully changed.",
-				"timezoneFailure": "An error has occured while changing gateway timezone."
+				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
+				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
+				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
+				"timezoneSetFailed": "Failed to change timezone: {error}."
 			}
 		},
 		"log": {
-			"title": "Log files",
-			"description": "Shows log of IQRF Gateway Controller and Daemon.",
+			"title": "Logs",
+			"description": "Shows gateway logs.",
 			"download": "Download",
+			"systemdJournal": {
+				"title": "Systemd journal configuration",
+				"restart": "Restart service",
+				"form": {
+					"forwardToSyslog": "Forward journal to syslog",
+					"storage": "Storage method",
+					"storageMethods": {
+						"persistent": "In-memory persistence",
+						"volatile": "Filesystem persistence"
+					},
+					"maxDisk": "Maximum disk space used by journal in MB*",
+					"sizeRotation": "File size-based log rotation",
+					"maxFiles": "Maximum number of log files to keep *",
+					"maxFilesNote": "* Systemd default value is 100 files.",
+					"maxFileSize": "Maximum log file size in MB *",
+					"timeRotation": "Time-based log rotation",
+					"defaultNote": "* Set value to 0 to use systemd default.",
+					"unit": "Time unit",
+					"units": {
+						"seconds": "Seconds",
+						"minutes": "Minutes",
+						"hours": "Hours",
+						"days": "Days",
+						"weeks": "Weeks",
+						"months": "Months",
+						"years": "Years"
+					},
+					"count": "Unit count"
+				},
+				"errors": {
+					"maxDisk": "Please enter maximum disk space usable by journal.",
+					"maxDiskInvalid": "Maximum disk size should be an integer greater or equal to 0.",
+					"maxFiles": "Please enter maximum number of log files to keep.",
+					"maxFilesInvalid": "Maximum number of log files should be an integer greater or equal to 1.",
+					"maxFileSize": "Please enter maximum log file size.",
+					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
+					"count": "Please enter unit count.",
+					"countInvalid": "Unit count should be an integer greater or equal to 1."
+				},
+				"messages": {
+					"fetchFailed": "Failed to retrieve systemd journal configuration.",
+					"fetchFailedError": "Failed to retrieve systemd journal configuration: {error}",
+					"restartFailed": "Failed to restart systemd journal service: {error}",
+					"restartSuccess": "Systemd journal service has been successfully restarted.",
+					"saveFailed": "Failed to save systemd journal configuration: {error}",
+					"saveSuccess": "Systemd journal configuration sucessfully saved."
+				}
+			},
 			"messages": {
+				"logEmpty": "Log file is empty.",
+				"logNotFound": "Log file does not exist.",
+				"fetchFailed": "Failed to retrieve Gateway logs.",
 				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
 				"readError": "Cannot read IQRF Gateway's log file.",
 				"notFound": "IQRF Gateway log file cannot be found."
@@ -1068,14 +1190,20 @@
 			"modes": {
 				"forwarding": "Forwarding mode",
 				"operational": "Operational mode",
-				"service": "Service mode"
+				"service": "Service mode",
+				"unknown": "Unknown"
 			},
+			"currentMode": "Current Daemon mode",
+			"startupMode": "Startup Daemon mode",
 			"messages": {
-				"getFailed": "An error occurred while getting the current gateway mode.",
+				"getFailed": "Failed to retrieve the current gateway mode.",
 				"setFailed": "An error occurred while setting a new gateway mode.",
 				"forwarding": "IQRF Gateway Daemon's mode has been changed to forwarding mode.",
 				"operational": "IQRF Gateway Daemon's mode has been changed to operational mode.",
-				"service": "IQRF Gateway Daemon's mode has been changed to service mode."
+				"service": "IQRF Gateway Daemon's mode has been changed to service mode.",
+				"startupFetchFailed": "Failed to retrieve Daemon startup mode: {error}",
+				"startupSaveFailed": "Failed to change Daemon startup mode: {error}",
+				"startupSaveSuccess": "Daemon startup mode has been successfully changed."
 			}
 		},
 		"power": {
@@ -1088,11 +1216,11 @@
 				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
-		"rootPass": {
-			"title": "Change root password",
+		"password": {
+			"title": "Change {user} account password",
 			"messages": {
-				"success": "Gateway root password has been successfully changed.",
-				"failure": "Failed to change root password."
+				"success": "{user} account password has been successfully changed.",
+				"failure": "Failed to change {user} account password: {error}"
 			}
 		},
 		"updater": {
@@ -1126,6 +1254,9 @@
 			"messages": {
 				"address": "Address has to be an integer from 0 to 239."
 			}
+		},
+		"messages": {
+			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
 		},
 		"enumeration": {
 			"title": "Device enumeration",
@@ -1184,6 +1315,7 @@
 			"backup": {
 				"title": "Network backup",
 				"form": {
+					"target": "Backup target",
 					"node": "Node",
 					"network": "Whole network",
 					"messages": {
@@ -1192,14 +1324,15 @@
 					}
 				},
 				"messages": {
-					"timeout": "The backup process request timed out.",
-					"success": "The backup process has been successfully completed.",
-					"partialSuccess": "All online devices have been successfully backed up. Offine devices: {devices}.",
-					"statusRunning": "Backup in progress",
-					"statusInitPercentage": "Backup in progress [0 %]",
-					"statusRunningPercentage": "Backup in progress [{progress} %]",
-					"statusSuccess": "Backup of device {deviceAddr} completed.",
-					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
+					"coordinatorRunning": "Backing up coordinator device...",
+					"coordinatorSuccess": "Backup of coordinator device completed.",
+					"nodeRunning": "Backing up node device {deviceAddr}...",
+					"nodeSuccess": "Backup of node device {deviceAddr} completed.",
+					"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
+					"networkRunning": "Backing up network [{progress} %]",
+					"networkSuccess": "Network backup has been successfully completed.",
+					"networkPartialSuccess": "All online devices have been successfully backed up. Offline devices: {devices}.",
+					"timeout": "The backup process request timed out."
 				}
 			},
 			"restore": {
@@ -1213,14 +1346,22 @@
 					}
 				},
 				"messages": {
-					"timeout": "The restore process request timed out.",
-					"success": "The restore process has been successfully completed.",
-					"corruptedFile": "The contents of uploaded file are corrupted.",
+					"invalidDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
+					"invalidAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",
+					"invalidCoordinatorAddr": "Device property of entry {entry} is Coordinator, but address is not 0. Address: {address}.",
+					"invalidCoordinatorDataC": "Device property of entry {entry} is Coordinator, but DataC entry is missing.",
+					"invalidCoordinatorDataN": "Device property of entry {entry} is Coordinator, but entry contains property DataN.",
+					"invalidNodeAddr": "Device property of entry {entry} is Node, but address is 0.",
+					"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
+					"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
+					"invalidDataContent": "Data{device} property of entry {entry} contains nonhexadecimal characters.",
+					"coordinatorRunning": "Restoring coordinator device...",
+					"coordinatorSuccess": "Coordinator device has been successfully restored.",
+					"readFailed": "Failed to read contents of selected file.",
+					"parsingContent": "Reading and parsing content of selected file.",
 					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
 					"missingProp": "Entry {item} does not contain property {property}.",
-					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
-					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
-					"statusCoordinator": "Restoring coordinator device.",
+					"missingCoordinator": "Selected file does not contain coordinator device backup data entry.",
 					"invalidSize": "Invalid coordinator backup data size.",
 					"checksumMismatch": "Incorrect coordinator backup data checksum.",
 					"failedMessage": "Restore process not started: {message}"
@@ -1306,7 +1447,8 @@
 					"file": "File",
 					"fileType": "File type",
 					"fileTypes": {
-						"hex": "Custom DPA handler"
+						"hex": "Custom DPA handler",
+						"iqrf": "IQRF plugin"
 					},
 					"target": "Upload target",
 					"targets": {
@@ -1317,6 +1459,8 @@
 					"hwpidFilter": "Filter nodes by HWPID*",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
+					"uploadEeprom": "Upload EEPROM data",
+					"uploadEeeprom": "Upload EEEPROM data",
 					"manualUpload": "Manual upload",
 					"automaticUpload": "Automatic upload",
 					"uploadSteps": {
@@ -1329,14 +1473,18 @@
 					"file": "Please select a file to upload.",
 					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
-					"eeepromAddress": "Please enter an integer between 0 and 16383 for external EEPROM start address."
+					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
 				"messages": {
+					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
 					"hwpid": "* HWPID 65535 includes all devices.",
-					"gwUploadFail": "Failed to upload file to gateway.",
-					"invalidFile": "Uploaded file is not HEX or IQRF file.",
-					"invalidContent": "Invalid file content.",
+					"notHexFile": "Selected file is not .hex file.",
+					"notIqrfFile": "Selected file is not .iqrf file.",
+					"invalidRequest": "OTA upload request is not valid: {error}",
+					"invalidFile": "Invalid OTA upload file: {error}",
+					"invalidContent": "An error has occured during file content parsing: {error}",
+					"invalidMemory": "Invalid memory operation: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",
@@ -1353,10 +1501,19 @@
 						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
 					},
 					"network": {
-						"uploadStepSuccess": "Upload step has been successfully completed for all online devices.",
-						"verifyStepSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+						"uploadStepSuccess": "Upload step has been successfully completed.",
+						"verifyStepSuccess": "Verification step has been successfully completed for all devices.",
+						"verifyStepHwpidSuccess": "Verification step has been successfully completed for all devices with HWPID {hwpid}.",
+						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
+						"loadStepHwpidSuccess": "Flash load step has been sucessfully completed for all devices with HWPID {hwpid}.",
+						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
+						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
+						"runAllHwpidSuccess": "All OTA upload steps have been successfully completed for all devices with HWPID {hwpid}.",
+						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
+						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
 					},
 					"uploadStepFail": "An error has occured during the upload step.",
 					"verifyStepFail": "An error has occured during the verification step.",
@@ -1398,32 +1555,39 @@
 			"title": "Send JSON request",
 			"description": "Send JSON request.",
 			"documentation": "Show API documentation.",
-			"notAvailable": "The IQRF Gateway Daemon service is currently not available, attempting reconnect ({attempt}).",
 			"form": {
 				"json": "JSON request",
-				"messages": {
-					"timeout": "Daemon API request timed out.",
-					"invalid": "Invalid JSON API request.",
-					"missing": "Please enter JSON request.",
-					"mType": "JSON object does not have mType key.",
-					"success": "JSON request has been sent successfully.",
-					"autoNetworkStart": "AutoNetwork request sent, multiple responses will be received.",
-					"autoNetworkFinish": "The AutoNetwork process has concluded.",
-					"error": {
-						"timeout": "Request timed out.",
-						"fail": "An error occurred while processing JSON request.",
-						"pcmd": "Sent JSON request contains incorrect PCMD.",
-						"pnum": "Sent JSON request contains incorrect PNUM.",
-						"addr": "Sent JSON request contains incorrect address parameter.",
-						"dataLen": "Sent JSON request contains incorrect data length.",
-						"data": "Sent JSON request contains incorrect data.",
-						"hwpid": "Sent JSON request contains incorrect HWPID.",
-						"nadr": "Sent JSON request contains incorrect NADR.",
-						"invalidMessage": "Sent JSON request is not valid.",
-						"messageQueueFull": "The IQRF Gateway Daemon message queue is full.",
-						"validatorErrors": "JSON request is not valid, detected violations:"
-					}
+				"activeMessage": "Request history"
+			},
+			"messages": {
+				"timeout": "Daemon API request timed out.",
+				"invalid": "Invalid JSON API request.",
+				"missing": "Please enter JSON request.",
+				"mType": "JSON object does not have mType key.",
+				"success": "JSON request has been sent successfully.",
+				"autoNetworkFinish": "The AutoNetwork process has concluded.",
+				"backupFinish": "The Backup process has concluded.",
+				"enumerationFinish": "The database enumeration process has concluded.",
+				"error": {
+					"timeout": "Request timed out.",
+					"fail": "An error occurred while processing JSON request.",
+					"pcmd": "Sent JSON request contains incorrect PCMD.",
+					"pnum": "Sent JSON request contains incorrect PNUM.",
+					"addr": "Sent JSON request contains incorrect address parameter.",
+					"dataLen": "Sent JSON request contains incorrect data length.",
+					"data": "Sent JSON request contains incorrect data.",
+					"hwpid": "Sent JSON request contains incorrect HWPID.",
+					"nadr": "Sent JSON request contains incorrect NADR.",
+					"invalidMessage": "Sent JSON request is not valid.",
+					"messageQueueFull": "The IQRF Gateway Daemon message queue is full.",
+					"validatorErrors": "JSON request is not valid, detected violations:"
 				}
+			},
+			"violations": {
+				"additional": "Additional property violation: Object {object} {message} ({path}). Additional property: {property}.\n",
+				"range": "Value range violation: Property: {property} {message} ({path}). Current value: {value}.\n",
+				"required": "Required property violation: Object {object} {message} ({path}).\n",
+				"type": "Type violation: Property {property} {message} ({path}). Detected type: {type}.\n"
 			}
 		},
 		"sendPacket": {
@@ -1444,6 +1608,7 @@
 				"autoRepeat": "Auto Repeat",
 				"autoRepeatInterval": "Repeat interval",
 				"autoRepeatTime": "x 100 ms",
+				"activeMessage": "Packet history",
 				"messages": {
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
@@ -1454,7 +1619,7 @@
 						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
 						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
 						"pdata": "PDATA should be 0 to 57 hexadecimal bytes long, separated by a dot.",
-						"autoRepeatInterval": "Auto repeat interval should be an integer between 1 and 36000."
+						"autoRepeatInterval": "Auto repeat interval should be an integer between 10 and 36000."
 					},
 					"missing": {
 						"address": "Please enter the custom NADR.",
@@ -1464,7 +1629,8 @@
 				}
 			},
 			"messages": {
-				"failure": "An error occurred while DPA packet sending. The device may be offline.",
+				"queueFull": "IQRF Daemon message queue full, DPA request discarded.",
+				"failure": "An error has occured while processing DPA request.",
 				"success": "DPA packet has been sent successfully.",
 				"incorrect": {
 					"pcmd": "Sent DPA packet contains incorrect PCMD.",
@@ -1588,6 +1754,82 @@
 					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
+			},
+			"table": {
+				"title": "Standard devices",
+				"actions": {
+					"enumerate": "Enumerate",
+					"refresh": "Refresh",
+					"reset": "Reset"
+				},
+				"info": "Product details",
+				"supported": "Supported",
+				"unsupported": "Unsupported",
+				"fields": {
+					"address": "Address",
+					"manufacturer": "Manufacturer",
+					"product": "Product",
+					"name": "Product name",
+					"dpa": "DPA",
+					"os": "OS",
+					"mid": "Module ID",
+					"hwpid": "HWPID",
+					"hwpidVer": "HWPID ver.",
+					"status": "Status",
+					"sensor": "Sensor",
+					"binout": "Binary Output",
+					"light": "Light",
+					"dali": "DALI",
+					"noDevices": "No devices implementing standards detected."
+				},
+				"messages": {
+					"device": {
+						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
+						"details": "MID: {mid}\nHWPID: {hwpid}\nHWPID version: {hwpidVer}\nOS build: {os}\nDPA: {dpa}",
+						"fetch": "Retrieving devices in network...",
+						"fetchFailed": "Failed to retrieve devices in network.",
+						"fetchTimeout": "Request to receive devices in network timed out."
+					},
+					"binout": {
+						"fetch": "Retrieving devices implementing Binary Output standard...",
+						"fetchFailed": "Failed to retrieve devices implementing Binary Output standard.",
+						"fetchTimeout": "Request to retrieve Binary Output devices timed out.",
+						"implemented": "Binary outputs implemented: {binouts}",
+						"notImplemented": "Device does not implement the Binary Output standard."
+					},
+					"dali": {
+						"fetch": "Retrieving devices implementing DALI standard...",
+						"fetchFailed": "Failed to retrieve devices implementing DALI standard.",
+						"fetchTimeout": "Request to retrieve DALI devices timed out.",
+						"implemented": "Device implements DALI standard.",
+						"notImplemented": "Device does not implement the DALI standard."
+					},
+					"light": {
+						"fetch": "Retrieving devices implementing Light standard...",
+						"fetchFailed": "Failed to retrieve devices implementing Light standard.",
+						"fetchTimeout": "Request to retrieve Light devices timed out.",
+						"implemented": "Lights implemented: {lights}",
+						"notImplemented": "Device does not implement the Light standard."
+					},
+					"sensor": {
+						"detail": "Name: {name} [{short}]\nType: {type}\nUnit: {unit}\nFRC commands: {commands}",
+						"fetch": "Retrieving devices implementing Sensor standard...",
+						"fetchFailed": "Failed to retrieve devices implementing Sensor standard.",
+						"fetchTimeout": "Request to retrieve Sensor devices timed out.",
+						"implemented": "Device implements the following sensor types:",
+						"notImplemented": "Device does not implement the Sensor standard."
+					},
+					"ping": {
+						"fetch": "Checking online status of devices...",
+						"fetchFailed": "Failed to retrieve status of devices."
+					},
+					"enumNowFailed": "Network enumeration process failed: {error}",
+					"enumNowProgress": "Enumerating network [{progress} %]\nPhase: {phase}\nStep: {current}/{total}",
+					"enumNowSuccess": "Network enumeration has been successfully completed.",
+					"resetFailed": "Failed to reset database: {error}",
+					"resetSuccess": "Database has been successfully reset.",
+					"resetTimeout": "Request to reset database timed out."
+				}
 			}
 		},
 		"trConfiguration": {
@@ -1605,7 +1847,8 @@
 				"messages": {
 					"success": "IQMESH security has been successfully set. Device restarted.",
 					"failure": "Could not update IQMESH security settings.",
-					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted."
+					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted.",
+					"invalid": "Password string is not valid for the selected format."
 				}
 			},
 			"form": {
@@ -1711,20 +1954,21 @@
 				"form": {
 					"version": "DPA version"
 				},
+				"modal": {
+					"title": "DPA plug-in upload",
+					"prompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
+				},
 				"errors": {
 					"version": "Please select DPA version to upload."
 				},
 				"messages": {
-					"dpaFileDownloaded": "DPA file {file} has been successfully downloaded to gateway.",
-					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades.",
-					"uploadError": "An error has occured during upload: \n{error}",
-					"uploadSuccess": "DPA plug-in has been successfully changed.",
-					"downloadFailure": "The webapp has not been able to download the DPA file.",
-					"moveFailure": "The file has not been uploaded due wrong permissions.",
-					"notFound": "DPA file not found.",
-					"badRequest": "Invalid combination of DPA version and RF mode.",
-					"modalTitle": "DPA plug-in upload",
-					"modalPrompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
+					"gatewayUpload": "Downloading DPA file to gateway...",
+					"gatewayUploadFailed": "Failed to download DPA file to gateway: {error}",
+					"gatewayUploadSuccess": "DPA file successfully downloaded to gateway.",
+					"trUpload": "Uploading DPA file to TR...",
+					"trUploadFailed": "Failed to upload DPA file to TR: {error}",
+					"trUploadSuccess": "DPA file successfully uploaded to TR.",
+					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades."
 				}
 			},
 			"hexUpload": {
@@ -1736,12 +1980,13 @@
 					"file": "Please select the file to upload."
 				},
 				"messages": {
-					"gatewayUpload": "Uploading file {file} to gateway ...",
-					"gatewayUploadFailure": "An error has occured during upload to gateway.",
-					"gatewayUploadSuccess": "File {file} has been successfully uploaded to gateway.",
-					"invalidFormat": "The uploaded file is not a .hex file.",
-					"uploadSuccess": "Custom DPA handler has been successfully uploaded.",
-					"uploadSuccessTr": "Custom DPA handler has been successfully uploaded to TR."
+					"gatewayUpload": "Uploading HEX file to gateway...",
+					"gatewayUploadFailed": "Failed to upload HEX file to gateway: {error}",
+					"gatewayUploadSuccess": "Hex file sucessfully uploaded to gateway.",
+					"trUpload": "Uploading HEX file to TR...",
+					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
+					"trUploadSuccess": "Hex file successfully uploaded to TR.",
+					"invalidFormat": "The uploaded file is not a .hex file."
 				}
 			},
 			"osUpload": {
@@ -1755,10 +2000,13 @@
 				},
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
-					"fetchFail": "Failed to retrieve current version of IQRF OS.",
-					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
-					"fileUploading": "Uploading {file} file to TR ...",
-					"fileUploaded": "{file} file has been successfully uploaded to TR."
+					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
+					"gatewayUpload": "Downloading OS and DPA files to gateway...",
+					"gatewayUploadFailed": "Failed to download OS and DPA files to gateway: {error}",
+					"gatewayUploadSuccess": "OS and DPA files successfully downloaded to gateway.",
+					"trUpload": "Uploading OS file to TR...",
+					"trUploadFailed": "Failed to upload OS file to TR: {error}",
+					"trUploadSuccess": "OS file successfully uploaded to TR."
 				}
 			},
 			"messages": {
@@ -1805,19 +2053,26 @@
 			"title": "Some information about this gateway",
 			"button": "Show GW info",
 			"download": "Download as JSON"
+		},
+		"messages": {
+			"check": "Running installation check..."
 		}
 	},
 	"network": {
 		"title": "IP network",
 		"description": "IP network management.",
 		"ethernet": {
-			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
 			"add": "Add Ethernet connection",
 			"edit": "Edit Ethernet connection",
 			"messages": {
-				"noInterfaces": "No ethernet network interface detected."
+				"noInterfaces": "No active ethernet network interface detected.",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address."
+			},
+			"modal": {
+				"title": "Ethernet connection disconnect warning",
+				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?"
 			}
 		},
 		"wireless": {
@@ -1832,64 +2087,68 @@
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
+				"titleDisconnect": "Wi-Fi connection disconnect warning",
+				"titleDelete": "Wi-Fi connection delete warning",
+				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?",
+				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Do you wish to delete connection?"
+			},
+			"form": {
 				"title": "Wi-Fi configuration",
-				"modalTitle": "Connect to {accessPoint}",
-				"form": {
-					"security": "Security",
-					"securityTypes": {
-						"open": "Open",
-						"wep": "Wep",
-						"wpa-psk": "WPA-Personal",
-						"wpa-eap": "WPA-Enterprise"
-					},
-					"authPhaseOne": "Phase one authentication",
-					"phaseOneAlgorithm": {
-						"peap": "Protected EAP"
-					},
-					"phaseTwoAlgorithm": {
-						"mschapv2": "MSCHAPv2"
-					},
-					"wep": {
-						"length": "WEP key length",
-						"lengths": {
-							"64bit": "64 bit (5 ASCII / 10 hex)",
-							"128bit": "128 bit (13 ASCII / 26 hex)"
-						},
-						"type": "Type",
-						"types": {
-							"key": "Key",
-							"passphrase": "Passphrase"
-						},
-						"index": "Default WEP key",
-						"keyNum": "WEP Key {index}"
-					},
-					"noCaCert": "No CA certificate required",
-					"caCert": "CA certificate",
-					"authPhaseTwo": "Phase two authentication",
-					"anonymousIdentity": "Anonymous identity",
-					"username": "Username",
-					"password": "Password",
-					"psk": "Pre-shared key"
+				"security": "Security",
+				"securityTypes": {
+					"open": "Open",
+					"wep": "Wep",
+					"wpa-psk": "WPA-Personal",
+					"wpa-eap": "WPA-Enterprise"
 				},
-				"errors": {
-					"password": "Please enter the password.",
-					"psk": "Please enter pre-shared key.",
-					"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
-					"wepKeyType": "Please select WEP security type.",
-					"wepIndex": "Please enter default key index.",
-					"wepIndexInvalid": "Default key index should be between 0 and 3.",
-					"wepIndexKeyMissing": "WEP key at specified index missing.",
-					"wepKey": "Please enter a WEP key.",
-					"wepPassphrase": "Please enter a WEP passphrase",
-					"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
-					"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
-				}
+				"authPhaseOne": "Phase one authentication",
+				"phaseOneAlgorithm": {
+					"peap": "Protected EAP"
+				},
+				"phaseTwoAlgorithm": {
+					"mschapv2": "MSCHAPv2"
+				},
+				"wep": {
+					"length": "WEP key length",
+					"lengths": {
+						"64bit": "64 bit (5 ASCII / 10 hex)",
+						"128bit": "128 bit (13 ASCII / 26 hex)"
+					},
+					"type": "Type",
+					"types": {
+						"key": "Key",
+						"passphrase": "Passphrase"
+					},
+					"index": "Default WEP key",
+					"keyNum": "WEP Key {index}"
+				},
+				"noCaCert": "No CA certificate required",
+				"caCert": "CA certificate",
+				"authPhaseTwo": "Phase two authentication",
+				"anonymousIdentity": "Anonymous identity",
+				"username": "Username",
+				"password": "Password",
+				"psk": "Pre-shared key"
+			},
+			"errors": {
+				"password": "Please enter the password.",
+				"psk": "Please enter pre-shared key.",
+				"pskInvalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
+				"wepKeyType": "Please select WEP security type.",
+				"wepIndex": "Please enter default key index.",
+				"wepIndexInvalid": "Default key index should be between 0 and 3.",
+				"wepIndexKeyMissing": "WEP key at specified index missing.",
+				"wepKey": "Please enter a WEP key.",
+				"wepPassphrase": "Please enter a WEP passphrase",
+				"wepKey64Invalid": "64bit WEP key should be 5 ASCII characters or 10 hexadecimal characters long.",
+				"wepKey128Invalid": "128bit WEP key should be 13 ASCII characters or 26 hexadecimal characters long."
 			},
 			"messages": {
-				"noInterfaces": "No Wi-Fi network interface detected.",
-				"interfacesFailed": "Failed to retrieve list of interfaces",
-				"listFailed": "Failed to retrieve list of available access points.",
-				"connectionsFailed": "Failed to retrieve access point connection details."
+				"noInterfaces": "No active Wi-Fi network interface detected.",
+				"listFailed": "Failed to retrieve list of available access points: {error}",
+				"connectionsFailed": "Failed to retrieve access point connection details: {error}",
+				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address.",
+				"removeUnavailable": "Web interface is no longer available at this address as the removed connection profile used this address."
 			}
 		},
 		"wireguard": {
@@ -1940,7 +2199,8 @@
 					"keepaliveNote": "* 0 = disabled",
 					"endpoint": "Endpoint",
 					"allowedIPv4Addrs": "Allowed peer IPv4 addresses",
-					"allowedIPv6Addrs": "Allowed peer IPv6 addresses"
+					"allowedIPv6Addrs": "Allowed peer IPv6 addresses",
+					"copyPublicKey": "Copy key to clipboard"
 				},
 				"errors": {
 					"name": "Please enter interface name.",
@@ -1965,21 +2225,23 @@
 				},
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
-					"addFailed": "Failed to create Wireguard tunnel: {error}.",
+					"addFailed": "Failed to create new Wireguard tunnel: {error}",
 					"editSuccess": "Wireguard tunnel {tunnel} has been successfully edited.",
-					"editFailed": "Failed to edit Wireguard tunnel: {error}.",
+					"editFailed": "Failed to edit Wireguard tunnel {tunnel}: {error}",
 					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
-					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}.",
+					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}: {error}",
 					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
-					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}.",
+					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}: {error}",
 					"disableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully disabled.",
-					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}.",
+					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}: {error}",
 					"enableSuccess": "Wiregguard tunnel {tunnel} startup activation has been successfully enabled.",
-					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}.",
-					"getFailed": "Failed to retrieve configuraiton of Wireguard tunnel {tunnel}.",
-					"listFailed": "Failed to retrieve list of existing Wireguard tunnels.",
+					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}: {error}",
+					"fetchFailed": "Failed to retrieve configuration of Wireguard tunnel ID {tunnel}: {error}.",
+					"listFailed": "Failed to retrieve list of existing Wireguard tunnels: {error}",
 					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
-					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}."
+					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}: {error}",
+					"copyPublicKey": "Public key has been successfully copied to clipboard.",
+					"keyPairFailed": "Failed to generate key pair: {error}"
 				}
 			}
 		},
@@ -2022,7 +2284,9 @@
 					"gateway": "Please enter a valid IPv4 gateway address.",
 					"mask": "Please enter a valid IPv4 subnet mask.",
 					"maskInvalid": "Invalid subnet mask."
-				}
+				},
+				"ipNotInSubnet": "IPv4 address and gateway address are not in the same subnet.",
+				"dnsNotInSubnet": "IPv4 dns address and gateway address are not in the same subnet."
 			},
 			"ipv6": {
 				"title": "IPv6 configuration",
@@ -2059,36 +2323,136 @@
 					"prefixInvalid": "IPv6 prefix should be between 48 and 128 bits."
 				}
 			},
+			"modal": {
+				"title": "Connection configuration changed",
+				"ipv4": {
+					"autoToStatic": "IPv4 method changed from auto to static, the web interface will be available at the following address: ",
+					"staticIpChange": "IPv4 address change detected, the web interface will be available at the following address: ",
+					"staticToAuto": "IPv4 method changed from static to auto, the web interface may be available at a different address as a result."
+				},
+				"confirmPrompt": "Do you wish to still wish to save connection configuration?"
+			},
 			"state": "Connection state",
 			"states": {
 				"connected": "Connected",
 				"notConnected": "Not connected"
 			},
 			"messages": {
-				"interfacesFetchFailed": "Failed to retrieve interfaces.",
-				"connectionFetchFailed": "Failed to retrieve connection details.",
+				"submit": "Saving configuration and attempting to connect...",
+				"ipChange": {
+					"error": "Unable to confirm web interface availability.",
+					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",
+					"staticToAuto": "Switching IPv4 method from static to auto resulted in the web interface no longer being available at this address.",
+					"staticToStatic": "IPv4 address changed, web interface is available at {address}",
+					"backendCheck": "Checking availability of web interface..."
+				},
+				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
+				"connectionFetchFailed": "Failed to retrieve list of connections: {error}",
+				"fetchFailed": "Failed to retrieve connection {connection}: {error}",
 				"createFailed": "Failed to create connection {connection}.",
 				"add": {
-					"failure": "Failed to create new connection.",
+					"failed": "Failed to create new connection: {error}",
 					"success": "Network connection {connection} has been created."
 				},
 				"edit": {
-					"failure": "An error occurred while saving the network connection settings.",
+					"failed": "Failed to edit network connection {connection}: {error}",
 					"success": "Network connection {connection} has been edited."
 				},
 				"connect": {
-					"success": "Network connection {connection} has been connected at network interface {interface}."
+					"success": "Network connection {connection} has been activated.",
+					"failed": "Failed to activate connection {connection}: {error}"
 				},
 				"disconnect": {
-					"success": "Network connection {connection} has been disconnected at network interface {interface}."
+					"success": "Network connection {connection} has been deactivated at network interface {interface}.",
+					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
-				"removeFailed": "Failed to delete network connection {connection}."
+				"removeFailed": "Failed to delete network connection {connection}: {error}"
 			}
 		},
 		"table": {
 			"connect": "Connect",
 			"disconnect": "Disconnect"
+		}
+	},
+	"maintenance": {
+		"title": "Maintenance",
+		"description": "Tools for gateway management, updates and monitoring.",
+		"disabled": "No maintenance feature enabled.",
+		"pixla": {
+			"title": "PIXLA management",
+			"description": "Manages PIXLA client service.",
+			"dashboard": "Visit dashboard",
+			"form": {
+				"token": "Token"
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve PIXLA token: {error}",
+				"disabled": "PIXLA manager is disabled.",
+				"failure": "Failed to change PIXLA token: {error}.",
+				"success": "New PIXLA token has been successfully saved.",
+				"serviceStatusError": "Failed to retrieve PIXLA service status: {error}",
+				"serviceError": "Failed to change PIXLA service state: {error}"
+			},
+			"errors": {
+				"token": "Please enter PIXLA platform token."
+			}
+		},
+		"mender": {
+			"title": "Mender update",
+			"description": "Manages Mender client service and configuration.",
+			"form": {
+				"inventoryPollInterval": "Inventory update interval (seconds)",
+				"retryPollInterval": "Communication retry interval (seconds)",
+				"server": "Server address",
+				"tenantToken": "Tenant token",
+				"updatePollInterval": "Update check interval (seconds)",
+				"placeholders": {
+					"server": "https://hosted.mender.io",
+					"tenantToken": "exampleToken"
+				},
+				"protocol": "Protocol",
+				"protocols": {
+					"https": "HTTPS",
+					"wss": "WSS"
+				}
+			},
+			"messages": {
+				"disabled": "Mender service is disabled.",
+				"fetchFailed": "Failed to retrieve Mender configuration: {error}",
+				"saveFailed": "Failed to save Mender configuration: {error}",
+				"saveSuccess": "Mender configuration has been successfully saved.",
+				"serviceStatusFailed": "Failed to retrieve service status: {error}",
+				"serviceFailed": "Failed to change service state: {error}"
+			},
+			"errors": {
+				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+				"server": "Please enter the server address.",
+				"tenantToken": "Please enter the tenant token."
+			}
+		},
+		"monit": {
+			"title": "M/Monit monitoring",
+			"description": "Manager M/Monit monitoring service and configuration.",
+			"form": {
+				"endpoint": "M/Monit endpoint",
+				"username": "Username",
+				"password": "Password"
+			},
+			"errors": {
+				"endpoint": "Please enter M/Monit endpoint.",
+				"username": "Please enter username.",
+				"usernameInvalid": "Username should be a string of letters and digits.",
+				"password": "Please enter password.",
+				"passwordInvalid": "Password should be a string of letters and digits."
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve MMonit configuration: {error}",
+				"saveFailed": "Failed to save MMonit configuration: {error}",
+				"saveSuccess": "MMonit configuration has been successfully saved."
+			}
 		}
 	},
 	"service": {
@@ -2106,7 +2470,9 @@
 			"inactive": "inactive",
 			"missing": "Missing",
 			"unsupported": "Unsupported",
-			"unknown": "Unknown"
+			"unknown": "Unknown",
+			"running": "Running",
+			"stopped": "Stopped"
 		},
 		"iqrf": {
 			"title": "IQRF services",
@@ -2146,6 +2512,7 @@
 			}
 		},
 		"gwman-client": {
+			"title": "PIXLA service",
 			"messages": {
 				"disabled": "PIXLA service is disabled.",
 				"disable": "PIXLA client service has been disabled.",
@@ -2159,11 +2526,24 @@
 			"title": "Mender service",
 			"description": "Control the Mender service.",
 			"messages": {
+				"disabled": "Mender service is disabled.",
 				"disable": "Mender service has been disabled.",
 				"enable": "Mender service has been enabled.",
 				"start": "Mender service has been started.",
 				"stop": "Mender service has been stopped.",
 				"restart": "Mender service has been restarted."
+			}
+		},
+		"monit": {
+			"title": "Monit service",
+			"description": "Control the Monit service.",
+			"messages": {
+				"disabled": "Monit service is disabled.",
+				"disable": "Monit service has been disabled.",
+				"enable": "Monit service has been enabled.",
+				"start": "Monit service has been started.",
+				"stop": "Monit service has been stopped.",
+				"restart": "Monit service has been restarted."
 			}
 		},
 		"ssh": {
@@ -2215,7 +2595,13 @@
 			"unsupportedService": "Unsupported service"
 		},
 		"messages": {
-			"refreshSuccess": "Service status successfully refreshed."
+			"statusFailed": "Failed to retrieve {service} service status: {error}",
+			"refreshSuccess": "Service status successfully refreshed.",
+			"disableFailed": "Failed to disable {service} service: {error}",
+			"enableFailed": "Failed to enable {service} service: {error}",
+			"startFailed": "Failed to start {service} service: {error}",
+			"stopFailed": "Failed to stop {service} service: {error}",
+			"restartFailed": "Failed to restart {service} service: {error}"
 		}
 	},
 	"table": {
@@ -2230,5 +2616,6 @@
 		"messages": {
 			"noRecords": "No records have been found."
 		}
-	}
+	},
+	"messageError": "Request could not be processed: {error}"
 }

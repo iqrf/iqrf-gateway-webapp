@@ -33,24 +33,19 @@ export interface ITracerFile {
 	instance: string
 
 	/**
-	 * Maximum log file size (Daemon version >= 2.3.0)
+	 * Maximum log file size
 	 */
-	maxSize?: number
-
-	/**
-	 * Maximum log file size (Daemon version <= 2.2.2)
-	 */
-	maxSizeMB?: number
+	maxSizeMB: number
 
 	/**
 	 * Maximum lifespan of timestamped files in minutes (Daemon version >= 2.3.0)
 	 */
-	maxAgeMinutes?: number
+	maxAgeMinutes: number
 
 	/**
 	 * Maximum number of timestamped files (Daemon version >= 2.3.0)
 	 */
-	maxNumber?: number
+	maxNumber: number
 
 	/**
 	 * Path to directory with log files

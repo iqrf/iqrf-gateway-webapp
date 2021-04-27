@@ -8,65 +8,121 @@
 		</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveInstance'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.websocket.errors.serviceInstance"}'
-						>
-							<CInput
-								v-model='componentInstance'
-								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required'
-							:custom-messages='{
-								required: "config.daemon.messagings.websocket.errors.WebsocketPort",
-								integer: "forms.errors.integer"
-							}'
-						>
-							<CInput
-								v-model.number='WebsocketPort'
-								type='number'
-								:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='acceptOnlyLocalhost'
-							:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
-						/>
-						<div v-if='daemon230'>
-							<CInputCheckbox
-								:checked.sync='tlsEnabled'
-								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
-							/>
-							<div>
-								<CSelect
-									:value.sync='tlsMode'
-									:options='tlsModeOptions'
-									:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
-									:disabled='!tlsEnabled'
+						<CRow>
+							<CCol md='6'>
+								<legend>{{ $t('config.daemon.messagings.websocket.service.legend') }}</legend>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|instance'
+									:custom-messages='{
+										required: "config.daemon.messagings.websocket.errors.serviceInstance",
+										instance: "config.daemon.messagings.instanceInvalid"
+									}'
+								>
+									<CInput
+										v-model='componentInstance'
+										:label='$t("forms.fields.instanceName")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='integer|between:1,65535|required'
+									:custom-messages='{
+										between: "config.daemon.messagings.websocket.errors.WebsocketPortRange",
+										required: "config.daemon.messagings.websocket.errors.WebsocketPort",
+										integer: "forms.errors.integer",
+									}'
+								>
+									<CInput
+										v-model.number='WebsocketPort'
+										type='number'
+										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<CInputCheckbox
+									:checked.sync='acceptOnlyLocalhost'
+									:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 								/>
-								<span v-if='tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
-							</div><br>
-							<CInput
-								v-model='certificate'
-								:label='$t("forms.fields.certificate")'
-								:disabled='!tlsEnabled'
-							/>
-							<CInput
-								v-model='privateKey'
-								:label='$t("forms.fields.privateKey")'
-								:disabled='!tlsEnabled'
-							/>
-						</div>
+							</CCol>
+							<CCol md='6'>
+								<div>
+									<label style='font-size: 1.5rem'>
+										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
+									</label>
+									<CSwitch
+										color='primary'
+										size='lg'
+										shape='pill'
+										label-on='ON'
+										label-off='OFF'
+										:checked.sync='tlsEnabled'
+										style='float: right;'
+									/>
+									<ValidationProvider
+										v-if='tlsEnabled'
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "config.daemon.messagings.websocket.errors.tlsMode",
+										}'
+									>
+										<CSelect
+											:value.sync='tlsMode'
+											:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
+											:options='tlsModeOptions'
+											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
+											:disabled='!tlsEnabled'
+											:is-valid='touched && tlsEnabled ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+										<p
+											v-if='tlsMode !== "" && tlsMode !== undefined'
+											:class='!tlsEnabled ? "text-secondary" : ""'
+										>
+											{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + tlsMode) }}
+										</p>
+									</ValidationProvider>
+									<ValidationProvider
+										v-if='tlsEnabled'
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "config.daemon.messagings.websocket.errors.certificate",
+										}'
+									>
+										<CInput
+											v-model='certificate'
+											:label='$t("forms.fields.certificate")'
+											:disabled='!tlsEnabled'
+											:is-valid='touched && tlsEnabled ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-if='tlsEnabled'
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "config.daemon.messagings.websocket.errors.privateKey",
+										}'
+									>
+										<CInput
+											v-model='privateKey'
+											:label='$t("forms.fields.privateKey")'
+											:disabled='!tlsEnabled'
+											:is-valid='touched && tlsEnabled ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</div>
+							</CCol>
+						</CRow>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
 						</CButton>
@@ -78,17 +134,16 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IWsService} from '../../interfaces/messagingInterfaces';
 import {AxiosError, AxiosResponse } from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -101,6 +156,7 @@ import {mapGetters} from 'vuex';
 		CInput,
 		CInputCheckbox,
 		CSelect,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -146,11 +202,6 @@ export default class WebsocketServiceForm extends Vue {
 	private componentName = 'shape::WebsocketCppService'
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
 	 * @var {string} privateKey Path to private key for TLS
 	 */
 	private privateKey = ''
@@ -168,7 +219,20 @@ export default class WebsocketServiceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = []
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
+		},
+	]
 
 	/**
 	 * @var {number} WebsocketPort Websocket port
@@ -199,42 +263,22 @@ export default class WebsocketServiceForm extends Vue {
 	}
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
-			this.tlsModeOptions = [
-				{
-					value: 'intermediate',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
-				},
-				{
-					value: 'modern',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
-				},
-				{
-					value: 'old',
-					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
-				}
-			];
-		}
-	}
-
-	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
+		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
+		extend('instance', (item: string) => {
+			const re = RegExp(/^[^&]+$/);
+			return re.test(item);
+		});
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves component instance configuration
 	 */
 	mounted(): void {
-		this.updateForm();
 		if (this.instance) {
 			this.getInstance();
 		}
@@ -265,19 +309,17 @@ export default class WebsocketServiceForm extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.WebsocketPort = response.WebsocketPort;
 		this.acceptOnlyLocalhost = response.acceptOnlyLocalhost;
-		if (this.daemon230) {
-			if (response.tlsEnabled !== undefined) {
-				this.tlsEnabled = response.tlsEnabled;
-			}
-			if (response.tlsMode !== undefined) {
-				this.tlsMode = response.tlsMode;
-			}
-			if (response.certificate !== undefined) {
-				this.certificate = response.certificate;
-			}
-			if (response.privateKey !== undefined) {
-				this.privateKey = response.privateKey;
-			}
+		if (response.tlsEnabled !== undefined) {
+			this.tlsEnabled = response.tlsEnabled;
+		}
+		if (response.tlsMode !== undefined) {
+			this.tlsMode = response.tlsMode;
+		}
+		if (response.certificate !== undefined) {
+			this.certificate = response.certificate;
+		}
+		if (response.privateKey !== undefined) {
+			this.privateKey = response.privateKey;
 		}
 	}
 
@@ -290,11 +332,12 @@ export default class WebsocketServiceForm extends Vue {
 			component: this.component,
 			instance: this.componentInstance,
 			WebsocketPort: this.WebsocketPort,
-			acceptOnlyLocalhost: this.acceptOnlyLocalhost
+			acceptOnlyLocalhost: this.acceptOnlyLocalhost,
+			tlsEnabled: this.tlsEnabled,
+			tlsMode: this.tlsMode,
+			certificate: this.certificate,
+			privateKey: this.privateKey
 		};
-		if (this.daemon230) {
-			Object.assign(configuration, {tlsEnabled: this.tlsEnabled, tlsMode: this.tlsMode, certificate: this.certificate, privateKey: this.privateKey});
-		}
 		return configuration;
 	}
 

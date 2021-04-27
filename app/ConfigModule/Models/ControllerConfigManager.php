@@ -55,7 +55,7 @@ class ControllerConfigManager {
 
 	/**
 	 * Saves the updated Controller configuration
-	 * @param array<string, array<array<string, bool|int|string>>|string> $newConfig Controller configuration
+	 * @param array<string, array<string, array<string, array<string, bool|int>|bool|int>|bool|int|string>> $newConfig Controller configuration
 	 */
 	public function saveConfig(array $newConfig): void {
 		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME);

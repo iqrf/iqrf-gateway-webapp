@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<CCard class='border-0'>
+		<CCard class='border-0 card-margin-bottom'>
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
@@ -109,16 +109,19 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
-import {AxiosError, AxiosResponse} from 'axios';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import {mapGetters} from 'vuex';
+
 
 @Component({
 	components: {
@@ -178,6 +181,11 @@ export default class MonitorList extends Vue {
 			filter: false,
 		},
 		{
+			key: 'tlsEnabled',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
+			filter: false,
+		},
+		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -200,25 +208,9 @@ export default class MonitorList extends Vue {
 	private instances: Array<unknown> = []
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateTable(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.fields.splice(4, 0, {
-				key: 'tlsEnabled',
-				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
-				filter: false,
-			});
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	mounted(): void {
-		this.updateTable();
-		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
 
@@ -260,9 +252,11 @@ export default class MonitorList extends Vue {
 					}
 				}
 				this.instances = instances;
-				this.$store.commit('spinner/HIDE');
+				this.$emit('fetched', {name: 'monitor', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.$emit('fetched', {name: 'monitor', success: false});
+			});
 	}
 
 	/**
@@ -306,7 +300,11 @@ export default class MonitorList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.misc.monitor.messages.editFailed',
+				{instance: service.instance}
+			));
 	}
 
 	/**
@@ -316,24 +314,25 @@ export default class MonitorList extends Vue {
 		if (this.deleteInstance === null) {
 			return;
 		}
+		const deleteInstance = this.deleteInstance;
+		this.deleteInstance = null;
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.componentNames.monitor, this.deleteInstance.monitor),
-			DaemonConfigurationService.deleteInstance(this.componentNames.webSocket, this.deleteInstance.webSocket),
+			DaemonConfigurationService.deleteInstance(this.componentNames.monitor, deleteInstance.monitor),
+			DaemonConfigurationService.deleteInstance(this.componentNames.webSocket, deleteInstance.webSocket),
 		])
 			.then(() => {
-				if (this.deleteInstance === null) {
-					return;
-				}
-				const deleteInstance = this.deleteInstance;
-				this.deleteInstance = null;
 				this.getConfig()
 					.then(() => this.$toast.success(
 						this.$t('config.daemon.misc.monitor.messages.deleteSuccess', {instance: deleteInstance.monitor})
 							.toString())
 					);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'config.daemon.misc.monitor.messages.deleteFailed',
+				{instance: deleteInstance.monitor}
+			));
 	}
 }
 </script>

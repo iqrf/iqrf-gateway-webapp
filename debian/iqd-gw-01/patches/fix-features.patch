@@ -1,13 +1,15 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -1,13 +1,13 @@
+@@ -1,7 +1,7 @@
  # Show documentation
  docs:
  	enabled: true
 -	url: https://docs.iqrf.org/iqrf-gateway/
 +	url: https://docs.iqrf.org/iqube/
- grafana:
+ # Default gateway user password change
+ gatewayPass:
  	enabled: false
+@@ -11,7 +11,7 @@ grafana:
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -16,15 +18,20 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -23,13 +23,13 @@ nodeRed:
+@@ -23,17 +23,17 @@ monit:
+ 	enabled: false
+ # Network manager
+ networkManager:
+-	enabled: false
++	enabled: true
+ # Node-RED
+ nodeRed:
+ 	enabled: false
  	url: /node-red/
  # PIXLA mamagement system
  pixla:
 -	enabled: false
 +	enabled: true
- # Root password change
- rootpass:
- 	enabled: false
  # SSH daemon manager
  ssh:
 -	enabled: false
@@ -32,7 +39,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -39,10 +39,10 @@ updater:
+@@ -46,10 +46,10 @@ updater:
  	enabled: false
  # IQRF TR native upload
  trUpload:

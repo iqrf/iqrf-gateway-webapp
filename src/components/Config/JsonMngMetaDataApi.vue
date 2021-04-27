@@ -1,30 +1,39 @@
 <template>
-	<CCard class='border-0'>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardHeader>
 			{{ $t('config.daemon.misc.jsonMngMetaDataApi.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<CElementCover 
+				v-if='loadFailed'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</CElementCover>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"}'
-					>
-						<CInput
-							v-model='configuration.instance'
-							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+					<fieldset :disable='loadFailed'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("forms.fields.instanceName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='configuration.metaDataToMessages'
+							:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages")'
 						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.metaDataToMessages'
-						:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages")'
-					/>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</fieldset>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
@@ -33,12 +42,14 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 
 interface JsonMngMetaDataApiConfig {
 	instance: string
@@ -51,6 +62,7 @@ interface JsonMngMetaDataApiConfig {
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -82,6 +94,11 @@ export default class JsonMngMetaDataApi extends Vue {
 	}
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -98,17 +115,19 @@ export default class JsonMngMetaDataApi extends Vue {
 	/**
 	 * Retrieves configuration of JSON MetaData component
 	 */
-	private getConfig(): void {
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent(this.componentName)
+	private getConfig(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
+				this.$emit('fetched', {name: 'jsonMngMetaDataApi', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('fetched', {name: 'jsonMngMetaDataApi', success: false});
+			});
 	}
 	
 	/**
@@ -131,8 +150,7 @@ export default class JsonMngMetaDataApi extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t('config.success').toString());
+		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
 }
 </script>

@@ -3,10 +3,10 @@
 		<h1>{{ $t('cloud.hexio.form.title') }}</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.clientId"
@@ -20,7 +20,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.requestTopic"
@@ -34,7 +34,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.responseTopic"
@@ -48,7 +48,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.username"
@@ -62,7 +62,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.password"
@@ -77,8 +77,8 @@
 							>
 								<template #append-content>
 									<span @click='changeVisibility'>
-										<CIcon
-											:content='(visibility === "password" ? icons.hidden : icons.shown)'
+										<FontAwesomeIcon
+											:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
 										/>
 									</span>
 								</template>
@@ -106,15 +106,16 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
-import {Dictionary} from 'vue-router/types/router';
+
+import {AxiosError} from 'axios';
 import {IHexioCloud} from '../../interfaces/clouds';
 
 @Component({
@@ -124,6 +125,7 @@ import {IHexioCloud} from '../../interfaces/clouds';
 		CCardBody,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -154,14 +156,6 @@ export default class HexioCreator extends Vue {
 	}
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Dictionary<Array<string>> = {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
-	}
-
-	/**
 	 * @var {string} visibility Form password field visibility type
 	 */
 	private visibility = 'password'
@@ -185,8 +179,8 @@ export default class HexioCreator extends Vue {
 				this.$toast.success(this.$t('cloud.messages.success').toString());
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.cloudError(error);
-				return Promise.reject(error);
+				extendedErrorToast(error, 'cloud.hexio.messages.saveFailed');
+				//return Promise.reject(error);
 			});
 	}
 
@@ -194,22 +188,18 @@ export default class HexioCreator extends Vue {
 	 * Stores new hexio cloud connection configuration in the gateway filesystem and restarts Daemon
 	 */
 	private saveAndRestart(): void {
-		this.save()
-			.then(() => {
-				this.$store.commit('spinner/SHOW');
-				ServiceService.restart('iqrf-gateway-daemon')
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('service.iqrf-gateway-daemon.messages.restart')
-								.toString()
-						);
-					})
-					.catch((error: AxiosError) => {
-						FormErrorHandler.serviceError(error);
-					});
-			})
-			.catch(() => {return;});
+		this.save().then(() => {
+			this.$store.commit('spinner/SHOW');
+			ServiceService.restart('iqrf-gateway-daemon')
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('service.iqrf-gateway-daemon.messages.restart')
+							.toString()
+					);
+				})
+				.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
+		});
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <template>
-	<CCard class='border-0'>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
@@ -7,26 +7,24 @@
 						:value.sync='fileType'
 						:options='fileTypeOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
+						@change='checkSelectedFile'
 					/>
-					<div class='form-group'>
-						<CInputFile
-							ref='fileInput'
-							accept='.hex'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
-							@input='fileInputEmpty'
-							@click='fileInputEmpty'
-						/>
-						<p v-if='fileEmpty && fileTouched' style='color: red;'>
-							{{ $t('iqrfnet.networkManager.otaUpload.errors.file') }}
-						</p>
-					</div><hr>
+					<CInputFile
+						ref='fileInput'
+						accept='.hex,.iqrf'
+						:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
+						@input='checkSelectedFile'
+						@click='fileInputEmpty'
+					/>
+					<hr>
 					<CSelect
 						:value.sync='target'
 						:options='targetOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
+						@change='resetChecks'
 					/>
 					<ValidationProvider
-						v-if='target === targetEnum.NODE'
+						v-if='target === "node"'
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
@@ -43,10 +41,11 @@
 							:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
+							@input='resetChecks'
 						/>
 					</ValidationProvider>
 					<div 
-						v-if='target === targetEnum.NETWORK'
+						v-if='target === "network"'
 						class='form-group'
 					>
 						<ValidationProvider
@@ -66,6 +65,7 @@
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								@input='resetChecks'
 							/>
 						</ValidationProvider>
 						<p>
@@ -76,7 +76,7 @@
 					</div>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
-						rules='required|integer|between:0,16383'
+						rules='required|integer|between:768,16383'
 						:custom-messages='{
 							required: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress",
 							integer: "forms.errors.integer",
@@ -86,13 +86,23 @@
 						<CInput
 							v-model.number='eeepromAddress'
 							type='number'
-							min='0'
+							min='768'
 							max='16383'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
+							@input='resetChecks'
 						/>
-					</ValidationProvider><hr>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='uploadEepromData'
+						:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeprom")'
+					/>
+					<CInputCheckbox
+						:checked.sync='uploadEeepromData'
+						:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeeprom")'
+					/>
+					<hr>
 					<h4>{{ $t('iqrfnet.networkManager.otaUpload.form.manualUpload') }}</h4>
 					<div class='form-group'>
 						<div>
@@ -100,13 +110,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.uploadEeeprom') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='uploadFile(false)'
-						>
-							{{ $t('forms.upload') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty'
+								@click='uploadFile(false)'
+							>
+								{{ $t('forms.upload') }}
+							</CButton> <CIcon 
+								v-if='checks.upload'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div>
 					<div class='form-group'>
 						<div>
@@ -114,13 +131,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.verifyEeeprom') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='verifyStep'
-						>
-							{{ $t('forms.verify') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty || !checks.upload'
+								@click='verifyStep'
+							>
+								{{ $t('forms.verify') }}
+							</CButton> <CIcon 
+								v-if='checks.verify'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div>
 					<div class='form-group'>
 						<div>
@@ -128,13 +152,20 @@
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.loadFlash') }}
 							</b>
 						</div><br>
-						<CButton
-							color='primary'
-							:disabled='invalid || fileEmpty'
-							@click='flashLoadStep'
-						>
-							{{ $t('forms.load') }}
-						</CButton>
+						<div class='step-check'>
+							<CButton
+								color='primary'
+								:disabled='invalid || fileEmpty || !checks.verify'
+								@click='flashLoadStep'
+							>
+								{{ $t('forms.load') }}
+							</CButton> <CIcon 
+								v-if='checks.flash'
+								class='text-success'
+								:content='checkIcon'
+								size='xl'
+							/>
+						</div>
 					</div><hr>
 					<h4>{{ $t('iqrfnet.networkManager.otaUpload.form.automaticUpload') }}</h4>
 					<CButton
@@ -152,21 +183,24 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {between, integer, required} from 'vee-validate/dist/rules';
 
+import {cilCheckCircle} from '@coreui/icons';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import NativeUploadService from '../../services/NativeUploadService';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {FileFormat} from '../../iqrfNet/fileFormat';
 import {NetworkTarget} from '../../iqrfNet/networkTarget';
 import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
 
+import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {AxiosResponse} from 'axios';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -176,6 +210,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CCardHeader,
 		CForm,
 		CInput,
+		CInputCheckbox,
 		CInputFile,
 		CSelect,
 		ValidationObserver,
@@ -187,6 +222,11 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
  * OTA upload component for IQRF network manager
  */
 export default class OtaUpload extends Vue {
+
+	/**
+	 * @constant {Array<string>} checkIcon Check icon for steps
+	 */
+	private checkIcon = cilCheckCircle;
 
 	/**
 	 * @var {number} address Target device address for node target option
@@ -201,7 +241,7 @@ export default class OtaUpload extends Vue {
 	/**
 	 * @var {number} eeepromAddress External EEPROM start address for data
 	 */
-	private eeepromAddress = 0
+	private eeepromAddress = 768
 
 	/**
 	 * @var {boolean} fileEmpty Indicates whether file input is empty or not
@@ -214,14 +254,19 @@ export default class OtaUpload extends Vue {
 	private fileName = ''
 
 	/**
-	 * @var {boolean} fileTouched Indicates whether file has been touched
-	 */
-	private fileTouched = false
-
-	/**
 	 * @var {FileFormat} fileType Type of IQRF file to upload
 	 */
 	private fileType: FileFormat = FileFormat.HEX
+
+	/**
+	 * @var {boolean} uploadEepromData Should eeprom data be uploaded?
+	 */
+	private uploadEepromData = false
+
+	/**
+	 * @var {boolean} uploadEeepromData Should eeeprom data be uploaded?
+	 */
+	private uploadEeepromData = false
 
 	/**
 	 * @constant {Array<IOption>} fileTypeOptions Array of CoreUI select options for file input
@@ -230,6 +275,10 @@ export default class OtaUpload extends Vue {
 		{
 			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.hex'),
 			value: FileFormat.HEX
+		},
+		{
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.iqrf'),
+			value: FileFormat.IQRF
 		}
 	]
 
@@ -239,7 +288,7 @@ export default class OtaUpload extends Vue {
 	private hwpid = 65535
 
 	/**
-	 * 
+	 * @var {string|null} msgId Message ID
 	 */
 	private msgId: string|null = null
 
@@ -249,12 +298,7 @@ export default class OtaUpload extends Vue {
 	private target: NetworkTarget = NetworkTarget.COORDINATOR
 
 	/**
-	 * @constant {enum} targetEnum IQRF network target enum for template
-	 */
-	private targetEnum = NetworkTarget
-
-	/**
-	 * @var {Array<IOption>} targetOptions Array of CoreUI select options for upload target
+	 * @constant {Array<IOption>} targetOptions Array of CoreUI select options for upload target
 	 */
 	private targetOptions: Array<IOption> = [
 		{
@@ -270,6 +314,15 @@ export default class OtaUpload extends Vue {
 			value: NetworkTarget.NETWORK,
 		},
 	]
+
+	/**
+	 * @var {Dictionary<boolean>} checks Upload step checks
+	 */
+	private checks: Dictionary<boolean> = {
+		upload: false,
+		verify: false,
+		flash: false,
+	}
 
 	/**
 	 * Component unsubscribe function
@@ -296,7 +349,7 @@ export default class OtaUpload extends Vue {
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
 			}
 		});
@@ -312,13 +365,59 @@ export default class OtaUpload extends Vue {
 	}
 
 	/**
+	 * Resets file input content
+	 */
+	private resetFileInput(): void {
+		((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		this.fileInputEmpty();
+	}
+
+	/**
 	 * Checks if file input is empty
 	 */
 	private fileInputEmpty(): void {
-		if (!this.fileTouched) {
-			this.fileTouched = true;
-		}
 		this.fileEmpty = this.getFiles().length === 0;
+	}
+
+	/**
+	 * Resets step checks
+	 */
+	private resetChecks(): void {
+		this.checks.upload = this.checks.verify = this.checks.flash = false;
+	}
+
+	/**
+	 * Resets the inputs and checks if target, address or filtering has changed
+	 */
+	private clearForm(): void {
+		this.resetFileInput();
+		this.resetChecks();
+	}
+
+	/**
+	 * Checks selected file
+	 */
+	private checkSelectedFile(): void {
+		const file = this.getFiles()[0];
+		if (!file) {
+			return;
+		}
+		if (this.fileType === FileFormat.HEX && !file.name.endsWith('.hex')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.notHexFile').toString()
+			);
+			this.clearForm();
+			return;
+		}
+		if (this.fileType === FileFormat.IQRF && !file.name.endsWith('.iqrf')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.notIqrfFile').toString()
+			);
+			this.clearForm();
+			return;
+		}
+		this.resetChecks();
+		this.fileEmpty = false;
 	}
 
 	/**
@@ -329,9 +428,9 @@ export default class OtaUpload extends Vue {
 		this.autoUpload = autoUpload;
 		this.fileName = '';
 		const formData = new FormData();
-		formData.append('format', FileFormat.HEX);
-		formData.append('file', this.getFiles()[0]);
-
+		const file = this.getFiles()[0];
+		formData.append('format', this.fileType);
+		formData.append('file', file);
 		this.$store.commit('spinner/SHOW');
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
@@ -339,12 +438,7 @@ export default class OtaUpload extends Vue {
 				this.fileName = response.data.fileName;
 				this.uploadStep();
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.gwUploadFail').toString()
-				);
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.networkManager.otaUpload.messages.gatewayUploadFailed'));
 	}
 
 	/**
@@ -365,6 +459,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the upload step
 	 */
 	private uploadStep(): void {
+		this.resetChecks();
 		this.executeStep(OtaUploadAction.UPLOAD, 'iqrfnet.networkManager.otaUpload.messages.uploadStepFail');
 	}
 
@@ -372,6 +467,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the verification step
 	 */
 	private verifyStep(): void {
+		this.checks.verify = this.checks.flash = false;
 		this.executeStep(OtaUploadAction.VERIFY, 'iqrfnet.networkManager.otaUpload.messages.verifyStepFail');
 	}
 
@@ -379,6 +475,7 @@ export default class OtaUpload extends Vue {
 	 * Sends Daemon API request to execute the flash load step
 	 */
 	private flashLoadStep(): void {
+		this.checks.flash = false;
 		this.executeStep(OtaUploadAction.LOAD, 'iqrfnet.networkManager.otaUpload.messages.loadStepFail');
 	}
 
@@ -393,6 +490,8 @@ export default class OtaUpload extends Vue {
 			this.hwpid,
 			this.fileName,
 			this.eeepromAddress,
+			this.uploadEepromData,
+			this.uploadEeepromData,
 			action,
 			new WebSocketOptions(null, null, message, () => this.msgId = null)
 		).then((msgId: string) => this.msgId = msgId);
@@ -403,15 +502,13 @@ export default class OtaUpload extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleOtaUploadResponse(response: any): void {
-		if (this.target === NetworkTarget.COORDINATOR ||
-			this.target === NetworkTarget.NODE) {
-			this.deviceResponse(response.rsp.deviceAddr, response.status, response.statusStr, response.rsp.loadingAction);
-			return;
-		}
-		if (response.status === 1002) {
+		if (response.status === 1001) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidFile').toString()
+				this.$t(
+					'iqrfnet.networkManager.otaUpload.messages.invalidRequest',
+					{error: response.statusStr}
+				).toString()
 			);
 			return;
 		}
@@ -422,72 +519,59 @@ export default class OtaUpload extends Vue {
 			);
 			return;
 		}
-		const action = response.rsp.loadingAction;
-		if (action === OtaUploadAction.UPLOAD) {
-			if (this.autoUpload) {
-				this.verifyStep();
-			} else {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.info(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.network.uploadStepSuccess').toString()
-				);
-			}
-		} else if (action === OtaUploadAction.VERIFY) {
-			if (this.autoUpload) {
-				this.flashLoadStep();
-			} else {
-				this.$store.commit('spinner/HIDE');
-				const devices = response.rsp.verifyResult.map((item) => {
-					if (!item.result) {
-						return item.address;
-					}
-				}).join(', ');
-				this.$toast.info(
-					this.$t(
-						'iqrfnet.networkManager.otaUpload.messages.network.verifyStepSuccess',
-						{devices: devices.trim() === ',' ? 'None' : devices}
-					).toString()
-				);
-			}
-		} else {
-			let devices = response.rsp.loadResult.map((item) => {
-				if (!item.result) {
-					return item.address;
-				}
-			}).join(', ');
+		if (response.status === 1004) {
 			this.$store.commit('spinner/HIDE');
-			if (this.autoUpload) {
-				this.$toast.info(
-					this.$t(
-						'iqrfnet.networkManager.otaUpload.messages.network.runAllSuccess',
-						{devices: devices.trim() === ',' ? 'None' : devices}
-					).toString()
-				);
-			} else {
-				this.$toast.info(
-					this.$t(
-						'iqrfnet.networkManager.otaUpload.messages.network.loadStepSuccess',
-						{devices: devices.trim() === ',' ? 'None' : devices}
-					).toString()
-				);
-			}
+			this.$toast.error(
+				this.$t(
+					'iqrfnet.networkManager.otaUpload.messages.invalidFile',
+					{error: response.statusStr}
+				).toString()
+			);
+			return;
+		}
+		if (response.status === 1005) {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(
+				this.$t(
+					'iqrfnet.networkManager.otaUpload.messages.invalidContent',
+					{error: response.statusStr}
+				).toString()
+			);
+			return;
+		}
+		if (response.status === 1006) {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(
+				this.$t(
+					'iqrfnet.networkManager.otaUpload.messages.invalidMemory',
+					{error: response.statusStr}
+				).toString()
+			);
+			return;
+		}
+		if (this.target === NetworkTarget.COORDINATOR ||
+			this.target === NetworkTarget.NODE) {
+			this.deviceResponse(response);
+		} else {
+			this.networkResponse(response);
 		}
 	}
 
 	/**
-	 * Handles OTa upload response for coordinator and node devices
-	 * @param {number} address Device address
-	 * @param {number} status OTA upload status code
-	 * @param {string} statusMessage OTA upload status message
-	 * @param {OtaUploadAction} action OTA upload step
+	 * Handles OTA upload response for coordinator and node devices
+	 * @param response Daemon API response
 	 */
-	private deviceResponse(address: number, status: number, statusMessage: string, action: OtaUploadAction): void {
+	private deviceResponse(response): void {
+		const status = response.status;
 		if (status === 0) {
+			const action = response.rsp.loadingAction;
+			const address = response.rsp.deviceAddr;
 			if (action === OtaUploadAction.UPLOAD) {
 				if (this.autoUpload) {
 					this.verifyStep();
 				} else {
 					this.$store.commit('spinner/HIDE');
+					this.checks.upload = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.uploadStepSuccess':
@@ -500,6 +584,7 @@ export default class OtaUpload extends Vue {
 					this.flashLoadStep();
 				} else {
 					this.$store.commit('spinner/HIDE');
+					this.checks.verify = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
@@ -517,6 +602,7 @@ export default class OtaUpload extends Vue {
 						).toString()
 					);
 				} else {
+					this.checks.flash = true;
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
@@ -528,43 +614,138 @@ export default class OtaUpload extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/HIDE');
-		// invalid uploaded file
-		if (status === 1002) {
+		const address = response.rsp.deviceAddr;
+		if (status === -1) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidFile').toString()
+				this.$t(address === 0 ?
+					'forms.messages.coordinatorOffline':
+					'forms.messages.deviceOffline', {address: address}
+				).toString()
 			);
-			return;
-		}
-		// invalid file content
-		if (status === 1003) {
+		} else if (status === 8) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.otaUpload.messages.invalidContent').toString()
+				this.$t('forms.messages.noDevice', {address: address}).toString()
 			);
-			return;
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+			);
 		}
-		if (status === 1005) {
-			// device offline
-			if (statusMessage.includes('Transaction error')) {
-				this.$toast.error(
-					this.$t(address === 0 ?
-						'forms.messages.coordinatorOffline':
-						'forms.messages.deviceOffline', {address: address}
-					).toString()
-				);
-			} else if (statusMessage.includes('Dpa error')) {
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: address}).toString()
-				);
+		
+	}
+
+	/**
+	 * Handles OTA upload response for network target
+	 * @param response Daemon API response
+	 */
+	private networkResponse(response): void {
+		const action = response.rsp.loadingAction;
+		if (action === OtaUploadAction.UPLOAD) {
+			if (this.autoUpload) {
+				this.verifyStep();
 			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
+				this.$store.commit('spinner/HIDE');
+				this.checks.upload = true;
+				this.$toast.success(
+					this.$t('iqrfnet.networkManager.otaUpload.messages.network.uploadStepSuccess').toString()
 				);
 			}
-			return;
+		} else if (action === OtaUploadAction.VERIFY) {
+			if (this.autoUpload) {
+				this.flashLoadStep();
+			} else {
+				const devices: Array<number> = [];
+				response.rsp.verifyResult.forEach((item) => {
+					if (!item.result) {
+						devices.push(item.address);
+					}
+				});
+				this.$store.commit('spinner/HIDE');
+				this.checks.verify = true;
+				if (devices.length > 0) {
+					if (this.hwpid === 65535) {
+						this.$toast.info(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepPartialSuccess',
+								{devices: devices.join(', ')}
+							).toString()
+						);
+					} else {
+						this.$toast.info(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepHwpidPartialSuccess',
+								{devices: devices.join(', '), hwpid: this.hwpid}
+							).toString()
+						);
+					}
+				} else {
+					if (this.hwpid === 65535) {
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.otaUpload.messages.network.verifyStepSuccess').toString()
+						);
+					} else {
+						this.$toast.success(
+							this.$t(
+								'iqrfnet.networkManager.otaUpload.messages.network.verifyStepHwpidSuccess',
+								{hwpid: this.hwpid}
+							).toString()
+						);
+					}
+				}
+				
+			}
+		} else {
+			const devices: Array<number> = [];
+			response.rsp.loadResult.map((item) => {
+				if (!item.result) {
+					devices.push(item.address);
+				}
+			});
+			this.$store.commit('spinner/HIDE');
+			if (!this.autoUpload) {
+				this.checks.flash = true;
+			}
+			if (devices.length > 0) {
+				if (this.hwpid === 65535) {
+					this.$toast.info(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepPartialSuccess',
+							{devices: devices.join(', ')}
+						).toString()
+					);
+				} else {
+					this.$toast.info(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepHwpidPartialSuccess',
+							{devices: devices.join(', '), hwpid: this.hwpid}
+						).toString()
+					);
+				}
+			} else {
+				if (this.hwpid === 65535) {
+					this.$toast.success(
+						this.$t('iqrfnet.networkManager.otaUpload.messages.network.loadStepSuccess').toString()
+					);
+				} else {
+					this.$toast.success(
+						this.$t(
+							'iqrfnet.networkManager.otaUpload.messages.network.loadStepHwpidSuccess',
+							{hwpid: this.hwpid}
+						).toString()
+					);
+				}
+			}
 		}
-		this.$toast.error(
-			this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
-		);
 	}
 }
 </script>
+
+<style scoped>
+
+.step-check {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+</style>

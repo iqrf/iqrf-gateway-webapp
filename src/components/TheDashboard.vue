@@ -1,6 +1,5 @@
 <template>
 	<div class='c-app'>
-		<LoadingSpinner />
 		<TheSidebar />
 		<CWrapper>
 			<TheHeader />
@@ -21,7 +20,6 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CWrapper} from '@coreui/vue/src';
-import LoadingSpinner from './LoadingSpinner.vue';
 import TheHeader from './TheHeader.vue';
 import TheSidebar from './TheSidebar.vue';
 
@@ -29,10 +27,9 @@ import TheSidebar from './TheSidebar.vue';
 	components: {
 		CContainer,
 		CWrapper,
-		LoadingSpinner,
 		TheHeader,
 		TheSidebar,
-	}
+	},
 })
 
 /**

@@ -59,7 +59,7 @@
 			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
 		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades"' />
-		<GatewayRootPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("rootpass")' />
+		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
 	</div>
 </template>
 
@@ -67,7 +67,7 @@
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '../../components/Gateway/AptConfig.vue';
-import GatewayRootPassword from '../../components/Gateway/GatewayRootPassword.vue';
+import GatewayUserPassword from '../../components/Gateway/GatewayUserPassword.vue';
 
 import AptService, {AptEnable} from '../../services/AptService';
 import ServiceService from '../../services/ServiceService';
@@ -82,7 +82,6 @@ const whitelisted = [
 	'iqrf-gateway-translator',
 	'ssh',
 	'unattended-upgrades',
-	'mender-client',
 ];
 
 const features = {
@@ -90,7 +89,6 @@ const features = {
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',
 	'unattended-upgrades': 'unattendedUpgrades',
-	'mender-client': 'mender',
 };
 
 interface IService {
@@ -104,7 +102,7 @@ interface IService {
 		AptConfig,
 		CButton,
 		CCard,
-		GatewayRootPassword,
+		GatewayUserPassword,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {

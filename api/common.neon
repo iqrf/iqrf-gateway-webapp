@@ -73,6 +73,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json
 		GatewayInfo:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+		GatewayPassword:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
 		Error:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/error.json
 		Feature:
@@ -103,6 +105,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingDetail.json
 		MenderConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/menderConfig.json
+		MonitConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json
 		NetworkConnection:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
 		NetworkConnections:
@@ -121,12 +125,12 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaToken.json
 		PowerControl:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
-		RootPassword:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/rootPassword.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		SystemdJournal:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdJournal.json
 		Task:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
 		TaskList:

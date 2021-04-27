@@ -67,6 +67,11 @@ class DiagnosticsManager {
 	private $confDir;
 
 	/**
+	 * @var string Path to a directory with IQRF Gateway Daemon's data
+	 */
+	private $dataDir;
+
+	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
 	private $logDir;
@@ -84,6 +89,7 @@ class DiagnosticsManager {
 		$this->infoManager = $infoManager;
 		$this->cacheDir = $mainManager->getCacheDir();
 		$this->confDir = $confDir;
+		$this->dataDir = $mainManager->getDataDir();
 		$this->logDir = $logDir;
 		$this->gwInfo = $gwInfo;
 	}
@@ -103,6 +109,7 @@ class DiagnosticsManager {
 		}
 		$this->zipManager = new ZipArchiveManager($path);
 		$this->addConfiguration();
+		$this->addDatabase();
 		$this->addMetadata();
 		$this->addScheduler();
 		$this->addDaemonLog();
@@ -112,6 +119,7 @@ class DiagnosticsManager {
 		$this->addSpi();
 		$this->addUsb();
 		$this->addControllerLog();
+		$this->addUploaderLog();
 		$this->addWebappLog();
 		$this->addInstalledPackages();
 		$this->zipManager->close();
@@ -123,6 +131,13 @@ class DiagnosticsManager {
 	 */
 	public function addConfiguration(): void {
 		$this->zipManager->addFolder($this->confDir, 'configuration');
+	}
+
+	/**
+	 * Adds IQRF Gateway Daemon database and scripts
+	 */
+	public function addDatabase(): void {
+		$this->zipManager->addFolder($this->dataDir . '/DB', 'DB');
 	}
 
 	/**
@@ -213,6 +228,17 @@ class DiagnosticsManager {
 		$command = $this->commandManager->run('journalctl --unit iqrf-gateway-controller.service --no-pager', true);
 		if ($command->getExitCode() === 0) {
 			$this->zipManager->addFileFromText('logs/iqrf-gateway-controller.log', $command->getStdout());
+		}
+	}
+
+	/**
+	 * Adds logs of IQRF Gateway Uploader
+	 */
+	public function addUploaderLog(): void {
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			if (file_exists('/var/log/iqrf-gateway-uploader.log')) {
+				$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
+			}
 		}
 	}
 

@@ -5,50 +5,53 @@
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
 			</CCardHeader>
 			<CCardBody>
+				<CElementCover 
+					v-if='loadFailed'
+					style='z-index: 1;'
+					:opacity='0.85'
+				>
+					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFailed') }}
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='upgradeOs()'>
-						<p>
-							<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-								<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
-							</span>
+						<fieldset :disabled='loadFailed'>
+							<p>
+								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
+									<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+								</span>
+							</p>
+							<div v-if='selectVersions.length > 0'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: "iqrfnet.trUpload.osUpload.errors.version"
+									}'
+								>
+									<CSelect
+										:value.sync='osVersion'
+										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
+										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
+										:options='selectVersions'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<CButton
+									color='primary'
+									type='submit'
+									:disabled='invalid'
+								>
+									{{ $t('forms.upload') }}
+								</CButton>
+							</div>
 							<CAlert
-								v-else
-								color='danger'
+								v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
+								color='success'
 							>
-								{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFail') }}
+								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
 							</CAlert>
-						</p>
-						<div v-if='selectVersions.length > 0'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: "iqrfnet.trUpload.osUpload.errors.version"
-								}'
-							>
-								<CSelect
-									:value.sync='osVersion'
-									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
-									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-									:options='selectVersions'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton
-								color='primary'
-								type='submit'
-								:disabled='invalid'
-							>
-								{{ $t('forms.upload') }}
-							</CButton>
-						</div>
-						<CAlert 
-							v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
-							color='success'
-						>
-							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-						</CAlert>
+						</fieldset>
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
@@ -58,24 +61,26 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import {IOption} from '../../interfaces/coreui';
 import IqrfService from '../../services/IqrfService';
 import ServiceService from '../../services/ServiceService';
+
 import {AxiosError, AxiosResponse} from 'axios';
-import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
 import {Dictionary} from 'vue-router/types/router';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {IOption} from '../../interfaces/coreui';
+import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CModal,
 		CSelect,
@@ -129,9 +134,9 @@ export default class OsUpdater extends Vue {
 	private uploadError = false;
 
 	/**
-	 * @var {string} uploadeMessage Upload message for spinner
+	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
-	private uploadMessage = ''
+	private loadFailed = false
 	
 	/**
 	 * Vue lifecycle hook created
@@ -165,11 +170,14 @@ export default class OsUpdater extends Vue {
 	 * Retrieves list of IQRF OS patches from database
 	 */
 	private getOsUpgrades(data: Dictionary<string|number>): void {
-		this.$store.commit('spinner/SHOW');
 		IqrfService.getUpgrades(data)
 			.then((response: AxiosResponse) => {
 				this.upgrades = response.data;
 				this.updateVersions();
+			})
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('loaded', {name: 'OS', success: false});
 			});
 	}
 
@@ -187,6 +195,7 @@ export default class OsUpdater extends Vue {
 			});
 		}
 		this.selectVersions = versions.sort().reverse();
+		this.$emit('loaded', {name: 'OS', success: true});
 	}
 
 	/**
@@ -220,11 +229,17 @@ export default class OsUpdater extends Vue {
 			Object.assign(data, {rfMode: upgrade.dpa.endsWith('STD') ? 'STD' : 'LP'});
 		}
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT',
+			this.$t('iqrfnet.trUpload.osUpload.messages.gatewayUpload').toString()
+		);
 		IqrfService.getUpgradeFiles(data)
 			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/UPDATE_TEXT',
+					this.$t('iqrfnet.trUpload.osUpload.messages.gatewayUploadSuccess').toString()
+				);
 				this.upload(response.data);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.fileFetchError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.osUpload.messages.gatewayUploadFailed'));
 	}
 
 	/**
@@ -239,25 +254,20 @@ export default class OsUpdater extends Vue {
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
 			for (let file of files) {
-				this.uploadMessage = this.$t(
-					'iqrfnet.trUpload.osUpload.messages.fileUploading', 
-					{file: file.type}
-				).toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.$store.commit('spinner/UPDATE_TEXT',
+					this.$t('iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUpload').toString()
+				);
 				await IqrfService.uploader(file)
 					.then(() => {
-						this.uploadMessage = this.$t(
-							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
-							{file: file.type}
-						).toString();
-						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+						this.$store.commit('spinner/UPDATE_TEXT',
+							this.$t('iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUploadSuccess').toString()
+						);
 					})
 					.catch((error: AxiosError) => {
-						FormErrorHandler.uploadUtilError(error);
+						extendedErrorToast(error, 'iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUploadFailed');
 						this.uploadError = true;
 					});
 				if (this.uploadError) {
-					this.uploadMessage = '';
 					break;
 				}
 			}
@@ -274,10 +284,11 @@ export default class OsUpdater extends Vue {
 	private stopDaemon(): Promise<void> {
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.uploadMessage = this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
-				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				this.$store.commit('spinner/UPDATE_TEXT',
+					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
+				);
 			})
-			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+			.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.stopFailed'));
 	}
 
 	/**
@@ -289,17 +300,7 @@ export default class OsUpdater extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$emit('os-upload');
 			})
-			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
-		this.uploadMessage = '';
-	}
-
-	/**
-	 * Extracts name of file from full path
-	 * @param {string} filePath Path to uploaded file
-	 * @returns {string} File name separated from path
-	 */
-	private getFileName(filePath: string): string {
-		return filePath.replace(/^.*(\\|\/|:)/, '');
+			.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.startFailed'));
 	}
 }
 </script>

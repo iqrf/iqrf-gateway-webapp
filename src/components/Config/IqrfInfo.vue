@@ -1,52 +1,85 @@
 <template>
-	<CCard class='border-0'>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-if='powerUser'
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.daemon.misc.iqrfInfo.errors.instance"}'
-					>
-						<CInput
-							v-model='componentInstance'
-							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+			<CElementCover 
+				v-if='loadFailed'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</CElementCover>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm
+					@submit.prevent='saveConfig'
+				>
+					<fieldset :disabled='loadFailed'>
+						<ValidationProvider
+							v-if='powerUser'
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: "config.daemon.misc.iqrfInfo.errors.instance"
+							}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("forms.fields.instanceName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<div
+							class='form-group'
+						>
+							<label for='enumPeriodicEnable'>
+								{{ $t("config.daemon.misc.iqrfInfo.form.enablePeriodic") }}
+							</label><br>
+							<CSwitch
+								id='enumPeriodicEnable'
+								color='primary'
+								size='lg'
+								shape='pill'
+								label-on='ON'
+								label-off='OFF'
+								:checked.sync='enumPeriodic'
+							/>
+							<ValidationProvider
+								v-if='enumPeriodic'
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									required: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
+									min: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
+									integer: "forms.errors.integer"
+								}'
+							>
+								<CInput
+									v-model.number='configuration.enumPeriod'
+									type='number'
+									min='0'
+									:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+						</div>
+						<CInputCheckbox
+							:checked.sync='configuration.enumAtStartUp'
+							:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-if='daemon230'
-						v-slot='{ errors, touched, valid }'
-						:rules='enumAtStartUp ? "integer|min:0|required": ""'
-						:custom-messages='{
-							required: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
-							min: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
-							integer: "forms.errors.integer"
-						}'
-					>
-						<CInput
-							v-model.number='enumPeriod'
-							type='number'
-							min='0'
-							:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+						<CInputCheckbox
+							:checked.sync='configuration.enumUniformDpaVer'
+							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='enumAtStartUp'
-						:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
-					/>
-					<CInputCheckbox
-						v-if='daemon230'
-						:checked.sync='enumUniformDpaVer'
-						:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
-					/>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
+						<CInputCheckbox
+							v-if='!versionLowerEqual("2.3.6")'
+							:checked.sync='configuration.metaDataToMessages'
+							:label='$t("config.daemon.misc.iqrfInfo.form.metaDataToMessages")'
+						/>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</fieldset>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
@@ -55,15 +88,17 @@
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfInfo} from '../../interfaces/iqrfInfo';
 import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -71,9 +106,11 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -81,47 +118,42 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
 		...mapGetters({
 			daemonVersion: 'daemonVersion',
 		}),
-	}
+	},
+	methods: {
+		versionLowerEqual: versionLowerEqual,
+	},
 })
 
 /**
  * IQRF Info component configuration
  */
 export default class IqrfInfo extends Vue {
-	/**
-	 * @var {string} componentInstance IQRF Info component instance name
-	 */
-	private componentInstance = ''
 
 	/**
-	 * @constant {string} componentName IQRF Info component name
+	 * @constant {string} name IQRF Info component name
 	 */
-	private componentName = 'iqrf::IqrfInfo'
+	private name = 'iqrf::IqrfInfo'
 
 	/**
-	 * @var {boolean} daemon230 Indicates whether Daemon version is 2.3.0 or higher
-	 */
-	private daemon230 = false
-
-	/**
-	 * @var {boolean} enumAtStartUp Enumerate network after startup?
-	 */
-	private enumAtStartUp = false
-
-	/**
-	 * @var {number} enumPeriod Enumeration period in minutes
-	 */
-	private enumPeriod = 0
-
-	/**
-	 * @var {boolean} enumUniformDpaVer Uniform DPA version and OS build enumeration?
-	 */
-	private enumUniformDpaVer = false
-
-	/**
-	 * @var {string} instance IQRF Info component instance name, used for REST API communication
+	 * @var {string} instance IQRF Info component instance name
 	 */
 	private instance = ''
+
+	/**
+	 * @var {IIqrfInfo} configuration IQRF Info component instance configuration
+	 */
+	private configuration: IIqrfInfo = {
+		component: '',
+		instance: '',
+		enumAtStartUp: false,
+		enumPeriod: 0,
+		enumUniformDpaVer: false,
+	}
+
+	/**
+	 * @var {boolean} enumPeriodic Shows period input
+	 */
+	private enumPeriodic = false
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
@@ -129,12 +161,17 @@ export default class IqrfInfo extends Vue {
 	private powerUser = false
 
 	/**
+	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
+	 */
+	private loadFailed = false
+
+	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
 	@Watch('daemonVersion')
 	private updateForm(): void {
-		if (versionHigherEqual('2.3.0')) {
-			this.daemon230 = true;
+		if (!versionLowerEqual('2.3.6')) {
+			Object.assign(this.configuration, {metaDataToMessages: false});
 		}
 	}
 
@@ -161,16 +198,18 @@ export default class IqrfInfo extends Vue {
 	/**
 	 * Retrieves configuration of IQRF Info component
 	 */
-	private getConfig(): void {
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent(this.componentName)
+	private getConfig(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.name)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
-				}	
+				}
+				this.$emit('fetched', {name: 'iqrfInfo', success: true});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => {
+				this.loadFailed = true;
+				this.$emit('fetched', {name: 'iqrfInfo', success: false});
+			});
 	}
 
 	/**
@@ -178,46 +217,27 @@ export default class IqrfInfo extends Vue {
 	 * @param {IIqrfInfo} response Configuration from REST API response
 	 */
 	private parseConfiguration(response: IIqrfInfo): void {
-		this.instance = this.componentInstance = response.instance;
-		this.enumAtStartUp = response.enumAtStartUp;
-		if (!this.daemon230) {
-			return;
+		this.instance = response.instance;
+		this.configuration = response;
+		if (this.configuration.enumPeriod > 0) {
+			this.enumPeriodic = true;
 		}
-		if (response.enumPeriod !== undefined) {
-			this.enumPeriod = response.enumPeriod;
-		}
-		if (response.enumUniformDpaVer !== undefined) {
-			this.enumUniformDpaVer = response.enumUniformDpaVer;
-		}
-	}
-
-	/**
-	 * Creates IQRF Info configuration object for REST API request
-	 * @returns {IIqrfInfo} IQRF Info configuration
-	 */
-	private buildConfiguration(): IIqrfInfo {
-		let configuration: IIqrfInfo = {
-			component: this.componentName,
-			instance: this.componentInstance,
-			enumAtStartUp: this.enumAtStartUp
-		};
-		if (this.daemon230) {
-			Object.assign(configuration, {enumPeriod: this.enumPeriod, enumUniformDpaVer: this.enumUniformDpaVer});
-		}
-		return configuration;
 	}
 
 	/**
 	 * Saves new or updates existing configuration of IQRF Info component instance
 	 */
 	private saveConfig(): void {
+		if (!this.enumPeriodic) {
+			this.configuration.enumPeriod = 0;
+		}
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
+			DaemonConfigurationService.updateInstance(this.name, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
+			DaemonConfigurationService.createInstance(this.name, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
@@ -227,8 +247,7 @@ export default class IqrfInfo extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t('config.success').toString());
+		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
 }
 </script>

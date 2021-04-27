@@ -123,7 +123,7 @@ class UserController extends BaseController {
 		$this->validator->validateRequest('passwordChange', $request);
 		$body = $request->getJsonBody();
 		if (!$user->verifyPassword($body['old'])) {
-			throw new ClientErrorException('Invalid old password', ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
 		}
 		$user->setPassword($body['new']);
 		$this->entityManager->persist($user);
@@ -178,18 +178,18 @@ class UserController extends BaseController {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$hostname = gethostname();
-		$builder = $this->configuration->createBuilder()
+		$builder = $this->configuration->builder()
 			->issuedAt($now)
 			->expiresAt($now->modify('+90 min'))
 			->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
 			$builder->issuedBy($hostname)->identifiedBy($hostname);
 		}
-		$signer = $this->configuration->getSigner();
-		$signingKey = $this->configuration->getSigningKey();
+		$signer = $this->configuration->signer();
+		$signingKey = $this->configuration->signingKey();
 		$token = $builder->getToken($signer, $signingKey);
 		$json = $user->jsonSerialize();
-		$json['token'] = (string) $token;
+		$json['token'] = $token->toString();
 		return $response->writeJsonBody($json);
 	}
 

@@ -75,8 +75,6 @@ import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
 import {Dictionary} from 'vue-router/types/router';
-import VueRouter from 'vue-router';
-const { isNavigationFailure, NavigationFailureType } = VueRouter;
 
 @Component({
 	components: {
@@ -129,6 +127,7 @@ export default class SignIn extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+		this.$store.commit('spinner/HIDE');
 	}
 
 	/**

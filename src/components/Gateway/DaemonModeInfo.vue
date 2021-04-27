@@ -2,7 +2,7 @@
 	<span v-if='requestRunning && mode === "unknown"'>
 		<CSpinner color='info' class='cinfo-spinner' />
 	</span>
-	<span v-else>{{ $t('gateway.mode.modes.' + mode) }}</span>
+	<span v-else>{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}</span>
 </template>
 
 <script lang='ts'>
@@ -96,7 +96,7 @@ export default class DaemonModeInfo extends Vue {
 	 * Retrieves current Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.modes.unknown', () => this.timedOut())
+		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.timedOut())
 			.then((msgId: string) => this.msgId = msgId);
 		this.requestRunning = true;
 	}

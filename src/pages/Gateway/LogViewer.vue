@@ -1,22 +1,44 @@
 <template>
 	<div>
 		<h1>{{ $t('gateway.log.title') }}</h1>
+		<SystemdJournal v-if='$store.getters["features/isEnabled"]("systemdJournal")' />
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab 
-					v-if='controllerLog !== ""'
+					v-if='loaded && controllerLog !== null'
 					:title='$t("service.iqrf-gateway-controller.title")'
 				>
 					<CCardBody>
-						<pre class='log'>{{ controllerLog }}</pre>
+						<CAlert 
+							v-if='controllerLog.length === 0'
+							class='card-margin-bottom'
+							color='info'
+						>
+							{{ $t('gateway.log.messages.logEmpty') }}
+						</CAlert>
+						<pre v-else class='log'>{{ controllerLog }}</pre>
 					</CCardBody>
 				</CTab>
 				<CTab
-					v-if='daemonLog !== ""'
+					v-if='loaded'
 					:title='$t("service.iqrf-gateway-daemon.title")'
 				>
 					<CCardBody>
-						<pre class='log'>{{ daemonLog }}</pre>
+						<CAlert
+							v-if='daemonLog === null'
+							class='card-margin-bottom'
+							color='danger'
+						>
+							{{ $t('gateway.log.messages.logNotFound') }}
+						</CAlert>
+						<CAlert
+							v-else-if='daemonLog.length === 0'
+							class='card-margin-bottom'
+							color='info'
+						>
+							{{ $t('gateway.log.messages.logEmpty') }}
+						</CAlert>
+						<pre v-else class='log'>{{ daemonLog }}</pre>
 					</CCardBody>
 				</CTab>
 			</CTabs>
@@ -31,18 +53,25 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
-import GatewayService from '../../services/GatewayService';
+import {CAlert, CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
+import SystemdJournal from '../../components/Gateway/SystemdJournal.vue';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {fileDownloader} from '../../helpers/fileDownloader';
+
+import GatewayService from '../../services/GatewayService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CTab,
-		CTabs
+		CTabs,
+		SystemdJournal,
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -62,14 +91,19 @@ export default class LogViewer extends Vue {
 	private activeTab = 0
 
 	/**
-	 * @var {string} controllerLog Controller log file content
+	 * @var {string|null} controllerLog Controller log file content
 	 */
-	private controllerLog = ''
+	private controllerLog: string|null = null
 
 	/**
-	 * @var {string} daemonLog Daemon log file content
+	 * @var {string|null} daemonLog Daemon log file content
 	 */
-	private daemonLog = ''
+	private daemonLog: string|null = null
+
+	/**
+	 * @var {boolean} loaded Indicates that logs have been loaded 
+	 */
+	private loaded = false;
 
 	/**
 	 * Vue lifecycle hook created
@@ -84,19 +118,11 @@ export default class LogViewer extends Vue {
 						this.controllerLog = response.data.controller;
 						this.activeTab = 1;
 					}
+					this.loaded = true;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				if (error.response) {
-					if (error.response.data.code === 500) {
-						this.$toast.error(
-							this.$t('gateway.log.messages.notFound').toString()
-						);
-					}
-				}
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.log.messages.fetchFailed'));
 	}
 	
 	/**

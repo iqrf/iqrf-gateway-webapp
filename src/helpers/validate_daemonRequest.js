@@ -117,24 +117,7 @@ var validate = (function() {
 						}
 					}
 					var data2 = data1.msgId;
-					if (data2 === undefined) {
-						valid2 = false;
-						var err = {
-							keyword: 'required',
-							dataPath: (dataPath || '') + '.data',
-							schemaPath: '#/properties/data/required',
-							params: {
-								missingProperty: 'msgId'
-							},
-							message: 'should have required property \'msgId\'',
-							schema: validate.schema.properties.data.properties,
-							parentSchema: validate.schema.properties.data,
-							data: data1
-						};
-						if (vErrors === null) vErrors = [err];
-						else vErrors.push(err);
-						errors++;
-					} else {
+					if (data2 !== undefined) {
 						var errs_2 = errors;
 						if (typeof data2 !== 'string') {
 							var err = {
@@ -301,6 +284,27 @@ var validate = (function() {
 							else vErrors.push(err);
 							errors++;
 						}
+						if ((typeof data2 === 'number')) {
+							if (data2 < 500 || data2 !== data2) {
+								var err = {
+									keyword: 'minimum',
+									dataPath: (dataPath || '') + '.data.timeout',
+									schemaPath: '#/properties/data/properties/timeout/minimum',
+									params: {
+										comparison: '>=',
+										limit: 500,
+										exclusive: false
+									},
+									message: 'should be >= 500',
+									schema: 500,
+									parentSchema: validate.schema.properties.data.properties.timeout,
+									data: data2
+								};
+								if (vErrors === null) vErrors = [err];
+								else vErrors.push(err);
+								errors++;
+							}
+						}
 						var valid2 = errors === errs_2;
 					}
 					var data2 = data1.repeat;
@@ -322,6 +326,27 @@ var validate = (function() {
 							if (vErrors === null) vErrors = [err];
 							else vErrors.push(err);
 							errors++;
+						}
+						if ((typeof data2 === 'number')) {
+							if (data2 < 1 || data2 !== data2) {
+								var err = {
+									keyword: 'minimum',
+									dataPath: (dataPath || '') + '.data.repeat',
+									schemaPath: '#/properties/data/properties/repeat/minimum',
+									params: {
+										comparison: '>=',
+										limit: 1,
+										exclusive: false
+									},
+									message: 'should be >= 1',
+									schema: 1,
+									parentSchema: validate.schema.properties.data.properties.repeat,
+									data: data2
+								};
+								if (vErrors === null) vErrors = [err];
+								else vErrors.push(err);
+								errors++;
+							}
 						}
 						var valid2 = errors === errs_2;
 					}
@@ -382,7 +407,7 @@ validate.schema = {
 			'$id': '#/properties/data',
 			'type': 'object',
 			'title': 'Request data',
-			'required': ['msgId', 'req'],
+			'required': ['req'],
 			'properties': {
 				'msgId': {
 					'$id': '#/properties/data/msgId',
@@ -415,12 +440,14 @@ validate.schema = {
 					'$id': '#/properties/data/timeout',
 					'type': 'integer',
 					'title': 'Request timeout in milliseconds',
+					'minimum': 500,
 					'example': 1000
 				},
 				'repeat': {
 					'$id': '#/properties/data/repeat',
 					'type': 'integer',
 					'title': 'Repeat request',
+					'minimum': 1,
 					'example': 1
 				}
 			},

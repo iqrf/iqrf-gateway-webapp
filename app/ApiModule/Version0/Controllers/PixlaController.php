@@ -28,7 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CloudModule\Models\PixlaManager;
+use App\MaintenanceModule\Models\PixlaManager;
 use Nette\IOException;
 
 /**
@@ -57,7 +57,7 @@ class PixlaController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns status of PIXLA client service and PIXLA token
+	 *  summary: Returns PIXLA token
 	 *  responses:
 	 *      '200':
 	 *          description: Success

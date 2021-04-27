@@ -56,13 +56,15 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+
 import ApiKeyService from '../../services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {MetaInfo} from 'vue-meta';
-import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -112,7 +114,7 @@ export default class ApiKeyForm extends Vue {
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false
-	
+
 	/**
 	 * @property {number} keyId API key id
 	 */
@@ -154,7 +156,7 @@ export default class ApiKeyForm extends Vue {
 			this.metadata.expiration = null;
 		}
 	}
-	
+
 	/**
 	 * Retrieves API key specified by id
 	 */
@@ -172,8 +174,8 @@ export default class ApiKeyForm extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'core.apiKey.messages.fetchFailed', {key: this.keyId});
 				this.$router.push('/api-key/');
-				FormErrorHandler.apiKeyError(error);
 			});
 	}
 
@@ -185,11 +187,11 @@ export default class ApiKeyForm extends Vue {
 		if (this.keyId !== null) {
 			ApiKeyService.editApiKey(this.keyId, this.metadata)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+				.catch(this.handleSaveError);
 		} else {
 			ApiKeyService.addApiKey(this.metadata)
 				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+				.catch(this.handleSaveError);
 		}
 	}
 
@@ -210,6 +212,18 @@ export default class ApiKeyForm extends Vue {
 			);
 		}
 		this.$router.push('/api-key/');
+	}
+
+	/**
+	 * Handles REST API save error response
+	 * @param {AxiosError} error Axios error
+	 */
+	private handleSaveError(error: AxiosError): void {
+		extendedErrorToast(
+			error,
+			'core.apiKey.messages.' + (this.$route.path === '/api-key/add' ? 'add' : 'edit') + 'Failed',
+			{key: this.keyId}
+		);
 	}
 }
 </script>

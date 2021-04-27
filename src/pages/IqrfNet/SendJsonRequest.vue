@@ -12,20 +12,26 @@
 					{{ $t("iqrfnet.sendJson.documentation") }}
 				</CButton>
 			</CCardHeader>
-			<CCardBody v-if='daemonAvailable'>
+			<CCardBody>
 				<CAlert v-if='validatorErrors !== ""' color='danger'>
-					{{ $t('iqrfnet.sendJson.form.messages.error.validatorErrors') }}<br>
+					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 					<span class='validation-errors'>{{ validatorErrors }}</span>
 				</CAlert>
-				<ValidationObserver v-slot='{ invalid }'>
+				<CElementCover 
+					v-if='!isSocketConnected'
+					style='z-index: 1;'
+					:opacity='0.85'
+				>
+					{{ $t('iqrfnet.messages.socketError') }}
+				</CElementCover>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|json|mType'
+							v-slot='{errors, touched, valid}'
+							rules='required|json'
 							:custom-messages='{
-								required: "iqrfnet.sendJson.form.messages.missing",
-								json: "iqrfnet.sendJson.form.messages.invalid",
-								mType: "iqrfnet.sendJson.form.messages.mType"
+								required: "iqrfnet.sendJson.messages.missing",
+								json: "iqrfnet.sendJson.messages.invalid",
 							}'
 						>
 							<CTextarea
@@ -42,52 +48,81 @@
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
-			<CCardBody v-else>
-				<CAlert color='danger'>
-					{{ $t('iqrfnet.sendJson.notAvailable', {attempt: reconnectAttempt}) }}
-				</CAlert>
-			</CCardBody>
 		</CCard>
-		<div>
-			<CRow>
-				<CCol v-if='request !== ""' md='6'>
-					<JsonMessage :message='request' type='request' source='sendJson' />
-				</CCol>
-				<CCol v-if='response !== ""' md='6'>
-					<JsonMessage :message='response' type='response' source='sendJson' />
-				</CCol>
-			</CRow>
-		</div>
+		<CCard 
+			v-if='messages.length !== 0'
+			body-wrapper
+		>
+			<CSelect
+				:value.sync='activeIdx'
+				:label='$t("iqrfnet.sendJson.form.activeMessage")'
+				:options='messageOptions'
+				@change='activeMessagePair = messages[activeIdx]'
+			/>
+			<div v-if='activeMessagePair !== null'>
+				<CRow>
+					<CCol md='6'>
+						<JsonMessage
+							:message='activeMessagePair.request'
+							type='request'
+							source='sendJson'
+						/>
+					</CCol>
+					<CCol 
+						v-if='activeMessagePair.response !== []'
+						md='6'
+					>
+						<JsonMessage
+							v-for='rsp of activeMessagePair.response'
+							:key='i = activeMessagePair.response.indexOf(rsp)'
+							:message='rsp'
+							type='response'
+							source='sendJson'
+						/>
+					</CCol>
+				</CRow>
+			</div>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
-import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
-import {StatusMessages} from '../../iqrfNet/sendJson';
-import IqrfNetService from '../../services/IqrfNetService';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+
 import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
-import validate from '../../helpers/validate_daemonRequest';
+import {required} from 'vee-validate/dist/rules';
+import {StatusMessages} from '../../iqrfNet/sendJson';
+import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {v4 as uuidv4} from 'uuid';
+
+import IqrfNetService from '../../services/IqrfNetService';
+import validate from '../../helpers/validate_daemonRequest';
+
+import {IMessagePairRequest} from '../../interfaces/iqrfnet';
+import {IOption} from '../../interfaces/coreui';
+import {mapGetters, MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CTextarea,
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			isSocketConnected: 'isSocketConnected',
+		}),
 	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective
@@ -101,10 +136,6 @@ import {v4 as uuidv4} from 'uuid';
  * Send daemon json api message page component
  */
 export default class SendJsonRequest extends Vue {
-	/**
-	 * @var {boolean} daemonAvailable Indicates whether Daemon is ready to accept requests
-	 */
-	private daemonAvailable = true
 
 	/**
 	 * @var {string|null} json Daemon api json message
@@ -117,24 +148,19 @@ export default class SendJsonRequest extends Vue {
 	private msgId: string|null = null
 
 	/**
-	 * @var {number} reconnectAttempt Number of attempts to re-establish WebSocket connection with Daemon
+	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
 	 */
-	private reconnectAttempt = 0
+	private activeMessagePair: IMessagePairRequest|null = null
 
 	/**
-	 * @var {string} request Daemon api request message, used in message card
+	 * @var {number} activeIdx Indec of active message pair
 	 */
-	private request = ''
+	private activeIdx = 0;
 
 	/**
-	 * @constant {string} requestSchema Daemon API request JSON schema for validator
+	 * @var {Array<IMessagePair>} messages Array of Daemon API request and response pairs
 	 */
-	private requestSchema = require('../../schemas/genericDaemonRequest.json')
-
-	/**
-	 * @var {string} response Daemon api response message, used in message card
-	 */
-	private response = ''
+	private messages: Array<IMessagePairRequest> = []
 
 	/**
 	 * @var validator JSON schema validator function
@@ -158,78 +184,53 @@ export default class SendJsonRequest extends Vue {
 		this.validator = validate;
 		extend('json', (json) => {
 			try {
-				JSON.parse(json);
-				return true;
+				this.validatorErrors = '';
+				const jsonObject = JSON.parse(json);
+				if (this.validator(jsonObject)) {
+					return true;
+				} else {
+					console.warn(this.validator.errors);
+					this.buildViolationString(this.validator.errors);
+					return false;
+				}
 			} catch (error) {
 				return false;
 			}
 		});
-		extend('mType', (json) => {
-			let object = JSON.parse(json);
-			return {}.hasOwnProperty.call(object, 'mType');
-		});
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN') { // daemon is available
-				this.daemonAvailable = true;
-			} else if (mutation.type === 'SOCKET_ONCLOSE' || 
-				mutation.type === 'SOCKET_ONERROR') { // daemon is not available
-				this.daemonAvailable = false;
-			} else if (mutation.type === 'SOCKET_RECONNECT') { // updates reconnect attempt counter
-				this.reconnectAttempt = mutation.payload;
-			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) { // if mType property exists
-					if (mutation.payload.data.msgId === this.msgId &&
-						mutation.payload.mType !== 'iqmeshNetwork_AutoNetwork') { // daemon api response handler (except for autonetwork)
-						this.$store.commit('spinner/HIDE');
-						this.$store.dispatch('removeMessage', this.msgId);
-						this.response = JSON.stringify(mutation.payload, null, 4);
-						if (mutation.payload.data.status === 0) {
-							this.$toast.success(
-								this.$t('iqrfnet.sendJson.form.messages.success')
-									.toString()
-							);
-						} else {
-							if (mutation.payload.data.status in StatusMessages) { // finds correct error message by response status
-								this.$toast.error(
-									this.$t(StatusMessages[mutation.payload.data.status])
-										.toString()
-								);
-							} else { // other unexpected error message
-								this.$toast.error(
-									this.$t('iqrfnet.sendJson.form.messages.error.fail')
-										.toString()
-								);
-							}
-						}
-					} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') { // autonetwork response handler as it sends multiple responses with progress
-						if (this.$store.getters['spinner/isEnabled']) {
-							this.$store.commit('spinner/HIDE');
-						}
-						if (mutation.payload.data.rsp.lastWave && mutation.payload.data.rsp.progress === 100) { // autonetwork finished
-							this.$toast.info(
-								this.$t('iqrfnet.sendJson.form.messages.autoNetworkFinish').toString()
-							);
-						}
-						this.response = JSON.stringify(mutation.payload, null, 4);
-						this.$store.commit('spinner/HIDE');
-					} else if (mutation.payload.mType === 'messageError') {
-						this.$store.commit('spinner/HIDE');
-						this.response = JSON.stringify(mutation.payload, null, 4);
-						if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
-							this.$toast.error(
-								this.$t('iqrfnet.sendJson.form.messages.error.messageQueueFull')
-									.toString()
-							);
-						} else { // message did not validate against json schema
-							this.$toast.error(
-								this.$t('iqrfnet.sendJson.form.messages.error.invalidMessage')
-									.toString()
-							);
-						}
-						
-					}
-				}
+			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
+				return;
+			}
+			if (mutation.type === 'SOCKET_ONSEND') {
+				this.messages.unshift({
+					msgId: mutation.payload.data.msgId,
+					request: JSON.stringify(mutation.payload, null, 4),
+					response: [],
+					label: '[' + new Date().toLocaleString() + ']: ' + mutation.payload.mType + ' (' + mutation.payload.data.msgId + ')',
+				});
+				this.activeMessagePair = this.messages[0];
+			}
+			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			if (mutation.payload.mType === 'messageError') {
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.handleMessageError(mutation.payload);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+				this.handleAutoNetworkResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
+				this.handleBackup(mutation.payload);
+			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
+				this.handleEnumerationNow(mutation.payload);
+			} else {
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.handleResponse(mutation.payload);
 			}
 		});
 	}
@@ -243,6 +244,21 @@ export default class SendJsonRequest extends Vue {
 	}
 
 	/**
+	 * Generates array of message options to select from to show
+	 * @returns {Array<IOption>} Array of options
+	 */
+	get messageOptions(): Array<IOption> {
+		let options: Array<IOption> = [];
+		this.messages.forEach((item: IMessagePairRequest) => {
+			options.push({
+				label: item.label,
+				value: this.messages.indexOf(item),
+			});
+		});
+		return options;
+	}
+
+	/**
 	 * Sends daemon api json message
 	 */
 	private processSubmit(): void {
@@ -252,18 +268,11 @@ export default class SendJsonRequest extends Vue {
 		if (this.validator === null) {
 			return;
 		}
-		this.request = '';
-		this.response = '';
-		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
 		if (json.data.msgId === undefined) {
 			Object.assign(json.data, {msgId: uuidv4()});
 		}
-		if (this.validator(json)) {
-			this.sendRequest(json);
-		} else {
-			this.buildViolationString(this.validator.errors);
-		}
+		this.sendRequest(json);
 	}
 
 	/**
@@ -274,13 +283,44 @@ export default class SendJsonRequest extends Vue {
 		let message = '';
 		for (let error of errors) {
 			if (error.keyword === 'type') {
-				message += 'Type violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + ' (' + typeof error.data + '). [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.type',
+					{
+						property: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						type: (typeof error.data),
+					}
+				).toString();
 			} else if (error.keyword === 'additionalProperties') {
-				message += 'Additional property violation: Property "' + error.dataPath + '" ' + error.message + '. Additional property: ' + (error.params as AdditionalPropertiesParams).additionalProperty + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.additional',
+					{
+						object: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						property: (error.params as AdditionalPropertiesParams).additionalProperty,
+					}
+				).toString();
 			} else if (error.keyword === 'required') {
-				message += 'Required property violation: Property "' + error.dataPath + '" ' + error.message!.replace(/'/g, '"') + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.required',
+					{
+						object: (error.dataPath.length === 0 ? 'root' : error.dataPath),
+						message: error.message,
+						path: error.schemaPath,
+					}
+				).toString();
 			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
-				message += 'Value range violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + '. [' + error.schemaPath + ']\n';
+				message += this.$t(
+					'iqrfnet.sendJson.violations.range',
+					{
+						property: error.dataPath,
+						message: error.message,
+						path: error.schemaPath,
+						value: error.data,
+					}
+				).toString();
 			}
 		}
 		this.validatorErrors = message.trimRight();
@@ -296,20 +336,121 @@ export default class SendJsonRequest extends Vue {
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
 			options.timeout = 1000;
-		} else if (request.mType === 'iqmeshNetwork_AutoNetwork') { // autonetwork request has multiple responses, do not timeout
-			this.$toast.info(
-				this.$t('iqrfnet.sendJson.form.messages.autoNetworkStart').toString()
-			);
+		} else if (request.mType === 'iqmeshNetwork_AutoNetwork' ||
+			request.mType === 'iqmeshNetwork_Backup' ||
+			(request.mType === 'infoDaemon_Enumeration' && request.data.req.command === 'now') ||
+			request.mType === 'otaUpload') { // requests without timeout
+			this.$store.commit('spinner/SHOW');
 		} else { // regular messages have a minute timeout
 			options.timeout = 60000;
-			options.message = 'iqrfnet.sendJson.form.messages.error.fail';
+			options.message = 'iqrfnet.sendJson.messages.error.fail';
 			this.$store.commit('spinner/SHOW');
 		}
 		options.callback = () => this.msgId = null;
-		this.request = JSON.stringify(request, null, 4);
-		this.response = '';
 		IqrfNetService.sendJson(options)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles messageError Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleMessageError(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		this.$store.commit('spinner/HIDE');		
+		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
+			this.$toast.error(
+				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()
+			);
+			return;
+		}
+		this.$toast.error(
+			this.$t('iqrfnet.sendJson.messages.error.invalidMessage').toString()
+		);
+	}
+
+	/**
+	 * Handles AutoNetwork Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleAutoNetworkResponse(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		if (response.data.rsp.lastWave && response.data.rsp.progress === 100) { // autonetwork finished
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.autoNetworkFinish').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles Backup Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleBackup(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		if (response.data.rsp.progress === 100) {
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.backupFinish').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles Enumeration now Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerationNow(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		if (response.data.rsp.percentage === 100) { // enumeration finished
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.info(
+				this.$t('iqrfnet.sendJson.messages.enumerationFinish').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles other Daemon API responses
+	 * @param response Daemon API response
+	 */
+	private handleResponse(response): void {
+		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		if (idx !== -1) {
+			this.messages[idx].response.push(JSON.stringify(response, null, 4));
+		}
+		this.$store.commit('spinner/HIDE');
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.sendJson.messages.success').toString()
+			);
+			return;
+		}
+		if (response.data.status in StatusMessages) {
+			this.$toast.error(
+				this.$t(StatusMessages[response.status]).toString()
+			);
+			return;
+		}
+		this.$toast.error(
+			this.$t('iqrfnet.sendJson.messages.error.fail').toString()
+		);
 	}
 }
 </script>

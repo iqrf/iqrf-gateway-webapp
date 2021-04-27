@@ -34,17 +34,6 @@
 							{{ $t('config.translator.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("mender")'
-						to='/config/mender/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.mender.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.mender.description') }}
-						</p>
-					</CListGroupItem>
 					<CListGroupItem to='/config/migration/'>
 						<header class='list-group-item-heading'>
 							{{ $t('config.migration.title') }}

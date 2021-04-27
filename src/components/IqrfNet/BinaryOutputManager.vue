@@ -1,11 +1,10 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.standard.binaryOutput.title') }}</CCardHeader>
+	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
+			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
 							integer: "forms.errors.integer",
@@ -24,7 +23,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,31'
 						:custom-messages='{
 							integer: "forms.errors.integer",
@@ -125,13 +124,16 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue/src';
-import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {cilCheckAlt, cilX} from '@coreui/icons';
+
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
-import { MutationPayload } from 'vuex';
+
+import {Dictionary} from 'vue-router/types/router';
+import {MutationPayload} from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -156,14 +158,6 @@ export default class BinaryOutputManager extends Vue {
 	 * @var {number} address Address of device implementing BinaryOutput standard
 	 */
 	private address = 1
-
-	/**
-	 * @constant {Array<string>} allowedMTypes Array of allowed Daemon api messages
-	 */
-	private allowedMTypes: Array<string> = [
-		'iqrfBinaryoutput_Enumerate',
-		'iqrfBinaryoutput_SetOutput'
-	]
 	
 	/**
 	 * @constant {Dictionary<Array<string>} icons Dictionary of CoreUI icons
@@ -217,63 +211,24 @@ export default class BinaryOutputManager extends Vue {
 		extend('between', between);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
 				this.responseType = null;
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
-				switch(mutation.payload.data.status) {
-					case -1:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.binaryOutput.messages.timeout')
-								.toString()
-						);
-						break;
-					case 0:
-						this.$toast.success(
-							this.$t('iqrfnet.standard.binaryOutput.messages.success')
-								.toString()
-						);
-						if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
-							this.numOutputs = mutation.payload.data.rsp.result.binOuts;
-							this.responseType = 'enum';
-						} else if (mutation.payload.mType === 'iqrfBinaryoutput_SetOutput') {
-							this.parseSetOutput(mutation.payload.data.rsp.result.prevVals);
-							this.responseType = 'set';
-						}
-						break;
-					case 1:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.binaryOutput.messages.fail')
-								.toString()
-						);
-						break;
-					case 3:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.binaryOutput.messages.pnum')
-								.toString()
-						);
-						break;
-					case 8:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.messages.noDevice', {address: this.address}).toString()
-						);
-						break;
-					default:
-						this.$toast.error(
-							this.$t('iqrfnet.standard.binaryOutput.messages.failure').toString()
-						);
+				if (mutation.payload.mType === 'messageError') {
+					this.$toast.error(
+						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+					);
+				} else if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
+					this.handleEnumerateResponse(mutation.payload);
+				} else if (mutation.payload.mType === 'iqrfBinaryoutput_SetOutput') {
+					this.handleSetOutputResponse(mutation.payload);
 				}
-
 			}
 		});
 		this.generateStates();
@@ -321,6 +276,22 @@ export default class BinaryOutputManager extends Vue {
 	}
 
 	/**
+	 * Handles Enumerate response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerateResponse(response): void {
+		if (response.data.status === 0) {
+			this.numOutputs = response.data.rsp.result.binOuts;
+			this.responseType = 'enum';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.binaryOutput.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
 	 * Retrieves states of binary outputs
 	 */
 	private submitGetStates(): void {
@@ -337,6 +308,58 @@ export default class BinaryOutputManager extends Vue {
 		const output = new StandardBinaryOutput(this.index, this.state);
 		StandardBinaryOutputService.setOutputs(this.address, [output], this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Set Output response
+	 * @param response Daemon API response
+	 */
+	private handleSetOutputResponse(response): void {
+		if (response.data.status === 0) {
+			this.parseSetOutput(response.data.rsp.result.prevVals);
+			this.responseType = 'set';
+			this.$toast.success(
+				this.$t('iqrfnet.standard.binaryOutput.messages.success').toString()
+			);
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
+	 * Handles error response
+	 * @param response Daemon API response
+	 */
+	private handleError(response): void {
+		switch(response.data.status) {
+			case -1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.binaryOutput.messages.timeout')
+						.toString()
+				);
+				break;
+			case 1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.binaryOutput.messages.fail')
+						.toString()
+				);
+				break;
+			case 3:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.binaryOutput.messages.pnum')
+						.toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.binaryOutput.messages.failure').toString()
+				);
+		}
 	}
 }
 </script>

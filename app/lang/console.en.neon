@@ -1,15 +1,17 @@
 features:
 	docs: Show documentation
+	gatewayPass: Default gateway user password change
 	grafana: Grafana in the menu
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
 	mender: Mender
+	monit: Monit
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	pixla: PIXLA device management
-	rootpass: Root password change
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
+	systemdJournal: Systemd Journald configuration
 	trUpload: IQRF TR native upload
 	updater: System updater
 	unattendedUpgrades: Unattended upgrades

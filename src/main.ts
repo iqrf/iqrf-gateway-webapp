@@ -24,16 +24,25 @@ import VueMeta from 'vue-meta';
 import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
+import {config, library} from '@fortawesome/fontawesome-svg-core';
+import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
 
 import store from './store';
 import router from './router';
 import i18n from './i18n';
+import UrlBuilder from './helpers/urlBuilder';
 
 import App from './App.vue';
 
 import './css/app.scss';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
+import 'vue-select/dist/vue-select.css';
+import 'vue-toast-notification/dist/theme-sugar.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
+config.autoAddCss = false;
+library.add(faEye);
+library.add(faEyeSlash);
 
 import * as version from '../version.json';
 
@@ -58,17 +67,9 @@ if (process.env.NODE_ENV === 'production') {
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
-const isHttps: boolean = window.location.protocol === 'https:';
-const hostname: string = window.location.hostname;
-let port: string = window.location.port;
-const isDev: boolean = port === '8081';
-if (port !== '') {
-	port = ':' + port;
-}
+const urlBuilder: UrlBuilder = new UrlBuilder();
 
-const wsApi: string = (isHttps ? 'wss://' : 'ws://') + hostname + (isDev ? ':1338': port + '/ws');
-
-Vue.use(VueNativeSock, wsApi, {
+Vue.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
 	store: store,
 	format: 'json',
 	reconnection: true,
@@ -82,8 +83,13 @@ Vue.use(VueToast,{
 });
 Vue.use(Clipboard);
 
-axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+axios.defaults.baseURL = urlBuilder.getRestApiUrl();
 axios.defaults.timeout = 30000;
+
+// Enable sending cookie to the backend (to enable xdebug)
+if (process.env.NODE_ENV === 'development') {
+	axios.defaults.withCredentials = false;
+}
 
 axios.interceptors.response.use(
 	(response: AxiosResponse) => {

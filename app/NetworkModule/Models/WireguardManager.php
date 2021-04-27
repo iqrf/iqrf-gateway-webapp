@@ -196,7 +196,7 @@ class WireguardManager {
 				if (!($ifPeer instanceof WireguardPeer)) {
 					throw new NonexistentWireguardTunnelException('Wireguard peer not found');
 				}
-				if (!((bool) ip2long($peer->endpoint))) {
+				if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
 					$this->validateEndpoint($peer->endpoint);
 				}
 				$this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer, 4);
@@ -265,7 +265,7 @@ class WireguardManager {
 	 * @return WireguardPeer Wireguard peer entity
 	 */
 	public function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
-		if (!((bool) ip2long($peer->endpoint))) {
+		if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
 			$this->validateEndpoint($peer->endpoint);
 		}
 		$ifPeer = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface);

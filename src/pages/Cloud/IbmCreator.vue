@@ -18,10 +18,10 @@
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.ibmCloud.errors.organizationId"
@@ -35,7 +35,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.ibmCloud.errors.deviceType"
@@ -49,7 +49,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.ibmCloud.errors.deviceId"
@@ -63,7 +63,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.ibmCloud.errors.token"
@@ -77,7 +77,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: "cloud.ibmCloud.errors.eventId"
@@ -112,13 +112,15 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
+
+import {AxiosError} from 'axios';
 import {IIbmCloud} from '../../interfaces/clouds';
 
 @Component({
@@ -176,8 +178,8 @@ export default class IbmCreator extends Vue {
 				this.$toast.success(this.$t('cloud.messages.success').toString());
 			})
 			.catch((error: AxiosError) => {
-				FormErrorHandler.cloudError(error);
-				return Promise.reject(error);
+				extendedErrorToast(error, 'cloud.ibmCloud.messages.saveFailed');
+				//return Promise.reject(error);
 			});
 	}
 
@@ -185,22 +187,18 @@ export default class IbmCreator extends Vue {
 	 * Stores new ibm cloud connection configuration in the gateway filesystem and restarts Daemon
 	 */
 	private saveAndRestart(): void {
-		this.save()
-			.then(() => {
-				this.$store.commit('spinner/SHOW');
-				ServiceService.restart('iqrf-gateway-daemon')
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('service.iqrf-gateway-daemon.messages.restart')
-								.toString()
-						);
-					})
-					.catch((error: AxiosError) => {
-						FormErrorHandler.serviceError(error);
-					});
-			})
-			.catch(() => {return;});
+		this.save().then(() => {
+			this.$store.commit('spinner/SHOW');
+			ServiceService.restart('iqrf-gateway-daemon')
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('service.iqrf-gateway-daemon.messages.restart')
+							.toString()
+					);
+				})
+				.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
+		});
 	}
 	
 }

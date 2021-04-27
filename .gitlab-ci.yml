@@ -151,6 +151,22 @@ phpstan:
   script:
     - make phpstan
 
+eslint:
+  stage: coding-style
+  needs: []
+  before_script:
+    - npm install
+  script:
+    - npm run lint
+
+stylelint:
+  stage: coding-style
+  needs: []
+  before_script:
+    - npm install
+  script:
+    - npm run lint:css
+
 qa:
   stage: coding-style
   needs: []
