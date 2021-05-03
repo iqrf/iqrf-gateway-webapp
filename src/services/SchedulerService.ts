@@ -155,6 +155,30 @@ class SchedulerService {
 	removeTaskREST(taskId: number): Promise<AxiosResponse> {
 		return axios.delete('/scheduler/' + taskId, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Removes all tasks via the Daemon API
+	 * @param {WebSocketOptions} options Websocket request options
+	 */
+	removeAll(options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'mngScheduler_RemoveAll',
+			'data': {
+				'req': {
+					'clientId': 'SchedulerMessaging',
+				},
+				'returnVerbose': true,
+			},
+		};
+		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Removes all tasks via the REST API
+	 */
+	removeAllRest(): Promise<AxiosResponse> {
+		return axios.delete('/scheduler', {headers: authorizationHeader()});
+	}
 	
 	/**
 	 * Exports scheduler configuration

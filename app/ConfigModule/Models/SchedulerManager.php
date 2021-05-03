@@ -80,6 +80,17 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Deletes all tasks
+	 */
+	public function deleteAll(): void {
+		$dir = $this->fileManager->getDirectory();
+		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
+			assert($file instanceof SplFileInfo);
+			$this->fileManager->delete($file->getBasename('.json'));
+		}
+	}
+
+	/**
 	 * Returns task file name
 	 * @param int $taskId Task ID
 	 * @return string File name

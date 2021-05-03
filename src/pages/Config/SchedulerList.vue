@@ -16,7 +16,7 @@
 					</CButton> <CButton
 						color='primary'
 						size='sm'
-						@click='importConfig.modal = true'
+						@click='showImportModal = true'
 					>
 						<CIcon :content='icons.import' size='sm' />
 						{{ $t('forms.import') }}
@@ -27,6 +27,13 @@
 					>
 						<CIcon :content='icons.export' size='sm' />
 						{{ $t('forms.export') }}
+					</CButton> <CButton
+						color='danger'
+						size='sm'
+						@click='removeAllTasks'
+					>
+						<CIcon :content='icons.remove' size='sm' />
+						{{ $t('table.actions.deleteAll') }}
 					</CButton>
 				</div>
 			</CCardHeader>
@@ -89,7 +96,7 @@
 			</CCardBody>
 		</CCard>
 		<CModal
-			:show.sync='importConfig.modal'
+			:show.sync='showImportModal'
 			color='primary'
 		>
 			<template #header>
@@ -103,21 +110,18 @@
 						ref='schedulerImport'
 						accept='application/json,.zip'
 						:label='$t("config.daemon.scheduler.import.file")'
-						@input='isEmpty'
-						@click='isEmpty'
+						@input='fileImportEmpty'
+						@click='fileImportEmpty'
 					/>
-					<p v-if='importConfig.empty && !importConfig.first' style='color: red'>
-						{{ $t('config.daemon.scheduler.import.errors.fileEmpty') }}
-					</p>
 				</div>
 			</CForm>
 			<template #footer>
-				<CButton color='secondary' @click='closeImport'>
+				<CButton color='secondary' @click='showImportModal = false'>
 					{{ $t('forms.cancel') }}
 				</CButton>
 				<CButton
 					color='primary'
-					:disabled='importConfig.empty'
+					:disabled='importEmpty'
 					@click='importScheduler'
 				>
 					{{ $t('forms.import') }}
@@ -255,15 +259,6 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * @var {Dictionary<boolean>} importConfig Import modal auxiliary variables
-	 */
-	private importConfig: Dictionary<boolean> = {
-		modal: false,
-		first: true,
-		empty: false,
-	}
-
-	/**
 	 * @var {Array<string>} msgIds Array of message ids used for response handling
 	 */
 	private msgIds: Array<string> = []
@@ -299,6 +294,16 @@ export default class SchedulerList extends Vue {
 	private useRest = true
 
 	/**
+	 * @var {boolean} showImportModal Controls import modal display
+	 */
+	private showImportModal = false
+
+	/**
+	 * @var {boolean} importEmpty Indicates whether file input is empty or not
+	 */
+	private importEmpty = true
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -323,48 +328,18 @@ export default class SchedulerList extends Vue {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
 					return;
 				}
-				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 				if (mutation.payload.mType === 'mngScheduler_List') {
-					if (mutation.payload.data.status === 0) {
-						this.taskIds = mutation.payload.data.rsp.tasks;
-						this.taskIds.forEach(item => {
-							this.getTask(item);
-						});
-						this.retrieved = 'daemon';
-					} else {
-						this.$toast.error(
-							this.$t('config.daemon.scheduler.messages.listFailed').toString()
-						);
-					}
+					this.handleList(mutation.payload.data);
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
-					if (mutation.payload.data.status === 0) {
-						if (this.tasks === null) {
-							return;
-						}
-						this.tasks.push(mutation.payload.data.rsp);
-					}
+					this.handleGetTask(mutation.payload.data);
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
-					if (mutation.payload.data.status === 0) {
-						this.$toast.success(
-							this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
-						);
-						this.getTasks();
-					} else {
-						this.$toast.error(
-							this.$t('config.daemon.scheduler.messages.deleteFail').toString()
-						);
-					}
+					this.handleRemoveTask(mutation.payload.data);
+				} else if (mutation.payload.mType === 'mngScheduler_RemoveAll') {
+					this.handleRemoveAll(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
-					if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
-						this.$toast.error(
-							this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()
-						);
-					} else {
-						this.$toast.error(
-							this.$t('config.daemon.scheduler.messages.processError').toString()
-						);
-					}
+					this.handleMessageError(mutation.payload.data);
 				}
 			}
 		});
@@ -390,14 +365,6 @@ export default class SchedulerList extends Vue {
 	beforeDestroy(): void {
 		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
-	}
-
-	/**
-	 * Closes scheduler task import modal
-	 */
-	private closeImport(): void {
-		this.importConfig.modal = false;
-		this.importConfig.first = true;
 	}
 
 	/**
@@ -445,12 +412,43 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
+	 * Handles Daemon API List response
+	 * @param response Daemon API response
+	 */
+	private handleList(response): void {
+		if (response.status === 0) {
+			this.taskIds = response.rsp.tasks;
+			this.taskIds.forEach(item => {
+				this.getTask(item);
+			});
+			this.retrieved = 'daemon';
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.listFailed').toString()
+			);
+		}
+	}
+
+	/**
 	 * Retrieves a scheduler task specified by task id
 	 * @param {number} taskId Scheduler task id
 	 */
 	private getTask(taskId: number): void {
 		SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000))
 			.then((msgId: string) => this.storeId(msgId));
+	}
+
+	/**
+	 * Handles Daemon API GetTask response
+	 * @param response Daemon API response
+	 */
+	private handleGetTask(response): void {
+		if (response.status === 0) {
+			if (this.tasks === null) {
+				return;
+			}
+			this.tasks.push(response.rsp);
+		}
 	}
 
 	/**
@@ -476,6 +474,79 @@ export default class SchedulerList extends Vue {
 		} else {
 			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
+		}
+	}
+
+	/**
+	 * Handles Daemon API RemoveTask response
+	 * @param response Daemon API response
+	 */
+	private handleRemoveTask(response): void {
+		if (response.status === 0) {
+			this.$toast.success(
+				this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
+			);
+			this.getTasks();
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.deleteFail').toString()
+			);
+		}
+	}
+
+	/**
+	 * Removes all scheduler tasks
+	 */
+	private removeAllTasks(): void {
+		if (this.useRest) {
+			this.$store.commit('spinner/SHOW');
+			SchedulerService.removeAllRest()
+				.then(() => {
+					this.$toast.success(
+						this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
+					);
+					this.getTasks();
+				})
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteAllFailedRest'));
+		} else {
+			this.$store.dispatch('spinner/show', 30000);
+			SchedulerService.removeAll(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
+				.then((msgId: string) => this.storeId(msgId));
+		}
+	}
+
+	/**
+	 * Handles Daemon API RemoveAll response
+	 * @param response Daemon API response
+	 */
+	private handleRemoveAll(response): void {
+		this.$store.dispatch('spinner/hide');
+		if (response.status === 0) {
+			this.$toast.success(
+				this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
+			);
+			this.getTasks();
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.deleteAllFailed').toString()
+			);
+		}
+
+	}
+
+	/**
+	 * Handles Daemon API messageError response
+	 * @param response Daemon API response
+	 */
+	private handleMessageError(response): void {
+		if (response.rsp.errorStr.includes('daemon overload')) {
+			this.$toast.error(
+				this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.processError').toString()
+			);
 		}
 	}
 
@@ -507,10 +578,26 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
+	 * Extracts files from import modal file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFile(): FileList {
+		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Checks if file input is empty
+	 */
+	private fileImportEmpty(): void {
+		this.importEmpty = this.getFile().length === 0;
+	}
+
+	/**
 	 * Imports scheduler tasks from zip file
 	 */
 	private importScheduler(): void {
-		this.importConfig.modal = false;
+		this.showImportModal = false;
 		this.$store.commit('spinner/SHOW');
 		const files = this.getFile();
 		SchedulerService.importConfig(files[0])
@@ -530,26 +617,6 @@ export default class SchedulerList extends Vue {
 					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
-	}
-
-	/**
-	 * Extracts files from import modal file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getFile(): FileList {
-		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if import modal file input is empty
-	 */
-	private isEmpty(): void {
-		if (this.importConfig.first) {
-			this.importConfig.first = false;
-		}
-		const file = this.getFile();
-		this.importConfig.empty = file.length === 0;
 	}
 
 	/**

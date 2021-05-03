@@ -73,6 +73,16 @@ final class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to delete all tasks
+	 */
+	public function testDeleteAll(): void {
+		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		$expected = [];
+		$this->managerTemp->deleteAll();
+		Assert::same($expected, $this->managerTemp->list());
+	}
+
+	/**
 	 * Tests function to get task file name
 	 */
 	public function testGetFileName(): void {
