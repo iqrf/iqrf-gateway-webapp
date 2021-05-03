@@ -1,8 +1,25 @@
 <template>
 	<div>
-		<h1>{{ $t('gateway.log.title') }}</h1>
+		<header class='d-flex'>
+			<h1 class='mr-auto'>
+				{{ $t('gateway.log.title') }}
+			</h1>
+			<div>
+				<CButton
+					color='primary'
+					@click='downloadArchive'
+				>
+					{{ $t('gateway.log.download') }}
+				</CButton> <CButton
+					color='primary'
+					@click='getLogs'
+				>
+					{{ $t('forms.refresh') }}
+				</CButton>
+			</div>
+		</header>
 		<SystemdJournal v-if='$store.getters["features/isEnabled"]("systemdJournal")' />
-		<CCard>
+		<CCard>			
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab 
 					v-if='loaded && controllerLog !== null'
@@ -16,7 +33,7 @@
 						>
 							{{ $t('gateway.log.messages.logEmpty') }}
 						</CAlert>
-						<pre v-else class='log'>{{ controllerLog }}</pre>
+						<pre v-else class='log card-margin-bottom'>{{ controllerLog }}</pre>
 					</CCardBody>
 				</CTab>
 				<CTab
@@ -38,15 +55,10 @@
 						>
 							{{ $t('gateway.log.messages.logEmpty') }}
 						</CAlert>
-						<pre v-else class='log'>{{ daemonLog }}</pre>
+						<pre v-else class='log card-margin-bottom'>{{ daemonLog }}</pre>
 					</CCardBody>
 				</CTab>
 			</CTabs>
-			<CCardFooter>
-				<CButton color='primary' @click='downloadArchive()'>
-					{{ $t('gateway.log.download') }}
-				</CButton>
-			</CCardFooter>
 		</CCard>
 	</div>
 </template>
@@ -105,10 +117,11 @@ export default class LogViewer extends Vue {
 	 */
 	private loaded = false;
 
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
+	mounted(): void {
+		this.getLogs();
+	}
+
+	private getLogs(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLatestLog()
 			.then(
