@@ -11,7 +11,8 @@
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
-					</div>			
+						<i>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</i>
+					</div>
 					<CButton
 						type='submit'
 						color='primary'
