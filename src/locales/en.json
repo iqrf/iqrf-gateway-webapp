@@ -641,6 +641,9 @@
 					"deleteSuccess": "Scheduler task has been successfully deleted.",
 					"deleteFail": "An error occurred while removing task.",
 					"deleteFailedRest": "Failed to delete task {task}: {error}",
+					"deleteAllSuccess": "All scheduler tasks have been successfully removed.",
+					"deleteAllFailed": "Failed to delete all scheduler tasks.",
+					"deleteAllFailedRest": "Failed to delete all scheduler tasks: {error}",
 					"getFail": "Failed to retrieve task {task}: {error}",
 					"listFailed": "Failed to retrieve list of scheduler tasks",
 					"listFailedRest": "Failed to retrieve list of scheduler tasks: {error}",
@@ -2611,7 +2614,8 @@
 			"delete": "Delete",
 			"edit": "Edit",
 			"enable": "Enable",
-			"disable": "Disable"
+			"disable": "Disable",
+			"deleteAll": "Delete all"
 		},
 		"messages": {
 			"noRecords": "No records have been found."
