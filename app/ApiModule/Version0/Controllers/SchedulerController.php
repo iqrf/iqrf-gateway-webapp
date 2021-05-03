@@ -134,6 +134,24 @@ class SchedulerController extends BaseController {
 	}
 
 	/**
+	 * @Path("/")
+	 * @Method("DELETE")
+	 * @OpenApi("
+	 *  summary: Deletes all tasks
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->manager->deleteAll();
+		return $response->writeBody('Workaround');
+	}
+
+	/**
 	 * @Path("/{taskId}")
 	 * @Method("GET")
 	 * @OpenApi("
