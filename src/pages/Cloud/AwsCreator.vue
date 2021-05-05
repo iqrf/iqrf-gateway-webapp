@@ -39,24 +39,18 @@
 								ref='awsFormCert'
 								accept='.pem'
 								:label='$t("forms.fields.certificate")'
-								@input='isEmpty("cert")'
-								@click='isEmpty("cert")'
+								@input='certInputEmpty'
+								@click='certInputEmpty'
 							/>
-							<p v-if='certEmpty && !certUntouched' style='color:red'>
-								{{ $t('cloud.amazonAws.errors.certificate') }}
-							</p>
 						</div>
 						<div class='form-group'>
 							<CInputFile
 								ref='awsFormKey'
 								accept='.pem,.key'
 								:label='$t("forms.fields.privateKey")'
-								@input='isEmpty("key")'
-								@click='isEmpty("key")'
+								@input='keyInputEmpty'
+								@click='keyInputEmpty'
 							/>
-							<p v-if='keyEmpty && !keyUntouched' style='color:red'>
-								{{ $t('cloud.amazonAws.errors.key') }}
-							</p>
 						</div>
 						<CButton
 							color='primary'
@@ -122,19 +116,9 @@ export default class AwsCreator extends Vue {
 	private certEmpty = true
 
 	/**
-	 * @var {boolean} certUntouched Indicates whether the form certificate file input has been interacted with
-	 */
-	private certUntouched = true
-
-	/**
 	 * @var {boolean} keyEmpty Indicates whether the form key file input is empty
 	 */
 	private keyEmpty = true
-
-	/**
-	 * @var {boolean} keyUntouched Indicates whether the form key file input has been interacted with
-	 */
-	private keyUntouched = true
 
 	/**
 	 * Vue lifecycle hook created
@@ -209,22 +193,29 @@ export default class AwsCreator extends Vue {
 	}
 
 	/**
-	 * Checks if the form file inputs are empty
+	 * Checks if certificate input field is empty
 	 */
-	private isEmpty(button: string): void {
-		if (button === 'cert') {
-			if (this.certUntouched) {
-				this.certUntouched = false;
-			}
-			const certFiles = this.getCertFiles();
-			this.certEmpty = certFiles === null || certFiles.length === 0;
-		} else {
-			if (this.keyUntouched) {
-				this.keyUntouched = false;
-			}
-			const keyFiles = this.getKeyFiles();
-			this.keyEmpty = keyFiles === null || keyFiles.length === 0;
-		}
+	private certInputEmpty(): void {
+		const files = this.getFileFromInput('awsFormCert');
+		this.certEmpty = files.length === 0;
 	}
+
+	/**
+	 * Checks if private key input field is empty
+	 */
+	private keyInputEmpty(): void {
+		const files = this.getFileFromInput('awsFormKey');
+		this.keyEmpty = files.length === 0;
+	}
+
+	/**
+	 * Extracts files from file input element specified by ID
+	 * @param {string} fieldId File input ID
+	 */
+	private getFileFromInput(fieldId: string): FileList {
+		const input = ((this.$refs[fieldId] as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
 }
 </script>
