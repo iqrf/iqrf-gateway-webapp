@@ -9,12 +9,9 @@
 							ref='configZip'
 							accept='.zip'
 							:label='$t("config.migration.form.importButton")'
-							@click='isEmpty'
-							@input='isEmpty'
+							@click='fileInputEmpty'
+							@input='fileInputEmpty'
 						/>
-						<p v-if='configEmpty && !configUntouched' class='text-danger'>
-							{{ $t('config.migration.errors.import') }}
-						</p>
 					</div>
 					<CButton
 						color='primary'
@@ -60,24 +57,11 @@ import { extendedErrorToast } from '../../helpers/errorToast';
  * Daemon configuration migration card
  */
 export default class ConfigMigration extends Vue {
+
 	/**
 	 * @var {boolean} configEmpty Indicates whether form configuration file input is empty
 	 */
 	private configEmpty = true
-
-	/**
-	 * @var {boolean} configUntouched Indicates whether form configuration file input has been interacted with
-	 */
-	private configUntouched = true
-
-	/**
-	 * Extracts uploaded files from form configuration file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getFiles(): FileList {
-		const input = ((this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
 
 	/**
 	 * Exports Daemon configuration
@@ -117,14 +101,20 @@ export default class ConfigMigration extends Vue {
 	}
 
 	/**
+	 * Extracts uploaded files from form configuration file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFiles(): FileList {
+		const input = ((this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
 	 * Checks if form configuration file input is empty
 	 */
-	private isEmpty(): void {
-		if (this.configUntouched) {
-			this.configUntouched = false;
-		}
+	private fileInputEmpty(): void {
 		const files = this.getFiles();
-		this.configEmpty = files === null || files.length === 0;
+		this.configEmpty = files.length === 0;
 	}
 
 }
