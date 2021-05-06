@@ -279,19 +279,9 @@ export default class SchedulerList extends Vue {
 	private tasks: Array<ITaskRest>|null = null
 
 	/**
-	 * @var {boolean} untouched Indicates whether or not scheduler tasks have been retrieved
-	 */
-	private untouched = true
-
-	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-
-	/**
-	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler tasks
-	 */
-	private useRest = true
 
 	/**
 	 * @var {boolean} showImportModal Controls import modal display
@@ -304,19 +294,20 @@ export default class SchedulerList extends Vue {
 	private importEmpty = true
 
 	/**
+	 * @var {boolean} fetchTasks Indicates whether tasks should be fetched
+	 */
+	private fetchTasks = true
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
-				this.useRest = false;
-				if (this.untouched) { // retrieve task only when the page is loaded
-					this.getTasks();
-				}
+				this.getTasks();
 			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
 				mutation.type === 'SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
-				this.useRest = true;
 			} else if (mutation.type === 'SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== []) {
@@ -349,14 +340,7 @@ export default class SchedulerList extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		setTimeout(() => {
-			if (this.$store.state.webSocketClient.socket.isConnected) {
-				this.useRest = false;
-			}
-			if (this.untouched) {
-				this.getTasks();
-			}
-		}, 1000);
+		this.getTasks();
 	}
 
 	/**
@@ -368,47 +352,30 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Creates a string of daemon api message types displayed in scheduler task table
-	 * @param item Task message or task message object
-	 * @returns {string} Task daemon api message types
-	 */
-	private displayMTypes(item): string {
-		try {
-			if (this.retrieved === 'rest') { // task retrieved from REST API, message types is array of strings or a string
-				return Array.isArray(item) ? item.join(', ') : item;
-			}
-			if (Array.isArray(item)) { // task retrieved from daemon API and has multiple messages
-				let message = '';
-				item.forEach(item => {
-					message += item.message.mType + ', ';
-				});
-				return message.slice(0, -2);
-			} else { // task retrieved from daemon API and has only one message
-				return item.message.mType;
-			}
-		} catch(err) {
-			return '';
-		}
-	}
-
-	/**
 	 * Retrieves list of scheduler tasks
 	 */
 	private getTasks(): void {
-		this.untouched = false;
-		this.$store.commit('spinner/SHOW');
-		if (this.useRest) {
-			SchedulerService.listTasksREST()
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					this.tasks = response.data;
-					this.retrieved = 'rest';
-				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest'));
-		} else {
-			SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
-				.then((msgId: string) => this.storeId(msgId));
+		if (!this.fetchTasks) {
+			return;
 		}
+		this.$store.commit('spinner/SHOW');
+		this.fetchTasks = false;
+		setTimeout(() => {
+			if (this.$store.state.webSocketClient.socket.isConnected) {
+				this.$store.dispatch('spinner/show', 30000);
+				SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
+					.then((msgId: string) => this.storeId(msgId));
+			} else {
+				this.$store.commit('spinner/SHOW');
+				SchedulerService.listTasksREST()
+					.then((response: AxiosResponse) => {
+						this.$store.commit('spinner/HIDE');
+						this.tasks = response.data;
+						this.retrieved = 'rest';
+					})
+					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest'));
+			}
+		}, 1000);
 	}
 
 	/**
@@ -458,22 +425,24 @@ export default class SchedulerList extends Vue {
 		if (this.deleteTask === null) {
 			return;
 		}
-		this.$store.commit('spinner/SHOW');
 		const task = this.deleteTask;
 		this.deleteTask = null;
-		if (this.useRest) {
+		if (this.$store.state.webSocketClient.socket.isConnected) {
+			this.$store.dispatch('spinner/show', 30000);
+			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
+				.then((msgId: string) => this.storeId(msgId));
+		} else {
+			this.$store.commit('spinner/SHOW');
 			SchedulerService.removeTaskREST(task)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 					);
+					this.fetchTasks = true;
 					this.getTasks();
 				})
 				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: task}));
-		} else {
-			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
-				.then((msgId: string) => this.storeId(msgId));
 		}
 	}
 
@@ -486,6 +455,7 @@ export default class SchedulerList extends Vue {
 			this.$toast.success(
 				this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 			);
+			this.fetchTasks = true;
 			this.getTasks();
 		} else {
 			this.$toast.error(
@@ -498,20 +468,21 @@ export default class SchedulerList extends Vue {
 	 * Removes all scheduler tasks
 	 */
 	private removeAllTasks(): void {
-		if (this.useRest) {
-			this.$store.commit('spinner/SHOW');
-			SchedulerService.removeAllRest()
-				.then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
-					);
-					this.getTasks();
-				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteAllFailedRest'));
-		} else {
+		if (this.$store.state.webSocketClient.socket.isConnected) {
 			this.$store.dispatch('spinner/show', 30000);
 			SchedulerService.removeAll(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
 				.then((msgId: string) => this.storeId(msgId));
+		} else {
+			this.$store.commit('spinner/SHOW');
+			SchedulerService.removeAllRest()
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
+					);
+					this.tasks = [];
+				})
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteAllFailedRest'));
 		}
 	}
 
@@ -525,13 +496,12 @@ export default class SchedulerList extends Vue {
 			this.$toast.success(
 				this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
 			);
-			this.getTasks();
+			this.tasks = [];
 		} else {
 			this.$toast.error(
 				this.$t('config.daemon.scheduler.messages.deleteAllFailed').toString()
 			);
 		}
-
 	}
 
 	/**
@@ -612,11 +582,36 @@ export default class SchedulerList extends Vue {
 							this.$t('service.iqrf-gateway-daemon.messages.restart')
 								.toString()
 						);
+						this.fetchTasks = true;
 						this.getTasks();
 					})
 					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
+	}
+
+	/**
+	 * Creates a string of daemon api message types displayed in scheduler task table
+	 * @param item Task message or task message object
+	 * @returns {string} Task daemon api message types
+	 */
+	private displayMTypes(item): string {
+		try {
+			if (this.retrieved === 'rest') { // task retrieved from REST API, message types is array of strings or a string
+				return Array.isArray(item) ? item.join(', ') : item;
+			}
+			if (Array.isArray(item)) { // task retrieved from daemon API and has multiple messages
+				let message = '';
+				item.forEach(item => {
+					message += item.message.mType + ', ';
+				});
+				return message.slice(0, -2);
+			} else { // task retrieved from daemon API and has only one message
+				return item.message.mType;
+			}
+		} catch(err) {
+			return '';
+		}
 	}
 
 	/**
@@ -648,7 +643,6 @@ export default class SchedulerList extends Vue {
 				return item.cronTime.join(' ').trim();
 			}
 		} catch (err) {
-			console.error(err);
 			return '';
 		}
 	}
