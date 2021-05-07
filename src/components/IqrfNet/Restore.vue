@@ -8,6 +8,7 @@
 						<CInputFile
 							ref='backupFile'
 							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
+							accept='.iqrfbkp'
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
@@ -64,7 +65,7 @@ export default class Restore extends Vue {
 	 * @var {Array<IRestoreData>} restoreData Array of device backup data entries
 	 */
 	private restoreData: Array<IRestoreData> = []
-	
+
 	/**
 	 * @var {boolean} fileEmpty Is file input empty?
 	 */
@@ -194,7 +195,7 @@ export default class Restore extends Vue {
 	/**
 	 * Performs device restoration
 	 * @param {number} address device address
-	 * @param {string} data 
+	 * @param {string} data
 	 */
 	private sendRestore(address: number, data: string) {
 		this.$store.commit('spinner/SHOW');
@@ -216,7 +217,7 @@ export default class Restore extends Vue {
 				this.sendRestore(0, entry.DataC);
 				return;
 			}
-		}	
+		}
 		this.$toast.error(
 			this.$t('iqrfnet.networkManager.restore.messages.missingCoordinator').toString()
 		);
