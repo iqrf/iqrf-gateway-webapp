@@ -10,6 +10,8 @@ parameters:
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
 		apiSchemaDir: '/usr/share/iqrf-gateway-daemon/apiSchemas/'
+		# Path to a directory with IQRF Gateway Daemon's cached files
+		cacheDir: '/var/cache/iqrf-gateway-daemon/'
 		# Path to directory with certificates for IQRF Gateway Daemon
 		certDir: '/etc/iqrf-gateway-daemon/certs/'
 		# Path to directory with IQRF Gateway Daemon's configuration files

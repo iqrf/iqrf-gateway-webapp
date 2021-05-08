@@ -62,6 +62,11 @@ class MigrationManager {
 	private $configDirectory;
 
 	/**
+	 * @var string Path to a directory with a cache of IQRF Gateway Daemon
+	 */
+	private $cacheDirectory;
+
+	/**
 	 * @var ServiceManager Service manager
 	 */
 	private $serviceManager;
@@ -79,14 +84,16 @@ class MigrationManager {
 	/**
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
+	 * @param string $cacheDirectory Path to a directory with a cache of IQRF Gateway Daemon
 	 * @param string $controllerConfigDirectory Path to a directory with a configuration of IQRF Gateway Controller
 	 * @param string $translatorConfigDirectory Path to a directory with a configuration of IQRF Gateway Translator
 	 * @param CommandManager $commandManager Command manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $configDirectory, string $controllerConfigDirectory, string $translatorConfigDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(string $configDirectory, string $cacheDirectory, string $controllerConfigDirectory, string $translatorConfigDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->configDirectory = $configDirectory;
+		$this->cacheDirectory = $cacheDirectory;
 		$this->controllerConfigDirectory = $controllerConfigDirectory;
 		$this->translatorConfigDirectory = $translatorConfigDirectory;
 		$this->commandManager = $commandManager;
@@ -110,6 +117,10 @@ class MigrationManager {
 		}
 		$zipManager = new ZipArchiveManager($path);
 		$zipManager->addFolder($this->configDirectory, 'daemon');
+		$zipManager->addFolder($this->cacheDirectory . '/scheduler', 'daemon/scheduler');
+		if ($zipManager->exist('daemon/scheduler/schema/')) {
+			$zipManager->deleteDirectory('daemon/scheduler/schema');
+		}
 		if (file_exists($this->controllerConfigDirectory . 'config.json')) {
 			$zipManager->addFolder($this->controllerConfigDirectory, 'controller');
 		}
@@ -167,12 +178,21 @@ class MigrationManager {
 		}
 	}
 
+	/**
+	 * Extracts IQRF Gateway Daemon's configuration
+	 * @param ZipArchiveManager $archiveManager ZIP archive manager
+	 */
 	private function extractDaemon(ZipArchiveManager $archiveManager): void {
 		foreach ($archiveManager->listFiles() as $file) {
+			if (strpos($file, 'daemon/scheduler/') === 0) {
+				$archiveManager->extract($this->cacheDirectory, $file);
+			}
 			if (strpos($file, 'daemon/') === 0) {
 				$archiveManager->extract($this->configDirectory, $file);
 			}
 		}
+		$this->commandManager->run('cp -rfp ' . $this->cacheDirectory . 'daemon/scheduler/* ' . $this->cacheDirectory . 'scheduler', true);
+		$this->commandManager->run('rm -rf ' . $this->cacheDirectory . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->configDirectory . 'daemon/* ' . $this->configDirectory, true);
 		$this->commandManager->run('rm -rf ' . $this->configDirectory . 'daemon', true);
 	}
