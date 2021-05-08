@@ -418,7 +418,7 @@ export default class StandardDevices extends Vue {
 				this.handleGetLights(mutation.payload.data);
 			} else if (mutation.payload.mType === 'infoDaemon_GetSensors') {
 				this.handleGetSensors(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
+			} else if (mutation.payload.mType === 'iqrfEmbedFrc_SendSelective') {
 				this.handlePingDevices(mutation.payload.data);
 			} else if (mutation.payload.mType === 'infoDaemon_Reset') {
 				this.handleReset(mutation.payload.data);
@@ -520,7 +520,11 @@ export default class StandardDevices extends Vue {
 			devices.push(new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc));
 		});
 		this.auxDevices = devices;
-		this.getBinouts();
+		if (this.auxDevices.length > 0) {
+			this.getBinouts();
+		} else {
+			this.$store.dispatch('spinner/hide');
+		}		
 	}
 
 	/**
@@ -665,14 +669,19 @@ export default class StandardDevices extends Vue {
 	 * Filters devices that do not implement any standards from the array
 	 */
 	private async fetchDeviceDetails(): Promise<void> {
+		let hwpids = new Map();
 		for (let i = 0; i < this.auxDevices.length; i++) {
-			await ProductService.get(this.auxDevices[i].getHwpid())
-				.then((response: AxiosResponse) => {
-					this.auxDevices[i].setProduct(response.data);
-				})
-				.catch(() => {
-					// Device not found in repository, ignore
-				});
+			let hwpid = this.auxDevices[i].getHwpid();
+			if (!hwpids.has(hwpid)) {
+				await ProductService.get(hwpid)
+					.then((response: AxiosResponse) => {
+						hwpids.set(hwpid, response.data);
+					})
+					.catch(() => {
+						// Device not found in repository, ignore
+					});
+			}
+			this.auxDevices[i].setProduct(hwpids.get(hwpid));
 		}
 		this.devices = this.auxDevices;
 	}
@@ -681,13 +690,14 @@ export default class StandardDevices extends Vue {
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
+		let nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress()));
 		this.$store.dispatch('spinner/show', {timeout: 100000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
 		const options = new WebSocketOptions(null, 100000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
-		IqrfNetService.ping(options)
+		IqrfNetService.pingSelective(nodes, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -707,6 +717,9 @@ export default class StandardDevices extends Vue {
 		const map = response.rsp.result.frcData.slice(0, 30);
 		const addrs = this.devices.map((device: StandardDevice) => {return device.getAddress();});
 		map.forEach((byte: number, idx: number) => {
+			if (byte === 0) {
+				return;
+			}
 			const bitString = byte.toString(2).padStart(8, '0');
 			for (let i = 0; i < 8; i++) {
 				let addr = idx * 8 + i;
@@ -740,6 +753,7 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
+		this.devices = [];
 		this.$toast.success(
 			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
 		);

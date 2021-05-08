@@ -179,9 +179,12 @@ class StandardDevice {
 
 	/**
 	 * Sets product information
-	 * @param {IProduct} product Product information
+	 * @param {IProduct|undefined} product Product information
 	 */
-	setProduct(product: IProduct): void {
+	setProduct(product: IProduct|undefined): void {
+		if (product === undefined) {
+			return;
+		}
 		this.product = product;
 	}
 
