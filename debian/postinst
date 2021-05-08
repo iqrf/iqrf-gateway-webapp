@@ -7,7 +7,7 @@ nginx_default_site() {
 	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	if [ -f /etc/iqrf-gateway.json ] ; then 
 		image=$(jq -r '.gwImage' /etc/iqrf-gateway.json)
-		case  "$image" in
+		case "$image" in
 			iqaros*|nakit*)
 				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH} ;;
 			*)
