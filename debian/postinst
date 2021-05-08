@@ -13,6 +13,8 @@ nginx_default_site() {
 			*)
 				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH} ;;
 		esac
+	else
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH} ;;
 	fi
 }
 
