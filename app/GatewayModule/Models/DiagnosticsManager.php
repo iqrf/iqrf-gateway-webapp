@@ -152,6 +152,9 @@ class DiagnosticsManager {
 	 */
 	public function addScheduler(): void {
 		$this->zipManager->addFolder($this->cacheDir . '/scheduler', 'scheduler');
+		if ($this->zipManager->exist('scheduler/schema/')) {
+			$this->zipManager->deleteDirectory('scheduler/schema');
+		}
 	}
 
 	/**
