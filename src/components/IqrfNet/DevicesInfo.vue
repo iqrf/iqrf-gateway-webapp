@@ -263,7 +263,11 @@ export default class DevicesInfo extends Vue {
 				bonded.forEach((item: number) => {
 					this.devices[item].bonded = true;
 				});
-				this.getDiscoveredDevices();
+				if (bonded.length > 0) {
+					this.getDiscoveredDevices();
+				} else {
+					this.$store.dispatch('spinner/hide');
+				}
 				break;
 			}
 			default:
