@@ -257,9 +257,33 @@ class IqrfNetService {
 						'frcCommand': 0,
 						'userData': [0, 0],
 					},
-					'returnVerbose': true,
 				},
+				'returnVerbose': true,
 			},
+		};
+		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Sends FRC Ping to selected nodes
+	 * @param nodes Array of selected nodes
+	 * @param options Websocket request options
+	 * @returns Message ID
+	 */
+	pingSelective(nodes: Array<number>, options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqrfEmbedFrc_SendSelective',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {
+						'frcCommand': 0,
+						'selectedNodes': nodes,
+						'userData': [0, 0],
+					},
+				},
+				'returnVerbose': true,
+			}
 		};
 		return store.dispatch('sendRequest', options);
 	}
