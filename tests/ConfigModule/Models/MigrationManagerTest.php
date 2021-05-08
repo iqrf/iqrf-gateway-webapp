@@ -34,6 +34,11 @@ require __DIR__ . '/../../bootstrap.php';
 final class MigrationManagerTest extends TestCase {
 
 	/**
+	 * Path to a nonexistent directory with IQRF Gateway Daemon's cache
+	 */
+	private const CACHE_TEMP_PATH = __DIR__ . '/../../temp/migrated-configuration/cache/';
+
+	/**
 	 * Path to a directory with IQRF Gateway Daemon's configuration
 	 */
 	private const CONFIG_PATH = __DIR__ . '/../../data/configuration/';
@@ -165,8 +170,8 @@ final class MigrationManagerTest extends TestCase {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$gwInfo = new GatewayInfoUtil($commandManager);
-		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
-		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
 	}
 
 	/**

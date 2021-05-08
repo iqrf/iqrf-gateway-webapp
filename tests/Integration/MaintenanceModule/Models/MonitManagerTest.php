@@ -56,6 +56,7 @@ final class MonitManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		Environment::lock('monit', __DIR__ . '/../../../temp/');
 		$monitDir = realpath(__DIR__ . '/../../../data/maintenance/');
 		$monitTempDir = realpath(__DIR__ . '/../../../temp/');
 		FileSystem::copy($monitDir, $monitTempDir . '/maintenance/');
@@ -91,7 +92,6 @@ final class MonitManagerTest extends TestCase {
 	 * Tests the function to get monit configuration from invalid file
 	 */
 	public function testGetConfigInvalid(): void {
-		Environment::lock('monit', __DIR__ . '/../../../temp/');
 		$this->fileManagerTemp->write(self::FILE_NAME, 'Invalid content.');
 		Assert::exception(function (): void {
 			$this->managerTemp->getConfig();
@@ -102,7 +102,6 @@ final class MonitManagerTest extends TestCase {
 	 * Tests the function to save monit configuration
 	 */
 	public function testSaveConfig(): void {
-		Environment::lock('monit', __DIR__ . '/../../../temp/');
 		$expected = [
 			'endpoint' => 'nonexistentdomain.org/collector',
 			'username' => 'username',
@@ -116,7 +115,6 @@ final class MonitManagerTest extends TestCase {
 	 * Tests the function to save monit configuration to invalid file
 	 */
 	public function testSaveConfigInvalid(): void {
-		Environment::lock('monit', __DIR__ . '/../../../temp/');
 		$this->fileManagerTemp->write(self::FILE_NAME, 'Invalid content');
 		Assert::exception(function (): void {
 			$config = [
