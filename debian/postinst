@@ -5,10 +5,13 @@ set -e
 
 nginx_default_site() {
 	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	if [ "$hostname" = "iqaros" ] ; then
-		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
-	else
-		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
+	if [ -f /etc/iqrf-gateway.json ] ; then 
+		image=$(jq -r '.gwImage' /etc/iqrf-gateway.json)
+		if [[ "$image" =~ ^(iqaros|nakit).*$ ]] ; then
+			ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
+		else
+			ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
+		fi
 	fi
 }
 
@@ -17,7 +20,6 @@ nginx_virtualhost_install() {
 		rm /etc/nginx/sites-enabled/default
 	fi
 	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	hostname=$(hostname)
 	if [ -L ${SITE_AVAILABLE_PATH} ] && [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
 		rm ${SITE_AVAILABLE_PATH}
 		nginx_default_site
