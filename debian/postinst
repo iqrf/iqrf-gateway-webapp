@@ -10,15 +10,15 @@ nginx_default_site() {
 		image=$(jq -r '.gwImage' /etc/iqrf-gateway.json)
 		case "$image" in
 			iqaros*|nakit*)
-				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
-				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
+				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
+				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
 			*)
-				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
-				ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
+				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
+				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
 		esac
 	else
-		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
-		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS}
+		ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
+		ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS}
 	fi
 }
 
