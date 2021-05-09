@@ -41,15 +41,15 @@
 						{{ $t('iqrfnet.standard.table.info') }}
 					</div>
 					<div>
-						<CIcon 
-							class='text-info' 
+						<CIcon
+							class='text-info'
 							:content='icons.coordinator'
 							size='lg'
 						/>
 						{{ $t('forms.fields.coordinator') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-info'
 							:content='icons.bonded'
 							size='lg'
@@ -57,7 +57,7 @@
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-info'
 							:content='icons.discovered'
 							size='lg'
@@ -65,7 +65,7 @@
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-success'
 							:content='icons.bonded'
 							size='lg'
@@ -73,7 +73,7 @@
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-success'
 							:content='icons.discovered'
 							size='lg'
@@ -81,7 +81,7 @@
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-success'
 							:content='icons.supported'
 							size='lg'
@@ -89,7 +89,7 @@
 						{{ $t('iqrfnet.standard.table.supported') }}
 					</div>
 					<div>
-						<CIcon 
+						<CIcon
 							class='text-danger'
 							:content='icons.unsupported'
 							size='lg'
@@ -110,7 +110,9 @@
 					</template>
 					<template #address='{item}'>
 						<td>
-							{{ item.getAddress() }}
+							<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
+								{{ item.getAddress() }}
+							</router-link>
 						</td>
 					</template>
 					<template #product='{item}'>
@@ -524,7 +526,7 @@ export default class StandardDevices extends Vue {
 			this.getBinouts();
 		} else {
 			this.$store.dispatch('spinner/hide');
-		}		
+		}
 	}
 
 	/**
@@ -672,15 +674,16 @@ export default class StandardDevices extends Vue {
 		let hwpids = new Map();
 		for (let i = 0; i < this.auxDevices.length; i++) {
 			let hwpid = this.auxDevices[i].getHwpid();
-			if (!hwpids.has(hwpid) && !hwpid.toString(16).endsWith('f')) {
-				await ProductService.get(hwpid)
-					.then((response: AxiosResponse) => {
-						hwpids.set(hwpid, response.data);
-					})
-					.catch(() => {
-						// Device not found in repository, ignore
-					});
+			if (hwpids.has(hwpid) || (hwpid & 0xf) === 0xf) {
+				continue;
 			}
+			await ProductService.get(hwpid)
+				.then((response: AxiosResponse) => {
+					hwpids.set(hwpid, response.data);
+				})
+				.catch(() => {
+					// Device not found in repository, ignore
+				});
 			this.auxDevices[i].setProduct(hwpids.get(hwpid));
 		}
 		this.devices = this.auxDevices;

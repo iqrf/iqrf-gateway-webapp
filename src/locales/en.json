@@ -1282,6 +1282,7 @@
 			"rssi": "RSSI",
 			"supplyVoltage": "Supply voltage",
 			"back": "Back to Network manager",
+			"uncertifiedProduct": "Uncertified product",
 			"messages": {
 				"failure": "An error occurred during the device enumeration.",
 				"repositoryUnavailable": "IQRF Repository is unavailable."
