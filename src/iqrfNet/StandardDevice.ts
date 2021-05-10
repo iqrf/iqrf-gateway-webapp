@@ -10,72 +10,77 @@ class StandardDevice {
 	/**
 	 * Device address
 	 */
-	private address: number
+	private readonly address: number;
 
 	/**
 	 * Device module ID
 	 */
-	private mid: number
+	private readonly mid: number;
 
 	/**
 	 * Device hwpid
 	 */
-	private hwpid: number
+	private readonly hwpid: number;
 
 	/**
 	 * Device hwpid version
 	 */
-	private hwpidVer: number
+	private readonly hwpidVer: number;
 
 	/**
 	 * Device DPA version
 	 */
-	private dpa: number
+	private dpa: number;
 
 	/**
 	 * Device OS build
 	 */
-	private os: number
+	private osBuild: number;
+
+	/**
+	 * Device OS version
+	 */
+	private osVersion: string;
 
 	/**
 	 * Is device discovered?
 	 */
-	private discovered: boolean
+	private discovered: boolean;
 
 	/**
 	 * Is device online?
 	 */
-	private online = false
+	private online = false;
 
 	/**
 	 * Indicates that device implements the DALI standard
 	 */
-	private dali = false
+	private dali = false;
 
 	/**
 	 * Array of implemented standard sensors
 	 */
-	private sensors: Array<IInfoSensorDetail> = []
+	private sensors: Array<IInfoSensorDetail> = [];
 
 	/**
 	 * Array of implemented binary outputs
 	 */
-	private binouts = 0
+	private binouts = 0;
 
 	/**
 	 * Array of implemented lights
 	 */
-	private lights = 0
+	private lights = 0;
 
 	/**
 	 * Show device details
 	 */
-	public showDetails = false
+	public showDetails = false;
 
 	/**
 	 * Product details
 	 */
-	private product: IProduct
+	private product: IProduct;
 
 	/**
 	 * Constructor
@@ -83,8 +88,8 @@ class StandardDevice {
 	 * @param mid Device MID
 	 * @param hwpid Device HWPID
 	 * @param hwpidVer Device HWPID version
-	 * @param DPA Device DPA version
-	 * @param OS Device OS build
+	 * @param dpa Device DPA version
+	 * @param os Device OS build
 	 * @param discovered Is device discovered?
 	 */
 	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
@@ -93,7 +98,8 @@ class StandardDevice {
 		this.hwpid = hwpid;
 		this.hwpidVer = hwpidVer;
 		this.dpa = dpa;
-		this.os = os;
+		this.osBuild = os;
+		this.osVersion = '';
 		this.discovered = discovered;
 		this.product = {
 			name: 'Unknown',
@@ -160,21 +166,37 @@ class StandardDevice {
 	 * @returns Device DPA version
 	 */
 	getDpa(): string {
-		let dpa = this.dpa.toString(16).padStart(4, '0');
-		if (dpa.startsWith('0')) {
-			dpa = dpa[1] + '.' + dpa.substr(2, 2);
-		} else {
-			dpa = dpa.substr(0, 2) + '.' + dpa.substr(2, 2);
-		}
-		return dpa;
+		const major = (this.dpa >> 8).toString(16);
+		const minor = (this.dpa & 0xff).toString(16).padStart(2, '0');
+		return major + '.' + minor;
 	}
 
 	/**
 	 * Returns device OS build
 	 * @returns Device OS build
 	 */
+	getOsBuild(): string {
+		return this.osBuild.toString(16).padStart(4, '0').toUpperCase();
+	}
+
+	/**
+	 * Sets IQRF OS version
+	 * @param version IQRF OS version
+	 */
+	setOsVersion(version: string): void {
+		this.osVersion = version;
+	}
+
+	/**
+	 * Returns device OS
+	 * @returns Device OS
+	 */
 	getOs(): string {
-		return this.os.toString(16).padStart(4, '0').toUpperCase();
+		const build = this.getOsBuild();
+		if (this.osVersion === '') {
+			return build;
+		}
+		return this.osVersion + ' (' + build + ')';
 	}
 
 	/**
@@ -221,16 +243,16 @@ class StandardDevice {
 	}
 
 	/**
-	 * Returns number of implemented binouts
-	 * @returns Implemented binouts
+	 * Returns number of implemented binary outputs
+	 * @returns Implemented binary outputs
 	 */
 	getBinouts(): number {
 		return this.binouts;
 	}
 
 	/**
-	 * Sets number of implemented binouts
-	 * @param {number} binouts Number of implemented binouts
+	 * Sets number of implemented binary outputs
+	 * @param {number} binouts Number of implemented binary outputs
 	 */
 	setBinouts(binouts: number): void {
 		this.binouts = binouts;
