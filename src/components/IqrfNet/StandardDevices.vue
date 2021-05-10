@@ -674,17 +674,21 @@ export default class StandardDevices extends Vue {
 		let hwpids = new Map();
 		for (let i = 0; i < this.auxDevices.length; i++) {
 			let hwpid = this.auxDevices[i].getHwpid();
-			if (hwpids.has(hwpid) || (hwpid & 0xf) === 0xf) {
+			if (hwpids.has(hwpid)) {
+				this.auxDevices[i].setProduct(hwpids.get(hwpid));
+				continue;
+			}
+			if ((hwpid & 0xf) === 0xf) {
 				continue;
 			}
 			await ProductService.get(hwpid)
 				.then((response: AxiosResponse) => {
 					hwpids.set(hwpid, response.data);
+					this.auxDevices[i].setProduct(hwpids.get(hwpid));
 				})
 				.catch(() => {
 					// Device not found in repository, ignore
 				});
-			this.auxDevices[i].setProduct(hwpids.get(hwpid));
 		}
 		this.devices = this.auxDevices;
 	}
