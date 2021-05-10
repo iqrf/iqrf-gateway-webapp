@@ -192,8 +192,8 @@
 									:aside-image-props='{
 										src: item.getImg(),
 										block: true,
-										width: "150px",
-										height: "150px",
+										width: `150px`,
+										height: `150px`,
 									}'
 								>
 									<div
@@ -253,7 +253,9 @@
 													<th>
 														{{ $t('iqrfnet.standard.sensor.title') }}
 													</th>
-													<td style='white-space: pre-wrap;'>{{ item.getSensorDetails() }}</td>
+													<td style='white-space: pre-wrap;'>
+														{{ item.getSensorDetails() }}
+													</td>
 												</tr>
 											</tbody>
 										</table>
@@ -286,6 +288,7 @@ import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
 import {MutationPayload} from 'vuex';
+import DpaService, {OsDpaVersion} from '../../services/IqrfRepository/OsDpaService';
 
 @Component({
 	components: {
@@ -671,8 +674,23 @@ export default class StandardDevices extends Vue {
 	 * Filters devices that do not implement any standards from the array
 	 */
 	private async fetchDeviceDetails(): Promise<void> {
-		let hwpids = new Map();
+		const hwpids = new Map();
+		const osVersions = new Map();
 		for (let i = 0; i < this.auxDevices.length; i++) {
+			let osBuild = this.auxDevices[i].getOsBuild();
+			if (!osVersions.has(osBuild)) {
+				await DpaService.getVersions(osBuild)
+					.then((versions: OsDpaVersion[]) => {
+						if (versions.length === 0) {
+							return;
+						}
+						osVersions.set(osBuild, versions[0].getOsVersion());
+					})
+					.catch(() => {
+						// IQRF OS not found in repository, ignore
+					});
+			}
+			this.auxDevices[i].setOsVersion(osVersions.get(osBuild));
 			let hwpid = this.auxDevices[i].getHwpid();
 			if (hwpids.has(hwpid)) {
 				this.auxDevices[i].setProduct(hwpids.get(hwpid));

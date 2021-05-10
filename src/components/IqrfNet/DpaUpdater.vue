@@ -3,7 +3,7 @@
 		<CCard>
 			<CCardHeader>{{ $t('iqrfnet.trUpload.dpaUpload.title') }}</CCardHeader>
 			<CCardBody>
-				<CElementCover 
+				<CElementCover
 					v-if='loadFailed'
 					style='z-index: 1;'
 					:opacity='0.85'
@@ -71,7 +71,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import DpaService, {RFMode} from '../../services/IqrfRepository/DpaService';
+import DpaService, {RFMode} from '../../services/IqrfRepository/OsDpaService';
 import IqrfNetService from '../../services/IqrfNetService';
 import IqrfService from '../../services/IqrfService';
 import ServiceService from '../../services/ServiceService';
@@ -234,20 +234,20 @@ export default class DpaUpdater extends Vue {
 			.then((versions) => {
 				let fetchedVersions: Array<DpaVersions> = [];
 				for (const version of versions) {
-					const dpaVer = Number.parseInt(version.getVersion(false));
+					const dpaVer = Number.parseInt(version.getDpaVersion(false));
 					if (dpaVer < 400) {
 						fetchedVersions.push({
-							value: version.getVersion(false) + '-' + RFMode.LP,
-							label: version.getVersion(true) + ', ' + RFMode.LP + ' RF mode'
+							value: version.getDpaVersion(false) + '-' + RFMode.LP,
+							label: version.getDpaVersion(true) + ', ' + RFMode.LP + ' RF mode'
 						});
 						fetchedVersions.push({
-							value: version.getVersion(false) + '-' + RFMode.STD,
-							label: version.getVersion(true) + ', ' + RFMode.STD + ' RF mode'
+							value: version.getDpaVersion(false) + '-' + RFMode.STD,
+							label: version.getDpaVersion(true) + ', ' + RFMode.STD + ' RF mode'
 						});
 					} else {
 						fetchedVersions.push({
-							value: version.getVersion(false),
-							label: version.getVersion(true),
+							value: version.getDpaVersion(false),
+							label: version.getDpaVersion(true),
 						});
 					}
 				}
@@ -323,11 +323,11 @@ export default class DpaUpdater extends Vue {
 		);
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/UPDATE_TEXT', 
+				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.dpaUpload.messages.gatewayUploadSuccess').toString()
 				);
 				this.stopDaemon(response.data.fileName);
-				
+
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.dpaUpload.messages.gatewayUploadFailed'));
 	}
@@ -342,7 +342,7 @@ export default class DpaUpdater extends Vue {
 		);
 		IqrfService.uploader({name: fileName, type: 'DPA'})
 			.then(() => {
-				this.$store.commit('spinner/UPDATE_TEXT',  
+				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.dpaUpload.messages.trUploadSuccess').toString()
 				);
 				this.startDaemon();
@@ -357,7 +357,7 @@ export default class DpaUpdater extends Vue {
 	private stopDaemon(fileName: string): Promise<void> {
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
-				this.$store.commit('spinner/UPDATE_TEXT', 
+				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
 				);
 				this.upload(fileName);

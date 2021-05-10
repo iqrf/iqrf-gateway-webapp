@@ -2,9 +2,9 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../../helpers/authorizationHeader';
 
 /**
- * DPA version entity
+ * OS & DPA version entity
  */
-export class DpaVersion {
+export class OsDpaVersion {
 
 	/**
 	 * IQRF OS build
@@ -13,10 +13,16 @@ export class DpaVersion {
 	private readonly osBuild: string;
 
 	/**
+	 * IQRF OS version
+	 * @private
+	 */
+	private readonly osVersion: string;
+
+	/**
 	 * DPA version
 	 * @private
 	 */
-	private readonly version: string;
+	private readonly dpaVersion: string;
 
 	/**
 	 * DPA version notes
@@ -32,14 +38,16 @@ export class DpaVersion {
 
 	/**
 	 * DPA version entity
-	 * @param osBuild Supported IQRF OS build
-	 * @param version Raw DPA version
+	 * @param osBuild IQRF OS build
+	 * @param osVersion IQRF OS version
+	 * @param dpaVersion Raw DPA version
 	 * @param notes DPA version notes
 	 * @param downloadPath DPA files download path
 	 */
-	public constructor(osBuild: string, version: string, notes: string, downloadPath: string) {
+	public constructor(osBuild: string, osVersion: string, dpaVersion: string, notes: string, downloadPath: string) {
 		this.osBuild = osBuild;
-		this.version = version;
+		this.osVersion = osVersion;
+		this.dpaVersion = dpaVersion;
 		this.notes = notes;
 		this.downloadPath = downloadPath;
 	}
@@ -53,15 +61,23 @@ export class DpaVersion {
 	}
 
 	/**
+	 * Returns IQRF OS version
+	 * @return IQRF OS version
+	 */
+	public getOsVersion(): string {
+		return this.osVersion;
+	}
+
+	/**
 	 * Returns DPA version
 	 * @param pretty Pretty formatting
 	 * @return DPA version
 	 */
-	public getVersion(pretty: boolean): string {
+	public getDpaVersion(pretty: boolean): string {
 		if (!pretty) {
-			return this.version;
+			return this.dpaVersion;
 		}
-		const versionInt = Number.parseInt(this.version, 16);
+		const versionInt = Number.parseInt(this.dpaVersion, 16);
 		const major = versionInt >> 8;
 		const minor = versionInt & 0xff;
 		return major.toString() + '.' + minor.toString(16).padStart(2, '0');
@@ -96,19 +112,19 @@ export enum RFMode {
 /**
  * IQRF Repository DPA service
  */
-class DpaService {
+class OsDpaService {
 
 	/**
 	 * Retrieves available DPA versions
 	 * @param osBuild Current IQRF OS build
 	 */
-	public getVersions(osBuild: string): Promise<DpaVersion[]> {
+	public getVersions(osBuild: string): Promise<OsDpaVersion[]> {
 		const url = 'https://repository.iqrfalliance.org/api/osdpa/';
 		return axios.get(url, {params: {os: osBuild}})
 			.then((response: AxiosResponse) => {
-				const versions: DpaVersion[] = [];
+				const versions: OsDpaVersion[] = [];
 				for (const version of response.data) {
-					versions.push(new DpaVersion(version.os, version.dpa, version.notes, version.downloadPath));
+					versions.push(new OsDpaVersion(version.os, version.osVersion, version.dpa, version.notes, version.downloadPath));
 				}
 				return versions;
 			});
@@ -124,4 +140,4 @@ class DpaService {
 
 }
 
-export default new DpaService();
+export default new OsDpaService();
