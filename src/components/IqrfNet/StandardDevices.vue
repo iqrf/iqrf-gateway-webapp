@@ -253,7 +253,7 @@
 													<th>
 														{{ $t('iqrfnet.standard.sensor.title') }}
 													</th>
-													<td style='white-space: pre-wrap;'>
+													<td style='white-space: pre-line;'>
 														{{ item.getSensorDetails() }}
 													</td>
 												</tr>
