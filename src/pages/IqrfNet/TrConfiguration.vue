@@ -558,7 +558,7 @@ export default class TrConfiguration extends Vue {
 	 */
 	private readOs(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.sendRead(this.address, 30000, 'iqrfnet.trConfiguration.messages.osReadFailure', () => this.msgId = null)
+		OsService.read(this.address, 30000, 'iqrfnet.trConfiguration.messages.osReadFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

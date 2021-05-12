@@ -123,7 +123,7 @@ export default class TrUpload extends Vue {
 	 */
 	private getOsInfo(): void {
 		this.$store.commit('spinner/SHOW');
-		OsService.sendRead(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+		OsService.read(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
