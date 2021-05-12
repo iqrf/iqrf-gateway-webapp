@@ -45,7 +45,7 @@ class OsService {
 	 * @param callback Timeout callback
 	 * @return Message ID
 	 */
-	sendRead(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	read(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_Read',
 			'data': {
