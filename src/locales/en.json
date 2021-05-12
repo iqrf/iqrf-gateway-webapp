@@ -1370,13 +1370,18 @@
 			"bondingManager": {
 				"title": "Bonding",
 				"form": {
-					"autoAddress": "Auto address",
+					"autoAddress": "Assign address automatically",
 					"bondMethod": "Bonding method",
-					"bondMethodLocal": "Local bonding",
-					"bondMethodSmart": "Smart Connect",
-					"bondingRetries": "Bonding test retries",
+					"bondMethods": {
+						"local": "Local bonding",
+						"smart": "Smart connect",
+						"nfc": "Bond NFC reader"
+					},
+					"bondNfcReader": "Bond NFC reader",
+					"unbondNfcReader": "Unbond NFC reader",
+					"bondingRetries": "Bonding success tests",
 					"smartConnect": "IQRF Smart Connect Code",
-					"unbondCoordinatorOnly": "Unbonds the Node only on Coordinator side"
+					"unbondCoordinatorOnly": "Unbond only in Coordinator memory"
 				},
 				"errors": {
 					"address": "Please enter an integer between 1 and 239 for new node address.",
@@ -1388,7 +1393,15 @@
 					"bondLocalAction": "Press node device button within 10 seconds to invoke bonding.",
 					"bondSuccess": "A new device has been successfully bonded to address {address}.",
 					"bondExists": "Another device is already bonded to address {address}.",
-					"timeout": "Request to bond a new device has timed out.",
+					"bondNfcFailure": "Failed to bond NFC reader.",
+					"bondNfcSuccess": "NFC reader has been successfully bonded.",
+					"unbondNfcCFailure": "Failed to unbond NFC reader in coordinator memory.",
+					"unbondNfcCSuccess": "NFC reader has been successfully unbonded in coordinator memory.",
+					"unbondNfcNFailure": "Failed to unbond NFC reader.",
+					"unbondNfcNSuccess": "NFC reader has been successfully unbonded.",
+					"unbondNfcNotBonded": "NFC reader is not bonded.",
+					"bondTimeout": "Request to bond a new device timed out.",
+					"unbondTimeout": "Request to unbond device timed out.",
 					"genericBondError": "An error has occured during the bonding process.",
 					"unbondPrompt": "Do you really want to remove device at address {address} from the network?",
 					"clearAllPrompt": "Do you really want to clear all bonds?",
