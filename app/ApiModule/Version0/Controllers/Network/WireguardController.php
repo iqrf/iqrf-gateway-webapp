@@ -96,8 +96,8 @@ class WireguardController extends NetworkController {
 	 *      '200':
 	 *          description: Success
 	 *          content:
-	 *              schema:
-	 *                  application/json:
+	 *              application/json:
+	 *                  schema:
 	 *                      $ref: '#/components/schemas/WireguardTunnel'
 	 *      '404':
 	 *          description: Not found

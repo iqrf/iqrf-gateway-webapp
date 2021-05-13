@@ -3,6 +3,14 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json",
 	"type": "array",
 	"additionalItems": false,
+	"example": [{
+		"osBuild": "08D5",
+		"dpa": "4.15",
+		"dpaRaw": "0415",
+		"notes": "IQRF OS 4.04D, DPA 4.15",
+		"downloadPath": "https://repository.iqrfalliance.org/download/dpa/4.15",
+		"osVersion": "404"
+	}],
 	"items": [
 		{
 			"$id": "#/items",
