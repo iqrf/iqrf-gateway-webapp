@@ -2060,6 +2060,7 @@
 				"genericError": "An error has occured while processing request.",
 				"osBuildFail": "Failed to retrieve OS builds information.",
 				"osInfoFail": "Embed OS read request failed.",
+				"fetchFail": "The following component(s) failed to fetch information: {children}",
 				"postUpload": "Restarting IQRF Gateway Daemon and refreshing OS information."
 			}
 		}
