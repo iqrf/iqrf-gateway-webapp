@@ -2043,8 +2043,8 @@
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {
-				"titleDisconnect": "Wi-Fi connection disconnect warning",
-				"titleDelete": "Wi-Fi connection delete warning",
+				"titleDisconnect": "Wi-Fi connection disconnect confirmation",
+				"titleDelete": "Wi-Fi connection delete confirmation",
 				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Are you sure you want to disconnect connection?",
 				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Are you sure you want to delete connection?"
 			},
@@ -2179,6 +2179,10 @@
 					"keepaliveInvalid": "Persistent keepalive should be an integer between 0 and 65535 seconds.",
 					"base64Key": "Invalid key format, the key should be 32-byte Curve25519 key."
 				},
+				"modal": {
+					"title": "Wireguard tunnel delete confirmation",
+					"prompt": "Are you sure you want to delete Wireguard tunnel {tunnel}?"
+				},
 				"messages": {
 					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
 					"addFailed": "Failed to create new Wireguard tunnel: {error}",
@@ -2194,8 +2198,8 @@
 					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}: {error}",
 					"fetchFailed": "Failed to retrieve configuration of Wireguard tunnel ID {tunnel}: {error}.",
 					"listFailed": "Failed to retrieve list of existing Wireguard tunnels: {error}",
-					"removeSuccess": "Wireguard tunnel {tunnel} has been successfully remove.",
-					"removeFailed": "Failed to remove Wireguard tunnel {tunnel}: {error}",
+					"deleteSuccess": "Wireguard tunnel {tunnel} has been successfully deleted.",
+					"deleteFailed": "Failed to delete Wireguard tunnel {tunnel}: {error}",
 					"copyPublicKey": "Public key has been successfully copied to clipboard.",
 					"keyPairFailed": "Failed to generate key pair: {error}"
 				}
