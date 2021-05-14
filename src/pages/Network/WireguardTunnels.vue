@@ -67,7 +67,7 @@
 							</CButton> <CButton
 								size='sm'
 								color='danger'
-								@click='removeTunnel(item.id, item.name)'
+								@click='tunnelToDelete = item'
 							>
 								<CIcon :content='icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -77,6 +77,32 @@
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<CModal
+			color='danger'
+			:show='tunnelToDelete !== null'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.wireguard.tunnels.modal.title') }}
+				</h5>
+			</template>
+			<span v-if='tunnelToDelete !== null'>
+				{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
+			</span>
+			<template #footer>
+				<CButton
+					color='danger'
+					@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
+				>
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='tunnelToDelete = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
@@ -92,7 +118,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IWG} from '../../interfaces/network';
-import { extend } from 'vee-validate';
 
 @Component({
 	components: {
@@ -152,6 +177,11 @@ export default class WireguardTunnels extends Vue {
 			sorter: false,
 		},
 	]
+
+	/**
+	 * @var {IWG} tunnelToDelete Tunnel information used in delete modal window
+	 */
+	private tunnelToDelete: IWG|null = null
 
 	/**
 	 * Retrieves existing Wireguard tunnels
@@ -260,19 +290,20 @@ export default class WireguardTunnels extends Vue {
 	 * @param {number} id Wireguard tunnel id
 	 */
 	private removeTunnel(id: number, name: string): void {
+		this.tunnelToDelete = null;
 		this.$store.commit('spinner/SHOW');
 		WireguardService.removeTunnel(id)
 			.then(() => {
-				this.getTunnels().then(() =>this.$toast.success(
+				this.getTunnels().then(() => this.$toast.success(
 					this.$t(
-						'network.wireguard.tunnels.messages.removeSuccess',
+						'network.wireguard.tunnels.messages.deleteSuccess',
 						{tunnel: name}
 					).toString()
 				));
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
-				'network.wireguard.tunnels.messages.removeFailed',
+				'network.wireguard.tunnels.messages.deleteFailed',
 				{tunnel: name}
 			));
 	}
