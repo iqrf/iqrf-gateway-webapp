@@ -103,46 +103,6 @@ class IqrfNetService {
 	}
 
 	/**
-	 * Unbonds NFC reader node from address 240 in coordinator memory
-	 * @param options WebSocket request options
-	 * @returns Message ID
-	 */
-	unbondNfcCoordinator(options: WebSocketOptions): Promise<string> {
-		options.request = {
-			'mType': 'iqrfEmbedCoordinator_RemoveBond',
-			'data': {
-				'req': {
-					'nAdr': 0,
-					'param': {
-						'bondAddr': 240,
-					},
-				},
-				'returnVerbose': true,
-			},
-		};
-		return store.dispatch('sendRequest', options);
-	}
-
-	/**
-	 * Unbonds NFC reader node from address 240
-	 * @param options WebSocket request options
-	 * @returns Message ID
-	 */
-	unbondNfcNode(options: WebSocketOptions): Promise<string> {
-		options.request = {
-			'mType': 'iqrfEmbedNode_RemoveBond',
-			'data': {
-				'req': {
-					'nAdr': 240,
-					'param': {},
-				},
-				'returnVerbose': true,
-			}
-		};
-		return store.dispatch('sendRequest', options);
-	}
-
-	/**
 	 * Bonds a node via IQRF Smart Connect
 	 * @param address Address to bond the device to.  If this parameter equals to 0, then the first free address is assigned to the node.
 	 * @param scCode Device Smart Connect code
