@@ -85,23 +85,23 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.monitor.messages.deleteTitle') }}
+					{{ $t('config.daemon.misc.monitor.modal.title') }}
 				</h5>
 			</template>
 			<div v-if='deleteInstance !== null'>
-				{{ $t('config.daemon.misc.monitor.messages.deletePrompt', {instance: deleteInstance.monitor}) }}
+				{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: deleteInstance.monitor}) }}
 			</div>
 			<template #footer>
-				<CButton 
+				<CButton
 					color='danger'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeInterface()'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton 
+					color='secondary'
+					@click='deleteInstance = null'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>

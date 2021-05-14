@@ -84,25 +84,24 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('core.user.messages.deleteTitle') }}
+					{{ $t('core.user.modal.title') }}
 				</h5>
-				<CButtonClose class='text-white' @click='deleteUser = null' />
 			</template>
 			<span v-if='deleteUser !== null'>
-				{{ $t('core.user.messages.deletePrompt', {username: deleteUser.username}) }}
+				{{ $t('core.user.modal.prompt', {user: deleteUser.username}) }}
 			</span>
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteUser = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='performDelete'
 				>
-					{{ $t('forms.yes') }}
-				</CButton>
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteUser = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton> 
 			</template>
 		</CModal>
 	</div>

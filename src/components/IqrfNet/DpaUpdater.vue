@@ -49,15 +49,15 @@
 			{{ $t('iqrfnet.trUpload.dpaUpload.modal.prompt', {version: prettyVersion(currentDpa)}) }}
 			<template #footer>
 				<CButton
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
 					color='warning'
 					@click='{{showModal = false; getDpaFile()}}'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.upload') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showModal = false'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>

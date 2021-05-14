@@ -90,19 +90,24 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.mqtt.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.mqtt.modal.title') }}
 				</h5>
 				<CButtonClose class='text-white' @click='deleteInstance = ""' />
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.mqtt.messages.deletePrompt', {instance: deleteInstance}) }}
+				{{ $t('config.daemon.messagings.mqtt.modal.prompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton color='danger' @click='deleteInstance = ""'>
-					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='performDelete'>
-					{{ $t('forms.yes') }}
+				<CButton 
+					color='danger'
+					@click='performDelete'
+				>
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteInstance = ""'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>

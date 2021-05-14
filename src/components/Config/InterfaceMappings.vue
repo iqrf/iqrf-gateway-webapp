@@ -34,7 +34,7 @@
 					@click='showRemoveModal(i)'
 				>
 					<CIcon :content='icons.remove' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.remove') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
@@ -44,16 +44,21 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.interfaces.interfaceMapping.remove') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('config.daemon.interfaces.interfaceMapping.messages.removePrompt', {mapping: modalMapping}) }}
+			{{ $t('config.daemon.interfaces.interfaceMapping.modal.prompt', {mapping: modalMapping}) }}
 			<template #footer>
-				<CButton color='danger' @click='hideRemoveModal'>
-					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeMapping'>
-					{{ $t('forms.yes') }}
+				<CButton
+					color='danger'
+					@click='removeMapping'
+				>
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='hideRemoveModal'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -74,6 +79,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Dictionary } from 'vue-router/types/router';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingForm from '../../components/Config/MappingForm.vue';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -193,15 +199,19 @@ export default class InterfaceMappings extends Vue {
 		this.showModal = false;
 		MappingService.removeMapping(this.deleteMapping.id)
 			.then(() => {
+				this.deleteMapping = null;
 				this.getMappings().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.interfaces.interfaceMapping.messages.removeSuccess', {mapping: this.modalMapping}).toString()
+						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: this.modalMapping}).toString()
 					);
 				});
+				this.modalMapping = '';
 			})
-			.catch((error: AxiosError) => FormErrorHandler.mappingError(error));
-		this.deleteMapping = null;
-		this.modalMapping = '';
+			.catch((error: AxiosError) => {
+				this.deleteMapping = null;
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: this.modalMapping});
+				this.modalMapping = '';
+			});
 	}
 
 	/**
