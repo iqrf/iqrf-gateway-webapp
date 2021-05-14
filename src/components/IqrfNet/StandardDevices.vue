@@ -274,10 +274,14 @@
 			</CCardBody>
 		</CCard>
 		<CModal
-			:title='$t("iqrfnet.standard.modal.title")'
 			color='danger'
 			:show.sync='showModal'
 		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('iqrfnet.standard.modal.title') }}
+				</h5>
+			</template>
 			{{ $t('iqrfnet.standard.modal.prompt') }}
 			<template #footer>
 				<CButton
