@@ -1383,7 +1383,6 @@
 						"nfc": "Bond NFC reader"
 					},
 					"bondNfcReader": "Bond NFC reader",
-					"unbondNfcReader": "Unbond NFC reader",
 					"bondingRetries": "Bonding success tests",
 					"smartConnect": "IQRF Smart Connect Code",
 					"unbondCoordinatorOnly": "Unbond only in Coordinator memory"
@@ -1400,11 +1399,6 @@
 					"bondExists": "Another device is already bonded to address {address}.",
 					"bondNfcFailure": "Failed to bond NFC reader.",
 					"bondNfcSuccess": "NFC reader has been successfully bonded.",
-					"unbondNfcCFailure": "Failed to unbond NFC reader in coordinator memory.",
-					"unbondNfcCSuccess": "NFC reader has been successfully unbonded in coordinator memory.",
-					"unbondNfcNFailure": "Failed to unbond NFC reader.",
-					"unbondNfcNSuccess": "NFC reader has been successfully unbonded.",
-					"unbondNfcNotBonded": "NFC reader is not bonded.",
 					"bondTimeout": "Request to bond a new device timed out.",
 					"unbondTimeout": "Request to unbond device timed out.",
 					"genericBondError": "An error has occured during the bonding process.",

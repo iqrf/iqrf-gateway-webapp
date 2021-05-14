@@ -47,60 +47,45 @@
 								:disabled='autoAddress'
 							/>
 						</ValidationProvider>
-					</div>
-					<ValidationProvider
-						v-if='bondMethod === "smartconnect"'
-						v-slot='{errors, valid}'
-						rules='required|scCode'
-						:custom-messages='{
-							required: "iqrfnet.networkManager.bondingManager.errors.scCodeMissing",
-							scCode: "iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"
-						}'
-					>
-						<CInput
-							v-model='scCode'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
-							:is-valid='valid'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='integer|required|between:0,255'
-						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.bondingManager.errors.bondingRetries",
-							between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
-						}'
-					>
-						<CInput
-							v-model.number='bondingRetries'
-							type='number'
-							min='0'
-							max='255'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='unbondCoordinatorOnly'
-						:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
-					/>
-					<div v-if='bondMethod ==="nfc"'>
-						<CButton
-							color='primary'
-							@click='bondNfc'
+						<ValidationProvider
+							v-if='bondMethod === "smartconnect"'
+							v-slot='{errors, valid}'
+							rules='required|scCode'
+							:custom-messages='{
+								required: "iqrfnet.networkManager.bondingManager.errors.scCodeMissing",
+								scCode: "iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"
+							}'
 						>
-							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
-						</CButton> <CButton
-							color='secondary'
-							@click='unbondNfcNode'
+							<CInput
+								v-model='scCode'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
+								:is-valid='valid'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required|between:0,255'
+							:custom-messages='{
+								integer: "forms.errors.integer",
+								required: "iqrfnet.networkManager.bondingManager.errors.bondingRetries",
+								between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
+							}'
 						>
-							{{ $t('iqrfnet.networkManager.bondingManager.form.unbondNfcReader') }}
-						</CButton>
-					</div>
-					<div v-else>
+							<CInput
+								v-model.number='bondingRetries'
+								type='number'
+								min='0'
+								max='255'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='unbondCoordinatorOnly'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
+						/>
 						<CButton
 							color='primary'
 							:disabled='invalid'
@@ -119,6 +104,14 @@
 							@click='modalClear = true'
 						>
 							{{ $t('forms.clearBonds') }}
+						</CButton>
+					</div>
+					<div v-else>
+						<CButton
+							color='primary'
+							@click='bondNfc'
+						>
+							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
 						</CButton>
 					</div>
 					<CModal
@@ -300,7 +293,7 @@ export default class BondingManager extends Vue {
 				} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
 					mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
 					this.handleRemoveResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondNode') {
+				} else if (mutation.payload.mType === 'iqrfRaw') {
 					this.handleBondNfcResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
