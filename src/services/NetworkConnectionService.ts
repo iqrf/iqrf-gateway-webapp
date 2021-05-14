@@ -44,6 +44,10 @@ class NetworkConnectionService {
 		return axios.post('network/connections/' + uuid + '/disconnect', null, config);
 	}
 
+	/**
+	 * Adds a new network connection
+	 * @param configuration Network connection configuration
+	 */
 	public add(configuration: any): Promise<AxiosResponse> {
 		return axios.post('network/connections/', configuration, {headers: authorizationHeader()});
 	}
