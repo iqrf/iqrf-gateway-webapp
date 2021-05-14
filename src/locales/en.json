@@ -488,8 +488,7 @@
 							"fetchFailed": "Failed to retrieve WebSocket interface {interface}: {error}",
 							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
 							"editFailed": "Failed to edit WebSocket interface {interface}: {error}",
-							"editSuccess": "WebSocket interface instance {instance} has been edited."							
-							
+							"editSuccess": "WebSocket interface instance {instance} has been edited."
 						}
 					},
 					"messaging": {
