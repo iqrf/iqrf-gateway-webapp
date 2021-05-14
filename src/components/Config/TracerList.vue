@@ -53,21 +53,21 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.tracer.messages.removeTitle') }}
+					{{ $t('config.daemon.misc.tracer.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('config.daemon.misc.tracer.messages.removeItem', {instance: deleteInstance}) }}
+			{{ $t('config.daemon.misc.tracer.modal.prompt', {instance: deleteInstance}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeInstance'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteInstance = ""'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -79,7 +79,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/coreui';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Dictionary } from 'vue-router/types/router';
@@ -181,14 +180,14 @@ export default class TracerList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.misc.tracer.messages.removeSuccess', {instance: instance})
+						this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: instance})
 							.toString()
 					);
 				});
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
-				'config.daemon.misc.tracer.messages.removeFailed',
+				'config.daemon.misc.tracer.messages.deleteFailed',
 				{instance: instance}
 			));
 	}

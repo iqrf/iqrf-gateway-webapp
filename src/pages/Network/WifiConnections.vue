@@ -160,7 +160,6 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
-import WifiForm from '../../components/Network/WifiForm.vue';
 
 import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -184,7 +183,6 @@ import {IAccessPoint, IAccessPointArray, NetworkInterface} from '../../interface
 		CModal,
 		CProgress,
 		CSelect,
-		WifiForm,
 	},
 	metaInfo: {
 		title: 'network.wireless.title'

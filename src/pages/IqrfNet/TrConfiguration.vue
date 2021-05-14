@@ -286,16 +286,15 @@
 			{{ $t('iqrfnet.trConfiguration.messages.modalPrompt') }}
 			<template #footer>
 				<CButton
-					color='secondary'
-					@click='dpaEnabledNotDetected = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
 					color='warning'
 					@click='disableHandler'
 				>
 					{{ $t('service.actions.disable') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='dpaEnabledNotDetected = false'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>

@@ -30,7 +30,7 @@
 					</CButton> <CButton
 						color='danger'
 						size='sm'
-						@click='removeAllTasks'
+						@click='showDeleteAllModal = true'
 					>
 						<CIcon :content='icons.remove' size='sm' />
 						{{ $t('table.actions.deleteAll') }}
@@ -116,15 +116,17 @@
 				</div>
 			</CForm>
 			<template #footer>
-				<CButton color='secondary' @click='showImportModal = false'>
-					{{ $t('forms.cancel') }}
-				</CButton>
 				<CButton
 					color='primary'
 					:disabled='importEmpty'
 					@click='importScheduler'
 				>
 					{{ $t('forms.import') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showImportModal = false'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -134,21 +136,45 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.messages.deleteTitle') }}
+					{{ $t('config.daemon.scheduler.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('config.daemon.scheduler.messages.deletePrompt', {task: deleteTask}) }}
+			{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: deleteTask}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteTask = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeTask'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteTask = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
+		<CModal
+			color='danger'
+			:show.sync='showDeleteAllModal'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('config.daemon.scheduler.modal.title') }}
+				</h5>
+			</template>
+			{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
+			<template #footer>
+				<CButton
+					color='danger'
+					@click='removeAllTasks'
+				>
+					{{ $t('table.actions.deleteAll') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showDeleteAllModal = false'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -284,7 +310,12 @@ export default class SchedulerList extends Vue {
 	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
-	 * @var {boolean} showImportModal Controls import modal display
+	 * @var {boolean} showDeleteAllModal Controls delete all modal rendering
+	 */
+	private showDeleteAllModal = false
+
+	/**
+	 * @var {boolean} showImportModal Controls import modal rendering
 	 */
 	private showImportModal = false
 
@@ -468,6 +499,7 @@ export default class SchedulerList extends Vue {
 	 * Removes all scheduler tasks
 	 */
 	private removeAllTasks(): void {
+		this.showDeleteAllModal = false;
 		if (this.$store.state.webSocketClient.socket.isConnected) {
 			this.$store.dispatch('spinner/show', 30000);
 			SchedulerService.removeAll(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
