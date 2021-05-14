@@ -62,21 +62,21 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('core.apiKey.messages.deleteTitle') }}
+					{{ $t('core.apiKey.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('core.apiKey.messages.deletePrompt', {key: deleteKey}) }}
+			{{ $t('core.apiKey.modal.prompt', {key: deleteKey}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteKey = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeKey'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteKey = null'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>

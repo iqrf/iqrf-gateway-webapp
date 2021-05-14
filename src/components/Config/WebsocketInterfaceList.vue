@@ -105,23 +105,23 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.websocket.interface.modal.title') }}
 				</h5>
 			</template>
 			<div v-if='deleteInstance !== null'>
-				{{ $t('config.daemon.messagings.websocket.messages.deletePrompt', {instance: deleteInstance.messaging}) }}
+				{{ $t('config.daemon.messagings.websocket.interface.modal.prompt', {instance: deleteInstance.messaging}) }}
 			</div>
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeInterface()'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteInstance = null'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -343,7 +343,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+						this.$t('config.daemon.messagings.websocket.interface.messages.editSuccess', {messaging: instance.instance})
 							.toString()
 					);
 				});
@@ -370,7 +370,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.messages.deleteSuccess', {instance: this.deleteInstance?.messaging})
+						this.$t('config.daemon.messagings.websocket.interface.messages.deleteSuccess', {instance: this.deleteInstance?.messaging})
 							.toString()
 					);
 				});

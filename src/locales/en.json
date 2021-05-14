@@ -335,7 +335,11 @@
 					"add": "Add mapping",
 					"edit": "Edit mapping",
 					"set": "Set mapping",
-					"remove": "Remove mapping",
+					"delete": "Delete mapping",
+					"modal": {
+						"title": "Mapping delete confirmation",
+						"prompt": "Are you sure you want to delete mapping {mapping}?"
+					},
 					"form": {
 						"type": "Mapping type",
 						"name": "Mapping name",
@@ -364,8 +368,8 @@
 					"messages": {
 						"invalid": "Invalid mapping content.",
 						"notFound": "Mapping not found.",
-						"removePrompt": "Do you really want to remove mapping {mapping}?",
-						"removeSuccess": "Mapping {mapping} has been successfully removed.",
+						"deleteFailed": "Failed to delete mapping {mapping}: {error}",
+						"deleteSuccess": "Mapping {mapping} has been successfully deleted.",
 						"addSuccess": "Mapping {mapping} has been succesfully created.",
 						"editSuccess": "Mapping {mapping} has been successfully edited."
 					}
@@ -406,13 +410,15 @@
 						"EnabledCipherSuites": "Enabled cipher suites",
 						"EnableServerCertAuth": "Enable server certificate authentication"
 					},
+					"modal": {
+						"title": "MQTT messaging instance delete confirmation",
+						"prompt": "Are you sure you want to delete MQTT messaging instance {instance}?"
+					},
 					"messages": {
 						"addFailed": "Failed to create new MQTT messaging instance: {error}",
 						"addSuccess": "MQTT messaging instance {instance} has been added.",
 						"deleteFailed": "Failed to delete MQTT messaging instance {instance}: {error}",
-						"deletePrompt": "Do you really want to delete MQTT messaging instance {instance}?",
 						"deleteSuccess": "MQTT messaging instance {instance} has been deleted.",
-						"deleteTitle": "Delete MQTT messaging instance",
 						"editFailed": "Failed to edit MQTT messaging instance {instance}: {error}",
 						"editSuccess": "MQTT messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
@@ -470,12 +476,20 @@
 						"legend": "WebSocket interface instance",
 						"add": "Add WebSocket interface",
 						"edit": "Edit WebSocket interface",
+						"modal": {
+							"title": "WebSocket interface instance delete confirmation",
+							"prompt": "Are you sure you want to delete WebSocket interface instance {instance}?"
+						},
 						"messages": {
 							"addFailed": "Failed to create new WebSocket interface: {error}",
+							"addSuccess": "WebSocket interface instance {instance} has been added.",
+							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}",
+							"deleteSuccess": "WebSocket interface instance {instance} has been deleted.",
 							"fetchFailed": "Failed to retrieve WebSocket interface {interface}: {error}",
 							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
 							"editFailed": "Failed to edit WebSocket interface {interface}: {error}",
-							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}"
+							"editSuccess": "WebSocket interface instance {instance} has been edited."							
+							
 						}
 					},
 					"messaging": {
@@ -503,13 +517,6 @@
 							"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
 						}
 					},
-					"messages": {
-						"addSuccess": "WebSocket interface instance {instance} has been added.",
-						"deletePrompt": "Do you really want to delete WebSocket interface instance {instance}?",
-						"deleteTitle": "Delete WebSocket interface instance",
-						"deleteSuccess": "WebSocket interface instance {instance} has been deleted.",
-						"editSuccess": "WebSocket interface instance {instance} has been edited."
-					},
 					"errors": {
 						"instance": "Please enter name of WebSocket interface.",
 						"messagingInstance": "Please enter name of WebSocket messaging.",
@@ -532,13 +539,15 @@
 						"LocalMqName": "Local MQ name",
 						"RemoteMqName": "Remote MQ name"
 					},
+					"modal": {
+						"title": "MQ messaging instance delete confirmation",
+						"prompt": "Are you sure you want to delete MQ messaging instance {instance}?"
+					},
 					"messages": {
 						"addFailed": "Failed to create new MQ messaging instance: {error}",
 						"addSuccess": "MQ messaging instance {instance} has been added.",
 						"deleteFailed": "Failed to delete MQ messaging instance {instance}: {error}",
-						"deletePrompt": "Do you really want to delete MQ messaging instance {instance}?",
 						"deleteSuccess": "MQ messaging instance {instance} has been deleted.",
-						"deleteTitle": "Delete MQ messaging instance",
 						"editFailed": "Failed to edit MQ messaging instance {instance}: {error}",
 						"editSuccess": "MQ messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve MQ messaging instance {instance}: {error}",
@@ -559,13 +568,15 @@
 						"RemotePort": "Remote port",
 						"LocalPort": "Local port"
 					},
+					"modal": {
+						"title": "UDP messaging instance delete confirmation",
+						"prompt": "Are you sure you want to delete UDP messaging instance {instance}?"
+					},
 					"messages": {
 						"addFailed": "Failed to create new UDP messaging instance: {error}",
 						"addSuccess": "UDP messaging instance {instance} has been added.",
 						"deleteFailed": "Failed to delete UDP messaging instance {instance}: {error}",
-						"deletePrompt": "Do you really want to delete UDP messaging instance {instance}?",
 						"deleteSuccess": "UDP messaging instance {instance} has been deleted.",
-						"deleteTitle": "Delete UDP messaging instance",
 						"editFailed": "Failed to edit UDP messaging instance {instance}: {error}",
 						"editSuccess": "UDP messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve UDP messaging instance {instance}: {error}",
@@ -633,12 +644,15 @@
 						"fileEmpty": "Please select file to import."
 					}
 				},
+				"modal": {
+					"title": "Scheduler task delete confirmation",
+					"deletePrompt": "Are you sure you want to delete scheduler task {task}?",
+					"deleteAllPrompt": "Are you sure you want to delete all scheduler tasks?"
+				},
 				"messages": {
 					"exportFailed": "Failed to export scheduler tasks: {error}",
 					"importFailed": "Failed to import scheduler task(s): {error}",
 					"importSuccess": "The tasks has been imported successfully.",
-					"deleteTitle": "Delete scheduler task",
-					"deletePrompt": "Do you really want to delete scheduler task {task}?",
 					"deleteSuccess": "Scheduler task has been successfully deleted.",
 					"deleteFail": "An error occurred while removing task.",
 					"deleteFailedRest": "Failed to delete task {task}: {error}",
@@ -757,12 +771,14 @@
 						"WebsocketPort": "WebSocket server port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost"
 					},
+					"modal": {
+						"title": "Monitoring delete confirmation",
+						"prompt": "Are you sure you want to delete Monitoring service instance {instance}?"
+					},
 					"messages": {
 						"addFailed": "Failed to create new Monitoring instance: {error}",
 						"addSuccess": "Monitoring service instance {instance} has been added.",
 						"deleteFailed": "Failed to delete Monitoring instance {instance}: {error}",
-						"deletePrompt": "Do you really want to delete Monitoring service instance {instance}?",
-						"deleteTitle": "Delete Monitoring service instance",
 						"deleteSuccess": "Monitoring service instance {instance} has been deleted.",
 						"editFailed": "Failed to edit Monitoring instance {instance}: {error}",
 						"editSuccess": "Monitoring service instance {instance} has been edited.",
@@ -795,14 +811,16 @@
 						"channel": "Verbosity channel",
 						"level": "Verbosity level"
 					},
+					"modal": {
+						"title": "Logging delete confirmation",
+						"prompt": "Are you sure you want to delete Logging instance {instance}?"
+					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",
-						"removeFailed": "Faled to delete Logging instance {instance}: {error}",
-						"removeItem": "Do you really want to delete Logging instance {instance}?",
-						"removeTitle": "Delete Logging instance",
-						"removeSuccess": "Logging instance {instance} has been removed.",
 						"addFailed": "Failed to create new Logging instance: {error}",
 						"addSuccess": "Logging instance {instance} has been added.",
+						"deleteFailed": "Faled to delete Logging instance {instance}: {error}",
+						"deleteSuccess": "Logging instance {instance} has been deleted.",
 						"editFailed": "Failed to edit Logging instance {instance}: {error}",
 						"editSuccess": "Logging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve Logging instance {instance} configuration: {error}"
@@ -986,15 +1004,17 @@
 				"description": "Description",
 				"expiration": "Expiration"
 			},
+			"modal": {
+				"title": "API key delete confirmation",
+				"prompt": "Are you sure you want to delete API key ID {key}?"
+			},
 			"messages": {
 				"invalid": "Invalid API key metadata.",
 				"notFound": "API key with this ID does not exist.",
 				"addFailed": "Failed to create new API key: {error}",
 				"addSuccess": "New API key has been successfully added.",
 				"deleteFailed": "Failed to delete API key ID {key}: {error}",
-				"deletePrompt": "Do you really want to delete API key ID {key}?",
 				"deleteSuccess": "API key ID {key} has been successfully deleted.",
-				"deleteTitle": "Delete API key",
 				"editFailed": "Failed to change API key ID {key}: {error}",
 				"editSuccess": "API key ID {key} has been successfully updated.",
 				"fetchFailed": "Failed to retrieve API key {key}: {error}",
@@ -1021,15 +1041,17 @@
 			},
 			"oldPassword": "Old password (only if you want change password)",
 			"newPassword": "New password (only if you want change password)",
+			"modal": {
+				"title": "User delete confirmation",
+				"prompt": "Are you sure you want to delete user {user}?"
+			},
 			"messages": {
 				"usernameExists": "Username is already used.",
 				"oldPassMismatch": "The old password is incorrect.",
 				"addFailed": "Failed to create new user: {error}",
 				"addSuccess": "User {user} has been added successfully.",
 				"deleteFailed": "Failed to delete user {user}: {error}",
-				"deletePrompt": "Do you really want to delete user {user}?",
 				"deleteSuccess": "User {user} has been deleted successfully.",
-				"deleteTitle": "Delete user",
 				"editFailed": "Failed to update user ID {user}: {error}",
 				"editSuccess": "User {user} has been edited successfully.",
 				"fetchFailed": "Failed to retrieve information of user ID {user}: {error}",
@@ -1394,6 +1416,12 @@
 					"scCodeMissing": "Please enter the IQRF Smart Connect code.",
 					"scCodeInvalid": "IQRF Smart Connect code should be a 34 characters long base57 string."
 				},
+				"modal": {
+					"clearAllTitle": "Clear all bonds confirmation",
+					"clearAllPrompt": "Are you sure you want to clear all bonds?",
+					"unbondTitle": "Unbond node confirmation",
+					"unbondPrompt": "Are you sure want to unbond device at address {address} from the network?"
+				},
 				"messages": {
 					"bondLocalAction": "Press node device button within 10 seconds to invoke bonding.",
 					"bondSuccess": "A new device has been successfully bonded to address {address}.",
@@ -1403,14 +1431,12 @@
 					"bondTimeout": "Request to bond a new device timed out.",
 					"unbondTimeout": "Request to unbond device timed out.",
 					"genericBondError": "An error has occured during the bonding process.",
-					"unbondPrompt": "Do you really want to remove device at address {address} from the network?",
-					"clearAllPrompt": "Do you really want to clear all bonds?",
-					"unbondSuccess": "Device at address {address} has been successfully removed.",
-					"unbondSuccessC": "Device at address {address} has been successfully removed from Coordinator memory.",
+					"unbondSuccess": "Device at address {address} has been successfully unbonded.",
+					"unbondSuccessC": "Device at address {address} has been successfully unbonded from Coordinator memory.",
 					"noDevices": "There are no devices bonded in the network.",
-					"unbondFailure": "Failed to remove device at address {address} from network.",
-					"clearAllStatus": "Removing all nodes from network.",
-					"clearAllCStatus": "Removing all nodes from coordinator memory.",
+					"unbondFailure": "Failed to unbond device at address {address} from network.",
+					"clearAllStatus": "Clearing all nodes from network.",
+					"clearAllCStatus": "Clearing all nodes from coordinator memory.",
 					"clearAllSuccess": "All bonds have been cleared successfully.",
 					"clearAllCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
 					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}.",
@@ -1972,8 +1998,8 @@
 					"version": "DPA version"
 				},
 				"modal": {
-					"title": "DPA plug-in upload",
-					"prompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
+					"title": "DPA plug-in upload confirmation",
+					"prompt": "The device already uses DPA version {version}, are you sure you want to proceed with upload?"
 				},
 				"errors": {
 					"version": "Please select DPA version to upload."
@@ -2088,8 +2114,8 @@
 				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address."
 			},
 			"modal": {
-				"title": "Ethernet connection disconnect warning",
-				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?"
+				"title": "Ethernet connection disconnect confirmation",
+				"prompt": "If you're accessing the web interface from address used by this ethernet connection profile, disconnecting will result in the web interface not being available at this address. Are you sure you want to disconnect connection?"
 			}
 		},
 		"wireless": {
@@ -2106,8 +2132,8 @@
 			"modal": {
 				"titleDisconnect": "Wi-Fi connection disconnect warning",
 				"titleDelete": "Wi-Fi connection delete warning",
-				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Do you wish to disconnect connection?",
-				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Do you wish to delete connection?"
+				"promptDisconnect": "If you're accessing the web interface from address used by this Wi-Fi connection profile, disconnecting will result in the web interface not being available at this address. Are you sure you want to disconnect connection?",
+				"promptDelete": "If you're accessing the web interface from address used by this Wi-Fi connection profile, deleting it will result in web interface no longer being available at this address. Are you sure you want to delete connection?"
 			},
 			"form": {
 				"title": "Wi-Fi configuration",
@@ -2347,7 +2373,7 @@
 					"staticIpChange": "IPv4 address change detected, the web interface will be available at the following address: ",
 					"staticToAuto": "IPv4 method changed from static to auto, the web interface may be available at a different address as a result."
 				},
-				"confirmPrompt": "Do you wish to still wish to save connection configuration?"
+				"confirmPrompt": "Are you sure you want to save connection configuration?"
 			},
 			"state": "Connection state",
 			"states": {

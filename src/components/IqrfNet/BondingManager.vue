@@ -115,42 +115,50 @@
 						</CButton>
 					</div>
 					<CModal
-						:title='$t("forms.clearBonds")'
 						color='danger'
 						:show.sync='modalClear'
 					>
-						{{ $t('iqrfnet.networkManager.bondingManager.messages.clearAllPrompt') }}
+						<template #header>
+							<h5 class='modal-title'>
+								{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
+							</h5>
+						</template>
+						{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
 						<template #footer>
 							<CButton
 								color='danger'
-								@click='modalClear = false'
-							>
-								{{ $t('forms.no') }}
-							</CButton> <CButton
-								color='success'
 								@click='clearAll'
 							>
-								{{ $t('forms.yes') }}
+								{{ $t('forms.clearBonds') }}
+							</CButton> <CButton
+								color='secondary'
+								@click='modalClear = false'
+							>
+								{{ $t('forms.cancel') }}
 							</CButton>
 						</template>
 					</CModal>
 					<CModal
-						:title='$t("forms.unbond")'
 						color='danger'
 						:show.sync='modalUnbond'
 					>
-						{{ $t('iqrfnet.networkManager.bondingManager.messages.unbondPrompt', {address: address}) }}
+						<template #header>
+							<h5 class='modal-title'>
+								{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
+							</h5>
+						</template>
+						{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
 						<template #footer>
 							<CButton
 								color='danger'
-								@click='modalUnbond = false'
-							>
-								{{ $t('forms.no') }}
-							</CButton> <CButton
-								color='success'
 								@click='unbond'
 							>
-								{{ $t('forms.yes') }}
+								{{ $t('forms.unbond') }}
+							</CButton> <CButton
+								color='secondary'
+								@click='modalUnbond = false'
+							>
+								{{ $t('forms.cancel') }}
 							</CButton>
 						</template>
 					</CModal>

@@ -57,7 +57,7 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.udp.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.udp.modal.title') }}
 				</h5>
 				<CButtonClose
 					class='text-white'
@@ -65,19 +65,19 @@
 				/>
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.udp.messages.deletePrompt', {instance: deleteInstance}) }}
+				{{ $t('config.daemon.messagings.udp.modal.prompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton 
-					color='danger' 
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
+				<CButton
+					color='danger'
 					@click='performDelete'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton 
+					color='secondary' 
+					@click='deleteInstance = ""'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
