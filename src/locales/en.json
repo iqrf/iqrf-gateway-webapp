@@ -152,6 +152,7 @@
 		"close": "Close",
 		"cancel": "Cancel",
 		"edit": "Edit",
+		"delete": "Delete",
 		"pingNodes": "Ping nodes",
 		"no": "No",
 		"refresh": "Refresh",
@@ -1766,6 +1767,10 @@
 					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
+			},
+			"modal": {
+				"title": "Reset confirmation",
+				"prompt": "Are you sure you want to reset the device database?"
 			},
 			"table": {
 				"title": "Standard devices",

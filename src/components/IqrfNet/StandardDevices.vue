@@ -12,21 +12,27 @@
 						@click='enumerateNetwork'
 					>
 						<CIcon :content='icons.enumerate' size='sm' />
-						{{ $t('iqrfnet.standard.table.actions.enumerate') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
+						</span>
 					</CButton> <CButton
 						color='primary'
 						size='sm'
 						@click='getDevices'
 					>
 						<CIcon :content='icons.refresh' size='sm' />
-						{{ $t('iqrfnet.standard.table.actions.refresh') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.refresh') }}
+						</span>
 					</CButton> <CButton
-						color='primary'
+						color='danger'
 						size='sm'
-						@click='resetDb'
+						@click='showModal = true'
 					>
 						<CIcon :content='icons.reset' size='sm' />
-						{{ $t('iqrfnet.standard.table.actions.reset') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.reset') }}
+						</span>
 					</CButton>
 				</div>
 			</CCardHeader>
@@ -267,12 +273,32 @@
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<CModal
+			:title='$t("iqrfnet.standard.modal.title")'
+			color='danger'
+			:show.sync='showModal'
+		>
+			{{ $t('iqrfnet.standard.modal.prompt') }}
+			<template #footer>
+				<CButton
+					color='danger'
+					@click='resetDb'
+				>
+					{{ $t('iqrfnet.standard.table.actions.reset') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showModal = false'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia, CModal} from '@coreui/vue/src';
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
@@ -307,7 +333,6 @@ import DpaService, {OsDpaVersion} from '../../services/IqrfRepository/OsDpaServi
  * Standard devices component
  */
 export default class StandardDevices extends Vue {
-
 	/**
 	 * @var {Array<standardDevice>} devices Auxiliary array of devices before the final grid is rendered
 	 */
@@ -322,6 +347,11 @@ export default class StandardDevices extends Vue {
 	 * @var {string|null} msgId Daemon API message ID
 	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {boolean} showModal Controls rendering of database reset modal
+	 */
+	private showModal = false
 
 	/**
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
@@ -760,6 +790,7 @@ export default class StandardDevices extends Vue {
 	 * Resets the IqrfInfo database
 	 */
 	private resetDb(): void {
+		this.showModal = false;
 		this.$store.dispatch('spinner/show', {timeout: 10000});
 		InfoService.reset(10000, 'iqrfnet.standard.table.message.resetTimeout', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
