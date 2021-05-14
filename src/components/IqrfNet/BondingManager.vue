@@ -302,10 +302,6 @@ export default class BondingManager extends Vue {
 					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondNode') {
 					this.handleBondNfcResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_RemoveBond') {
-					this.handleUnbondNfcCoordinatorResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqrfEmbedNode_RemoveBond') {
-					this.handleUnbondNfcNodeResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
@@ -357,11 +353,15 @@ export default class BondingManager extends Vue {
 			return;
 		}
 		const os = response.rsp.osRead.osBuild;
-		if (parseInt(os, 16) < 2263) {
+		if (parseInt(os, 16) < 0x08d7) {
 			return;
 		}
 		const dpa = response.rsp.peripheralEnumeration.dpaVer;
 		if (compareVersions.compare(dpa, '4.16', '<')) {
+			return;
+		}
+		const hwpid = response.rsp.peripheralEnumeration.hwpid;
+		if (hwpid !== 3004) {
 			return;
 		}
 		this.bondMethodOptions.push({
@@ -471,59 +471,6 @@ export default class BondingManager extends Vue {
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.bondingManager.messages.bondNfcFailure').toString()
-			);
-		}
-	}
-
-	/**
-	 * Unbonds NFC reader node device
-	 */
-	private unbondNfcNode(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.unbondNfcNode(this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.unbondTimeout'))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles Node remove bond Daemon API responses
-	 */
-	private handleUnbondNfcNodeResponse(response): void {
-		if (response.status === 0) {
-			this.$toast.success(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.unbondNfcNSuccess').toString()
-			);
-			this.unbondNfcCoordinator();
-		} else if (response.status === 8) {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.unbondNfcNotBonded').toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.unbondNfcNFailure').toString()
-			);
-		}
-	}
-
-	/**
-	 * Unbonds NFC reader in coordinator memory
-	 */
-	private unbondNfcCoordinator(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.unbondNfcCoordinator(this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.unbondTimeout'))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles Coordinator remove bond Daemon API responses
-	 */
-	private handleUnbondNfcCoordinatorResponse(response): void {
-		if (response.status === 0) {
-			this.$toast.success(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.unbondNfcCSuccess').toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.unbondNfcCFailure').toString()
 			);
 		}
 	}
