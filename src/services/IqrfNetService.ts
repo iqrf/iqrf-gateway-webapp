@@ -86,15 +86,11 @@ class IqrfNetService {
 	 */
 	bondNfc(options: WebSocketOptions): Promise<string> {
 		options.request = {
-			'mType': 'iqrfEmbedCoordinator_BondNode',
+			'mType': 'iqrfRaw',
 			'data': {
 				'timeout': 11000,
 				'req': {
-					'nAdr': 0,
-					'param': {
-						'reqAddr': 240,
-						'bondingMask': 0,
-					},
+					'rData': '00.00.00.04.ff.ff.f0.00',
 				},
 				'returnVerbose': true,
 			},
