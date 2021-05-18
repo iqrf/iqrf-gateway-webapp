@@ -248,7 +248,7 @@ export default class OsUpdater extends Vue {
 	 */
 	private upload(responseFiles: IqrfOsUpgradeFiles): void {
 		let files: Array<UploadUtilFile> = [];
-		for (let file of responseFiles.os) {
+		for (let file of responseFiles.os.sort()) {
 			files.push({name: file, type: 'OS'});
 		}
 		files.push({name: responseFiles.dpa, type: 'DPA'});
