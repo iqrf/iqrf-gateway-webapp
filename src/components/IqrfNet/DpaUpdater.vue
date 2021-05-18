@@ -13,25 +13,33 @@
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='compareUploadedVersion'>
 						<fieldset :disabled='loadFailed'>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='required'
-								:custom-messages='{
-									required: "iqrfnet.trUpload.dpaUpload.errors.version",
-								}'
+							<div v-if='versions.length > 0'>
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
+									rules='required'
+									:custom-messages='{
+										required: "iqrfnet.trUpload.dpaUpload.errors.version",
+									}'
+								>
+									<CSelect
+										:value.sync='version'
+										:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+										:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
+										:options='versions'
+									/>
+								</ValidationProvider>
+								<CButton type='submit' color='primary' :disabled='invalid'>
+									{{ $t('forms.upload') }}
+								</CButton>
+							</div>
+							<CAlert
+								v-if='versions.length === 0 && currentDpa !== null'
+								color='info'
 							>
-								<CSelect
-									:value.sync='version'
-									:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-									:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
-									:options='versions'
-								/>
-							</ValidationProvider>
-							<CButton type='submit' color='primary' :disabled='invalid'>
-								{{ $t('forms.upload') }}
-							</CButton>
+								{{ $t('iqrfnet.trUpload.dpaUpload.messages.noUpgrades') }}
+							</CAlert>
 						</fieldset>
 					</CForm>
 				</ValidationObserver>
@@ -225,11 +233,14 @@ export default class DpaUpdater extends Vue {
 	/**
 	 * EmbedOs info response handler
 	 */
-	public handleOsInfoResponse(response: any): void {
-		const result = response.data.rsp.result;
-		this.osBuild = this.convertVersion(result.osBuild);
-		this.trType = result.trMcuType;
-		this.currentDpa = this.convertVersion(result.dpaVer);
+	public handleEnumResponse(response: any): void {
+		this.osBuild = response.osRead.osBuild;
+		this.trType = response.osRead.trMcuType.value;
+		let dpaStr: string = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
+		this.currentDpa = dpaStr.split('.').join('').padStart(4, '0');
+		if (this.osBuild === null) {
+			this.osBuild = '0000';
+		}
 		DpaService.getVersions(this.osBuild)
 			.then((versions) => {
 				let fetchedVersions: Array<DpaVersions> = [];

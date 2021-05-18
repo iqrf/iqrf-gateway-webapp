@@ -2004,6 +2004,7 @@
 					"version": "Please select DPA version to upload."
 				},
 				"messages": {
+					"noUpgrades": "No DPA version upgrade or downgrade available for this OS version.",
 					"gatewayUpload": "Downloading DPA file to gateway...",
 					"gatewayUploadFailed": "Failed to download DPA file to gateway: {error}",
 					"gatewayUploadSuccess": "DPA file successfully downloaded to gateway.",
