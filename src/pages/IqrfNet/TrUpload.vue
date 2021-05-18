@@ -12,11 +12,11 @@ import {Component, Vue} from 'vue-property-decorator';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
-import OsService from '../../services/DaemonApi/OsService';
 import DpaUpdater from '../../components/IqrfNet/DpaUpdater.vue';
 import HexUpload from '../../components/IqrfNet/HexUpload.vue';
 import OsUpdater from '../../components/IqrfNet/OsUpdater.vue';
 import {IConfigFetch} from '../../interfaces/daemonComponent';
+import IqrfNetService from '../../services/IqrfNetService';
 
 @Component({
 	components: {
@@ -83,8 +83,8 @@ export default class TrUpload extends Vue {
 				return;
 			}
 			this.$store.dispatch('removeMessage', this.msgId);
-			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
-				this.handleOsInfoResponse(mutation.payload);
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				this.handleEnumResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
@@ -95,13 +95,13 @@ export default class TrUpload extends Vue {
 		});
 
 		if (this.$store.getters.isSocketConnected) {
-			this.getOsInfo();
+			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
 				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
-						this.getOsInfo();
+						this.enumerateCoordinator();
 						this.unwatch();
 					}
 				}
@@ -121,9 +121,9 @@ export default class TrUpload extends Vue {
 	/**
 	 * Sends a Daemon API request to retrieve OS information
 	 */
-	private getOsInfo(): void {
+	private enumerateCoordinator(): void {
 		this.$store.commit('spinner/SHOW');
-		OsService.read(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null) 
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -131,10 +131,10 @@ export default class TrUpload extends Vue {
 	 * Handles Daemon API OS response
 	 * @param response Daemon API response
 	 */
-	private handleOsInfoResponse(response): void {
+	private handleEnumResponse(response): void {
 		if (response.data.status === 0) {
-			(this.$refs.dpaUpdater as DpaUpdater).handleOsInfoResponse(response);
-			(this.$refs.osUpdater as OsUpdater).handleOsInfoResponse(response.data.rsp.result);
+			(this.$refs.dpaUpdater as DpaUpdater).handleEnumResponse(response.data.rsp);
+			(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
 		} else {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
@@ -157,7 +157,7 @@ export default class TrUpload extends Vue {
 			(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
 			(newVal: boolean, oldVal: boolean) => {
 				if (!oldVal && newVal) {
-					setTimeout(() => this.getOsInfo(), 5000);
+					setTimeout(() => this.enumerateCoordinator(), 5000);
 					this.unwatch();
 				}
 			}

@@ -147,21 +147,21 @@ export default class OsUpdater extends Vue {
 	}
 
 	/**
-	 * Handles OS Info response
+	 * Handles device enumeration response
 	 */
-	public handleOsInfoResponse(response: any): void {
-		this.currentOsBuild = ('0000' + response.osBuild.toString(16)).slice(-4).toUpperCase();
-		const osVersion = response.osVersion.toString(16);
-		this.currentOsVersion = osVersion.charAt(0) + '0' + osVersion.charAt(1);
-		this.trMcuType = response.trMcuType;
-		const flags = ('00000000' + response.flags.toString(2)).slice(-8);
+	public handleEnumResponse(response: any): void {
+		this.currentOsBuild = response.osRead.osBuild;
+		const osVersion = response.osRead.osVersion.split('.').join('');
+		this.currentOsVersion = osVersion.charAt(0) + '0' + osVersion.charAt(2);
+		this.trMcuType = response.osRead.trMcuType.value;
+		const flags = ('00000000' + response.osRead.flags.value.toString(2)).slice(-8);
 		if (flags[3] === '0') {
 			this.interfaceType = flags[6] === '0' ? 'SPI' : 'UART';
 		}
 		const data = {
 			build: this.currentOsBuild,
 			version: this.currentOsVersion,
-			mcuType: parseInt(response.trMcuType.toString(2).slice(-3), 2),
+			mcuType: parseInt(this.trMcuType.toString(2).slice(-3), 2),
 		};
 		this.getOsUpgrades(data);
 	}
