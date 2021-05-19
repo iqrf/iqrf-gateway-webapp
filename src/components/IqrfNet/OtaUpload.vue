@@ -48,6 +48,11 @@
 						v-if='target === "network"'
 						class='form-group'
 					>
+						<p>
+							<i class='text-danger'>
+								{{ $t('iqrfnet.networkManager.otaUpload.messages.networkNote') }}
+							</i>
+						</p>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:0,65535'
