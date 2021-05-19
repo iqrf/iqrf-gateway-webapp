@@ -1480,7 +1480,7 @@
 					"fileType": "File type",
 					"fileTypes": {
 						"hex": "Custom DPA handler",
-						"iqrf": "IQRF plugin"
+						"iqrf": "IQRF plug-in"
 					},
 					"target": "Upload target",
 					"targets": {
@@ -1510,6 +1510,7 @@
 				"messages": {
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occured during the OTA upload process.",
+					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
 					"hwpid": "* HWPID 65535 includes all devices.",
 					"notHexFile": "Selected file is not .hex file.",
 					"notIqrfFile": "Selected file is not .iqrf file.",
