@@ -10,7 +10,7 @@
 						:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
 						:options='bondTargetOptions'
 					/>
-					<div v-if='bondTarget === "node"'>
+					<div v-if='bondTarget === "device"'>
 						<CSelect
 							:value.sync='bondMethod'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
@@ -247,7 +247,7 @@ export default class BondingManager extends Vue {
 	/**
 	 * @var {BondingTarget} bondTarget Bonding target
 	 */
-	private bondTarget = BondingTarget.NODE
+	private bondTarget = BondingTarget.DEVICE
 
 	/**
 	 * @var {boolean} bondTargetAvailable Shows bond target select
@@ -259,12 +259,12 @@ export default class BondingManager extends Vue {
 	 */
 	private bondTargetOptions: Array<IOption> = [
 		{
-			value: BondingTarget.NODE,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.node')
+			value: BondingTarget.DEVICE,
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device')
 		},
 		{
 			value: BondingTarget.SERVICETOOL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.tool')
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service')
 		}
 	]
 
