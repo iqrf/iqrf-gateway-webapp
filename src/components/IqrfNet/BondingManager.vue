@@ -5,11 +5,17 @@
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<CSelect
-						:value.sync='bondMethod'
-						:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
-						:options='bondMethodOptions'
+						v-if='bondTargetAvailable'
+						:value.sync='bondTarget'
+						:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
+						:options='bondTargetOptions'
 					/>
-					<div v-if='bondMethod !== "nfc"'>
+					<div v-if='bondTarget === "node"'>
+						<CSelect
+							:value.sync='bondMethod'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
+							:options='bondMethodOptions'
+						/>
 						<div class='form-group'>
 							<label for='addressSwitch'>
 								<b>
@@ -107,7 +113,13 @@
 						</CButton>
 					</div>
 					<div v-else>
+						<CSelect
+							:value.sync='bondTool'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.toolType")'
+							:options='bondToolOptions'
+						/>
 						<CButton
+							v-if='bondTool === "nfc"'
 							color='primary'
 							@click='bondNfc'
 						>
@@ -177,7 +189,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import compareVersions from 'compare-versions';
 
-import {BondingMethod} from '../../enums/IqrfNet/bonding';
+import {BondingMethod, BondingTarget, Tool} from '../../enums/IqrfNet/bonding';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {IOption} from '../../interfaces/coreui';
@@ -214,7 +226,7 @@ export default class BondingManager extends Vue {
 	private autoAddress = false
 
 	/**
-	 * @var {string} bondMethod Bonding method
+	 * @var {BondingMethod} bondMethod Bonding method
 	 */
 	private bondMethod = BondingMethod.LOCAL
 
@@ -229,6 +241,45 @@ export default class BondingManager extends Vue {
 		{
 			value: BondingMethod.SMARTCONNECT,
 			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart')
+		}
+	]
+
+	/**
+	 * @var {BondingTarget} bondTarget Bonding target
+	 */
+	private bondTarget = BondingTarget.NODE
+
+	/**
+	 * @var {boolean} bondTargetAvailable Shows bond target select
+	 */
+	private bondTargetAvailable = false
+
+	/**
+	 * @constant {Array<IOption>} bondTargetOptions Bonding target options for coreui select
+	 */
+	private bondTargetOptions: Array<IOption> = [
+		{
+			value: BondingTarget.NODE,
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.node')
+		},
+		{
+			value: BondingTarget.SERVICETOOL,
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.tool')
+		}
+	]
+
+	/**
+	 * @var {Tool} tool Bond tool
+	 */
+	private bondTool = Tool.NFC
+
+	/**
+	 * @constant {Array<IOption>} toolOptions Tool options for coreui select
+	 */
+	private bondToolOptions: Array<IOption> = [
+		{
+			value: Tool.NFC,
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc')
 		}
 	]
 
@@ -353,7 +404,7 @@ export default class BondingManager extends Vue {
 		if (response.status !== 0) {
 			return;
 		}
-		const os = response.rsp.osRead.osBuild;
+		/*const os = response.rsp.osRead.osBuild;
 		if (parseInt(os, 16) < 0x08d7) {
 			return;
 		}
@@ -364,11 +415,8 @@ export default class BondingManager extends Vue {
 		const hwpid = response.rsp.peripheralEnumeration.hwpid;
 		if (hwpid !== 3004) {
 			return;
-		}
-		this.bondMethodOptions.push({
-			value: BondingMethod.NFC,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.nfc').toString()
-		});
+		}*/
+		this.bondTargetAvailable = true;
 	}
 
 	/**
