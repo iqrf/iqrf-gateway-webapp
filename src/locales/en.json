@@ -1394,10 +1394,10 @@
 					"autoAddress": "Assign address automatically",
 					"bondTarget": "Bonding target",
 					"bondingTargets": {
-						"node": "Node device",
-						"tool": "Service tool"
+						"device": "Device",
+						"service": "Service device"
 					},
-					"toolType": "Service tool type",
+					"toolType": "Device type",
 					"toolTypes": {
 						"nfc": "NFC reader"
 					},
