@@ -1398,11 +1398,19 @@
 				"title": "Bonding",
 				"form": {
 					"autoAddress": "Assign address automatically",
+					"bondTarget": "Bonding target",
+					"bondingTargets": {
+						"node": "Node device",
+						"tool": "Service tool"
+					},
+					"toolType": "Service tool type",
+					"toolTypes": {
+						"nfc": "NFC reader"
+					},
 					"bondMethod": "Bonding method",
 					"bondMethods": {
 						"local": "Local bonding",
-						"smart": "Smart connect",
-						"nfc": "Bond NFC reader"
+						"smart": "Smart connect"
 					},
 					"bondNfcReader": "Bond NFC reader",
 					"bondingRetries": "Bonding success tests",
