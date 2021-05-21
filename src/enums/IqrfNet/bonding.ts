@@ -11,8 +11,8 @@ export enum BondingMethod {
  * Bonding targers
  */
 export enum BondingTarget {
-	NODE = 'node',
-	SERVICETOOL = 'tool'
+	DEVICE = 'device',
+	SERVICETOOL = 'service'
 }
 
 /**
