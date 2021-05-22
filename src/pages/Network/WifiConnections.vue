@@ -33,23 +33,26 @@
 							{{ $t('network.wireless.table.noAccessPoints') }}
 						</template>
 						<template #ssid='{item}'>
-							<td>
-								<CBadge 
-									v-if='item.aps[0].inUse'
-									color='success'
+							<td class='table-ssid'>
+								<div>
+									<CBadge 
+										v-if='item.aps[0].inUse'
+										color='success'
+									>
+										{{ $t('network.connection.states.connected') }}
+									</CBadge>
+									{{ item.ssid }}
+								</div>
+								<span
+									style='cursor: pointer; align-content: right;'
+									@click='item.aps[0].showDetails = !item.aps[0].showDetails'
 								>
-									{{ $t('network.connection.states.connected') }}
-								</CBadge>
-								{{ item.ssid }}
-								<CIcon
-									v-c-tooltip='{
-										content: "BSSID: " + item.aps[0].bssid + " Channel: " + item.aps[0].channel + " Rate: " + item.aps[0].rate,
-										placement: "left"
-									}'
-									style='float: right;'
-									:content='icons.details'
-									size='xl'
-								/>
+									<CIcon
+										class='text-info'
+										size='xl'
+										:content='icons.details'
+									/>
+								</span>
 							</td>
 						</template>
 						<template #security='{item}'>
@@ -99,6 +102,42 @@
 									{{ $t('table.actions.delete') }}
 								</CButton>
 							</td>
+						</template>
+						<template #details='{item}'>
+							<CCollapse :show='item.aps[0].showDetails'>
+								<CCardBody>
+									<div class='table-details'>
+										<table>
+											<tbody>
+												<tr>
+													<th>BSSID</th>
+													<td>
+														{{ item.aps[0].bssid }}
+													</td>
+												</tr>
+												<tr>
+													<th>Mode</th>
+													<td>
+														{{ item.aps[0].mode }}
+													</td>
+												</tr>
+												<tr>
+													<th>Channel</th>
+													<td>
+														{{ item.aps[0].channel }}
+													</td>
+												</tr>
+												<tr>
+													<th>Rate</th>
+													<td>
+														{{ item.aps[0].rate }}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</CCardBody>
+							</CCollapse>
 						</template>
 					</CDataTable>
 				</CCardBody>
@@ -357,6 +396,7 @@ export default class WifiConnections extends Vue {
 			.then((response: AxiosResponse) => {
 				let apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
+					ap['showDetails'] = false;
 					let index = response.data.findIndex(con => con.name === ap.ssid);
 					if (index !== -1) {
 						ap.uuid = response.data[index].uuid;
@@ -536,3 +576,29 @@ export default class WifiConnections extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.table-ssid {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: -1px;
+}
+
+.table-details {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+}
+
+.table-details > table {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+.table th, td {
+	border: 0px;
+}
+
+</style>
