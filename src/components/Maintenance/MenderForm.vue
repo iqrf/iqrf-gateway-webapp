@@ -233,19 +233,25 @@ export default class MenderForm extends Vue {
 	 * Converts seconds to readable period string
 	 */
 	private periodString(seconds: number): string {
-		const duration = Duration.fromMillis(seconds * 1000);
-		if (seconds >= 0 && seconds < 60) {
-			return duration.toFormat('s') + ' seconds';
-		} else if (seconds < 3600) {
-			const tok = duration.toFormat('m ss').split(' ');
-			return this.mergeArrays(tok, [' minutes', ' seconds']);
-		} else if (seconds < 86400) {
-			const tok = duration.toFormat('h mm ss').split(' ');
-			return this.mergeArrays(tok, [' hours', ' minutes', ' seconds']);
-		} else {
-			const tok = duration.toFormat('d hh mm ss').split(' ');
-			return this.mergeArrays(tok, [' days', ' hours', ' minutes', ' seconds']);
+		const duration = Duration.fromMillis(seconds * 1000).shiftTo('days', 'hours', 'minutes', 'seconds').toObject();
+		let nums: Array<number> = [], units: Array<string> = [];
+		if (duration.days) {
+			nums.push(duration.days);
+			units.push(' days');
 		}
+		if (duration.hours) {
+			nums.push(duration.hours);
+			units.push(' hours');
+		}
+		if (duration.minutes) {
+			nums.push(duration.minutes);
+			units.push(' minutes');
+		}
+		if (duration.seconds) {
+			nums.push(duration.seconds);
+			units.push(' seconds');
+		}
+		return this.mergeArrays(nums, units);
 	}
 
 	/**
@@ -254,7 +260,7 @@ export default class MenderForm extends Vue {
 	 * @param {Array<string>} array2 Second array to merge
 	 * @return {string} Time string
 	 */
-	private mergeArrays(array1: Array<string>, array2: Array<string>): string {
+	private mergeArrays(array1: Array<number>, array2: Array<string>): string {
 		let result: Array<string> = [];
 		for (let i = 0; i < array1.length; i++) {
 			result.push(array1[i] + array2[i]);
