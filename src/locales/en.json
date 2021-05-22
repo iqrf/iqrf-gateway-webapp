@@ -1159,8 +1159,8 @@
 					"forwardToSyslog": "Forward journal to syslog",
 					"storage": "Storage method",
 					"storageMethods": {
-						"persistent": "In-memory persistence",
-						"volatile": "Filesystem persistence"
+						"persistent": "Filesystem persistence",
+						"volatile": "In-memory persistence"
 					},
 					"maxDisk": "Maximum disk space used by journal in MB*",
 					"sizeRotation": "File size-based log rotation",
