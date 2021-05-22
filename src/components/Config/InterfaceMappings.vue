@@ -197,10 +197,12 @@ export default class InterfaceMappings extends Vue {
 			return;
 		} 
 		this.showModal = false;
+		this.$store.commit('spinner/SHOW');
 		MappingService.removeMapping(this.deleteMapping.id)
 			.then(() => {
 				this.deleteMapping = null;
 				this.getMappings().then(() => {
+					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: this.modalMapping}).toString()
 					);
@@ -209,6 +211,7 @@ export default class InterfaceMappings extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.deleteMapping = null;
+				this.$store.commit('spinner/HIDE');
 				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: this.modalMapping});
 				this.modalMapping = '';
 			});
