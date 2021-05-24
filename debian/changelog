@@ -1,3 +1,76 @@
+iqrf-gateway-webapp (2.3.0~rc3) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * added update time to iqrf change os files
+  * GatewayLogs: fixed systemd journal fetch failure translation mapping
+  * GatewayModule: include IqrfInfo in diagnostics zip
+  * set 3s update time to non-final change os part files
+
+  [ Rostislav Spinar ]
+  * Adding acknowledgement
+
+  [ Karel Hanák ]
+  * Scheduler: fixed import modal, added remove all tasks option and endpoint
+  * Gateway logs: added refresh button
+  * IqrfNet restore: added access password note
+  * Aws cloud: file input handling refactor
+  * Config migration: file input handling refactor
+  * Scheduler: updated task fetch
+
+  [ Roman Ondráček ]
+  * IQRF net: add file extension filter in Restore
+  * Config: fix removal of JSON schema dir from scheduler ZIP archive
+
+  [ Karel Hanák ]
+  * GatewayModule: remove scheduler record schema from diagnostics zip
+  * ConfigModule: include scheduler in configuration migration, extract scheduler
+  * fixed migration and monit tests
+  * Debian package: updated postinst nginx action to depend on iqrf gateway file contents
+  * DevicesInfo: stop grid building chain if there are no bonded devices
+  * debian package: use case for pattern matching in posix shell
+  * debian package: install default symlink
+  * debian package: fixed postinst syntax error
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * debian package: symlink to https nginx conf
+  * debian package: remove existing symlink before creating new
+  * IQRF net: do not fetch product information from IQRF repository for uncertified devices
+
+  [ Roman Ondráček ]
+  * IQRF net: get os version from repository based on build
+
+  [ Karel Hanák ]
+  * BondingManager: NFC reader bonding
+
+  [ Roman Ondráček ]
+  * API: fix API specification
+
+  [ Karel Hanák ]
+  * NetworkConnectionService: missing docstring
+  * Bonding manager: added hwpid condition for NFC reader option, removed unused unbond methods for nfc
+  * BondingManager: updated localization, use iqrfRaw to bond nfc reader, updated layout
+  * unified modal windows across pages and components, removed unused wifi form component
+  * fixed coding style
+  * Wireguard: added tunnel delete modal window
+  * CoordinatorUpload: added missing translation
+  * TrUpload: replace OsRead with Enumeration in case of older DPA versions
+  * OsUpdater: sort IQRF OS files
+  * OtaUpload: network target warning
+  * BondingManager: separated nfc bonding from bonding methods
+  * BondingManager: updated labels
+  * SystemdJournal: fixed persistence translation mapping
+  * InterfaceMappings: added spinner to remove action
+  * MenderForm: fixed time badges
+  * WifiConnections: moved AP details from tooltip to collapse
+  * BondingManager: uncomment service tool conditions
+  * CI: added testing stability
+  * EntityManager: updated return type
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 24 May 2021 16:38:16 +0200
+
 iqrf-gateway-webapp (2.3.0~rc2) testing; urgency=medium
 
   [ Karel Hanák ]
