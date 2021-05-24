@@ -1,3 +1,10 @@
+iqrf-gateway-webapp (2.3.0~rc4) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * CI: fixed iqd-gw-01 deploy stage
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 24 May 2021 17:19:26 +0200
+
 iqrf-gateway-webapp (2.3.0~rc3) testing; urgency=medium
 
   [ Karel Hanák ]
