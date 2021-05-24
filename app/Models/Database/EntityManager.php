@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database;
 
 use Doctrine\ORM\Decorator\EntityManagerDecorator;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Entity manager
@@ -34,11 +34,11 @@ class EntityManager extends EntityManagerDecorator {
 	 * Returns the selected repository
 	 * @internal
 	 * @param string $entityName Entity name
-	 * @return ObjectRepository<mixed> Object repository
+	 * @return EntityRepository<mixed> Entity repository
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 	 */
-	public function getRepository($entityName): ObjectRepository {
+	public function getRepository($entityName): EntityRepository {
 		return parent::getRepository($entityName);
 	}
 
