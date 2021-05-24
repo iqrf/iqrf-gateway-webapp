@@ -404,7 +404,7 @@ export default class BondingManager extends Vue {
 		if (response.status !== 0) {
 			return;
 		}
-		/*const os = response.rsp.osRead.osBuild;
+		const os = response.rsp.osRead.osBuild;
 		if (parseInt(os, 16) < 0x08d7) {
 			return;
 		}
@@ -415,7 +415,7 @@ export default class BondingManager extends Vue {
 		const hwpid = response.rsp.peripheralEnumeration.hwpid;
 		if (hwpid !== 3004) {
 			return;
-		}*/
+		}
 		this.bondTargetAvailable = true;
 	}
 
