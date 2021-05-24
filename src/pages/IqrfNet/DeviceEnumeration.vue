@@ -15,13 +15,21 @@
 								<th>{{ $t('iqrfnet.enumeration.hwpid') }}</th>
 								<td>{{ peripheralData.hwpId }}</td>
 							</tr>
-							<tr>
+							<tr v-if='response.manufacturer !== ""'>
 								<th>{{ $t('iqrfnet.enumeration.manufacturer') }}</th>
 								<td>{{ response.manufacturer }}</td>
 							</tr>
-							<tr v-if='product !== null'>
+							<tr>
 								<th>{{ $t('iqrfnet.enumeration.product') }}</th>
-								<td><a :href='product.homePage'>{{ product.name }}</a></td>
+								<td v-if='product !== null'>
+									<a :href='product.homePage'>{{ product.name }}</a>
+								</td>
+								<td v-else-if='response.product !== ""'>
+									{{ response.product }}
+								</td>
+								<td v-else>
+									{{ $t('iqrfnet.enumeration.uncertifiedProduct') }}
+								</td>
 							</tr>
 							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.picture') }}</th>
@@ -32,10 +40,6 @@
 										:src='product.picture'
 									>
 								</td>
-							</tr>
-							<tr v-else>
-								<th>{{ $t('iqrfnet.enumeration.product') }}</th>
-								<td>{{ response.product }}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -167,7 +171,7 @@ export default class DeviceEnumeration extends Vue {
 	 * Component unwatch function
 	 */
 	private unwatch: CallableFunction = () => {return;}
-	
+
 	/**
 	 * @property {number} address Address of device to enumerate
 	 */
@@ -200,7 +204,11 @@ export default class DeviceEnumeration extends Vue {
 				if (this.peripheralData === null) {
 					return;
 				}
-				ProductService.get(this.peripheralData.hwpId)
+				const hwpId = this.peripheralData.hwpId;
+				if ((hwpId & 0xf) === 0xf) {
+					return;
+				}
+				ProductService.get(hwpId)
 					.then((response: AxiosResponse) => {
 						this.product = response.data;
 					})
