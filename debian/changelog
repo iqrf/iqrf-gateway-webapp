@@ -1,3 +1,12 @@
+iqrf-gateway-webapp (2.3.0~rc5) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * localization: added missing delete translation
+  * BondingManager: drop hwpid condition for nfc reader
+  * SchedulerForm: fixed cron seconds component validation
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 26 May 2021 07:37:19 +0200
+
 iqrf-gateway-webapp (2.3.0~rc4) testing; urgency=medium
 
   [ Karel Hanák ]
