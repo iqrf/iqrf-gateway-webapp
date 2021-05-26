@@ -412,10 +412,6 @@ export default class BondingManager extends Vue {
 		if (compareVersions.compare(dpa, '4.16', '<')) {
 			return;
 		}
-		const hwpid = response.rsp.peripheralEnumeration.hwpid;
-		if (hwpid !== 3004) {
-			return;
-		}
 		this.bondTargetAvailable = true;
 	}
 
