@@ -28,6 +28,8 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\MaintenanceModule\Exceptions\MenderFailedException;
+use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -114,6 +116,50 @@ class MenderController extends BaseController {
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/install")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Installs mender artifact
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          multipart/form-data:
+	 *              schema:
+	 *                  type: object
+	 *                  properties:
+	 *                      file:
+	 *                          type: string
+	 *                          format: binary
+	 *
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '415':
+	 *          description: Unsupported media file
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$file = $request->getUploadedFiles()[0];
+			$filePath = $this->manager->saveArtifactFile($file->getClientFilename(), $file->getStream()->getContents());
+			return $response->writeBody($this->manager->installArtifact($filePath));
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

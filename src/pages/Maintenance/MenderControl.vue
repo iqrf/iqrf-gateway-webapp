@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('maintenance.mender.title') }}</h1>
+		<h1>{{ $t('maintenance.mender.service.pageTitle') }}</h1>
 		<CCard body-wrapper>
 			<div class='box'>
 				<div>
@@ -40,7 +40,7 @@
 					</CButton>
 				</div>
 			</div>
-			<MenderForm />
+			<MenderServiceForm />
 		</CCard>
 	</div>
 </template>
@@ -48,7 +48,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import MenderForm from '../../components/Maintenance/MenderForm.vue';
+import MenderServiceForm from '../../components/Maintenance/MenderServiceForm.vue';
 
 import ServiceService from '../../services/ServiceService';
 import {menderErrorToast} from '../../helpers/errorToast';
@@ -61,7 +61,7 @@ import {ServiceStatus} from '../../services/ServiceService';
 	components: {
 		CButton,
 		CCard,
-		MenderForm,
+		MenderServiceForm,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
@@ -72,7 +72,7 @@ import {ServiceStatus} from '../../services/ServiceService';
 		});
 	},
 	metaInfo: {
-		title: 'maintenance.mender.title',
+		title: 'maintenance.mender.service.pageTitle',
 	},
 })
 

@@ -80,7 +80,9 @@ const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
 const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
+const MenderDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderDisambiguation.vue');
 const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
+const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderUpdate.vue');
 const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
 import store from '../store';
@@ -841,8 +843,26 @@ const routes: Array<RouteConfig> = [
 						path: 'pixla',
 					},
 					{
-						component: MenderControl,
 						path: 'mender',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								component: MenderDisambiguation,
+								path: '',
+							},
+							{
+								component: MenderControl,
+								path: 'service',
+							},
+							{
+								component: MenderUpdate,
+								path: 'update',
+							},
+						],
 					},
 					{
 						component: MonitControl,
