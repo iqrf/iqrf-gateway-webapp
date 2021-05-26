@@ -6,33 +6,33 @@
 				v-slot='{errors, touched, valid}'
 				rules='required'
 				:custom-messages='{
-					required: "maintenance.mender.errors.server"
+					required: "maintenance.mender.service.errors.server"
 				}'
 			>
 				<CInput
 					v-model='configuration.ServerURL'
-					:label='$t("maintenance.mender.form.server")'
-					:placeholder='$t("maintenance.mender.form.placeholders.server")'
+					:label='$t("maintenance.mender.service.form.server")'
+					:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
 					:is-valid='touched ? valid : null'
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
 			<CSelect
 				:value.sync='configuration.ClientProtocol'
-				:label='$t("maintenance.mender.form.protocol")'
+				:label='$t("maintenance.mender.service.form.protocol")'
 				:options='protocolOptions'
 			/>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='required'
 				:custom-messages='{
-					required: "maintenance.mender.errors.tenantToken"
+					required: "maintenance.mender.service.errors.tenantToken"
 				}'
 			>
 				<CInput
 					v-model='configuration.TenantToken'
-					:label='$t("maintenance.mender.form.tenantToken")'
-					:placeholder='$t("maintenance.mender.form.placeholders.tenantToken")'
+					:label='$t("maintenance.mender.service.form.tenantToken")'
+					:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
 					:is-valid='touched ? valid : null'
 					:invalid-feedback='$t(errors[0])'
 				/>
@@ -42,13 +42,13 @@
 				rules='min:0|required|integer'
 				:custom-messages='{
 					integer: "forms.errors.integer",
-					min: "maintenance.mender.errors.inventoryPollInterval",
-					required: "maintenance.mender.errors.inventoryPollInterval"
+					min: "maintenance.mender.service.errors.inventoryPollInterval",
+					required: "maintenance.mender.service.errors.inventoryPollInterval"
 				}'
 			>
 				<b>
 					<label for='inventoryPoll'>
-						{{ $t('maintenance.mender.form.inventoryPollInterval') }}
+						{{ $t('maintenance.mender.service.form.inventoryPollInterval') }}
 					</label>
 				</b> <CBadge color='info'>
 					{{ inventoryPollTime }}
@@ -67,13 +67,13 @@
 				rules='min:0|required|integer'
 				:custom-messages='{
 					integer: "forms.errors.integer",
-					min: "maintenance.mender.errors.retryPollInterval",
-					required: "maintenance.mender.errors.retryPollInterval"
+					min: "maintenance.mender.service.errors.retryPollInterval",
+					required: "maintenance.mender.service.errors.retryPollInterval"
 				}'
 			>
 				<b>
 					<label for='retryPoll'>
-						{{ $t('maintenance.mender.form.retryPollInterval') }}
+						{{ $t('maintenance.mender.service.form.retryPollInterval') }}
 					</label>
 				</b> <CBadge color='info'>
 					{{ retryPollTime }}
@@ -92,13 +92,13 @@
 				rules='min:0|required|integer'
 				:custom-messages='{
 					integer: "forms.errors.integer",
-					min: "maintenance.mender.errors.updatePollInterval",
-					required: "maintenance.mender.errors.updatePollInterval"
+					min: "maintenance.mender.service.errors.updatePollInterval",
+					required: "maintenance.mender.service.errors.updatePollInterval"
 				}'
 			>
 				<b>
 					<label for='retryPoll'>
-						{{ $t('maintenance.mender.form.updatePollInterval') }}
+						{{ $t('maintenance.mender.service.form.updatePollInterval') }}
 					</label>
 				</b> <CBadge color='info'>
 					{{ updatePollTime }}
@@ -167,11 +167,11 @@ export default class MenderForm extends Vue {
 	 */
 	private protocolOptions: Array<IOption> = [
 		{
-			label: this.$t('maintenance.mender.form.protocols.https').toString(),
+			label: this.$t('maintenance.mender.service.form.protocols.https').toString(),
 			value: MenderProtocols.HTTPS,
 		},
 		{
-			label: this.$t('maintenance.mender.form.protocols.wss').toString(),
+			label: this.$t('maintenance.mender.service.form.protocols.wss').toString(),
 			value: MenderProtocols.WSS,
 		},
 	]
@@ -280,7 +280,7 @@ export default class MenderForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.configuration = response.data;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.messages.fetchFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
 	}
 	
 	/**
@@ -293,9 +293,9 @@ export default class MenderForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.featureName, this.configuration)
 			.then(() => this.getConfig().then(() => this.$toast.success(
-				this.$t('maintenance.mender.messages.saveSuccess').toString()
+				this.$t('maintenance.mender.service.messages.saveSuccess').toString()
 			)))
-			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.messages.saveFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.saveFailed'));
 	}
 
 }
