@@ -383,7 +383,7 @@ export default class SchedulerForm extends Vue {
 		allowOnlyOneBlankDayField: false,
 		seconds: {
 			minValue: 0,
-			maxValue: 0,
+			maxValue: 59,
 		},
 		minutes: {
 			minValue: 0,
