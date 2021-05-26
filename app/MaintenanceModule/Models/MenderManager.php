@@ -20,17 +20,16 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
+use App\MaintenanceModule\Exceptions\MenderFailedException;
+use App\MaintenanceModule\Exceptions\MenderMissingException;
+use Nette\Utils\FileSystem;
 
 /**
  * Mender client configuration manager
  */
 class MenderManager {
-
-	/**
-	 * @var JsonFileManager $fileManager JSON file manager
-	 */
-	private $fileManager;
 
 	/**
 	 * JSON file containing mender-client configuration
@@ -43,10 +42,27 @@ class MenderManager {
 	private const CONNECT_CONF = 'mender-connect';
 
 	/**
+	 * Path to upload artifact file to
+	 */
+	private const UPLOAD_PATH = '/tmp/';
+
+	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
+
+	/**
+	 * @var JsonFileManager $fileManager JSON file manager
+	 */
+	private $fileManager;
+
+	/**
 	 * Constructior
+	 * @param CommandManager $commandManager Command manager
 	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager) {
+		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
 	}
 
@@ -89,6 +105,43 @@ class MenderManager {
 		unset($newConfig['ClientProtocol']);
 		$this->fileManager->write(self::CLIENT_CONF, array_merge($clientConfig, $newConfig), '.conf');
 		$this->fileManager->write(self::CONNECT_CONF, $connectConfig, '.conf');
+	}
+
+	/**
+	 * Saves uploaded artifact file and returns full path
+	 * @param string $fileName File name
+	 * @param string $fileContent File content
+	 * @return string Path to uploaded file in Gateway filesystem
+	 */
+	public function saveArtifactFile(string $fileName, string $fileContent): string {
+		$filePath = self::UPLOAD_PATH . $fileName;
+		FileSystem::write($filePath, $fileContent);
+		return $filePath;
+	}
+
+	/**
+	 * Removes uploaded artifact file
+	 * @param string $filePath Path to uploaded file
+	 */
+	public function removeArtifactFile(string $filePath): void {
+		FileSystem::delete($filePath);
+	}
+
+	/**
+	 * Installs mender artifact and returns output
+	 * @param string $filePath Path to mender artifact file
+	 * @return string Mender execution output
+	 */
+	public function installArtifact(string $filePath): string {
+		if (!$this->commandManager->commandExist('mender')) {
+			throw new MenderMissingException('Mender utility is not installed.');
+		}
+		$result = $this->commandManager->run('mender -install ' . $filePath);
+		$this->removeArtifactFile($filePath);
+		if ($result->getExitCode() !== 0) {
+			throw new MenderFailedException($result->getStderr());
+		}
+		return $result->getStdout();
 	}
 
 }
