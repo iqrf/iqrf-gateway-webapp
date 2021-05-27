@@ -24,7 +24,9 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
+use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * Mender client configuration manager
@@ -128,20 +130,70 @@ class MenderManager {
 	}
 
 	/**
-	 * Installs mender artifact and returns output
+	 * Installs update from artifact and returns output
 	 * @param string $filePath Path to mender artifact file
-	 * @return string Mender execution output
+	 * @return string Output log
 	 */
 	public function installArtifact(string $filePath): string {
+		$this->checkMender();
+		$result = $this->commandManager->run('mender -install ' . $filePath, true);
+		$this->removeArtifactFile($filePath);
+		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+	}
+
+	/**
+	 * Commits installed mender artifact
+	 * @return string Output log
+	 */
+	public function commitUpdate(): string {
+		$this->checkMender();
+		$result = $this->commandManager->run('mender -commit', true);
+		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+	}
+
+	/**
+	 * Rolls installed mender artifact back
+	 * @return string Output log
+	 */
+	public function rollbackUpdate(): string {
+		$this->checkMender();
+		$result = $this->commandManager->run('mender -rollback', true);
+		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+	}
+
+	/**
+	 * Checks execution status and processes output log accordingly
+	 * @param int $code Mender execution code
+	 * @param string $output Output log before processing
+	 * @return string Processed output log
+	 */
+	private function handleCommandResult(int $code, string $output): string {
+		$lines = explode(PHP_EOL, $output);
+		$pattern = '/^time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"\smodule=(\w+)$/';
+		foreach ($lines as $idx => $line) {
+			$matches = Strings::match($line, $pattern);
+			if ($matches === null) {
+				continue;
+			}
+			$lines[$idx] = sprintf('%s - [%s] - %s: %s', $matches[1], $matches[2], $matches[4], $matches[3]);
+		}
+		$output = implode(PHP_EOL, $lines);
+		if ($code === 0) {
+			return $output;
+		}
+		if ($code === 2) {
+			throw new MenderNoUpdateInProgressException($output);
+		}
+		throw new MenderFailedException($output);
+	}
+
+	/**
+	 * Checks if Mender utility is installed
+	 */
+	private function checkMender(): void {
 		if (!$this->commandManager->commandExist('mender')) {
 			throw new MenderMissingException('Mender utility is not installed.');
 		}
-		$result = $this->commandManager->run('mender -install ' . $filePath);
-		$this->removeArtifactFile($filePath);
-		if ($result->getExitCode() !== 0) {
-			throw new MenderFailedException($result->getStderr());
-		}
-		return $result->getStdout();
 	}
 
 }
