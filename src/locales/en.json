@@ -2510,7 +2510,12 @@
 					"rollback": "Rollback update"
 				},
 				"messages": {
-					"installFailed": "Failed to install mender artifact, see output log for details."
+					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully commited.",
+					"installFailed": "Failed to install Mender artifact, see output log for details.",
+					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
+					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
+					"rollbackSuccess": "Currently installed Mender artifact update has been successfully rolled back."
 				}
 			}
 		},
