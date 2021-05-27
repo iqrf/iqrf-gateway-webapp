@@ -19,11 +19,13 @@
 			</CButton> <CButton
 				color='success'
 				:disabled='!installSuccess'
+				@click='commit'
 			>
 				{{ $t('maintenance.mender.update.form.commit') }}
 			</CButton> <CButton
 				color='danger'
 				:disabled='!installSuccess'
+				@click='rollback'
 			>
 				{{ $t('maintenance.mender.update.form.rollback') }}
 			</CButton>
@@ -90,17 +92,65 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		MenderService.install(formData)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
-				this.updateLog(response.data);
+				this.handleResponse('maintenance.mender.update.messages.installSuccess', response.data);
 				this.installSuccess = true;
 			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('maintenance.mender.update.messages.installFailed').toString()
-				);
-				this.updateLog(error.response ? error.response.data : error.message);
-			});
+			.catch((error: AxiosError) => this.handleError(
+				'maintenance.mender.update.messages.installFailed',
+				error.response ? error.response.data : error.message
+			));
+	}
+
+	/**
+	 * Performs mender commit task
+	 */
+	private commit(): void {
+		this.$store.commit('spinner/SHOW');
+		MenderService.commit()
+			.then((response: AxiosResponse) => this.handleResponse(
+				'maintenance.mender.update.messages.commitSuccess',
+				response.data
+			))
+			.catch((error: AxiosError) => this.handleError(
+				'maintenance.mender.update.messages.commitFailed',
+				error.response ? error.response.data : error.message
+			));
+	}
+
+	/**
+	 * Performs mender rollback task
+	 */
+	private rollback(): void {
+		this.$store.commit('spinner/SHOW');
+		MenderService.rollback()
+			.then((response: AxiosResponse) => this.handleResponse(
+				'maintenance.mender.update.messages.rollbackSuccess',
+				response.data
+			))
+			.catch((error: AxiosError) => this.handleError(
+				'maintenance.mender.update.messages.rollbackFailed',
+				error.response ? error.response.data : error.message
+			));
+	}
+
+	/**
+	 * Handles axios response
+	 * @param {string} message Toast message to project
+	 * @param {string} output Output log
+	 */
+	private handleResponse(message: string, output: string): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(this.$t(message).toString());
+		this.updateLog(output);
+	}
+
+	/**
+	 * Handles axios error
+	 */
+	private handleError(message: string, output: string): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.error(this.$t(message).toString());
+		this.updateLog(output);
 	}
 
 	/**
