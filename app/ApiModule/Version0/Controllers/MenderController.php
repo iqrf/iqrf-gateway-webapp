@@ -24,15 +24,20 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
+use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
+use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Mender client configuration controller
@@ -150,16 +155,89 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
+		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$file = $request->getUploadedFiles()[0];
-			$filePath = $this->manager->saveArtifactFile($file->getClientFilename(), $file->getStream()->getContents());
+			$fileName = $file->getClientFilename();
+			$this->checkArtifact($fileName);
+			$filePath = $this->manager->saveArtifactFile($fileName, $file->getStream()->getContents());
 			return $response->writeBody($this->manager->installArtifact($filePath));
+		} catch (MenderInvalidArtifactException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (MenderFailedException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
 			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/commit")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Commits installed mender artifact
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeBody($this->manager->commitUpdate());
+		} catch (MenderNoUpdateInProgressException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/rollback")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Rolls installed mender artifact back
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeBody($this->manager->rollbackUpdate());
+		} catch (MenderNoUpdateInProgressException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * Checks if uploaded file is a valid mender artifact file
+	 * @param string $fileName File name
+	 */
+	private function checkArtifact(string $fileName): void {
+		if (!Strings::endsWith($fileName, '.mender')) {
+			throw new MenderInvalidArtifactException('Uploaded file is not a .mender artifact file.');
 		}
 	}
 

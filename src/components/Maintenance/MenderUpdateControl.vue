@@ -36,8 +36,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
 
 import MenderService from '../../services/MenderService';
-import { AxiosError, AxiosResponse } from 'axios';
-import { extendedErrorToast } from '../../helpers/errorToast';
+
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
