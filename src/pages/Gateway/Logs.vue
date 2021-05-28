@@ -21,43 +21,18 @@
 		<SystemdJournal v-if='$store.getters["features/isEnabled"]("systemdJournal")' />
 		<CCard>			
 			<CTabs variant='tabs' :active-tab='activeTab'>
-				<CTab 
-					v-if='loaded && controllerLog !== null'
-					:title='$t("service.iqrf-gateway-controller.title")'
-				>
-					<CCardBody>
-						<CAlert 
-							v-if='controllerLog.length === 0'
-							class='card-margin-bottom'
-							color='info'
-						>
-							{{ $t('gateway.log.messages.logEmpty') }}
-						</CAlert>
-						<pre v-else class='log card-margin-bottom'>{{ controllerLog }}</pre>
-					</CCardBody>
+				<CTab :title='$t("service.iqrf-gateway-controller.title")'>
+					<LogTab :log='controllerLog' />
 				</CTab>
-				<CTab
-					v-if='loaded'
-					:title='$t("service.iqrf-gateway-daemon.title")'
-				>
-					<CCardBody>
-						<CAlert
-							v-if='daemonLog === null'
-							class='card-margin-bottom'
-							color='danger'
-						>
-							{{ $t('gateway.log.messages.logNotFound') }}
-						</CAlert>
-						<CAlert
-							v-else-if='daemonLog.length === 0'
-							class='card-margin-bottom'
-							color='info'
-						>
-							{{ $t('gateway.log.messages.logEmpty') }}
-						</CAlert>
-						<pre v-else class='log card-margin-bottom'>{{ daemonLog }}</pre>
-					</CCardBody>
+				<CTab :title='$t("service.iqrf-gateway-daemon.title")'>
+					<LogTab :log='daemonLog' />
 				</CTab>
+				<CTabs :title='$t("gateway.log.uploader")'>
+					<LogTab :log='uploaderLog' />
+				</CTabs>
+				<CTabs :title='$t("gateway.log.journal")'>
+					<LogTab :log='journal' />
+				</CTabs>
 			</CTabs>
 		</CCard>
 	</div>
@@ -65,7 +40,8 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
+import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
+import LogTab from '../../components/Gateway/LogTab.vue';
 import SystemdJournal from '../../components/Gateway/SystemdJournal.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -78,11 +54,11 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CTab,
 		CTabs,
+		LogTab,
 		SystemdJournal,
 	},
 	metaInfo(): MetaInfo {
@@ -113,6 +89,16 @@ export default class LogViewer extends Vue {
 	private daemonLog: string|null = null
 
 	/**
+	 * @var {string|null} uploaderLog Uploader log file content
+	 */
+	private uploaderLog: string|null = null
+
+	/**
+	 * @var {string|null} journal Systemd journal content
+	 */
+	private journal: string|null = null
+
+	/**
 	 * @var {boolean} loaded Indicates that logs have been loaded 
 	 */
 	private loaded = false;
@@ -126,11 +112,16 @@ export default class LogViewer extends Vue {
 		GatewayService.getLatestLog()
 			.then(
 				(response: AxiosResponse) => {
-					this.daemonLog = response.data.daemon;
 					if (response.data.controller) {
 						this.controllerLog = response.data.controller;
-						this.activeTab = 1;
 					}
+					if (response.data.daemon) {
+						this.daemonLog = response.data.daemon;
+					}
+					if (response.data.uploader) {
+						this.uploaderLog = response.data.uploader;
+					}
+					this.journal = response.data.journal;
 					this.loaded = true;
 					this.$store.commit('spinner/HIDE');
 				}
