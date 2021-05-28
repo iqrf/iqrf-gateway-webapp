@@ -60,7 +60,7 @@ class LogController extends GatewayController {
 	 * @Path("/log")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: 'Returns latest IQRF Gateway Controller Daemon logs'
+	 *  summary: 'Returns latest Gateway logs'
 	 *  responses:
 	 *      '200':
 	 *          description: 'Success'
@@ -73,6 +73,10 @@ class LogController extends GatewayController {
 	 *                              type: string
 	 *                          daemon:
 	 *                              type: string
+	 *                          journal:
+	 *                               type: string
+	 *                          uploader:
+	 *                               type: string
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")

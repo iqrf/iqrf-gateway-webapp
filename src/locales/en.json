@@ -1152,6 +1152,8 @@
 			"title": "Logs",
 			"description": "Shows gateway logs.",
 			"download": "Download",
+			"uploader": "Uploader",
+			"journal": "Journal",
 			"systemdJournal": {
 				"title": "Systemd journal configuration",
 				"restart": "Restart service",

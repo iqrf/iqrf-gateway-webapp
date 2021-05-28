@@ -13,7 +13,7 @@ const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
 const GatewayTime = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayTime.vue');
-const LogViewer = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/LogViewer.vue');
+const Logs = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/Logs.vue');
 const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonMode.vue');
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
@@ -652,7 +652,7 @@ const routes: Array<RouteConfig> = [
 						path: 'date-time',
 					},
 					{
-						component: LogViewer,
+						component: Logs,
 						path: 'log',
 					},
 					{
