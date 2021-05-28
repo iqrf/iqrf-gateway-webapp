@@ -160,7 +160,7 @@ class MenderController extends BaseController {
 			$file = $request->getUploadedFiles()[0];
 			$fileName = $file->getClientFilename();
 			$this->checkArtifact($fileName);
-			$filePath = $this->manager->saveArtifactFile($fileName, $file->getStream()->getContents());
+			$filePath = $this->manager->saveArtifactFile($file);
 			return $response->writeBody($this->manager->installArtifact($filePath));
 		} catch (MenderInvalidArtifactException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
