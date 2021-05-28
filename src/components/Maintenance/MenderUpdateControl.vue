@@ -90,6 +90,7 @@ export default class MenderUpdateControl extends Vue {
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
 		MenderService.install(formData)
 			.then((response: AxiosResponse) => {
 				this.handleResponse('maintenance.mender.update.messages.installSuccess', response.data);
