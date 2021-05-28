@@ -11,7 +11,7 @@ class MenderService {
 	 * @returns {Promise<AxiosResponse>} Axios response promise
 	 */
 	install(file: FormData): Promise<AxiosResponse> {
-		return axios.post('mender/install', file, {headers: authorizationHeader()});
+		return axios.post('mender/install', file, {headers: authorizationHeader(), timeout: 600000});
 	}
 
 	/**
