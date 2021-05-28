@@ -57,7 +57,11 @@ export default class MenderUpdate extends Vue {
 	 * @param {string} log Output
 	 */
 	private updateLog(log: string) {
-		this.log += log;
+		if (this.log.length === 0) {
+			this.log += log;
+		} else {
+			this.log += '\n' + log;
+		}
 	}
 
 }
