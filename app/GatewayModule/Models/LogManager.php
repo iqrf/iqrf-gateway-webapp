@@ -90,20 +90,21 @@ class LogManager {
 			$logs['daemon'] = null;
 		}
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
-			$logs['controller'] = FileSystem::read($this->getLatestControllerLog());
+			try {
+				$logs['controller'] = $this->getLogFromPath(self::CONTROLLER_LOG);
+			} catch (LogNotFoundException $e) {
+				$logs['controller'] = null;
+			}
 		}
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+			try {
+				$logs['uploader'] = $this->getLogFromPath(self::UPLOADER_LOG);
+			} catch (LogNotFoundException $e) {
+				$logs['uploader'] = null;
+			}
+		}
+		$logs['journal'] = $this->getSystemdJournalLog();
 		return $logs;
-	}
-
-	/**
-	 * Returns IQRF Gateway Controller's latest log file path
-	 */
-	public function getLatestControllerLog(): string {
-		$logFile = $this->logDir . self::CONTROLLER_LOG;
-		if (!file_exists($logFile)) {
-			throw new LogNotFoundException('Controller log file not found');
-		}
-		return $logFile;
 	}
 
 	/**
@@ -126,12 +127,34 @@ class LogManager {
 		}
 		if ($logFiles === []) {
 			if ($emptyLogFound) {
-				throw new LogEmptyException('Daemon log file is empty.');
+				throw new LogEmptyException();
 			}
-			throw new LogNotFoundException('Daemon log files not found');
+			throw new LogNotFoundException();
 		}
 		krsort($logFiles);
 		return reset($logFiles);
+	}
+
+	/**
+	 * Returns log contents from file specified by parameter
+	 * @param string $logFile Log file name
+	 * @return string Log file content
+	 */
+	public function getLogFromPath(string $logFile): string {
+		$path = $this->$logDir . $logFile;
+		if (!file_exists($path)) {
+			throw new LogNotFoundException();
+		}
+		return FileSystem::read($path);
+	}
+
+	/**
+	 * Returns Systemd Journal log
+	 * @return string Systemd Journal log
+	 */
+	public function getSystemdJournalLog(): string {
+		$result = $this->commandManager->run('journalctl --utc --since today --no-pager');
+		return $result->getStdout();
 	}
 
 	/**
