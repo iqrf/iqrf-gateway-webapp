@@ -27,6 +27,7 @@ use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Mender client configuration manager
@@ -111,13 +112,12 @@ class MenderManager {
 
 	/**
 	 * Saves uploaded artifact file and returns full path
-	 * @param string $fileName File name
-	 * @param string $fileContent File content
+	 * @param UploadedFileInterface $file Uploaded file
 	 * @return string Path to uploaded file in Gateway filesystem
 	 */
-	public function saveArtifactFile(string $fileName, string $fileContent): string {
-		$filePath = self::UPLOAD_PATH . $fileName;
-		FileSystem::write($filePath, $fileContent);
+	public function saveArtifactFile(UploadedFileInterface $file): string {
+		$filePath = self::UPLOAD_PATH . $file->getClientFilename();
+		$file->moveTo($filePath);
 		return $filePath;
 	}
 
