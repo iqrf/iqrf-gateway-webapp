@@ -2496,11 +2496,10 @@
 				}
 			},
 			"update": {
-				"title": "Update",
-				"pageTitle": "Mender update",
+				"title": "Gateway update",
 				"description": "Manages Mender artifact updates.",
 				"log": {
-					"title": "Execution log",
+					"title": "Output log",
 					"noLog": "No Mender action has been performed."
 				},
 				"form": {
