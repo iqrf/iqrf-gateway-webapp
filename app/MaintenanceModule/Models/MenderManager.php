@@ -47,7 +47,7 @@ class MenderManager {
 	/**
 	 * Path to upload artifact file to
 	 */
-	private const UPLOAD_PATH = '/tmp/';
+	private const UPLOAD_PATH = '/data/storage/';
 
 	/**
 	 * @var CommandManager Command manager
