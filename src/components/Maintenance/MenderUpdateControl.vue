@@ -114,7 +114,7 @@ export default class MenderUpdateControl extends Vue {
 			))
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.commitFailed',
-				error.response ? error.response.data : error.message
+				error.response ? error.response.data.message : error.message
 			));
 	}
 
@@ -130,7 +130,7 @@ export default class MenderUpdateControl extends Vue {
 			))
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.rollbackFailed',
-				error.response ? error.response.data : error.message
+				error.response ? error.response.data.message : error.message
 			));
 	}
 
