@@ -98,7 +98,7 @@ export default class MenderUpdateControl extends Vue {
 			})
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.installFailed',
-				error.response ? error.response.data : error.message
+				error.response ? error.response.data.message : error.message
 			));
 	}
 
