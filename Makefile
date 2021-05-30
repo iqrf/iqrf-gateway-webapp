@@ -1,4 +1,4 @@
-# Copyright 2017-2019 IQRF Tech s.r.o.
+# Copyright 2017-2021 IQRF Tech s.r.o.
 # Copyright 2019-2021 MICRORISC s.r.o.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
