@@ -22,7 +22,6 @@
  * @phpVersion >= 7.2
  * @testCase
  */
-
 declare(strict_types = 1);
 
 namespace Tests\Unit\IqrfNetModule\Models;
