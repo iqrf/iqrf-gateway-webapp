@@ -1,5 +1,5 @@
 <?php
-/**
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -15,13 +15,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *//**
+ */
+/**
  * TEST: App\NetworkModule\Models\ConnectionManager
  * @covers App\NetworkModule\Models\ConnectionManager
  * @phpVersion >= 7.2
  * @testCase
  */
-
 declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Models;
