@@ -130,6 +130,8 @@ def insertToJsTs():
         lines = file.readlines()
         file.close()
 
+        #print(''.join(lines))
+        
         lines = header + lines
 
         #print(''.join(lines))
