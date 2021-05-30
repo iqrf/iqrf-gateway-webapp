@@ -1,67 +1,70 @@
 <template>
-	<CCard>
-		<CCardBody>
-			<CRow>
-				<CCol md='6'>
-					<p v-if='gatewayTime !== null'>
-						<b>
-							{{ $t('gateway.datetime.currentTime') }}
-						</b>
-					</p>
-					<p style='font-size: 2em'>
-						{{ timeDisplay }}
-					</p> 
-					<p style='font-size: 1.5em'>
-						{{ timezoneDisplay }}
-					</p>
-					<div class='form-group'>
-						<label for='clockFormatSwitch'>
-							{{ $t('gateway.datetime.clockFormat') }}
-						</label><br>
-						<CSwitch
-							id='clockFormatSwitch'
-							:checked.sync='hour12'
-							color='primary'
-							shape='pill'
-							size='lg'
-							:label-on='$t("forms.on")'
-							:label-off='$t("forms.off")'
-						/>
-					</div>
-				</CCol>
-				<CCol md='6'>
-					<p>
-						<b>
-							{{ $t('gateway.datetime.currentTimezone') }}
-						</b>
-					</p>
-					<p>
-						{{ currentTimezone }}
-					</p>
-					<CForm @submit.prevent='setTimezone'>
+	<div>
+		<h1>{{ $t('gateway.datetime.title') }}</h1>
+		<CCard>
+			<CCardBody>
+				<CRow>
+					<CCol md='6'>
+						<p v-if='gatewayTime !== null'>
+							<b>
+								{{ $t('gateway.datetime.currentTime') }}
+							</b>
+						</p>
+						<p style='font-size: 2em'>
+							{{ timeDisplay }}
+						</p> 
+						<p style='font-size: 1.5em'>
+							{{ timezoneDisplay }}
+						</p>
 						<div class='form-group'>
-							<label>
-								<strong>
-									{{ $t('gateway.datetime.form.timezone') }}
-								</strong>
-							</label>
-							<vSelect
-								v-model='timezone'
-								:options='timezoneOptions'
-								label='label'
-								:autoscroll='true'
-								:clearable='false'
-								:filterable='true'
+							<label for='clockFormatSwitch'>
+								{{ $t('gateway.datetime.clockFormat') }}
+							</label><br>
+							<CSwitch
+								id='clockFormatSwitch'
+								:checked.sync='hour12'
+								color='primary'
+								shape='pill'
+								size='lg'
+								:label-on='$t("forms.on")'
+								:label-off='$t("forms.off")'
 							/>
 						</div>
-						<CButton color='primary' type='submit'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</CCol>
-			</CRow>
-		</CCardBody>
-	</CCard>
+					</CCol>
+					<CCol md='6'>
+						<p>
+							<b>
+								{{ $t('gateway.datetime.currentTimezone') }}
+							</b>
+						</p>
+						<p>
+							{{ currentTimezone }}
+						</p>
+						<CForm @submit.prevent='setTimezone'>
+							<div class='form-group'>
+								<label>
+									<strong>
+										{{ $t('gateway.datetime.form.timezone') }}
+									</strong>
+								</label>
+								<vSelect
+									v-model='timezone'
+									:options='timezoneOptions'
+									label='label'
+									:autoscroll='true'
+									:clearable='false'
+									:filterable='true'
+								/>
+							</div>
+							<CButton color='primary' type='submit'>
+								{{ $t('forms.save') }}
+							</CButton>
+						</CForm>
+					</CCol>
+				</CRow>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

@@ -618,16 +618,16 @@ const routes: Array<RouteConfig> = [
 						]
 					},
 					{
-						component: ConfigMigration,
-						path: 'migration',
-					},
-					{
 						component: TranslatorConfig,
 						path: 'translator',
 					},
 					{
 						component: ControllerConfig,
 						path: 'controller',
+					},
+					{
+						component: ConfigMigration,
+						path: 'migration',
 					},
 				]
 			},

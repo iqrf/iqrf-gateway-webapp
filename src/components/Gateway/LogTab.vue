@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<CCardBody>
 		<CAlert
 			v-if='log === null'
 			class='card-margin-bottom'
@@ -15,7 +15,7 @@
 			{{ $t('gateway.log.messages.logEmpty') }}
 		</CAlert>
 		<pre v-else class='log card-margin-bottom'>{{ log }}</pre>
-	</div>
+	</CCardBody>
 </template>
 
 <script lang='ts'>

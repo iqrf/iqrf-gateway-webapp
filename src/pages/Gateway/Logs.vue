@@ -18,21 +18,11 @@
 				</CButton>
 			</div>
 		</header>
-		<SystemdJournal v-if='$store.getters["features/isEnabled"]("systemdJournal")' />
 		<CCard>			
-			<CTabs variant='tabs' :active-tab='activeTab'>
-				<CTab :title='$t("service.iqrf-gateway-controller.title")'>
-					<LogTab :log='controllerLog' />
+			<CTabs variant='tabs' :active-tab='0'>
+				<CTab v-for='(item, i) in logs' :key='i' :title='item.name'>
+					<LogTab :log='item.log' />
 				</CTab>
-				<CTab :title='$t("service.iqrf-gateway-daemon.title")'>
-					<LogTab :log='daemonLog' />
-				</CTab>
-				<CTabs :title='$t("gateway.log.uploader")'>
-					<LogTab :log='uploaderLog' />
-				</CTabs>
-				<CTabs :title='$t("gateway.log.journal")'>
-					<LogTab :log='journal' />
-				</CTabs>
 			</CTabs>
 		</CCard>
 	</div>
@@ -42,7 +32,6 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import LogTab from '../../components/Gateway/LogTab.vue';
-import SystemdJournal from '../../components/Gateway/SystemdJournal.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {fileDownloader} from '../../helpers/fileDownloader';
@@ -50,6 +39,7 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 import GatewayService from '../../services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IServiceLog} from '../../interfaces/log';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
@@ -59,7 +49,6 @@ import {MetaInfo} from 'vue-meta';
 		CTab,
 		CTabs,
 		LogTab,
-		SystemdJournal,
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -74,29 +63,9 @@ import {MetaInfo} from 'vue-meta';
 export default class LogViewer extends Vue {
 
 	/**
-	 * @var {number} activeTab CoreUI tabs active tab index
+	 * Array of service logs
 	 */
-	private activeTab = 0
-
-	/**
-	 * @var {string|null} controllerLog Controller log file content
-	 */
-	private controllerLog: string|null = null
-
-	/**
-	 * @var {string|null} daemonLog Daemon log file content
-	 */
-	private daemonLog: string|null = null
-
-	/**
-	 * @var {string|null} uploaderLog Uploader log file content
-	 */
-	private uploaderLog: string|null = null
-
-	/**
-	 * @var {string|null} journal Systemd journal content
-	 */
-	private journal: string|null = null
+	private logs: Array<IServiceLog> = []
 
 	/**
 	 * @var {boolean} loaded Indicates that logs have been loaded 
@@ -113,15 +82,29 @@ export default class LogViewer extends Vue {
 			.then(
 				(response: AxiosResponse) => {
 					if (response.data.controller) {
-						this.controllerLog = response.data.controller;
+						this.logs.push({
+							name: this.$t('service.iqrf-gateway-controller.title').toString(),
+							log: response.data.controller,
+						});
 					}
 					if (response.data.daemon) {
-						this.daemonLog = response.data.daemon;
+						this.logs.push({
+							name: this.$t('service.iqrf-gateway-daemon.title').toString(),
+							log: response.data.daemon,
+						});
 					}
 					if (response.data.uploader) {
-						this.uploaderLog = response.data.uploader;
+						this.logs.push({
+							name: this.$t('gateway.log.uploader').toString(),
+							log: response.data.uploader,
+						});
 					}
-					this.journal = response.data.journal;
+					if (response.data.journal) {
+						this.logs.push({
+							name: this.$t('gateway.log.journal').toString(),
+							log: response.data.journal,
+						});
+					}
 					this.loaded = true;
 					this.$store.commit('spinner/HIDE');
 				}
