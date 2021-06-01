@@ -1161,6 +1161,7 @@
 									"        },",
 									"        'systemdJournal': {",
 									"            'enabled': false,",
+									"            'path': '/etc/systemd/journald.conf',",
 									"        },",
 									"    };",
 									"    pm.expect(jsonData).to.eql(features);",
