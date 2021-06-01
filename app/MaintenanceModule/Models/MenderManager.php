@@ -136,7 +136,7 @@ class MenderManager {
 	 */
 	public function installArtifact(string $filePath): string {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -install ' . $filePath, true);
+		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 600);
 		$this->removeArtifactFile($filePath);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
@@ -147,7 +147,7 @@ class MenderManager {
 	 */
 	public function commitUpdate(): string {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -commit', true);
+		$result = $this->commandManager->run('mender -commit 2>&1', true);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
@@ -157,7 +157,7 @@ class MenderManager {
 	 */
 	public function rollbackUpdate(): string {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -rollback', true);
+		$result = $this->commandManager->run('mender -rollback 2>&1', true);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
