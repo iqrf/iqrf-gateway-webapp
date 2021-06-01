@@ -45,7 +45,7 @@ class SystemdJournalManager {
 	];
 
 	/**
-	 * @param string $confPath Path to systemd journald conf file
+	 * @var string $confPath Path to systemd journald conf file
 	 */
 	private $confPath;
 
