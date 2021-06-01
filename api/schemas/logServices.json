@@ -1,0 +1,33 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json",
+	"type": "array",
+	"title": "Available log services",
+	"description": "Logs of available services that webapp manages",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Available service",
+		"description": "Information about available service",
+		"required": [
+			"service",
+			"description"
+		],
+		"additionalProperties": false,
+		"properties": {
+			"service": {
+				"$id": "#/items/properties/service",
+				"title": "Service keyword",
+				"type": "string",
+				"example": "daemon"
+			},
+			"description": {
+				"$id": "#/items/properties/description",
+				"title": "Service description",
+				"type": "string",
+				"example": "IQRF Gateway Daemon"
+			}
+		}
+	}
+}

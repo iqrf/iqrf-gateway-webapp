@@ -97,6 +97,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
+		LogServices:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
 		MainConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mainConfiguration.json
 		Mapping:

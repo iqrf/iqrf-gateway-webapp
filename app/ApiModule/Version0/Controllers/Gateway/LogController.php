@@ -24,12 +24,17 @@ use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
+use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use App\GatewayModule\Models\LogManager;
 use DateTime;
 use Nette\Utils\FileSystem;
@@ -57,7 +62,65 @@ class LogController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/log")
+	 * @Path("/log/{service}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns latest log of a service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              text/plain:
+	 *                  schema:
+	 *                      type: string
+	 *      '404':
+	 *          description: 'Service not found'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="service", type="string", description="Service name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$service = $request->getParameter('service');
+		try {
+			return $response->writeBody($this->logManager->getServiceLog($service));
+		} catch (ServiceLogNotAvailableException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (LogNotFoundException $e) {
+			throw new ServerErrorException('Log file does not exist.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (LogEmptyException $e) {
+			throw new ServerErrorException('Log file is empty.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/log/services")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns list of services with available logs
+	 *  response:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/LogServices'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $response->writeJsonBody($this->logManager->getAvailableServices());
+	}
+
+	/**
+	 * @Path("/logs")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: 'Returns latest Gateway logs'
@@ -84,7 +147,7 @@ class LogController extends GatewayController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function logs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$response->writeJsonBody($this->logManager->load());
 			$fileName = 'iqrf-gateway.log';
@@ -96,7 +159,7 @@ class LogController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/logs")
+	 * @Path("/logs/export")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *   summary: Returns archive with IQRF Gateway logs
