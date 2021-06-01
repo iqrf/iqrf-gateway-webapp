@@ -56,7 +56,7 @@ class PasswordManager {
 	public function setPassword(string $password): void {
 		$feature = $this->featureManager->get('gatewayPass');
 		$input = $feature['user'] . ':' . $password;
-		$command = $this->commandManager->run('chpasswd', true, $input);
+		$command = $this->commandManager->run('chpasswd', true, 60, $input);
 		if ($command->getExitCode() !== 0) {
 			throw new ChpasswdErrorException($command->getStderr());
 		}
