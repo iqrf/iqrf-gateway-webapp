@@ -86,6 +86,7 @@ class FeatureManager {
 		],
 		'systemdJournal' => [
 			'enabled' => false,
+			'path' => '/etc/systemd/journald.conf',
 		],
 		'trUpload' => [
 			'enabled' => false,
