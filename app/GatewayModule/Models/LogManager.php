@@ -172,6 +172,7 @@ class LogManager {
 			$zipManager->addFile($this->logDir . self::UPLOADER_LOG, 'uploader/' . self::UPLOADER_LOG);
 		}
 		$zipManager->addFolder($this->daemonLogDir, 'daemon');
+		$zipManager->addFileFromText('journal.log', $this->getSystemdJournalLog());
 		$zipManager->close();
 		return $this->path;
 	}
