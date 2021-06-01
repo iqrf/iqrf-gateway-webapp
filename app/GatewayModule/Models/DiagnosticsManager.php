@@ -121,6 +121,7 @@ class DiagnosticsManager {
 		$this->addControllerLog();
 		$this->addUploaderLog();
 		$this->addWebappLog();
+		$this->addJournalLog();
 		$this->addInstalledPackages();
 		$this->zipManager->close();
 		return $path;
@@ -251,6 +252,14 @@ class DiagnosticsManager {
 	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';
 		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
+	}
+
+	/**
+	 * Adds logs of Systemd journal
+	 */
+	public function addJournalLog(): void {
+		$command = $this->commandManager->run('journalctl --utc --since today --no-pager');
+		$this->zipManager->addFileFromText('logs/journal.log', $command->getStdout());
 	}
 
 	/**

@@ -37,14 +37,12 @@ final class LogManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * Tests the function to load the latest IQRF Gateway Daemon's log
+	 * Tests the function to get the latest IQRF Gateway Daemon's log
 	 */
-	public function testLoad(): void {
+	public function testGetLatestDaemonLog(): void {
 		$fileName = '2018-08-13-13-37-834-iqrf-gateway-daemon.log';
-		$expected = [
-			'daemon' => $this->fileManager->read('daemon/' . $fileName),
-		];
-		Assert::same($expected, $this->manager->load());
+		$expected = $this->fileManager->read('daemon/' . $fileName);
+		Assert::same($expected, $this->manager->getLatestDaemonLog());
 	}
 
 	/**
