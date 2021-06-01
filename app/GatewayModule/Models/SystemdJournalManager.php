@@ -186,7 +186,13 @@ class SystemdJournalManager {
 		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
-		$conf = parse_ini_file($this->confPath, true, INI_SCANNER_RAW);
+		$conf = Strings::replace(FileSystem::read($this->confPath), [
+			'/^#/' => ';',
+			'/\\n#/' => PHP_EOL . ';',
+			'/\(/' => '"("',
+			'/\)/' => '")"',
+		]);
+		$conf = parse_ini_string($conf, true, INI_SCANNER_RAW);
 		if ($conf === false) {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}
