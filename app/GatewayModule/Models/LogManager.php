@@ -83,18 +83,20 @@ class LogManager {
 	 */
 	public function load(): array {
 		$logs = [];
-		try {
-			$logs['daemon'] = $this->getLatestDaemonLog();
-		} catch (LogEmptyException $e) {
-			$logs['daemon'] = '';
-		} catch (LogNotFoundException $e) {
-			$logs['daemon'] = null;
-		}
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
 			try {
 				$logs['controller'] = $this->getLogFromPath(self::CONTROLLER_LOG);
 			} catch (LogNotFoundException $e) {
 				$logs['controller'] = null;
+			}
+		}
+		if ($this->commandManager->commandExist('iqrfgd2')) {
+			try {
+				$logs['daemon'] = $this->getLatestDaemonLog();
+			} catch (LogEmptyException $e) {
+				$logs['daemon'] = '';
+			} catch (LogNotFoundException $e) {
+				$logs['daemon'] = null;
 			}
 		}
 		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
