@@ -47,7 +47,7 @@ class MenderManager {
 	/**
 	 * Path to upload artifact file to
 	 */
-	private const UPLOAD_PATH = '/data/storage/';
+	private const UPLOAD_PATH = '/tmp/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -137,8 +137,7 @@ class MenderManager {
 	public function installArtifact(string $filePath): string {
 		$this->checkMender();
 		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 600);
-		$this->removeArtifactFile($filePath);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+		return $this->handleCommandResult($result->getExitCode(), $result->getStdout(), $filePath);
 	}
 
 	/**
@@ -165,17 +164,21 @@ class MenderManager {
 	 * Checks execution status and processes output log accordingly
 	 * @param int $code Mender execution code
 	 * @param string $output Output log before processing
+	 * @param string $filePath Path to file to remove
 	 * @return string Processed output log
 	 */
-	private function handleCommandResult(int $code, string $output): string {
+	private function handleCommandResult(int $code, string $output, ?string $filePath = null): string {
+		if ($filePath !== null) {
+			$this->removeArtifactFile($filePath);
+		}
 		$lines = explode(PHP_EOL, $output);
-		$pattern = '/^time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"\smodule=(\w+)$/';
+		$pattern = '/^time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)".*$/';
 		foreach ($lines as $idx => $line) {
 			$matches = Strings::match($line, $pattern);
 			if ($matches === null) {
 				continue;
 			}
-			$lines[$idx] = sprintf('%s - [%s] - %s: %s', $matches[1], $matches[2], $matches[4], $matches[3]);
+			$lines[$idx] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
 		}
 		$output = implode(PHP_EOL, $lines);
 		if ($code === 0) {
