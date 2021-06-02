@@ -180,7 +180,7 @@ class MenderManager {
 			}
 			$lines[$idx] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
 		}
-		$output = implode(PHP_EOL, $lines);
+		$output = trim(implode(PHP_EOL, $lines));
 		if ($code === 0) {
 			return $output;
 		}
