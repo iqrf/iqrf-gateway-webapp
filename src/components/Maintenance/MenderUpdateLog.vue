@@ -11,7 +11,7 @@
 			>
 				{{ $t('maintenance.mender.update.log.noLog') }}
 			</CAlert>
-			<pre class='card-margin-bottom'>{{ log }}</pre>
+			<pre class='log card-margin-bottom'>{{ log }}</pre>
 		</CCardBody>
 	</CCard>
 </template>
