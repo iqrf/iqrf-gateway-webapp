@@ -32,6 +32,6 @@ export interface IField {
  * Coreui select component option interface
  */
 export interface IOption {
-	value: FileFormat|SecurityFormat|string|number|null
+	value: FileFormat|SecurityFormat|string|number|boolean|null
 	label: VueI18n.TranslateResult|string
 }

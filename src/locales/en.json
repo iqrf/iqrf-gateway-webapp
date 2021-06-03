@@ -1410,12 +1410,6 @@
 	"iqrfnet": {
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
-		"addressChange": {
-			"title": "Change network address",
-			"messages": {
-				"address": "Address has to be an integer from 0 to 239."
-			}
-		},
 		"messages": {
 			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
 		},
@@ -2033,11 +2027,19 @@
 				"form": {
 					"ascii": "ASCII",
 					"hex": "HEX",
-					"format": "Input format",
-					"setPassword": "Set Access Password",
-					"setKey": "Set User Key"
+					"format": "Format",
+					"value": "Value *",
+					"accessPassword": "Access Password",
+					"userKey": "User Key"
+				},
+				"errors": {
+					"password": "Access password should only contain printable ascii characters.",
+					"passwordLen": "Access password should be at most 16 characters long.",
+					"key": "User key should only contain printable ascii characters.",
+					"keyLen": "User key should be at most 16 characters long."
 				},
 				"messages": {
+					"note": "* Leave blank to use default value.",
 					"success": "IQMESH security has been successfully set. Device restarted.",
 					"failure": "Could not update IQMESH security settings.",
 					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted.",
@@ -2052,10 +2054,15 @@
 					"868": "868 MHz",
 					"916": "916 MHz"
 				},
+				"target": "Target",
+				"targets": {
+					"device": "Device",
+					"network": "Network"
+				},
 				"rfChannelA": "RF channel A",
 				"rfChannelB": "RF channel B",
-				"rfSubChannelA": "RF channel 2nd network",
-				"rfSubChannelB": "Alternative DSM channel",
+				"rfSubChannelA": "RF channel A subnetwork",
+				"rfSubChannelB": "RF channel B subnetwork",
 				"rfAltDsmChannel": "Alternative DSM channel",
 				"networkType": "Network type",
 				"networkTypes": {
@@ -2114,13 +2121,14 @@
 				},
 				"nodeDpaInterface": "Node DPA interface",
 				"messages": {
-					"breakInteroperability": "You will break interoperability if you disable STD and LP network.",
+					"breakInteroperability": "Disabling STD and LP network will break interoperability.",
 					"lpRxTimeout": "LP RX timeout has to be in range from 1 to 255.",
 					"rfChannel": {
 						"433": "RF Channel has to be in range from 0 to 16.",
 						"868": "RF Channel has to be in range from 0 to 67.",
 						"916": "RF Channel has to be in range from 0 to 255."
 					},
+					"address": "Address has to be an integer from 0 to 239.",
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7.",
 					"uartBaudRate": "Please select UART interface baud rate."

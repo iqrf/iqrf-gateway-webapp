@@ -163,13 +163,17 @@ export interface ITrConfiguration {
 	dpaPeerToPeer: boolean
 	embPers: IEmbedPers
 	ioSetup: boolean
+	localFrcReception: boolean
 	lpRxTimeout: number
+	nodeDpaInterface?: boolean
 	neverSleep: boolean
 	peerToPeer: boolean
 	rfAltDsmChannel: number
 	rfBand: string
 	rfChannelA: number
 	rfChannelB: number
+	rfSubChannelA?: number
+	rfSubChannelB?: number
 	rfPgmDualChannel: boolean
 	rfPgmEnableAfterReset: boolean
 	rfPgmIncorrectUpload: boolean
@@ -180,7 +184,9 @@ export interface ITrConfiguration {
 	rxFilter: number
 	stdAndLpNetwork: boolean
 	txPower: number
-	uartBaudrate: number
+	uartBaudrate: number,
+	accessPassword?: string,
+	securityUserKey?: string,
 }
 
 /**
