@@ -796,7 +796,14 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						component: TrConfiguration,
-						path: 'tr-config',
+						path: 'tr-config/:defaultAddr',
+						props: (route) => {
+							const defaultAddr = Number.parseInt(route.params.defaultAddr, 10);
+							if (Number.isNaN(defaultAddr)) {
+								return 0;
+							}
+							return {defaultAddr};
+						},
 					},
 					{
 						component: TrUpload,
