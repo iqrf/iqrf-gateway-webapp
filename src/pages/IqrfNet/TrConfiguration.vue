@@ -20,7 +20,7 @@ limitations under the License.
 		<CCard v-if='loaded !== null && loaded'>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='handleSubmit'>
+					<CForm>
 						<CRow>
 							<CCol>
 								<CSelect
@@ -133,7 +133,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.00", "<")'
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -149,7 +149,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.00", "<")'
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -277,11 +277,59 @@ limitations under the License.
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
 								<CInputCheckbox
-									v-for='peripheral of peripherals'
-									:key='peripheral.name'
-									:checked.sync='peripheral.enabled'
-									:disabled='unchangeablePeripherals.includes(peripheral.name)'
-									:label='$t("iqrfnet.trConfiguration.form.embPers." + peripheral.name)'
+									v-if='readAddress === 0'
+									:checked.sync='config.embPers.coordinator'
+									:disabled='unchangeablePeripherals.includes("coordinator")'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
+								/>
+								<CInputCheckbox
+									v-if='readAddress !== 0 || target === "network"'
+									:checked.sync='config.embPers.node'
+									:disabled='unchangeablePeripherals.includes("node")'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.os'
+									:disabled='unchangeablePeripherals.includes("os")'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ram'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledr'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledg'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
+								/>
+								<CInputCheckbox
+									v-if='(readAddress !== 0 || target === "network") && compareVersions(dpaVersion, "4.14", "<=")'
+									:checked.sync='config.embPers.spi'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.io'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.thermometer'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
+								/>
+								<CInputCheckbox
+									v-if='readAddress !== 0 || target === "network"'
+									:checked.sync='config.embPers.uart'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
 								<CInputCheckbox
@@ -405,7 +453,11 @@ limitations under the License.
 								<i v-if='securityPassword || securityKey'>{{ $t('iqrfnet.trConfiguration.security.messages.note') }}</i>
 							</CCol>
 						</CRow>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<CButton 
+							color='primary'
+							:disabled='invalid'
+							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
+						>
 							{{ $t('forms.write') }}
 						</CButton>
 					</CForm>
@@ -464,10 +516,10 @@ import OsService from '../../services/DaemonApi/OsService';
 import {Dictionary} from 'vue-router/types/router';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
+import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
-import { IProduct } from '../../interfaces/repository';
 
 @Component({
 	components: {
@@ -762,7 +814,7 @@ export default class TrConfiguration extends Vue {
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
 				this.$store.dispatch('spinner/hide');
-				this.handleWriteResponse(mutation.payload);
+				this.handleWriteResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				this.$store.dispatch('spinner/hide');
 				this.handleEnumerationResponse(mutation.payload);
@@ -933,12 +985,28 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Updates transciever configuration object with embed peripherals configuration and then sends WriteTrConfiguration request
+	 * @param {number} address Device address
 	 */
-	private handleSubmit(): void {
+	private handleSubmit(address: number): void {
 		let config = JSON.parse(JSON.stringify(this.config));
 		config.embPers = this.getEmbeddedPeripherals();
+		if (address === 255) {
+			if (config.embPers.coordinator !== undefined) {
+				config.embPers.coordinator = false;
+			}
+			if (config.embPers.node !== undefined) {
+				config.embPers.node = true;
+			}
+		} else if (address === 0) {
+			if (config.embPers.coordinator !== undefined) {
+				config.embPers.coordinator = true;
+			}
+			if (config.embPers.node !== undefined) {
+				config.embPers.node = false;
+			}
+		}
 		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.writeTrConfiguration(this.address, this.hwpid, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
+		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -946,23 +1014,44 @@ export default class TrConfiguration extends Vue {
 	 * Handles WriteTrConfiguration request response
 	 */
 	private handleWriteResponse(response): void {
-		if (response.data.status === 0) {
-			if (response.data.rsp.restartNeeded) {
-				this.resetDevice();
+		if (response.status === 0) {
+			console.warn(response);
+			if (this.target === NetworkTarget.NETWORK) {
+				if (response.rsp.deviceAddr === 255) {
+					if (response.rsp.notRespondedNodes !== undefined) {
+						this.$toast.info(this.$t(
+							'iqrfnet.trConfiguration.messages.notResponded',
+							{nodes: response.rsp.notRespondedNodes.join(', ')}
+						).toString());
+					}
+					if (response.rsp.notMatchedNodes !== undefined) {
+						this.$toast.info(this.$t(
+							'iqrfnet.trConfiguration.messages.NotMatched',
+							{nodes: response.rsp.notMatchedNodes.join(', ')}
+						).toString());
+					}
+					this.handleSubmit(0);
+				} else {
+					this.resetDevice(255);
+				}
 			} else {
-				this.$toast.success(
-					this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
-				);
+				if (response.rsp.restartNeeded) {
+					this.resetDevice(response.rsp.deviceAddr);
+				} else {
+					this.$toast.success(
+						this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
+					);
+				}
 			}
 			return;
 		}
 
 		if (this.daemon236) { // unified status codes
-			if (response.data.status === -1) {
+			if (response.status === -1) {
 				this.$toast.error(
 					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
 				);
-			} else if (response.data.status === 8) {
+			} else if (response.status === 8) {
 				this.$toast.error(
 					this.$t('forms.messages.noDevice', {address: this.address}).toString()
 				);
@@ -998,9 +1087,9 @@ export default class TrConfiguration extends Vue {
 	/**
 	 * Performs device reset
 	 */
-	private resetDevice(): void {
+	private resetDevice(address: number): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+		OsService.reset(address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -1018,6 +1107,12 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleResetResponse(response): void {
 		if (response.data.status === 0) {
+			if (this.target === NetworkTarget.NETWORK) {
+				if (response.data.rsp.nAdr === 255) {
+					this.resetDevice(0);
+					return;
+				}
+			}
 			this.$toast.success(
 				this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString()
 			);

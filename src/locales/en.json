@@ -2140,6 +2140,8 @@
 				}
 			},
 			"messages": {
+				"notMatched": "The following nodes did not match the selected HWPID: {nodes}.",
+				"notResponded": "The following nodes did not respond to the request: {nodes}.",
 				"invalidAddress": "Address {address} is not a valid device address.",
 				"noConfig": "TR configuration could not be read.",
 				"modalTitle": "Custom DPA handler issue detected",
