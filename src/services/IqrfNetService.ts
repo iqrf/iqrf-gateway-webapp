@@ -404,7 +404,7 @@ class IqrfNetService {
 	writeTrConfiguration(address: number, hwpid: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		delete configuration.rfBand;
 		configuration.deviceAddr = address;
-		configuration.hwpid = hwpid;
+		configuration.hwpId = hwpid;
 		const request = {
 			'mType': 'iqmeshNetwork_WriteTrConf',
 			'data': {
