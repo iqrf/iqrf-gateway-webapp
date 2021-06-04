@@ -1277,6 +1277,11 @@
 		"messages": {
 			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
 		},
+		"product": {
+			"title": "Product browser",
+			"browse": "Browse products",
+			"noProduct": "Could not retrieve products."
+		},
 		"enumeration": {
 			"title": "Device enumeration",
 			"deviceInfo": "Device info",
@@ -1496,7 +1501,7 @@
 						"node": "Node",
 						"network": "Network"
 					},
-					"hwpidFilter": "Filter nodes by HWPID*",
+					"hwpidFilter": "Filter nodes by HWPID *",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
 					"uploadEeprom": "Upload EEPROM data",
@@ -1993,6 +1998,8 @@
 				}
 			},
 			"messages": {
+				"invalidAddress": "Address {address} is not a valid device address.",
+				"noConfig": "TR configuration could not be read.",
 				"modalTitle": "Custom DPA handler issue detected",
 				"modalPrompt": "Custom DPA handler has been enabled in transciever configuration, but not detected. Do you wish to disable Custom DPA handler? The transciever will then be restarted.",
 				"disableFailure": "An error has occured while disabling Custom DPA handler.",

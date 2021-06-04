@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<CCard>
+		<CCard v-if='loaded !== null && loaded'>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='enumerate'>
+					<CForm @submit.prevent='handleSubmit'>
 						<CRow>
 							<CCol>
 								<CSelect
@@ -32,41 +32,47 @@
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<ValidationProvider
+								<div 
 									v-if='target === "network"'
-									v-slot='{errors, touched, valid}'
-									rules='required|integer|between:0,65535'
-									:custom-messages='{
-										required: "iqrfnet.networkManager.otaUpload.errors.hwpid",
-										integer: "forms.errors.integer",
-										between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
-									}'
 								>
-									<CInput
-										v-model.number='hwpid'
-										type='number'
-										min='0'
-										max='65535'
-										:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-									/>
+									<CButton
+										style='float: right;'
+										color='primary'
+										size='sm'
+										@click='showProductModal'
+									>
+										{{ $t('iqrfnet.product.browse') }}
+									</CButton>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|integer|between:0,65535'
+										:custom-messages='{
+											required: "iqrfnet.networkManager.otaUpload.errors.hwpid",
+											integer: "forms.errors.integer",
+											between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
+										}'
+									>
+										<CInput
+											v-model.number='hwpid'
+											type='number'
+											min='0'
+											max='65535'
+											:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
 									<i>{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}</i>
-								</ValidationProvider>
+								</div>
 								<CButton
 									v-if='target === "node"'
 									color='primary'
-									type='submit'
-									:disabled='invalid'
+									@click='enumerate'
 								>
 									{{ $t('forms.read') }}
 								</CButton>
 							</CCol>
 						</CRow><hr>
-					</CForm>
-				</ValidationObserver>
-				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='handleSubmit'>
 						<CRow>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
@@ -309,10 +315,10 @@
 								>
 									<CSelect
 										:value.sync='config.uartBaudrate'
-										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
+										:label='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
+										:placeholder='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
 										:options='uartBaudRates'
 									/>
 								</ValidationProvider>
@@ -390,6 +396,13 @@
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
+		<CAlert
+			v-else-if='loaded !== null && !loaded'
+			color='danger'
+		>
+			{{ $t('iqrfnet.trConfiguration.messages.noConfig') }}
+		</CAlert>
+		<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
 		<CModal
 			:show.sync='dpaEnabledNotDetected'
 			color='warning'
@@ -419,10 +432,11 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import ProductModal from '../../components/IqrfNet/ProductModal.vue';
 
 import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '../../enums/IqrfNet/network';
@@ -437,9 +451,11 @@ import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import { IProduct } from '../../interfaces/repository';
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -448,6 +464,7 @@ import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 		CInput,
 		CModal,
 		FontAwesomeIcon,
+		ProductModal,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -460,6 +477,11 @@ import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
  * Transciever configuration page component
  */
 export default class TrConfiguration extends Vue {
+
+	/**
+	 * @property {number} defaultAddr Default address
+	 */
+	@Prop({required: true}) defaultAddr!: number
 
 	/**
 	 * @var {number} address Device address
@@ -575,9 +597,14 @@ export default class TrConfiguration extends Vue {
 	private keyVisibility = 'password'
 
 	/**
-	 * @var {boolean} loaded Indicates whether configuration has been loaded
+	 * @var {boolean|null} loaded Indicates whether configuration has been loaded
 	 */
-	private loaded = false
+	private loaded: boolean|null = null
+
+	/**
+	 * @var {boolean} productModal Controls whether or not product modal is rendered
+	 */
+	private productModal = false
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -747,6 +774,17 @@ export default class TrConfiguration extends Vue {
 	 */
 	mounted(): void {
 		this.daemon236 = versionHigherEqual('2.3.6');
+		if (this.defaultAddr >= 0 && this.defaultAddr <= 239) {
+			this.address = this.defaultAddr;
+		} else if (this.defaultAddr === 255) {
+			this.address = 0;
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.invalidAddress', {address: this.defaultAddr}).toString()
+			);
+			this.$router.push('/iqrfnet/');
+			return;
+		}
 		if (this.$store.getters.isSocketConnected) {
 			this.readOs();
 		} else {
@@ -828,6 +866,7 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
+		this.loaded = null;
 		this.$store.dispatch('spinner/show', {timeout: 60000});
 		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
@@ -855,6 +894,7 @@ export default class TrConfiguration extends Vue {
 				this.$t('iqrfnet.trConfiguration.messages.readFailure').toString()
 			);
 		}
+		this.loaded = false;
 	}
 
 	/**
@@ -882,7 +922,7 @@ export default class TrConfiguration extends Vue {
 		let config = JSON.parse(JSON.stringify(this.config));
 		config.embPers = this.getEmbeddedPeripherals();
 		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
+		IqrfNetService.writeTrConfiguration(this.address, this.hwpid, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -1029,5 +1069,29 @@ export default class TrConfiguration extends Vue {
 		}
 		return (peripherals as IEmbedPers);
 	}
+
+	/**
+	 * Renders product modal
+	 */
+	private showProductModal(): void {
+		(this.$refs.productModal as ProductModal).show();
+	}
+
+	/**
+	 * Sets HWPID from selected product
+	 * @param {IProduct} product Selected product
+	 */
+	private setSelectedProduct(product: IProduct): void {
+		this.hwpid = product.hwpid;
+		(this.$refs.productModal as ProductModal).hide();
+	}
 }
 </script>
+
+<style scoped>
+.hwpid-group {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+</style>
