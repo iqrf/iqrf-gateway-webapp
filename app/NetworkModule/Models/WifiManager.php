@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\WifiNetwork;
 use App\NetworkModule\Enums\WifiSecurity;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use stdClass;
 
 /**
  * WiFI network manager
@@ -68,6 +69,18 @@ class WifiManager {
 			$networks[] = $deserializedEntry;
 		}
 		return $networks;
+	}
+
+	/**
+	 * Creates a hotspot
+	 * @param stdClass $hotspot Hotspot configuration
+	 */
+	public function createHotspot(stdClass $hotspot): void {
+		$command = sprintf('nmcli dev wifi hotspot ifname %s ssid %s password %s', $hotspot->interface, $hotspot->ssid, $hotspot->password);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
 	}
 
 }

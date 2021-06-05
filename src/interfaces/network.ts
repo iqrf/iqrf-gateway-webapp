@@ -129,6 +129,15 @@ export interface IWifiWep {
 }
 
 /**
+ * Hotspot creation configuration interface
+ */
+export interface IHotspot {
+	interface: string
+	ssid: string
+	password: string
+}
+
+/**
  * Wireguard VPN list entry interface
  */
 export interface IWG {

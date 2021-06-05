@@ -77,6 +77,7 @@ const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pa
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
 const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
+const HotspotForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/HotspotForm.vue');
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
 const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
@@ -790,7 +791,11 @@ const routes: Array<RouteConfig> = [
 								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
-							}
+							},
+							{
+								component: HotspotForm,
+								path: 'hotspot',
+							},
 						]
 					},
 					{

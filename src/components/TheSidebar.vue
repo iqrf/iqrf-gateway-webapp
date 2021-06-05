@@ -368,6 +368,11 @@ export default class TheSidebar extends Vue {
 								roles: ['power', 'normal'],
 							},
 							{
+								name: this.$t('network.wireless.hotspot.title'),
+								to: '/network/wireless/hotspot/',
+								roles: ['power', 'normal'],
+							},
+							{
 								name: this.$t('network.wireguard.title'),
 								to: '/network/vpn',
 								roles: ['power', 'normal'],

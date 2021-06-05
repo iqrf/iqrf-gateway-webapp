@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import { IHotspot } from '../interfaces/network';
 
 export enum ConnectionType {
 	BLUETOOTH = 'bluetooth',
@@ -95,6 +96,14 @@ class NetworkConnectionService {
 	 */
 	public listWifiAccessPoints(): Promise<AxiosResponse> {
 		return axios.get('network/wifi/list', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Creates a hotspot
+	 * @param data Hotspot configuration
+	 */
+	public createHotspot(data: IHotspot): Promise<AxiosResponse> {
+		return axios.post('network/wifi/hotspot', data, {headers: authorizationHeader()});
 	}
 
 }

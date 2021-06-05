@@ -1,0 +1,37 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/hotspot.json",
+	"type": "object",
+	"title": "Create a hotspot",
+	"example": {
+		"interface": "wlan0",
+		"ssid": "Hotspot",
+		"password": "password"
+	},
+	"required": [
+		"interface",
+		"ssid",
+		"password"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"interface": {
+			"$id": "#/properties/interface",
+			"title": "Interface name",
+			"type": "string",
+			"example": "wlan0"
+		},
+		"ssid": {
+			"$id": "#/properties/ssid",
+			"title": "Hotspot name",
+			"type": "string",
+			"example": "Hotspot"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"title": "Hotspot password",
+			"type": "string",
+			"example": "password"
+		}
+	}
+}

@@ -80,7 +80,9 @@ components:
 		Feature:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json
 		FeatureList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.jso
+		Hotspot:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/hotspot.json
 		IqrfIdeMacros:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:

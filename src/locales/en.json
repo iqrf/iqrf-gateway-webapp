@@ -2131,6 +2131,10 @@
 		"wireless": {
 			"title": "Wireless connections",
 			"description": "Wireless connections management.",
+			"hotspot": {
+				"title": "Create hotspot",
+				"create": "Create"
+			},
 			"table": {
 				"accessPoints": "Available access points",
 				"noAccessPoints": "No available access points.",

@@ -11,7 +11,13 @@
 				<CCardHeader class='border-0'>
 					{{ $t('network.wireless.table.accessPoints') }}
 					<CButton
-						style='float: right;'
+						color='success'
+						size='sm'
+						to='/network/wireless/hotspot/'
+					>
+						<CIcon :content='icons.add' size='sm' />
+						{{ $t('network.wireless.hotspot.title') }}
+					</CButton> <CButton
 						color='primary'
 						size='sm'
 						@click='getAccessPoints'
@@ -200,7 +206,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
 
-import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
+import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilPlus, cilReload, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
@@ -252,6 +258,7 @@ export default class WifiConnections extends Vue {
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Dictionary<Array<string>> = {
+		add: cilPlus,
 		details: cilInfo,
 		connect: cilLink,
 		disconnect: cilLinkBroken,
