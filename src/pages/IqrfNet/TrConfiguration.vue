@@ -133,7 +133,6 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -146,10 +145,10 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
+										:disabled='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "!=") && compareVersions(dpaVersion, "3.04", "!="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -162,6 +161,7 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
+										:disabled='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "!=") && compareVersions(dpaVersion, "3.04", "!="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -180,16 +180,16 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<CAlert
-									v-if='readAddress === 0 && config.stdAndLpNetwork === false'
+									v-if='address === 0 && config.stdAndLpNetwork === false'
 									color='warning'
 								>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
 								<CSelect
-									v-if='readAddress === 0'
 									:label='$t("iqrfnet.trConfiguration.form.networkType")'
 									:value.sync='config.stdAndLpNetwork'
 									:options='networkTypeOptions'
+									:disabled='address !== 0'
 								/>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
@@ -202,12 +202,12 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.txPower'
-										:label='$t("iqrfnet.trConfiguration.form.txPower")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
 										type='number'
 										max='7'
 										min='0'
+										:label='$t("iqrfnet.trConfiguration.form.txPower")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -221,16 +221,15 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.rxFilter'
-										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
 										type='number'
 										max='64'
 										min='0'
+										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='readAddress !== 0'
 									v-slot='{valid, touched, errors}'
 									rules='integer|between:1,255|required'
 									:custom-messages='{
@@ -241,10 +240,13 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.lpRxTimeout'
+										type='number'
+										min='1'
+										max='255'
 										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										type='number'
+										:disabled='address === 0'
 									/>
 								</ValidationProvider>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
@@ -272,124 +274,6 @@ limitations under the License.
 									:checked.sync='config.rfPgmIncorrectUpload'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
 									disabled='true'
-								/>
-							</CCol>
-							<CCol md='6'>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
-								<CInputCheckbox
-									v-if='readAddress === 0'
-									:checked.sync='config.embPers.coordinator'
-									:disabled='unchangeablePeripherals.includes("coordinator")'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
-								/>
-								<CInputCheckbox
-									v-if='readAddress !== 0 || target === "network"'
-									:checked.sync='config.embPers.node'
-									:disabled='unchangeablePeripherals.includes("node")'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.os'
-									:disabled='unchangeablePeripherals.includes("os")'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.eeprom'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.eeeprom'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ram'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ledr'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ledg'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
-								/>
-								<CInputCheckbox
-									v-if='(readAddress !== 0 || target === "network") && compareVersions(dpaVersion, "4.14", "<=")'
-									:checked.sync='config.embPers.spi'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.io'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.thermometer'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
-								/>
-								<CInputCheckbox
-									v-if='readAddress !== 0 || target === "network"'
-									:checked.sync='config.embPers.uart'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
-								/>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
-								<CInputCheckbox
-									:checked.sync='config.customDpaHandler'
-									:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
-									:disabled='!dpaHandlerDetected'
-								/>
-								<CInputCheckbox
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.10", ">=") && readAddress !== 0'
-									:checked.sync='config.dpaPeerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.peerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
-								/>
-								<CInputCheckbox
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.15", ">=") && readAddress !== 0'
-									:checked.sync='config.localFrcReception'
-									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.ioSetup'
-									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
-								/>
-								<CInputCheckbox
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.14", "<=")'
-									:checked.sync='config.dpaAutoexec'
-									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
-								/>
-								<CInputCheckbox
-									v-if='readAddress !== 0'
-									:checked.sync='config.routingOff'
-									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
-								/>
-								<CInputCheckbox
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "3.03", ">=")'
-									:checked.sync='config.neverSleep'
-									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='required'
-									:custom-messages='{
-										required: "iqrfnet.trConfiguration.form.messages.uartBaudrate",
-									}'
-								>
-									<CSelect
-										:value.sync='config.uartBaudrate'
-										:label='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
-										:options='uartBaudRates'
-									/>
-								</ValidationProvider>
-								<CInputCheckbox
-									v-if='dpaVersion !== null && compareVersions(dpaVersion, "4.00", "<")'
-									:checked.sync='config.nodeDpaInterface'
-									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.security.title') }}</h2>
 								<CInputCheckbox
@@ -450,10 +334,142 @@ limitations under the License.
 										</template>
 									</CInput>
 								</ValidationProvider>
-								<i v-if='securityPassword || securityKey'>{{ $t('iqrfnet.trConfiguration.security.messages.note') }}</i>
+								<p>
+									<i v-if='securityPassword || securityKey'>
+										{{ $t('iqrfnet.trConfiguration.security.messages.note') }}
+									</i>
+								</p>
+							</CCol>
+							<CCol md='6'>
+								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
+								<CInputCheckbox
+									:checked.sync='config.embPers.coordinator'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
+									:disabled='unchangeablePeripherals.includes("coordinator") || address !== 0'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.node'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
+									:disabled='unchangeablePeripherals.includes("node") || address === 0'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.os'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
+									:disabled='unchangeablePeripherals.includes("os")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ram'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledr'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledg'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.spi'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
+									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.io'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.thermometer'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
+								/>
+								<CInputCheckbox
+									v-if='readAddress !== 0 || target === "network"'
+									:checked.sync='config.embPers.uart'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
+								/>
+								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
+								<CInputCheckbox
+									:checked.sync='config.customDpaHandler'
+									:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
+									:disabled='!dpaHandlerDetected'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.dpaPeerToPeer'
+									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
+									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.peerToPeer'
+									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.localFrcReception'
+									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
+									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.ioSetup'
+									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.dpaAutoexec'
+									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
+									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.routingOff'
+									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
+									:disabled='address === 0'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.neverSleep'
+									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
+									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.nodeDpaInterface'
+									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
+									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.00", ">="))'
+								/>
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
+									rules='required'
+									:custom-messages='{
+										required: "iqrfnet.trConfiguration.form.messages.uartBaudrate",
+									}'
+								>
+									<CSelect
+										:value.sync='config.uartBaudrate'
+										:label='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+										:placeholder='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
+										:options='uartBaudRates'
+									/>
+								</ValidationProvider><hr>
+								<div class='form-group'>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa3') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa3Higher') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa4Lower') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa410') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa414') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa415') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.coordinatorOnly') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.nodeOnly') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.uart') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.readOnly') }}</i>
+								</div>
 							</CCol>
 						</CRow>
-						<CButton 
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
@@ -990,14 +1006,14 @@ export default class TrConfiguration extends Vue {
 	private handleSubmit(address: number): void {
 		let config = JSON.parse(JSON.stringify(this.config));
 		config.embPers = this.getEmbeddedPeripherals();
-		if (address === 255) {
+		if (address > 0) {
 			if (config.embPers.coordinator !== undefined) {
 				config.embPers.coordinator = false;
 			}
 			if (config.embPers.node !== undefined) {
 				config.embPers.node = true;
 			}
-		} else if (address === 0) {
+		} else {
 			if (config.embPers.coordinator !== undefined) {
 				config.embPers.coordinator = true;
 			}
@@ -1015,7 +1031,6 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleWriteResponse(response): void {
 		if (response.status === 0) {
-			console.warn(response);
 			if (this.target === NetworkTarget.NETWORK) {
 				if (response.rsp.deviceAddr === 255) {
 					if (response.rsp.notRespondedNodes !== undefined) {
@@ -1079,9 +1094,6 @@ export default class TrConfiguration extends Vue {
 			}
 			return;
 		}
-		this.$toast.error(
-			this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-		);
 	}
 
 	/**
