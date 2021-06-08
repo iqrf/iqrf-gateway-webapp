@@ -127,22 +127,10 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	public function testGetAvailableServices(): void {
 		$expected = [
-			[
-				'service' => 'controller',
-				'description' => 'IQRF Gateway Controller',
-			],
-			[
-				'service' => 'daemon',
-				'description' => 'IQRF Gateway Daemon',
-			],
-			[
-				'service' => 'uploader',
-				'description' => 'IQRF Gateway Uploader',
-			],
-			[
-				'service' => 'journal',
-				'description' => 'Systemd journal',
-			],
+			'controller',
+			'daemon',
+			'uploader',
+			'journal',
 		];
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['iqrf-gateway-controller'])
