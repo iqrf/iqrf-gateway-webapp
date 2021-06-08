@@ -7,27 +7,8 @@
 	"additionalItems": false,
 	"items": {
 		"$id": "#/items",
-		"type": "object",
+		"type": "string",
 		"title": "Available service",
-		"description": "Information about available service",
-		"required": [
-			"service",
-			"description"
-		],
-		"additionalProperties": false,
-		"properties": {
-			"service": {
-				"$id": "#/items/properties/service",
-				"title": "Service keyword",
-				"type": "string",
-				"example": "daemon"
-			},
-			"description": {
-				"$id": "#/items/properties/description",
-				"title": "Service description",
-				"type": "string",
-				"example": "IQRF Gateway Daemon"
-			}
-		}
+		"description": "List of available services managed by the webapp"
 	}
 }
