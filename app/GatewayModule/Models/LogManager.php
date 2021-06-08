@@ -188,32 +188,20 @@ class LogManager {
 
 	/**
 	 * Returns services with available logs that webapp manages
-	 * @return array<int, array<string, string>> Array of available services and descriptions
+	 * @return array<int, string> Array of available services and descriptions
 	 */
 	public function getAvailableServices(): array {
 		$services = [];
 		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
-			$services[] = [
-				'service' => 'controller',
-				'description' => 'IQRF Gateway Controller',
-			];
+			$services[] = 'controller';
 		}
 		if ($this->commandManager->commandExist('iqrfgd2')) {
-			$services[] = [
-				'service' => 'daemon',
-				'description' => 'IQRF Gateway Daemon',
-			];
+			$services[] = 'daemon';
 		}
 		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
-			$services[] = [
-				'service' => 'uploader',
-				'description' => 'IQRF Gateway Uploader',
-			];
+			$services[] = 'uploader';
 		}
-		$services[] = [
-			'service' => 'journal',
-			'description' => 'Systemd journal',
-		];
+		$services[] = 'journal';
 		return $services;
 	}
 
@@ -224,7 +212,7 @@ class LogManager {
 	 */
 	public function getServiceLog(string $service): string {
 		$services = $this->getAvailableServices();
-		if (!in_array($service, array_column($services, 'service'), true)) {
+		if (!in_array($service, $services, true)) {
 			throw new ServiceLogNotAvailableException('Service not found');
 		}
 		if ($service === 'controller') {
