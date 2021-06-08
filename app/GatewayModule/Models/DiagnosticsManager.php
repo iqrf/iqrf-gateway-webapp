@@ -122,6 +122,7 @@ class DiagnosticsManager {
 		$this->addUploaderLog();
 		$this->addWebappLog();
 		$this->addInstalledPackages();
+		$this->addProcesses();
 		$this->zipManager->close();
 		return $path;
 	}
@@ -261,6 +262,16 @@ class DiagnosticsManager {
 			$command = $this->commandManager->run('apt list --installed', true);
 			$packages = Strings::replace($command->getStdout(), '/Listing...\n/');
 			$this->zipManager->addFileFromText('installed_packages.txt', $packages);
+		}
+	}
+
+	/**
+	 * Adds process info
+	 */
+	public function addProcesses(): void {
+		if ($this->commandManager->commandExist('ps')) {
+			$output = $this->commandManager->run('ps -axeu', true)->getStdout();
+			$this->zipManager->addFileFromText('processes.txt', $output);
 		}
 	}
 
