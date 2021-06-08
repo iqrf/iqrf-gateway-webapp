@@ -44,10 +44,19 @@ class GatewayService {
 	}
 
 	/**
-	 * Retrieves the latest IQRF gateway Daemon's log file
+	 * Retrieves available logs
 	 */
-	getLatestLog(): Promise<AxiosResponse> {
-		return axios.get('gateway/logs', {headers: authorizationHeader(), timeout: 60000});
+	getAvailableLogs(): Promise<AxiosResponse> {
+		return axios.get('gateway/logs', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves a service log
+	 * @param service service name
+	 * @returns 
+	 */
+	getServiceLog(service: string): Promise<AxiosResponse> {
+		return axios.get('gateway/logs/' + service, {headers: authorizationHeader(), timeout: 60000});
 	}
 
 	/**

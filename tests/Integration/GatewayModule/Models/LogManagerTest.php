@@ -49,7 +49,7 @@ final class LogManagerTest extends CommandTestCase {
 	 * Command manager commands
 	 */
 	private const COMMANDS = [
-		'journal' => 'journalctl --utc --since today --no-pager',
+		'journal' => 'journalctl --utc -b --no-pager',
 	];
 
 	/**
@@ -66,32 +66,6 @@ final class LogManagerTest extends CommandTestCase {
 	 * @var LogManager Log manager with mocked command manager
 	 */
 	private $managerMockCommand;
-
-	/**
-	 * Tests the function to load latest gateway logs
-	 */
-	public function testLoad(): void {
-		$expected = [
-			'controller' => $this->fileManager->read('iqrf-gateway-controller.log'),
-			'daemon' => $this->fileManager->read('daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log'),
-			'uploader' => $this->fileManager->read('iqrf-gateway-uploader.log'),
-			'journal' => $this->fileManager->read('journal.log'),
-		];
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-controller'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrfgd2'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-uploader'])
-			->andReturn(true);
-		$command = new Command(self::COMMANDS['journal'], $expected['journal'], '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['journal']])
-			->andReturn($command);
-		Assert::same($expected, $this->managerMockCommand->load());
-	}
 
 	/**
 	 * Tests the function to get the latest IQRF Gateway Daemon's log
@@ -143,10 +117,10 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	public function testGetAvailableServices(): void {
 		$expected = [
-			'controller',
-			'daemon',
-			'uploader',
-			'journal',
+			'iqrf-gateway-controller',
+			'iqrf-gateway-daemon',
+			'iqrf-gateway-uploader',
+			'systemd-journald',
 		];
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['iqrf-gateway-controller'])
@@ -174,17 +148,17 @@ final class LogManagerTest extends CommandTestCase {
 			->withArgs(['iqrf-gateway-uploader'])
 			->andReturn(true);
 		$expected = $this->fileManager->read('iqrf-gateway-controller.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('controller'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-controller'));
 		$expected = $this->fileManager->read('daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('daemon'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-daemon'));
 		$expected = $this->fileManager->read('iqrf-gateway-uploader.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('uploader'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-uploader'));
 		$expected = $this->fileManager->read('journal.log');
 		$command = new Command(self::COMMANDS['journal'], $expected, '', 0);
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['journal']])
 			->andReturn($command);
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('journal'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog('systemd-journald'));
 	}
 
 	/**

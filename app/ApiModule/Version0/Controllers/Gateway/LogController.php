@@ -62,7 +62,28 @@ class LogController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/log/{service}")
+	 * @Path("/logs")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns list of services with available logs
+	 *  response:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/LogServices'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $response->writeJsonBody($this->logManager->getAvailableServices());
+	}
+
+	/**
+	 * @Path("/logs/{service}")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns latest log of a service
@@ -95,66 +116,6 @@ class LogController extends GatewayController {
 			throw new ServerErrorException('Log file does not exist.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (LogEmptyException $e) {
 			throw new ServerErrorException('Log file is empty.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
-	/**
-	 * @Path("/log/services")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns list of services with available logs
-	 *  response:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/LogServices'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $response->writeJsonBody($this->logManager->getAvailableServices());
-	}
-
-	/**
-	 * @Path("/logs")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: 'Returns latest Gateway logs'
-	 *  responses:
-	 *      '200':
-	 *          description: 'Success'
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: object
-	 *                      properties:
-	 *                          controller:
-	 *                              type: string
-	 *                          daemon:
-	 *                              type: string
-	 *                          journal:
-	 *                               type: string
-	 *                          uploader:
-	 *                               type: string
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function logs(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$response->writeJsonBody($this->logManager->load());
-			$fileName = 'iqrf-gateway.log';
-			$contentType = 'application/json; charset=utf-8';
-			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, $contentType);
-		} catch (LogNotFoundException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

@@ -36,7 +36,6 @@ export default class LogTab extends Vue {
 	/**
 	 * @property {string|null} log Log content
 	 */	
-	@Prop({required: true, default: null}) log!: string|null;
-
+	@Prop({required: true, default: null}) readonly log!: string|null;
 }
 </script>
