@@ -79,7 +79,7 @@ export default class LogViewer extends Vue {
 	private logs: Array<IServiceLog> = []
 
 	/**
-	 * @var {boolean} loaded Indicates that logs have been loaded 
+	 * @var {boolean} loaded Indicates that logs have been loaded
 	 */
 	private loaded = false;
 
@@ -145,7 +145,7 @@ export default class LogViewer extends Vue {
 				this.logs[this.tab].loaded = true;
 			});
 	}
-	
+
 	/**
 	 * Creates a daemon log blob and prompts file download
 	 */
