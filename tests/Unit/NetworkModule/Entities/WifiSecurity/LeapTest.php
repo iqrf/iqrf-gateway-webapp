@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * TEST: App\NetworkModule\Entities\ConnectionDetail
+ * @covers App\NetworkModule\Entities\ConnectionDetail
+ * @phpVersion >= 7.3
+ * @testCase
+ */
+/**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
  *
@@ -15,12 +21,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-/**
- * TEST: App\NetworkModule\Entities\ConnectionDetail
- * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.2
- * @testCase
  */
 declare(strict_types = 1);
 

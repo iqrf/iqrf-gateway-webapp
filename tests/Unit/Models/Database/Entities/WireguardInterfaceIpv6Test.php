@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * TEST: App\Models\Database\Entities\WireguardInterfaceIpv6
+ * @covers App\Models\Database\Entities\WireguardInterfaceIpv6
+ * @phpVersion >= 7.3
+ * @testCase
+ */
+/**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
  *
@@ -16,13 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * TEST: App\Models\Database\Entities\WireguardInterfaceIpv6
- * @covers App\Models\Database\Entities\WireguardInterfaceIpv6
- * @phpVersion >= 7.3
- * @testCase
- */
-
 declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
