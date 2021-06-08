@@ -12,16 +12,22 @@
 					{{ $t('gateway.log.download') }}
 				</CButton> <CButton
 					color='primary'
-					@click='getLogs'
+					@click='getAvailableLogs'
 				>
 					{{ $t('forms.refresh') }}
 				</CButton>
 			</div>
 		</header>
-		<CCard>			
-			<CTabs variant='tabs' :active-tab='0'>
-				<CTab v-for='(item, i) in logs' :key='i' :title='item.name'>
-					<LogTab :log='item.log' />
+		<CAlert
+			v-if='loaded && logs.length === 0'
+			color='danger'
+		>
+			{{ $t('gateway.log.messages.noLogs') }}
+		</CAlert>
+		<CCard v-else-if='loaded && logs.length > 0'>
+			<CTabs variant='tabs' :active-tab.sync='tab'>
+				<CTab v-for='(item, i) in logs' :key='i' :title='$t("gateway.log.services." + item.name)'>
+					<LogTab v-if='item.loaded' :log.sync='item.log' />
 				</CTab>
 			</CTabs>
 		</CCard>
@@ -29,7 +35,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import LogTab from '../../components/Gateway/LogTab.vue';
 
@@ -63,6 +69,11 @@ import {MetaInfo} from 'vue-meta';
 export default class LogViewer extends Vue {
 
 	/**
+	 * @var {number} tab Number of active tab
+	 */
+	private tab = 0
+
+	/**
 	 * Array of service logs
 	 */
 	private logs: Array<IServiceLog> = []
@@ -72,44 +83,67 @@ export default class LogViewer extends Vue {
 	 */
 	private loaded = false;
 
-	mounted(): void {
-		this.getLogs();
+	@Watch('tab')
+	private onTabChanged(): void {
+		this.getServiceLog();
 	}
 
-	private getLogs(): void {
+	/**
+	 * Retrieve list of available logs when component is mounted
+	 */
+	mounted(): void {
+		this.getAvailableLogs();
+	}
+
+	/**
+	 * Retrieves a list of available logs
+	 */
+	private getAvailableLogs(): void {
+		if (this.loaded) {
+			this.loaded = false;
+		}
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getLatestLog()
-			.then(
-				(response: AxiosResponse) => {
-					if (response.data.controller) {
-						this.logs.push({
-							name: this.$t('service.iqrf-gateway-controller.title').toString(),
-							log: response.data.controller,
-						});
-					}
-					if (response.data.daemon) {
-						this.logs.push({
-							name: this.$t('service.iqrf-gateway-daemon.title').toString(),
-							log: response.data.daemon,
-						});
-					}
-					if (response.data.uploader) {
-						this.logs.push({
-							name: this.$t('gateway.log.uploader').toString(),
-							log: response.data.uploader,
-						});
-					}
-					if (response.data.journal) {
-						this.logs.push({
-							name: this.$t('gateway.log.journal').toString(),
-							log: response.data.journal,
-						});
-					}
-					this.loaded = true;
+		GatewayService.getAvailableLogs()
+			.then((response: AxiosResponse) => {
+				let logs: Array<IServiceLog> = [];
+				response.data.forEach((item: string) => {
+					logs.push({
+						name: item,
+						log: null,
+						loaded: false,
+					});
+				});
+				if (logs.length === 0) {
 					this.$store.commit('spinner/HIDE');
+				} else {
+					this.logs = logs;
+					this.getServiceLog();
 				}
-			)
-			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.log.messages.fetchFailed'));
+				this.loaded = true;
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'gateway.log.messages.listFailed');
+				this.loaded = true;
+			});
+	}
+
+	/**
+	 * Retrieves service log
+	 */
+	private getServiceLog(): void {
+		if (!this.$store.getters['spinner/isEnabled']) {
+			this.$store.commit('spinner/SHOW');
+		}
+		GatewayService.getServiceLog(this.logs[this.tab].name)
+			.then((response: AxiosResponse) => {
+				this.logs[this.tab].log = response.data;
+				this.logs[this.tab].loaded = true;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'gateway.log.messages.fetchFailed');
+				this.logs[this.tab].loaded = true;
+			});
 	}
 	
 	/**

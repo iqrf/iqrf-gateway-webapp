@@ -10,5 +10,10 @@ export interface IServiceLog {
     /**
      * Service log
      */
-    log: string
+    log: string|null
+
+    /**
+     * Service log loaded
+     */
+    loaded: boolean
 }

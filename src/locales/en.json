@@ -1155,13 +1155,18 @@
 			"download": "Download",
 			"uploader": "Uploader",
 			"journal": "Journal",
+			"services": {
+				"iqrf-gateway-controller": "Controller",
+				"iqrf-gateway-daemon": "Daemon",
+				"iqrf-gateway-uploader": "Uploader",
+				"systemd-journald": "Journal"
+			},
 			"messages": {
+				"noLogs": "No available service logs.",
+				"listFailed": "Failed to retrieve list of available logs: {error}",
+				"fetchFailed": "Failed to retrieve service log: {error}",
 				"logEmpty": "Log file is empty.",
-				"logNotFound": "Log file does not exist.",
-				"fetchFailed": "Failed to retrieve Gateway logs.",
-				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
-				"readError": "Cannot read IQRF Gateway's log file.",
-				"notFound": "IQRF Gateway log file cannot be found."
+				"logNotFound": "Log file does not exist."
 			}
 		},
 		"mode": {
