@@ -145,7 +145,7 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
-										:disabled='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "!=") && compareVersions(dpaVersion, "3.04", "!="))'
+										:disabled='dpaVersion !== null && (!compareVersions(dpaVersion, "3.03", "=") && !compareVersions(dpaVersion, "3.04", "="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -161,7 +161,7 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
-										:disabled='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "!=") && compareVersions(dpaVersion, "3.04", "!="))'
+										:disabled='dpaVersion !== null && (!compareVersions(dpaVersion, "3.03", "=") && !compareVersions(dpaVersion, "3.04", "="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -189,7 +189,7 @@ limitations under the License.
 									:label='$t("iqrfnet.trConfiguration.form.networkType")'
 									:value.sync='config.stdAndLpNetwork'
 									:options='networkTypeOptions'
-									:disabled='address !== 0'
+									:disabled='address !== 0 || target === "network"'
 								/>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
@@ -246,7 +246,7 @@ limitations under the License.
 										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:disabled='address === 0'
+										:disabled='address === 0 && target !== "network"'
 									/>
 								</ValidationProvider>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
@@ -380,7 +380,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.embPers.spi'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
-									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.embPers.io'
@@ -391,9 +391,9 @@ limitations under the License.
 									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
 								/>
 								<CInputCheckbox
-									v-if='readAddress !== 0 || target === "network"'
 									:checked.sync='config.embPers.uart'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
+									:disabled='address === 0 && target !== "network"'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
 								<CInputCheckbox
@@ -404,7 +404,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.dpaPeerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
-									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.peerToPeer'
@@ -413,7 +413,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.localFrcReception'
 									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
-									:disabled='address === 0 || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.ioSetup'
@@ -427,12 +427,12 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.routingOff'
 									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
-									:disabled='address === 0'
+									:disabled='(address === 0 && target !== "network")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
-									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.nodeDpaInterface'
@@ -448,10 +448,10 @@ limitations under the License.
 								>
 									<CSelect
 										:value.sync='config.uartBaudrate'
-										:label='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
+										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t(readAddress === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
+										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
 										:options='uartBaudRates'
 									/>
 								</ValidationProvider><hr>
@@ -525,12 +525,12 @@ import ProductModal from '../../components/IqrfNet/ProductModal.vue';
 import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '../../enums/IqrfNet/network';
 
-import compareVersions from 'compare-versions';
+import compareVersions, { compare } from 'compare-versions';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
 
 import {Dictionary} from 'vue-router/types/router';
-import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
+import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
 import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
@@ -571,11 +571,6 @@ export default class TrConfiguration extends Vue {
 	 * @var {number} address Device address
 	 */
 	private address = 0
-
-	/**
-	 * @var {number} readAddress Address of last read device
-	 */
-	private readAddress = 0;
 
 	/**
 	 * @var {number} hwpid HWPID to filter devices by
@@ -989,9 +984,7 @@ export default class TrConfiguration extends Vue {
 		let rsp = response.data.rsp;
 		this.config = {...this.config, ...rsp.trConfiguration};
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
-		this.setEmbeddedPeripherals(rsp.peripheralEnumeration.dpaVer);
 		this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
-		this.readAddress = this.address;
 		this.$store.dispatch('spinner/hide');
 		this.$toast.success(
 			this.$t('iqrfnet.trConfiguration.messages.readSuccess').toString()
@@ -1004,26 +997,72 @@ export default class TrConfiguration extends Vue {
 	 * @param {number} address Device address
 	 */
 	private handleSubmit(address: number): void {
-		let config = JSON.parse(JSON.stringify(this.config));
-		config.embPers = this.getEmbeddedPeripherals();
-		if (address > 0) {
-			if (config.embPers.coordinator !== undefined) {
-				config.embPers.coordinator = false;
-			}
-			if (config.embPers.node !== undefined) {
-				config.embPers.node = true;
-			}
-		} else {
-			if (config.embPers.coordinator !== undefined) {
-				config.embPers.coordinator = true;
-			}
-			if (config.embPers.node !== undefined) {
-				config.embPers.node = false;
-			}
-		}
+		let config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
 		this.$store.dispatch('spinner/show', {timeout: 60000});
 		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Filters configuration to be sent based on DPA and target device
+	 */
+	private filterConfigToSend(config: ITrConfiguration, address: number): ITrConfiguration {
+		if (address === 0) { // filter configuration options not available for coordinator
+			// filter RF
+			delete config.lpRxTimeout;
+			// filter peripherals
+			delete config.embPers.node;
+			delete config.embPers.spi;
+			delete config.embPers.uart;
+			// filter DPA other section
+			delete config.dpaPeerToPeer;
+			delete config.localFrcReception;
+			delete config.routingOff;
+			delete config.neverSleep;
+		} else { // filter configuration options not available for nodes
+			// filter RF
+			delete config.stdAndLpNetwork;
+			// filter peripherals
+			delete config.embPers.coordinator;
+		}
+		if (this.$store.getters['user/getRole'] === 'normal') { // normal user cannot change these
+			delete config.embPers.coordinator;
+			delete config.embPers.node;
+			delete config.embPers.os;
+		}
+		if (this.dpaVersion !== null) {
+			let dpa = this.dpaVersion;
+			if (!compare(dpa, '3.03', '=') && !compare(dpa, '3.04', '=')) {
+				delete config.rfSubChannelA;
+				delete config.rfSubChannelB;
+			}
+			if (compare(dpa, '3.03', '<')) {
+				delete config.neverSleep;
+			}
+			if (compare(dpa, '4.00', '>=')) {
+				delete config.nodeDpaInterface;
+			}
+			if (compare(dpa, '4.10', '<')) {
+				delete config.dpaPeerToPeer;
+			}
+			if (compare(dpa, '4.14', '>')) {
+				delete config.dpaAutoexec;
+				delete config.embPers.spi;
+			}
+			if (compare(dpa, '4.15', '<')) {
+				delete config.localFrcReception;
+			}
+		}
+		if (!this.securityPassword) {
+			delete config.accessPassword;
+		}
+		if (!this.securityKey) {
+			delete config.securityUserKey;
+		}
+		delete config.rfPgmIncorrectUpload;
+		delete config.rfBand;
+		delete config.embPers.values;
+		return config;
 	}
 
 	/**
@@ -1146,51 +1185,6 @@ export default class TrConfiguration extends Vue {
 				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
 			);
 		}
-	}
-
-	/**
-	 * Populates array of embedded peripherals with information from ReadTrConfiguration request
-	 */
-	private setEmbeddedPeripherals(dpaVersion: string): void {
-		if (this.config === null) {
-			return;
-		}
-		let peripherals = JSON.parse(JSON.stringify(this.config.embPers));
-		this.peripherals = [];
-		for (let peripheral in peripherals) {
-			if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) { // peripheral information exists
-				continue;
-			}
-			if (typeof this.config.embPers[peripheral] !== 'boolean') { // invalid value in configuration
-				continue;
-			}
-			if (peripheral === 'spi' && (compareVersions.compare(dpaVersion, '4.14', '>') || this.address === 0)) {
-				continue;
-			}
-			if (peripheral === 'uart' && this.address === 0) {
-				continue;
-			}
-			if (this.unchangeablePeripherals.includes(peripheral) &&
-					this.$store.getters['user/getRole'] === 'normal') {
-				continue;
-			}
-			this.peripherals.push({
-				name: peripheral,
-				enabled: this.config.embPers[peripheral],
-			});
-		}
-	}
-
-	/**
-	 * Converts new configuration of embedded peripherals from array to object accepted by daemon
-	 * @returns {IEmbedPers} Dictionary of embedded peripherals
-	 */
-	private getEmbeddedPeripherals(): IEmbedPers {
-		let peripherals = {};
-		for (let peripheral of this.peripherals) {
-			peripherals[peripheral.name] = peripheral.enabled;
-		}
-		return (peripherals as IEmbedPers);
 	}
 
 	/**

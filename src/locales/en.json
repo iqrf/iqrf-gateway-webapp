@@ -2066,8 +2066,8 @@
 				},
 				"rfChannelA": "RF channel A",
 				"rfChannelB": "RF channel B",
-				"rfSubChannelA": "RF channel A subnetwork",
-				"rfSubChannelB": "RF channel B subnetwork",
+				"rfSubChannelA": "RF channel A subnetwork (*1)",
+				"rfSubChannelB": "RF channel B subnetwork (*1)",
 				"rfAltDsmChannel": "Alternative DSM channel",
 				"networkType": "Network type (*7)",
 				"networkTypes": {
@@ -2101,7 +2101,7 @@
 					"io": "IO",
 					"thermometer": "Thermometer",
 					"pwm": "PWM",
-					"uart": "UART (*9)",
+					"uart": "UART (*8)",
 					"frc": "FRC"
 				},
 				"customDpaHandler": "Custom DPA Handler",
@@ -2111,7 +2111,7 @@
 				"peerToPeer": "User Peer-to-Peer",
 				"localFrcReception": "Local FRC (*6, *8)",
 				"dpaPeerToPeer": "DPA Peer-to-Peer (*4, *8)",
-				"neverSleep": "Stay awake when not bonded (*1, *8)",
+				"neverSleep": "Stay awake when not bonded (*2, *8)",
 				"uartBaudRate": "UART interface baud rate (*9)",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
@@ -2127,7 +2127,7 @@
 				"nodeDpaInterface": "Node DPA interface (*3)",
 				"notes": {
 					"dpa3": "*1 Only for DPA 3.03 and 3.04.",
-					"dpa3Higher": "*2 Only for DPA 3.04 or higher.",
+					"dpa3Higher": "*2 Only for DPA 3.03 or higher.",
 					"dpa4Lower": "*3 Only for DPA lower than 4.00.",
 					"dpa410": "*4 Only for DPA 4.10 or higher.",
 					"dpa414": "*5 Only for DPA 4.14 or lower.",
