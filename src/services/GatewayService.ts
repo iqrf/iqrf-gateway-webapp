@@ -16,7 +16,8 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import { ISystemdJournal } from '../interfaces/systemdJournal';
+import {IHostname} from '../interfaces/gatewayInfo';
+import {ISystemdJournal} from '../interfaces/systemdJournal';
 
 /**
  * Root password interface
@@ -92,6 +93,14 @@ class GatewayService {
 	 */
 	saveSystemdJournalConfig(config: ISystemdJournal): Promise<AxiosResponse> {
 		return axios.post('gateway/journal/config', config, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Sets hostname
+	 * @param {IHostname} config Hostname configuration
+	 */
+	setHostname(config: IHostname): Promise<AxiosResponse> {
+		return axios.post('gateway/hostname', config, {headers: authorizationHeader()});
 	}
 }
 

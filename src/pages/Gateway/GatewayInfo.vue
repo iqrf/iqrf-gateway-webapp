@@ -59,7 +59,21 @@ limitations under the License.
 						</tr>
 						<tr>
 							<th>{{ $t('gateway.info.hostname') }}</th>
-							<td>{{ info.hostname }}</td>
+							<td
+								style='display: flex; justify-content: space-between; margin-top: -1px;'
+							>
+								{{ info.hostname }}
+								<CButton
+									color='primary'
+									size='sm'
+									@click='showHostnameModal'
+								>
+									<CIcon :content='icon' size='sm' />
+									<span class='d-none d-lg-inline'>
+										{{ $t('forms.edit') }}
+									</span>
+								</CButton>
+							</td>
 						</tr>
 						<tr>
 							<th>{{ $t('gateway.info.addresses.ip') }}</th>
@@ -117,6 +131,7 @@ limitations under the License.
 				{{ $t('gateway.info.diagnostics') }}
 			</CButton>
 		</CCard>
+		<HostnameChange ref='hostname' @hostname-changed='getInformation' />
 	</div>
 </template>
 
@@ -127,10 +142,14 @@ import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
 import ResourceUsage from '../../components/Gateway/ResourceUsage.vue';
 import GatewayService from '../../services/GatewayService';
+import HostnameChange from '../../components/Gateway/HostnameChange.vue';
+
+import {cilPencil} from '@coreui/icons';
+import {DaemonModeEnum} from '../../services/DaemonModeService';
 import {fileDownloader} from '../../helpers/fileDownloader';
+
+import {AxiosResponse} from 'axios';
 import {IGatewayInfo, IpAddress, MacAddress} from '../../interfaces/gatewayInfo';
-import { AxiosResponse } from 'axios';
-import { DaemonModeEnum } from '../../services/DaemonModeService';
 
 @Component({
 	components: {
@@ -138,7 +157,8 @@ import { DaemonModeEnum } from '../../services/DaemonModeService';
 		CCard,
 		CoordinatorInfo,
 		DaemonModeInfo,
-		ResourceUsage
+		HostnameChange,
+		ResourceUsage,
 	},
 	metaInfo: {
 		title: 'gateway.info.title',
@@ -163,6 +183,8 @@ export default class GatewayInfo extends Vue {
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false
+
+	private icon: Array<string> = cilPencil;
 	
 	/**
 	 * Computes array of ip address objects from network interfaces
@@ -207,9 +229,16 @@ export default class GatewayInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Vue lifecycle hook mounted
 	 */
-	created(): void {
+	mounted(): void {
+		this.getInformation();
+	}
+
+	/**
+	 * Retrieves gateway information
+	 */
+	private getInformation(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
 			.then(
@@ -233,6 +262,13 @@ export default class GatewayInfo extends Vue {
 				file.click();
 			}
 		).catch(() => (this.$store.commit('spinner/HIDE')));
+	}
+
+	/**
+	 * Show hostname change modal
+	 */
+	private showHostnameModal(): void {
+		(this.$refs.hostname as HostnameChange).show();
 	}
 }
 </script>

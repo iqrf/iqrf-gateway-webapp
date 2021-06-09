@@ -86,16 +86,18 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		DpaFile:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json
-		GatewayInfo:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
-		GatewayPassword:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
 		Error:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/error.json
 		Feature:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json
 		FeatureList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json
+		GatewayInfo:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+		GatewayPassword:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
+		Hostname:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/hostname.json
 		IqrfIdeMacros:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:

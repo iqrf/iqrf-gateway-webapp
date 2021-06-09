@@ -99,3 +99,10 @@ export interface IGatewayInfo {
 	swapUsage: SwapInfo
 	versions: VersionsInfo
 }
+
+/**
+ * Hostnamectl interface
+ */
+export interface IHostname {
+	hostname: string
+}
