@@ -1089,6 +1089,18 @@
 	"gateway": {
 		"title": "Gateway",
 		"description": "Control this gateway.",
+		"hostname": {
+			"title": "Change hostname",
+			"errors": {
+				"hostnameMissing": "Please enter hostname.",
+				"hostnameLen": "Hostname should be at most 64 characters long.",
+				"hostnameInvalid": "Hostname should contain letters a-z, digits 0-9 and a hyphen (-). Cannot start with a hyphen."
+			},
+			"messages": {
+				"success": "Hostname configuration has been succesfully changed.",
+				"failed": "Failed to change hostname configuration: {error}"
+			}
+		},
 		"info": {
 			"title": "Information",
 			"description": "Show information about this gateway.",
