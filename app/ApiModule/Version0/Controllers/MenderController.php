@@ -125,6 +125,47 @@ class MenderController extends BaseController {
 	}
 
 	/**
+	 * @Path("/config/mender/cert")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Uploads and stores a Mender server certificate
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          multipart/form-data:
+	 *              schema:
+	 *                  type: object
+	 *                  properties:
+	 *                      certificate:
+	 *                          type: string
+	 *                          format: binary
+	 *
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$file = $request->getUploadedFiles()[0];
+			$fileName = $file->getClientFilename();
+			$content = $file->getStream()->getContents();
+			$filePath = $this->manager->saveCertFile($fileName, $content);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->writeBody($filePath);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
 	 * @Path("/mender/install")
 	 * @Method("POST")
 	 * @OpenApi("

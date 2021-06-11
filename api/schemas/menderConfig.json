@@ -8,6 +8,7 @@
 			"InventoryPollIntervalSeconds": 28800,
 			"RetryPollIntervalSeconds": 300,
 			"ServerURL": "localhost",
+			"ServerCertificate": "/etc/site-conf/servert.crt",
 			"TenantToken": "dummy",
 			"UpdatePollIntervalSeconds": 1800
 		}
@@ -41,6 +42,12 @@
 			"title": "Server URL",
 			"description": "The server URL which is used as the basis for API requests.",
 			"example": "localhost"
+		},
+		"ServerCertificate": {
+			"$id": "#/properties/ServerCertificate",
+			"title": "Path to server certificate",
+			"type": "string",
+			"example": "/etc/site-conf/servert.crt"
 		},
 		"TenantToken": {
 			"$id": "#/properties/TenantToken",

@@ -28,6 +28,11 @@
 				@click='rollback'
 			>
 				{{ $t('maintenance.mender.update.form.rollback') }}
+			</CButton> <CButton
+				color='primary'
+				@click='reboot()'
+			>
+				{{ $t('gateway.power.reboot') }}
 			</CButton>
 		</CCardBody>
 	</CCard>
@@ -109,7 +114,10 @@ export default class MenderUpdateControl extends Vue {
 	private commit(): void {
 		this.$store.commit('spinner/SHOW');
 		MenderService.commit()
-			.then((response: AxiosResponse) => this.reboot(response.data))
+			.then((response: AxiosResponse) => this.handleResponse(
+				'maintenance.mender.update.messages.commitSuccess',
+				response.data
+			))
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.commitFailed',
 				error.response ? error.response.data.message : error.message
@@ -134,20 +142,19 @@ export default class MenderUpdateControl extends Vue {
 
 	/**
 	 * Performs reboot after commit
-	 * @param {string} Output Output log
 	 */
-	private reboot(output: string): void {
+	private reboot(): void {
+		this.$store.commit('spinner/SHOW');
 		GatewayService.performReboot()
 			.then((response: AxiosResponse) => {
 				let time = new Date(response.data.timetimestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
-						'maintenance.mender.update.messages.commitSuccess',
-						{time: time},
+						'gateway.power.messages.rebootSuccess',
+						{time: time},						
 					).toString()
 				);
-				this.updateLog(output);
 			});
 	}
 

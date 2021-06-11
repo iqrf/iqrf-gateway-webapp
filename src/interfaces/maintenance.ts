@@ -31,12 +31,17 @@ export interface IMenderConfig {
 	RetryPollIntervalSeconds: number
 
 	/**
-	 * Mender server 
+	 * Server
 	 */
 	ServerURL: string
 
 	/**
-	 * Mender token
+	 * Path to server certificate
+	 */
+	ServerCertificate?: string
+
+	/**
+	 * Tenant token
 	 */
 	TenantToken: string
 
@@ -46,7 +51,7 @@ export interface IMenderConfig {
 	UpdatePollIntervalSeconds: number
 
 	/**
-	 * Mender client protocol
+	 * Client protocol
 	 */
 	ClientProtocol: MenderProtocols
 }
@@ -56,17 +61,17 @@ export interface IMenderConfig {
  */
 export interface IMonitConfig {
     /**
-     * MMonit username
+     * Username
      */
     username: string
 
     /**
-     * MMonit password
+     * Password
      */
     password: string
 
     /**
-     * MMonit server and endpoint
+     * Server and endpoint
      */
     endpoint: string
 }
