@@ -25,6 +25,7 @@ use App\CoreModule\Models\JsonFileManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
@@ -60,13 +61,19 @@ class MenderManager {
 	private $fileManager;
 
 	/**
+	 * @var ServiceManager $serviceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
 	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager) {
+	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -191,11 +198,14 @@ class MenderManager {
 	}
 
 	/**
-	 * Checks if Mender utility is installed
+	 * Checks if Mender utility is installed, stops mender-client if active
 	 */
 	private function checkMender(): void {
 		if (!$this->commandManager->commandExist('mender')) {
 			throw new MenderMissingException('Mender utility is not installed.');
+		}
+		if ($this->serviceManager->isActive('mender-client')) {
+			$this->serviceManager->stop('mender-client');
 		}
 	}
 
