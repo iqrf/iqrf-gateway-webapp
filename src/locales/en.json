@@ -2510,7 +2510,7 @@
 				"messages": {
 					"update": "Uploading Mender artifact to gateway and installing artifact, this may take several minutes.",
 					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
-					"commitSuccess": "Currently installed Mender artifact update has been successfully commited.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, gateway will reboot at {time}.",
 					"installFailed": "Failed to install Mender artifact, see output log for details.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
 					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
