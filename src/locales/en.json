@@ -2457,16 +2457,18 @@
 			}
 		},
 		"mender": {
-			"title": "Mender",
+			"title": "Mender update",
 			"description": "Manages Mender service, configuration and client.",
 			"service": {
-				"title": "Service",
-				"pageTitle": "Mender service",
+				"title": "Remote",
+				"pageTitle": "Client service",
 				"description": "Manages Mender service and configuration.",
 				"form": {
 					"inventoryPollInterval": "Inventory update interval (seconds)",
 					"retryPollInterval": "Communication retry interval (seconds)",
 					"server": "Server address",
+					"cert": "Certificate",
+					"newCert": "New certificate",
 					"tenantToken": "Tenant token",
 					"updatePollInterval": "Update check interval (seconds)",
 					"placeholders": {
@@ -2485,7 +2487,8 @@
 					"saveFailed": "Failed to save Mender configuration: {error}",
 					"saveSuccess": "Mender configuration has been successfully saved.",
 					"serviceStatusFailed": "Failed to retrieve service status: {error}",
-					"serviceFailed": "Failed to change service state: {error}"
+					"serviceFailed": "Failed to change service state: {error}",
+					"certificateFailed": "Failed to upload certificate: {error}"
 				},
 				"errors": {
 					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
@@ -2496,7 +2499,8 @@
 				}
 			},
 			"update": {
-				"title": "Gateway update",
+				"title": "Local",
+				"pageTitle": "Local update",
 				"description": "Manages Mender artifact updates.",
 				"log": {
 					"title": "Output log",
@@ -2509,9 +2513,9 @@
 					"rollback": "Rollback update"
 				},
 				"messages": {
-					"update": "Uploading Mender artifact to gateway and installing artifact, this may take several minutes.",
+					"update": "Uploading and installing Mender artifact, this may take several minutes.",
 					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
-					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, gateway will reboot at {time}.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, reboot the gateway for the changes to take effect.",
 					"installFailed": "Failed to install Mender artifact, see output log for details.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
 					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",

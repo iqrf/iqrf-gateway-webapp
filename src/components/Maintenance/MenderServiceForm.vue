@@ -17,6 +17,16 @@
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
+			<CInput
+				v-model='configuration.ServerCertificate'
+				:label='$t("maintenance.mender.service.form.cert")'
+				:disabled='true'
+			/>
+			<CInputFile
+				ref='formCert'
+				accept='.crt'
+				:label='$t("maintenance.mender.service.form.newCert")'
+			/>
 			<CSelect
 				:value.sync='configuration.ClientProtocol'
 				:label='$t("maintenance.mender.service.form.protocol")'
@@ -121,10 +131,11 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {CBadge, CButton, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {MenderProtocols} from '../../enums/Maintenance/Mender';
 
@@ -132,8 +143,8 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMenderConfig} from '../../interfaces/maintenance';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import { IOption } from '../../interfaces/coreui';
+import {IOption} from '../../interfaces/coreui';
+import MenderService from '../../services/MenderService';
 
 @Component({
 	components: {
@@ -141,6 +152,7 @@ import { IOption } from '../../interfaces/coreui';
 		CButton,
 		CForm,
 		CInput,
+		CInputFile,
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
@@ -160,7 +172,15 @@ export default class MenderForm extends Vue {
 	/**
 	 * @var {IMenderConfig} configuration Mender configuration
 	 */
-	private configuration: IMenderConfig|null = null
+	private configuration: IMenderConfig = {
+		ClientProtocol: MenderProtocols.HTTPS,
+		ServerURL: '',
+		ServerCertificate: '',
+		TenantToken: 'dummy',
+		InventoryPollIntervalSeconds: 28800,
+		RetryPollIntervalSeconds: 300,
+		UpdatePollIntervalSeconds: 1800
+	}
 
 	/**
 	 * @constant {Array<IOption>} protocolOptions Array of CoreUI select mender client protocol options
@@ -230,31 +250,6 @@ export default class MenderForm extends Vue {
 	}
 
 	/**
-	 * Converts seconds to readable period string
-	 */
-	private periodString(seconds: number): string {
-		const duration = Duration.fromMillis(seconds * 1000).shiftTo('days', 'hours', 'minutes', 'seconds').toObject();
-		let nums: Array<number> = [], units: Array<string> = [];
-		if (duration.days) {
-			nums.push(duration.days);
-			units.push(' days');
-		}
-		if (duration.hours) {
-			nums.push(duration.hours);
-			units.push(' hours');
-		}
-		if (duration.minutes) {
-			nums.push(duration.minutes);
-			units.push(' minutes');
-		}
-		if (duration.seconds) {
-			nums.push(duration.seconds);
-			units.push(' seconds');
-		}
-		return this.mergeArrays(nums, units);
-	}
-
-	/**
 	 * Merges two arrays in alternating order into a string
 	 * @param {Array<string>} array1 First array to merge
 	 * @param {Array<string>} array2 Second array to merge
@@ -282,25 +277,76 @@ export default class MenderForm extends Vue {
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
 	}
-	
+
+	/**
+	 * Extracts files from form file input
+	 */
+	private getInputFiles(): FileList {
+		const input = ((this.$refs.formCert as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
 	/**
 	 * Updates configuration of the Mender feature
 	 */
-	processSubmit(): void {
+	private processSubmit(): void {
 		if (this.configuration === null) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.saveConfig(this.featureName, this.configuration)
+		let files = this.getInputFiles();
+		if (files.length > 0) {
+			let formData = new FormData();
+			formData.append('certificate', files[0]);
+			MenderService.uploadCertificate(formData)
+				.then((response: AxiosResponse) => {
+					this.configuration.ServerCertificate = response.data;
+					this.saveConfig();
+				})
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'maintenance.mender.service.messages.certificateFailed',
+				));
+		} else {
+			this.saveConfig();
+		}
+	}
+
+	/**
+	 * Saves Mender client configuration
+	 */
+	private saveConfig(): void {
+		let config = JSON.parse(JSON.stringify(this.configuration));
+		FeatureConfigService.saveConfig(this.featureName, config)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.service.messages.saveSuccess').toString()
 			)))
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.saveFailed'));
 	}
 
+	/**
+	 * Converts seconds to readable period string
+	 */
+	private periodString(seconds: number): string {
+		const duration = Duration.fromMillis(seconds * 1000).shiftTo('days', 'hours', 'minutes', 'seconds').toObject();
+		let nums: Array<number> = [], units: Array<string> = [];
+		if (duration.days) {
+			nums.push(duration.days);
+			units.push(' days');
+		}
+		if (duration.hours) {
+			nums.push(duration.hours);
+			units.push(' hours');
+		}
+		if (duration.minutes) {
+			nums.push(duration.minutes);
+			units.push(' minutes');
+		}
+		if (duration.seconds) {
+			nums.push(duration.seconds);
+			units.push(' seconds');
+		}
+		return this.mergeArrays(nums, units);
+	}
 }
 </script>
-
-<style>
-
-</style>
