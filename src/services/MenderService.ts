@@ -5,6 +5,16 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
  * Mender update service
  */
 class MenderService {
+
+	/**
+	 * Upload Mender server certificate
+	 * @param {FormData} file Certificate to upload
+	 * @returns {Promise<AxiosResponse>} Axios response promise
+	 */
+	uploadCertificate(file: FormData): Promise<AxiosResponse> {
+		return axios.post('config/mender/cert', file, {headers: authorizationHeader()});
+	}
+
 	/**
 	 * Installs data from mender artifact
 	 * @param {FormData} file File to install

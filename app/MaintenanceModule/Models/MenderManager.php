@@ -36,6 +36,11 @@ use Psr\Http\Message\UploadedFileInterface;
 class MenderManager {
 
 	/**
+	 * Path to certificate storage
+	 */
+	private const CERT_PATH = '/etc/mender/';
+
+	/**
 	 * JSON file containing mender-client configuration
 	 */
 	private const CLIENT_CONF = 'mender';
@@ -112,15 +117,31 @@ class MenderManager {
 		$connectConfig = $this->getConnectConfig();
 		$connectConfig['ServerURL'] = $newConfig['ServerURL'];
 		$connectConfig['ClientProtocol'] = $newConfig['ClientProtocol'];
+		if (array_key_exists('ServerCertificate', $newConfig)) {
+			$connectConfig['ServerCertificate'] = $newConfig['ServerCertificate'];
+			unset($newConfig['ServerCertificate']);
+		}
 		unset($newConfig['ClientProtocol']);
 		$this->fileManager->write(self::CLIENT_CONF, array_merge($clientConfig, $newConfig), '.conf');
 		$this->fileManager->write(self::CONNECT_CONF, $connectConfig, '.conf');
 	}
 
 	/**
+	 * Saves uploaded certificate file and returns full path
+	 * @param string $fileName File name
+	 * @param string $content File contents
+	 * @return string Path to uploaded certificate
+	 */
+	public function saveCertFile(string $fileName, string $content): string {
+		$filePath = self::CERT_PATH . $fileName;
+		FileSystem::write($filePath, $content);
+		return $filePath;
+	}
+
+	/**
 	 * Saves uploaded artifact file and returns full path
 	 * @param UploadedFileInterface $file Uploaded file
-	 * @return string Path to uploaded file in Gateway filesystem
+	 * @return string Path to uploaded file artifact
 	 */
 	public function saveArtifactFile(UploadedFileInterface $file): string {
 		$filePath = self::UPLOAD_PATH . $file->getClientFilename();

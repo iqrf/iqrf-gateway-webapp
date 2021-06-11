@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('maintenance.mender.update.title') }}</h1>
+		<h1>{{ $t('maintenance.mender.update.pageTitle') }}</h1>
 		<CRow>
 			<CCol md='6'>
 				<MenderUpdateControl @update-log='updateLog' />
@@ -38,7 +38,7 @@ import {NavigationGuardNext, Route} from 'vue-router';
 		});
 	},
 	metaInfo: {
-		title: 'maintenance.mender.update.title',
+		title: 'maintenance.mender.update.pageTitle',
 	},
 })
 
