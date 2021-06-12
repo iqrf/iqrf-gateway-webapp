@@ -210,12 +210,13 @@ export default class TheSidebar extends Vue {
 								feature: 'unattendedUpgrades',
 								roles: ['power', 'normal'],
 							},
-							/*{
-								name: this.$t('gateway.updater.title'),
-								to: '/gateway/updater/',
-								feature: 'updater',
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('service.systemd-journald.title'),
+								to: '/gateway/service/systemd-journald/',
+								feature: 'systemdJournal',
 								roles: ['power', 'normal'],
-							},*/
+							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.power.title'),

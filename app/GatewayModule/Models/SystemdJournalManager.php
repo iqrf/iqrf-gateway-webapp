@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
@@ -30,11 +31,6 @@ use stdClass;
  * Systemd journal manager
  */
 class SystemdJournalManager {
-
-	/**
-	 * Paths to journald conf file
-	 */
-	private const CONF_FILE = '/data/lib/systemd/journald.conf.d/00-systemd-conf.conf';
 
 	/**
 	 * Journal configuration
@@ -49,9 +45,17 @@ class SystemdJournalManager {
 	];
 
 	/**
-	 * Constructor
+	 * @var string $confPath Path to systemd journald conf file
 	 */
-	public function __construct() {
+	private $confPath;
+
+	/**
+	 * Constructor
+	 * @param FeatureManager $featureManager Feature manager
+	 */
+	public function __construct(FeatureManager $featureManager) {
+		$feature = $featureManager->get('systemdJournal');
+		$this->confPath = $feature['path'];
 	}
 
 	/**
@@ -158,7 +162,7 @@ class SystemdJournalManager {
 	 * @param stdClass $newConf New systemd journal configuration
 	 */
 	public function saveConfig(stdClass $newConf): void {
-		if (!file_exists(self::CONF_FILE)) {
+		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
 		$conf = [
@@ -171,7 +175,7 @@ class SystemdJournalManager {
 				'SystemMaxFileSize' => $newConf->sizeRotation->maxFileSize === 0 ? '' : strval($newConf->sizeRotation->maxFileSize) . 'M',
 			],
 		];
-		FileSystem::write(self::CONF_FILE, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
+		FileSystem::write($this->confPath, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
 	}
 
 	/**
@@ -179,10 +183,16 @@ class SystemdJournalManager {
 	 * @return array<string, array<string, mixed>> Systemd journal configuration
 	 */
 	private function getJournalConf(): array {
-		if (!file_exists(self::CONF_FILE)) {
+		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
-		$conf = parse_ini_file(self::CONF_FILE, true, INI_SCANNER_RAW);
+		$conf = Strings::replace(FileSystem::read($this->confPath), [
+			'/^#/' => ';',
+			'/\\n#/' => PHP_EOL . ';',
+			'/\(/' => '"("',
+			'/\)/' => '")"',
+		]);
+		$conf = parse_ini_string($conf, true, INI_SCANNER_RAW);
 		if ($conf === false) {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}

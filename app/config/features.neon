@@ -56,6 +56,7 @@ supervisord:
 # Systemd journal configuration
 systemdJournal:
 	enabled: false
+	path: /etc/systemd/journald.conf
 # System updater
 updater:
 	enabled: false

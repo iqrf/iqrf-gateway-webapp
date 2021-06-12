@@ -1,0 +1,14 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json",
+	"type": "array",
+	"title": "Available log services",
+	"description": "Logs of available services that webapp manages",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "string",
+		"title": "Available service",
+		"description": "List of available services managed by the webapp"
+	}
+}

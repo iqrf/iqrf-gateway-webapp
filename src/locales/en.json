@@ -1164,61 +1164,20 @@
 			"title": "Logs",
 			"description": "Shows gateway logs.",
 			"download": "Download",
-			"systemdJournal": {
-				"title": "Systemd journal configuration",
-				"restart": "Restart service",
-				"form": {
-					"forwardToSyslog": "Forward journal to syslog",
-					"storage": "Storage method",
-					"storageMethods": {
-						"persistent": "Filesystem persistence",
-						"volatile": "In-memory persistence"
-					},
-					"maxDisk": "Maximum disk space used by journal in MB*",
-					"sizeRotation": "File size-based log rotation",
-					"maxFiles": "Maximum number of log files to keep *",
-					"maxFilesNote": "* Systemd default value is 100 files.",
-					"maxFileSize": "Maximum log file size in MB *",
-					"timeRotation": "Time-based log rotation",
-					"defaultNote": "* Set value to 0 to use systemd default.",
-					"unit": "Time unit",
-					"units": {
-						"seconds": "Seconds",
-						"minutes": "Minutes",
-						"hours": "Hours",
-						"days": "Days",
-						"weeks": "Weeks",
-						"months": "Months",
-						"years": "Years"
-					},
-					"count": "Unit count"
-				},
-				"errors": {
-					"maxDisk": "Please enter maximum disk space usable by journal.",
-					"maxDiskInvalid": "Maximum disk size should be an integer greater or equal to 0.",
-					"maxFiles": "Please enter maximum number of log files to keep.",
-					"maxFilesInvalid": "Maximum number of log files should be an integer greater or equal to 1.",
-					"maxFileSize": "Please enter maximum log file size.",
-					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
-					"count": "Please enter unit count.",
-					"countInvalid": "Unit count should be an integer greater or equal to 1."
-				},
-				"messages": {
-					"fetchFailed": "Failed to retrieve systemd journal configuration.",
-					"fetchFailedError": "Failed to retrieve systemd journal configuration: {error}",
-					"restartFailed": "Failed to restart systemd journal service: {error}",
-					"restartSuccess": "Systemd journal service has been successfully restarted.",
-					"saveFailed": "Failed to save systemd journal configuration: {error}",
-					"saveSuccess": "Systemd journal configuration sucessfully saved."
-				}
+			"uploader": "Uploader",
+			"journal": "Journal",
+			"services": {
+				"iqrf-gateway-controller": "Controller",
+				"iqrf-gateway-daemon": "Daemon",
+				"iqrf-gateway-uploader": "Uploader",
+				"systemd-journald": "Journal"
 			},
 			"messages": {
+				"noLogs": "No available service logs.",
+				"listFailed": "Failed to retrieve list of available logs: {error}",
+				"fetchFailed": "Failed to retrieve service log: {error}",
 				"logEmpty": "Log file is empty.",
-				"logNotFound": "Log file does not exist.",
-				"fetchFailed": "Failed to retrieve Gateway logs.",
-				"nonExistingDir": "IQRF Gateway's log directory does not exist.",
-				"readError": "Cannot read IQRF Gateway's log file.",
-				"notFound": "IQRF Gateway log file cannot be found."
+				"logNotFound": "Log file does not exist."
 			}
 		},
 		"mode": {
@@ -2652,6 +2611,66 @@
 				"restart": "Automatic upgrades service has been restarted.",
 				"success": "Automatic upgrades configuration has been successfully saved.",
 				"failure": "Unable to save automatic upgrades configuration."
+			}
+		},
+		"systemd-journald": {
+			"title": "Journal service",
+			"description": "Controls the systemd journald service.",
+			"config": {
+				"title": "Systemd journald configuration",
+				"restart": "Restart service",
+				"form": {
+					"forwardToSyslog": "Forward journal to syslog",
+					"storage": "Storage method",
+					"storageMethods": {
+						"persistent": "Filesystem persistence",
+						"volatile": "In-memory persistence"
+					},
+					"maxDisk": "Maximum disk space used by journal in MB*",
+					"sizeRotation": "File size-based log rotation",
+					"maxFiles": "Maximum number of log files to keep *",
+					"maxFilesNote": "* Systemd default value is 100 files.",
+					"maxFileSize": "Maximum log file size in MB *",
+					"timeRotation": "Time-based log rotation",
+					"defaultNote": "* Set value to 0 to use systemd default.",
+					"unit": "Time unit",
+					"units": {
+						"seconds": "Seconds",
+						"minutes": "Minutes",
+						"hours": "Hours",
+						"days": "Days",
+						"weeks": "Weeks",
+						"months": "Months",
+						"years": "Years"
+					},
+					"count": "Unit count"
+				},
+				"errors": {
+					"maxDisk": "Please enter maximum disk space usable by journal.",
+					"maxDiskInvalid": "Maximum disk size should be an integer greater or equal to 0.",
+					"maxFiles": "Please enter maximum number of log files to keep.",
+					"maxFilesInvalid": "Maximum number of log files should be an integer greater or equal to 1.",
+					"maxFileSize": "Please enter maximum log file size.",
+					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
+					"count": "Please enter unit count.",
+					"countInvalid": "Unit count should be an integer greater or equal to 1."
+				},
+				"messages": {
+					"fetchFailed": "Failed to retrieve systemd journal configuration.",
+					"fetchFailedError": "Failed to retrieve systemd journal configuration: {error}",
+					"restartFailed": "Failed to restart systemd journal service: {error}",
+					"restartSuccess": "Systemd journal service has been successfully restarted.",
+					"saveFailed": "Failed to save systemd journal configuration: {error}",
+					"saveSuccess": "Systemd journal configuration sucessfully saved."
+				}
+			},
+			"messages": {
+				"disabled": "Systemd journald service is disabled.",
+				"disable": "Systemd journald service has been disabled.",
+				"enable": "Systemd journald service has been enabled.",
+				"start": "Systemd journald service has been enabled.",
+				"stop": "Systemd journald service has been stopped.",
+				"restart": "Systemd journald service has been restarted."
 			}
 		},
 		"unsupported": {

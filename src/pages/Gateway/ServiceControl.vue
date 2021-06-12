@@ -76,6 +76,7 @@ limitations under the License.
 		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades"' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
+		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("systemdJournal")' />
 	</div>
 </template>
 
@@ -84,6 +85,7 @@ import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '../../components/Gateway/AptConfig.vue';
 import GatewayUserPassword from '../../components/Gateway/GatewayUserPassword.vue';
+import SystemdJournaldConfig from '../../components/Gateway/SystemdJournalConfig.vue';
 
 import AptService, {AptEnable} from '../../services/AptService';
 import ServiceService from '../../services/ServiceService';
@@ -98,6 +100,7 @@ const whitelisted = [
 	'iqrf-gateway-translator',
 	'ssh',
 	'unattended-upgrades',
+	'systemd-journald',
 ];
 
 const features = {
@@ -105,6 +108,7 @@ const features = {
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',
 	'unattended-upgrades': 'unattendedUpgrades',
+	'systemd-journald': 'systemdJournal',
 };
 
 interface IService {
@@ -119,6 +123,7 @@ interface IService {
 		CButton,
 		CCard,
 		GatewayUserPassword,
+		SystemdJournaldConfig,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
