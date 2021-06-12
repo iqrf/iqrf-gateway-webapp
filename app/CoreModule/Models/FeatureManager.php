@@ -74,6 +74,9 @@ class FeatureManager {
 		'pixla' => [
 			'enabled' => false,
 		],
+		'remount' => [
+			'enabled' => false,
+		],
 		'ssh' => [
 			'enabled' => false,
 		],
