@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver v-if='configuration !== null' v-slot='{invalid}'>
+	<ValidationObserver v-slot='{invalid}'>
 		<hr>
 		<CForm @submit.prevent='processSubmit'>
 			<ValidationProvider
@@ -36,12 +36,29 @@ limitations under the License.
 			<CInput
 				v-model='configuration.ServerCertificate'
 				:label='$t("maintenance.mender.service.form.cert")'
-				:disabled='true'
+				:disabled='uploadCert'
 			/>
+			<div class='form-group'>
+				<label for='uploadSwitch'>
+					{{ $t('maintenance.mender.service.form.uploadCert') }}
+				</label><br>
+				<CSwitch
+					ref='uploadSwitch'
+					color='primary'
+					size='lg'
+					shape='pill'
+					label-on='ON'
+					label-off='OFF'
+					:checked.sync='uploadCert'
+				/>
+			</div>
 			<CInputFile
+				v-if='uploadCert'
 				ref='formCert'
 				accept='.crt'
 				:label='$t("maintenance.mender.service.form.newCert")'
+				@input='checkInput'
+				@click='checkInput'
 			/>
 			<CSelect
 				:value.sync='configuration.ClientProtocol'
@@ -138,7 +155,11 @@ limitations under the License.
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
-			<CButton color='primary' type='submit' :disabled='invalid'>
+			<CButton
+				color='primary'
+				type='submit'
+				:disabled='invalid || (uploadCert && inputEmpty)'
+			>
 				{{ $t('forms.save') }}
 			</CButton>
 		</CForm>
@@ -197,6 +218,16 @@ export default class MenderForm extends Vue {
 		RetryPollIntervalSeconds: 300,
 		UpdatePollIntervalSeconds: 1800
 	}
+
+	/**
+	 * @var {boolean} uploadCert Controls Mender form
+	 */
+	private uploadCert = false
+
+	/**
+	 * @var {boolean} inputEmpty Empty status of the cert input
+	 */
+	private inputEmpty = true
 
 	/**
 	 * @constant {Array<IOption>} protocolOptions Array of CoreUI select mender client protocol options
@@ -288,8 +319,11 @@ export default class MenderForm extends Vue {
 		}
 		return FeatureConfigService.getConfig(this.featureName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
+				if (this.uploadCert) {
+					this.uploadCert = false;
+				}
 				this.configuration = response.data;
+				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
 	}
@@ -303,6 +337,14 @@ export default class MenderForm extends Vue {
 	}
 
 	/**
+	 * Checks if certificate input is empty
+	 */
+	private checkInput(): void {
+		let files = this.getInputFiles();
+		this.inputEmpty = files.length === 0;
+	}
+
+	/**
 	 * Updates configuration of the Mender feature
 	 */
 	private processSubmit(): void {
@@ -310,10 +352,9 @@ export default class MenderForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		let files = this.getInputFiles();
-		if (files.length > 0) {
+		if (this.uploadCert) {
 			let formData = new FormData();
-			formData.append('certificate', files[0]);
+			formData.append('certificate', this.getInputFiles()[0]);
 			MenderService.uploadCertificate(formData)
 				.then((response: AxiosResponse) => {
 					this.configuration.ServerCertificate = response.data;
