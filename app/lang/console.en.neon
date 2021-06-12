@@ -9,6 +9,7 @@ features:
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	pixla: PIXLA device management
+	remount: Filesystem remount
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
 	systemdJournal: Systemd Journald configuration
