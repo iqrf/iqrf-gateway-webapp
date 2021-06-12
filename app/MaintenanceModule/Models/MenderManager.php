@@ -117,10 +117,6 @@ class MenderManager {
 		$connectConfig = $this->getConnectConfig();
 		$connectConfig['ServerURL'] = $newConfig['ServerURL'];
 		$connectConfig['ClientProtocol'] = $newConfig['ClientProtocol'];
-		if (array_key_exists('ServerCertificate', $newConfig)) {
-			$connectConfig['ServerCertificate'] = $newConfig['ServerCertificate'];
-			unset($newConfig['ServerCertificate']);
-		}
 		unset($newConfig['ClientProtocol']);
 		$this->fileManager->write(self::CLIENT_CONF, array_merge($clientConfig, $newConfig), '.conf');
 		$this->fileManager->write(self::CONNECT_CONF, $connectConfig, '.conf');
