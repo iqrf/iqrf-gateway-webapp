@@ -30,10 +30,12 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
+use App\CoreModule\Models\FeatureManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -47,16 +49,23 @@ use Nette\Utils\Strings;
 class MenderController extends BaseController {
 
 	/**
+	 * @var FeatureManager $featureManager Feature manager
+	 */
+	private $featureManager;
+
+	/**
 	 * @var MenderManager $manager Mender client configuration manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
+	 * @param FeatureManager $featureManager Feature manager
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MenderManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
+		$this->featureManager = $featureManager;
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -268,6 +277,43 @@ class MenderController extends BaseController {
 		} catch (MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/remount")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Remounts root fs
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/Remount'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!$this->featureManager->isEnabled('remount')) {
+			throw new ClientErrorException('Remount feature is not enabled.', ApiResponse::S400_BAD_REQUEST);
+		}
+		$this->validator->validateRequest('remount', $request);
+		try {
+			$mode = $request->getJsonBody(true);
+			$this->manager->remount($mode);
+			return $response->writeBody('Workaround');
+		} catch (MountErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
