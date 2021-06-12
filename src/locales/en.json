@@ -2467,8 +2467,9 @@
 					"inventoryPollInterval": "Inventory update interval (seconds)",
 					"retryPollInterval": "Communication retry interval (seconds)",
 					"server": "Server address",
-					"cert": "Certificate",
-					"newCert": "New certificate",
+					"cert": "Path to certificate",
+					"newCert": "Certificate to upload",
+					"uploadCert": "Upload new certificate",
 					"tenantToken": "Tenant token",
 					"updatePollInterval": "Update check interval (seconds)",
 					"placeholders": {
@@ -2488,7 +2489,8 @@
 					"saveSuccess": "Mender configuration has been successfully saved.",
 					"serviceStatusFailed": "Failed to retrieve service status: {error}",
 					"serviceFailed": "Failed to change service state: {error}",
-					"certificateFailed": "Failed to upload certificate: {error}"
+					"certificateFailed": "Failed to upload certificate: {error}",
+					"certificateNote": "Note: "
 				},
 				"errors": {
 					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
