@@ -25,6 +25,7 @@ use App\CoreModule\Models\JsonFileManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
@@ -132,6 +133,17 @@ class MenderManager {
 		$filePath = self::CERT_PATH . $fileName;
 		FileSystem::write($filePath, $content);
 		return $filePath;
+	}
+
+	/**
+	 * Remounts root filesystem with specified mode
+	 * @param string $mode Mount mode
+	 */
+	public function remount(string $mode): void {
+		$output = $this->commandManager->run('mount -o remount,' . $mode . ' /', true);
+		if ($output->getExitCode() !== 0) {
+			throw new MountErrorException($output->getStderr());
+		}
 	}
 
 	/**

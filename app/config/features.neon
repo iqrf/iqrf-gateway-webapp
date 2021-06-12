@@ -46,6 +46,9 @@ nodeRed:
 # PIXLA mamagement system
 pixla:
 	enabled: false
+# Remount endpoints
+remount:
+	enabled: false
 # SSH daemon manager
 ssh:
 	enabled: false
