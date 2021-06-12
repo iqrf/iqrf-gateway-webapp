@@ -1139,6 +1139,7 @@
 									"        },",
 									"        'pixla': {",
 									"            'enabled': false,",
+									"        },",
 									"        'remount': {",
 									"            'enabled': false,",
 									"        },",
