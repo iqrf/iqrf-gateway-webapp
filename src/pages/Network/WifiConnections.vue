@@ -8,25 +8,31 @@
 				</CCardBody>
 			</div>
 			<div v-else>
-				<CCardHeader class='border-0'>
-					{{ $t('network.wireless.table.accessPoints') }}
-					<CButton
-						color='success'
-						size='sm'
-						@click='addHotspot'
-					>
-						<CIcon :content='icons.add' size='sm' />
-						{{ $t('network.wireless.table.addHotspot') }}
-					</CButton> <CButton
-						color='primary'
-						size='sm'
-						@click='getAccessPoints'
-					>
-						<CIcon :content='icons.refresh' size='sm' />
-						{{ $t('forms.refresh') }}
-					</CButton>
+				<CCardHeader class='border-0 card-margin-bottom'>
+					<div class='box'>
+						<span>
+							{{ $t('network.wireless.table.accessPoints') }}
+						</span>
+						<CButton
+							color='success'
+							size='sm'
+							@click='addHotspot'
+						>
+							<CIcon :content='icons.add' size='sm' />
+							{{ $t('network.wireless.table.addHotspot') }}
+						</CButton> <CButton
+							color='primary'
+							size='sm'
+							@click='getAccessPoints'
+						>
+							<CIcon :content='icons.refresh' size='sm' />
+							{{ $t('forms.refresh') }}
+						</CButton>
+					</div>
 				</CCardHeader>
-				<CCardBody>
+				<CCardBody
+					class='datatable-card-padding'
+				>
 					<CDataTable
 						:fields='tableFields'
 						:items='accessPoints'

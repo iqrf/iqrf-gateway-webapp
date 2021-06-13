@@ -11,7 +11,9 @@
 				<CCardHeader class='border-0'>
 					{{ $t('network.connection.title') }}
 				</CCardHeader>
-				<CCardBody>
+				<CCardBody
+					class='datatable-card-padding'
+				>
 					<CDataTable
 						:fields='tableFields'
 						:items='connections'

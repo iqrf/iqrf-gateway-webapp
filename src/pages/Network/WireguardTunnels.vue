@@ -14,7 +14,9 @@
 					{{ $t('forms.add') }}
 				</CButton>
 			</CCardHeader>
-			<CCardBody>
+			<CCardBody
+				class='datatable-card-padding'
+			>
 				<CDataTable
 					:fields='tableFields'
 					:items='tunnels'
