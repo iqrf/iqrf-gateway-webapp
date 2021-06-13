@@ -114,7 +114,10 @@ limitations under the License.
 										:min='rfChannelRules.min'
 									/>
 								</ValidationProvider>
-								<CAlert v-if='address === 0 && config.stdAndLpNetwork === false' color='warning'>
+								<CAlert
+									v-if='address === 0 && config.stdAndLpNetwork === false'
+									color='warning'
+								>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
 								<CSelect
@@ -281,7 +284,11 @@ limitations under the License.
 								/>
 							</CCol>
 						</CRow>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<CButton
+							color='primary'
+							:disabled='invalid'
+							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
+						>
 							{{ $t('forms.write') }}
 						</CButton>
 					</CForm>
@@ -318,7 +325,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Options, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
 import {
 	between,
@@ -332,14 +339,14 @@ import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
 import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
+
 import {IOption} from '../../interfaces/coreui';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {MutationPayload} from 'vuex';
-import {Dictionary} from 'vue-router/types/router';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 
-@Component({
+@Options({
 	components: {
 		AddressChanger,
 		CButton,
@@ -437,12 +444,12 @@ export default class TrConfiguration extends Vue {
 				.then((msgId: string) => this.msgId = msgId);
 		}
 	}
-	
+
 	/**
 	 * Computes rules for validation of RF channel input field
-	 * @returns {Dictionary<string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
+	 * @returns {Record<string, string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
 	 */
-	get rfChannelRules(): Dictionary<string|number>|undefined {
+	get rfChannelRules(): Record<string, string|number>|undefined {
 		if (this.config === null) {
 			return undefined;
 		}
@@ -459,9 +466,9 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Computes feedback messages in case rfBand field value is invalid
-	 * @returns {Dictionary<string>} Dictionary of messages for applied rules
+	 * @returns {Record<string, string>} Dictionary of messages for applied rules
 	 */
-	get rfChannelValidatorMessages(): Dictionary<string> {
+	get rfChannelValidatorMessages(): Record<string, string> {
 		let message = '';
 		if (this.config !== null) {
 			switch (this.config.rfBand) {
@@ -560,9 +567,9 @@ export default class TrConfiguration extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
@@ -713,7 +720,7 @@ export default class TrConfiguration extends Vue {
 			}
 			return;
 		}
-		
+
 		if (response.data.status === 1007) { // pre-unified status codes
 			if (response.data.statusStr.includes('ERROR_TIMEOUT')) {
 				this.$toast.error(

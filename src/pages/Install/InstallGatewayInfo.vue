@@ -96,7 +96,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
@@ -105,7 +105,7 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 import { IGatewayInfo, IpAddress, MacAddress } from '../../interfaces/gatewayInfo';
 import { AxiosResponse } from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCardBody,
@@ -173,11 +173,11 @@ export default class InstallGatewayInfo extends Vue {
 		}
 		return addresses;
 	}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */
-	private created(): void {
+	created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
 			.then(

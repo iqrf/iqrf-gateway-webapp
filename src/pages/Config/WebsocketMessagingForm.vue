@@ -112,7 +112,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -140,7 +140,7 @@ interface LocalWsMessaging {
 	RequiredInterfaces: Array<LocalRequiredInterface>
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

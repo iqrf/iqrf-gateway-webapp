@@ -35,7 +35,7 @@ limitations under the License.
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
-			<CButton 
+			<CButton
 				color='primary'
 				type='submit'
 				:disabled='invalid'
@@ -47,7 +47,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -58,7 +58,7 @@ import PixlaService from '../../services/PixlaService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CForm,
@@ -77,7 +77,7 @@ export default class PixlaForm extends Vue {
 	 * @var {string|null} token pixla token
 	 */
 	private token: string|null = null
-	
+
 	/**
 	 * Initializes validation rules
 	 */

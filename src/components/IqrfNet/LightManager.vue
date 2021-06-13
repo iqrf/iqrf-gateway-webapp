@@ -122,7 +122,7 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.lights') }}</th>
 						<td>{{ numLights }}</td>
-					</tr>	
+					</tr>
 				</tbody>
 				<tbody v-else>
 					<tr>
@@ -140,7 +140,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -151,7 +151,7 @@ import StandardLightService, {StandardLight} from '../../services/DaemonApi/Stan
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -173,7 +173,7 @@ export default class LightManager extends Vue {
 	 * @var {number} address Address of device implementing the light standard
 	 */
 	private address = 1
-	
+
 	/**
 	 * @var {number} index Index of light to manage
 	 */
@@ -248,9 +248,9 @@ export default class LightManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

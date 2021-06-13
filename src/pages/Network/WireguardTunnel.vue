@@ -62,7 +62,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 							<div
-								v-if='tunnel.publicKey !== ""' 
+								v-if='tunnel.publicKey !== ""'
 								class='form-group'
 							>
 								<label>
@@ -285,8 +285,8 @@ limitations under the License.
 									:label='$t("network.wireguard.tunnels.form.stack")'
 								/>
 								<CRow>
-									<CCol 
-										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"' 
+									<CCol
+										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"'
 										:md='peerStacks[index] === "ipv4" ? 12 : 6'
 									>
 										<div
@@ -432,7 +432,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
@@ -452,7 +453,7 @@ export enum StackType {
 	DUAL = 'both'
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -608,7 +609,7 @@ export default class WireguardTunnel extends Vue {
 	 * Shows public key clipboard copy success message
 	 */
 	private successClipboard(): void {
-		this.$toast.success(
+		useToast().success(
 			this.$t('network.wireguard.tunnels.messages.copyPublicKey').toString()
 		);
 	}
@@ -779,7 +780,7 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(
+		useToast().success(
 			this.$t(
 				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Success',
 				{tunnel: this.tunnel.name}

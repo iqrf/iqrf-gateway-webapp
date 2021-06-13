@@ -20,7 +20,7 @@ limitations under the License.
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
-					<JsonApi 
+					<JsonApi
 						v-if='!powerUser'
 						@fetched='configFetch'
 					/>
@@ -51,7 +51,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import IqrfInfo from '../../components/Config/IqrfInfo.vue';
 import IqrfRepository from '../../components/Config/IqrfRepository.vue';
@@ -65,7 +65,7 @@ import TracerList from '../../components/Config/TracerList.vue';
 
 import {IConfigFetch} from '../../interfaces/daemonComponent';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CCardBody,
@@ -146,7 +146,7 @@ export default class MiscConfiguration extends Vue {
 		if (this.powerUser) {
 			this.endpoints.splice(3, 0, 'iqmesh');
 		}
-		if (this.$attrs.tabName !== undefined) {
+		if (typeof this.$attrs.tabName === 'string') {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
 		this.$store.commit('spinner/SHOW',

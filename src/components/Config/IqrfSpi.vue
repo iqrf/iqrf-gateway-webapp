@@ -109,7 +109,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</CCol>
-						<CCol 
+						<CCol
 							v-if='(i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null)'
 							md='6'
 						>
@@ -160,7 +160,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -184,7 +184,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {IIqrfSpi} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -403,7 +403,7 @@ export default class IqrfSpi extends Vue {
 			this.uartEnableGpioPin = null;
 		}
 	}
-	
+
 	/**
 	 * Updates port in configuration from mapping
 	 * @param {string} port Port

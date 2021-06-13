@@ -102,7 +102,7 @@ limitations under the License.
 					@click='performDelete'
 				>
 					{{ $t('forms.delete') }}
-				</CButton> <CButton 
+				</CButton> <CButton
 					color='secondary'
 					@click='deleteInstance = ""'
 				>
@@ -114,7 +114,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CButton,
 	CButtonClose,
@@ -133,11 +133,10 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IMqInstance} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonClose,
@@ -199,9 +198,9 @@ export default class MqMessagingTable extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
@@ -219,7 +218,7 @@ export default class MqMessagingTable extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
-	
+
 	/**
 	 * Assigns name of MQ messaging instance selected to remove to the remove modal
 	 * @param {IMqInstance} instance MQ messaging instance
@@ -284,7 +283,7 @@ export default class MqMessagingTable extends Vue {
 				});
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.deleteFailed', {instance: instance}));
-	}	
+	}
 }
 </script>
 

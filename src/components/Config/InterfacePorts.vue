@@ -31,11 +31,11 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonGroup,
@@ -50,7 +50,7 @@ export default class InterfacePorts extends Vue {
 	 * @var {Array<string>} ports device ports
 	 */
 	private ports: Array<string> = []
-	
+
 	/**
 	 * @property {string} interfaceType communication interface type
 	 */

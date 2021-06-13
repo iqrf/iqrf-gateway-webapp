@@ -48,14 +48,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile} from '@coreui/vue/src';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

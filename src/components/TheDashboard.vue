@@ -34,12 +34,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CContainer, CWrapper} from '@coreui/vue/src';
 import TheHeader from './TheHeader.vue';
 import TheSidebar from './TheSidebar.vue';
 
-@Component({
+@Options({
 	components: {
 		CContainer,
 		CWrapper,

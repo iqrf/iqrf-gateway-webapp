@@ -80,7 +80,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.service.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("states." + (item.service.tlsEnabled !== undefined ? 
+								:toggler-text='$t("states." + (item.service.tlsEnabled !== undefined ?
 									(item.service.tlsEnabled ? "enabled": "disabled") : "disabled"))'
 								size='sm'
 							>
@@ -145,7 +145,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
@@ -157,9 +157,8 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
-import {Dictionary} from 'vue-router/types/router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -231,9 +230,9 @@ export default class WebsocketInterfaceList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
@@ -247,7 +246,7 @@ export default class WebsocketInterfaceList extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
+	mounted(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -320,9 +319,9 @@ export default class WebsocketInterfaceList extends Vue {
 	/**
 	 * Saves changes in Websocket service instance configuration
 	 * @param {IWsInstance} service Websocket service instance
-	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
+	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
-	private editService(service: IWsService, newSettings: Dictionary<boolean>): void {
+	private editService(service: IWsService, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
 		let settings = {
 			...service,

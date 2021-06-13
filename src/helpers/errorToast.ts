@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import i18n from '../i18n';
+
 import store from '../store';
-import Vue from 'vue';
 
 import {AxiosError} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
+import {useI18n} from 'vue-i18n';
+import {useToast} from 'vue-toastification';
 
 /**
  * Shows error toast with assignable parameters
@@ -27,7 +27,7 @@ import {Dictionary} from 'vue-router/types/router';
  * @param {string} message Path to translation message
  * @param {Dict<string|number>|undefined} params Partial translations for message placeholders
  */
-export function extendedErrorToast(error: AxiosError, message: string, params: Dictionary<string|number>|undefined = undefined): void {
+export function extendedErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
 	const translations = {
 		error: error.response ? error.response.data.message : error.message
 	};
@@ -35,7 +35,9 @@ export function extendedErrorToast(error: AxiosError, message: string, params: D
 		Object.assign(translations, params);
 	}
 	store.commit('spinner/HIDE');
-	Vue.$toast.error(i18n.t(message, translations).toString());
+	const i18n = useI18n();
+	const toast = useToast();
+	toast.error(i18n.t(message, translations).toString());
 }
 
 /**
@@ -44,7 +46,7 @@ export function extendedErrorToast(error: AxiosError, message: string, params: D
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function controllerErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function controllerErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
 		params = {service: 'IQRF Gateway Controller'};
 	} else {
@@ -59,7 +61,7 @@ export function controllerErrorToast(error: AxiosError, message: string, params:
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function daemonErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function daemonErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
 		params = {service: 'IQRF Gateway Daemon'};
 	} else {
@@ -74,7 +76,7 @@ export function daemonErrorToast(error: AxiosError, message: string, params: Dic
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function menderErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function menderErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
 		params = {service: 'Mender'};
 	} else {
@@ -89,7 +91,7 @@ export function menderErrorToast(error: AxiosError, message: string, params: Dic
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function monitErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function monitErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
 		params = {service: 'Monit'};
 	} else {
@@ -104,7 +106,7 @@ export function monitErrorToast(error: AxiosError, message: string, params: Dict
  * @param {string} message Path to translation message
  * @param {Dict<string>|undefined} params Partial translations for message placeholders
  */
-export function pixlaErrorToast(error: AxiosError, message: string, params: Dictionary<string>|undefined = undefined): void {
+export function pixlaErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
 		params = {service: 'PIXLA'};
 	} else {

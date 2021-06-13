@@ -115,7 +115,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -123,9 +123,8 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/coreui';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -178,9 +177,9 @@ export default class WebsocketMessagingList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
@@ -249,7 +248,7 @@ export default class WebsocketMessagingList extends Vue {
 						this.$t('config.daemon.messagings.websocket.messaging.messages.deleteSuccess', {messaging: instance})
 							.toString()
 					);
-				});	
+				});
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}

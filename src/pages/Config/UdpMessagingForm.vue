@@ -88,7 +88,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -100,7 +100,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IUdpInstance} from '../../interfaces/messagingInterfaces';
 import {MetaInfo} from 'vue-meta';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

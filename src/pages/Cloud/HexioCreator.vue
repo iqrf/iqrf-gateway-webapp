@@ -121,7 +121,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -134,7 +134,7 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {IHexioCloud} from '../../interfaces/clouds';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -175,7 +175,7 @@ export default class HexioCreator extends Vue {
 	 * @var {string} visibility Form password field visibility type
 	 */
 	private visibility = 'password'
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */

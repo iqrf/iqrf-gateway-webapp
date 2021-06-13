@@ -44,7 +44,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from '@coreui/vue/src';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -56,7 +56,7 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosResponse, AxiosError} from 'axios';
 import {FileUpload} from '../../interfaces/trUpload';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -118,7 +118,7 @@ export default class HexUpload extends Vue {
 		);
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/UPDATE_TEXT', 
+				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess').toString()
 				);
 				this.stopDaemon(response.data);

@@ -64,7 +64,7 @@ limitations under the License.
 							:options='timeSpecOptions'
 						/>
 						<div
-							v-if='timeSpecSelected === "cron"' 
+							v-if='timeSpecSelected === "cron"'
 							class='form-group'
 						>
 							<ValidationProvider
@@ -109,7 +109,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div
-							v-if='timeSpecSelected === "exact"' 
+							v-if='timeSpecSelected === "exact"'
 							class='form-group'
 						>
 							<label for='exactTime'>
@@ -130,7 +130,7 @@ limitations under the License.
 							</h3>
 							<CButton
 								color='primary'
-								size='sm' 
+								size='sm'
 								href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 								target='_blank'
 							>
@@ -160,7 +160,7 @@ limitations under the License.
 									</ValidationProvider>
 								</CCol>
 								<CCol md='6'>
-									<div 
+									<div
 										v-for='(messaging, j) of tasks[i-1].messaging'
 										:key='j'
 										class='form-group'
@@ -173,7 +173,7 @@ limitations under the License.
 											}'
 										>
 											<CSelect
-												:value.sync='tasks[i-1].messaging[j]'
+												:value='tasks[i-1].messaging[j]'
 												:label='$t("config.daemon.scheduler.form.messages.messaging")'
 												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 												:options='messagings'
@@ -222,7 +222,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
@@ -237,7 +237,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import SchedulerService from '../../services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IOption} from '../../interfaces/coreui';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
@@ -251,7 +250,7 @@ enum TimeSpecTypes {
 	PERIODIC = 'periodic'
 }
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
@@ -287,9 +286,9 @@ export default class SchedulerForm extends Vue {
 	private clientId = 'SchedulerMessaging'
 
 	/**
-	 * @constant {Dictionary<string>} components Names of messaging components
+	 * @constant {Record<string, string>} components Names of messaging components
 	 */
-	private components: Dictionary<string> = {
+	private components: Record<string, string> = {
 		mq: 'iqrf::MqMessaging',
 		mqtt: 'iqrf::MqttMessaging',
 		websocket: 'iqrf::WebsocketMessaging'
@@ -299,11 +298,11 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null
-	
+
 	/**
-	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
+	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
 	 */
-	private dateFormat: Dictionary<string|boolean> = {
+	private dateFormat: Record<string, string|boolean> = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
@@ -376,7 +375,7 @@ export default class SchedulerForm extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-	
+
 	/**
 	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
 	 */
@@ -531,9 +530,9 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.msgIds.forEach((item: string) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}
@@ -863,7 +862,7 @@ export default class SchedulerForm extends Vue {
 			);
 		}
 		this.$router.push('/config/daemon/scheduler/');
-		
+
 	}
 }
 </script>

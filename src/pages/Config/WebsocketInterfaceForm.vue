@@ -152,7 +152,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -167,7 +167,7 @@ import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

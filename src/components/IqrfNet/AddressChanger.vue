@@ -51,12 +51,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -86,7 +86,7 @@ export default class AddressChanger extends Vue {
 	/**
 	 * @property {number} loaded Indicates that configuration has been loaded
 	 */
-	@Prop({required: true}) loaded!: boolean 
+	@Prop({required: true}) loaded!: boolean
 
 	/**
 	 * Vue lifecycle hook created

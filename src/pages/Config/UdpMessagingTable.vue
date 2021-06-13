@@ -89,8 +89,8 @@ limitations under the License.
 					@click='performDelete'
 				>
 					{{ $t('forms.delete') }}
-				</CButton> <CButton 
-					color='secondary' 
+				</CButton> <CButton
+					color='secondary'
 					@click='deleteInstance = ""'
 				>
 					{{ $t('forms.cancel') }}
@@ -101,7 +101,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
@@ -109,11 +109,10 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUdpInstance} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonClose,
@@ -142,7 +141,7 @@ export default class UdpMessagingTable extends Vue {
 	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
 	 */
 	private deleteInstance = ''
-	
+
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
 	 */
@@ -168,9 +167,9 @@ export default class UdpMessagingTable extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,

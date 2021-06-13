@@ -89,7 +89,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -108,7 +108,7 @@ interface DpaVersions {
 	value: string
 }
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 		CButton,
@@ -207,9 +207,9 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

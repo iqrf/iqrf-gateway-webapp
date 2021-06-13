@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -100,7 +100,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -110,7 +110,7 @@ import DaemonConfigurationService	from '../../services/DaemonConfigurationServic
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

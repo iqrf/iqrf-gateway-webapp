@@ -85,7 +85,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -97,7 +97,7 @@ import {ISensor, IStandardSensor} from '../../interfaces/standard';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -167,9 +167,9 @@ export default class SensorManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

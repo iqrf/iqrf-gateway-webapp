@@ -198,7 +198,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
@@ -211,13 +211,12 @@ import ServiceService from '../../services/ServiceService';
 import SchedulerService from '../../services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -244,7 +243,7 @@ export default class SchedulerList extends Vue {
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
 	 */
-	private dateFormat: Dictionary<string|boolean> = {
+	private dateFormat: Record<string, string|boolean> = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
@@ -290,9 +289,9 @@ export default class SchedulerList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
@@ -391,9 +390,9 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}

@@ -21,7 +21,7 @@ limitations under the License.
 				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
 			</CCardHeader>
 			<CCardBody>
-				<CElementCover 
+				<CElementCover
 					v-if='loadFailed'
 					style='z-index: 1;'
 					:opacity='0.85'
@@ -72,7 +72,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -82,7 +82,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import {IIqrfCdc} from '../../interfaces/iqrfInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -180,14 +180,14 @@ export default class IqrfCdc extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
-	
+
 	/**
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
 		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
 	}
-	
+
 	/**
 	 * Updates port in configuration from mapping
 	 * @param {string} port Port

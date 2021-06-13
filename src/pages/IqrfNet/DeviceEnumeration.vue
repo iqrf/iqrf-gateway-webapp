@@ -113,7 +113,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '../../services/IqrfNetService';
@@ -135,7 +135,7 @@ interface Product {
 	rfMode: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -255,9 +255,9 @@ export default class DeviceEnumeration extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

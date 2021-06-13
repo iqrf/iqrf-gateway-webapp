@@ -317,7 +317,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia, CModal} from '@coreui/vue/src';
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
@@ -330,13 +330,12 @@ import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '../../services/IqrfRepository/OsDpaService';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -374,9 +373,9 @@ export default class StandardDevices extends Vue {
 	private showModal = false
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
@@ -491,7 +490,7 @@ export default class StandardDevices extends Vue {
 	/**
 	 * Unsubscribes handler from websocket store
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

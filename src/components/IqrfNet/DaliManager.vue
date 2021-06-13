@@ -65,9 +65,9 @@ limitations under the License.
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
 						</CButton> <CButton
-							v-if='i === commands.length' 
-							color='success' 
-							:disabled='invalid' 
+							v-if='i === commands.length'
+							color='success'
+							:disabled='invalid'
 							@click.prevent='addDaliCommand'
 						>
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
@@ -104,7 +104,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -117,7 +117,7 @@ interface DaliAnswer {
 	value: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -144,7 +144,7 @@ export default class DaliManager extends Vue {
 	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
 	 */
 	private answers: Array<DaliAnswer> = []
-	
+
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
@@ -186,9 +186,9 @@ export default class DaliManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

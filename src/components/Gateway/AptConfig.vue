@@ -31,7 +31,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.listUpdateInterval",
 							required: "service.unattended-upgrades.errors.listUpdateInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='listUpdateInterval'
 							type='number'
@@ -49,7 +49,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.upgradeInterval",
 							required: "service.unattended-upgrades.errors.upgradeInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='upgradeInterval'
 							type='number'
@@ -68,7 +68,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.removeInterval",
 							required: "service.unattended-upgrades.errors.removeInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='removeInterval'
 							type='number'
@@ -93,7 +93,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
@@ -102,7 +102,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import ToastClear from '../../helpers/ToastClear';
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -117,7 +117,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 })
 
 /**
- * Gateway APT configuration component for service control 
+ * Gateway APT configuration component for service control
  */
 export default class AptConfig extends Vue {
 

@@ -22,12 +22,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
-@Component({})
+@Options({})
 
 /**
  * Daemon mode information component for gateway information
@@ -60,7 +60,7 @@ export default class DaemonModeInfo extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-	
+
 	/**
 	 * Component unwatch function
 	 */
@@ -100,9 +100,9 @@ export default class DaemonModeInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

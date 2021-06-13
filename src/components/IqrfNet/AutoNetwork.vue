@@ -243,7 +243,7 @@ limitations under the License.
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 						:disabled='!useNodes'
 					/>
-					<CButton 
+					<CButton
 						color='primary'
 						type='button'
 						:disabled='invalid'
@@ -258,7 +258,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -274,7 +274,7 @@ interface NodeMessages {
 	nodesTotal: string
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -295,7 +295,7 @@ export default class AutoNetwork extends Vue {
 	 * @var {boolean} autoAddress Use first available address for bonding
 	 */
 	private autoAddress = false
-	
+
 	/**
 	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
 	 */
@@ -318,7 +318,7 @@ export default class AutoNetwork extends Vue {
 		nodesNew: '',
 		nodesTotal: ''
 	}
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -440,9 +440,9 @@ export default class AutoNetwork extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

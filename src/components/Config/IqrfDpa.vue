@@ -72,7 +72,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -83,7 +83,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -166,7 +166,7 @@ export default class IqrfDpa extends Vue {
 				this.$emit('fetched', {name: 'iqrfDpa', success: false});
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF DPA component instance
 	 */

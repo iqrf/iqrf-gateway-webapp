@@ -86,7 +86,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -94,13 +94,12 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -147,7 +146,7 @@ export default class DaemonMode extends Vue {
 	/**
 	 * @constant {DaemonModeEnum} modes Daemon mode options
 	 */
-	private modes: Dictionary<DaemonModeEnum> = {
+	private modes: Record<string, DaemonModeEnum> = {
 		forwarding: DaemonModeEnum.forwarding,
 		operational: DaemonModeEnum.operational,
 		service: DaemonModeEnum.service
@@ -199,9 +198,9 @@ export default class DaemonMode extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

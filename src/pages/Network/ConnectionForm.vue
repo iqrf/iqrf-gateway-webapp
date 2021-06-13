@@ -72,7 +72,7 @@ limitations under the License.
 										:label='$t("network.wireless.form.password")'
 									/>
 								</div>
-								<div 
+								<div
 									v-else-if='connection.wifi.security.type === "wep"'
 									class='form-group'
 								>
@@ -130,7 +130,7 @@ limitations under the License.
 												"network.wireless.errors.wepKey128Invalid"
 										}'
 									>
-										<CInput							
+										<CInput
 											v-model='connection.wifi.security.wep.keys[index]'
 											:label='$t("network.wireless.form.wep.keyNum", {index: index})'
 											:is-valid='touched ? valid : null'
@@ -510,7 +510,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
 import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -531,7 +532,7 @@ import {IConnection, IConnectionModal, NetworkInterface} from '../../interfaces/
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
@@ -709,7 +710,7 @@ export default class ConnectionForm extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('ipv4', (address: string) => {
-			return ip.v4({exact: true}).test(address); 
+			return ip.v4({exact: true}).test(address);
 		});
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
@@ -947,7 +948,7 @@ export default class ConnectionForm extends Vue {
 		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
-			delete connection.ipv4.current;	
+			delete connection.ipv4.current;
 		}
 		if (connection.ipv4.addresses.length === 0) {
 			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
@@ -1057,10 +1058,11 @@ export default class ConnectionForm extends Vue {
 	private connect(uuid: string, name: string): void {
 		NetworkConnectionService.connect(uuid)
 			.then(() => {
+				const toast = useToast();
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
+				toast.success(
 					this.$t(
-						'network.connection.messages.' + 
+						'network.connection.messages.' +
 						(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
 						{connection: name}).toString()
 				);
@@ -1069,7 +1071,7 @@ export default class ConnectionForm extends Vue {
 				} else if (this.connection.type === ConnectionType.WIFI) {
 					this.$router.push('/network/wireless');
 				}
-				
+
 			})
 			.catch((error: AxiosError) => {
 				if (!this.handleIPChanged) {
@@ -1103,7 +1105,7 @@ export default class ConnectionForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$store.commit('blocking/SHOW',
 					this.$t(message, {address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}).toString()
-				);	
+				);
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');

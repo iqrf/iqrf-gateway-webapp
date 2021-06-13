@@ -315,7 +315,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -329,7 +329,7 @@ import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {IMqttInstance} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -424,7 +424,7 @@ export default class MqttMessagingForm extends Vue {
 	/**
 	 * Computes array of CoreUI qos select options
 	 * @returns {Array<IOption>} QoS select options
-	 */	
+	 */
 	get qosOptions(): Array<IOption> {
 		const options = [0, 1, 2];
 		return options.map((option) => {
@@ -434,7 +434,7 @@ export default class MqttMessagingForm extends Vue {
 			};
 		});
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

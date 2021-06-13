@@ -37,7 +37,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardFooter, CCardHeader} from '@coreui/vue/src';
 
 import {PrismEditor} from 'vue-prism-editor';
@@ -46,7 +46,7 @@ import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-bash';
 import 'prismjs/themes/prism.css';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CCardBody,

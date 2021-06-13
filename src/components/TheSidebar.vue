@@ -35,7 +35,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CRenderFunction,
 	CSidebar,
@@ -94,7 +94,7 @@ interface NavData {
 	_children: Array<NavMember>
 }
 
-@Component({
+@Options({
 	components: {
 		CRenderFunction,
 		CSidebar,
@@ -180,14 +180,14 @@ export default class TheSidebar extends Vue {
 										to: '/gateway/service/iqrf-gateway-daemon/',
 										roles: ['power', 'normal'],
 									},
-									{	
+									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-controller.title'),
 										to: '/gateway/service/iqrf-gateway-controller/',
 										feature: 'iqrfGatewayController',
 										roles: ['power', 'normal'],
 									},
-									{	
+									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-translator.title'),
 										to: '/gateway/service/iqrf-gateway-translator/',
@@ -302,14 +302,14 @@ export default class TheSidebar extends Vue {
 									}
 								]
 							},
-							{	
+							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.controller.title'),
 								to: '/config/controller/',
 								feature: 'iqrfGatewayController',
 								roles: ['power', 'normal'],
 							},
-							{	
+							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.translator.title'),
 								to: '/config/translator/',

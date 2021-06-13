@@ -126,7 +126,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Options, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -134,11 +134,10 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IWsService} from '../../interfaces/messagingInterfaces';
-import {Dictionary} from 'vue-router/types/router';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -196,9 +195,9 @@ export default class WebsocketServiceList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
@@ -270,9 +269,9 @@ export default class WebsocketServiceList extends Vue {
 	/**
 	 * Saves changes in Websocket service instance configuration
 	 * @param {IWsInstance} service Websocket service instance
-	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
+	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
-	private edit(service: IWsService, newSettings: Dictionary<boolean>): void {
+	private edit(service: IWsService, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
 		let settings = {
 			...service,

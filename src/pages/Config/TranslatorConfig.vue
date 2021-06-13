@@ -249,7 +249,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -260,9 +260,9 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITranslator} from '../../interfaces/translator';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -278,7 +278,7 @@ import {NavigationGuardNext, Route} from 'vue-router';
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
 				vm.$toast.error(

@@ -37,7 +37,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
 import UrlBuilder from '../helpers/urlBuilder';
@@ -57,7 +57,7 @@ interface IMonitorMsg {
 	data: IMonitorMsgData
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CModal,

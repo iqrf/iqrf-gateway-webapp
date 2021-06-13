@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 
 const messages = {
 	'en': require('./locales/en.json')
 };
 
-Vue.use(VueI18n);
-
-export default new VueI18n({
+const i18n = createI18n({
 	locale: 'en',
 	fallbackLocale: 'en',
 	messages: messages
 });
+
+export default i18n;

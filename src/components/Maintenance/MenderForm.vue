@@ -136,7 +136,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -151,7 +151,7 @@ import {IMenderConfig} from '../../interfaces/maintenance';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import { IOption } from '../../interfaces/coreui';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
@@ -298,7 +298,7 @@ export default class MenderForm extends Vue {
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.messages.fetchFailed'));
 	}
-	
+
 	/**
 	 * Updates configuration of the Mender feature
 	 */

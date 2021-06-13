@@ -136,7 +136,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
@@ -151,7 +151,7 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 import {AxiosResponse} from 'axios';
 import {IGatewayInfo, IpAddress, MacAddress} from '../../interfaces/gatewayInfo';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -185,7 +185,7 @@ export default class GatewayInfo extends Vue {
 	private showCoordinator = false
 
 	private icon: Array<string> = cilPencil;
-	
+
 	/**
 	 * Computes array of ip address objects from network interfaces
 	 * @returns {Array<IpAddress} Array of ip address objects

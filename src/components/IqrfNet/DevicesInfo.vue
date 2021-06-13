@@ -81,7 +81,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
 import DeviceIcon from './DeviceIcon.vue';
 
@@ -91,11 +91,10 @@ import {ToastOptions} from 'vue-toast-notification';
 import Device from '../../helpers/Device';
 import IqrfNetService from '../../services/IqrfNetService';
 
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 		CButton,
@@ -118,9 +117,9 @@ export default class DevicesInfo extends Vue {
 	private devices: Array<Device> = []
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
@@ -131,7 +130,7 @@ export default class DevicesInfo extends Vue {
 	 * @var {boolean} manual Manual FRC ping request
 	 */
 	private manual = false
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -193,9 +192,9 @@ export default class DevicesInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

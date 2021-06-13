@@ -291,7 +291,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -303,9 +303,9 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -318,7 +318,7 @@ import {NavigationGuardNext, Route} from 'vue-router/types/router';
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(

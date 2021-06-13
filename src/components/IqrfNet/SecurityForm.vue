@@ -66,7 +66,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -77,7 +77,7 @@ import {IOption} from '../../interfaces/coreui';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {regex} from 'vee-validate/dist/rules';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -131,7 +131,7 @@ export default class SecurityForm extends Vue {
 	private visibility = 'password'
 
 	/**
-	 * Component unsubscribe function
+	 * Options unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
@@ -174,9 +174,9 @@ export default class SecurityForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

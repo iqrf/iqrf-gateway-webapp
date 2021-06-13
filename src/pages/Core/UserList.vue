@@ -117,14 +117,14 @@ limitations under the License.
 					@click='deleteUser = null'
 				>
 					{{ $t('forms.cancel') }}
-				</CButton> 
+				</CButton>
 			</template>
 		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CButton,
 	CButtonClose,
@@ -143,12 +143,10 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
-import { extend } from 'vee-validate';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonClose,
@@ -176,9 +174,9 @@ export default class UserList extends Vue {
 	private deleteUser: IUser|null = null
 
 	/**
-	 * @var {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @var {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
@@ -193,7 +191,7 @@ export default class UserList extends Vue {
 	 * @var {Array<User>} users Array of user objects
 	 */
 	private users: Array<IUser> = []
-	
+
 	/**
 	 * Updates table fields by user rolr
 	 */
@@ -288,9 +286,9 @@ export default class UserList extends Vue {
 	/**
 	 * Updates settings of a user object and then stores new values
 	 * @param {IUser} user User object
-	 * @param {Dictionary<string>} newSettings Settings to apply to the user obhect
+	 * @param {Record<string, string>} newSettings Settings to apply to the user obhect
 	 */
-	private edit(user: IUser, newSettings: Dictionary<string>) {
+	private edit(user: IUser, newSettings: Record<string, string>) {
 		if (user.id === undefined) {
 			return;
 		}
@@ -363,7 +361,7 @@ export default class UserList extends Vue {
 		this.getUsers().then(() => {
 			this.$toast.success(
 				this.$t(
-					'core.user.messages.deleteSuccess', 
+					'core.user.messages.deleteSuccess',
 					{user: user.username}
 				).toString()
 			);

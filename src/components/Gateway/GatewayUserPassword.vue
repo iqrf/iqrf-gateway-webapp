@@ -45,7 +45,7 @@ limitations under the License.
 							</template>
 						</CInput>
 					</ValidationProvider>
-					<CButton 
+					<CButton
 						color='primary'
 						type='submit'
 						:disabled='invalid'
@@ -59,7 +59,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -72,7 +72,7 @@ import {AxiosError} from 'axios';
 import {GatewayPasswordFeature} from '../../services/FeatureService';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -91,7 +91,7 @@ import { extendedErrorToast } from '../../helpers/errorToast';
  * Gateway user password change component
  */
 export default class GatewayUserPassword extends Vue {
-	
+
 	/**
 	 * @var {string} password Password
 	 */

@@ -91,7 +91,7 @@ limitations under the License.
 									:checked.sync='configuration.timestampFiles'
 								/>
 							</div>
-							<div 
+							<div
 								v-if='configuration.timestampFiles'
 								class='form-group'
 							>
@@ -199,7 +199,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -215,7 +215,7 @@ import {MetaInfo} from 'vue-meta';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -325,7 +325,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
+	mounted(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}

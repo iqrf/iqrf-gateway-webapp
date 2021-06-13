@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<table 
+	<table
 		v-if='!$store.getters["sidebar/isMinimized"]'
 		class='table'
 	>
@@ -55,12 +55,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CBadge} from '@coreui/vue/src';
 
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CBadge
 	},

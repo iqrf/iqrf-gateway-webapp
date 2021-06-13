@@ -80,7 +80,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -93,7 +93,7 @@ import {IMqInstance} from '../../interfaces/messagingInterfaces';
 import {MetaInfo} from 'vue-meta';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -145,7 +145,7 @@ export default class MqMessagingForm extends Vue {
 		return this.$route.path === '/config/daemon/messagings/mq/add' ?
 			this.$t('config.daemon.messagings.mq.add').toString() : this.$t('config.daemon.messagings.mq.edit').toString();
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

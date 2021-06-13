@@ -28,7 +28,7 @@ limitations under the License.
 						</p>
 						<p style='font-size: 2em'>
 							{{ timeDisplay }}
-						</p> 
+						</p>
 						<p style='font-size: 1.5em'>
 							{{ timezoneDisplay }}
 						</p>
@@ -84,7 +84,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
 import vSelect from 'vue-select';
 
@@ -96,7 +96,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {IOption} from '../../interfaces/coreui';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -145,7 +145,7 @@ export default class GatewayTime extends Vue {
 	/**
 	 * @var {ReturnType<typeof setInterval>} timeRefreshInterval Timestamp refresh interval
 	 */
-	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null; 
+	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null;
 
 	/**
 	 * Retrieves gateway time and available timezones
@@ -157,7 +157,7 @@ export default class GatewayTime extends Vue {
 	/**
 	 * Clears time refresh interval
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.clearActiveInterval();
 	}
 
@@ -169,7 +169,7 @@ export default class GatewayTime extends Vue {
 		if (this.gatewayTime === null) {
 			return '';
 		}
-		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
+		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000,
 			{zone: this.gatewayTime.name}).toFormat(
 			'cccc dd.LL.yyyy ' + (this.hour12 ? 'tt': 'TT')
 		);
@@ -242,7 +242,7 @@ export default class GatewayTime extends Vue {
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,
-				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')', 
+				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
 			});
 		}
 		this.timezoneOptions = timezoneArray;

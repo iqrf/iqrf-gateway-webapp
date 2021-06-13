@@ -60,15 +60,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CDataTable, CIcon} from '@coreui/vue/src';
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkConnectionService from '../../services/NetworkConnectionService';
-import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
 import {NetworkConnection} from '../../interfaces/network';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CDataTable,
@@ -97,9 +96,9 @@ export default class EthernetConnection extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array fo CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
 		delete: cilTrash,

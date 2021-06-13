@@ -63,7 +63,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -72,7 +72,7 @@ import UserService from '../../services/UserService';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

@@ -85,7 +85,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -102,7 +102,7 @@ interface ComponentFormConfig {
 	startlevel: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -135,12 +135,12 @@ export default class ComponentForm extends Vue {
 		enabled: false,
 		startlevel: 0
 	}
-	
+
 	/**
 	 * @property {string} component Daemon component name for editing
 	 */
 	@Prop({ required: false, default: '' }) component!: string;
-	
+
 	/**
 	 * Computes page title depending on the action (add, edit)
 	 * @returns {string} Page title

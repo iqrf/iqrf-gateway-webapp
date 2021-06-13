@@ -71,7 +71,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -82,7 +82,7 @@ import ServiceService from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -118,7 +118,7 @@ export default class AzureCreator extends Vue {
 	created(): void {
 		extend('required', required);
 	}
-	
+
 	/**
 	 * Stores new Azure cloud connection configuration in the gateway filesystem
 	 * @returns {Promise<void>} Empty promise for request chaining
@@ -135,7 +135,7 @@ export default class AzureCreator extends Vue {
 				return Promise.reject();
 			});
 	}
-	
+
 	/**
 	 * Stores new Azure cloud connection configuration in the gateway filesystem and restarts Daemon
 	 */

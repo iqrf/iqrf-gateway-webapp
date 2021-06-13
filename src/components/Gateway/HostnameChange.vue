@@ -1,7 +1,7 @@
 <template>
 	<ValidationObserver v-slot='{invalid}'>
 		<CModal
-			:show.sync='render'
+			:show.sync='renderModal'
 			color='primary'
 		>
 			<template #header>
@@ -46,7 +46,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -59,7 +59,7 @@ import {IHostname} from '../../interfaces/gatewayInfo';
 import {AxiosError} from 'axios';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CForm,
@@ -78,7 +78,7 @@ export default class HostnameChange extends Vue {
 	/**
 	 * @var {boolean} render Controls whether or not modal is rendered
 	 */
-	private render = false
+	private renderModal = false
 
 	/**
 	 * @var {IHostname} config Hostnamectl configuration
@@ -122,14 +122,14 @@ export default class HostnameChange extends Vue {
 	 * Shows modal component
 	 */
 	public show(): void {
-		this.render = true;
+		this.renderModal = true;
 	}
 
 	/**
 	 * Hides modal component
 	 */
 	public hide(): void {
-		this.render = false;
+		this.renderModal = false;
 		this.config.hostname = '';
 	}
 }

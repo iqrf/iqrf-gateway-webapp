@@ -19,9 +19,9 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
 		<CCard>
 			<CCardHeader>
-				<CButton 
+				<CButton
 					color='primary'
-					size='sm' 
+					size='sm'
 					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
@@ -33,7 +33,7 @@ limitations under the License.
 					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 					<span class='validation-errors'>{{ validatorErrors }}</span>
 				</CAlert>
-				<CElementCover 
+				<CElementCover
 					v-if='!isSocketConnected'
 					style='z-index: 1;'
 					:opacity='0.85'
@@ -65,7 +65,7 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
@@ -84,7 +84,7 @@ limitations under the License.
 							source='sendJson'
 						/>
 					</CCol>
-					<CCol 
+					<CCol
 						v-if='activeMessagePair.response !== []'
 						md='6'
 					>
@@ -103,7 +103,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
@@ -122,7 +122,7 @@ import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -181,7 +181,7 @@ export default class SendJsonRequest extends Vue {
 	/**
 	 * @var validator JSON schema validator function
 	 */
-	private validator: any = null 
+	private validator: any = null
 
 	/**
 	 * @var {string} validatorErrors String containing JSON schema violations
@@ -252,9 +252,9 @@ export default class SendJsonRequest extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
@@ -376,7 +376,7 @@ export default class SendJsonRequest extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		this.$store.commit('spinner/HIDE');		
+		this.$store.commit('spinner/HIDE');
 		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
 			this.$toast.error(
 				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()

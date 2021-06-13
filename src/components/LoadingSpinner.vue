@@ -26,10 +26,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import { mapGetters } from 'vuex';
 
-@Component({
+@Options({
 	computed: {
 		...mapGetters({
 			enabled: 'spinner/isEnabled',

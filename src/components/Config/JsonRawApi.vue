@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.misc.jsonRawApi.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -57,7 +57,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -68,7 +68,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonRaw} from '../../interfaces/jsonApi';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

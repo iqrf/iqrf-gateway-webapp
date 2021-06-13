@@ -52,7 +52,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
 import {
 	CBadge,
 	CDropdown,
@@ -65,9 +66,8 @@ import {
 } from '@coreui/vue/src';
 import LogoBig from '../assets/logo-big.svg';
 import {cilLockLocked} from '@coreui/icons';
-import { Dictionary } from 'vue-router/types/router';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CDropdown,
@@ -86,12 +86,12 @@ import { Dictionary } from 'vue-router/types/router';
  */
 export default class TheHeader extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		logout: cilLockLocked
 	}
-	
+
 	/**
 	 * User signout method, redirects to the signin page
 	 */
@@ -99,7 +99,8 @@ export default class TheHeader extends Vue {
 		this.$store.dispatch('user/signOut')
 			.then(() => {
 				this.$router.push('/sign/in');
-				this.$toast.success(this.$t('core.sign.out.message').toString());
+				const toast = useToast();
+				toast.success(this.$t('core.sign.out.message').toString());
 			});
 	}
 }

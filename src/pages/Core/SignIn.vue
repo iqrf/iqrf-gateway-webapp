@@ -82,7 +82,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
@@ -90,9 +90,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
-import {Dictionary} from 'vue-router/types/router';
 
-@Component({
+@Options({
 	components: {
 		CContainer,
 		CCard,
@@ -116,9 +115,9 @@ import {Dictionary} from 'vue-router/types/router';
  */
 export default class SignIn extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		user: cilUser,
 		lock: cilLockLocked,
 	}

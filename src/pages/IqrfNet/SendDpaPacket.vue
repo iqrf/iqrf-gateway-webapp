@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover 
+			<CElementCover
 				v-if='!isSocketConnected'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -183,7 +183,7 @@ limitations under the License.
 			</ValidationObserver>
 		</CCard>
 		<DpaMacros @set-packet='setPacket($event)' />
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
@@ -217,7 +217,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
@@ -233,7 +233,7 @@ import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {RawMessage} from '../../interfaces/dpa';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -434,9 +434,9 @@ export default class SendDpaPacket extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

@@ -42,7 +42,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosResponse} from 'axios';
 import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
@@ -62,7 +62,7 @@ interface IDpaMacros {
 	name: string
 }
 
-@Component({
+@Options({
 	components: {
 		CButtonGroup,
 		CCard,

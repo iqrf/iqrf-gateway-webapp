@@ -117,13 +117,13 @@ limitations under the License.
 				/>
 			</CForm>
 			<template #footer>
-				<CButton 
+				<CButton
 					color='success'
 					:disabled='invalid'
 					@click='saveMapping'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton 
+				</CButton> <CButton
 					color='secondary'
 					@click='hideModal'
 				>
@@ -135,7 +135,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
 import {IOption} from '../../interfaces/coreui';
 import {IMapping} from '../../interfaces/mappings';
@@ -145,7 +145,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingService from '../../services/MappingService';
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CForm,
@@ -245,7 +245,7 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.mappingId === null ? 
+		return this.mappingId === null ?
 			this.$t('config.daemon.interfaces.interfaceMapping.add').toString(): this.$t('config.daemon.interfaces.interfaceMapping.edit').toString() + ' ' + this.name;
 	}
 

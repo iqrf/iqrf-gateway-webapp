@@ -19,10 +19,10 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CAlert} from '@coreui/vue/src';
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 	},
@@ -35,7 +35,7 @@ export default class LogTab extends Vue {
 
 	/**
 	 * @property {string|null} log Log content
-	 */	
+	 */
 	@Prop({required: true, default: null}) readonly log!: string|null;
 }
 </script>

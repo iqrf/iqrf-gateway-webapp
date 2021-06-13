@@ -65,14 +65,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CCard, CSelect} from '@coreui/vue/src';
 import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
 import WebsocketList from '../../pages/Config/WebsocketList.vue';
 import MqMessagingTable from '../../pages/Config/MqMessagingTable.vue';
 import UdpMessagingTable from '../../pages/Config/UdpMessagingTable.vue';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CSelect,

@@ -197,7 +197,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -212,7 +212,7 @@ import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -323,7 +323,7 @@ export default class BondingManager extends Vue {
 	 * @var {string} scCode SmartConnect code
 	 */
 	private scCode = ''
-	
+
 	/**
 	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
 	 */
@@ -388,9 +388,9 @@ export default class BondingManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
@@ -459,7 +459,7 @@ export default class BondingManager extends Vue {
 			});
 			return;
 		}
-		
+
 		if (this.daemon236) { // unified status codes
 			if (response.status === 1) {
 				this.$toast.error(
