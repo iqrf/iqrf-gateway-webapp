@@ -17,6 +17,7 @@
 							<CButton
 								color='success'
 								size='sm'
+								:title='$t("network.wireless.table.addHotspot")'
 								@click='addHotspot'
 							>
 								<CIcon :content='icons.add' size='sm' />
@@ -26,6 +27,7 @@
 							</CButton> <CButton
 								color='primary'
 								size='sm'
+								:title='$t("forms.refresh")'
 								@click='getAccessPoints'
 							>
 								<CIcon :content='icons.refresh' size='sm' />
@@ -102,6 +104,7 @@
 								<CButton
 									size='sm'
 									:color='item.aps[0].inUse ? "danger" : "success"'
+									:title='$t("network.table." + (item.aps[0].inUse ? "disconnect" : "connect"))'
 									@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
 										item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
 										addConnection(item.aps[0])'
@@ -114,6 +117,7 @@
 									v-if='item.aps[0].uuid'
 									size='sm'
 									color='primary'
+									:title='$t("table.actions.edit")'
 									:to='"/network/wireless/edit/" + item.aps[0].uuid'
 								>
 									<CIcon :content='icons.edit' size='sm' />
@@ -124,6 +128,7 @@
 									v-if='item.aps[0].uuid'
 									size='sm'
 									color='danger'
+									:title='$t("table.actions.delete")'
 									@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
 								>
 									<CIcon :content='icons.remove' size='sm' />

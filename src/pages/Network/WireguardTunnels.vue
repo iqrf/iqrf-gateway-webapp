@@ -12,6 +12,7 @@
 						color='success'
 						size='sm'
 						to='/network/vpn/add'
+						:title='$t("forms.add")'
 					>
 						<CIcon :content='icons.add' size='sm' />
 						<span class='d-none d-lg-inline'>
@@ -48,6 +49,7 @@
 							<CButton
 								size='sm'
 								:color='item.active ? "danger" : "success"'
+								:title='$t("network.wireguard.tunnels.table.action." + (item.active ? "deactivate" : "activate"))'
 								@click='changeActiveState(item.id, item.name, (item.active ? false : true))'
 							>
 								<CIcon 
@@ -55,11 +57,12 @@
 									size='sm'
 								/>
 								<span class='d-none d-lg-inline'>
-									{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+									{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? 'deactivate' : 'activate')) }}
 								</span>
 							</CButton> <CButton
 								size='sm'
 								:color='item.enabled ? "danger" : "success"'
+								:title='$t("table.actions." + (item.enabled ? "disable" : "enable"))'
 								@click='changeEnabledState(item.id, item.name, (item.enabled ? false : true))'
 							>
 								<CIcon
@@ -67,11 +70,12 @@
 									size='sm'
 								/>
 								<span class='d-none d-lg-inline'>
-									{{ $t('table.actions.' + (item.enabled ? "disable" : "enable")) }}
+									{{ $t('table.actions.' + (item.enabled ? 'disable' : 'enable')) }}
 								</span>
 							</CButton> <CButton
 								size='sm'
 								color='primary'
+								:title='$t("table.actions.edit")'
 								:to='"/network/vpn/edit/" + item.id'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -81,6 +85,7 @@
 							</CButton> <CButton
 								size='sm'
 								color='danger'
+								:title='$t("table.actions.delete")'
 								@click='tunnelToDelete = item'
 							>
 								<CIcon :content='icons.remove' size='sm' />

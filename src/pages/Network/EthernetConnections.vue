@@ -47,6 +47,7 @@
 									v-if='item.interfaceName === null'
 									color='success'
 									size='sm'
+									:title='$t("network.table.connect")'
 									@click='connect(item)'
 								>
 									<CIcon :content='icons.connect' size='sm' />
@@ -58,6 +59,7 @@
 									v-else
 									color='danger'
 									size='sm'
+									:title='$t("network.table.disconnect")'
 									@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
 								>
 									<CIcon :content='icons.disconnect' size='sm' />
@@ -68,6 +70,7 @@
 									color='primary'
 									:to='"/network/ethernet/edit/" + item.uuid'
 									size='sm'
+									:title='$t("table.actions.edit")'
 								>
 									<CIcon :content='icons.edit' size='sm' />
 									<span class='d-none d-lg-inline'>
