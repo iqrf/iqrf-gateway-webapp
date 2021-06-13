@@ -10,9 +10,12 @@
 					size='sm'
 					class='float-right'
 					to='/config/daemon/messagings/websocket/add-messaging'
+					:title='$t("table.actions.add")'
 				>
 					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
+					<span class='d-none d-lg-inline'>
+						{{ $t('table.actions.add') }}
+					</span>
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
@@ -55,16 +58,22 @@
 								color='info'
 								size='sm'
 								:to='"/config/daemon/messagings/websocket/edit-messaging/" + item.instance'
+								:title='$t("table.actions.edit")'
 							>
 								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.edit') }}
+								</span>
 							</CButton> <CButton
 								color='danger'
 								size='sm'
+								:title='$t("table.actions.delete")'
 								@click='deleteInstance = item.instance'
 							>
 								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.delete') }}
+								</span>
 							</CButton>
 						</td>
 					</template>
