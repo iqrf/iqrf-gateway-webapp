@@ -46,7 +46,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Options, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
@@ -59,7 +59,7 @@ import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 import OtaUpload from '../../components/IqrfNet/OtaUpload.vue';
 import {ToastOptions} from 'vue-toast-notification';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CTab,

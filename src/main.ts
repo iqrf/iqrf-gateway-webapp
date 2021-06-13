@@ -18,11 +18,10 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import CoreuiVue from '@coreui/vue/src';
 import * as Sentry from '@sentry/browser';
-import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';
-import Vue from 'vue';
-import VueMeta from 'vue-meta';
+//import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';
+import {createApp} from 'vue';
 import VueNativeSock from 'vue-native-websocket';
-import VueToast from 'vue-toast-notification';
+import Toast, {PluginOptions, POSITION} from 'vue-toastification';
 import Clipboard from 'v-clipboard';
 import {config, library} from '@fortawesome/fontawesome-svg-core';
 import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
@@ -40,48 +39,32 @@ import './css/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import 'vue-toastification/dist/index.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+
+//import Component from 'vue-class-component';
+import * as version from '../version.json';
+import {useI18n} from 'vue-i18n';
+/*
+// Register the router hooks with their names
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+Component.registerHooks([
+	'beforeRouteEnter',
+	'beforeRouteLeave',
+	'beforeRouteUpdate'
+]);*/
 
 config.autoAddCss = false;
 library.add(faEye);
 library.add(faEyeSlash);
-
-import * as version from '../version.json';
 
 let release = version.version;
 if (version.pipeline !== '') {
 	release += '~' + version.pipeline;
 }
 
-if (process.env.NODE_ENV === 'production') {
-	Sentry.init({
-		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
-		integrations: [new VueIntegration({
-			Vue: Vue,
-			attachProps: true,
-			logErrors: true,
-		})],
-		release: release,
-	});
-}
-
-Vue.prototype.$appName = i18n.t(ThemeManager.getTitleKey());
-
 const urlBuilder: UrlBuilder = new UrlBuilder();
-
-Vue.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
-	store: store,
-	format: 'json',
-	reconnection: true,
-});
-
-Vue.use(CoreuiVue);
-Vue.use(VueMeta);
-Vue.use(VueToast,{
-	position: 'top',
-	duration: 5000
-});
-Vue.use(Clipboard);
 
 axios.defaults.baseURL = urlBuilder.getRestApiUrl();
 axios.defaults.timeout = 30000;
@@ -103,7 +86,7 @@ axios.interceptors.response.use(
 		if (error.response.status === 401) {
 			store.dispatch('user/signOut')
 				.then(() => {
-					router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
+					router.push({path: '/sign/in', query: {redirect: router.currentRoute.value.path}});
 				});
 			return;
 		}
@@ -111,19 +94,56 @@ axios.interceptors.response.use(
 	}
 );
 
-const app = new Vue({
-	router,
-	store,
-	i18n: i18n,
-	render: h => h(App),
+const app = createApp({
 	metaInfo: {
 		titleTemplate: (titleChunk: string): string => {
+			const i18n = useI18n();
 			const title = i18n.t(ThemeManager.getTitleKey()).toString();
 			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') + title;
 		}
 	},
-}).$mount('#app');
+	...App,
+});
+
+app.config.globalProperties.$appName = 'IQRF Gateway Webapp';
+
+app.use(store);
+app.use(router);
+app.use(i18n);
+
+app.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
+	store: store,
+	format: 'json',
+	reconnection: true,
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+app.use(CoreuiVue);
+const toastOptions: PluginOptions = {
+	position: POSITION.TOP_CENTER,
+	timeout: 5000,
+};
+app.use(Toast, toastOptions);
+app.use(Clipboard);
+
+app.mount('#app');
 
 if (process.env.VUE_APP_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	window['app'] = app;
+}
+
+
+if (process.env.NODE_ENV === 'production') {
+	Sentry.init({
+		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
+		integrations: [/*new VueIntegration({
+			Vue: app,
+			attachProps: true,
+			logErrors: true,
+		})*/],
+		release: release,
+	});
 }

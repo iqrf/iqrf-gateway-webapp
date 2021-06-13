@@ -8,10 +8,10 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import SmtpForm from '../../components/Config/SmtpForm.vue';
 
-@Component({
+@Options({
 	components: {
 		SmtpForm
 	},

@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<template>		
+<template>
 	<div>
 		<h1>{{ $t('core.security.title') }}</h1>
 		<CCard>
@@ -46,10 +46,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CListGroup,

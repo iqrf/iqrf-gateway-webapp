@@ -23,11 +23,20 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {AxiosError, AxiosResponse} from 'axios';
+import {DateTime} from 'luxon';
+import {Options, Vue} from 'vue-property-decorator';
+
 import DateTimeZone from '../../components/Gateway/DateTimeZone.vue';
 import NtpConfig from '../../components/Gateway/NtpConfig.vue';
 
-@Component({
+import {extendedErrorToast} from '../../helpers/errorToast';
+import TimeService from '../../services/TimeService';
+
+import {IOption} from '../../interfaces/coreui';
+import {ITime, ITimezone} from '../../interfaces/gatewayTime';
+
+@Options({
 	components: {
 		DateTimeZone,
 		NtpConfig,
@@ -41,12 +50,13 @@ import NtpConfig from '../../components/Gateway/NtpConfig.vue';
  * Gateway time component
  */
 export default class GatewayTime extends Vue {
-	
+
 	/**
 	 * Refreshes the gateway clock
 	 */
 	private refreshTime(): void {
 		(this.$refs.datetime as DateTimeZone).getTime(true);
 	}
+
 }
 </script>

@@ -34,7 +34,7 @@ limitations under the License.
 								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -49,7 +49,7 @@ limitations under the License.
 								required: "config.daemon.messagings.udp.errors.RemotePort",
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='configuration.RemotePort'
 								:label='$t("config.daemon.messagings.udp.form.RemotePort")'
 								:is-valid='touched ? valid : null'
@@ -67,7 +67,7 @@ limitations under the License.
 								required: "config.daemon.messagings.udp.errors.LocalPort",
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='configuration.LocalPort'
 								:label='$t("config.daemon.messagings.udp.form.LocalPort")'
 								:is-valid='touched ? valid : null'
@@ -88,8 +88,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, required} from 'vee-validate/dist/rules';
@@ -100,14 +100,14 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IUdpInstance} from '../../interfaces/messagingInterfaces';
 import {MetaInfo} from 'vue-meta';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

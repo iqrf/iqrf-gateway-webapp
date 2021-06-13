@@ -29,7 +29,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.discovery.errors.txPower"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='txPower'
 							type='number'
 							min='0'
@@ -48,7 +48,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='maxAddr'
 							type='number'
 							min='0'
@@ -68,8 +68,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -78,14 +78,14 @@ import IqrfNetService from '../../services/IqrfNetService';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -99,7 +99,7 @@ export default class DiscoveryManager extends Vue {
 	 * @var {number} maxAddr Maximum node address
 	 */
 	private maxAddr = 239
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -141,9 +141,9 @@ export default class DiscoveryManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

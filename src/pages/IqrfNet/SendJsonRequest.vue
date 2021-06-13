@@ -67,7 +67,7 @@ limitations under the License.
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
-			<CSelect
+			<CFormSelect
 				:value.sync='activeIdx'
 				:label='$t("iqrfnet.sendJson.form.activeMessage")'
 				:options='messageOptions'
@@ -101,8 +101,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '../../components/Config/JsonEditor.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
@@ -120,7 +120,7 @@ import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -128,7 +128,7 @@ import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CTextarea,
+		CFormTextarea,
 		JsonEditor,
 		JsonMessage,
 		JsonSchemaErrors,
@@ -242,9 +242,9 @@ export default class SendJsonRequest extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

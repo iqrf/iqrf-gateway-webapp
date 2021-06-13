@@ -38,7 +38,7 @@ limitations under the License.
 								required: "forms.errors.username",
 							}'
 						>
-							<CInput
+							<CFormInput
 								id='username'
 								v-model='username'
 								:label='$t("forms.fields.username")'
@@ -53,7 +53,7 @@ limitations under the License.
 								email: "forms.errors.emailFormat",
 							}'
 						>
-							<CInput
+							<CFormInput
 								id='email'
 								v-model='email'
 								:label='$t("forms.fields.email")'
@@ -68,7 +68,7 @@ limitations under the License.
 								required: "forms.errors.password",
 							}'
 						>
-							<CInput
+							<CFormInput
 								id='password'
 								v-model='password'
 								:label='$t("forms.fields.password")'
@@ -88,9 +88,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {AxiosError} from 'axios';
+import {CButton, CCard, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {Options, Vue} from 'vue-property-decorator';
 
 import UserService from '../../services/UserService';
 
@@ -99,14 +100,12 @@ import {email, required} from 'vee-validate/dist/rules';
 import {sleep} from '../../helpers/sleep';
 import {UserCredentials} from '../../services/AuthenticationService';
 
-import {AxiosError} from 'axios';
-
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

@@ -123,8 +123,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
+import {CBadge, CButton, CCard, CCardBody, CCardHeader, CFormInput} from '@coreui/vue/src';
 
 import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -134,14 +135,14 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {IWG} from '../../interfaces/network';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CInput,
+		CFormInput,
 	},
 	metaInfo: {
 		title: 'network.wireguard.title'
@@ -251,7 +252,7 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state Wireguard tunnel state
 	 */
 	private handleActiveSuccess(name: string, state: boolean): void {
-		this.getTunnels().then(() => this.$toast.success(
+		this.getTunnels().then(() => useToast().success(
 			this.$t(
 				'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateSuccess',
 				{tunnel: name}
@@ -292,7 +293,7 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state Wireguard tunnel state
 	 */
 	private handleEnableSuccess(name: string, state: boolean): void {
-		this.getTunnels().then(() => this.$toast.success(
+		this.getTunnels().then(() => useToast().success(
 			this.$t(
 				'network.wireguard.tunnels.messages.' + (state ? 'enableSuccess' : 'disableSuccess'),
 				{tunnel: name}
@@ -302,14 +303,15 @@ export default class WireguardTunnels extends Vue {
 
 	/**
 	 * Removes an existing Wireguard tunnel
-	 * @param {number} id Wireguard tunnel id
+	 * @param {number} id Wireguard tunnel ID
+	 * @param {string} name Wireguard tunnel name
 	 */
 	private removeTunnel(id: number, name: string): void {
 		this.tunnelToDelete = null;
 		this.$store.commit('spinner/SHOW');
 		WireguardService.removeTunnel(id)
 			.then(() => {
-				this.getTunnels().then(() => this.$toast.success(
+				this.getTunnels().then(() => useToast().success(
 					this.$t(
 						'network.wireguard.tunnels.messages.deleteSuccess',
 						{tunnel: name}

@@ -35,7 +35,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Options, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import LogTab from '../../components/Gateway/LogTab.vue';
 
@@ -48,7 +48,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IServiceLog} from '../../interfaces/log';
 import {MetaInfo} from 'vue-meta';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -79,7 +79,7 @@ export default class LogViewer extends Vue {
 	private logs: Array<IServiceLog> = []
 
 	/**
-	 * @var {boolean} loaded Indicates that logs have been loaded 
+	 * @var {boolean} loaded Indicates that logs have been loaded
 	 */
 	private loaded = false;
 
@@ -149,7 +149,7 @@ export default class LogViewer extends Vue {
 				this.logs[this.tab].loaded = true;
 			});
 	}
-	
+
 	/**
 	 * Creates a daemon log blob and prompts file download
 	 */

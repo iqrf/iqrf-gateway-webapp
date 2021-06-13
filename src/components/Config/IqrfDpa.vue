@@ -36,7 +36,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.interfaces.iqrfDpa.errors.instance"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -52,7 +52,7 @@ limitations under the License.
 								required: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='configuration.DpaHandlerTimeout'
 								type='number'
 								min='0'
@@ -72,8 +72,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, min_value, required} from 'vee-validate/dist/rules';
@@ -83,7 +83,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -91,7 +91,7 @@ import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -166,7 +166,7 @@ export default class IqrfDpa extends Vue {
 				this.$emit('fetched', {name: 'iqrfDpa', success: false});
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF DPA component instance
 	 */

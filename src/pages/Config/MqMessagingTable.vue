@@ -114,7 +114,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CButton,
 	CButtonClose,
@@ -136,7 +136,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {IMqInstance} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonClose,

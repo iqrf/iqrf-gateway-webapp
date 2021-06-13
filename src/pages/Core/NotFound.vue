@@ -25,10 +25,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CCardBody,

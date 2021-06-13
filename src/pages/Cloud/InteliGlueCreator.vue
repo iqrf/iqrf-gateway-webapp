@@ -28,7 +28,7 @@ limitations under the License.
 								required: "cloud.intelimentsInteliGlue.errors.rootTopic"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.rootTopic'
 								:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
 								:is-valid='touched ? valid : null'
@@ -44,7 +44,7 @@ limitations under the License.
 								required: "cloud.intelimentsInteliGlue.errors.assignedPort"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='config.assignedPort'
 								type='number'
 								min='0'
@@ -61,7 +61,7 @@ limitations under the License.
 								required: "forms.errors.clientId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.clientId'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
@@ -75,7 +75,7 @@ limitations under the License.
 								required: "forms.errors.password"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.password'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
@@ -89,7 +89,7 @@ limitations under the License.
 										/>
 									</span>
 								</template>
-							</CInput>
+							</CFormInput>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -112,8 +112,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
@@ -125,13 +125,13 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {IInteliGlueCloud} from '../../interfaces/clouds';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,

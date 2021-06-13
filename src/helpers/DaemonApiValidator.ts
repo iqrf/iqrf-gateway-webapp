@@ -16,7 +16,7 @@
  */
 import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import validate from './validate_daemonRequest';
-import i18n from '../i18n';
+import {useI18n} from 'vue-i18n';
 
 export interface DaemonApiValidatorCallback {
 	(errorMessages: Array<string>): void;
@@ -70,6 +70,7 @@ export default class DaemonApiValidator {
 	 */
 	private buildViolationString(errors: Array<ErrorObject>): Array<string> {
 		const messages: Array<string> = [];
+		const i18n = useI18n();
 		for (const error of errors) {
 			let message = '';
 			if (error.keyword === 'type') {

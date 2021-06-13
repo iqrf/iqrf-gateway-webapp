@@ -4,10 +4,11 @@
 			<CCardBody>
 				<h4>{{ $t('maintenance.mender.update.update') }}</h4>
 				<CForm>
-					<CInputFile
+					<CFormInput
 						ref='artifactInput'
 						:label='$t("maintenance.mender.update.form.artifact")'
 						accept='.mender'
+						type='file'
 						@input='isInputEmpty'
 						@click='isInputEmpty'
 					/>
@@ -60,8 +61,8 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CFormInput} from '@coreui/vue/src';
 
 import MenderService from '../../services/MenderService';
 
@@ -70,12 +71,12 @@ import GatewayService from '../../services/GatewayService';
 import { MountModes } from '../../enums/Maintenance/Mender';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
-		CInputFile,
+		CFormInput,
 	},
 })
 
@@ -99,7 +100,7 @@ export default class MenderUpdateControl extends Vue {
 	 * @return {FileList} List of uploaded files
 	 */
 	private getInputFile(): FileList {
-		const input = ((this.$refs.artifactInput as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.artifactInput as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
@@ -175,7 +176,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$toast.success(
 					this.$t(
 						'gateway.power.messages.rebootSuccess',
-						{time: time},						
+						{time: time},
 					).toString()
 				);
 			});

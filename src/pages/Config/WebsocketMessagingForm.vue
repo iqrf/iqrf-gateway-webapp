@@ -34,14 +34,14 @@ limitations under the License.
 								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
@@ -58,7 +58,7 @@ limitations under the License.
 									required: "config.daemon.messagings.websocket.errors.interfaceName"
 								}'
 							>
-								<CSelect
+								<CFormSelect
 									:value.sync='iface.name'
 									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.name")'
 									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceName")'
@@ -76,7 +76,7 @@ limitations under the License.
 									required: "config.daemon.messagings.websocket.errors.interfaceName"
 								}'
 							>
-								<CSelect
+								<CFormSelect
 									:value.sync='iface.instance'
 									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.instance")'
 									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceInstance")'
@@ -112,8 +112,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -140,16 +140,16 @@ interface LocalWsMessaging {
 	RequiredInterfaces: Array<LocalRequiredInterface>
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,

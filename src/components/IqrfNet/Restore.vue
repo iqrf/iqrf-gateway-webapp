@@ -21,10 +21,11 @@ limitations under the License.
 			<ValidationObserver>
 				<CForm @submit.prevent='restoreDevice'>
 					<div class='form-group'>
-						<CInputFile
+						<CFormInput
 							ref='backupFile'
 							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
 							accept='.iqrfbkp'
+							type='file'
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
@@ -44,8 +45,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardHeader, CCardBody, CForm, CFormInput, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -58,16 +59,15 @@ import {IRestoreData} from '../../interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputFile,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -201,9 +201,9 @@ export default class Restore extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
@@ -243,7 +243,7 @@ export default class Restore extends Vue {
 	 * Extracts files from file input element
 	 */
 	private getFiles(): FileList {
-		const input = ((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.backupFile as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
@@ -259,7 +259,7 @@ export default class Restore extends Vue {
 	 * Clears file input content
 	 */
 	private clearInput(): void {
-		((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		((this.$refs.backupFile as CFormInput).$el.children[1] as HTMLInputElement).value = '';
 		this.fileEmpty = true;
 		this.$store.commit('spinner/HIDE');
 	}

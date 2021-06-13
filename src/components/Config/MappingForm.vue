@@ -27,7 +27,7 @@ limitations under the License.
 				</h5>
 			</template>
 			<CForm>
-				<CSelect
+				<CFormSelect
 					:value.sync='type'
 					:label='$t("config.daemon.interfaces.interfaceMapping.form.type")'
 					:options='typeOptions'
@@ -40,7 +40,7 @@ limitations under the License.
 						required: "config.daemon.interfaces.interfaceMapping.errors.name"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model='name'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.name")'
 						:is-valid='touched ? valid : null'
@@ -54,7 +54,7 @@ limitations under the License.
 						required: "config.daemon.interfaces.interfaceMapping.errors.interface"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model='deviceName'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.interface")'
 						:is-valid='touched ? valid : null'
@@ -69,7 +69,7 @@ limitations under the License.
 						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model.number='powerPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
@@ -85,7 +85,7 @@ limitations under the License.
 						required: "config.daemon.interfaces.interfaceMapping.errors.busPin"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model.number='busPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
@@ -101,7 +101,7 @@ limitations under the License.
 						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model.number='pgmPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
@@ -109,7 +109,7 @@ limitations under the License.
 						:invalid-feedback='$t(errors[0])'
 					/>
 				</ValidationProvider>
-				<CSelect
+				<CFormSelect
 					v-if='type === "uart"'
 					:value.sync='baudRate'
 					:options='baudRateOptions'
@@ -117,13 +117,13 @@ limitations under the License.
 				/>
 			</CForm>
 			<template #footer>
-				<CButton 
+				<CButton
 					color='success'
 					:disabled='invalid'
 					@click='saveMapping'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton 
+				</CButton> <CButton
 					color='secondary'
 					@click='hideModal'
 				>
@@ -135,8 +135,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CForm, CFormInput, CModal, CFormSelect} from '@coreui/vue/src';
 import {IOption} from '../../interfaces/coreui';
 import {IMapping} from '../../interfaces/mappings';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -145,13 +145,13 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingService from '../../services/MappingService';
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CForm,
-		CInput,
+		CFormInput,
 		CModal,
-		CSelect,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -245,7 +245,7 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.mappingId === null ? 
+		return this.mappingId === null ?
 			this.$t('config.daemon.interfaces.interfaceMapping.add').toString(): this.$t('config.daemon.interfaces.interfaceMapping.edit').toString() + ' ' + this.name;
 	}
 

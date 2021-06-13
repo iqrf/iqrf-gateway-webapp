@@ -32,7 +32,7 @@ limitations under the License.
 										ws_addr: "config.controller.errors.invalid.ws_format"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.wsServers.api'
 										:label='$t("config.controller.form.wsServers.api")'
 										:is-valid='touched ? valid : null'
@@ -47,7 +47,7 @@ limitations under the License.
 										ws_addr: "config.controller.errors.invalid.ws_format"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.wsServers.monitor'
 										:label='$t("config.controller.form.wsServers.monitor")'
 										:is-valid='touched ? valid : null'
@@ -64,7 +64,7 @@ limitations under the License.
 											rules='required'
 											:custom-messages='{required: "config.controller.errors.missing.l_file"}'
 										>
-											<CInput
+											<CFormInput
 												v-model='config.logger.filePath'
 												:label='$t("config.controller.form.logger.filePath")'
 												:is-valid='touched ? valid : null'
@@ -78,7 +78,7 @@ limitations under the License.
 												required: "config.controller.errors.missing.l_severity",
 											}'
 										>
-											<CSelect
+											<CFormSelect
 												:value.sync='config.logger.severity'
 												:options='severityOptions'
 												:label='$t("config.controller.form.logger.severity")'
@@ -92,11 +92,11 @@ limitations under the License.
 										<label>
 											<b>{{ $t('config.controller.form.logger.sink') }}</b>
 										</label>
-										<CInputCheckbox
+										<CFormCheck
 											:checked.sync='config.logger.sinks.file'
 											:label='$t("config.controller.form.logger.sinks.file")'
 										/>
-										<CInputCheckbox
+										<CFormCheck
 											:checked.sync='config.logger.sinks.syslog'
 											:label='$t("config.controller.form.logger.sinks.syslog")'
 										/>
@@ -107,7 +107,7 @@ limitations under the License.
 						<CRow>
 							<CCol md='6'>
 								<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
-								<CSelect
+								<CFormSelect
 									:value.sync='config.resetButton.api'
 									:options='apiCallOptions'
 									:label='$t("config.controller.form.resetButton.api")'
@@ -125,7 +125,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.autoNetwork.actionRetries'
 											type='number'
 											min='0'
@@ -135,7 +135,7 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
+									<CFormCheck
 										:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
 										:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
 									/>
@@ -148,7 +148,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.messages.discovery.txPower"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.autoNetwork.discoveryTxPower'
 											type='number'
 											min='0'
@@ -158,14 +158,14 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
+									<CFormCheck
 										:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
 										:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 									/><hr>
 									<h4>
 										{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
 									</h4>
-									<CInputCheckbox
+									<CFormCheck
 										:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
 										:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 									/>
@@ -178,7 +178,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
 											type='number'
 											min='1'
@@ -197,7 +197,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.autoNetwork.stopConditions.waves'
 											type='number'
 											min='1'
@@ -207,7 +207,7 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider><hr>
-									<CInputCheckbox
+									<CFormCheck
 										:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
 										:label='$t("forms.fields.verbose")'
 									/>
@@ -225,7 +225,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.discovery.maxAddr'
 											type='number'
 											min='0'
@@ -244,7 +244,7 @@ limitations under the License.
 											between: "iqrfnet.networkManager.discovery.errors.txPower"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='config.daemonApi.discovery.txPower'
 											type='number'
 											min='0'
@@ -254,7 +254,7 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
+									<CFormCheck
 										:checked.sync='config.daemonApi.discovery.returnVerbose'
 										:label='$t("forms.fields.verbose")'
 									/>
@@ -262,24 +262,24 @@ limitations under the License.
 							</CCol>
 							<CCol md='6'>
 								<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.factoryReset.coordinator'
 									:label='$t("forms.fields.coordinator")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.factoryReset.daemon'
 									:label='$t("config.controller.form.factoryReset.daemon")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									v-if='config.factoryReset.iqaros !== undefined'
 									:checked.sync='config.factoryReset.iqaros'
 									:label='$t("config.controller.form.factoryReset.iqaros")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.factoryReset.network'
 									:label='$t("config.controller.form.factoryReset.network")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.factoryReset.webapp'
 									:label='$t("config.controller.form.factoryReset.webapp")'
 								/>
@@ -296,8 +296,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -308,22 +308,22 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(

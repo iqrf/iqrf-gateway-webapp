@@ -20,11 +20,11 @@ limitations under the License.
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h4>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='autoNetwork.discoveryBeforeStart'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
 					/>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='autoNetwork.skipDiscoveryEachWave'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 					/>
@@ -37,7 +37,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.messages.discovery.txPower"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='autoNetwork.discoveryTxPower'
 							requred='true'
 							type='number'
@@ -48,11 +48,11 @@ limitations under the License.
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='autoNetwork.unbondUnrespondingNodes'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
 					/>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='autoNetwork.skipPrebonding'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
 					/>
@@ -65,7 +65,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='autoNetwork.actionRetries'
 							type='number'
 							min='0'
@@ -76,7 +76,7 @@ limitations under the License.
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='useOverlappingNetworks'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
 					/>
@@ -89,7 +89,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.messages.autoNetwork.networks"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='overlappingNetworks.networks'
 							type='number'
 							min='1'
@@ -109,7 +109,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.messages.autoNetwork.network"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='overlappingNetworks.network'
 							type='number'
 							min='1'
@@ -121,7 +121,7 @@ limitations under the License.
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='useHwpidFiltering'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
 					/>
@@ -132,7 +132,7 @@ limitations under the License.
 							hwpidFilter: "iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='hwpidFiltering'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpids")'
 							:is-valid='touched ? valid : null'
@@ -142,7 +142,7 @@ limitations under the License.
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
 					<div class='form-group'>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='useWaves'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 						/>
@@ -155,7 +155,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='stopConditions.waves'
 								type='number'
 								min='1'
@@ -175,7 +175,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='stopConditions.emptyWaves'
 							type='number'
 							min='1'
@@ -186,11 +186,11 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='useNodes'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
 						/>
-						<CSelect
+						<CFormSelect
 							:value.sync='nodeCondition'
 							:options='[
 								{value: "new", label: "New"},
@@ -208,7 +208,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.messages.autoNetwork.totalNodes"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
@@ -229,7 +229,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.messages.autoNetwork.newNodes"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
@@ -241,12 +241,12 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 					</div>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='stopConditions.abortOnTooManyNodesFound'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 						:disabled='!useNodes'
 					/>
-					<CButton 
+					<CButton
 						color='primary'
 						type='button'
 						:disabled='invalid'
@@ -261,8 +261,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -277,14 +277,14 @@ interface NodeMessages {
 	nodesTotal: string
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -298,7 +298,7 @@ export default class AutoNetwork extends Vue {
 	 * @var {boolean} autoAddress Use first available address for bonding
 	 */
 	private autoAddress = false
-	
+
 	/**
 	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
 	 */
@@ -323,7 +323,7 @@ export default class AutoNetwork extends Vue {
 		nodesNew: '',
 		nodesTotal: ''
 	}
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -445,9 +445,9 @@ export default class AutoNetwork extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

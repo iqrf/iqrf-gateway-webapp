@@ -43,7 +43,7 @@ limitations under the License.
 								required: "cloud.amazonAws.errors.endpoint"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='endpoint'
 								:label='$t("cloud.amazonAws.form.endpoint")'
 								:is-valid='touched ? valid : null'
@@ -51,19 +51,21 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
-							<CInputFile
+							<CFormInput
 								ref='awsFormCert'
 								accept='.pem'
 								:label='$t("forms.fields.certificate")'
+								type='file'
 								@input='certInputEmpty'
 								@click='certInputEmpty'
 							/>
 						</div>
 						<div class='form-group'>
-							<CInputFile
+							<CFormInput
 								ref='awsFormKey'
 								accept='.pem,.key'
 								:label='$t("forms.fields.privateKey")'
+								type='file'
 								@input='keyInputEmpty'
 								@click='keyInputEmpty'
 							/>
@@ -89,8 +91,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -100,15 +102,14 @@ import ServiceService from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputFile,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -160,7 +161,7 @@ export default class AwsCreator extends Vue {
 	 * @returns {FileList} List of uploaded files
 	 */
 	private getCertFiles(): FileList {
-		const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.awsFormCert as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
@@ -169,7 +170,7 @@ export default class AwsCreator extends Vue {
 	 * @returns {FileList} List of uploaded files
 	 */
 	private getKeyFiles(): FileList {
-		const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.awsFormKey as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
@@ -220,7 +221,7 @@ export default class AwsCreator extends Vue {
 	 * @param {string} fieldId File input ID
 	 */
 	private getFileFromInput(fieldId: string): FileList {
-		const input = ((this.$refs[fieldId] as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs[fieldId] as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 

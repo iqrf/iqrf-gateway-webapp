@@ -21,10 +21,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import TheWizard from '../../components/TheWizard.vue';
 
-@Component({
+@Options({
 	components: {
 		TheWizard,
 	},

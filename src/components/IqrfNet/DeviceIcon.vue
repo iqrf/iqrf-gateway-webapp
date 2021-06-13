@@ -25,13 +25,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 
 import {CIcon} from '@coreui/vue/src';
 
 import Device from '../../helpers/Device';
 
-@Component({
+@Options({
 	components: {
 		CIcon,
 	}

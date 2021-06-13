@@ -31,14 +31,14 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.components.errors.name"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.name'
 								:label='$t("config.daemon.components.form.name")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInput
+						<CFormInput
 							v-model='configuration.libraryPath'
 							:label='$t("config.daemon.components.form.libraryPath")'
 						/>
@@ -47,14 +47,14 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.components.errors.libraryName"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.libraryName'
 								:label='$t("config.daemon.components.form.libraryName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.enabled'
 							:label='$t("states.enabled")'
 						/>
@@ -66,7 +66,7 @@ limitations under the License.
 								required: "config.daemon.components.errors.startLevel"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='configuration.startlevel'
 								type='number'
 								:label='$t("config.daemon.components.form.startLevel")'
@@ -85,8 +85,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -102,15 +102,15 @@ interface ComponentFormConfig {
 	startlevel: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -135,12 +135,12 @@ export default class ComponentForm extends Vue {
 		enabled: false,
 		startlevel: 0
 	}
-	
+
 	/**
 	 * @property {string} component Daemon component name for editing
 	 */
 	@Prop({ required: false, default: '' }) component!: string;
-	
+
 	/**
 	 * Computes page title depending on the action (add, edit)
 	 * @returns {string} Page title

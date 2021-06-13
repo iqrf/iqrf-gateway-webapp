@@ -62,7 +62,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import MenderServiceForm from '../../components/Maintenance/MenderServiceForm.vue';
 
@@ -70,21 +70,21 @@ import ServiceService from '../../services/ServiceService';
 import {menderErrorToast} from '../../helpers/errorToast';
 
 import {AxiosError} from 'axios';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 import {ServiceStatus} from '../../services/ServiceService';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		MenderServiceForm,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());
 				vm.$router.push(from.path);
-			}	
+			}
 		});
 	},
 	metaInfo: {
@@ -98,7 +98,7 @@ import {ServiceStatus} from '../../services/ServiceService';
 export default class MenderControl extends Vue {
 
 	/**
-	 * @constant {string} serviceName Mender service name 
+	 * @constant {string} serviceName Mender service name
 	 */
 	private serviceName = 'mender-client'
 

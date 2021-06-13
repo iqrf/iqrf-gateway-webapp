@@ -28,7 +28,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "core.sign.in.messages.username"}'
 						>
-							<CInput
+							<CFormInput
 								id='username'
 								v-model='username'
 								:label='$t("forms.fields.username")'
@@ -40,14 +40,14 @@ limitations under the License.
 								<template #prepend-content>
 									<CIcon :content='icons.user' />
 								</template>
-							</CInput>
+							</CFormInput>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
 							:custom-messages='{required: "core.sign.in.messages.password"}'
 						>
-							<CInput
+							<CFormInput
 								id='password'
 								v-model='password'
 								:label='$t("forms.fields.password")'
@@ -60,7 +60,7 @@ limitations under the License.
 								<template #prepend-content>
 									<CIcon :content='icons.lock' />
 								</template>
-							</CInput>
+							</CFormInput>
 						</ValidationProvider>
 						<div style='display: flex; justify-content: space-between;'>
 							<CButton color='primary' type='submit' :disabled='invalid'>
@@ -80,8 +80,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CFormInput, CLink, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -89,7 +89,7 @@ import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
 import TheWizard from '../../components/TheWizard.vue';
 
-@Component({
+@Options({
 	components: {
 		CContainer,
 		CCard,
@@ -97,7 +97,7 @@ import TheWizard from '../../components/TheWizard.vue';
 		CCol,
 		CForm,
 		CIcon,
-		CInput,
+		CFormInput,
 		CLink,
 		CRow,
 		TheWizard,

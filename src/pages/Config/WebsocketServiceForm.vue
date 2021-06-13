@@ -37,7 +37,7 @@ limitations under the License.
 										instance: "config.daemon.messagings.instanceInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='componentInstance'
 										:label='$t("forms.fields.instanceName")'
 										:is-valid='touched ? valid : null'
@@ -53,7 +53,7 @@ limitations under the License.
 										integer: "forms.errors.integer",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='WebsocketPort'
 										type='number'
 										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
@@ -61,7 +61,7 @@ limitations under the License.
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='acceptOnlyLocalhost'
 									:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 								/>
@@ -88,7 +88,7 @@ limitations under the License.
 											required: "config.daemon.messagings.websocket.errors.tlsMode",
 										}'
 									>
-										<CSelect
+										<CFormSelect
 											:value.sync='tlsMode'
 											:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 											:options='tlsModeOptions'
@@ -112,7 +112,7 @@ limitations under the License.
 											required: "config.daemon.messagings.websocket.errors.certificate",
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='certificate'
 											:label='$t("forms.fields.certificate")'
 											:disabled='!tlsEnabled'
@@ -128,7 +128,7 @@ limitations under the License.
 											required: "config.daemon.messagings.websocket.errors.privateKey",
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='privateKey'
 											:label='$t("forms.fields.privateKey")'
 											:disabled='!tlsEnabled'
@@ -150,8 +150,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -162,16 +162,16 @@ import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,

@@ -43,7 +43,7 @@ limitations under the License.
 								required: "cloud.ibmCloud.errors.organizationId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.organizationId'
 								:label='$t("cloud.ibmCloud.form.organizationId")'
 								:is-valid='touched ? valid : null'
@@ -57,7 +57,7 @@ limitations under the License.
 								required: "cloud.ibmCloud.errors.deviceType"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.deviceType'
 								:label='$t("cloud.ibmCloud.form.deviceType")'
 								:is-valid='touched ? valid : null'
@@ -71,7 +71,7 @@ limitations under the License.
 								required: "cloud.ibmCloud.errors.deviceId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.deviceId'
 								:label='$t("cloud.ibmCloud.form.deviceId")'
 								:is-valid='touched ? valid : null'
@@ -85,7 +85,7 @@ limitations under the License.
 								required: "cloud.ibmCloud.errors.token"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.token'
 								:label='$t("cloud.ibmCloud.form.token")'
 								:is-valid='touched ? valid : null'
@@ -99,7 +99,7 @@ limitations under the License.
 								required: "cloud.ibmCloud.errors.eventId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.eventId'
 								:label='$t("cloud.ibmCloud.form.eventId")'
 								:is-valid='touched ? valid : null'
@@ -127,8 +127,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -139,14 +139,14 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {IIbmCloud} from '../../interfaces/clouds';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -207,6 +207,6 @@ export default class IbmCreator extends Vue {
 				extendedErrorToast(error, 'cloud.ibmCloud.messages.saveFailed');
 			});
 	}
-	
+
 }
 </script>

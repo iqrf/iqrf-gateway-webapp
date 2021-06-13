@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import {AxiosError} from 'axios';
-import i18n from '../i18n';
+import {useI18n} from 'vue-i18n';
+import {useToast} from 'vue-toastification';
 import store from '../store';
-import Vue from 'vue';
 
 /**
  * Form error handler
@@ -29,17 +29,19 @@ class FormErrorHandler {
 	 * @param error caught axios error
 	 */
 	configError(error: AxiosError): void {
+		const i18n = useI18n();
+		const toast = useToast();
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
-			Vue.$toast.error(i18n.t('config.daemon.messages.configFailed', {error: error.message}).toString());
+			toast.error(i18n.t('config.daemon.messages.configFailed', {error: error.message}).toString());
 			return;
 		}
 		if (error.response.status === 400) {
-			Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
+			toast.error(i18n.t('forms.messages.submitBadRequest').toString());
 		} else if (error.response.status === 404) {
-			Vue.$toast.error(i18n.t('forms.messages.componentNotFound').toString());
+			toast.error(i18n.t('forms.messages.componentNotFound').toString());
 		} else if (error.response.status === 500) {
-			Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
+			toast.error(i18n.t('forms.messages.submitServerError').toString());
 		} else {
 			console.error(error.message);
 		}
@@ -51,17 +53,19 @@ class FormErrorHandler {
 	 * @param error caught axios error
 	 */
 	serviceError(error: AxiosError): void {
+		const i18n = useI18n();
+		const toast = useToast();
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
 			return;
 		}
 		if (error.response.status === 400) {
-			Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
+			toast.error(i18n.t('forms.messages.submitBadRequest').toString());
 		} else if (error.response.status === 404) {
-			Vue.$toast.error(i18n.t('service.errors.unsupportedService').toString());
+			toast.error(i18n.t('service.errors.unsupportedService').toString());
 		} else if (error.response.status === 500) {
-			Vue.$toast.error(i18n.t('service.errors.unsupportedInit').toString());
+			toast.error(i18n.t('service.errors.unsupportedInit').toString());
 		}
 	}
 
@@ -71,15 +75,17 @@ class FormErrorHandler {
 	 * @param error Caught axios error
 	 */
 	mappingError(error: AxiosError): void {
+		const i18n = useI18n();
+		const toast = useToast();
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
 			return;
 		}
 		if (error.response.status === 400) {
-			Vue.$toast.error(i18n.t('config.interfaceMappings.messages.invalid').toString());
+			toast.error(i18n.t('config.interfaceMappings.messages.invalid').toString());
 		} else if (error.response.status === 404) {
-			Vue.$toast.error(i18n.t('config.interfaceMappings.messages.notFound').toString());
+			toast.error(i18n.t('config.interfaceMappings.messages.notFound').toString());
 		}
 	}
 }

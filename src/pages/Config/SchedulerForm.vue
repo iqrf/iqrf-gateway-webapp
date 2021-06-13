@@ -34,7 +34,7 @@ limitations under the License.
 								integer: "config.daemon.scheduler.errors.nums"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='taskId'
 								type='number'
 								:label='$t("config.daemon.scheduler.form.task.taskId")'
@@ -47,7 +47,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.scheduler.errors.service"}'
 						>
-							<CSelect
+							<CFormSelect
 								:value.sync='clientId'
 								:label='$t("config.daemon.scheduler.table.service")'
 								:options='[
@@ -58,13 +58,13 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CSelect
-							:value.sync='timeSpecSelected'
+						<CFormSelect
+							:value.sync='timeSpeCFormSelected'
 							:label='$t("config.daemon.scheduler.form.task.timeSpec")'
 							:options='timeSpecOptions'
 						/>
 						<div
-							v-if='timeSpecSelected === "cron"'
+							v-if='timeSpeCFormSelected === "cron"'
 							class='form-group'
 						>
 							<ValidationProvider
@@ -80,7 +80,7 @@ limitations under the License.
 								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
 									{{ cronMessage }}
 								</CBadge>
-								<CInput
+								<CFormInput
 									id='cronTime'
 									v-model='timeSpec.cronTime'
 									:is-valid='touched ? valid : null'
@@ -90,7 +90,7 @@ limitations under the License.
 							</ValidationProvider>
 						</div>
 						<ValidationProvider
-							v-if='timeSpecSelected === "periodic"'
+							v-if='timeSpeCFormSelected === "periodic"'
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|min:0'
 							:custom-messages='{
@@ -99,7 +99,7 @@ limitations under the License.
 								min: "config.daemon.scheduler.errors.period"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='timeSpec.period'
 								type='number'
 								min='0'
@@ -109,7 +109,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div
-							v-if='timeSpecSelected === "exact"'
+							v-if='timeSpeCFormSelected === "exact"'
 							class='form-group'
 						>
 							<label for='exactTime'>
@@ -190,8 +190,8 @@ limitations under the License.
 												required: "config.daemon.scheduler.errors.service"
 											}'
 										>
-											<CSelect
-												:value.sync='tasks[i-1].messaging[j]'
+											<CFormSelect
+												:value='tasks[i-1].messaging[j]'
 												:label='$t("config.daemon.scheduler.form.messages.messaging")'
 												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 												:options='messagings'
@@ -216,7 +216,7 @@ limitations under the License.
 								</CCol>
 							</CRow>
 						</div>
-						<CButton type='submit' color='primary' :disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'>
+						<CButton type='submit' color='primary' :disabled='invalid || (timeSpeCFormSelected === "exact" && timeSpec.startTime === "")'>
 							{{ $t('forms.save') }}
 						</CButton>
 					</CForm>
@@ -227,8 +227,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect, CFormTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
 import {Datetime} from 'vue-datetime';
@@ -258,7 +258,7 @@ enum TimeSpecTypes {
 	PERIODIC = 'periodic'
 }
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
@@ -266,10 +266,10 @@ enum TimeSpecTypes {
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CTextarea,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
+		CFormTextarea,
 		Datetime,
 		JsonEditor,
 		JsonSchemaErrors,
@@ -366,9 +366,9 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
+	 * @var {TimeSpecTypes} timeSpeCFormSelected Selected task time specification type
 	 */
-	private timeSpecSelected = TimeSpecTypes.EXACT
+	private timeSpeCFormSelected = TimeSpecTypes.EXACT
 
 	/**
 	 * @constant {Array<IOption>} timeSpecOptions Scheduler task time specification options
@@ -553,9 +553,9 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.msgIds.forEach((item: string) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}
@@ -667,11 +667,11 @@ export default class SchedulerForm extends Vue {
 		this.taskId = taskDaemon.taskId;
 		this.clientId = taskDaemon.clientId;
 		if (!taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.CRON;
+			this.timeSpeCFormSelected = TimeSpecTypes.CRON;
 		} else if (taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.EXACT;
+			this.timeSpeCFormSelected = TimeSpecTypes.EXACT;
 		} else {
-			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
+			this.timeSpeCFormSelected = TimeSpecTypes.PERIODIC;
 		}
 		this.timeSpec = taskDaemon.timeSpec;
 		if (Array.isArray(taskDaemon.task)) {
@@ -700,11 +700,11 @@ export default class SchedulerForm extends Vue {
 		this.taskId = taskRest.taskId;
 		this.clientId = taskRest.clientId;
 		if (!taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.CRON;
+			this.timeSpeCFormSelected = TimeSpecTypes.CRON;
 		} else if (taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.EXACT;
+			this.timeSpeCFormSelected = TimeSpecTypes.EXACT;
 		} else {
-			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
+			this.timeSpeCFormSelected = TimeSpecTypes.PERIODIC;
 		}
 		this.timeSpec = taskRest.timeSpec;
 		this.tasks = taskRest.task.map((item: ITaskMessage) => ({
@@ -763,7 +763,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	private prepareTaskToSubmit(): ITaskTimeSpec {
 		let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
-		if (this.timeSpecSelected === TimeSpecTypes.EXACT) { // exact time, reset others
+		if (this.timeSpeCFormSelected === TimeSpecTypes.EXACT) { // exact time, reset others
 			timeSpec.cronTime = Array(7).fill('');
 			timeSpec.exactTime = true;
 			timeSpec.periodic = false;
@@ -771,7 +771,7 @@ export default class SchedulerForm extends Vue {
 			let date = new Date(timeSpec.startTime);
 			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 			timeSpec.startTime = date.toISOString().split('.')[0];
-		} else if (this.timeSpecSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
+		} else if (this.timeSpeCFormSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
 			timeSpec.cronTime = Array(7).fill('');
 			timeSpec.exactTime = false;
 			timeSpec.periodic = true;

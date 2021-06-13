@@ -28,7 +28,7 @@ limitations under the License.
 								required: "forms.errors.clientId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.clientId'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
@@ -42,7 +42,7 @@ limitations under the License.
 								required: "forms.errors.requestTopic"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.topicRequest'
 								:label='$t("forms.fields.requestTopic")'
 								:is-valid='touched ? valid : null'
@@ -56,7 +56,7 @@ limitations under the License.
 								required: "forms.errors.responseTopic"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.topicResponse'
 								:label='$t("forms.fields.responseTopic")'
 								:is-valid='touched ? valid : null'
@@ -70,7 +70,7 @@ limitations under the License.
 								required: "forms.errors.username"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.username'
 								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
@@ -84,7 +84,7 @@ limitations under the License.
 								required: "forms.errors.password"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.password'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
@@ -98,7 +98,7 @@ limitations under the License.
 										/>
 									</span>
 								</template>
-							</CInput>
+							</CFormInput>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -121,8 +121,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
@@ -134,13 +134,13 @@ import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {IHexioCloud} from '../../interfaces/clouds';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
@@ -175,7 +175,7 @@ export default class HexioCreator extends Vue {
 	 * @var {string} visibility Form password field visibility type
 	 */
 	private visibility = 'password'
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */

@@ -28,7 +28,7 @@ limitations under the License.
 							required: "iqrfnet.standard.form.messages.address"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='address'
 							type='number'
 							min='1'
@@ -48,7 +48,7 @@ limitations under the License.
 								required: "iqrfnet.standard.dali.form.messages.command"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='commands[i-1]'
 								type='number'
 								min='0'
@@ -65,9 +65,9 @@ limitations under the License.
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
 						</CButton> <CButton
-							v-if='i === commands.length' 
-							color='success' 
-							:disabled='invalid' 
+							v-if='i === commands.length'
+							color='success'
+							:disabled='invalid'
 							@click.prevent='addDaliCommand'
 						>
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
@@ -104,9 +104,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
@@ -117,7 +117,7 @@ interface DaliAnswer {
 	value: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -125,7 +125,7 @@ interface DaliAnswer {
 		CCardFooter,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -144,7 +144,7 @@ export default class DaliManager extends Vue {
 	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
 	 */
 	private answers: Array<DaliAnswer> = []
-	
+
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
@@ -186,9 +186,9 @@ export default class DaliManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

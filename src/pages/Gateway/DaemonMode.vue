@@ -86,7 +86,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -99,7 +99,7 @@ import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -198,9 +198,9 @@ export default class DaemonMode extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

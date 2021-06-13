@@ -45,7 +45,7 @@ limitations under the License.
 							required: "forms.errors.password"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='password'
 							:type='visibility'
 							:label='$t("forms.fields.password")'
@@ -59,7 +59,7 @@ limitations under the License.
 									/>
 								</span>
 							</template>
-						</CInput>
+						</CFormInput>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -81,8 +81,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -94,14 +94,14 @@ import {GatewayPasswordFeature} from '../../services/FeatureService';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {MetaInfo} from 'vue-meta';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
@@ -117,7 +117,7 @@ import {MetaInfo} from 'vue-meta';
  * Gateway user password change component
  */
 export default class GatewayUserPassword extends Vue {
-	
+
 	/**
 	 * @var {string} password Password
 	 */

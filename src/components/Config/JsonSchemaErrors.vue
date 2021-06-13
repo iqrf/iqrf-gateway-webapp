@@ -26,13 +26,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CAlert} from '@coreui/vue';
 
 /**
  * JSON schema violations viewer
  */
-@Component({
+@Options({
 	components: {
 		CAlert,
 	},

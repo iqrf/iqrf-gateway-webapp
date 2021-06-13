@@ -29,7 +29,7 @@ limitations under the License.
 				<div class='form-group'>
 					{{ $t('install.ssh.messages.note') }}
 				</div>
-				<CInputRadioGroup
+				<CFormInputRadioGroup
 					:checked.sync='status'
 					:options='options'
 					:label='$t("install.ssh.state")'
@@ -54,8 +54,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CFormSelect} from '@coreui/vue/src';
 
 import ServiceService from '../../services/ServiceService';
 
@@ -65,13 +65,13 @@ import {SSHStatus} from '../../enums/Install/ssh';
 import {AxiosError} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CSelect,
+		CFormSelect,
 	},
 	metaInfo: {
 		title: 'install.ssh.title'

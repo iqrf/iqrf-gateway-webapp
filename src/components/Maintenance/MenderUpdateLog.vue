@@ -17,10 +17,10 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CAlert, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 		CCard,

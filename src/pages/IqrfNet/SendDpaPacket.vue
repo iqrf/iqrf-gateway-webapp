@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover 
+			<CElementCover
 				v-if='!isSocketConnected'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -39,7 +39,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.invalid.nadr"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='packetNadr'
 									maxlength='4'
 									:label='$t("iqrfnet.sendPacket.form.nadr")'
@@ -59,7 +59,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.invalid.pnum",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='packetPnum'
 									:label='$t("iqrfnet.sendPacket.form.pnum")'
 									:is-valid='touched ? valid : null'
@@ -77,7 +77,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.invalid.pcmd",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='packetPcmd'
 									:label='$t("iqrfnet.sendPacket.form.pcmd")'
 									:is-valid='touched ? valid : null'
@@ -95,7 +95,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.invalid.hwpid",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='packetHwpid'
 									:label='$t("iqrfnet.sendPacket.form.hwpid")'
 									:is-valid='touched ? valid : null'
@@ -112,7 +112,7 @@ limitations under the License.
 									pdata: "iqrfnet.sendPacket.form.messages.invalid.pdata"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='packetPdata'
 									v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
 									:label='$t("iqrfnet.sendPacket.form.pdata")'
@@ -124,7 +124,7 @@ limitations under the License.
 					</CRow>
 					<CRow>
 						<CCol md='6'>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='addressOverwrite'
 								:label='$t("iqrfnet.sendPacket.form.addressOverwrite")'
 							/>
@@ -138,7 +138,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.missing.address",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='address'
 									:disabled='!addressOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.address")'
@@ -151,7 +151,7 @@ limitations under the License.
 							</ValidationProvider>
 						</CCol>
 						<CCol md='6'>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='timeoutOverwrite'
 								:label='$t("iqrfnet.sendPacket.form.timeoutOverwrite")'
 							/>
@@ -164,7 +164,7 @@ limitations under the License.
 									required: "iqrfnet.sendPacket.form.messages.missing.timeout",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='timeout'
 									min='1000'
 									:disabled='!timeoutOverwrite'
@@ -183,11 +183,11 @@ limitations under the License.
 			</ValidationObserver>
 		</CCard>
 		<DpaMacros @set-packet='setPacket($event)' />
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
-			<CSelect
+			<CFormSelect
 				:value.sync='activeIdx'
 				:label='$t("iqrfnet.sendPacket.form.activeMessage")'
 				:options='messageOptions'
@@ -217,8 +217,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput, CFormCheck, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
@@ -233,7 +233,7 @@ import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {RawMessage} from '../../interfaces/dpa';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -241,9 +241,9 @@ import {RawMessage} from '../../interfaces/dpa';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		DpaMacros,
 		JsonMessage,
 		ValidationObserver,
@@ -434,9 +434,9 @@ export default class SendDpaPacket extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

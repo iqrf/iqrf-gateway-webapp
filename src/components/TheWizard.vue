@@ -30,11 +30,11 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CContainer, CCol, CRow} from '@coreui/vue/src';
 import ThemeManager from '../helpers/themeManager';
 
-@Component({
+@Options({
 	components: {
 		CContainer,
 		CCol,

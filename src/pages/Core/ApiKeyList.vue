@@ -100,7 +100,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 
 import ApiKeyService from '../../services/ApiKeyService';
@@ -118,7 +118,7 @@ interface ApiKey {
 	id: number
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

@@ -18,14 +18,14 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
 			>
 				{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
 			</CElementCover>
-			<CSelect
+			<CFormSelect
 				v-else
 				:value.sync='iqrfInterface'
 				:label='$t("config.daemon.interfaces.form.interface")'
@@ -47,8 +47,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardHeader, CFormSelect} from '@coreui/vue/src';
 import IqrfSpi from '../../components/Config/IqrfSpi.vue';
 import IqrfCdc from '../../components/Config/IqrfCdc.vue';
 import IqrfUart from '../../components/Config/IqrfUart.vue';
@@ -61,12 +61,12 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IChangeComponent, IComponent, IConfigFetch} from '../../interfaces/daemonComponent';
 import {IOption} from '../../interfaces/coreui';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CSelect,
+		CFormSelect,
 		IqrfCdc,
 		IqrfDpa,
 		IqrfSpi,
@@ -82,7 +82,7 @@ import {IOption} from '../../interfaces/coreui';
  */
 export default class Interfaces extends Vue {
 	/**
-	 * @var {boolean} powerUser Indicates whether the user account is advanced 
+	 * @var {boolean} powerUser Indicates whether the user account is advanced
 	 */
 	private powerUser = false;
 
@@ -211,7 +211,7 @@ export default class Interfaces extends Vue {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.changeComponent(updateInterfaces)
 			.then(() => {
-				this.getConfig().then(() => 
+				this.getConfig().then(() =>
 					this.$toast.success(
 						this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()
 					)

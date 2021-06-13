@@ -86,7 +86,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {IMapping} from '../../interfaces/mappings';
@@ -96,7 +96,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingForm from '../../components/Config/MappingForm.vue';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CButtonGroup,

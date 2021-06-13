@@ -35,14 +35,14 @@ limitations under the License.
 									required: "config.daemon.misc.tracer.errors.instance"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CInput
+							<CFormInput
 								v-model='configuration.path'
 								:label='$t("config.daemon.misc.tracer.form.path")'
 							/>
@@ -53,7 +53,7 @@ limitations under the License.
 									required: "config.daemon.misc.tracer.errors.filename"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.filename'
 									:label='$t("config.daemon.misc.tracer.form.filename")'
 									:is-valid='touched ? valid : null'
@@ -69,7 +69,7 @@ limitations under the License.
 									integer: "forms.errors.integer"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.maxSizeMB'
 									type='number'
 									:label='$t("config.daemon.misc.tracer.form.maxSize")'
@@ -91,7 +91,7 @@ limitations under the License.
 									:checked.sync='configuration.timestampFiles'
 								/>
 							</div>
-							<div 
+							<div
 								v-if='configuration.timestampFiles'
 								class='form-group'
 							>
@@ -103,7 +103,7 @@ limitations under the License.
 										min: "config.daemon.misc.tracer.errors.maxAgeMinutes"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.maxAgeMinutes'
 										type='number'
 										min='0'
@@ -120,7 +120,7 @@ limitations under the License.
 										min: "config.daemon.misc.tracer.errors.maxNumber"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.maxNumber'
 										type='number'
 										min='0'
@@ -148,7 +148,7 @@ limitations under the License.
 										required: "config.daemon.misc.tracer.errors.verbosityLevels.channel"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='level.channel'
 										type='number'
 										:label='$t("config.daemon.misc.tracer.form.channel")'
@@ -163,7 +163,7 @@ limitations under the License.
 										required: "config.daemon.misc.tracer.errors.verbosityLevels.level"
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='level.level'
 										:label='$t("config.daemon.misc.tracer.form.level")'
 										:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
@@ -199,8 +199,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CFormInput, CFormSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, min_value, required} from 'vee-validate/dist/rules';
@@ -215,13 +215,13 @@ import {MetaInfo} from 'vue-meta';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CForm,
-		CInput,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
@@ -325,7 +325,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
+	mounted(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}

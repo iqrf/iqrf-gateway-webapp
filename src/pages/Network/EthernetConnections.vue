@@ -117,7 +117,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CModal} from '@coreui/vue/src';
 import EthernetConnection from '../../components/Network/EthernetConnection.vue';
 
@@ -131,7 +131,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IField, IOption} from '../../interfaces/coreui';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CCard,

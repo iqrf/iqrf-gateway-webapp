@@ -24,8 +24,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {Options, Vue} from 'vue-property-decorator';
+import {NavigationGuardNext} from 'vue-router';
 import {MutationPayload} from 'vuex';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import DpaUpdater from '../../components/IqrfNet/DpaUpdater.vue';
@@ -34,13 +34,13 @@ import OsUpdater from '../../components/IqrfNet/OsUpdater.vue';
 import {IConfigFetch} from '../../interfaces/daemonComponent';
 import IqrfNetService from '../../services/IqrfNetService';
 
-@Component({
+@Options({
 	components: {
 		DpaUpdater,
 		HexUpload,
 		OsUpdater,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('trUpload')) {
 				vm.$toast.error(
@@ -85,7 +85,7 @@ export default class TrUpload extends Vue {
 	 * Component unwatch function
 	 */
 	private unwatch: CallableFunction = () => {return;}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 * Initializes validation rules and websocket callbacks
@@ -126,9 +126,9 @@ export default class TrUpload extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
@@ -139,7 +139,7 @@ export default class TrUpload extends Vue {
 	 */
 	private enumerateCoordinator(): void {
 		this.$store.commit('spinner/SHOW');
-		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null) 
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

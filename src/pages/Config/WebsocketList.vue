@@ -27,12 +27,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import WebsocketInterfaceList from '../../components/Config/WebsocketInterfaceList.vue';
 import WebsocketMessagingList from '../../components/Config/WebsocketMessagingList.vue';
 import WebsocketServiceList from '../../components/Config/WebsocketServiceList.vue';
 
-@Component({
+@Options({
 	components: {
 		WebsocketInterfaceList,
 		WebsocketMessagingList,

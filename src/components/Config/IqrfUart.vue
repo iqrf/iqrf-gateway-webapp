@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -36,7 +36,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.instance"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='componentInstance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -48,7 +48,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.iqrfInterface"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='IqrfInterface'
 								:label='$t("config.daemon.interfaces.iqrfUart.form.iqrfInterface")'
 								:is-valid='touched ? valid : null'
@@ -62,7 +62,7 @@ limitations under the License.
 								required: "config.daemon.interfaces.iqrfUart.errors.baudRate",
 							}'
 						>
-							<CSelect
+							<CFormSelect
 								:value.sync='baudRate'
 								:label='$t("config.daemon.interfaces.iqrfUart.form.baudRate")'
 								:is-valid='touched ? valid : null'
@@ -71,7 +71,7 @@ limitations under the License.
 								:options='baudRates'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='uartReset'
 							:label='$t("config.daemon.interfaces.iqrfUart.form.uartReset")'
 						/>
@@ -85,7 +85,7 @@ limitations under the License.
 										required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='powerEnableGpioPin'
 										type='number'
 										:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
@@ -101,7 +101,7 @@ limitations under the License.
 										required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='busEnableGpioPin'
 										type='number'
 										:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
@@ -117,7 +117,7 @@ limitations under the License.
 										required: "cconfig.daemon.interfaces.interfaceMapping.errors.pgmPin",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='pgmSwitchGpioPin'
 										type='number'
 										:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
@@ -127,24 +127,24 @@ limitations under the License.
 								</ValidationProvider>
 							</CCol>
 							<CCol
-								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null' 
+								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'
 								md='6'
 							>
-								<CInput
+								<CFormInput
 									v-if='i2cEnableGpioPin !== null'
 									v-model.number='i2cEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 									:disabled='true'
 								/>
-								<CInput
+								<CFormInput
 									v-if='spiEnableGpioPin !== null'
 									v-model.number='spiEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 									:disabled='true'
 								/>
-								<CInput
+								<CFormInput
 									v-if='uartEnableGpioPin !== null'
 									v-model.number='uartEnableGpioPin'
 									type='number'
@@ -178,7 +178,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Options, Vue, Watch} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -189,10 +189,10 @@ import {
 	CCol,
 	CElementCover,
 	CForm,
-	CInput,
-	CInputCheckbox,
+	CFormInput,
+	CFormCheck,
 	CRow,
-	CSelect,
+	CFormSelect,
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -206,7 +206,7 @@ import {IMapping} from '../../interfaces/mappings';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -216,10 +216,10 @@ import {mapGetters} from 'vuex';
 		CCol,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		CRow,
-		CSelect,
+		CFormSelect,
 		InterfaceMappings,
 		InterfacePorts,
 		ValidationObserver,
@@ -245,7 +245,7 @@ export default class IqrfUart extends Vue {
 	 * @var {number} busEnableGpioPin UART bus enable ping
 	 */
 	private busEnableGpioPin = -1
-	
+
 	/**
 	 * @constant {string} component UART component name
 	 */
@@ -310,7 +310,7 @@ export default class IqrfUart extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false
-	
+
 	/**
 	 * Computes array of CoreUI select options for baudrate
 	 * @returns {Array<BaudRateOptions} Baudrate select options
@@ -319,7 +319,7 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */
@@ -409,7 +409,7 @@ export default class IqrfUart extends Vue {
 		}
 		return configuration;
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF UART interface component instance
 	 */
@@ -425,7 +425,7 @@ export default class IqrfUart extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
-	
+
 	/**
 	 * Handles successful REST API response
 	 */
@@ -469,6 +469,6 @@ export default class IqrfUart extends Vue {
 	private updatePort(port: string): void {
 		this.IqrfInterface = port;
 	}
-	
+
 }
 </script>

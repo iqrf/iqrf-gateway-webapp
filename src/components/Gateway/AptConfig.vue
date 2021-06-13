@@ -31,8 +31,8 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.listUpdateInterval",
 							required: "service.unattended-upgrades.errors.listUpdateInterval",
 						}'
-					> 
-						<CInput
+					>
+						<CFormInput
 							v-model='listUpdateInterval'
 							type='number'
 							min='0'
@@ -49,8 +49,8 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.upgradeInterval",
 							required: "service.unattended-upgrades.errors.upgradeInterval",
 						}'
-					> 
-						<CInput
+					>
+						<CFormInput
 							v-model='upgradeInterval'
 							type='number'
 							min='0'
@@ -68,8 +68,8 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.removeInterval",
 							required: "service.unattended-upgrades.errors.removeInterval",
 						}'
-					> 
-						<CInput
+					>
+						<CFormInput
 							v-model='removeInterval'
 							type='number'
 							min='0'
@@ -78,7 +78,7 @@ limitations under the License.
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
+					<CFormCheck
 						:value.sync='rebootOnKernelUpdate'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
 					/>
@@ -93,8 +93,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import AptService, {AptConfiguration} from '../../services/AptService';
@@ -102,22 +102,22 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import ToastClear from '../../helpers/ToastClear';
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider
 	},
 })
 
 /**
- * Gateway APT configuration component for service control 
+ * Gateway APT configuration component for service control
  */
 export default class AptConfig extends Vue {
 

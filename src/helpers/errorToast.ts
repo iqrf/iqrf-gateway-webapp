@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import i18n from '../i18n';
+
 import store from '../store';
-import Vue from 'vue';
 
 import {AxiosError} from 'axios';
+import {useI18n} from 'vue-i18n';
+import {useToast} from 'vue-toastification';
 
 /**
  * Shows error toast with assignable parameters
@@ -34,7 +35,9 @@ export function extendedErrorToast(error: AxiosError, message: string, params: R
 		Object.assign(translations, params);
 	}
 	store.commit('spinner/HIDE');
-	Vue.$toast.error(i18n.t(message, translations).toString());
+	const i18n = useI18n();
+	const toast = useToast();
+	toast.error(i18n.t(message, translations).toString());
 }
 
 /**

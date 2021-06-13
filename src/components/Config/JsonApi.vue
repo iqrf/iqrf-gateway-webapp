@@ -34,23 +34,23 @@ limitations under the License.
 						required: "config.daemon.misc.jsonSplitter.errors.insId"
 					}'
 				>
-					<CInput
+					<CFormInput
 						v-model='insId'
 						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
 				</ValidationProvider>
-				<CInputCheckbox
+				<CFormCheck
 					v-if='daemonLowerEqual236'
 					:checked.sync='metaDataToMessages'
 					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
 				/>
-				<CInputCheckbox
+				<CFormCheck
 					:checked.sync='asyncDpaMessage'
 					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
 				/>
-				<CInputCheckbox
+				<CFormCheck
 					:checked.sync='validateJsonResponse'
 					:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
 				/>
@@ -67,8 +67,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -79,7 +79,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -87,8 +87,8 @@ import { extendedErrorToast } from '../../helpers/errorToast';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider,
 	}

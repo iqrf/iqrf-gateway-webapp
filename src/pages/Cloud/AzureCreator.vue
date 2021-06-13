@@ -43,7 +43,7 @@ limitations under the License.
 								required: "cloud.msAzure.errors.connectionString"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
 								:is-valid='touched ? valid : null'
@@ -71,8 +71,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -82,14 +82,14 @@ import ServiceService from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -118,7 +118,7 @@ export default class AzureCreator extends Vue {
 	created(): void {
 		extend('required', required);
 	}
-	
+
 	/**
 	 * Stores new Azure cloud connection configuration in the gateway filesystem
 	 * @param {boolean} restart Restart daemon on save?

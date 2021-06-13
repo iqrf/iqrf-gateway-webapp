@@ -14,23 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import i18n from '../i18n';
-import Vue from 'vue';
-import {ToastOptions} from 'vue-toast-notification';
+
+import {useToast} from 'vue-toastification';
 
 /**
  * Toast class that automatically clears existing toasts
  */
 class ToastClear {
-	
+
 	/**
 	 * Error toast
 	 * @param {string} message Toast message
 	 * @param {number} duration Toast duration
 	 */
 	error(message: string, duration = 5000): void {
-		Vue.$toast.clear();
-		Vue.$toast.open(this.defaultOptions(message, duration, 'error'));
+		const toast = useToast();
+		toast.clear();
+		toast.error(message, {timeout: duration});
 	}
 
 	/**
@@ -39,8 +39,9 @@ class ToastClear {
 	 * @param {number} duration Toast duration
 	 */
 	info(message: string, duration = 5000): void {
-		Vue.$toast.clear();
-		Vue.$toast.open(this.defaultOptions(message, duration, 'info'));
+		const toast = useToast();
+		toast.clear();
+		toast.info(message, {timeout: duration});
 	}
 
 	/**
@@ -49,8 +50,9 @@ class ToastClear {
 	 * @param {number} duration Toast duration
 	 */
 	success(message: string, duration = 5000): void {
-		Vue.$toast.clear();
-		Vue.$toast.open(this.defaultOptions(message, duration, 'success'));
+		const toast = useToast();
+		toast.clear();
+		toast.success(message, {timeout: duration});
 	}
 
 	/**
@@ -59,26 +61,9 @@ class ToastClear {
 	 * @param {number} duration Toast duration
 	 */
 	warning(message: string, duration = 5000): void {
-		Vue.$toast.clear();
-		Vue.$toast.open(this.defaultOptions(message, duration, 'warning'));
-	}
-
-	/**
-	 * Creates and returns default ToastOptions object
-	 * @param {string} message: Toast message
-	 * @param {number} duration: Toast duration
-	 * @param {string} type: Toast type
-	 * @returns {ToastOptions} ToastOptions object
-	 */
-	private defaultOptions(message: string, duration: number, type: string): ToastOptions {
-		return {
-			message: i18n.t(message).toString(),
-			type: type,
-			duration: duration,
-			position: 'top',
-			dismissible: true,
-			pauseOnHover: true
-		};
+		const toast = useToast();
+		toast.clear();
+		toast.warning(message, {timeout: duration});
 	}
 
 }

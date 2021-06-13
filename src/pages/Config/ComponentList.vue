@@ -105,7 +105,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -113,10 +113,9 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import { MetaInfo } from 'vue-meta';
 import { IField } from '../../interfaces/coreui';
 import { AxiosError } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 import {IComponent} from '../../interfaces/daemonComponent';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

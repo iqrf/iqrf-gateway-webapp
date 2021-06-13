@@ -47,14 +47,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import IqrfNetService from '../../services/IqrfNetService';
 import {CSpinner} from '@coreui/vue/src';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '../../interfaces/dpa';
 
-@Component({
+@Options({
 	components: {
 		CSpinner,
 	},
@@ -138,7 +138,7 @@ export default class CoordinatorInfo extends Vue {
 					}
 				}
 			}
-			
+
 		});
 		if (this.$store.getters.isSocketConnected) {
 			this.enumerate();
@@ -156,9 +156,9 @@ export default class CoordinatorInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

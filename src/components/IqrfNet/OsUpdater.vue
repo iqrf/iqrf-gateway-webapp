@@ -44,7 +44,7 @@ limitations under the License.
 										required: "iqrfnet.trUpload.osUpload.errors.version"
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='osVersion'
 										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
 										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
@@ -76,8 +76,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -89,7 +89,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -98,7 +98,7 @@ import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interface
 		CElementCover,
 		CForm,
 		CModal,
-		CSelect,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider
 	}

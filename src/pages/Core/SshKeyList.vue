@@ -162,7 +162,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 
 import {cilPlus, cilTrash, cilInfo, cilClipboard} from '@coreui/icons';
@@ -174,7 +174,7 @@ import {AxiosResponse, AxiosError} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {ISshKey} from '../../interfaces/ssh';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

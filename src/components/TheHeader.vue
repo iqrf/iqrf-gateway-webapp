@@ -52,7 +52,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
 import {
 	CBadge,
 	CDropdown,
@@ -64,10 +65,9 @@ import {
 	CToggler,
 } from '@coreui/vue/src';
 import {cilLockLocked} from '@coreui/icons';
-import { Dictionary } from 'vue-router/types/router';
 import ThemeManager from '../helpers/themeManager';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CDropdown,
@@ -107,7 +107,8 @@ export default class TheHeader extends Vue {
 		this.$store.dispatch('user/signOut')
 			.then(() => {
 				this.$router.push('/sign/in');
-				this.$toast.success(this.$t('core.sign.out.message').toString());
+				const toast = useToast();
+				toast.success(this.$t('core.sign.out.message').toString());
 			});
 	}
 }

@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.misc.jsonSplitter.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -35,7 +35,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.misc.jsonSplitter.errors.instance"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -49,14 +49,14 @@ limitations under the License.
 								required: "config.daemon.misc.jsonSplitter.errors.insId"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.insId'
 								:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.validateJsonResponse'
 							:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse")'
 						/>
@@ -71,24 +71,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IJsonSplitter} from '../../interfaces/jsonApi';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -135,7 +135,7 @@ export default class JsonSplitter extends Vue {
 	mounted(): void {
 		this.getConfig();
 	}
-	
+
 	/**
 	 * Retrieves configuration of JSON splitter component
 	 */
@@ -145,7 +145,7 @@ export default class JsonSplitter extends Vue {
 				if (response.data.instances.length > 0) {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
-				}	
+				}
 				this.$emit('fetched', {name: 'jsonSplitter', success: true});
 			})
 			.catch(() => {

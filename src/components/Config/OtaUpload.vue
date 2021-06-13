@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t("config.daemon.misc.otaUpload.title") }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -36,15 +36,15 @@ limitations under the License.
 							:custom-messages='{
 								required: "config.daemon.misc.otaUpload.errors.instance"
 							}'
-						>					
-							<CInput
+						>
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInput
+						<CFormInput
 							v-model='configuration.uploadPath'
 							:label='$t("config.daemon.misc.otaUpload.form.uploadPath")'
 						/>
@@ -59,8 +59,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -70,7 +70,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOtaUpload} from '../../interfaces/iqmeshServices';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -78,7 +78,7 @@ import {IOtaUpload} from '../../interfaces/iqmeshServices';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider,
 	}

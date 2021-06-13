@@ -181,13 +181,13 @@ limitations under the License.
 <script lang='ts'>
 import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 		CButton,

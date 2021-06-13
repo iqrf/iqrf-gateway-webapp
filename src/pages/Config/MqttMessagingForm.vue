@@ -35,7 +35,7 @@ limitations under the License.
 								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -51,7 +51,7 @@ limitations under the License.
 										required: "config.daemon.messagings.mqtt.errors.BrokerAddr"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='configuration.BrokerAddr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 										:is-valid='touched ? valid : null'
@@ -67,7 +67,7 @@ limitations under the License.
 										required: "forms.errors.clientId"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='configuration.ClientId'
 										:label='$t("forms.fields.clientId")'
 										:is-valid='touched ? valid : null'
@@ -83,7 +83,7 @@ limitations under the License.
 										required: "forms.errors.requestTopic"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='configuration.TopicRequest'
 										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
@@ -99,7 +99,7 @@ limitations under the License.
 										required: "forms.errors.responseTopic"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='configuration.TopicResponse'
 										:label='$t("forms.fields.responseTopic")'
 										:is-valid='touched ? valid : null'
@@ -108,13 +108,13 @@ limitations under the License.
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.User'
 									:label='$t("config.daemon.messagings.mqtt.form.User")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.Password'
 									:label='$t("forms.fields.password")'
 								/>
@@ -127,7 +127,7 @@ limitations under the License.
 										required: "config.daemon.messagings.mqtt.errors.QoS",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='configuration.Qos'
 										:label='$t("config.daemon.messagings.mqtt.form.QoS")'
 										:is-valid='touched ? valid : null'
@@ -146,7 +146,7 @@ limitations under the License.
 										required: "config.daemon.messagings.mqtt.errors.Persistence",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='configuration.Persistence'
 										:label='$t("config.daemon.messagings.mqtt.form.Persistence")'
 										:is-valid='touched ? valid : null'
@@ -166,7 +166,7 @@ limitations under the License.
 										min: "config.daemon.messagings.mqtt.errors.KeepAliveInterval",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.KeepAliveInterval'
 										:label='$t("config.daemon.messagings.mqtt.form.KeepAliveInterval")'
 										:is-valid='touched ? valid : null'
@@ -185,7 +185,7 @@ limitations under the License.
 										min: "config.daemon.messagings.mqtt.errors.ConnectTimeout",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.ConnectTimeout'
 										:label='$t("config.daemon.messagings.mqtt.form.ConnectTimeout")'
 										:is-valid='touched ? valid : null'
@@ -204,7 +204,7 @@ limitations under the License.
 										integer: "config.daemon.messagings.mqtt.errors.MinReconnect",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.MinReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MinReconnect")'
 										:is-valid='touched ? valid : null'
@@ -224,7 +224,7 @@ limitations under the License.
 										min: "config.daemon.messagings.mqtt.errors.MaxReconnect",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='configuration.MaxReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MaxReconnect")'
 										:is-valid='touched ? valid : null'
@@ -235,7 +235,7 @@ limitations under the License.
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='configuration.acceptAsyncMsg'
 									:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 								/>
@@ -259,25 +259,25 @@ limitations under the License.
 						</CRow>
 						<CRow v-if='configuration.EnabledSSL'>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.TrustStore'
 									:label='$t("config.daemon.messagings.mqtt.form.TrustStore")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.KeyStore'
 									:label='$t("forms.fields.certificate")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.PrivateKey'
 									:label='$t("forms.fields.privateKey")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.PrivateKeyPassword'
 									:type='visibility'
 									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
@@ -289,16 +289,16 @@ limitations under the License.
 											/>
 										</span>
 									</template>
-								</CInput>
+								</CFormInput>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='configuration.EnabledCipherSuites'
 									:label='$t("config.daemon.messagings.mqtt.form.EnabledCipherSuites")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='configuration.EnableServerCertAuth'
 									:label='$t("config.daemon.messagings.mqtt.form.EnableServerCertAuth")'
 								/>
@@ -315,8 +315,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
@@ -329,16 +329,16 @@ import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {IMqttInstance} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		CSwitch,
 		FontAwesomeIcon,
 		ValidationObserver,
@@ -424,7 +424,7 @@ export default class MqttMessagingForm extends Vue {
 	/**
 	 * Computes array of CoreUI qos select options
 	 * @returns {Array<IOption>} QoS select options
-	 */	
+	 */
 	get qosOptions(): Array<IOption> {
 		const options = [0, 1, 2];
 		return options.map((option) => {
@@ -434,7 +434,7 @@ export default class MqttMessagingForm extends Vue {
 			};
 		});
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

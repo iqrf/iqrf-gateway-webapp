@@ -36,14 +36,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import {cilPowerStandby, cilReload} from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
 import { MetaInfo } from 'vue-meta';
 import { AxiosResponse } from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

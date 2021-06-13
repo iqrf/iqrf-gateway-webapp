@@ -38,7 +38,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CTab, CTabs} from '@coreui/vue/src';
 import BinaryOutputManager from '../../components/IqrfNet/BinaryOutputManager.vue';
 import DaliManager from '../../components/IqrfNet/DaliManager.vue';
@@ -46,7 +46,7 @@ import LightManager from '../../components/IqrfNet/LightManager.vue';
 import SensorManager from '../../components/IqrfNet/SensorManager.vue';
 import StandardDevices from '../../components/IqrfNet/StandardDevices.vue';
 
-@Component({
+@Options({
 	components: {
 		CTab,
 		CTabs,

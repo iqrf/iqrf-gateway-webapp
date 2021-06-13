@@ -51,7 +51,7 @@ limitations under the License.
 									server: "gateway.ntp.errors.serverInvalid"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='pools[idx]'
 									:label='$t("gateway.ntp.form.server")'
 									:is-valid='touched ? valid : null'
@@ -92,8 +92,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CForm, CInput, CSwitch} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardHeader, CForm, CFormInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -105,13 +105,13 @@ import isFQDN from 'is-fqdn';
 
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
@@ -138,7 +138,7 @@ export default class NtpConfig extends Vue {
 	 */
 	created(): void {
 		extend('server', (addr: string) => {
-			return ip.v4({exact: true}).test(addr) || isFQDN(addr); 
+			return ip.v4({exact: true}).test(addr) || isFQDN(addr);
 		});
 		extend('required', required);
 	}

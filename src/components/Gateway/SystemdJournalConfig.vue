@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('service.systemd-journald.config.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='failed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -32,11 +32,11 @@ limitations under the License.
 				v-slot='{invalid}'
 			>
 				<CForm @submit.prevent='saveConfig'>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='config.forwardToSyslog'
 						:label='$t("service.systemd-journald.config.form.forwardToSyslog")'
 					/>
-					<CSelect
+					<CFormSelect
 						:value.sync='config.persistence'
 						:label='$t("service.systemd-journald.config.form.storage")'
 						:options='storageOptions'
@@ -51,7 +51,7 @@ limitations under the License.
 								min: "service.systemd-journald.config.errors.maxDiskInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='config.maxDiskSize'
 								type='number'
 								min='0'
@@ -72,7 +72,7 @@ limitations under the License.
 								min: "service.systemd-journald.config.errors.maxFilesInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='config.maxFiles'
 								type='number'
 								min='1'
@@ -109,7 +109,7 @@ limitations under the License.
 								min: "service.systemd-journald.config.errors.maxFileSizeInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='config.sizeRotation.maxFileSize'
 								type='number'
 								min='0'
@@ -137,7 +137,7 @@ limitations under the License.
 						v-if='timeRotation'
 						class='form-group'
 					>
-						<CSelect
+						<CFormSelect
 							:value.sync='config.timeRotation.unit'
 							:label='$t("service.systemd-journald.config.form.unit")'
 							:options='unitOptions'
@@ -151,7 +151,7 @@ limitations under the License.
 								min: "service.systemd-journald.config.errors.countInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='config.timeRotation.count'
 								type='number'
 								min='1'
@@ -170,13 +170,13 @@ limitations under the License.
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCardBody>	
+		</CCardBody>
 	</CCard>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput, CFormCheck, CFormSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {StorageMethod, TimeUnit} from '../../enums/Gateway/SystemdJournal';
@@ -189,7 +189,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {ISystemdJournal} from '../../interfaces/systemdJournal';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -197,9 +197,9 @@ import {ISystemdJournal} from '../../interfaces/systemdJournal';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,

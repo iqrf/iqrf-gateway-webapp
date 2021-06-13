@@ -52,7 +52,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Ref, Vue, Watch} from 'vue-property-decorator';
+import {Options, Prop, Ref, Vue, Watch} from 'vue-property-decorator';
 import {CFormGroup} from '@coreui/vue';
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -63,7 +63,7 @@ import 'prismjs/themes/prism.css';
 /**
  * JSON editor with syntax highlighting
  */
-@Component({
+@Options({
 	components: {
 		CFormGroup,
 		PrismEditor,

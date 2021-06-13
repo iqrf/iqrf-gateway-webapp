@@ -20,7 +20,7 @@ limitations under the License.
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
-					<CSelect
+					<CFormSelect
 						:value.sync='format'
 						:options='selectOptions'
 						:label='$t("iqrfnet.trConfiguration.security.form.format")'
@@ -30,7 +30,7 @@ limitations under the License.
 						:rules='{regex: validationPattern}'
 						:custom-messages='{regex: "iqrfnet.trConfiguration.security.messages.invalid"}'
 					>
-						<CInput
+						<CFormInput
 							v-model='password'
 							:label='$t("forms.fields.password")'
 							:type='visibility'
@@ -44,7 +44,7 @@ limitations under the License.
 									/>
 								</span>
 							</template>
-						</CInput>
+						</CFormInput>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -66,9 +66,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import SecurityService from '../../services/SecurityService';
 import OsService from '../../services/DaemonApi/OsService';
@@ -77,15 +77,15 @@ import {IOption} from '../../interfaces/coreui';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {regex} from 'vee-validate/dist/rules';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
@@ -131,7 +131,7 @@ export default class SecurityForm extends Vue {
 	private visibility = 'password'
 
 	/**
-	 * Component unsubscribe function
+	 * Options unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
@@ -174,9 +174,9 @@ export default class SecurityForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

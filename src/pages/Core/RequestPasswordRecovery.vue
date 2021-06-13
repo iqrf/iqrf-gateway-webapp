@@ -40,7 +40,7 @@ limitations under the License.
 								required: "core.sign.in.messages.username"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='user'
 								:label='$t("forms.fields.username")'
 								autocomplete='username'
@@ -66,8 +66,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import TheWizard from '../../components/TheWizard.vue';
 
@@ -77,13 +77,13 @@ import UserService from '../../services/UserService';
 
 import {AxiosError} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider

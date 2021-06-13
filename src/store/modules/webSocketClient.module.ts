@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
-import i18n from '../../i18n';
+
+import Vue from '@vue/compat';
 import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
+import {useToast} from 'vue-toastification';
+import {useI18n} from 'vue-i18n';
 
 export class WebSocketOptions {
 	public request: Record<string, any>|null;
@@ -159,6 +161,8 @@ const serviceModeWhitelist = [
 
 const actions: ActionTree<WebSocketClientState, any> = {
 	sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string>|undefined {
+		const i18n = useI18n();
+		const toast = useToast();
 		const request = options.request;
 		if (request === null) {
 			console.error('Request is null');
@@ -168,7 +172,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			commit('spinner/HIDE');
 			state.daemonStatus.modal = true;
 			return;
-		} 
+		}
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
@@ -186,7 +190,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 				if (options.message === null) {
 					return;
 				}
-				Vue.$toast.error(i18n.t(options.message).toString());
+				toast.error(i18n.t(options.message).toString());
 			}, options.timeout);
 		}
 		state.messages.push(new WebSocketMessage(request.data.msgId, timeout));
@@ -247,7 +251,7 @@ const mutations: MutationTree<WebSocketClientState> = {
 		} else {
 			state.socket.isConnected = true;
 		}
-		
+
 	},
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;

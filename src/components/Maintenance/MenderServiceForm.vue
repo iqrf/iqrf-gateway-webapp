@@ -25,7 +25,7 @@ limitations under the License.
 					required: "maintenance.mender.service.errors.server"
 				}'
 			>
-				<CInput
+				<CFormInput
 					v-model='configuration.ServerURL'
 					:label='$t("maintenance.mender.service.form.server")'
 					:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
@@ -33,7 +33,7 @@ limitations under the License.
 					:invalid-feedback='$t(errors[0])'
 				/>
 			</ValidationProvider>
-			<CInput
+			<CFormInput
 				v-model='configuration.ServerCertificate'
 				:label='$t("maintenance.mender.service.form.cert")'
 				:disabled='uploadCert'
@@ -52,15 +52,16 @@ limitations under the License.
 					:checked.sync='uploadCert'
 				/>
 			</div>
-			<CInputFile
+			<CFormInput
 				v-if='uploadCert'
 				ref='formCert'
 				accept='.crt'
 				:label='$t("maintenance.mender.service.form.newCert")'
+				type='file'
 				@input='checkInput'
 				@click='checkInput'
 			/>
-			<CSelect
+			<CFormSelect
 				:value.sync='configuration.ClientProtocol'
 				:label='$t("maintenance.mender.service.form.protocol")'
 				:options='protocolOptions'
@@ -72,7 +73,7 @@ limitations under the License.
 					required: "maintenance.mender.service.errors.tenantToken"
 				}'
 			>
-				<CInput
+				<CFormInput
 					v-model='configuration.TenantToken'
 					:label='$t("maintenance.mender.service.form.tenantToken")'
 					:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
@@ -96,7 +97,7 @@ limitations under the License.
 				</b> <CBadge color='info'>
 					{{ inventoryPollTime }}
 				</CBadge>
-				<CInput
+				<CFormInput
 					id='inventoryPoll'
 					v-model.number='configuration.InventoryPollIntervalSeconds'
 					type='number'
@@ -121,7 +122,7 @@ limitations under the License.
 				</b> <CBadge color='info'>
 					{{ retryPollTime }}
 				</CBadge>
-				<CInput
+				<CFormInput
 					id='retryPoll'
 					v-model.number='configuration.RetryPollIntervalSeconds'
 					type='number'
@@ -146,7 +147,7 @@ limitations under the License.
 				</b> <CBadge color='info'>
 					{{ updatePollTime }}
 				</CBadge>
-				<CInput
+				<CFormInput
 					id='updatePoll'
 					v-model.number='configuration.UpdatePollIntervalSeconds'
 					type='number'
@@ -167,8 +168,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CBadge, CButton, CForm, CFormInput, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
@@ -183,14 +184,13 @@ import {IMenderConfig} from '../../interfaces/maintenance';
 import {IOption} from '../../interfaces/coreui';
 import MenderService from '../../services/MenderService';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
 		CForm,
-		CInput,
-		CInputFile,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -332,7 +332,7 @@ export default class MenderForm extends Vue {
 	 * Extracts files from form file input
 	 */
 	private getInputFiles(): FileList {
-		const input = ((this.$refs.formCert as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.formCert as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 

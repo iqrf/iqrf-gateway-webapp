@@ -91,8 +91,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CIcon, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCol, CForm, CIcon, CFormCheck, CRow, CFormSelect, CSwitch} from '@coreui/vue/src';
 import vSelect from 'vue-select';
 
 import {cilCheckCircle, cilXCircle} from '@coreui/icons';
@@ -103,9 +103,8 @@ import TimeService from '../../services/TimeService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {IOption} from '../../interfaces/coreui';
-import { Dictionary } from 'vue-router/types/router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -113,9 +112,9 @@ import { Dictionary } from 'vue-router/types/router';
 		CCol,
 		CForm,
 		CIcon,
-		CInputCheckbox,
+		CFormCheck,
 		CRow,
-		CSelect,
+		CFormSelect,
 		CSwitch,
 		vSelect,
 	}

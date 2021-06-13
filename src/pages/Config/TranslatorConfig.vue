@@ -31,7 +31,7 @@ limitations under the License.
 										required: "config.translator.errors.restAddr"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.rest.addr'
 										:label='$t("forms.fields.address")'
 										:is-valid='touched ? valid : null'
@@ -47,7 +47,7 @@ limitations under the License.
 										between: "config.translator.errors.port"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rest.port'
 										type='number'
 										min='1'
@@ -65,7 +65,7 @@ limitations under the License.
 										apiKey: "config.translator.errors.apiKeyInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.rest.api_key'
 										:label='$t("config.translator.form.rest.apiKey")'
 										:is-valid='touched ? valid : null'
@@ -83,7 +83,7 @@ limitations under the License.
 								clientId: "config.translator.errors.clientIdInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.mqtt.cid'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
@@ -99,7 +99,7 @@ limitations under the License.
 										required: "config.translator.errors.brokerAddr"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.mqtt.addr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 										:is-valid='touched ? valid : null'
@@ -117,7 +117,7 @@ limitations under the License.
 										between: "config.translator.errors.port"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.mqtt.port'
 										type='number'
 										min='1'
@@ -137,7 +137,7 @@ limitations under the License.
 										requestTopic: "config.translator.errors.requestTopicInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.mqtt.request_topic'
 										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
@@ -154,7 +154,7 @@ limitations under the License.
 										responseTopic: "config.translator.errors.responseTopicInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.mqtt.response_topic'
 										:label='$t("forms.fields.responseTopic")'
 										:is-valid='touched ? valid: null'
@@ -166,7 +166,7 @@ limitations under the License.
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.mqtt.user'
 										:label='$t("forms.fields.username")'
 										:is-valid='touched ? valid : null'
@@ -178,7 +178,7 @@ limitations under the License.
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
-									<CInput
+									<CFormInput
 										v-model='config.mqtt.pw'
 										:label='$t("forms.fields.password")'
 										:is-valid='touched ? valid : null'
@@ -192,7 +192,7 @@ limitations under the License.
 												/>
 											</span>
 										</template>
-									</CInput>
+									</CFormInput>
 								</ValidationProvider>
 							</CCol>
 						</CRow>
@@ -214,25 +214,25 @@ limitations under the License.
 						</CRow>
 						<CRow v-if='config.mqtt.tls.enabled'>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='config.mqtt.tls.trust_store'
 									:label='$t("config.translator.form.mqtt.tls.trustStore")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='config.mqtt.tls.key_store'
 									:label='$t("config.translator.form.mqtt.tls.keyStore")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<CFormInput
 									v-model='config.mqtt.tls.private_key'
 									:label='$t("config.translator.form.mqtt.tls.privateKey")'
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.mqtt.tls.require_broker_certificate'
 									:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
 								/>
@@ -249,8 +249,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CIcon, CFormInput, CFormCheck, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
@@ -260,9 +260,9 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITranslator} from '../../interfaces/translator';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -271,14 +271,14 @@ import {NavigationGuardNext, Route} from 'vue-router';
 		CElementCover,
 		CForm,
 		CIcon,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		CSwitch,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
 				vm.$toast.error(

@@ -39,7 +39,7 @@ limitations under the License.
 							required: "core.sign.in.messages.password"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='password'
 							:type='passwordVisible ? "text" : "password"'
 							:label='$t("forms.fields.password")'
@@ -53,7 +53,7 @@ limitations under the License.
 									/>
 								</span>
 							</template>
-						</CInput>
+						</CFormInput>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -69,10 +69,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CForm, CFormInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {AxiosError} from 'axios';
-import {Component, Vue, Prop} from 'vue-property-decorator';
+import {Options, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
@@ -81,13 +81,13 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import {User, UserRole} from '../../services/AuthenticationService';
 import UserService from '../../services/UserService';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		FontAwesomeIcon,
 		TheWizard,
 		ValidationObserver,

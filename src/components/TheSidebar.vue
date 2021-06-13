@@ -35,7 +35,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CRenderFunction,
 	CSidebar,
@@ -93,7 +93,7 @@ interface NavData {
 	_children: Array<NavMember>
 }
 
-@Component({
+@Options({
 	components: {
 		CRenderFunction,
 		CSidebar,

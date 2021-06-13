@@ -14,13 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
+
+import { ComponentCustomProperties } from 'vue';
 import {ToastApi} from 'vue-toast-notification';
 import VueI18n from 'vue-i18n';
+import VueRouter from 'vue-router';
+import {Store} from 'vuex';
 
-declare module 'vue/types/vue' {
-	interface Vue {
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
 		$toast: ToastApi,
 		$t: typeof VueI18n.prototype.t,
+		$router: VueRouter,
+		$store: Store<any>
 	}
 }

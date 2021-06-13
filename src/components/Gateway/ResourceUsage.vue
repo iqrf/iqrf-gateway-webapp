@@ -30,7 +30,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Options, Prop, Vue} from 'vue-property-decorator';
 
 /**
  * Resource usage data
@@ -54,7 +54,7 @@ export interface UsageData {
 
 }
 
-@Component({})
+@Options({})
 
 /**
  * Resource usage component for gateway information

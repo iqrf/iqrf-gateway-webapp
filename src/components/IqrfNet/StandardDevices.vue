@@ -318,7 +318,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
@@ -336,7 +336,7 @@ import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../.
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '../../services/IqrfRepository/OsDpaService';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -491,7 +491,7 @@ export default class StandardDevices extends Vue {
 	/**
 	 * Unsubscribes handler from websocket store
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

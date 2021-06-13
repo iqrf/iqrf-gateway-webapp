@@ -26,7 +26,7 @@ limitations under the License.
 						<CRow>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
-								<CSelect
+								<CFormSelect
 									v-model='config.rfBand'
 									:label='$t("iqrfnet.trConfiguration.form.rfBand")'
 									:options='[
@@ -41,7 +41,7 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rfChannelA'
 										:label='$t("iqrfnet.trConfiguration.form.rfChannelA")'
 										:is-valid='touched ? valid : null'
@@ -56,7 +56,7 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rfChannelB'
 										:label='$t("iqrfnet.trConfiguration.form.rfChannelB")'
 										:is-valid='touched ? valid : null'
@@ -72,7 +72,7 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rfSubChannelA'
 										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelA")'
 										:is-valid='touched ? valid : null'
@@ -88,7 +88,7 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rfSubChannelB'
 										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelB")'
 										:is-valid='touched ? valid : null'
@@ -104,7 +104,7 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rfAltDsmChannel'
 										:label='$t("iqrfnet.trConfiguration.form.rfAltDsmChannel")'
 										:is-valid='touched ? valid : null'
@@ -114,10 +114,13 @@ limitations under the License.
 										:min='rfChannelRules.min'
 									/>
 								</ValidationProvider>
-								<CAlert v-if='address === 0 && config.stdAndLpNetwork === false' color='warning'>
+								<CAlert
+									v-if='address === 0 && config.stdAndLpNetwork === false'
+									color='warning'
+								>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
-								<CSelect
+								<CFormSelect
 									v-if='address === 0 && config.stdAndLpNetwork !== undefined'
 									:label='$t("iqrfnet.trConfiguration.form.networkType")'
 									:value.sync='config.stdAndLpNetwork'
@@ -139,7 +142,7 @@ limitations under the License.
 										required: "iqrfnet.trConfiguration.form.messages.txPower",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.txPower'
 										:label='$t("iqrfnet.trConfiguration.form.txPower")'
 										:is-valid='touched ? valid : null'
@@ -158,7 +161,7 @@ limitations under the License.
 										required: "iqrfnet.trConfiguration.form.messages.rxFilter",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.rxFilter'
 										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
 										:is-valid='touched ? valid : null'
@@ -177,7 +180,7 @@ limitations under the License.
 										required: "iqrfnet.trConfiguration.form.messages.lpRxTimeout",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='config.lpRxTimeout'
 										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
 										:is-valid='touched ? valid : null'
@@ -186,27 +189,27 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmEnableAfterReset'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmEnableAfterReset")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmTerminateAfter1Min'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateAfter1Min")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmTerminateMcuPin'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateMcuPin")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmDualChannel'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmDualChannel")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmLpMode'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmLpMode")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.rfPgmIncorrectUpload'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
 									disabled='true'
@@ -214,7 +217,7 @@ limitations under the License.
 							</CCol>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
-								<CInputCheckbox
+								<CFormCheck
 									v-for='peripheral of peripherals'
 									:key='peripheral.name'
 									:checked.sync='peripheral.enabled'
@@ -222,38 +225,38 @@ limitations under the License.
 									:label='$t("iqrfnet.trConfiguration.form.embPers." + peripheral.name)'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.customDpaHandler'
 									:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
 									:disabled='!dpaHandlerDetected'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									v-if='config.dpaPeerToPeer !== undefined'
 									:checked.sync='config.dpaPeerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.peerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									v-if='config.localFrcReception !== undefined && address !== 0'
 									:checked.sync='config.localFrcReception'
 									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.ioSetup'
 									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.dpaAutoexec'
 									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									:checked.sync='config.routingOff'
 									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
 								/>
-								<CInputCheckbox
+								<CFormCheck
 									v-if='config.neverSleep !== undefined'
 									:checked.sync='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
@@ -265,7 +268,7 @@ limitations under the License.
 										required: "iqrfnet.trConfiguration.form.messages.uartBaudrate",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='config.uartBaudrate'
 										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
 										:is-valid='touched ? valid : null'
@@ -274,14 +277,18 @@ limitations under the License.
 										:options='uartBaudRates'
 									/>
 								</ValidationProvider>
-								<CInputCheckbox
+								<CFormCheck
 									v-if='config.nodeDpaInterface !== undefined'
 									:checked.sync='config.nodeDpaInterface'
 									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
 								/>
 							</CCol>
 						</CRow>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<CButton
+							color='primary'
+							:disabled='invalid'
+							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
+						>
 							{{ $t('forms.write') }}
 						</CButton>
 					</CForm>
@@ -318,8 +325,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
+import {Options, Prop, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CModal} from '@coreui/vue/src';
 import {
 	between,
 	integer,
@@ -332,13 +339,14 @@ import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
 import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
+
 import {IOption} from '../../interfaces/coreui';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {MutationPayload} from 'vuex';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 
-@Component({
+@Options({
 	components: {
 		AddressChanger,
 		CButton,
@@ -346,7 +354,7 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		CModal,
 		SecurityForm,
 		ValidationObserver,
@@ -559,9 +567,9 @@ export default class TrConfiguration extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();

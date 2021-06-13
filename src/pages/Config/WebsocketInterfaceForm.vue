@@ -36,7 +36,7 @@ limitations under the License.
 									instance: "config.daemon.messagings.instanceInvalid"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='messaging.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
@@ -52,7 +52,7 @@ limitations under the License.
 									integer: "forms.errors.integer"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='service.WebsocketPort'
 									type='number'
 									:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
@@ -60,11 +60,11 @@ limitations under the License.
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='messaging.acceptAsyncMsg'
 								:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 							/>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='service.acceptOnlyLocalhost'
 								:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 							/>
@@ -91,7 +91,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.tlsMode",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='service.tlsMode'
 										:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 										:options='tlsModeOptions'
@@ -115,7 +115,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.certificate",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='service.certificate'
 										:label='$t("forms.fields.certificate")'
 										:disabled='!service.tlsEnabled'
@@ -131,7 +131,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.privateKey",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='service.privateKey'
 										:label='$t("forms.fields.privateKey")'
 										:disabled='!service.tlsEnabled'
@@ -152,8 +152,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -167,16 +167,16 @@ import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},

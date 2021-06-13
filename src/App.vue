@@ -18,13 +18,13 @@ limitations under the License.
 	<div>
 		<Blocking />
 		<LoadingSpinner />
-		<router-view v-if='installationChecked' />
+		<router-view />
 		<DaemonModeModal />
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
 import {AxiosError} from 'axios';
 
@@ -33,7 +33,7 @@ import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		Blocking,
 		DaemonModeModal,

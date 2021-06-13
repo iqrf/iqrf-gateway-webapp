@@ -33,7 +33,7 @@ limitations under the License.
 								rules='required'
 								:custom-messages='{required: "config.daemon.misc.monitor.errors.instance"}'
 							>
-								<CInput
+								<CFormInput
 									v-model='monitor.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
@@ -49,7 +49,7 @@ limitations under the License.
 									integer: "forms.errors.integer"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='monitor.reportPeriod'
 									type='number'
 									:label='$t("config.daemon.misc.monitor.form.reportPeriod")'
@@ -66,7 +66,7 @@ limitations under the License.
 									integer: "forms.errors.integer"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='webSocket.WebsocketPort'
 									type='number'
 									:label='$t("config.daemon.misc.monitor.form.WebsocketPort")'
@@ -74,7 +74,7 @@ limitations under the License.
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='webSocket.acceptOnlyLocalhost'
 								:label='$t("config.daemon.misc.monitor.form.acceptOnlyLocalhost")'
 							/>
@@ -101,7 +101,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.tlsMode",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='webSocket.tlsMode'
 										:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 										:options='tlsModeOptions'
@@ -125,7 +125,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.certificate",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='webSocket.certificate'
 										:label='$t("forms.fields.certificate")'
 										:disabled='!webSocket.tlsEnabled'
@@ -141,7 +141,7 @@ limitations under the License.
 										required: "config.daemon.messagings.websocket.errors.privateKey",
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='webSocket.privateKey'
 										:label='$t("forms.fields.privateKey")'
 										:disabled='!webSocket.tlsEnabled'
@@ -162,8 +162,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -197,15 +197,15 @@ interface MonitorWebSocket {
 	privateKey?: string
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider,
 	},

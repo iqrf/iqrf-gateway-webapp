@@ -19,31 +19,31 @@ limitations under the License.
 		<h1>{{ $t('config.daemon.main.title') }}</h1>
 		<CCard body-wrapper>
 			<CForm @submit.prevent='saveConfig'>
-				<CInput
+				<CFormInput
 					v-model='configuration.applicationName'
 					:label='$t("config.daemon.main.form.applicationName")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.resourceDir'
 					:label='$t("config.daemon.main.form.resourceDir")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.dataDir'
 					:label='$t("config.daemon.main.form.dataDir")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.cacheDir'
 					:label='$t("config.daemon.main.form.cacheDir")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.userDir'
 					:label='$t("config.daemon.main.form.userDir")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.configurationDir'
 					:label='$t("config.daemon.main.form.configurationDir")'
 				/>
-				<CInput
+				<CFormInput
 					v-model='configuration.deploymentDir'
 					:label='$t("config.daemon.main.form.deploymentDir")'
 				/>
@@ -56,8 +56,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CFormInput} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -65,12 +65,12 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMainConfig} from '../../interfaces/daemonComponent';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CForm,
-		CInput,
+		CFormInput,
 	},
 	metaInfo: {
 		title: 'config.main.title',
@@ -93,7 +93,7 @@ export default class MainConfiguration extends Vue {
 		deploymentDir: '',
 		userDir: ''
 	}
-	
+
 	/**
 	 * Vue lifecycle hook mounted
 	 */

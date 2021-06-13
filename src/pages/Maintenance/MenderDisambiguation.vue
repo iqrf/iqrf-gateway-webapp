@@ -29,18 +29,18 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CCard,
 		CListGroup,
 		CListGroupItem,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('maintenance.disabled').toString());

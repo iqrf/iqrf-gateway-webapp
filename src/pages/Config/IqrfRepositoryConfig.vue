@@ -28,7 +28,7 @@ limitations under the License.
 								required: "config.repository.errors.endpointMissing"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='config.apiEndpoint'
 								:label='$t("config.repository.form.endpoint")'
 								:is-valid='touched ? valid : null'
@@ -60,7 +60,7 @@ limitations under the License.
 									required: "forms.errors.username"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='config.credentials.username'
 									:label='$t("forms.fields.username")'
 									:is-valid='touched ? valid : null'
@@ -74,7 +74,7 @@ limitations under the License.
 									required: "forms.errors.password"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='config.credentials.password'
 									:label='$t("forms.fields.password")'
 									:is-valid='touched ? valid : null'
@@ -97,12 +97,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 import {required} from 'vee-validate/dist/rules';
 
 import RepositoryConfigService from '../../services/IqrfRepository/IqrfRepositoryConfigService';
@@ -111,18 +111,18 @@ import {AxiosError} from 'axios';
 import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfRepository')) {
 				vm.$toast.error(

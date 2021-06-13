@@ -30,7 +30,7 @@ limitations under the License.
 									required: "network.wireguard.tunnels.errors.name"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='tunnel.name'
 									:label='$t("network.wireguard.tunnels.form.name")'
 									placeholder='wg0'
@@ -54,7 +54,7 @@ limitations under the License.
 									base64Key: "network.wireguard.tunnels.errors.base64Key"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='tunnel.privateKey'
 									:label='$t("network.wireguard.tunnels.form.privateKey")'
 									:is-valid='touched ? valid : null'
@@ -62,7 +62,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 							<div
-								v-if='tunnel.publicKey !== ""' 
+								v-if='tunnel.publicKey !== ""'
 								class='form-group'
 							>
 								<label>
@@ -81,7 +81,7 @@ limitations under the License.
 									{{ tunnel.publicKey }}
 								</p>
 							</div>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='optionalPort'
 								:label='$t("network.wireguard.tunnels.form.portOptional")'
 							/>
@@ -95,7 +95,7 @@ limitations under the License.
 									between: "network.wireguard.tunnels.errors.portInvalid"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='tunnel.port'
 									type='number'
 									min='0'
@@ -107,7 +107,7 @@ limitations under the License.
 							</ValidationProvider>
 						</CCol>
 						<CCol md='6'>
-							<CSelect
+							<CFormSelect
 								:value.sync='stack'
 								:options='stackOptions'
 								:label='$t("network.wireguard.tunnels.form.stack")'
@@ -125,7 +125,7 @@ limitations under the License.
 											ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='tunnel.ipv4.address'
 											:label='$t("network.wireguard.tunnels.form.ipv4")'
 											:is-valid='touched ? valid : null'
@@ -141,7 +141,7 @@ limitations under the License.
 											between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='tunnel.ipv4.prefix'
 											type='number'
 											min='1'
@@ -164,7 +164,7 @@ limitations under the License.
 											ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='tunnel.ipv6.address'
 											:label='$t("network.wireguard.tunnels.form.ipv6")'
 											:is-valid='touched ? valid : null'
@@ -180,7 +180,7 @@ limitations under the License.
 											between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='tunnel.ipv6.prefix'
 											type='number'
 											min='48'
@@ -211,14 +211,14 @@ limitations under the License.
 										base64Key: "network.wireguard.tunnels.errors.base64Key"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='peer.publicKey'
 										:label='$t("network.wireguard.tunnels.form.publicKey")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
-								<CInput
+								<CFormInput
 									v-model='peer.psk'
 									:label='$t("network.wireguard.tunnels.form.psk")'
 								/>
@@ -229,7 +229,7 @@ limitations under the License.
 										required: "network.wireguard.tunnels.errors.endpoint"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='peer.endpoint'
 										:label='$t("network.wireguard.tunnels.form.endpoint")'
 										:is-valid='touched ? valid : null'
@@ -245,7 +245,7 @@ limitations under the License.
 										between: "network.wireguard.tunnels.errors.portInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model.number='peer.port'
 										type='number'
 										min='0'
@@ -265,7 +265,7 @@ limitations under the License.
 											between: "network.wireguard.tunnels.errors.keepaliveInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='peer.keepalive'
 											type='number'
 											min='0'
@@ -279,14 +279,14 @@ limitations under the License.
 								</div>
 							</CCol>
 							<CCol>
-								<CSelect
+								<CFormSelect
 									:value.sync='peerStacks[index]'
 									:options='stackOptions'
 									:label='$t("network.wireguard.tunnels.form.stack")'
 								/>
 								<CRow>
-									<CCol 
-										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"' 
+									<CCol
+										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"'
 										:md='peerStacks[index] === "ipv4" ? 12 : 6'
 									>
 										<div
@@ -302,7 +302,7 @@ limitations under the License.
 													ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
 												}'
 											>
-												<CInput
+												<CFormInput
 													v-model='ip.address'
 													:label='$t("network.wireguard.tunnels.form.ipv4")'
 													:is-valid='touched ? valid : null'
@@ -318,7 +318,7 @@ limitations under the License.
 													between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
 												}'
 											>
-												<CInput
+												<CFormInput
 													v-model.number='ip.prefix'
 													type='number'
 													min='1'
@@ -360,7 +360,7 @@ limitations under the License.
 													ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
 												}'
 											>
-												<CInput
+												<CFormInput
 													v-model='ip.address'
 													:label='$t("network.wireguard.tunnels.form.ipv6")'
 													:is-valid='touched ? valid : null'
@@ -376,7 +376,7 @@ limitations under the License.
 													between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
 												}'
 											>
-												<CInput
+												<CFormInput
 													v-model.number='ip.prefix'
 													type='number'
 													min='48'
@@ -432,8 +432,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
+import {CButton, CCard, CCardBody, CForm, CFormInput, CFormCheck, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
 
@@ -452,15 +453,15 @@ export enum StackType {
 	DUAL = 'both'
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -608,7 +609,7 @@ export default class WireguardTunnel extends Vue {
 	 * Shows public key clipboard copy success message
 	 */
 	private successClipboard(): void {
-		this.$toast.success(
+		useToast().success(
 			this.$t('network.wireguard.tunnels.messages.copyPublicKey').toString()
 		);
 	}
@@ -779,7 +780,7 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(
+		useToast().success(
 			this.$t(
 				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Success',
 				{tunnel: this.tunnel.name}

@@ -28,7 +28,7 @@ limitations under the License.
 					required: "maintenance.monit.errors.endpoint",
 				}'
 			>
-				<CInput
+				<CFormInput
 					v-model='configuration.endpoint'
 					:label='$t("maintenance.monit.form.endpoint")'
 					:is-valid='touched ? valid : null'
@@ -43,7 +43,7 @@ limitations under the License.
 					userpass: "maintenance.monit.errors.usernameInvalid"
 				}'
 			>
-				<CInput
+				<CFormInput
 					v-model='configuration.username'
 					:label='$t("maintenance.monit.form.username")'
 					:is-valid='touched ? valid : null'
@@ -58,7 +58,7 @@ limitations under the License.
 					userpass: "maintenance.monit.errors.passwordInvalid"
 				}'
 			>
-				<CInput
+				<CFormInput
 					v-model='configuration.password'
 					:label='$t("maintenance.monit.form.password")'
 					:is-valid='touched ? valid : null'
@@ -77,8 +77,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CForm, CFormInput} from '@coreui/vue/src';
 import {ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extend} from 'vee-validate';
@@ -90,11 +90,11 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMonitConfig} from '../../interfaces/maintenance';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

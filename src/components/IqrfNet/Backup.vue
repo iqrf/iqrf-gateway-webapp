@@ -20,7 +20,7 @@ limitations under the License.
 			<h4>{{ $t('iqrfnet.networkManager.backup.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='backupDevice'>
-					<CSelect
+					<CFormSelect
 						:value.sync='target'
 						:label='$t("iqrfnet.networkManager.backup.form.target")'
 						:options='selectOptions'
@@ -36,7 +36,7 @@ limitations under the License.
 							required: "iqrfnet.networkManager.backup.form.messages.address"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='address'
 							type='number'
 							min='1'
@@ -60,8 +60,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -77,13 +77,13 @@ import {IBackupData} from '../../interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -139,7 +139,7 @@ export default class Backup extends Vue {
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false 
+	private daemon236 = false
 
 	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
@@ -191,9 +191,9 @@ export default class Backup extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
@@ -314,7 +314,7 @@ export default class Backup extends Vue {
 		}
 		return message;
 	}
-	
+
 	/**
 	 * Generates backup file and prompts file save
 	 */

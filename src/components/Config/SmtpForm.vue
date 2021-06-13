@@ -48,7 +48,7 @@ limitations under the License.
 									required: "config.smtp.errors.hostMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.host'
 									:label='$t("config.smtp.form.host")'
 									:is-valid='touched ? valid : null'
@@ -62,14 +62,14 @@ limitations under the License.
 									required: "config.smtp.errors.portMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.port'
 									:label='$t("config.smtp.form.port")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CSelect
+							<CFormSelect
 								:value.sync='configuration.secure'
 								:options='protocols'
 								:label='$t("config.smtp.form.security")'
@@ -83,7 +83,7 @@ limitations under the License.
 									required: "config.smtp.errors.usernameMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.username'
 									:label='$t("forms.fields.username")'
 									:is-valid='touched ? valid : null'
@@ -97,7 +97,7 @@ limitations under the License.
 									required: "config.smtp.errors.passwordMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.password'
 									:type='passwordVisible ? "text" : "password"'
 									:label='$t("forms.fields.password")'
@@ -111,7 +111,7 @@ limitations under the License.
 											/>
 										</span>
 									</template>
-								</CInput>
+								</CFormInput>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -120,7 +120,7 @@ limitations under the License.
 									required: "config.smtp.errors.fromMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='configuration.from'
 									:label='$t("config.smtp.form.from")'
 									:is-valid='touched ? valid : null'
@@ -155,12 +155,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
+import {CCol, CForm, CFormInput, CRow, CFormSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -171,13 +171,13 @@ import MailerService from '../../services/MailerService';
 import {IOption} from '../../interfaces/coreui';
 import {ISmtp} from '../../interfaces/smtp';
 
-@Component({
+@Options({
 	components: {
 		CCol,
 		CForm,
-		CInput,
+		CFormInput,
 		CRow,
-		CSelect,
+		CFormSelect,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,

@@ -19,21 +19,22 @@ limitations under the License.
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
-					<CSelect
+					<CFormSelect
 						:value.sync='fileType'
 						:options='fileTypeOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
 						@change='checkSelectedFile'
 					/>
-					<CInputFile
+					<CFormInput
 						ref='fileInput'
 						accept='.hex,.iqrf'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
+						type='file'
 						@input='checkSelectedFile'
 						@click='fileInputEmpty'
 					/>
 					<hr>
-					<CSelect
+					<CFormSelect
 						:value.sync='target'
 						:options='targetOptions'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
@@ -49,7 +50,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.otaUpload.errors.nodeAddress"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='address'
 							type='number'
 							min='1'
@@ -78,7 +79,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='hwpid'
 								type='number'
 								min='0'
@@ -104,7 +105,7 @@ limitations under the License.
 							between: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='eeepromAddress'
 							type='number'
 							min='768'
@@ -115,11 +116,11 @@ limitations under the License.
 							@input='resetChecks'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='uploadEepromData'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeprom")'
 					/>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='uploadEeepromData'
 						:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeeprom")'
 					/>
@@ -203,8 +204,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {cilCheckCircle} from '@coreui/icons';
@@ -222,17 +223,16 @@ import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
-		CInputFile,
-		CSelect,
+		CFormInput,
+		CFormCheck,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -380,7 +380,7 @@ export default class OtaUpload extends Vue {
 	 * @returns {FileList} List of uploaded files
 	 */
 	private getFiles(): FileList {
-		const input = ((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.fileInput as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
@@ -388,7 +388,7 @@ export default class OtaUpload extends Vue {
 	 * Resets file input content
 	 */
 	private resetFileInput(): void {
-		((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		((this.$refs.fileInput as CFormInput).$el.children[1] as HTMLInputElement).value = '';
 		this.fileInputEmpty();
 	}
 

@@ -58,7 +58,7 @@ class IqrfService {
 
 	/**
 	 * Executes upload via IQRF Gateway Uploader
-	 * @param {Record<string, string>} data API request body
+	 * @param {UploadUtilFile} data API request body
 	 */
 	uploader(data: UploadUtilFile): Promise<AxiosResponse> {
 		return axios.post('iqrf/uploader', data, {headers: authorizationHeader(), timeout: 30000});

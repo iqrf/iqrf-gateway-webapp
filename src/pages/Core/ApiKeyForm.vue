@@ -31,7 +31,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "core.security.apiKey.errors.description"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='metadata.description'
 								:label='$t("core.security.apiKey.form.description")'
 								:is-valid='touched ? valid : null'
@@ -39,7 +39,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
-							<CInputCheckbox
+							<CFormCheck
 								:checked.sync='useExpiration'
 								:label='$t("core.security.apiKey.form.expiration")'
 								@change='clear'
@@ -69,8 +69,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import ApiKeyService from '../../services/ApiKeyService';
@@ -81,14 +81,14 @@ import {required} from 'vee-validate/dist/rules';
 import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		Datetime,
 		ValidationObserver,
 		ValidationProvider,

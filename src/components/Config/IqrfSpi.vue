@@ -38,7 +38,7 @@ limitations under the License.
 						rules='required'
 						:custom-messages='{required: "config.daemon.interfaces.iqrfSpi.errors.instance"}'
 					>
-						<CInput
+						<CFormInput
 							v-model='configuration.instance'
 							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
@@ -50,14 +50,14 @@ limitations under the License.
 						rules='required'
 						:custom-messages='{required: "config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"}'
 					>
-						<CInput
+						<CFormInput
 							v-model='configuration.IqrfInterface'
 							:label='$t("config.daemon.interfaces.iqrfSpi.form.iqrfInterface")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
+					<CFormCheck
 						:checked.sync='configuration.spiReset'
 						:label='$t("config.daemon.interfaces.iqrfSpi.form.spiReset")'
 					/>
@@ -71,7 +71,7 @@ limitations under the License.
 									required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.powerEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
@@ -87,7 +87,7 @@ limitations under the License.
 									required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.busEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
@@ -103,7 +103,7 @@ limitations under the License.
 									required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.pgmSwitchGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
@@ -112,25 +112,25 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</CCol>
-						<CCol 
+						<CCol
 							v-if='(configuration.i2cEnableGpioPin !== undefined || configuration.spiEnableGpioPin !== undefined || configuration.uartEnableGpioPin !== undefined)'
 							md='6'
 						>
-							<CInput
+							<CFormInput
 								v-if='configuration.i2cEnableGpioPin !== undefined'
 								v-model.number='configuration.i2cEnableGpioPin'
 								type='number'
 								:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 								:disabled='true'
 							/>
-							<CInput
+							<CFormInput
 								v-if='configuration.spiEnableGpioPin !== undefined'
 								v-model.number='configuration.spiEnableGpioPin'
 								type='number'
 								:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 								:disabled='true'
 							/>
-							<CInput
+							<CFormInput
 								v-if='configuration.uartEnableGpioPin !== undefined'
 								v-model.number='configuration.uartEnableGpioPin'
 								type='number'
@@ -163,7 +163,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -174,8 +174,8 @@ import {
 	CCol,
 	CElementCover,
 	CForm,
-	CInput,
-	CInputCheckbox,
+	CFormInput,
+	CFormCheck,
 	CRow
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -187,7 +187,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {IIqrfSpi} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -197,8 +197,8 @@ import {IMapping} from '../../interfaces/mappings';
 		CCol,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		CRow,
 		InterfaceMappings,
 		InterfacePorts,
@@ -319,7 +319,7 @@ export default class IqrfSpi extends Vue {
 		}
 		this.configuration = config;
 	}
-	
+
 	/**
 	 * Updates port in configuration from mapping
 	 * @param {string} port Port

@@ -27,7 +27,7 @@ limitations under the License.
 							required: "forms.errors.username",
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
@@ -41,7 +41,7 @@ limitations under the License.
 							email: "forms.errors.emailFormat",
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
@@ -55,7 +55,7 @@ limitations under the License.
 							required: "forms.errors.password",
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='password'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
@@ -71,7 +71,7 @@ limitations under the License.
 							required: "core.user.errors.role",
 						}'
 					>
-						<CSelect
+						<CFormSelect
 							:value.sync='role'
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
@@ -91,7 +91,7 @@ limitations under the License.
 							required: "core.user.errors.language",
 						}'
 					>
-						<CSelect
+						<CFormSelect
 							:value.sync='language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
@@ -112,8 +112,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CFormInput, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -122,13 +122,13 @@ import UserService from '../../services/UserService';
 
 import {AxiosError} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CForm,
-		CInput,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},

@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.misc.jsonMngMetaDataApi.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -35,14 +35,14 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.metaDataToMessages'
 							:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages")'
 						/>
@@ -57,8 +57,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -72,7 +72,7 @@ interface JsonMngMetaDataApiConfig {
 	metaDataToMessages: boolean
 }
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -80,8 +80,8 @@ interface JsonMngMetaDataApiConfig {
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -145,7 +145,7 @@ export default class JsonMngMetaDataApi extends Vue {
 				this.$emit('fetched', {name: 'jsonMngMetaDataApi', success: false});
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of JSON MetaData configuration instance
 	 */

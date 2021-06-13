@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -37,7 +37,7 @@ limitations under the License.
 								required: "config.daemon.misc.iqrfInfo.errors.instance"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -69,7 +69,7 @@ limitations under the License.
 									integer: "forms.errors.integer"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model.number='configuration.enumPeriod'
 									type='number'
 									min='0'
@@ -79,15 +79,15 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</div>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.enumAtStartUp'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 						/>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.enumUniformDpaVer'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 						/>
-						<CInputCheckbox
+						<CFormCheck
 							v-if='!versionLowerEqual("2.3.6")'
 							:checked.sync='configuration.metaDataToMessages'
 							:label='$t("config.daemon.misc.iqrfInfo.form.metaDataToMessages")'
@@ -103,8 +103,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
+import {Options, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput, CFormCheck, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, min_value, required} from 'vee-validate/dist/rules';
@@ -116,7 +116,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfInfo} from '../../interfaces/iqrfInfo';
 import {mapGetters} from 'vuex';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -124,8 +124,8 @@ import {mapGetters} from 'vuex';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,

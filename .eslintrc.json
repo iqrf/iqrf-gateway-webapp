@@ -57,6 +57,9 @@
 		"vue/max-attributes-per-line": [
 			"warn",
 			{"singleline": 3}
+		],
+		"vue/no-v-model-argument": [
+			"warn"
 		]
 	}
 }

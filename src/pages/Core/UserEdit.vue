@@ -27,7 +27,7 @@ limitations under the License.
 							required: "forms.errors.username",
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
@@ -41,7 +41,7 @@ limitations under the License.
 							email: "forms.errors.emailFormat",
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model='email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
@@ -55,7 +55,7 @@ limitations under the License.
 							required: "core.user.errors.role",
 						}'
 					>
-						<CSelect
+						<CFormSelect
 							v-if='$store.getters["user/getRole"] === "power"'
 							:value.sync='role'
 							:label='$t("core.user.role")'
@@ -75,7 +75,7 @@ limitations under the License.
 							required: "core.user.errors.language",
 						}'
 					>
-						<CSelect
+						<CFormSelect
 							v-if='$store.getters["user/getRole"] === "power"'
 							:value.sync='language'
 							:label='$t("core.user.language")'
@@ -95,7 +95,7 @@ limitations under the License.
 								required: "core.user.errors.oldPassword",
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='oldPassword'
 								:label='$t("core.user.oldPassword")'
 								:is-valid='touched ? valid : null'
@@ -111,7 +111,7 @@ limitations under the License.
 								required: "core.user.errors.newPassword",
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='newPassword'
 								:label='$t("core.user.newPassword")'
 								:is-valid='touched ? valid : null'
@@ -131,8 +131,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CFormInput, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -141,13 +141,13 @@ import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CForm,
-		CInput,
-		CSelect,
+		CFormInput,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},

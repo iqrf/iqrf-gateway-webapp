@@ -21,10 +21,11 @@ limitations under the License.
 			<CCardBody>
 				<CForm>
 					<div class='form-group'>
-						<CInputFile
+						<CFormInput
 							ref='configZip'
 							accept='.zip'
 							:label='$t("config.migration.form.importButton")'
+							type='file'
 							@click='fileInputEmpty'
 							@input='fileInputEmpty'
 						/>
@@ -48,21 +49,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInputFile
+		CFormInput
 	},
 	metaInfo: {
 		title: 'config.migration.title',
@@ -121,7 +122,7 @@ export default class ConfigMigration extends Vue {
 	 * @returns {FileList} List of uploaded files
 	 */
 	private getFiles(): FileList {
-		const input = ((this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.configZip as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 

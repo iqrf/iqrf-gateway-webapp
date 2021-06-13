@@ -32,7 +32,7 @@ limitations under the License.
 					<CSpinner color='primary' />
 				</CElementCover>
 				<div
-					v-if='$route.path.includes("/install")' 
+					v-if='$route.path.includes("/install")'
 					class='form-group'
 				>
 					{{ $t('core.security.ssh.messages.installNote') }}
@@ -52,7 +52,7 @@ limitations under the License.
 									required: "core.security.ssh.errors.descriptionMissing"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='key.description'
 									:label='$t("core.security.ssh.form.description")'
 									:is-valid='touched ? valid : null'
@@ -67,7 +67,7 @@ limitations under the License.
 									ssh: "core.security.ssh.errors.keyInvalid"
 								}'
 							>
-								<CInput
+								<CFormInput
 									v-model='key.key'
 									:label='$t("core.security.ssh.form.key")'
 									:is-valid='touched ? valid : null'
@@ -110,8 +110,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import SshKeyTypes from '../../components/Gateway/SshKeyTypes.vue';
 
@@ -123,14 +123,14 @@ import SshService from '../../services/SshService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ISshInput} from '../../interfaces/ssh';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,

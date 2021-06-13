@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.misc.jsonRawApi.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -35,14 +35,14 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.misc.jsonRawApi.errors.instance"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.asyncDpaMessage'
 							:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage")'
 						/>
@@ -57,8 +57,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -68,7 +68,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonRaw} from '../../interfaces/jsonApi';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -76,8 +76,8 @@ import {IJsonRaw} from '../../interfaces/jsonApi';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider
 	}

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
 /**

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Dictionary } from 'vue-router/types/router';
 
 /**
  * Scheduler task time interface

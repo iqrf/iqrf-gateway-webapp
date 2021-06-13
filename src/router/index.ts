@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
-import VueRouter, {RouteConfig} from 'vue-router';
+
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
 
 import TheDashboard from '../components/TheDashboard.vue';
 
@@ -115,10 +115,9 @@ const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages
 const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
 import store from '../store';
+import {h} from 'vue';
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
+const routes: Array<RouteRecordRaw> = [
 	{
 		component: SignIn,
 		name: 'signIn',
@@ -208,8 +207,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/cloud',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -242,8 +241,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/config',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -420,8 +419,8 @@ const routes: Array<RouteConfig> = [
 					{
 						path: 'daemon',
 						component: {
-							render(c) {
-								return c('router-view');
+							render() {
+								return h('router-view');
 							}
 						},
 						children: [
@@ -436,8 +435,8 @@ const routes: Array<RouteConfig> = [
 							{
 								path: 'component',
 								component: {
-									render(c) {
-										return c('router-view');
+									render() {
+										return h('router-view');
 									}
 								},
 								children: [
@@ -463,8 +462,8 @@ const routes: Array<RouteConfig> = [
 							{
 								path: 'messagings',
 								component: {
-									render(c) {
-										return c('router-view');
+									render() {
+										return h('router-view');
 									}
 								},
 								children: [
@@ -475,8 +474,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'websocket',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -516,8 +515,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'mq',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -539,8 +538,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'mqtt',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -562,8 +561,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'udp',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -587,8 +586,8 @@ const routes: Array<RouteConfig> = [
 							{
 								path: 'scheduler',
 								component: {
-									render(c) {
-										return c('router-view');
+									render() {
+										return h('router-view');
 									}
 								},
 								children: [
@@ -604,9 +603,13 @@ const routes: Array<RouteConfig> = [
 										path: 'edit/:id',
 										component: SchedulerForm,
 										props: (route) => {
-											const id = Number.parseInt(route.params.id, 10);
+											const param = route.params.id;
+											if (typeof param !== 'string') {
+												return false;
+											}
+											const id = Number.parseInt(param, 10);
 											if (Number.isNaN(id)) {
-												return 0;
+												return false;
 											}
 											return {id};
 										},
@@ -616,8 +619,8 @@ const routes: Array<RouteConfig> = [
 							{
 								path: 'misc',
 								component: {
-									render(c) {
-										return c('router-view');
+									render() {
+										return h('router-view');
 									}
 								},
 								children: [
@@ -632,7 +635,8 @@ const routes: Array<RouteConfig> = [
 											if (route.redirectedFrom === undefined) {
 												return {tabName: 'json'};
 											}
-											const redirect = (route.redirectedFrom.endsWith('/') ? route.redirectedFrom.slice(0, -1): route.redirectedFrom);
+											const redirectPath = route.redirectedFrom.path;
+											const redirect = (redirectPath.endsWith('/') ? redirectPath.slice(0, -1): redirectPath);
 											if (redirect.endsWith('json-mng-meta-data-api') || redirect.endsWith('json-raw-api') || redirect.endsWith('json-splitter')) {
 												return {tabName: 'json'};
 											}
@@ -648,8 +652,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'monitor',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -667,8 +671,8 @@ const routes: Array<RouteConfig> = [
 									{
 										path: 'tracer',
 										component: {
-											render(c) {
-												return c('router-view');
+											render() {
+												return h('router-view');
 											}
 										},
 										children: [
@@ -712,8 +716,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/gateway',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -756,8 +760,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/iqrfnet',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -769,9 +773,13 @@ const routes: Array<RouteConfig> = [
 						component: DeviceEnumeration,
 						path: 'enumeration/:address',
 						props: (route) => {
-							const address = Number.parseInt(route.params.address, 10);
+							const param = route.params.address;
+							if (typeof param !== 'string') {
+								return false;
+							}
+							const address = Number.parseInt(param, 10);
 							if (Number.isNaN(address)) {
-								return 0;
+								return false;
 							}
 							return {address};
 						},
@@ -796,9 +804,13 @@ const routes: Array<RouteConfig> = [
 						component: TrConfiguration,
 						path: 'tr-config/:address',
 						props: (route) => {
-							const address = Number.parseInt(route.params.address, 10);
+							const param = route.params.address;
+							if (typeof param !== 'string') {
+								return false;
+							}
+							const address = Number.parseInt(param, 10);
 							if (Number.isNaN(address)) {
-								return 0;
+								return false;
 							}
 							return {address};
 						},
@@ -812,8 +824,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/network',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -824,8 +836,8 @@ const routes: Array<RouteConfig> = [
 					{
 						path: 'ethernet',
 						component: {
-							render(c) {
-								return c('router-view');
+							render() {
+								return h('router-view');
 							}
 						},
 						children: [
@@ -848,8 +860,8 @@ const routes: Array<RouteConfig> = [
 					{
 						path: 'wireless',
 						component: {
-							render(c) {
-								return c('router-view');
+							render() {
+								return h('router-view');
 							}
 						},
 						children: [
@@ -874,8 +886,8 @@ const routes: Array<RouteConfig> = [
 					{
 						path: 'vpn',
 						component: {
-							render(c) {
-								return c('router-view');
+							render() {
+								return h('router-view');
 							}
 						},
 						children: [
@@ -891,9 +903,13 @@ const routes: Array<RouteConfig> = [
 								component: WireguardTunnel,
 								path: 'edit/:id',
 								props: (route) => {
-									const id = Number.parseInt(route.params.id, 10);
+									const param = route.params.id;
+									if (typeof param !== 'string') {
+										return false;
+									}
+									const id = Number.parseInt(param, 10);
 									if (Number.isNaN(id)) {
-										return 0;
+										return false;
 									}
 									return {id};
 								},
@@ -905,8 +921,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/maintenance',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -949,8 +965,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/user',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -966,9 +982,13 @@ const routes: Array<RouteConfig> = [
 						component: UserEdit,
 						path: 'edit/:userId',
 						props: (route) => {
-							const userId = Number.parseInt(route.params.userId, 10);
+							const param = route.params.userId;
+							if (typeof param !== 'string') {
+								return false;
+							}
+							const userId = Number.parseInt(param, 10);
 							if (Number.isNaN(userId)) {
-								return 0;
+								return false;
 							}
 							return {userId};
 						},
@@ -978,8 +998,8 @@ const routes: Array<RouteConfig> = [
 			{
 				path: '/security',
 				component: {
-					render(c) {
-						return c('router-view');
+					render() {
+						return h('router-view');
 					}
 				},
 				children: [
@@ -1007,9 +1027,13 @@ const routes: Array<RouteConfig> = [
 								component: ApiKeyForm,
 								path: 'edit/:keyId',
 								props: (route) => {
-									const keyId = Number.parseInt(route.params.keyId, 10);
+									const param = route.params.keyId;
+									if (typeof param !== 'string') {
+										return false;
+									}
+									const keyId = Number.parseInt(param, 10);
 									if (Number.isNaN(keyId)) {
-										return 0;
+										return false;
 									}
 									return {keyId};
 								},
@@ -1048,10 +1072,9 @@ const routes: Array<RouteConfig> = [
 	}
 ];
 
-const router = new VueRouter({
-	base: process.env.VUE_APP_BASE_URL,
-	mode: 'history',
-	routes: routes
+const router = createRouter({
+	routes: routes,
+	history: createWebHistory(process.env.VUE_APP_BASE_URL)
 });
 
 const whitelist = [

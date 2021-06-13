@@ -37,7 +37,7 @@ limitations under the License.
 										required: "iqrfnet.trUpload.dpaUpload.errors.version",
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='version'
 										:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
 										:is-valid='touched ? valid : null'
@@ -89,8 +89,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -108,7 +108,7 @@ interface DpaVersions {
 	value: string
 }
 
-@Component({
+@Options({
 	components: {
 		CAlert,
 		CButton,
@@ -117,7 +117,7 @@ interface DpaVersions {
 		CCardHeader,
 		CForm,
 		CModal,
-		CSelect,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -207,9 +207,9 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

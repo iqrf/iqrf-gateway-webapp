@@ -75,7 +75,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import PixlaForm from '../../components/Maintenance/PixlaForm.vue';
 
@@ -84,15 +84,15 @@ import {pixlaErrorToast} from '../../helpers/errorToast';
 import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		PixlaForm,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('pixla')) {
 				vm.$toast.error(vm.$t('service.gwman-client.messages.disabled').toString());

@@ -122,10 +122,11 @@ limitations under the License.
 			</template>
 			<CForm>
 				<div class='form-group'>
-					<CInputFile
+					<CFormInput
 						ref='schedulerImport'
 						accept='application/json,.zip'
 						:label='$t("config.daemon.scheduler.import.file")'
+						type='file'
 						@input='fileImportEmpty'
 						@click='fileImportEmpty'
 					/>
@@ -198,8 +199,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CFormInput, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
 
 import {DateTime, Duration} from 'luxon';
@@ -215,7 +216,7 @@ import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -223,7 +224,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CCardHeader,
 		CForm,
 		CIcon,
-		CInputFile,
+		CFormInput,
 		CModal,
 	},
 	metaInfo: {
@@ -386,9 +387,9 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}
@@ -604,7 +605,7 @@ export default class SchedulerList extends Vue {
 	 * @returns {FileList} List of uploaded files
 	 */
 	private getFile(): FileList {
-		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
+		const input = ((this.$refs.schedulerImport as CFormInput).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 

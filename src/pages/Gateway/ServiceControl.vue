@@ -81,7 +81,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Options, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '../../components/Gateway/AptConfig.vue';
 import GatewayUserPassword from '../../components/Gateway/GatewayUserPassword.vue';
@@ -91,7 +91,7 @@ import AptService, {AptEnable} from '../../services/AptService';
 import ServiceService from '../../services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {NavigationGuardNext} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
 
 const whitelisted = [
@@ -119,7 +119,7 @@ interface IService {
 	status: string|null
 }
 
-@Component({
+@Options({
 	components: {
 		AptConfig,
 		CButton,
@@ -127,13 +127,14 @@ interface IService {
 		GatewayUserPassword,
 		SystemdJournaldConfig,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
-		next((vm: Vue) => {
-			const feature = features[vm.$props.serviceName];
+	beforeRouteEnter(to, from, next: NavigationGuardNext): void {
+		next((vm) => {
+			const serviceName = (vm.$props as Record<string, string>).serviceName;
+			const feature = features[serviceName];
 			if (feature !== undefined &&
 					!vm.$store.getters['features/isEnabled'](feature)) {
 				vm.$toast.error(
-					vm.$t('service.' + vm.$props.serviceName + '.messages.disabled').toString()
+					vm.$t('service.' + serviceName + '.messages.disabled').toString()
 				);
 				vm.$router.push(from.path);
 			}

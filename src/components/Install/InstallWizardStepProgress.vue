@@ -8,12 +8,12 @@
 
 <script lang='ts'>
 import Color from 'color';
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import VueStepProgressIndicator from 'vue-step-progress-indicator';
 
 import ThemeManager from '../../helpers/themeManager';
 
-@Component({
+@Options({
 	components: {
 		VueStepProgressIndicator,
 	},

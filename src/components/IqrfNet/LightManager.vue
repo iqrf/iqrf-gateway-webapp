@@ -28,7 +28,7 @@ limitations under the License.
 							required: "iqrfnet.standard.form.messages.address"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='address'
 							type='number'
 							min='1'
@@ -47,7 +47,7 @@ limitations under the License.
 							required: "iqrfnet.standard.light.form.messages.index"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='index'
 							type='number'
 							min='0'
@@ -66,7 +66,7 @@ limitations under the License.
 							required: "iqrfnet.standard.light.form.messages.power"
 						}'
 					>
-						<CInput
+						<CFormInput
 							v-model.number='power'
 							type='number'
 							min='0'
@@ -122,7 +122,7 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.lights') }}</th>
 						<td>{{ numLights }}</td>
-					</tr>	
+					</tr>
 				</tbody>
 				<tbody v-else>
 					<tr>
@@ -140,8 +140,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CFormInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -151,7 +151,7 @@ import StandardLightService, {StandardLight} from '../../services/DaemonApi/Stan
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
@@ -159,7 +159,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CCardFooter,
 		CCardHeader,
 		CForm,
-		CInput,
+		CFormInput,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -173,7 +173,7 @@ export default class LightManager extends Vue {
 	 * @var {number} address Address of device implementing the light standard
 	 */
 	private address = 1
-	
+
 	/**
 	 * @var {number} index Index of light to manage
 	 */
@@ -248,9 +248,9 @@ export default class LightManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}

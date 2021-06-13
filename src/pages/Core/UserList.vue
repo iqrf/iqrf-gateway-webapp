@@ -145,7 +145,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Options, Vue} from 'vue-property-decorator';
 import {
 	CButton,
 	CCard,
@@ -168,7 +168,7 @@ import {IUser} from '../../interfaces/user';
 
 import punycode from 'punycode/';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,

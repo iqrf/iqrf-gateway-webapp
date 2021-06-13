@@ -34,7 +34,7 @@ limitations under the License.
 								instance: "config.daemon.messagings.instanceInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
@@ -46,7 +46,7 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.LocalMqName"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.LocalMqName'
 								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
 								:is-valid='touched ? valid : null'
@@ -58,14 +58,14 @@ limitations under the License.
 							rules='required'
 							:custom-messages='{required: "config.daemon.messagings.mq.errors.RemoteMqName"}'
 						>
-							<CInput
+							<CFormInput
 								v-model='configuration.RemoteMqName'
 								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
@@ -80,8 +80,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CFormInput, CFormCheck} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -93,15 +93,15 @@ import {IMqInstance} from '../../interfaces/messagingInterfaces';
 import {MetaInfo} from 'vue-meta';
 
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -145,7 +145,7 @@ export default class MqMessagingForm extends Vue {
 		return this.$route.path === '/config/daemon/messagings/mq/add' ?
 			this.$t('config.daemon.messagings.mq.add').toString() : this.$t('config.daemon.messagings.mq.edit').toString();
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

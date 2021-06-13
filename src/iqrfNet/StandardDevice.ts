@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
+import {useI18n} from 'vue-i18n';
 import {IInfoSensorDetail} from '../interfaces/iqrfInfo';
 import {IProduct} from '../interfaces/repository';
-import i18n from '../i18n';
 
 /**
  * Standard device object
@@ -339,6 +339,7 @@ class StandardDevice {
 	 * @returns Implemented sensors details
 	 */
 	getSensorDetails(): string {
+		const i18n = useI18n();
 		if (this.sensors.length > 0) {
 			let message = '';
 			this.sensors.forEach((sensor: IInfoSensorDetail) => {

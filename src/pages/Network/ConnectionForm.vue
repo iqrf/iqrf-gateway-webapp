@@ -28,7 +28,7 @@ limitations under the License.
 								required: "network.connection.errors.name"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='connection.name'
 								:label='$t("network.connection.name")'
 								:is-valid='touched ? valid : null'
@@ -42,7 +42,7 @@ limitations under the License.
 								required: "network.connection.errors.interface"
 							}'
 						>
-							<CSelect
+							<CFormSelect
 								:value.sync='ifname'
 								:label='$t("network.connection.interface")'
 								:placeholder='$t("network.connection.errors.interface")'
@@ -63,11 +63,11 @@ limitations under the License.
 									v-if='connection.wifi.security.type === "ieee8021x"'
 									class='form-group'
 								>
-									<CInput
+									<CFormInput
 										v-model='connection.wifi.security.leap.username'
 										:label='$t("network.wireless.form.username")'
 									/>
-									<CInput
+									<CFormInput
 										v-model='connection.wifi.security.leap.password'
 										:label='$t("network.wireless.form.password")'
 									/>
@@ -84,7 +84,7 @@ limitations under the License.
 											wepKeyType: "network.wireless.errors.wepKeyType"
 										}'
 									>
-										<CSelect
+										<CFormSelect
 											:value.sync='connection.wifi.security.wep.type'
 											:options='wepKeyOptions'
 											:label='$t("network.wireless.form.wep.type")'
@@ -93,7 +93,7 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CSelect
+									<CFormSelect
 										v-if='connection.wifi.security.wep.type === "key"'
 										:value.sync='wepLen'
 										:options='wepLenOptions'
@@ -109,7 +109,7 @@ limitations under the License.
 											wepIndex: "network.wireless.errors.wepIndexKeyMissing"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model.number='connection.wifi.security.wep.index'
 											type='number'
 											min='0'
@@ -130,7 +130,7 @@ limitations under the License.
 												"network.wireless.errors.wepKey128Invalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.wifi.security.wep.keys[index]'
 											:label='$t("network.wireless.form.wep.keyNum", {index: index})'
 											:is-valid='touched ? valid : null'
@@ -147,7 +147,7 @@ limitations under the License.
 										wpaPsk: "network.wireless.errors.pskInvalid"
 									}'
 								>
-									<CInput
+									<CFormInput
 										v-model='connection.wifi.security.psk'
 										:type='pskInputType'
 										visibility
@@ -162,27 +162,27 @@ limitations under the License.
 												/>
 											</span>
 										</template>
-									</CInput>
+									</CFormInput>
 								</ValidationProvider>
 								<div
 									v-if='connection.wifi.security.type === "wpa-eap"'
 									class='form-group'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='connection.wifi.security.eap.phaseOne'
 										:options='authOneOptions'
 										:label='$t("network.wireless.form.authPhaseOne")'
 									/>
-									<CInput
+									<CFormInput
 										v-model='connection.wifi.security.eap.anonymousIdentity'
 										:label='$t("network.wireless.form.anonymousIdentity")'
 									/>
-									<CInput
+									<CFormInput
 										v-model='connection.wifi.security.eap.cert'
 										:label='$t("network.wireless.form.caCert")'
 										:disabled='connection.wifi.security.eap.noCert'
 									/>
-									<CSelect
+									<CFormSelect
 										:value.sync='connection.wifi.security.eap.phaseTwo'
 										:options='authTwoOptions'
 										:label='$t("network.wireless.form.authPhaseTwo")'
@@ -194,7 +194,7 @@ limitations under the License.
 											required: "forms.errors.username"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.wifi.security.eap.identity'
 											:label='$t("network.wireless.form.username")'
 											:is-valid='touched ? valid : null'
@@ -208,7 +208,7 @@ limitations under the License.
 											required: "forms.errors.password"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.wifi.security.eap.password'
 											:label='$t("network.wireless.form.password")'
 											:is-valid='touched ? valid : null'
@@ -228,7 +228,7 @@ limitations under the License.
 										required: "network.connection.ipv4.errors.method"
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										id='ipv4MethodSelect'
 										:value.sync='connection.ipv4.method'
 										:options='ipv4Methods'
@@ -254,7 +254,7 @@ limitations under the License.
 											ipv4: "network.connection.ipv4.errors.addressInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.ipv4.addresses[0].address'
 											:label='$t("network.connection.ipv4.address")'
 											:is-valid='touched ? valid : null'
@@ -270,7 +270,7 @@ limitations under the License.
 											netmask: "network.connection.ipv4.errors.maskInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.ipv4.addresses[0].mask'
 											:label='$t("network.connection.ipv4.mask")'
 											:is-valid='touched ? valid : null'
@@ -285,7 +285,7 @@ limitations under the License.
 											ipv4: "network.connection.ipv4.errors.addressInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.ipv4.gateway'
 											:label='$t("network.connection.ipv4.gateway")'
 											:is-valid='touched ? valid : null'
@@ -305,7 +305,7 @@ limitations under the License.
 												ipv4: "network.connection.ipv4.errors.addressInvalid"
 											}'
 										>
-											<CInput
+											<CFormInput
 												v-model='address.address'
 												:label='$t("network.connection.ipv4.dns.address")'
 												:is-valid='touched ? valid : null'
@@ -339,7 +339,7 @@ limitations under the License.
 										required: "network.connection.ipv6.errors.method"
 									}'
 								>
-									<CSelect
+									<CFormSelect
 										:value.sync='connection.ipv6.method'
 										:label='$t("network.connection.ipv6.method")'
 										:options='ipv6Methods'
@@ -362,7 +362,7 @@ limitations under the License.
 												ipv6: "network.connection.ipv6.errors.addressInvalid"
 											}'
 										>
-											<CInput
+											<CFormInput
 												v-model='address.address'
 												:label='$t("network.connection.ipv6.address")'
 												:is-valid='touched ? valid : null'
@@ -377,7 +377,7 @@ limitations under the License.
 												between: "network.connection.ipv6.errors.prefixInvalid"
 											}'
 										>
-											<CInput
+											<CFormInput
 												v-model.number='address.prefix'
 												type='number'
 												min='48'
@@ -411,7 +411,7 @@ limitations under the License.
 											ipv6: "network.connection.ipv6.errors.addressInvalid"
 										}'
 									>
-										<CInput
+										<CFormInput
 											v-model='connection.ipv6.gateway'
 											:label='$t("network.connection.ipv6.gateway")'
 											:is-valid='touched ? valid : null'
@@ -430,7 +430,7 @@ limitations under the License.
 												ipv6: "network.connection.ipv6.errors.addressInvalid"
 											}'
 										>
-											<CInput
+											<CFormInput
 												v-model='address.address'
 												:label='$t("network.connection.ipv6.dns.address")'
 												:is-valid='touched ? valid : null'
@@ -509,8 +509,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
+import {Options, Prop, Vue} from 'vue-property-decorator';
+import {useToast} from 'vue-toastification';
+import {CBadge, CButton, CCard, CCardBody, CForm, CFormInput, CModal, CFormSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -530,16 +531,16 @@ import {IConnection, IConnectionModal, NetworkInterface} from '../../interfaces/
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
 
-@Component({
+@Options({
 	components: {
 		CBadge,
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
+		CFormInput,
 		CModal,
-		CSelect,
+		CFormSelect,
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
@@ -1053,8 +1054,9 @@ export default class ConnectionForm extends Vue {
 	private connect(uuid: string, name: string): void {
 		NetworkConnectionService.connect(uuid)
 			.then(() => {
+				const toast = useToast();
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
+				toast.success(
 					this.$t(
 						'network.connection.messages.' +
 						(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',

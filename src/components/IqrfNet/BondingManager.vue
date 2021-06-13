@@ -20,14 +20,14 @@ limitations under the License.
 			<h4>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
-					<CSelect
+					<CFormSelect
 						v-if='bondTargetAvailable'
 						:value.sync='bondTarget'
 						:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
 						:options='bondTargetOptions'
 					/>
 					<div v-if='bondTarget === "device"'>
-						<CSelect
+						<CFormSelect
 							:value.sync='bondMethod'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
 							:options='bondMethodOptions'
@@ -58,7 +58,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.bondingManager.errors.address"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='address'
 								type='number'
 								min='1'
@@ -78,7 +78,7 @@ limitations under the License.
 								scCode: "iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model='scCode'
 								:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
 								:is-valid='valid'
@@ -94,7 +94,7 @@ limitations under the License.
 								between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
 							}'
 						>
-							<CInput
+							<CFormInput
 								v-model.number='bondingRetries'
 								type='number'
 								min='0'
@@ -104,7 +104,7 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
+						<CFormCheck
 							:checked.sync='unbondCoordinatorOnly'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
 						/>
@@ -129,7 +129,7 @@ limitations under the License.
 						</CButton>
 					</div>
 					<div v-else>
-						<CSelect
+						<CFormSelect
 							:value.sync='bondTool'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.toolType")'
 							:options='bondToolOptions'
@@ -197,8 +197,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
+import {Options, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CFormInput, CFormCheck, CModal, CFormSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -212,16 +212,16 @@ import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-@Component({
+@Options({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CForm,
-		CInput,
-		CInputCheckbox,
+		CFormInput,
+		CFormCheck,
 		CModal,
-		CSelect,
+		CFormSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -388,9 +388,9 @@ export default class BondingManager extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Vue lifecycle hook beforeUnmount
 	 */
-	beforeDestroy(): void {
+	beforeUnmount(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
