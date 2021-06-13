@@ -10,30 +10,42 @@
 						color='success'
 						size='sm'
 						to='/config/daemon/scheduler/add'
+						:title='$t("table.actions.add")'
 					>
 						<CIcon :content='icons.add' size='sm' />
-						{{ $t('table.actions.add') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('table.actions.add') }}
+						</span>
 					</CButton> <CButton
 						color='primary'
 						size='sm'
+						:title='$t("forms.import")'
 						@click='showImportModal = true'
 					>
 						<CIcon :content='icons.import' size='sm' />
-						{{ $t('forms.import') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('forms.import') }}
+						</span>
 					</CButton> <CButton
 						color='secondary'
 						size='sm'
+						:title='$t("forms.export")'
 						@click='exportScheduler'
 					>
 						<CIcon :content='icons.export' size='sm' />
-						{{ $t('forms.export') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('forms.export') }}
+						</span>
 					</CButton> <CButton
 						color='danger'
 						size='sm'
+						:title='$t("table.actions.deleteAll")'
 						@click='showDeleteAllModal = true'
 					>
 						<CIcon :content='icons.remove' size='sm' />
-						{{ $t('table.actions.deleteAll') }}
+						<span class='d-none d-lg-inline'>
+							{{ $t('table.actions.deleteAll') }}
+						</span>
 					</CButton>
 				</div>
 			</CCardHeader>
@@ -79,16 +91,22 @@
 								color='info'
 								size='sm'
 								:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
+								:title='$t("table.actions.edit")'
 							>
 								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.edit') }}
+								</span>
 							</CButton> <CButton
 								color='danger'
 								size='sm'
+								:title='$t("table.actions.delete")'
 								@click='deleteTask = retrieved === "daemon" ? item.taskId : item.id'
 							>
 								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.delete') }}
+								</span>
 							</CButton>
 						</td>
 					</template>
