@@ -19,6 +19,8 @@
 
 set -e
 
+#DEBHELPER#
+
 nginx_remove() {
 	if [ -e /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
