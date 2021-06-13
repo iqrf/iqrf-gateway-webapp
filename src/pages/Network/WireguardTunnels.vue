@@ -3,16 +3,22 @@
 		<h1>{{ $t('network.wireguard.title') }}</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
-				{{ $t('network.wireguard.tunnels.title') }}
-				<CButton
-					style='float: right;'
-					color='success'
-					size='sm'
-					to='/network/vpn/add'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('forms.add') }}
-				</CButton>
+				<div class='box'>
+					<span>
+						{{ $t('network.wireguard.tunnels.title') }}
+					</span>
+					<CButton
+						style='float: right;'
+						color='success'
+						size='sm'
+						to='/network/vpn/add'
+					>
+						<CIcon :content='icons.add' size='sm' />
+						<span class='d-none d-lg-inline'>
+							{{ $t('forms.add') }}
+						</span>
+					</CButton>
+				</div>
 			</CCardHeader>
 			<CCardBody
 				class='datatable-card-padding'
@@ -48,7 +54,9 @@
 									:content='item.active ? icons.deactivate : icons.activate'
 									size='sm'
 								/>
-								{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+								</span>
 							</CButton> <CButton
 								size='sm'
 								:color='item.enabled ? "danger" : "success"'
@@ -58,21 +66,27 @@
 									:content='item.enabled ? icons.disable : icons.enable'
 									size='sm'
 								/>
-								{{ $t('table.actions.' + (item.enabled ? "disable" : "enable")) }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.' + (item.enabled ? "disable" : "enable")) }}
+								</span>
 							</CButton> <CButton
 								size='sm'
 								color='primary'
 								:to='"/network/vpn/edit/" + item.id'
 							>
 								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.edit') }}
+								</span>
 							</CButton> <CButton
 								size='sm'
 								color='danger'
 								@click='tunnelToDelete = item'
 							>
 								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
+								<span class='d-none d-lg-inline'>
+									{{ $t('table.actions.delete') }}
+								</span>
 							</CButton>
 						</td>
 					</template>

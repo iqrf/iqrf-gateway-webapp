@@ -13,21 +13,27 @@
 						<span>
 							{{ $t('network.wireless.table.accessPoints') }}
 						</span>
-						<CButton
-							color='success'
-							size='sm'
-							@click='addHotspot'
-						>
-							<CIcon :content='icons.add' size='sm' />
-							{{ $t('network.wireless.table.addHotspot') }}
-						</CButton> <CButton
-							color='primary'
-							size='sm'
-							@click='getAccessPoints'
-						>
-							<CIcon :content='icons.refresh' size='sm' />
-							{{ $t('forms.refresh') }}
-						</CButton>
+						<span>
+							<CButton
+								color='success'
+								size='sm'
+								@click='addHotspot'
+							>
+								<CIcon :content='icons.add' size='sm' />
+								<span class='d-none d-lg-inline'>
+									{{ $t('network.wireless.table.addHotspot') }}
+								</span>
+							</CButton> <CButton
+								color='primary'
+								size='sm'
+								@click='getAccessPoints'
+							>
+								<CIcon :content='icons.refresh' size='sm' />
+								<span class='d-none d-lg-inline'>
+									{{ $t('forms.refresh') }}
+								</span>
+							</CButton>
+						</span>
 					</div>
 				</CCardHeader>
 				<CCardBody
@@ -101,7 +107,9 @@
 										addConnection(item.aps[0])'
 								>
 									<CIcon :content='item.aps[0].inUse ? icons.disconnect : icons.connect' size='sm' />
-									{{ $t('network.table.' + (item.aps[0].inUse ? 'disconnect' : 'connect')) }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('network.table.' + (item.aps[0].inUse ? 'disconnect' : 'connect')) }}
+									</span>
 								</CButton> <CButton
 									v-if='item.aps[0].uuid'
 									size='sm'
@@ -109,7 +117,9 @@
 									:to='"/network/wireless/edit/" + item.aps[0].uuid'
 								>
 									<CIcon :content='icons.edit' size='sm' />
-									{{ $t('table.actions.edit') }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('table.actions.edit') }}
+									</span>
 								</CButton> <CButton
 									v-if='item.aps[0].uuid'
 									size='sm'
@@ -117,7 +127,9 @@
 									@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
 								>
 									<CIcon :content='icons.remove' size='sm' />
-									{{ $t('table.actions.delete') }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('table.actions.delete') }}
+									</span>
 								</CButton>
 							</td>
 						</template>

@@ -50,7 +50,9 @@
 									@click='connect(item)'
 								>
 									<CIcon :content='icons.connect' size='sm' />
-									{{ $t('network.table.connect') }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('network.table.connect') }}
+									</span>
 								</CButton>
 								<CButton
 									v-else
@@ -59,14 +61,18 @@
 									@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
 								>
 									<CIcon :content='icons.disconnect' size='sm' />
-									{{ $t('network.table.disconnect') }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('network.table.disconnect') }}
+									</span>
 								</CButton> <CButton
 									color='primary'
 									:to='"/network/ethernet/edit/" + item.uuid'
 									size='sm'
 								>
 									<CIcon :content='icons.edit' size='sm' />
-									{{ $t('table.actions.edit') }}
+									<span class='d-none d-lg-inline'>
+										{{ $t('table.actions.edit') }}
+									</span>
 								</CButton>
 							</td>
 						</template>
