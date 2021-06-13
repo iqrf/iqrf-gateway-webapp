@@ -2131,12 +2131,9 @@
 		"wireless": {
 			"title": "Wireless connections",
 			"description": "Wireless connections management.",
-			"hotspot": {
-				"title": "Create hotspot",
-				"create": "Create"
-			},
 			"table": {
 				"accessPoints": "Available access points",
+				"addHotspot": "Create hotspot",
 				"noAccessPoints": "No available access points.",
 				"ssid": "Name",
 				"signal": "Signal strength",
@@ -2309,7 +2306,10 @@
 		"connection": {
 			"title": "Available connections",
 			"name": "Name",
+			"add": "Create connection",
 			"edit": "Edit connection",
+			"addHotspot": "Create hotspot connection",
+			"editHotspot": "Edit hotspot connection",
 			"errors": {
 				"name": "Please enter a connection name.",
 				"interface": "Please select an interface."
@@ -2398,6 +2398,7 @@
 				"connected": "Connected",
 				"notConnected": "Not connected"
 			},
+			"hotspot": "Hotspot",
 			"messages": {
 				"submit": "Saving configuration and attempting to connect...",
 				"ipChange": {

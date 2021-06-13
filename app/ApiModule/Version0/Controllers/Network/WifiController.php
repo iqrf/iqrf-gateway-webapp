@@ -79,40 +79,4 @@ class WifiController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/hotspot")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a WiFi hotspot
-	 *  requestBody:
-	 *      description: Hotspot configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Hotspot'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function createHotspot(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$this->validator->validateRequest('hotspot', $request);
-			$this->wifiManager->createHotspot($request->getJsonBody(false));
-			return $response->writeBody('Workaround');
-		} catch (NetworkManagerException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
 }

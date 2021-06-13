@@ -13,10 +13,10 @@
 					<CButton
 						color='success'
 						size='sm'
-						to='/network/wireless/hotspot/'
+						@click='addHotspot'
 					>
 						<CIcon :content='icons.add' size='sm' />
-						{{ $t('network.wireless.hotspot.title') }}
+						{{ $t('network.wireless.table.addHotspot') }}
 					</CButton> <CButton
 						color='primary'
 						size='sm'
@@ -41,6 +41,12 @@
 						<template #ssid='{item}'>
 							<td class='table-ssid'>
 								<div>
+									<CBadge
+										v-if='item.aps[0].mode === "ap"'
+										color='warning'
+									>
+										{{ $t('network.connection.hotspot') }}
+									</CBadge>
 									<CBadge 
 										v-if='item.aps[0].inUse'
 										color='success'
@@ -532,6 +538,20 @@ export default class WifiConnections extends Vue {
 				interfaceName: ap.interfaceName!,
 				wifiMode: ap.mode,
 				wifiSecurity: this.getSecurityType(ap.security)
+			}
+		});
+	}
+
+	/**
+	 * Redirects to connection form for hotspot
+	 */
+	private addHotspot(): void {
+		this.$router.push({
+			name: 'add-hotspot',
+			params: {
+				interfaceName: '',
+				wifiMode: 'ap',
+				wifiSecurity: 'wpa-psk',
 			}
 		});
 	}

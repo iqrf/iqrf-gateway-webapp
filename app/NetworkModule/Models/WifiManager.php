@@ -21,10 +21,13 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\NetworkModule\Entities\Connection;
+use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiNetwork;
+use App\NetworkModule\Enums\ConnectionTypes;
+use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurity;
 use App\NetworkModule\Exceptions\NetworkManagerException;
-use stdClass;
 
 /**
  * WiFI network manager
@@ -55,32 +58,57 @@ class WifiManager {
 		}
 		$gateway = file_exists('/etc/iqrf-gateway.json');
 		$networks = [];
+		$blacklist = [];
 		foreach (explode(PHP_EOL, $output->getStdout()) as $network) {
 			if ($network === '') {
 				continue;
 			}
 			$deserializedEntry = WifiNetwork::nmCliDeserialize($network);
-			if ($gateway) {
-				$security = $deserializedEntry->getSecurity();
-				if ($security === WifiSecurity::OPEN() || $security === WifiSecurity::WEP()) {
-					continue;
-				}
-			}
 			$networks[] = $deserializedEntry;
+			$blacklist[] = $deserializedEntry->getSsid();
+		}
+		$networks = array_merge($networks, $this->findHotspots($blacklist));
+		if ($gateway) {
+			$networks = array_filter($networks, function ($item): bool {
+				$security = $item->getSecurity();
+				return $security !== WifiSecurity::OPEN() && $security !== WifiSecurity::WEP();
+			});
 		}
 		return $networks;
 	}
 
 	/**
-	 * Creates a hotspot
-	 * @param stdClass $hotspot Hotspot configuration
+	 * Finds hotspot networks
+	 * @param array<int, string> $blacklist Wifi network blacklist
+	 * @return array<WifiNetwork> Array of hotspot networks
 	 */
-	public function createHotspot(stdClass $hotspot): void {
-		$command = sprintf('nmcli dev wifi hotspot ifname %s ssid %s password %s', $hotspot->interface, $hotspot->ssid, $hotspot->password);
-		$output = $this->commandManager->run($command, true);
-		if ($output->getExitCode() !== 0) {
-			throw new NetworkManagerException($output->getStderr());
+	private function findHotspots(array $blacklist): array {
+		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();
+		if ($output === '') {
+			return [];
 		}
+		$array = explode(PHP_EOL, trim($output));
+		$aps = [];
+		foreach ($array as $item) {
+			$connection = Connection::nmCliDeserialize($item);
+			if ($connection->getType() !== ConnectionTypes::WIFI()) {
+				continue;
+			}
+			$output = $this->commandManager->run('nmcli -t -s connection show ' . $connection->getUuid()->toString(), true)->getStdout();
+			if ($output === '') {
+				continue;
+			}
+			$connection = WifiConnection::nmCliDeserialize($output);
+			if ($connection->getMode() !== WifiMode::AP()) {
+				continue;
+			}
+			$network = $connection->toWifiNetwork();
+			if (in_array($network->getSsid(), $blacklist, true)) {
+				continue;
+			}
+			$aps[] = $network;
+		}
+		return $aps;
 	}
 
 }

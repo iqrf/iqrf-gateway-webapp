@@ -29,7 +29,12 @@ final class WifiManagerTest extends CommandTestCase {
 	/**
 	 * NetworkManager WiFi list command
 	 */
-	private const LIST_COMMAND = 'nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto';
+	private const AP_LIST_COMMAND = 'nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto';
+
+	/**
+	 * NetworkManager connection list command
+	 */
+	private const CONNECTION_LIST_COMMAND = 'nmcli -t connection show';
 
 	/**
 	 * @var WifiManager WiFi network manager
@@ -48,10 +53,12 @@ final class WifiManagerTest extends CommandTestCase {
 	 * Tests the function for listing available WiFI networks
 	 */
 	public function testList(): void {
-		$output = '*:04\:F0\:21\:24\:1E\:53:WIFI MAGDA:Infra:36:405 Mbit/s:60:▂▄▆_:WPA2' . PHP_EOL
+		$apOutput = '*:04\:F0\:21\:24\:1E\:53:WIFI MAGDA:Infra:36:405 Mbit/s:60:▂▄▆_:WPA2' . PHP_EOL
 			. ' :18\:E8\:29\:E4\:CB\:9A:WIFI MAGDA:Infra:1:195 Mbit/s:47:▂▄__:WPA2' . PHP_EOL
 			. ' :1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:36:405 Mbit/s:32:▂▄__:WPA2' . PHP_EOL;
-		$this->receiveCommand(self::LIST_COMMAND, true, $output);
+		$connectionOutput = '';
+		$this->receiveCommand(self::AP_LIST_COMMAND, true, $apOutput);
+		$this->receiveCommand(self::CONNECTION_LIST_COMMAND, true, $connectionOutput);
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA();
 		$security = WifiSecurity::WPA2_PERSONAL();
@@ -68,7 +75,7 @@ final class WifiManagerTest extends CommandTestCase {
 	 */
 	public function testListError(): void {
 		Assert::throws(function (): void {
-			$this->receiveCommand(self::LIST_COMMAND, true, '', 'ERROR', 1);
+			$this->receiveCommand(self::AP_LIST_COMMAND, true, '', 'ERROR', 1);
 			$this->manager->list();
 		}, NetworkManagerException::class, 'ERROR');
 	}

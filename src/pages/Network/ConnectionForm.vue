@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('network.connection.edit') }}</h1>
+		<h1>{{ pageTitle }}</h1>
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
@@ -514,6 +514,7 @@ import axios, {AxiosError, AxiosResponse} from 'axios';
 import {IConnection, IConnectionModal, NetworkInterface} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import UrlBuilder from '../../helpers/urlBuilder';
+import { MetaInfo } from 'vue-meta';
 
 @Component({
 	components: {
@@ -529,8 +530,10 @@ import UrlBuilder from '../../helpers/urlBuilder';
 		ValidationObserver,
 		ValidationProvider,
 	},
-	metaInfo: {
-		title: 'network.connection.edit',
+	metaInfo(): MetaInfo {
+		return {
+			title: (this as unknown as ConnectionForm).pageTitle
+		};
 	}
 })
 
@@ -740,13 +743,31 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
+	 * Computes page title based on route
+	 */
+	get pageTitle(): string {
+		if (this.$route.path.includes('add-hotspot')) {
+			return this.$t('network.connection.addHotspot').toString();
+		} else if (this.$route.path.includes('add')) {
+			return this.$t('network.connection.add').toString();
+		} else {
+			return this.$t('network.connection.edit').toString();
+		}
+	}
+
+	/**
 	 * Computes array of CoreUI select options for IPv4 configuration method
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv4Methods(): Array<IOption> {
-		const methods = this.powerUser ?
-			['auto', 'link-local', 'manual', 'shared']:
-			['auto', 'manual'];
+		let methods: Array<string> = [];
+		if (this.wifiMode === 'ap') {
+			methods = ['shared'];
+		} else {
+			methods = this.powerUser ?
+				['auto', 'link-local', 'manual', 'shared']:
+				['auto', 'manual'];
+		}
 		let methodOptions: Array<IOption> = methods.map(
 			(method: string) => ({
 				value: method,
@@ -767,9 +788,14 @@ export default class ConnectionForm extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv6Methods(): Array<IOption> {
-		const methods = this.powerUser ?
-			['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared']:
-			['auto', 'dhcp', 'manual'];
+		let methods: Array<string> = [];
+		if (this.wifiMode === 'ap') {
+			methods = ['shared'];
+		} else {
+			methods = this.powerUser ?
+				['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared']:
+				['auto', 'dhcp', 'manual'];
+		}
 		let methodOptions: Array<IOption> = methods.map((method: string) =>
 			({
 				value: method,
@@ -998,16 +1024,22 @@ export default class ConnectionForm extends Vue {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
 			}
-		} else if (connection.ipv4.method === 'auto') {
+		} else if (connection.ipv4.method === 'auto' || connection.ipv4.method === 'shared') {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}
-		if (connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') {
+		if (connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp' || connection.ipv6.method === 'shared') {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
 		if (connection.wifi?.bssids !== undefined) {
 			delete connection.wifi.bssids;
+		}
+		if (connection.wifi !== undefined) {
+			if (connection.wifi.mode === 'ap') {
+				connection.wifi.ssid = connection.name;
+				connection.autoConnect.enabled = false;
+			}
 		}
 		if (this.showModal) {
 			this.showModal = false;

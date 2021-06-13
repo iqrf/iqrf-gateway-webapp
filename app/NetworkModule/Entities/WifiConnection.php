@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\WifiMode;
+use App\NetworkModule\Enums\WifiSecurity;
+use App\NetworkModule\Enums\WifiSecurityType;
 use App\NetworkModule\Utils\NmCliConnection;
 use stdClass;
 use Throwable;
@@ -56,6 +58,16 @@ final class WifiConnection implements INetworkManagerEntity {
 	private $security;
 
 	/**
+	 * @var int Channel
+	 */
+	private $channel;
+
+	/**
+	 * @var int Rate
+	 */
+	private $rate;
+
+	/**
 	 * Constructor
 	 * @param string $ssid SSID
 	 * @param WifiMode $mode WiFi network mode
@@ -67,6 +79,8 @@ final class WifiConnection implements INetworkManagerEntity {
 		$this->mode = $mode;
 		$this->bssids = $bssids;
 		$this->security = $security;
+		$this->channel = 0;
+		$this->rate = 0;
 	}
 
 	/**
@@ -107,7 +121,35 @@ final class WifiConnection implements INetworkManagerEntity {
 		} catch (Throwable $e) {
 			$security = null;
 		}
-		return new self($array['ssid'], $mode, $bssids, $security);
+		$connection = new self($array['ssid'], $mode, $bssids, $security);
+		if (array_key_exists('channel', $array)) {
+			$connection->setChannel(intval($array['channel']));
+		}
+		if (array_key_exists('rate', $array)) {
+			$connection->setRate(intval($array['rate']));
+		}
+		return $connection;
+	}
+
+	/**
+	 * Converts Wifi connection to Wifi network entity
+	 * @return WifiNetwork Wifi network entity
+	 */
+	public function toWifiNetwork(): WifiNetwork {
+		$channel = $this->channel ?? 0;
+		$rate = sprintf('%d Mbit/s', $this->rate ?? 0);
+		$security = $this->security->jsonSerialize()['type'];
+		if ($security === WifiSecurityType::OPEN()->toScalar()) {
+			$security = WifiSecurity::OPEN();
+		} elseif ($security === WifiSecurityType::WEP()->toScalar() ||
+			$security === WifiSecurityType::LEAP()->toScalar()) {
+			$security = WifiSecurity::WEP();
+		} elseif ($security === WifiSecurityType::WPA_EAP()->toScalar()) {
+			$security = WifiSecurity::WPA2_ENTERPRISE();
+		} else {
+			$security = WifiSecurity::WPA2_PERSONAL();
+		}
+		return new WifiNetwork(false, $this->bssids[0], $this->ssid, $this->mode, $channel, $rate, 100, $security);
 	}
 
 	/**
@@ -124,6 +166,54 @@ final class WifiConnection implements INetworkManagerEntity {
 			$string .= $this->security->nmCliSerialize();
 		}
 		return $string;
+	}
+
+	/**
+	 * Returns wifi connection mode
+	 * @return WifiMode Connection mode
+	 */
+	public function getMode(): WifiMode {
+		return $this->mode;
+	}
+
+	/**
+	 * Sets connection mode
+	 * @param WifiMode $mode Connection mode
+	 */
+	public function setMode(WifiMode $mode): void {
+		$this->mode = $mode;
+	}
+
+	/**
+	 * Returns channel
+	 * @return int|null Channel
+	 */
+	public function getChannel(): ?int {
+		return $this->rate;
+	}
+
+	/**
+	 * Sets channel
+	 * @param int $channel Channel
+	 */
+	public function setChannel(int $channel): void {
+		$this->channel = $channel;
+	}
+
+	/**
+	 * Returns rate
+	 * @return int|null rate
+	 */
+	public function getRate(): ?int {
+		return $this->rate;
+	}
+
+	/**
+	 * Sets rate
+	 * @param int $rate Rate
+	 */
+	public function setRate(int $rate): void {
+		$this->rate = $rate;
 	}
 
 }
