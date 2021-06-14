@@ -310,8 +310,8 @@ class MenderController extends BaseController {
 		}
 		$this->validator->validateRequest('remount', $request);
 		try {
-			$mode = $request->getJsonBody(true);
-			$this->manager->remount($mode);
+			$conf = $request->getJsonBody(true);
+			$this->manager->remount($conf['mode']);
 			return $response->writeBody('Workaround');
 		} catch (MountErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
