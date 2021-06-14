@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MenderProtocols} from '../enums/Maintenance/Mender';
+import {MenderProtocols, MountModes} from '../enums/Maintenance/Mender';
 
 /**
  * Mender configuration interface
@@ -54,6 +54,16 @@ export interface IMenderConfig {
 	 * Client protocol
 	 */
 	ClientProtocol: MenderProtocols
+}
+
+/**
+ * Filesystem remount interface
+ */
+export interface IRemount {
+	/**
+	 * Mode to remount filesystem with
+	 */
+	mode: MountModes
 }
 
 /**

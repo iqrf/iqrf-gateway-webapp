@@ -2398,6 +2398,10 @@
 					"title": "Output log",
 					"noLog": "No Mender action has been performed."
 				},
+				"update": "Update",
+				"control": "Control",
+				"remountRo": "Mount fs read-only",
+				"remountRw": "Mount fs read-write",
 				"form": {
 					"artifact": "Artifact to install",
 					"install": "Install artifact",
@@ -2411,7 +2415,9 @@
 					"installFailed": "Failed to install Mender artifact, see output log for details.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
 					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
-					"rollbackSuccess": "Currently installed Mender artifact update has been successfully rolled back."
+					"rollbackSuccess": "Currently installed Mender artifact update has been successfully rolled back.",
+					"remountSuccess": "Filesystem has been successfully remounted.",
+					"remountFailed": "Failed to remount filesystem: {error}"
 				}
 			}
 		},
