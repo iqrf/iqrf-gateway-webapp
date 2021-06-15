@@ -19,9 +19,9 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
 		<CCard>
 			<CCardHeader>
-				<CButton 
+				<CButton
 					color='primary'
-					size='sm' 
+					size='sm'
 					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
@@ -33,7 +33,7 @@ limitations under the License.
 					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 					<span class='validation-errors'>{{ validatorErrors }}</span>
 				</CAlert>
-				<CElementCover 
+				<CElementCover
 					v-if='!isSocketConnected'
 					style='z-index: 1;'
 					:opacity='0.85'
@@ -52,7 +52,12 @@ limitations under the License.
 						>
 							<CTextarea
 								v-model='json'
-								v-autogrow
+								:label='$t("iqrfnet.sendJson.form.json")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+							<JsonEditor
+								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -65,7 +70,7 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
@@ -84,7 +89,7 @@ limitations under the License.
 							source='sendJson'
 						/>
 					</CCol>
-					<CCol 
+					<CCol
 						v-if='activeMessagePair.response !== []'
 						md='6'
 					>
@@ -106,12 +111,12 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import JsonEditor from '../../components/Config/JsonEditor.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
 
 import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '../../iqrfNet/sendJson';
-import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {v4 as uuidv4} from 'uuid';
 
 import IqrfNetService from '../../services/IqrfNetService';
@@ -131,6 +136,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CElementCover,
 		CForm,
 		CTextarea,
+		JsonEditor,
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
@@ -139,9 +145,6 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		...mapGetters({
 			isSocketConnected: 'isSocketConnected',
 		}),
-	},
-	directives: {
-		'autogrow': TextareaAutogrowDirective
 	},
 	metaInfo: {
 		title: 'iqrfnet.sendJson.title',
@@ -181,7 +184,7 @@ export default class SendJsonRequest extends Vue {
 	/**
 	 * @var validator JSON schema validator function
 	 */
-	private validator: any = null 
+	private validator: any = null
 
 	/**
 	 * @var {string} validatorErrors String containing JSON schema violations
@@ -376,7 +379,7 @@ export default class SendJsonRequest extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		this.$store.commit('spinner/HIDE');		
+		this.$store.commit('spinner/HIDE');
 		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
 			this.$toast.error(
 				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()
@@ -472,6 +475,12 @@ export default class SendJsonRequest extends Vue {
 </script>
 
 <style scoped>
+#editor {
+	border-radius: 1em;
+	border-color: black;
+	border-width: 10px;
+	padding: 1em 2em;
+}
 .validation-errors {
 	white-space: pre-wrap;
 }
