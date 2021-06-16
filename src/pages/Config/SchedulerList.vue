@@ -201,7 +201,6 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
-import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 
 import {DateTime, Duration} from 'luxon';
 import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -227,9 +226,6 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CIcon,
 		CInputFile,
 		CModal,
-	},
-	directives: {
-		'autogrow': TextareaAutogrowDirective
 	},
 	metaInfo: {
 		title: 'config.daemon.scheduler.title',
