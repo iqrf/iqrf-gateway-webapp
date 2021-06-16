@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CFormGroup
-		v-bind='{validFeedback, invalidFeedback, wasValidated, class: computedClasses}'
+		v-bind='{validFeedback, invalidFeedback, wasValidated, class: ["form-group"]}'
 	>
 		<template #label>
 			<slot name='label'>
@@ -30,10 +30,15 @@ limitations under the License.
 			<prism-editor
 				v-bind='$attrs'
 				:id='safeId'
+				ref='input'
 				v-model='json'
 				:class='inputClasses'
 				:readonly='readonly'
 				:highlight='highlighter'
+				@input='onInput($event)'
+				@change='onChange($event)'
+				@focus='onFocus($event)'
+				@blur='onBlur($event)'
 			/>
 		</template>
 
@@ -47,7 +52,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {Component, Prop, Ref, Vue, Watch} from 'vue-property-decorator';
 import {CFormGroup} from '@coreui/vue';
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -63,15 +68,20 @@ import 'prismjs/themes/prism.css';
 })
 export default class JsonEditor extends Vue {
 
-	@Prop() id?: string|null = null;
-	@Prop() label?: string|null = null;
-	@Prop() readonly = false;
-	@VModel({type: String}) json?: string|null = null;
+	@Prop({default: null}) id?: string|null;
+	@Prop({default: null}) label?: string|null;
+	@Prop({default: false}) readonly;
+	@Prop({default: null}) value?: string|null;
 
-	@Prop() validFeedback?: string|null;
-	@Prop() invalidFeedback?: string|null;
-	@Prop() wasValidated = true;
-	@Prop() isValid?: boolean;
+	@Prop({default: null}) validFeedback?: string|null;
+	@Prop({default: null}) invalidFeedback?: string|null;
+	@Prop({default: false}) wasValidated = false;
+	@Prop({default: null}) isValid?: boolean|null;
+
+	@Ref('input') readonly input!: Vue;
+
+	private focused = false;
+	private json: string|null = null;
 
 	get safeId(): string {
 		if (this.id || this.$attrs.id) {
@@ -80,13 +90,10 @@ export default class JsonEditor extends Vue {
 		return 'uid-' + Math.random().toString(36).substr(2);
 	}
 
-	get computedClasses(): Array<string> {
-		return ['form-group'];
-	}
-
 	get inputClasses(): Array<string> {
 		const validationClass = typeof this.isValid === 'boolean' ? (this.isValid ? 'is-valid' : 'is-invalid') : '';
-		return ['form-control', validationClass];
+		const focusedClass = this.focused ? 'focused' : '';
+		return ['form-control', validationClass, focusedClass];
 	}
 
 	/**
@@ -97,11 +104,50 @@ export default class JsonEditor extends Vue {
 		return Prism.highlight(code, Prism.languages.json, 'json');
 	}
 
+	@Watch('value')
+	private onValueChanged(json: string): void {
+		this.json = json;
+	}
+
+	onInput (json: string): void {
+		this.$emit('input', json);
+		this.$emit('update:value', json);
+	}
+
+	onChange (json: string): void {
+		this.$emit('change', json);
+		this.$emit('update:value', json);
+	}
+
+	onBlur(event: Event): void {
+		this.focused = false;
+		this.$emit('blur', event);
+	}
+
+	onFocus(event: Event): void {
+		this.focused = true;
+		this.$emit('focus', event);
+	}
+
 }
 </script>
 
-<style>
-.prism-editor-wrapper {
-		min-height: 5em;
+<style lang='scss'>
+.focused {
+	color: #768192;
+	background-color: #fff;
+	border-color: #8bb8df;
+	outline: 0;
+	box-shadow: 0 0 0 0.2rem rgb(51 122 183 / 25%);
+
+	&.is-invalid {
+		border-color: #e55353;
+		box-shadow: 0 0 0 0.2rem rgb(229 83 83 / 25%);
+	}
+
+	&.is-valid {
+		border-color: #2eb85c;
+		box-shadow: 0 0 0 0.2rem rgb(46 184 92 / 25%);
+	}
 }
 </style>
