@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CAlert v-if='errors.length !== 0' color='danger'>
+	<CAlert v-if='errors !== undefined && errors.length !== 0' color='danger'>
 		{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 		<ol class='validation-errors'>
 			<li v-for='error in errors' :key='error'>
@@ -39,7 +39,7 @@ export default class JsonSchemaErrors extends Vue {
 	/**
 	 * JSON schema validation errors
 	 */
-	@Prop({default: []}) errors: Array<string>;
+	@Prop({required: true}) errors!: Array<string>;
 
 }
 </script>

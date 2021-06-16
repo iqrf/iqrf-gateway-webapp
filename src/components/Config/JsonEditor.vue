@@ -104,6 +104,10 @@ export default class JsonEditor extends Vue {
 		return Prism.highlight(code, Prism.languages.json, 'json');
 	}
 
+	mounted() {
+		this.json = this.value ?? null;
+	}
+
 	@Watch('value')
 	private onValueChanged(json: string): void {
 		this.json = json;
