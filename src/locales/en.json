@@ -1290,9 +1290,12 @@
 			"autoNetwork": {
 				"title": "AutoNetwork",
 				"form": {
+					"general": "General settings",
 					"discoveryTxPower": "TX power to use in discovery process",
 					"discoveryBeforeStart": "Run discovery before start",
 					"skipDiscoveryEachWave": "Skip discovery in each wave",
+					"skipPrebonding": "Skip prebonding step",
+					"unbondUnrespondingNodes": "Unbond nodes that do not respond",
 					"actionRetries": "Number of retry DPA transactions",
 					"bondingControl": "Bonding control",
 					"overlappingNetworks": "Overlapping networks",

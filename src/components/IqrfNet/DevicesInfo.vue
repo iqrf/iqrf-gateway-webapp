@@ -283,6 +283,10 @@ export default class DevicesInfo extends Vue {
 					this.getDiscoveredDevices();
 				} else {
 					this.$store.dispatch('spinner/hide');
+					if (this.toastMessage !== null) {
+						this.$toast.open(this.toastMessage);
+						this.toastMessage = null;
+					}
 				}
 				break;
 			}

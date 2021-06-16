@@ -19,6 +19,15 @@ limitations under the License.
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h4>
+					<CInputCheckbox
+						:checked.sync='autoNetwork.discoveryBeforeStart'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+					/>
+					<CInputCheckbox
+						:checked.sync='autoNetwork.skipDiscoveryEachWave'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
@@ -40,13 +49,13 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='autoNetwork.discoveryBeforeStart'
-						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+						:checked.sync='autoNetwork.unbondUnrespondingNodes'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
 					/>
 					<CInputCheckbox
-						:checked.sync='autoNetwork.skipDiscoveryEachWave'
-						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
-					/><hr>
+						:checked.sync='autoNetwork.skipPrebonding'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
+					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,3'
@@ -66,9 +75,7 @@ limitations under the License.
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
 					<CInputCheckbox
 						:checked.sync='useOverlappingNetworks'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
@@ -113,9 +120,7 @@ limitations under the License.
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
 					<CInputCheckbox
 						:checked.sync='useHwpidFiltering'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
@@ -135,9 +140,7 @@ limitations under the License.
 							:disabled='!useHwpidFiltering'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
 					<div class='form-group'>
 						<CInputCheckbox
 							:checked.sync='useWaves'
@@ -247,7 +250,7 @@ limitations under the License.
 						color='primary'
 						type='button'
 						:disabled='invalid'
-						@click='processSubmitAutoNetwork'
+						@click='runAutonetwork'
 					>
 						{{ $t('forms.runAutonetwork') }}
 					</CButton>
@@ -303,7 +306,9 @@ export default class AutoNetwork extends Vue {
 		actionRetries: 1,
 		discoveryBeforeStart: false,
 		discoveryTxPower: 7,
-		skipDiscoveryEachWave: false
+		skipDiscoveryEachWave: false,
+		unbondUnrespondingNodes: true,
+		skipPrebonding: false,
 	}
 
 	/**
@@ -378,7 +383,7 @@ export default class AutoNetwork extends Vue {
 	private unwatch: CallableFunction = () => {return;}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules and websocket mutation handling
 	 */
 	created(): void {
 		extend('between', between);
@@ -475,7 +480,7 @@ export default class AutoNetwork extends Vue {
 	/**
 	 * Builds AutoNetwork configuration object and performs the AutoNetwork process
 	 */
-	private processSubmitAutoNetwork(): void {
+	private runAutonetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
 		let submitData = this.autoNetwork;
 		let stopConditions = {};

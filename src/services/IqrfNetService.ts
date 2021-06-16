@@ -36,7 +36,9 @@ class IqrfNetService {
 					'discoveryTxPower': autoNetwork.discoveryTxPower,
 					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
 					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
-					'actionRetries': autoNetwork.actionRetries,
+					'unbondUnrespondingNodes': autoNetwork.unbondUnrespondingNodes,
+					'skipPrebonding': autoNetwork.skipPrebonding,
+					'actionRetries': autoNetwork.actionRetries
 				},
 				'returnVerbose': true,
 			},
