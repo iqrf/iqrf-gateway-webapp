@@ -29,10 +29,7 @@ limitations under the License.
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
-				<CAlert v-if='validatorErrors !== ""' color='danger'>
-					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
-					<span class='validation-errors'>{{ validatorErrors }}</span>
-				</CAlert>
+				<JsonSchemaErrors :errors='validatorErrors' />
 				<CElementCover
 					v-if='!isSocketConnected'
 					style='z-index: 1;'
@@ -40,7 +37,7 @@ limitations under the License.
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
 				</CElementCover>
-				<ValidationObserver v-slot='{invalid}'>
+				<ValidationObserver v-slot='{invalid}' slim>
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -49,18 +46,14 @@ limitations under the License.
 								required: "iqrfnet.sendJson.messages.missing",
 								json: "iqrfnet.sendJson.messages.invalid",
 							}'
+							slim
 						>
-							<CTextarea
-								v-model='json'
-								:label='$t("iqrfnet.sendJson.form.json")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
 							<JsonEditor
 								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>
 						<CButton color='primary' type='submit' :disabled='invalid'>
@@ -114,18 +107,18 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '../../components/Config/JsonEditor.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
 
-import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import {v4 as uuidv4} from 'uuid';
 
 import IqrfNetService from '../../services/IqrfNetService';
-import validate from '../../helpers/validate_daemonRequest';
 
 import {IMessagePairRequest} from '../../interfaces/iqrfnet';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonApiValidator from '../../helpers/DaemonApiValidator';
+import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
 
 @Component({
 	components: {
@@ -138,6 +131,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CTextarea,
 		JsonEditor,
 		JsonMessage,
+		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -184,12 +178,12 @@ export default class SendJsonRequest extends Vue {
 	/**
 	 * @var validator JSON schema validator function
 	 */
-	private validator: any = null
+	private validator: DaemonApiValidator
 
 	/**
-	 * @var {string} validatorErrors String containing JSON schema violations
+	 * @var {Array<string>} validatorErrors String containing JSON schema violations
 	 */
-	private validatorErrors = ''
+	private validatorErrors: Array<string> = []
 
 	/**
 	 * Component unsubscribe function
@@ -200,22 +194,8 @@ export default class SendJsonRequest extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.validator = validate;
-		extend('json', (json) => {
-			try {
-				this.validatorErrors = '';
-				const jsonObject = JSON.parse(json);
-				if (this.validator(jsonObject)) {
-					return true;
-				} else {
-					console.warn(this.validator.errors);
-					this.buildViolationString(this.validator.errors);
-					return false;
-				}
-			} catch (error) {
-				return false;
-			}
-		});
+		this.validator = new DaemonApiValidator();
+		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
@@ -292,57 +272,6 @@ export default class SendJsonRequest extends Vue {
 			Object.assign(json.data, {msgId: uuidv4()});
 		}
 		this.sendRequest(json);
-	}
-
-	/**
-	 * Creates a JSON schema violation string message
-	 * @param {Array<ErrorObject>} errors Array of violations
-	 */
-	private buildViolationString(errors: Array<ErrorObject>): void {
-		let message = '';
-		for (let error of errors) {
-			if (error.keyword === 'type') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.type',
-					{
-						property: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						type: (typeof error.data),
-					}
-				).toString();
-			} else if (error.keyword === 'additionalProperties') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.additional',
-					{
-						object: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						property: (error.params as AdditionalPropertiesParams).additionalProperty,
-					}
-				).toString();
-			} else if (error.keyword === 'required') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.required',
-					{
-						object: (error.dataPath.length === 0 ? 'root' : error.dataPath),
-						message: error.message,
-						path: error.schemaPath,
-					}
-				).toString();
-			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.range',
-					{
-						property: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						value: error.data,
-					}
-				).toString();
-			}
-		}
-		this.validatorErrors = message.trimRight();
 	}
 
 	/**
@@ -471,17 +400,6 @@ export default class SendJsonRequest extends Vue {
 			this.$t('iqrfnet.sendJson.messages.error.fail').toString()
 		);
 	}
+
 }
 </script>
-
-<style scoped>
-#editor {
-	border-radius: 1em;
-	border-color: black;
-	border-width: 10px;
-	padding: 1em 2em;
-}
-.validation-errors {
-	white-space: pre-wrap;
-}
-</style>
