@@ -1,8 +1,33 @@
+<!--
+Copyright 2017-2021 IQRF Tech s.r.o.
+Copyright 2019-2021 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h4>
+					<CInputCheckbox
+						:checked.sync='autoNetwork.discoveryBeforeStart'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+					/>
+					<CInputCheckbox
+						:checked.sync='autoNetwork.skipDiscoveryEachWave'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
@@ -24,13 +49,13 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='autoNetwork.discoveryBeforeStart'
-						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+						:checked.sync='autoNetwork.unbondUnrespondingNodes'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
 					/>
 					<CInputCheckbox
-						:checked.sync='autoNetwork.skipDiscoveryEachWave'
-						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
-					/><hr>
+						:checked.sync='autoNetwork.skipPrebonding'
+						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
+					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,3'
@@ -50,9 +75,7 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
 					<CInputCheckbox
 						:checked.sync='useOverlappingNetworks'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
@@ -97,9 +120,7 @@
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
 					<CInputCheckbox
 						:checked.sync='useHwpidFiltering'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
@@ -119,9 +140,7 @@
 							:disabled='!useHwpidFiltering'
 						/>
 					</ValidationProvider><hr>
-					<h4>
-						{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}
-					</h4>
+					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
 					<div class='form-group'>
 						<CInputCheckbox
 							:checked.sync='useWaves'
@@ -231,7 +250,7 @@
 						color='primary'
 						type='button'
 						:disabled='invalid'
-						@click='processSubmitAutoNetwork'
+						@click='runAutonetwork'
 					>
 						{{ $t('forms.runAutonetwork') }}
 					</CButton>
@@ -287,7 +306,9 @@ export default class AutoNetwork extends Vue {
 		actionRetries: 1,
 		discoveryBeforeStart: false,
 		discoveryTxPower: 7,
-		skipDiscoveryEachWave: false
+		skipDiscoveryEachWave: false,
+		unbondUnrespondingNodes: true,
+		skipPrebonding: false,
 	}
 
 	/**
@@ -362,7 +383,7 @@ export default class AutoNetwork extends Vue {
 	private unwatch: CallableFunction = () => {return;}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules and websocket mutation handling
 	 */
 	created(): void {
 		extend('between', between);
@@ -459,7 +480,7 @@ export default class AutoNetwork extends Vue {
 	/**
 	 * Builds AutoNetwork configuration object and performs the AutoNetwork process
 	 */
-	private processSubmitAutoNetwork(): void {
+	private runAutonetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
 		let submitData = this.autoNetwork;
 		let stopConditions = {};

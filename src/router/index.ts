@@ -1,3 +1,19 @@
+/**
+ * Copyright 2017-2021 IQRF Tech s.r.o.
+ * Copyright 2019-2021 MICRORISC s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
 
@@ -13,7 +29,7 @@ const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
 const GatewayTime = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayTime.vue');
-const LogViewer = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/LogViewer.vue');
+const Logs = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/Logs.vue');
 const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonMode.vue');
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
@@ -620,16 +636,16 @@ const routes: Array<RouteConfig> = [
 						]
 					},
 					{
-						component: ConfigMigration,
-						path: 'migration',
-					},
-					{
 						component: TranslatorConfig,
 						path: 'translator',
 					},
 					{
 						component: ControllerConfig,
 						path: 'controller',
+					},
+					{
+						component: ConfigMigration,
+						path: 'migration',
 					},
 				]
 			},
@@ -654,7 +670,7 @@ const routes: Array<RouteConfig> = [
 						path: 'date-time',
 					},
 					{
-						component: LogViewer,
+						component: Logs,
 						path: 'log',
 					},
 					{

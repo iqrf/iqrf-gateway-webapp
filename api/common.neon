@@ -1,3 +1,18 @@
+# Copyright 2017-2021 IQRF Tech s.r.o.
+# Copyright 2019-2021 MICRORISC s.r.o.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 info:
 	title: IQRF Gateway Webapp API specification
 	version: '0.0.1'
@@ -71,16 +86,18 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		DpaFile:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json
-		GatewayInfo:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
-		GatewayPassword:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
 		Error:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/error.json
 		Feature:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json
 		FeatureList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json
+		GatewayInfo:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+		GatewayPassword:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
+		Hostname:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/hostname.json
 		IqrfIdeMacros:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:
@@ -97,6 +114,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
+		LogServices:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
 		MainConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mainConfiguration.json
 		Mapping:

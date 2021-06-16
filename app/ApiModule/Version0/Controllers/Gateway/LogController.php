@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017-2019 IQRF Tech s.r.o.
+ * Copyright 2017-2021 IQRF Tech s.r.o.
+ * Copyright 2019-2021 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,17 @@ use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
+use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use App\GatewayModule\Models\LogManager;
 use DateTime;
 use Nette\Utils\FileSystem;
@@ -57,42 +62,65 @@ class LogController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/log")
+	 * @Path("/logs")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: 'Returns latest IQRF Gateway Controller Daemon logs'
-	 *  responses:
+	 *  summary: Returns list of services with available logs
+	 *  response:
 	 *      '200':
-	 *          description: 'Success'
+	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      type: object
-	 *                      properties:
-	 *                          controller:
-	 *                              type: string
-	 *                          daemon:
-	 *                              type: string
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
+	 *                      $ref: '#/components/schemas/LogServices'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
+	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $response->writeJsonBody($this->logManager->getAvailableServices());
+	}
+
+	/**
+	 * @Path("/logs/{service}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns latest log of a service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              text/plain:
+	 *                  schema:
+	 *                      type: string
+	 *      '404':
+	 *          description: 'Service not found'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="service", type="string", description="Service name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$service = $request->getParameter('service');
 		try {
-			$response->writeJsonBody($this->logManager->load());
-			$fileName = 'iqrf-gateway.log';
-			$contentType = 'application/json; charset=utf-8';
-			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, $contentType);
+			return $response->writeBody($this->logManager->getServiceLog($service));
+		} catch (ServiceLogNotAvailableException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (LogNotFoundException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Log file does not exist.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (LogEmptyException $e) {
+			throw new ServerErrorException('Log file is empty.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/logs")
+	 * @Path("/logs/export")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *   summary: Returns archive with IQRF Gateway logs
