@@ -1,40 +1,61 @@
 <template>
 	<CCard>
-		<CCardBody>
-			<CForm>
-				<CInputFile
-					ref='artifactInput'
-					:label='$t("maintenance.mender.update.form.artifact")'
-					accept='.mender'
-					@input='isInputEmpty'
-					@click='isInputEmpty'
-				/>
-			</CForm>
-			<CButton
-				color='primary'
-				:disabled='inputEmpty'
-				@click='install'
-			>
-				{{ $t('maintenance.mender.update.form.install') }}
-			</CButton> <CButton
-				color='success'
-				:disabled='!installSuccess'
-				@click='commit'
-			>
-				{{ $t('maintenance.mender.update.form.commit') }}
-			</CButton> <CButton
-				color='danger'
-				:disabled='!installSuccess'
-				@click='rollback'
-			>
-				{{ $t('maintenance.mender.update.form.rollback') }}
-			</CButton> <CButton
-				color='primary'
-				@click='reboot()'
-			>
-				{{ $t('gateway.power.reboot') }}
-			</CButton>
-		</CCardBody>
+		<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
+			<CCardBody>
+				<h4>{{ $t('maintenance.mender.update.update') }}</h4>
+				<CForm>
+					<CInputFile
+						ref='artifactInput'
+						:label='$t("maintenance.mender.update.form.artifact")'
+						accept='.mender'
+						@input='isInputEmpty'
+						@click='isInputEmpty'
+					/>
+				</CForm>
+				<CButton
+					color='primary'
+					:disabled='inputEmpty'
+					@click='install'
+				>
+					{{ $t('maintenance.mender.update.form.install') }}
+				</CButton> <CButton
+					color='success'
+					:disabled='!installSuccess'
+					@click='commit'
+				>
+					{{ $t('maintenance.mender.update.form.commit') }}
+				</CButton> <CButton
+					color='danger'
+					:disabled='!installSuccess'
+					@click='rollback'
+				>
+					{{ $t('maintenance.mender.update.form.rollback') }}
+				</CButton>
+			</CCardBody>
+		</CCard>
+		<CCard class='border-0 card-margin-bottom'>
+			<CCardBody>
+				<h4>{{ $t('maintenance.mender.update.control') }}</h4>
+				<CButton
+					color='primary'
+					@click='reboot()'
+				>
+					{{ $t('gateway.power.reboot') }}
+				</CButton> <CButton
+					v-if='$store.getters["features/isEnabled"]("remount")'
+					color='primary'
+					@click='remount(false)'
+				>
+					{{ $t('maintenance.mender.update.remountRo') }}
+				</CButton> <CButton
+					v-if='$store.getters["features/isEnabled"]("remount")'
+					color='primary'
+					@click='remount(true)'
+				>
+					{{ $t('maintenance.mender.update.remountRw') }}
+				</CButton>
+			</CCardBody>
+		</CCard>
 	</CCard>
 </template>
 
@@ -46,6 +67,8 @@ import MenderService from '../../services/MenderService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import GatewayService from '../../services/GatewayService';
+import { MountModes } from '../../enums/Maintenance/Mender';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -147,7 +170,7 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.performReboot()
 			.then((response: AxiosResponse) => {
-				let time = new Date(response.data.timetimestamp * 1000).toLocaleTimeString();
+				let time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
@@ -156,6 +179,28 @@ export default class MenderUpdateControl extends Vue {
 					).toString()
 				);
 			});
+	}
+
+	/**
+	 * Remounts filesystem
+	 * @param {boolean} writable Make filesystem writable
+	 */
+	private remount(writable: boolean): void {
+		const conf = {
+			mode: writable ? MountModes.RW : MountModes.RO
+		};
+		this.$store.commit('spinner/SHOW');
+		MenderService.remount(conf)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('maintenance.mender.update.messages.remountSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(
+				error,
+				'maintenance.mender.update.messages.remountFailed',
+			));
 	}
 
 	/**

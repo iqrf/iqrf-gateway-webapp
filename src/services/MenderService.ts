@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import {IRemount} from '../interfaces/maintenance';
 
 /**
  * Mender update service
@@ -38,6 +39,15 @@ class MenderService {
 	 */
 	rollback(): Promise<AxiosResponse> {
 		return axios.post('mender/rollback', null, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Remounts filesystem with specified mode
+	 * @param {IRemount} mode Mode
+	 * @returns {Promise<AxiosResponse>} Axios response promise
+	 */
+	remount(mode: IRemount): Promise<AxiosResponse> {
+		return axios.post('mender/remount', mode, {headers: authorizationHeader()});
 	}
 }
 
