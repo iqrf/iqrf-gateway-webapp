@@ -106,6 +106,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea}
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '../../components/Config/JsonEditor.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
+import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '../../iqrfNet/sendJson';
@@ -118,7 +119,6 @@ import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import DaemonApiValidator from '../../helpers/DaemonApiValidator';
-import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
 
 @Component({
 	components: {
@@ -190,11 +190,15 @@ export default class SendJsonRequest extends Vue {
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	constructor() {
+		super();
+		this.validator = new DaemonApiValidator();
+	}
+
 	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.validator = new DaemonApiValidator();
 		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
@@ -262,9 +266,6 @@ export default class SendJsonRequest extends Vue {
 	 */
 	private processSubmit(): void {
 		if (this.json === null) {
-			return;
-		}
-		if (this.validator === null) {
 			return;
 		}
 		const json = JSON.parse(this.json);
