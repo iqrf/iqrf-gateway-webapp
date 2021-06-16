@@ -18,17 +18,49 @@
  * AutoNetwork base interface
  */
 export interface AutoNetworkBase {
+	/**
+	 * Number of DPA retry transactions if the original transaction fails
+	 */
 	actionRetries: number
+
+	/**
+	 * Run discovery before starting the autonetwork process
+	 */
 	discoveryBeforeStart: boolean
+
+	/**
+	 * TX power
+	 */
 	discoveryTxPower: number
+
+	/**
+	 * Skip discovery during each wave
+	 */
 	skipDiscoveryEachWave: boolean
+
+	/**
+	 * Unbond nodes that do not respond
+	 */
+	unbondUnrespondingNodes: boolean
+
+	/**
+	 * Skip SmartConnect pre-bonding step
+	 */
+	skipPrebonding: boolean
 }
 
 /**
  * AutoNetwork overlapping networks interface
  */
 export interface AutoNetworkOverlappingNetworks {
+	/**
+	 * Network number
+	 */
 	network: number
+
+	/**
+	 * Number of networks
+	 */
 	networks: number
 }
 
@@ -36,9 +68,24 @@ export interface AutoNetworkOverlappingNetworks {
  * AutoNetwork stop conditions interface
  */
 export interface AutoNetworkStopConditions {
+	/**
+	 * Abort if too many nodes are found
+	 */
 	abortOnTooManyNodesFound: boolean
+
+	/**
+	 * Abort after number of consecutive waves where no nodes are found
+	 */
 	emptyWaves: number
+
+	/**
+	 * Abort after number of nodes is found
+	 */
 	nodeCount: number
+
+	/**
+	 * Abort after number of waves
+	 */
 	waves: number
 }
 
