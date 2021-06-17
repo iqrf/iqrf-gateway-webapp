@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CCard>
-		<CCardHeader class='d-flex'>
+		<CCardHeader class='message-header'>
 			<span class='mr-auto'>
 				{{ $t('iqrfnet.jsonMessage.' + type) }}
 			</span>
@@ -108,3 +108,13 @@ export default class JsonMessage extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.message-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+</style>
