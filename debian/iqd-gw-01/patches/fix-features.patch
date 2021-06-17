@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -1,7 +1,7 @@
+@@ -16,7 +16,7 @@
  # Show documentation
  docs:
  	enabled: true
@@ -9,7 +9,7 @@
  # Default gateway user password change
  gatewayPass:
  	enabled: false
-@@ -11,7 +11,7 @@ grafana:
+@@ -26,7 +26,7 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -23,17 +23,17 @@ monit:
+@@ -38,17 +38,17 @@
  	enabled: false
  # Network manager
  networkManager:
@@ -39,7 +39,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -46,10 +46,10 @@ updater:
+@@ -62,10 +62,10 @@
  	enabled: false
  # IQRF TR native upload
  trUpload:
