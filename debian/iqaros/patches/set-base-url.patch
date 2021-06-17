@@ -1,6 +1,7 @@
 Sets base URL for Iqaros
 --- a/.env
 +++ b/.env
-@@ -1 +1 @@
+@@ -1,2 +1,2 @@
 -VUE_APP_BASE_URL=/
 +VUE_APP_BASE_URL=/system/
+ VUE_APP_CYPRESS_ENABLED=0
