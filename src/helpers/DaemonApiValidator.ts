@@ -27,6 +27,9 @@ export interface DaemonApiValidatorCallback {
  */
 export default class DaemonApiValidator {
 
+	/**
+	 * Constructor
+	 */
 	constructor() {
 		this.validator = validate;
 	}
@@ -37,33 +40,35 @@ export default class DaemonApiValidator {
 	private readonly validator: any = null;
 
 	/**
-	 * @var {Array<string>} validatorErrors String containing JSON schema violations
+	 * Validates the JSON against Daemon JSON API schema
+	 * @param {string} json JSON to validate
+	 * @param {DaemonApiValidatorCallback} callback Callback for retrieving JSON schema violations
+	 * @return {boolean} Is the JSON valid?
 	 */
-	private validatorErrors: Array<string> = [];
-
 	public validate(json: string, callback: DaemonApiValidatorCallback): boolean {
+		let errors: Array<string> = [];
 		try {
-			this.validatorErrors = [];
 			const jsonObject = JSON.parse(json);
 			if (this.validator(jsonObject)) {
 				return true;
 			} else {
 				console.warn(this.validator.errors);
-				this.buildViolationString(this.validator.errors);
+				errors = this.buildViolationString(this.validator.errors);
 				return false;
 			}
 		} catch (error) {
 			return false;
 		} finally {
-			callback(this.validatorErrors);
+			callback(errors);
 		}
 	}
 
 	/**
 	 * Creates a JSON schema violation string message
 	 * @param {Array<ErrorObject>} errors Array of violations
+	 * @return {Array<string>} JSON schema violations strings
 	 */
-	private buildViolationString(errors: Array<ErrorObject>): void {
+	private buildViolationString(errors: Array<ErrorObject>): Array<string> {
 		const messages: Array<string> = [];
 		for (const error of errors) {
 			let message = '';
@@ -109,6 +114,6 @@ export default class DaemonApiValidator {
 			}
 			messages.push(message.trimRight());
 		}
-		this.validatorErrors = messages;
+		return messages;
 	}
 }
