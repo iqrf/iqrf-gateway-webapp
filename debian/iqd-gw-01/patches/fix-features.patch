@@ -39,7 +39,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -62,10 +62,10 @@
+@@ -75,10 +75,10 @@
  	enabled: false
  # IQRF TR native upload
  trUpload:
