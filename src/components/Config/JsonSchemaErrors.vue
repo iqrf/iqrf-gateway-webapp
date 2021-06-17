@@ -29,6 +29,9 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CAlert} from '@coreui/vue';
 
+/**
+ * JSON schema violations viewer
+ */
 @Component({
 	components: {
 		CAlert,
@@ -37,7 +40,7 @@ import {CAlert} from '@coreui/vue';
 export default class JsonSchemaErrors extends Vue {
 
 	/**
-	 * JSON schema validation errors
+	 * @var {Array<string>} errors JSON schema validation errors
 	 */
 	@Prop({required: true}) errors!: Array<string>;
 
