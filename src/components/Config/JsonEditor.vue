@@ -60,6 +60,9 @@ import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 
+/**
+ * JSON editor with syntax highlighting
+ */
 @Component({
 	components: {
 		CFormGroup,
@@ -68,21 +71,65 @@ import 'prismjs/themes/prism.css';
 })
 export default class JsonEditor extends Vue {
 
+	/**
+	 * @var {string|null} id Component ID
+	 */
 	@Prop({default: null}) id?: string|null;
+
+	/**
+	 * @var {string|null} label Component label
+	 */
 	@Prop({default: null}) label?: string|null;
+
+	/**
+	 * @var {boolean} readonly Is read-only?
+	 */
 	@Prop({default: false}) readonly;
+
+	/**
+	 * @var {string|null} value JSON to edit/view
+	 */
 	@Prop({default: null}) value?: string|null;
 
+	/**
+	 * @var {string|null} validFeedback Valid JSON feedback
+	 */
 	@Prop({default: null}) validFeedback?: string|null;
+
+	/**
+	 * @var {string|null} invalidFeedback Invalid JSON feedback
+	 */
 	@Prop({default: null}) invalidFeedback?: string|null;
+
+	/**
+	 * @var {boolean} wasValidated Was JSON validated?
+	 */
 	@Prop({default: false}) wasValidated = false;
+
+	/**
+	 * @var {boolean|null} isValid Is JSON valid?
+	 */
 	@Prop({default: null}) isValid?: boolean|null;
 
+	/**
+	 * @var {Vue} input Prism editor component
+	 */
 	@Ref('input') readonly input!: Vue;
 
+	/**
+	 * @var {boolean} focused Is the input focused?
+	 */
 	private focused = false;
+
+	/**
+	 * @var {string|null} json JSON to render
+	 */
 	private json: string|null = null;
 
+	/**
+	 * Generates safe ID for the component
+	 * @return {string} Safe ID
+	 */
 	get safeId(): string {
 		if (this.id || this.$attrs.id) {
 			return this.id || this.$attrs.id;
@@ -90,6 +137,10 @@ export default class JsonEditor extends Vue {
 		return 'uid-' + Math.random().toString(36).substr(2);
 	}
 
+	/**
+	 * Returns CSS classes for the input
+	 * @return {Array<string>} Array of CSS classes for the input
+	 */
 	get inputClasses(): Array<string> {
 		const validationClass = typeof this.isValid === 'boolean' ? (this.isValid ? 'is-valid' : 'is-invalid') : '';
 		const focusedClass = this.focused ? 'focused' : '';
@@ -100,34 +151,57 @@ export default class JsonEditor extends Vue {
 	 * JSON highlighter method
 	 * @param {string} code text to highlight
 	 */
-	private highlighter(code: string) {
+	private highlighter(code: string): void {
 		return Prism.highlight(code, Prism.languages.json, 'json');
 	}
 
-	mounted() {
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.json = this.value ?? null;
 	}
 
+	/**
+	 * Updates the rendered JSON
+	 * @param {string} json New JSON to render
+	 */
 	@Watch('value')
 	private onValueChanged(json: string): void {
 		this.json = json;
 	}
 
-	onInput (json: string): void {
+	/**
+	 * Handles the input input event
+	 * @param {string} json JSON from the input
+	 */
+	onInput(json: string): void {
 		this.$emit('input', json);
 		this.$emit('update:value', json);
 	}
 
-	onChange (json: string): void {
+	/**
+	 * Handles the input change event
+	 * @param {string} json JSON from the input
+	 */
+	onChange(json: string): void {
 		this.$emit('change', json);
 		this.$emit('update:value', json);
 	}
 
+	/**
+	 * Handles the input blur event
+	 * @param {Event} event Blur event
+	 */
 	onBlur(event: Event): void {
 		this.focused = false;
 		this.$emit('blur', event);
 	}
 
+	/**
+	 * Handles the input focus event
+	 * @param {Event} event Focus event
+	 */
 	onFocus(event: Event): void {
 		this.focused = true;
 		this.$emit('focus', event);

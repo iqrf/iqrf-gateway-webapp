@@ -146,17 +146,17 @@ import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 })
 
 /**
- * Send daemon json api message page component
+ * Send daemon JSON API message page component
  */
 export default class SendJsonRequest extends Vue {
 
 	/**
-	 * @var {string|null} json Daemon api json message
+	 * @var {string|null} json Daemon API JSON message
 	 */
 	private json: string|null = null
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string|null} msgId Daemon API message ID
 	 */
 	private msgId: string|null = null
 
@@ -166,7 +166,7 @@ export default class SendJsonRequest extends Vue {
 	private activeMessagePair: IMessagePairRequest|null = null
 
 	/**
-	 * @var {number} activeIdx Indec of active message pair
+	 * @var {number} activeIdx Index of active message pair
 	 */
 	private activeIdx = 0;
 
@@ -176,7 +176,7 @@ export default class SendJsonRequest extends Vue {
 	private messages: Array<IMessagePairRequest> = []
 
 	/**
-	 * @var validator JSON schema validator function
+	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
 	private validator: DaemonApiValidator
 
@@ -190,6 +190,9 @@ export default class SendJsonRequest extends Vue {
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Component constructor
+	 */
 	constructor() {
 		super();
 		this.validator = new DaemonApiValidator();

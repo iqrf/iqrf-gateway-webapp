@@ -289,7 +289,7 @@ enum TimeSpecTypes {
  */
 export default class SchedulerForm extends Vue {
 	/**
-	 * @var {string} clientId Scheduler task client id
+	 * @var {string} clientId Scheduler task client ID
 	 */
 	private clientId = 'SchedulerMessaging'
 
@@ -331,7 +331,7 @@ export default class SchedulerForm extends Vue {
 	private msgIds: Array<string> = []
 
 	/**
-	 * @var validator JSON schema validator function
+	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
 	private validator: DaemonApiValidator
 
@@ -463,6 +463,9 @@ export default class SchedulerForm extends Vue {
 	 */
 	@Prop({required: false, default: null}) id!: number
 
+	/**
+	 * Constructor
+	 */
 	constructor() {
 		super();
 		this.validator = new DaemonApiValidator();
@@ -728,7 +731,7 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Retrieve instances of Daemon messaging components
+	 * Retrieves instances of Daemon messaging components
 	 */
 	private getMessagings(): void {
 		this.$store.commit('spinner/SHOW');
@@ -897,11 +900,9 @@ export default class SchedulerForm extends Vue {
 </script>
 
 <style scoped>
-
 .messages-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
-
 </style>
