@@ -80,7 +80,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
-		$command = $this->commandManager->run('tee ' . $this->directory . '/' . $fileName, true, $content);
+		$command = $this->commandManager->run('tee ' . $this->directory . '/' . $fileName, true, 60, $content);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}

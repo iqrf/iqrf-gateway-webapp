@@ -24,13 +24,22 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
+use App\CoreModule\Models\FeatureManager;
+use App\MaintenanceModule\Exceptions\MenderFailedException;
+use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
+use App\MaintenanceModule\Exceptions\MenderMissingException;
+use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Mender client configuration controller
@@ -40,16 +49,23 @@ use Nette\Utils\JsonException;
 class MenderController extends BaseController {
 
 	/**
+	 * @var FeatureManager $featureManager Feature manager
+	 */
+	private $featureManager;
+
+	/**
 	 * @var MenderManager $manager Mender client configuration manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
+	 * @param FeatureManager $featureManager Feature manager
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MenderManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
+		$this->featureManager = $featureManager;
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -114,6 +130,201 @@ class MenderController extends BaseController {
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/config/mender/cert")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Uploads and stores a Mender server certificate
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          multipart/form-data:
+	 *              schema:
+	 *                  type: object
+	 *                  properties:
+	 *                      certificate:
+	 *                          type: string
+	 *                          format: binary
+	 *
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$file = $request->getUploadedFiles()[0];
+			$fileName = $file->getClientFilename();
+			$content = $file->getStream()->getContents();
+			$filePath = $this->manager->saveCertFile($fileName, $content);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->writeBody($filePath);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/install")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Installs mender artifact
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          multipart/form-data:
+	 *              schema:
+	 *                  type: object
+	 *                  properties:
+	 *                      file:
+	 *                          type: string
+	 *                          format: binary
+	 *
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '415':
+	 *          description: Unsupported media file
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
+		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
+		try {
+			$file = $request->getUploadedFiles()[0];
+			$fileName = $file->getClientFilename();
+			$this->checkArtifact($fileName);
+			$filePath = $this->manager->saveArtifactFile($file);
+			return $response->writeBody($this->manager->installArtifact($filePath));
+		} catch (MenderInvalidArtifactException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/commit")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Commits installed mender artifact
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeBody($this->manager->commitUpdate());
+		} catch (MenderNoUpdateInProgressException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/rollback")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Rolls installed mender artifact back
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeBody($this->manager->rollbackUpdate());
+		} catch (MenderNoUpdateInProgressException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (MenderMissingException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderFailedException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/mender/remount")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Remounts root fs
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/Remount'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!$this->featureManager->isEnabled('remount')) {
+			throw new ClientErrorException('Remount feature is not enabled.', ApiResponse::S400_BAD_REQUEST);
+		}
+		$this->validator->validateRequest('remount', $request);
+		try {
+			$conf = $request->getJsonBody(true);
+			$this->manager->remount($conf['mode']);
+			return $response->writeBody('Workaround');
+		} catch (MountErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * Checks if uploaded file is a valid mender artifact file
+	 * @param string $fileName File name
+	 */
+	private function checkArtifact(string $fileName): void {
+		if (!Strings::endsWith($fileName, '.mender')) {
+			throw new MenderInvalidArtifactException('Uploaded file is not a .mender artifact file.');
 		}
 	}
 

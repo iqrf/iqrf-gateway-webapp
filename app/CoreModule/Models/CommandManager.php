@@ -79,15 +79,17 @@ class CommandManager {
 	 * Executes shell command and returns output
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
+	 * @param int $timeout Command's timeout
 	 * @param string|int|float|bool|resource|Traversable|null $input Command's input
 	 * @return ICommand Command entity
 	 * @throws RuntimeException When process can't be launched
 	 * @throws ProcessTimedOutException When process timed out
 	 * @throws ProcessSignaledException When process stopped after receiving signal
 	 */
-	public function run(string $command, bool $needSudo = false, $input = null): ICommand {
+	public function run(string $command, bool $needSudo = false, int $timeout = 60, $input = null): ICommand {
 		$process = $this->createProcess($command, $needSudo);
 		$process->setInput($input);
+		$process->setTimeout((float) $timeout);
 		$process->run();
 		$entity = new Command($command, $process);
 		$this->stack->addCommand($entity);

@@ -78,7 +78,7 @@ final class PasswordManagerTest extends CommandTestCase {
 	public function testSetPassword(): void {
 		$command = new Command(self::COMMAND, '', '', 0);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMAND, true, self::ARGUMENT])
+			->withArgs([self::COMMAND, true, 60, self::ARGUMENT])
 			->andReturn($command);
 		Assert::noError(function (): void {
 			$this->manager->setPassword('testpass');
@@ -91,7 +91,7 @@ final class PasswordManagerTest extends CommandTestCase {
 	public function testSetPasswordChangeError(): void {
 		$command = new Command(self::COMMAND, '', '', 1);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMAND, true, self::ARGUMENT])
+			->withArgs([self::COMMAND, true, 60, self::ARGUMENT])
 			->andReturn($command);
 		Assert::throws(function (): void {
 			$this->manager->setPassword('testpass');

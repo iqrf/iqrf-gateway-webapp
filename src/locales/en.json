@@ -2431,37 +2431,77 @@
 		},
 		"mender": {
 			"title": "Mender update",
-			"description": "Manages Mender client service and configuration.",
-			"form": {
-				"inventoryPollInterval": "Inventory update interval (seconds)",
-				"retryPollInterval": "Communication retry interval (seconds)",
-				"server": "Server address",
-				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"placeholders": {
-					"server": "https://hosted.mender.io",
-					"tenantToken": "exampleToken"
+			"description": "Manages Mender service, configuration and client.",
+			"service": {
+				"title": "Remote",
+				"pageTitle": "Client service",
+				"description": "Manages Mender service and configuration.",
+				"form": {
+					"inventoryPollInterval": "Inventory update interval (seconds)",
+					"retryPollInterval": "Communication retry interval (seconds)",
+					"server": "Server address",
+					"cert": "Path to certificate",
+					"newCert": "Certificate to upload",
+					"uploadCert": "Upload new certificate",
+					"tenantToken": "Tenant token",
+					"updatePollInterval": "Update check interval (seconds)",
+					"placeholders": {
+						"server": "https://hosted.mender.io",
+						"tenantToken": "exampleToken"
+					},
+					"protocol": "Protocol",
+					"protocols": {
+						"https": "HTTPS",
+						"wss": "WSS"
+					}
 				},
-				"protocol": "Protocol",
-				"protocols": {
-					"https": "HTTPS",
-					"wss": "WSS"
+				"messages": {
+					"disabled": "Mender service is disabled.",
+					"fetchFailed": "Failed to retrieve Mender configuration: {error}",
+					"saveFailed": "Failed to save Mender configuration: {error}",
+					"saveSuccess": "Mender configuration has been successfully saved.",
+					"serviceStatusFailed": "Failed to retrieve service status: {error}",
+					"serviceFailed": "Failed to change service state: {error}",
+					"certificateFailed": "Failed to upload certificate: {error}",
+					"certificateNote": "Note: "
+				},
+				"errors": {
+					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+					"server": "Please enter the server address.",
+					"tenantToken": "Please enter the tenant token."
 				}
 			},
-			"messages": {
-				"disabled": "Mender service is disabled.",
-				"fetchFailed": "Failed to retrieve Mender configuration: {error}",
-				"saveFailed": "Failed to save Mender configuration: {error}",
-				"saveSuccess": "Mender configuration has been successfully saved.",
-				"serviceStatusFailed": "Failed to retrieve service status: {error}",
-				"serviceFailed": "Failed to change service state: {error}"
-			},
-			"errors": {
-				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-				"server": "Please enter the server address.",
-				"tenantToken": "Please enter the tenant token."
+			"update": {
+				"title": "Local",
+				"pageTitle": "Local update",
+				"description": "Manages Mender artifact updates.",
+				"log": {
+					"title": "Output log",
+					"noLog": "No Mender action has been performed."
+				},
+				"update": "Update",
+				"control": "Control",
+				"remountRo": "Mount fs read-only",
+				"remountRw": "Mount fs read-write",
+				"form": {
+					"artifact": "Artifact to install",
+					"install": "Install artifact",
+					"commit": "Commit update",
+					"rollback": "Rollback update"
+				},
+				"messages": {
+					"update": "Uploading and installing Mender artifact, this may take up to 10 minutes.",
+					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, reboot the gateway for the changes to take effect.",
+					"installFailed": "Failed to install Mender artifact, see output log for details.",
+					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
+					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
+					"rollbackSuccess": "Currently installed Mender artifact update has been successfully rolled back.",
+					"remountSuccess": "Filesystem has been successfully remounted.",
+					"remountFailed": "Failed to remount filesystem: {error}"
+				}
 			}
 		},
 		"monit": {

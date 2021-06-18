@@ -359,7 +359,7 @@ class WireguardManager {
 	 * @return string Wireguard public key
 	 */
 	public function generatePublicKey(string $privateKey): string {
-		$output = $this->commandManager->run('wg pubkey', false, $privateKey);
+		$output = $this->commandManager->run('wg pubkey', false, 60, $privateKey);
 		if ($output->getExitCode() !== 0) {
 			throw new WireguardKeyErrorException($output->getStderr());
 		}

@@ -199,7 +199,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	public function testGeneratePublicKey(): void {
 		$command = new Command(self::COMMANDS['publicKey'], self::WG_KEYPAIR['publicKey'], '', 0);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['publicKey'], false, self::WG_KEYPAIR['privateKey']])->andReturn($command);
+			->withArgs([self::COMMANDS['publicKey'], false, 60, self::WG_KEYPAIR['privateKey']])->andReturn($command);
 		Assert::same(self::WG_KEYPAIR['publicKey'], $this->manager->generatePublicKey(self::WG_KEYPAIR['privateKey']));
 	}
 
@@ -209,7 +209,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	public function testGeneratePublicKeyException(): void {
 		$command = new Command(self::COMMANDS['publicKey'], '', 'Usage: wg pubkey', 1);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['publicKey'], false, ''])->andReturn($command);
+			->withArgs([self::COMMANDS['publicKey'], false, 60, ''])->andReturn($command);
 		Assert::throws(function (): void {
 			$this->manager->generatePublicKey('');
 		}, WireguardKeyErrorException::class);

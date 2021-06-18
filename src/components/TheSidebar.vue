@@ -432,20 +432,39 @@ export default class TheSidebar extends Vue {
 						to: '/maintenance/',
 						route: '/maintenance/',
 						icon: {content: cilSync},
-						items: [
+						_children: [
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.pixla.title'),
 								to: '/maintenance/pixla/',
 								feature: 'pixla',
 								roles: ['power', 'normal'],
 							},
 							{
+								_name: 'CSidebarNavDropdown',
 								name: this.$t('maintenance.mender.title'),
 								to: '/maintenance/mender/',
 								feature: 'mender',
 								roles: ['power', 'normal'],
+								_children: [
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('maintenance.mender.service.title'),
+										to: '/maintenance/mender/service/',
+										feature: 'mender',
+										roles: ['power', 'normal'],
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('maintenance.mender.update.title'),
+										to: '/maintenance/mender/update/',
+										feature: 'mender',
+										roles: ['power', 'normal'],
+									},
+								],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.monit.title'),
 								to: '/maintenance/monit/',
 								feature: 'monit',
