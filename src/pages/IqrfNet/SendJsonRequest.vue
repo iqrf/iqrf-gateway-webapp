@@ -19,9 +19,9 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
 		<CCard>
 			<CCardHeader>
-				<CButton 
+				<CButton
 					color='primary'
-					size='sm' 
+					size='sm'
 					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
@@ -29,18 +29,15 @@ limitations under the License.
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
-				<CAlert v-if='validatorErrors !== ""' color='danger'>
-					{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
-					<span class='validation-errors'>{{ validatorErrors }}</span>
-				</CAlert>
-				<CElementCover 
+				<JsonSchemaErrors :errors='validatorErrors' />
+				<CElementCover
 					v-if='!isSocketConnected'
 					style='z-index: 1;'
 					:opacity='0.85'
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
 				</CElementCover>
-				<ValidationObserver v-slot='{invalid}'>
+				<ValidationObserver v-slot='{invalid}' slim>
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -49,13 +46,14 @@ limitations under the License.
 								required: "iqrfnet.sendJson.messages.missing",
 								json: "iqrfnet.sendJson.messages.invalid",
 							}'
+							slim
 						>
-							<CTextarea
+							<JsonEditor
 								v-model='json'
-								v-autogrow
 								:label='$t("iqrfnet.sendJson.form.json")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>
 						<CButton color='primary' type='submit' :disabled='invalid'>
@@ -65,7 +63,7 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
@@ -84,7 +82,7 @@ limitations under the License.
 							source='sendJson'
 						/>
 					</CCol>
-					<CCol 
+					<CCol
 						v-if='activeMessagePair.response !== []'
 						md='6'
 					>
@@ -106,21 +104,21 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import JsonEditor from '../../components/Config/JsonEditor.vue';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
+import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
 
-import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '../../iqrfNet/sendJson';
-import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {v4 as uuidv4} from 'uuid';
 
 import IqrfNetService from '../../services/IqrfNetService';
-import validate from '../../helpers/validate_daemonRequest';
 
 import {IMessagePairRequest} from '../../interfaces/iqrfnet';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 
 @Component({
 	components: {
@@ -131,7 +129,9 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 		CElementCover,
 		CForm,
 		CTextarea,
+		JsonEditor,
 		JsonMessage,
+		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -140,26 +140,23 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 			isSocketConnected: 'isSocketConnected',
 		}),
 	},
-	directives: {
-		'autogrow': TextareaAutogrowDirective
-	},
 	metaInfo: {
 		title: 'iqrfnet.sendJson.title',
 	},
 })
 
 /**
- * Send daemon json api message page component
+ * Send daemon JSON API message page component
  */
 export default class SendJsonRequest extends Vue {
 
 	/**
-	 * @var {string|null} json Daemon api json message
+	 * @var {string|null} json Daemon API JSON message
 	 */
 	private json: string|null = null
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string|null} msgId Daemon API message ID
 	 */
 	private msgId: string|null = null
 
@@ -169,7 +166,7 @@ export default class SendJsonRequest extends Vue {
 	private activeMessagePair: IMessagePairRequest|null = null
 
 	/**
-	 * @var {number} activeIdx Indec of active message pair
+	 * @var {number} activeIdx Index of active message pair
 	 */
 	private activeIdx = 0;
 
@@ -179,14 +176,14 @@ export default class SendJsonRequest extends Vue {
 	private messages: Array<IMessagePairRequest> = []
 
 	/**
-	 * @var validator JSON schema validator function
+	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
-	private validator: any = null 
+	private validator: DaemonApiValidator
 
 	/**
-	 * @var {string} validatorErrors String containing JSON schema violations
+	 * @var {Array<string>} validatorErrors String containing JSON schema violations
 	 */
-	private validatorErrors = ''
+	private validatorErrors: Array<string> = []
 
 	/**
 	 * Component unsubscribe function
@@ -194,25 +191,18 @@ export default class SendJsonRequest extends Vue {
 	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
+	 * Component constructor
+	 */
+	constructor() {
+		super();
+		this.validator = new DaemonApiValidator();
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.validator = validate;
-		extend('json', (json) => {
-			try {
-				this.validatorErrors = '';
-				const jsonObject = JSON.parse(json);
-				if (this.validator(jsonObject)) {
-					return true;
-				} else {
-					console.warn(this.validator.errors);
-					this.buildViolationString(this.validator.errors);
-					return false;
-				}
-			} catch (error) {
-				return false;
-			}
-		});
+		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
@@ -281,65 +271,11 @@ export default class SendJsonRequest extends Vue {
 		if (this.json === null) {
 			return;
 		}
-		if (this.validator === null) {
-			return;
-		}
 		const json = JSON.parse(this.json);
 		if (json.data.msgId === undefined) {
 			Object.assign(json.data, {msgId: uuidv4()});
 		}
 		this.sendRequest(json);
-	}
-
-	/**
-	 * Creates a JSON schema violation string message
-	 * @param {Array<ErrorObject>} errors Array of violations
-	 */
-	private buildViolationString(errors: Array<ErrorObject>): void {
-		let message = '';
-		for (let error of errors) {
-			if (error.keyword === 'type') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.type',
-					{
-						property: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						type: (typeof error.data),
-					}
-				).toString();
-			} else if (error.keyword === 'additionalProperties') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.additional',
-					{
-						object: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						property: (error.params as AdditionalPropertiesParams).additionalProperty,
-					}
-				).toString();
-			} else if (error.keyword === 'required') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.required',
-					{
-						object: (error.dataPath.length === 0 ? 'root' : error.dataPath),
-						message: error.message,
-						path: error.schemaPath,
-					}
-				).toString();
-			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
-				message += this.$t(
-					'iqrfnet.sendJson.violations.range',
-					{
-						property: error.dataPath,
-						message: error.message,
-						path: error.schemaPath,
-						value: error.data,
-					}
-				).toString();
-			}
-		}
-		this.validatorErrors = message.trimRight();
 	}
 
 	/**
@@ -376,7 +312,7 @@ export default class SendJsonRequest extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		this.$store.commit('spinner/HIDE');		
+		this.$store.commit('spinner/HIDE');
 		if (response.data.rsp.errorStr.includes('daemon overload')) { // daemon queue is full
 			this.$toast.error(
 				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()
@@ -468,11 +404,6 @@ export default class SendJsonRequest extends Vue {
 			this.$t('iqrfnet.sendJson.messages.error.fail').toString()
 		);
 	}
+
 }
 </script>
-
-<style scoped>
-.validation-errors {
-	white-space: pre-wrap;
-}
-</style>

@@ -64,7 +64,7 @@ limitations under the License.
 							:options='timeSpecOptions'
 						/>
 						<div
-							v-if='timeSpecSelected === "cron"' 
+							v-if='timeSpecSelected === "cron"'
 							class='form-group'
 						>
 							<ValidationProvider
@@ -109,7 +109,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div
-							v-if='timeSpecSelected === "exact"' 
+							v-if='timeSpecSelected === "exact"'
 							class='form-group'
 						>
 							<label for='exactTime'>
@@ -130,7 +130,7 @@ limitations under the License.
 							</h3>
 							<CButton
 								color='primary'
-								size='sm' 
+								size='sm'
 								href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 								target='_blank'
 							>
@@ -140,27 +140,45 @@ limitations under the License.
 						<div v-for='i of tasks.length' :key='i' class='form-group'>
 							<hr v-if='i > 1'>
 							<CRow>
+								<CCol>
+									<JsonSchemaErrors :errors='validatorErrors[i-1]' />
+								</CCol>
+							</CRow>
+							<CRow>
 								<CCol md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|json|mType'
 										:custom-messages='{
 											required: "config.daemon.scheduler.errors.message",
-											json: "iqrfnet.sendJson.form.messages.invalid",
-											mType: "iqrfnet.sendJson.form.messages.mType"
+											json: "iqrfnet.sendJson.messages.invalid",
+											mType: "iqrfnet.sendJson.messages.mType"
 										}'
+										slim
 									>
-										<CTextarea
+										<JsonEditor
 											v-model='tasks[i-1].message'
-											v-autogrow
 											:label='$t("config.daemon.scheduler.form.messages.label")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
+									<CButton
+										v-if='tasks.length > 1'
+										color='danger'
+										@click='removeMessage(i-1)'
+									>
+										{{ $t('config.daemon.scheduler.form.messages.remove') }}
+									</CButton> <CButton
+										v-if='i === tasks.length'
+										color='success'
+										@click='addMessage'
+									>
+										{{ $t('config.daemon.scheduler.form.messages.add') }}
+									</CButton>
 								</CCol>
 								<CCol md='6'>
-									<div 
+									<div
 										v-for='(messaging, j) of tasks[i-1].messaging'
 										:key='j'
 										class='form-group'
@@ -197,19 +215,6 @@ limitations under the License.
 									</div>
 								</CCol>
 							</CRow>
-							<CButton
-								v-if='tasks.length > 1'
-								color='danger'
-								@click='removeMessage(i-1)'
-							>
-								{{ $t('config.daemon.scheduler.form.messages.remove') }}
-							</CButton> <CButton
-								v-if='i === tasks.length'
-								color='success'
-								@click='addMessage'
-							>
-								{{ $t('config.daemon.scheduler.form.messages.add') }}
-							</CButton>
 						</div>
 						<CButton type='submit' color='primary' :disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'>
 							{{ $t('forms.save') }}
@@ -226,9 +231,9 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
-import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive';
 import {Datetime} from 'vue-datetime';
 
+import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 import {extendedErrorToast} from '../../helpers/errorToast';
 
 import cron from 'cron-validate';
@@ -244,6 +249,9 @@ import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
+
+import JsonEditor from '../../components/Config/JsonEditor.vue';
+import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
 
 enum TimeSpecTypes {
 	CRON = 'cron',
@@ -264,11 +272,10 @@ enum TimeSpecTypes {
 		CSelect,
 		CTextarea,
 		Datetime,
+		JsonEditor,
+		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider
-	},
-	directives: {
-		'autogrow': TextareaAutogrowDirective,
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -282,7 +289,7 @@ enum TimeSpecTypes {
  */
 export default class SchedulerForm extends Vue {
 	/**
-	 * @var {string} clientId Scheduler task client id
+	 * @var {string} clientId Scheduler task client ID
 	 */
 	private clientId = 'SchedulerMessaging'
 
@@ -299,7 +306,7 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null
-	
+
 	/**
 	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
 	 */
@@ -322,6 +329,16 @@ export default class SchedulerForm extends Vue {
 	 * @var {Array<string>} msgIds Array of daemon api message ids
 	 */
 	private msgIds: Array<string> = []
+
+	/**
+	 * @var {DaemonApiValidator} validator JSON schema validator function
+	 */
+	private validator: DaemonApiValidator
+
+	/**
+	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
+	 */
+	private validatorErrors: Array<Array<string>> = [[]]
 
 	/**
 	 * @constant {number} taskId Scheduler task id in epoch seconds
@@ -376,7 +393,7 @@ export default class SchedulerForm extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-	
+
 	/**
 	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
 	 */
@@ -447,21 +464,27 @@ export default class SchedulerForm extends Vue {
 	@Prop({required: false, default: null}) id!: number
 
 	/**
+	 * Constructor
+	 */
+	constructor() {
+		super();
+		this.validator = new DaemonApiValidator();
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
+		extend('json', (json) => {
+			return this.validator.validate(json, (errorMessages) => {
+				const index = this.tasks.findIndex((task) => task.message === json);
+				this.validatorErrors[index] = errorMessages;
+			});
+		});
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
-		extend('json', (json) => {
-			try {
-				JSON.parse(json);
-				return true;
-			} catch (error) {
-				return false;
-			}
-		});
 		extend('mType', (json) => {
 			let object = JSON.parse(json);
 			return {}.hasOwnProperty.call(object, 'mType');
@@ -548,11 +571,11 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Converts cron time string into a human readable message
-	 * @param {string} cronstring cRon time string
+	 * Converts cron time expression into a human readable message
+	 * @param {string} cronExpression Cron time expression
 	 */
-	private calculateCron(cronstring: string): void {
-		const cronTime = cronstring.trim().split(' ');
+	private calculateCron(cronExpression: string): void {
+		const cronTime = cronExpression.trim().split(' ');
 		const len = cronTime.length;
 		if (len === 1) {
 			const alias = this.getCronAlias((this.timeSpec.cronTime as string));
@@ -573,6 +596,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	private addMessage(): void {
 		this.tasks.push({message: '', messaging: ['']});
+		this.validatorErrors.push([]);
 	}
 
 	/**
@@ -589,6 +613,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	private removeMessage(index: number): void {
 		this.tasks.splice(index, 1);
+		this.validatorErrors.splice(index, 1);
 	}
 
 	/**
@@ -663,6 +688,9 @@ export default class SchedulerForm extends Vue {
 				}
 			];
 		}
+		for (let i = 0; i < this.tasks.length; ++i) {
+			this.validatorErrors.push([]);
+		}
 	}
 
 	/**
@@ -684,6 +712,9 @@ export default class SchedulerForm extends Vue {
 			messaging: Array.isArray(item.messaging) ? item.messaging : item.messaging.split('&'),
 			message: JSON.stringify(item.message, null, 2),
 		}));
+		for (let i = 0; i < this.tasks.length; ++i) {
+			this.validatorErrors.push([]);
+		}
 	}
 
 	/**
@@ -863,17 +894,15 @@ export default class SchedulerForm extends Vue {
 			);
 		}
 		this.$router.push('/config/daemon/scheduler/');
-		
 	}
+
 }
 </script>
 
 <style scoped>
-
 .messages-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
-
 </style>

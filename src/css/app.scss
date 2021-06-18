@@ -130,3 +130,7 @@ $theme-colors: (
 	text-align: right;
 	white-space: nowrap;
 }
+
+.prism-editor__textarea {
+	outline: 0;
+}
