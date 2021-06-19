@@ -55,7 +55,7 @@ class HostnameManager {
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param Networkmanager $networkManager Network manager
+	 * @param NetworkManager $networkManager Network manager
 	 */
 	public function __construct(CommandManager $commandManager, IFileManager $fileManager, NetworkManager $networkManager) {
 		$this->commandManager = $commandManager;
