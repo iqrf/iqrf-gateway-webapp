@@ -28,9 +28,8 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Exceptions\HostnamectlException;
+use App\GatewayModule\Exceptions\HostnameException;
 use App\GatewayModule\Models\HostnameManager;
-use Nette\IOException;
 
 /**
  * Hostname controller
@@ -82,9 +81,7 @@ class HostnameController extends GatewayController {
 			$config = $request->getJsonBody(true);
 			$this->manager->setHostname($config['hostname']);
 			return $response->writeBody('Workaround');
-		} catch (HostnamectlException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+		} catch (HostnameException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
