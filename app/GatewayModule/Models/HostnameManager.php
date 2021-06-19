@@ -32,9 +32,14 @@ use Nette\Utils\Strings;
 class HostnameManager {
 
 	/**
-	 * Path to hosts file
+	 * Hosts file name
 	 */
 	private const HOSTS_FILE = 'hosts';
+
+	/**
+	 * Hostname file name
+	 */
+	private const HOSTNAME_FILE = 'hostname';
 
 	/**
 	 * @var CommandManager Command manager
@@ -91,16 +96,20 @@ class HostnameManager {
 	 */
 	private function replaceHostname(string $oldHostname, string $newHostname): void {
 		$content = $this->fileManager->read(self::HOSTS_FILE);
-		$pattern = '/^.+\s+' . $oldHostname . '$/';
+		$ipv4Pattern = '/^.+\s+' . $oldHostname . '(\slocalhost)?$/';
+		$ipv6Pattern = '/^.+\s+' . $oldHostname . '(\slocalhost)?(\sip6-localhost)?(\sip6-loopback)?$/';
 		$lines = explode(PHP_EOL, $content);
 		foreach ($lines as $idx => $line) {
-			if (Strings::match($line, $pattern) !== null) {
-				$lines[$idx] = Strings::replace($line, '/' . $oldHostname . '/', $newHostname);
-				break;
+			if (Strings::match($line, $ipv4Pattern) !== null) {
+				$lines[$idx] = Strings::replace($line, '/' . $oldHostname . '/', $newHostname, 1);
+			}
+			if (Strings::match($line, $ipv6Pattern) !== null) {
+				$lines[$idx] = Strings::replace($line, '/' . $oldHostname . '/', $newHostname, 1);
 			}
 		}
 		$content = implode(PHP_EOL, $lines);
 		$this->fileManager->write(self::HOSTS_FILE, $content);
+		$this->fileManager->write(self::HOSTNAME_FILE, $newHostname);
 	}
 
 }
