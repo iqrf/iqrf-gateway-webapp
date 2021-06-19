@@ -122,7 +122,7 @@ class LogManager {
 	 * @return string Systemd Journal log
 	 */
 	public function getSystemdJournalLog(): string {
-		$result = $this->commandManager->run('journalctl --utc -b --no-pager');
+		$result = $this->commandManager->run('journalctl --utc -b --no-pager', true);
 		return $result->getStdout();
 	}
 
