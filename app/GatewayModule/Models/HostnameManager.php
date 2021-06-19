@@ -75,12 +75,17 @@ class HostnameManager {
 	public function setHostname(string $hostname): void {
 		$old = $this->networkManager->getHostname();
 		if ($old === '') {
-			throw new HostnameException('Failed to retrieve hostname.');
+				throw new HostnameException('Failed to retrieve hostname.');
 		}
 		try {
 			$this->replaceHostname($old, $hostname);
 		} catch (IOException $e) {
 			throw new HostnameException($e->getMessage());
+		}
+		$output = $this->commandManager->run('hostname ' . $hostname, true);
+		if ($output->getExitCode() !== 0) {
+			$this->replaceHostname($hostname, $old);
+			throw new HostnameException($output->getStderr());
 		}
 		$output = $this->commandManager->run('hostnamectl set-hostname ' . $hostname, true);
 		if ($output->getExitCode() !== 0) {
@@ -88,6 +93,7 @@ class HostnameManager {
 			throw new HostnameException($output->getStderr());
 		}
 	}
+
 
 	/**
 	 * Replaces hostname in hosts file
