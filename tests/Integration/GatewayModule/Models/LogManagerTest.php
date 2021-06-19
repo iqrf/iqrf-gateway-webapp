@@ -156,7 +156,7 @@ final class LogManagerTest extends CommandTestCase {
 		$expected = $this->fileManager->read('journal.log');
 		$command = new Command(self::COMMANDS['journal'], $expected, '', 0);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['journal']])
+			->withArgs([self::COMMANDS['journal'], true])
 			->andReturn($command);
 		Assert::same($expected, $this->managerMockCommand->getServiceLog('systemd-journald'));
 	}
