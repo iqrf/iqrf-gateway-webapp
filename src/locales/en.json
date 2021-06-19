@@ -1093,7 +1093,7 @@
 			"errors": {
 				"hostnameMissing": "Please enter hostname.",
 				"hostnameLen": "Hostname should be at most 64 characters long.",
-				"hostnameInvalid": "Hostname should contain letters a-z, digits 0-9 and a hyphen (-). Cannot start with a hyphen."
+				"hostnameInvalid": "Hostname should contain letters a-z (case insensitive), digits 0-9 and a hyphen (-). Cannot start with a hyphen."
 			},
 			"messages": {
 				"success": "Hostname configuration has been succesfully changed.",

@@ -14,10 +14,15 @@
 # limitations under the License.
 
 services:
-	certificateFileManager: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
-	certificateManager: App\GatewayModule\Models\CertificateManager
+	certificateFileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
+		autowired: false
+	certificateManager: App\GatewayModule\Models\CertificateManager(@certificateFileManager)
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
-	- App\GatewayModule\Models\HostnameManager
+	hostname.fileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/')
+		autowired: false
+	- App\GatewayModule\Models\HostnameManager(@commandManager, @hostname.fileManager)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager

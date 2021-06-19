@@ -21,8 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\GatewayModule\Exceptions\HostnamectlException;
-use Nette\Utils\FileSystem;
+use App\CoreModule\Models\IFileManager;
+use App\GatewayModule\Exceptions\HostnameException;
+use Nette\IOException;
 use Nette\Utils\Strings;
 
 /**
@@ -33,7 +34,7 @@ class HostnameManager {
 	/**
 	 * Path to hosts file
 	 */
-	private const HOSTS_FILE = '/etc/hosts';
+	private const HOSTS_FILE = 'hosts';
 
 	/**
 	 * @var CommandManager Command manager
@@ -41,11 +42,25 @@ class HostnameManager {
 	private $commandManager;
 
 	/**
+	 * @var IFileManager File manager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var NetworkManager Network manager
+	 */
+	private $networkManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param IFileManager $fileManager Privileged file manager
+	 * @param Networkmanager $networkManager Network manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, IFileManager $fileManager, NetworkManager $networkManager) {
 		$this->commandManager = $commandManager;
+		$this->fileManager = $fileManager;
+		$this->networkManager = $networkManager;
 	}
 
 	/**
@@ -53,24 +68,20 @@ class HostnameManager {
 	 * @param string $hostname Hostname to set
 	 */
 	public function setHostname(string $hostname): void {
-		$old = $this->getHostname();
+		$old = $this->networkManager->getHostname();
+		if ($old === '') {
+			throw new HostnameException('Failed to retrieve hostname.');
+		}
+		try {
+			$this->replaceHostname($old, $hostname);
+		} catch (IOException $e) {
+			throw new HostnameException($e->getMessage());
+		}
 		$output = $this->commandManager->run('hostnamectl set-hostname ' . $hostname, true);
 		if ($output->getExitCode() !== 0) {
-			throw new HostnamectlException($output->getStderr());
+			$this->replaceHostname($hostname, $old);
+			throw new HostnameException($output->getStderr());
 		}
-		$this->replaceHostname($old, $hostname);
-	}
-
-	/**
-	 * Returns current gateway hostname
-	 * @return string Current gateway hostname
-	 */
-	private function getHostname(): string {
-		$output = $this->commandManager->run('hostname -f');
-		if ($output->getExitCode() !== 0) {
-			throw new HostnamectlException($output->getStderr());
-		}
-		return $output->getStdout();
 	}
 
 	/**
@@ -79,7 +90,7 @@ class HostnameManager {
 	 * @param string $newHostname New hostname
 	 */
 	private function replaceHostname(string $oldHostname, string $newHostname): void {
-		$content = FileSystem::read(self::HOSTS_FILE);
+		$content = $this->fileManager->read(self::HOSTS_FILE);
 		$pattern = '/^.+\s+' . $oldHostname . '$/';
 		$lines = explode(PHP_EOL, $content);
 		foreach ($lines as $idx => $line) {
@@ -89,7 +100,7 @@ class HostnameManager {
 			}
 		}
 		$content = implode(PHP_EOL, $lines);
-		FileSystem::write(self::HOSTS_FILE, $content);
+		$this->fileManager->write(self::HOSTS_FILE, $content);
 	}
 
 }
