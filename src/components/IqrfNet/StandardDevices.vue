@@ -211,6 +211,7 @@ limitations under the License.
 						<CCollapse :show='item.showDetails'>
 							<CCardBody>
 								<CMedia
+									v-if='item.showDetails'
 									:aside-image-props='{
 										src: item.getImg(),
 										block: true,
