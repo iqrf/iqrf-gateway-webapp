@@ -23,8 +23,8 @@ namespace App\GatewayModule\Exceptions;
 use Exception;
 
 /**
- * Exception that indicates a hostnamectl error
+ * Exception that indicates a hostname error
  */
-class HostnamectlException extends Exception {
+class HostnameException extends Exception {
 
 }

@@ -92,7 +92,7 @@ export default class HostnameChange extends Vue {
 	 */
 	created(): void {
 		extend('hostnamePattern', (hostname: string) => {
-			const re = new RegExp('^[0-9a-z][0-9a-z\\-]{0,63}$');
+			const re = new RegExp('^[0-9a-zA-Z][0-9a-zA-Z\\-]{0,63}$');
 			return re.test(hostname);
 		});
 		extend('maxLen', max);
