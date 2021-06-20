@@ -19,13 +19,14 @@ services:
 		autowired: false
 	certificateManager: App\GatewayModule\Models\CertificateManager(@certificateFileManager)
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
-	hostname.fileManager:
+	etc.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/')
 		autowired: false
-	- App\GatewayModule\Models\HostnameManager(@commandManager, @hostname.fileManager)
+	- App\GatewayModule\Models\HostnameManager(@commandManager, @etc.fileManager)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
+	- App\GatewayModule\Models\NtpManager
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SystemdJournalManager

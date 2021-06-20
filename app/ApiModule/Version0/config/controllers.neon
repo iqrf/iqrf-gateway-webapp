@@ -31,6 +31,7 @@ services:
 	- App\ApiModule\Version0\Controllers\Gateway\HostnameController
 	- App\ApiModule\Version0\Controllers\Gateway\InfoController
 	- App\ApiModule\Version0\Controllers\Gateway\LogController
+	- App\ApiModule\Version0\Controllers\Gateway\NtpController
 	- App\ApiModule\Version0\Controllers\Gateway\PasswordController
 	- App\ApiModule\Version0\Controllers\Gateway\PowerController
 	- App\ApiModule\Version0\Controllers\Gateway\SystemdJournalController
