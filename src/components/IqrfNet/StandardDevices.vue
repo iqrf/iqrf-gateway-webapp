@@ -701,7 +701,7 @@ export default class StandardDevices extends Vue {
 	 * Handles GetSensors Daemon API response
 	 * @param response Daemon API response
 	 */
-	private handleGetSensors(response): void {
+	private async handleGetSensors(response): Promise<void> {
 		this.$store.dispatch('removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
@@ -716,7 +716,7 @@ export default class StandardDevices extends Vue {
 				this.auxDevices[idx]?.setSensors(device.sensors);
 			}
 		});
-		this.fetchDeviceDetails();
+		await this.fetchDeviceDetails();
 		this.$store.dispatch('spinner/hide');
 		this.pingDevices();
 	}
