@@ -2429,7 +2429,11 @@
 					"failed": "Failed to deactivate connection {connection}: {error}"
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
-				"removeFailed": "Failed to delete network connection {connection}: {error}"
+				"removeFailed": "Failed to delete network connection {connection}: {error}",
+				"hotspotAddSuccess": "Hotspot {hotspot} has been successfully created.",
+				"hotspotAddFailed": "Failed to create hotspot {hotspot}: {error}",
+				"hotspotEditSuccess": "Hotspot {hotspot} has been successfully edited.",
+				"hotspotEditFailed": "Failed to edit configuration of hotspot {hotspot}: {error}"
 			}
 		},
 		"table": {

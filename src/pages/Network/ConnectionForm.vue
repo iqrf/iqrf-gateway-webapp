@@ -1050,17 +1050,42 @@ export default class ConnectionForm extends Vue {
 		if (connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
-				.then((response: AxiosResponse) => this.connect(response.data, connection.name))
+				.then((response: AxiosResponse) => {
+					if (this.wifiMode !== 'ap') {
+						this.connect(response.data, connection.name);
+					} else {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('network.connection.messages.hotspotAddSuccess', {hotspot: connection.name}).toString()
+						);
+						this.$router.push('/network/wireless');
+					}
+				})
 				.catch((error: AxiosError) => extendedErrorToast(
 					error,
-					'network.connection.messages.add.failed'
+					this.wifiMode === 'ap' ?
+						'network.connection.messages.hotspotAddFailed':
+						'network.connection.messages.add.failed',
+					{hotspot: connection.name}
 				));
 		} else {
 			NetworkConnectionService.edit(this.uuid, connection)
-				.then(() => this.connect(this.uuid, connection.name))
+				.then(() => {
+					if (this.wifiMode !== 'ap') {
+						this.connect(this.uuid, connection.name);
+					} else {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('network.connection.messages.hotspotEditSuccess', {hotspot: connection.name}).toString()
+						);
+						this.$router.push('/network/wireless');
+					}
+				})
 				.catch((error: AxiosError) => extendedErrorToast(
 					error,
-					'network.connection.messages.edit.failed',
+					this.wifiMode === 'ap' ?
+						'network.connection.messages.hotspotEditFailed':
+						'network.connection.messages.edit.failed',
 					{connection: connection.name}
 				));
 		}
