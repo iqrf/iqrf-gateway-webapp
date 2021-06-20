@@ -111,6 +111,21 @@ class GatewayService {
 	setHostname(config: IHostname): Promise<AxiosResponse> {
 		return axios.post('gateway/hostname', config, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Retrieves NTP configuration
+	 */
+	getNtp(): Promise<AxiosResponse> {
+		return axios.get('gateway/ntp', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Saves NTP configuration
+	 * @param config NTP configuration
+	 */
+	setNtp(config: any): Promise<AxiosResponse> {
+		return axios.put('gateway/ntp', config, {headers: authorizationHeader()});
+	}
 }
 
 export default new GatewayService();

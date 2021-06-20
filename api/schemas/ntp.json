@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/ntp.json",
+	"type": "object",
+	"title": "NTP configuration",
+	"required": [
+		"servers"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"servers": {
+			"$id": "#/properties/servers",
+			"title": "NTP servers",
+			"type": "array",
+			"additionalItems": false,
+			"items": {
+				"anyOf": [
+					{
+						"type": "string",
+						"format": "hostname"
+					},
+					{
+						"type": "string",
+						"format": "ipv4"
+					}
+				]
+			}
+		}
+	}
+}

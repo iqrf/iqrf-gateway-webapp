@@ -1160,6 +1160,24 @@
 				"timezoneSetFailed": "Failed to change timezone: {error}."
 			}
 		},
+		"ntp": {
+			"title": "Local NTP server configuration",
+			"form": {
+				"setServer": "Set own NTP server",
+				"server": "Server",
+				"add": "Add another server",
+				"remove": "Remove server"
+			},
+			"errors": {
+				"serverInvalid": "Server should be either IP address or fully qualified domain name.",
+				"serverMissing": "Please enter a server."
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve NTP configuration: {error}",
+				"saveFailed": "Failed to NTP configuration: {error}",
+				"saveSuccess": "NTP configuration has been successfully saved."
+			}
+		},
 		"log": {
 			"title": "Logs",
 			"description": "Shows gateway logs.",
