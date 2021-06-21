@@ -267,8 +267,8 @@ export default class DeviceEnumeration extends Vue {
 	 * Performs enumeration on device specified by address
 	 */
 	private enumerate(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+		this.$store.dispatch('spinner/show', {timeout: 300000});
+		IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 }
