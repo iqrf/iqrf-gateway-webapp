@@ -1,11 +1,29 @@
+From 5b6d71f767f48d2b8951d79d838a57530bad0bb0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Karel=20Han=C3=A1k?= <karel.hanak@iqrf.org>
+Date: Mon, 21 Jun 2021 11:57:35 +0200
+Subject: [PATCH] f
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Karel Hanák <karel.hanak@iqrf.org>
+---
+ debian/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/debian/control b/debian/control
+index 5485b20b..14429be5 100644
 --- a/debian/control
 +++ b/debian/control
-@@ -13,7 +13,7 @@
-
+@@ -13,7 +13,7 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
+ 
  Package: iqrf-gateway-webapp
  Architecture: all
--Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl,
-+Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-gateway-uploader, openssl,
+-Depends: ${misc:Depends}, iqrf-gateway-daemon (>> 2.3.5), openssl,
++Depends: ${misc:Depends}, iqrf-gateway-daemon (>> 2.3.5), iqrf-gateway-uploader, openssl,
   php7.3-common | php7.4-common, php7.3-cli | php7.4-cli,
   php7.3-fpm | php7.4-fpm, php7.3-curl | php7.4-curl, php7.3-json | php7.4-json,
-  php7.3-mbstring | php7.4-mbstring, php7.3-sqlite3 | php7.4-sqlite3,
+  php7.3-mbstring | php7.4-mbstring, php7.3-sqlite3 | php7.4-sqlite3, 
+-- 
+2.25.1
+
