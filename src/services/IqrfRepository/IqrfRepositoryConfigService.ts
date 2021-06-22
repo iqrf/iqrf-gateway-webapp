@@ -20,15 +20,24 @@ import axios, {AxiosResponse} from 'axios';
 import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
 
 /**
- * Repository configuration service
+ * IQRF Repository configuration service
  */
-class RepositoryConfigService {
+class IqrfRepositoryConfigService {
+
+	/**
+	 * REST API endpoint base path
+	 * @private
+	 */
+	private readonly basePath = 'config/iqrf-repository';
 
 	/**
 	 * Retrieves IQRF repository configuration
 	 */
-	get(): Promise<AxiosResponse> {
-		return axios.get('iqrf/repository/config', {headers: authorizationHeader()});
+	get(): Promise<IIqrfRepositoryConfig> {
+		return axios.get(this.basePath, {headers: authorizationHeader()})
+			.then((response: AxiosResponse<IIqrfRepositoryConfig>) => {
+				return response.data;
+			});
 	}
 
 	/**
@@ -36,9 +45,8 @@ class RepositoryConfigService {
 	 * @param config IQRF repository configuration
 	 */
 	save(config: IIqrfRepositoryConfig): Promise<AxiosResponse> {
-		return axios.put('iqrf/repository/config', config, {headers: authorizationHeader()});
+		return axios.put(this.basePath, config, {headers: authorizationHeader()});
 	}
 }
 
-export default new RepositoryConfigService();
- 
+export default new IqrfRepositoryConfigService();

@@ -20,8 +20,10 @@ declare(strict_types = 1);
 
 namespace App;
 
+use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\Configurator;
 use Nette\IOException;
+use Nette\Neon\Exception;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
@@ -58,6 +60,12 @@ class Kernel {
 			// Skip Sentry version settings
 		}
 		$configurator->addParameters(['confDir' => $confDir]);
+		try {
+			$iqrfRepositoryManager = new IqrfRepositoryManager(__DIR__ . '/config/iqrf-repository.neon');
+			$configurator->addDynamicParameters(['iqrfRepository' => $iqrfRepositoryManager->readConfig()]);
+		} catch (IOException | Exception $e) {
+			// File not found/is corrupted - do nothing
+		}
 		/**
 		 * @var SplFileInfo $file File info object
 		 */

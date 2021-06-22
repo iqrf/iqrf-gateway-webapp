@@ -18,44 +18,45 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers\Iqrf;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\IqrfController;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\IqrfNetModule\Exceptions\RepositoryConfigMissingException;
-use App\IqrfNetModule\Models\RepositoryManager;
+use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\IOException;
-use Nette\Neon\Exception;
+use Nette\Neon\Exception as NeonException;
 
 /**
  * IQRF Repository controller
- * @Path("/repository")
+ * @Path("/iqrf-repository")
+ * @Tag("IQRF Repository configuration")
  */
-class RepositoryController extends IqrfController {
+class IqrfRepositoryController extends BaseConfigController {
 
 	/**
-	 * @var RepositoryManager IQRF Repository manager
+	 * @var IqrfRepositoryManager IQRF Repository manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param RepositoryManager $manager IQRF Repository manager
+	 * @param IqrfRepositoryManager $manager IQRF Repository manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(RepositoryManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(IqrfRepositoryManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/config")
+	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns IQRF repository extension configuration
@@ -65,7 +66,7 @@ class RepositoryController extends IqrfController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/RepositoryConfig'
+	 *                      $ref: '#/components/schemas/IqrfRepositoryConfig'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -73,16 +74,16 @@ class RepositoryController extends IqrfController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeJsonBody($this->manager->getConfig());
-		} catch (Exception | IOException | RepositoryConfigMissingException $e) {
+			return $response->writeJsonBody($this->manager->readConfig());
+		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/config")
+	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Updates IQRF repository extension configuration
@@ -91,7 +92,7 @@ class RepositoryController extends IqrfController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/RepositoryConfig'
+	 *                  $ref: '#/components/schemas/IqrfRepositoryConfig'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -105,12 +106,12 @@ class RepositoryController extends IqrfController {
 	 * @return ApiResponse API response
 	 */
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('repositoryConfig', $request);
+		$this->validator->validateRequest('iqrfRepositoryConfig', $request);
 		try {
 			$config = $request->getJsonBody(true);
 			$this->manager->saveConfig($config);
 			return $response->writeBody('Workaround');
-		} catch (Exception | IOException $e) {
+		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

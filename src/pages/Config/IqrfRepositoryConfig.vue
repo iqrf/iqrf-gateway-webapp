@@ -104,7 +104,7 @@ import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import RepositoryConfigService from '../../services/IqrfRepository/RepositoryConfigService';
+import RepositoryConfigService from '../../services/IqrfRepository/IqrfRepositoryConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
@@ -128,16 +128,16 @@ import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
 /**
  * IQRF repository configuration component
  */
-export default class RepositoryConfig extends Vue {
+export default class IqrfRepositoryConfig extends Vue {
 
 	/**
 	 * @var {IIqrfRepositoryConfig} config IQRF repository configuration
 	 */
 	private config: IIqrfRepositoryConfig = {
-		apiEndpoint: 'repository.iqrfalliance.org/api',
+		apiEndpoint: 'https://repository.iqrfalliance.org/api',
 		credentials: {
-			username: '',
-			password: '',
+			username: null,
+			password: null,
 		},
 	}
 
@@ -166,9 +166,9 @@ export default class RepositoryConfig extends Vue {
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return RepositoryConfigService.get()
-			.then((response: AxiosResponse) => {
-				this.config = {...this.config, ...response.data};
-				this.credentials = response.data.credentials !== undefined;
+			.then((config: IIqrfRepositoryConfig) => {
+				this.config = {...this.config, ...config};
+				this.credentials = config.credentials.username !== null;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -183,7 +183,7 @@ export default class RepositoryConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		let config = this.config;
 		if (!this.credentials) {
-			delete config.credentials;
+			config.credentials = {username: null, password: null};
 		}
 		RepositoryConfigService.save(config)
 			.then(() => {
