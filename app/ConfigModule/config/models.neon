@@ -28,6 +28,7 @@ services:
 		autowired: self
 	- App\ConfigModule\Models\GenericManager
 	- App\ConfigModule\Models\IqrfManager
+	- App\ConfigModule\Models\IqrfRepositoryManager(%confDir%/iqrf-repository.neon)
 	- App\ConfigModule\Models\MainManager
 	- App\ConfigModule\Models\MigrationManager(%daemon.configDir%, %daemon.cacheDir%, %controller.configDir%, %translator.configDir%)
 	- App\ConfigModule\Models\SchedulerManager

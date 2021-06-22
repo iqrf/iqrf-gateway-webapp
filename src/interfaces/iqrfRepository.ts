@@ -22,22 +22,22 @@ export interface IIqrfRepository {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Component instance name
 	 */
 	instance: string
-	
+
 	/**
 	 * Repository URL
 	 */
 	urlRepo: string
-	
+
 	/**
 	 * Check period in minutes
 	 */
 	checkPeriodInMinutes: number
-	
+
 	/**
 	 * Download date if repository cache is empty?
 	 */
@@ -56,10 +56,20 @@ export interface IIqrfRepositoryConfig {
 	/**
 	 * Repository credentials
 	 */
-	credentials?: IIqrfRepositoryCredentials
+	credentials: IIqrfRepositoryCredentials
 }
 
+/**
+ * IQRF Repository credentials
+ */
 export interface IIqrfRepositoryCredentials {
-	username: string
-	password: string
+	/**
+	 * Username
+	 */
+	username: string|null
+
+	/**
+	 * Password
+	 */
+	password: string|null
 }
