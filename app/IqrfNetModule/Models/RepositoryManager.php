@@ -46,7 +46,7 @@ class RepositoryManager {
 	 * @return array<mixed> IQRF repository configuration
 	 */
 	public function getConfig(): array {
-		$config = Neon::decode(FileSystem::read($this->confPath));
+		$config = Neon::decode($this->readConfig());
 		if (array_key_exists('iqrfRepository', $config)) {
 			return $config['iqrfRepository'];
 		}
@@ -58,12 +58,17 @@ class RepositoryManager {
 	 * @param array<string, string|array<string, string>> $config IQRF repository configuration to save
 	 */
 	public function saveConfig(array $config): void {
-		try {
-			$oldConfig = $this->getConfig();
-		} catch (RepositoryConfigMissingException $e) {
-			// ignore error
-		}
+		$oldConfig = Neon::decode($this->readConfig());
 		$oldConfig['iqrfRepository'] = $config;
-		Filesystem::write($this->confPath, Neon::encode($oldConfig));
+		FileSystem::write($this->confPath, Neon::encode($oldConfig, Neon::BLOCK));
 	}
+
+	/**
+	 * Reads config file and returns content
+	 * @return string Config file content
+	 */
+	private function readConfig(): string {
+		return FileSystem::read($this->confPath);
+	}
+
 }
