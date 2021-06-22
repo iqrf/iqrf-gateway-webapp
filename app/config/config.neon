@@ -52,10 +52,7 @@ extensions:
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
 
 iqrfRepository:
-	apiEndpoint: https://repository.iqrfalliance.org/api
-	credentials:
-		username: 'admin'
-		password: '1234'
+	apiEndpoint: 'https://repository.iqrfalliance.org/api'
 
 iqrfMacros:
 	# path to IQRF IDE macros

@@ -213,6 +213,19 @@
 				"importSuccess": "The configuration has been imported."
 			}
 		},
+		"repository": {
+			"title": "IQRF Repository",
+			"header": "Credentials configuration",
+			"form": {
+				"endpoint": "API endpoint",
+				"credentials": "Use credentials"
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve IQRF repository configuration: {error}",
+				"saveFailed": "Failed to save IQRF repository configuration: {error}",
+				"saveSuccess": "IQRF repository configuration has been successfully saved."
+			}
+		},
 		"daemon": {
 			"title": "IQRF GW daemon",
 			"description": "IQRF Daemon configuration",
