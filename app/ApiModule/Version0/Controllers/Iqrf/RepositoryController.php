@@ -30,8 +30,8 @@ use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\IqrfNetModule\Exceptions\RepositoryConfigMissingException;
 use App\IqrfNetModule\Models\RepositoryManager;
-use Nette\Neon\Exception;
 use Nette\IOException;
+use Nette\Neon\Exception;
 
 /**
  * IQRF Repository controller
@@ -76,7 +76,7 @@ class RepositoryController extends IqrfController {
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->getConfig());
-		} catch (Exception|IOException|RepositoryConfigMissingException $e) {
+		} catch (Exception | IOException | RepositoryConfigMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -110,7 +110,7 @@ class RepositoryController extends IqrfController {
 			$config = $request->getJsonBody(true);
 			$this->manager->saveConfig($config);
 			return $response->writeBody('Workaround');
-		} catch (Exception|IOException $e) {
+		} catch (Exception | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

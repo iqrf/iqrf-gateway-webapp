@@ -119,7 +119,7 @@
 		"fields": {
 			"address": "Address",
 			"id": "ID",
-			"username": "User name",
+			"username": "Username",
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
@@ -215,11 +215,14 @@
 			}
 		},
 		"repository": {
-			"title": "IQRF Repository",
-			"header": "Credentials configuration",
+			"title": "IQRF repository",
+			"description": "Manage configuration of IQRF repository extension.",
 			"form": {
 				"endpoint": "API endpoint",
 				"credentials": "Use credentials"
+			},
+			"errors": {
+				"endpointMissing": "Please enter repository API endpoint."
 			},
 			"messages": {
 				"fetchFailed": "Failed to retrieve IQRF repository configuration: {error}",

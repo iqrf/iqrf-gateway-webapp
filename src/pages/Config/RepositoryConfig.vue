@@ -2,16 +2,23 @@
 	<div>
 		<h1>{{ $t('config.repository.title') }}</h1>
 		<CCard>
-			<CCardHeader>
-				{{ $t('config.repository.header') }}
-			</CCardHeader>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
-						<CInput
-							v-model='config.apiEndpoint'
-							:label='$t("config.repository.form.endpoint")'
-						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: "config.repository.errors.endpointMissing"
+							}'
+						>
+							<CInput
+								v-model='config.apiEndpoint'
+								:label='$t("config.repository.form.endpoint")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<div class='form-group'>
 							<b>
 								<label>
@@ -19,12 +26,45 @@
 								</label>
 							</b><br>
 							<CSwitch
+								:checked.sync='credentials'
 								color='primary'
 								size='lg'
 								shape='pill'
 								label-on='ON'
 								label-off='OFF'
 							/>
+						</div>
+						<div
+							v-if='credentials'
+						>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "forms.errors.username"
+								}'
+							>
+								<CInput
+									v-model='config.credentials.username'
+									:label='$t("forms.fields.username")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "forms.errors.password"
+								}'
+							>
+								<CInput
+									v-model='config.credentials.password'
+									:label='$t("forms.fields.password")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
 						</div>
 						<CButton
 							color='primary'
@@ -42,7 +82,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSwitch} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -58,9 +98,9 @@ import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
 		CButton,
 		CCard,
 		CCardBody,
-		CCardHeader,
 		CForm,
 		CInput,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider
 	},
