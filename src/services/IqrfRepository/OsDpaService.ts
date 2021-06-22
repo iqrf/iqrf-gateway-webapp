@@ -55,6 +55,12 @@ export class OsDpaVersion {
 	private readonly downloadPath: string;
 
 	/**
+	 * DPA attributes
+	 * @private
+	 */
+	private readonly dpaAttributes: number;
+
+	/**
 	 * DPA version entity
 	 * @param osBuild IQRF OS build
 	 * @param osVersion IQRF OS version
@@ -62,12 +68,13 @@ export class OsDpaVersion {
 	 * @param notes DPA version notes
 	 * @param downloadPath DPA files download path
 	 */
-	public constructor(osBuild: string, osVersion: string, dpaVersion: string, notes: string, downloadPath: string) {
+	public constructor(osBuild: string, osVersion: string, dpaVersion: string, notes: string, downloadPath: string, dpaAttributes: number) {
 		this.osBuild = osBuild;
 		this.osVersion = osVersion;
 		this.dpaVersion = dpaVersion;
 		this.notes = notes;
 		this.downloadPath = downloadPath;
+		this.dpaAttributes = dpaAttributes;
 	}
 
 	/**
@@ -98,7 +105,7 @@ export class OsDpaVersion {
 		const versionInt = Number.parseInt(this.dpaVersion, 16);
 		const major = versionInt >> 8;
 		const minor = versionInt & 0xff;
-		return major.toString() + '.' + minor.toString(16).padStart(2, '0');
+		return major.toString() + '.' + minor.toString(16).padStart(2, '0') + this.getDpaAttributesString();
 	}
 
 	/**
@@ -115,6 +122,33 @@ export class OsDpaVersion {
 	 */
 	public getDownloadPath(): string {
 		return this.downloadPath;
+	}
+
+	/**
+	 * Returns DPA attributes
+	 * @returns DPA attributes
+	 */
+	public getDpaAttributes(): number {
+		return this.dpaAttributes;
+	}
+
+	/**
+	 * Returns DPA version properties string based on attributes
+	 * @returns DPA version properties
+	 */
+	public getDpaAttributesString(): string {
+		switch (this.dpaAttributes) {
+			case 0:
+				return '';
+			case 1:
+				return ' (Beta version)';
+			case 2:
+				return ' (Obsolete)';
+			case 3:
+				return ' (Beta version, Obsolete)';
+			default:
+				return '';
+		}
 	}
 
 }
@@ -138,13 +172,20 @@ class OsDpaService {
 	 */
 	public async getVersions(osBuild: string): Promise<OsDpaVersion[]> {
 		let baseUrl = 'https://repository.iqrfalliance.org/api';
+		const params = {params: {os: osBuild}};
 		await IqrfRepositoryConfigService.get()
-			.then((config: IIqrfRepositoryConfig) => (baseUrl = config.apiEndpoint));
-		return axios.get(baseUrl + '/osdpa/', {params: {os: osBuild}})
+			.then((config: IIqrfRepositoryConfig) => {
+				baseUrl = config.apiEndpoint;
+				if (config.credentials.username === null) {
+					params.params['dpaBeta'] = false;
+				}
+			});
+
+		return axios.get(baseUrl + '/osdpa/', params)
 			.then((response: AxiosResponse) => {
 				const versions: OsDpaVersion[] = [];
 				for (const version of response.data) {
-					versions.push(new OsDpaVersion(version.os, version.osVersion, version.dpa, version.notes, version.downloadPath));
+					versions.push(new OsDpaVersion(version.os, version.osVersion, version.dpa, version.notes, version.downloadPath, version.dpaAttributes));
 				}
 				return versions;
 			});
