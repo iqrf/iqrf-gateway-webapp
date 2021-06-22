@@ -15,17 +15,18 @@
 
 services:
 	- App\ApiModule\Version0\Controllers\ApiKeyController
-	- App\ApiModule\Version0\Controllers\AptController
 	- App\ApiModule\Version0\Controllers\CertificateController
 	- App\ApiModule\Version0\Controllers\Cloud\AwsController
 	- App\ApiModule\Version0\Controllers\Cloud\AzureController
 	- App\ApiModule\Version0\Controllers\Cloud\HexioController
 	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
 	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
-	- App\ApiModule\Version0\Controllers\ConfigController
+	- App\ApiModule\Version0\Controllers\Config\AptController
 	- App\ApiModule\Version0\Controllers\Config\ControllerController
+	- App\ApiModule\Version0\Controllers\Config\DaemonController
 	- App\ApiModule\Version0\Controllers\Config\IqrfRepositoryController
 	- App\ApiModule\Version0\Controllers\Config\MigrationController
+	- App\ApiModule\Version0\Controllers\Config\MonitController
 	- App\ApiModule\Version0\Controllers\Config\TranslatorController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController
 	- App\ApiModule\Version0\Controllers\FeatureController
@@ -44,7 +45,6 @@ services:
 	- App\ApiModule\Version0\Controllers\Iqrf\UploadController
 	- App\ApiModule\Version0\Controllers\MappingController
 	- App\ApiModule\Version0\Controllers\MenderController
-	- App\ApiModule\Version0\Controllers\MonitController
 	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
 	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
 	- App\ApiModule\Version0\Controllers\Network\InterfacesController

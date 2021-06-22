@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
@@ -36,7 +37,7 @@ use Nette\IOException;
 /**
  * APT configuration controller
  * @Path("/apt")
- * @Tag("Config manager")
+ * @Tag("APT configuration")
  */
 class AptController extends BaseConfigController {
 

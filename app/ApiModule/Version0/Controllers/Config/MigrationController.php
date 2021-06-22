@@ -42,7 +42,7 @@ use Nette\Utils\JsonException;
 /**
  * Configuration migration controller
  * @Path("/daemon/migration")
- * @Tag("Config manager")
+ * @Tag("IQRF Gateway Daemon configuration migration")
  */
 class MigrationController extends BaseConfigController {
 

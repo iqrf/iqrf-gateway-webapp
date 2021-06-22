@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -30,6 +30,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
@@ -42,9 +43,9 @@ use Nette\Utils\JsonException;
 /**
  * Configuration controller
  * @Path("/daemon")
- * @Tag("Config manager")
+ * @Tag("IQRF Gateway Daemon configuration")
  */
-class ConfigController extends BaseConfigController {
+class DaemonController extends BaseConfigController {
 
 	/**
 	 * @var ComponentManager Component configuration manager
