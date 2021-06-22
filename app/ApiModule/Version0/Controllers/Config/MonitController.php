@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\MonitManager;
@@ -34,10 +35,10 @@ use Nette\IOException;
 
 /**
  * Monit controller
- * @Path("/")
- * @Tag("Monit")
+ * @Path("/monit")
+ * @Tag("Monit configuration")
  */
-class MonitController extends BaseController {
+class MonitController extends BaseConfigController {
 
 	/**
 	 * @var MonitManager $manager Monit manager
@@ -55,11 +56,11 @@ class MonitController extends BaseController {
 	}
 
 	/**
-	 * @Path("/config/monit")
+	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns current monit configuration
-	 *  response:
+	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
@@ -83,7 +84,7 @@ class MonitController extends BaseController {
 	}
 
 	/**
-	 * @Path("/config/monit")
+	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Saves updated monit configuration
@@ -93,7 +94,7 @@ class MonitController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/MonitConfig'
-	 *  response:
+	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *      '400':
