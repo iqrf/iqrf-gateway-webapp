@@ -66,7 +66,7 @@ class LogController extends GatewayController {
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns list of services with available logs
-	 *  response:
+	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
