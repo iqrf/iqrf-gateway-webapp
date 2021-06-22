@@ -16,6 +16,8 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../../helpers/authorizationHeader';
+import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
+import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
 
 /**
  * OS & DPA version entity
@@ -134,9 +136,11 @@ class OsDpaService {
 	 * Retrieves available DPA versions
 	 * @param osBuild Current IQRF OS build
 	 */
-	public getVersions(osBuild: string): Promise<OsDpaVersion[]> {
-		const url = 'https://repository.iqrfalliance.org/api/osdpa/';
-		return axios.get(url, {params: {os: osBuild}})
+	public async getVersions(osBuild: string): Promise<OsDpaVersion[]> {
+		let baseUrl = 'https://repository.iqrfalliance.org/api';
+		await IqrfRepositoryConfigService.get()
+			.then((config: IIqrfRepositoryConfig) => (baseUrl = config.apiEndpoint));
+		return axios.get(baseUrl + '/osdpa/', {params: {os: osBuild}})
 			.then((response: AxiosResponse) => {
 				const versions: OsDpaVersion[] = [];
 				for (const version of response.data) {
