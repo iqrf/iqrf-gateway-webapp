@@ -86,6 +86,7 @@ const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/
 const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketServiceForm.vue');
 const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerList.vue');
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
+const RepositoryConfig = () => import(/* webpackChunkName: "config" */'@/pages/Config/RepositoryConfig.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
@@ -646,6 +647,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: ConfigMigration,
 						path: 'migration',
+					},
+					{
+						component: RepositoryConfig,
+						path: 'repository',
 					},
 				]
 			},
