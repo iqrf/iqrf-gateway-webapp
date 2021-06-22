@@ -58,6 +58,14 @@ limitations under the License.
 							{{ $t('config.migration.description') }}
 						</p>
 					</CListGroupItem>
+					<CListGroupItem to='/config/repository/'>
+						<header class='list-group-item-heading'>
+							{{ $t('config.repository.title') }}
+						</header>
+						<p class='list-group-item-text'>
+							{{ $t('config.repository.description') }}
+						</p>
+					</CListGroupItem>
 				</CListGroup>
 			</CCardBody>
 		</CCard>
