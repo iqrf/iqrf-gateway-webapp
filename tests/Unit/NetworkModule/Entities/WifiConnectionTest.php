@@ -47,7 +47,7 @@ final class WifiConnectionTest extends TestCase {
 	/**
 	 * NetworkManager data directory
 	 */
-	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var WifiConnection WiFi connection entity

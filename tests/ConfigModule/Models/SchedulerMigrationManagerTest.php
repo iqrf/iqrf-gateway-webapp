@@ -51,22 +51,22 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	/**
 	 * Path to a directory with scheduler's configuration
 	 */
-	private const CONFIG_PATH = __DIR__ . '/../../data/scheduler/';
+	private const CONFIG_PATH = TESTER_DIR . '/data/scheduler/';
 
 	/**
 	 * Path to a temporary directory with scheduler's configuration
 	 */
-	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrations/scheduler/';
+	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrations/scheduler/';
 
 	/**
 	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
-	private const ZIP_PATH = __DIR__ . '/../../data/iqrf-gateway-scheduler.zip';
+	private const ZIP_PATH = TESTER_DIR . '/data/iqrf-gateway-scheduler.zip';
 
 	/**
 	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
-	private const ZIP_TEMP_PATH = __DIR__ . '/../../temp/iqrf-gateway-scheduler.zip';
+	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-scheduler.zip';
 
 	/**
 	 * @var FileManager Text file manager
@@ -121,7 +121,7 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		Environment::lock('migration', __DIR__ . '/../../temp/');
+		Environment::lock('migration', TMP_DIR);
 		$this->copyFiles();
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);

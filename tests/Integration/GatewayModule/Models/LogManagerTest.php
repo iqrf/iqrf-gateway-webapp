@@ -184,7 +184,7 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$logDir = realpath(__DIR__ . '/../../../data/logs/');
+		$logDir = realpath(TESTER_DIR . '/data/logs/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);

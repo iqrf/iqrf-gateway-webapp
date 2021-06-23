@@ -52,47 +52,47 @@ final class MigrationManagerTest extends TestCase {
 	/**
 	 * Path to a nonexistent directory with IQRF Gateway Daemon's cache
 	 */
-	private const CACHE_TEMP_PATH = __DIR__ . '/../../temp/migrated-configuration/cache/';
+	private const CACHE_TEMP_PATH = TMP_DIR . '/migrated-configuration/cache/';
 
 	/**
 	 * Path to a directory with IQRF Gateway Daemon's configuration
 	 */
-	private const CONFIG_PATH = __DIR__ . '/../../data/configuration/';
+	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
 	 * Path to a temporary directory with IQRF Gateway Daemon's configuration
 	 */
-	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrated-configuration/';
+	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrated-configuration/';
 
 	/**
-	 * Path to nonexistant directory with IQRF Gateway Controller's configuration
+	 * Path to nonexistent directory with IQRF Gateway Controller's configuration
 	 */
-	private const CONFIG_TEMP_PATH_CONTROLLER = __DIR__ . '/../../temp/migrated-configuration/controller';
+	private const CONFIG_TEMP_PATH_CONTROLLER = TMP_DIR . '/migrated-configuration/controller';
 
 	/**
 	 * Path to nonexistant directory with IQRF Gateway Translator's configuration
 	 */
-	private const CONFIG_TEMP_PATH_TRANSLATOR = __DIR__ . '/../../temp/migrated-configuration/translator';
+	private const CONFIG_TEMP_PATH_TRANSLATOR = TMP_DIR . '/migrated-configuration/translator';
 
 	/**
 	 * Path to a directory with correct JSON schemas
 	 */
-	private const SCHEMA_PATH = __DIR__ . '/../../data/cfgSchemas/';
+	private const SCHEMA_PATH = TESTER_DIR . '//data/cfgSchemas/';
 
 	/**
 	 * Path to a directory with corrupted JSON schemas
 	 */
-	private const SCHEMA_CORRUPTED_PATH = __DIR__ . '/../../temp/cfgSchemas/';
+	private const SCHEMA_CORRUPTED_PATH = TMP_DIR . '/cfgSchemas/';
 
 	/**
 	 * Path to ZIP archive with IQRF Gateway Daemon's configuration
 	 */
-	private const ZIP_PATH  = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
+	private const ZIP_PATH  = TESTER_DIR . '/data/iqrf-gateway-configuration.zip';
 
 	/**
 	 * Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
-	private const ZIP_TEMP_PATH = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
+	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-configuration.zip';
 
 	/**
 	 * @var FileManager Text file manager
@@ -172,7 +172,7 @@ final class MigrationManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		Environment::lock('migration', __DIR__ . '/../../temp/');
+		Environment::lock('migration', TMP_DIR);
 		$this->copyFiles();
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);

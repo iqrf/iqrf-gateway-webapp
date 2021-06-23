@@ -90,9 +90,9 @@ abstract class JsonConfigTestCase extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$configPath = TESTER_DIR . '/data/configuration/';
+		$configTempPath = TMP_DIR . '/configuration/';
+		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new JsonFileManager($configPath, $commandManager);

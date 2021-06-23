@@ -168,7 +168,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->certPathReal = realpath(__DIR__ . '/../../../data/certificates/') . '/';
+		$this->certPathReal = realpath(TESTER_DIR . '/data/certificates/') . '/';
 		$this->certManager = new CertificateManager();
 		$client = new Client();
 		$this->manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $client);

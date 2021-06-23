@@ -43,19 +43,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TranslatorConfigManagerTest extends TestCase {
 
 	/**
-	 * Translator configuration file name
-	 */
-	private const FILE_NAME = 'config';
-
-	/**
 	 * Translator configuration directory path
 	 */
-	private const CONF_DIR = __DIR__ . '/../../../data/translator/';
+	private const CONF_DIR = TESTER_DIR . '/data/translator/';
 
 	/**
 	 * Translator configuration temporary directory path
 	 */
-	private const TEMP_CONF_DIR = __DIR__ . '/../../../temp/translator/';
+	private const TEMP_CONF_DIR = TMP_DIR . '/translator/';
 
 	/**
 	 * @var TranslatorConfigManager Translator configuration manager
@@ -93,7 +88,7 @@ final class TranslatorConfigManagerTest extends TestCase {
 	 * Tests the function to update Controller configuration file
 	 */
 	public function testSaveConfig(): void {
-		Environment::lock('translator_config', __DIR__ . '/../../../temp/');
+		Environment::lock('translator_config', TMP_DIR);
 		$expected = $this->manager->getConfig();
 		$expected['rest']['port'] = 20;
 		$expected['mqtt']['user'] = 'testUser';

@@ -62,7 +62,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 * Tests the function to delete the instance of component
 	 */
 	public function testDeleteFile(): void {
-		Environment::lock('config_mqtt', __DIR__ . '/../../../temp/');
+		Environment::lock('config_mqtt', TMP_DIR);
 		$this->managerTemp->setComponent(self::COMPONENT);
 		$this->copyFile(self::FILE_NAME);
 		Assert::true($this->fileManagerTemp->exists(self::FILE_NAME));
@@ -168,7 +168,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 * Tests the function to save main configuration of daemon
 	 */
 	public function testSave(): void {
-		Environment::lock('config_mqtt', __DIR__ . '/../../../temp/');
+		Environment::lock('config_mqtt', TMP_DIR);
 		$this->managerTemp->setComponent(self::COMPONENT);
 		$array = [
 			'instance' => 'MqttMessaging',

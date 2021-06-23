@@ -84,7 +84,7 @@ final class MainManagerTest extends JsonConfigTestCase {
 	 * Tests the function to save main configuration of daemon
 	 */
 	public function testSave(): void {
-		Environment::lock('config_main', __DIR__ . '/../../../temp/');
+		Environment::lock('config_main', TMP_DIR);
 		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',

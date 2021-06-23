@@ -45,12 +45,12 @@ final class ControllerConfigManagerTest extends TestCase {
 	/**
 	 * Controller configuration directory path
 	 */
-	private const CONF_DIR = __DIR__ . '/../../../data/controller/';
+	private const CONF_DIR = TESTER_DIR . '/data/controller/';
 
 	/**
 	 * Controller configuration temporary directory path
 	 */
-	private const TEMP_CONF_DIR = __DIR__ . '/../../../temp/controller/';
+	private const TEMP_CONF_DIR = TMP_DIR . '/controller/';
 
 	/**
 	 * IQRF Gateway Controller's expected configuration
@@ -120,7 +120,7 @@ final class ControllerConfigManagerTest extends TestCase {
 	 * Tests the function to update Controller configuration file
 	 */
 	public function testSaveConfig(): void {
-		Environment::lock('controller_config', __DIR__ . '/../../../temp/');
+		Environment::lock('controller_config', TMP_DIR);
 		FileSystem::copy(self::CONF_DIR, self::TEMP_CONF_DIR);
 		$expected = self::CONFIG;
 		$expected['daemonApi']['discovery']['maxAddr'] = 5;

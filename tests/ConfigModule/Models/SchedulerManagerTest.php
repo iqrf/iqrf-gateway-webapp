@@ -71,7 +71,7 @@ final class SchedulerManagerTest extends TestCase {
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete(): void {
-		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', TMP_DIR);
 		$fileName = '1';
 		$this->fileManagerTemp->write($fileName, $this->array);
 		Assert::true($this->fileManagerTemp->exists($fileName));
@@ -92,7 +92,7 @@ final class SchedulerManagerTest extends TestCase {
 	 * Tests the function to delete all tasks
 	 */
 	public function testDeleteAll(): void {
-		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', TMP_DIR);
 		$expected = [];
 		$this->managerTemp->deleteAll();
 		Assert::same($expected, $this->managerTemp->list());
@@ -178,7 +178,7 @@ final class SchedulerManagerTest extends TestCase {
 	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave(): void {
-		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', TMP_DIR);
 		$expected = $this->array;
 		$expected->task[0]->message->returnVerbose = false;
 		$config = $expected;
@@ -222,8 +222,8 @@ final class SchedulerManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$configPath = TESTER_DIR . '/data/';
+		$configTempPath = TMP_DIR . '/configuration/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/', $commandManager);

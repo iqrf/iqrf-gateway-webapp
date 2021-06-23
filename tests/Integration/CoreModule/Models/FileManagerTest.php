@@ -48,12 +48,12 @@ final class FileManagerTest extends TestCase {
 	/**
 	 * Directory with configuration files
 	 */
-	private const CONFIG_PATH = __DIR__ . '/../../../data/configuration/';
+	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
 	 * Directory with temporary configuration files
 	 */
-	private const CONFIG_TEMP_PATH = __DIR__ . '/../../../temp/configuration/';
+	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 
 	/**
 	 * @var FileManager Text file manager

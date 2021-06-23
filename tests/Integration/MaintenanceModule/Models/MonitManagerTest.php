@@ -72,9 +72,9 @@ final class MonitManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		Environment::lock('monit', __DIR__ . '/../../../temp/');
-		$monitDir = realpath(__DIR__ . '/../../../data/maintenance/');
-		$monitTempDir = realpath(__DIR__ . '/../../../temp/');
+		Environment::lock('monit', TMP_DIR);
+		$monitDir = realpath(TESTER_DIR . '/data/maintenance/');
+		$monitTempDir = realpath(TMP_DIR);
 		FileSystem::copy($monitDir, $monitTempDir . '/maintenance/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);

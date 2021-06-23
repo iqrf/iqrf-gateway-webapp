@@ -37,14 +37,14 @@ use ZipArchive;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for ZIP archive manager manager
+ * Tests for ZIP archive manager
  */
 final class ZipArchiveManagerTest extends TestCase {
 
 	/**
 	 * Path to the directory with IQRF Gateway Daemon's configuration
 	 */
-	private const CONFIG_DIR = __DIR__ . '/../../../data/configuration/';
+	private const CONFIG_DIR = TESTER_DIR . '/data/configuration/';
 
 	/**
 	 * File name
@@ -154,7 +154,7 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testExtract(): void {
 		$originalPath = realpath(self::CONFIG_DIR);
-		$destinationPath = realpath(__DIR__ . '/../../../temp/zip');
+		$destinationPath = realpath(TMP_DIR . '/zip');
 		$this->manager->extract($destinationPath);
 		$expected = $this->createList($originalPath);
 		$expectedCount = count($expected);
@@ -192,8 +192,8 @@ final class ZipArchiveManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$path = __DIR__ . '/../../../temp/archive.zip';
-		$pathExtract = __DIR__ . '/../../../data/iqrf-gateway-configuration.zip';
+		$path = TMP_DIR . '/archive.zip';
+		$pathExtract = TESTER_DIR . '/data/iqrf-gateway-configuration.zip';
 		$this->managerNew = new ZipArchiveManager($path);
 		$this->manager = new ZipArchiveManager($pathExtract, ZipArchive::CREATE);
 	}

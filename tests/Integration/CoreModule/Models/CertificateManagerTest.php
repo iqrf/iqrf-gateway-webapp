@@ -56,7 +56,7 @@ final class CertificateManagerTest extends TestCase {
 	/**
 	 * Path to a directory with certificates and private keys
 	 */
-	private const PATH = __DIR__ . '/../../../data/certificates/';
+	private const PATH = TESTER_DIR . '/data/certificates/';
 
 	/**
 	 * Constructor
