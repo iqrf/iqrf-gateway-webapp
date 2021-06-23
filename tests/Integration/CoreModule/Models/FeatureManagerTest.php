@@ -41,19 +41,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FeatureManagerTest extends TestCase {
 
 	/**
-	 * Path to the temporary directory
-	 */
-	private const TEMP_DIR = __DIR__ . '/../../../../temp/tests';
-
-	/**
 	 * Path to the temporary file
 	 */
-	private const PATH_TEMP = self::TEMP_DIR . '/features.neon';
+	private const PATH_TEMP = TMP_DIR . '/features.neon';
 
 	/**
 	 * Path to the original file
 	 */
-	private const PATH = __DIR__ . '/../../../data/features.neon';
+	private const PATH = TESTER_DIR . '/data/features.neon';
 
 	/**
 	 * @var FeatureManager Optional feature manager
@@ -84,7 +79,7 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the constructor with nonexistent path
 	 */
 	public function testConstructorNonexistent(): void {
-		$manager = new FeatureManager(self::TEMP_DIR . '/nonsense');
+		$manager = new FeatureManager(TMP_DIR . '/nonsense');
 		Assert::same(['docs'], $manager->listEnabled());
 	}
 
@@ -92,7 +87,7 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the function to edit feature configuration
 	 */
 	public function testEdit(): void {
-		Environment::lock('feature', self::TEMP_DIR);
+		Environment::lock('feature', TMP_DIR);
 		$this->copy();
 		$expected = [
 			'enabled' => true,
@@ -164,7 +159,7 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the function to set feature enablement
 	 */
 	public function testSetEnabled(): void {
-		Environment::lock('feature', self::TEMP_DIR);
+		Environment::lock('feature', TMP_DIR);
 		$this->copy();
 		$expected = ['docs'];
 		Assert::same($expected, $this->managerTemp->listEnabled());

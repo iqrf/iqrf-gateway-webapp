@@ -52,11 +52,6 @@ final class PasswordManagerTest extends CommandTestCase {
 	private const ARGUMENT = 'root:testpass';
 
 	/**
-	 * Path to the temporary directory
-	 */
-	private const TMP_PATH = __DIR__ . '/../../../../temp/tests';
-
-	/**
 	 * @var PasswordManager Root manager
 	 */
 	private $manager;
@@ -67,7 +62,7 @@ final class PasswordManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$original = __DIR__ . '/../../../data/features.neon';
-		$path = self::TMP_PATH . '/features.neon';
+		$path = TMP_DIR . '/features.neon';
 		FileSystem::copy($original, $path);
 		$this->manager = new PasswordManager($this->commandManager, new FeatureManager($path));
 	}

@@ -50,7 +50,7 @@ final class JsonSchemaManagerTest extends TestCase {
 	/**
 	 * Directory with configuration files
 	 */
-	private const FILE_PATH = __DIR__ . '/../../../data/configuration/';
+	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
 	 * JSON schema file name
@@ -60,7 +60,7 @@ final class JsonSchemaManagerTest extends TestCase {
 	/**
 	 * JSON schema directory path
 	 */
-	private const SCHEMA_PATH = __DIR__ . '/../../../data/cfgSchemas/';
+	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
 	/**
 	 * @var JsonFileManager JSON File manager
