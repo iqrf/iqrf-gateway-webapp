@@ -645,12 +645,12 @@ const routes: Array<RouteConfig> = [
 						path: 'controller',
 					},
 					{
-						component: ConfigMigration,
-						path: 'migration',
-					},
-					{
 						component: IqrfRepositoryConfig,
 						path: 'repository',
+					},
+					{
+						component: ConfigMigration,
+						path: 'migration',
 					},
 				]
 			},

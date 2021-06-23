@@ -19,6 +19,7 @@ features:
 	grafana: Grafana in the menu
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
+	iqrfRepository: IQRF Repository extension configuration
 	mender: Mender
 	monit: Monit
 	networkManager: Network manager
