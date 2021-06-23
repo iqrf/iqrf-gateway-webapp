@@ -94,7 +94,7 @@ class IqrfOsManager {
 			foreach ($this->osDpaManager->get($toBuild) as $dpa) {
 				$upgrade = $dpa->jsonSerialize();
 				$upgrade['osVersion'] = $toVersion;
-				if (hexdec($dpa->getDpa()) < 0x400) {
+				if (hexdec($dpa->getDpa()->getVersion()) < 0x400) {
 					$upgrade['dpa'] = $dpa->getDpa()->getVersion(true) . ', LP';
 					$versions[] = $upgrade;
 					$upgrade['dpa'] = $dpa->getDpa()->getVersion(true) . ', STD';
