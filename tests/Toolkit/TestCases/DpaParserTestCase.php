@@ -55,7 +55,7 @@ abstract class DpaParserTestCase extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$data = __DIR__ . '/../../data/iqrf/';
+		$data = TESTER_DIR . '/data/iqrf/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new JsonFileManager($data, $commandManager);

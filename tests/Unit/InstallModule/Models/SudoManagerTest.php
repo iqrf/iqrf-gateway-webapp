@@ -58,7 +58,7 @@ final class SudoManagerTest extends CommandTestCase {
 	 * Tests the function to check sudo and if webapp can use sudo
 	 */
 	public function testCheckSudo(): void {
-		Environment::lock('sudo_check', __DIR__ . '/../../../temp/');
+		Environment::lock('sudo_check', TMP_DIR);
 		$command = new Command(self::COMMAND, '', '', 0);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['sudo'])

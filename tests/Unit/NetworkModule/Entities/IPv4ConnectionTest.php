@@ -45,7 +45,7 @@ final class IPv4ConnectionTest extends TestCase {
 	/**
 	 * NetworkManager data directory
 	 */
-	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var IPv4Methods IPv4 connection method
