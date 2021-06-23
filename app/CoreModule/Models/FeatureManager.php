@@ -58,6 +58,9 @@ class FeatureManager {
 		'iqrfGatewayTranslator' => [
 			'enabled' => false,
 		],
+		'iqrfRepository' => [
+			'enabled' => false,
+		],
 		'mender' => [
 			'enabled' => false,
 		],
