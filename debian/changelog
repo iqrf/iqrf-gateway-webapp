@@ -1,3 +1,89 @@
+iqrf-gateway-webapp (2.3.0~rc6) testing; urgency=medium
+
+  [ Roman Ondráček ]
+  * Pixla: fix OpenAPI summary
+
+  [ Karel Hanák ]
+  * Scheduler: added support for array of messagings
+  * Messagings: added validation rule preventing ampersand in instance name
+  * Scheduler: added conditional message separator
+  * Mender: artifact update base, moved mender control to service section
+  * MenderManager: added commit and rollback steps, output log processing
+  * Mender: added success and error handling, service methods for rollback and commit
+  * Mender: increased install timeout to 10 minutes, added spinner message, fixed log appending
+  * Gateway logs: uploader and systemd journal, update wip
+  * MenderUpdate: updated localization
+  * Mender: move uploaded file instead of filesystem save
+  * MenderUpdateControl: pass message string on error
+  * MenderManager: upload file to data
+  * MenderUpdateControl: fixed error message selection for install action
+  * Logs: systemd journal, log refactor
+  * LogManager: include systemd journal in log archive
+  * Gateway Logs: added service log endpoints, updated other endpoints, include journal in diagnostics
+  * Gateway logs: added tests
+  * Feature manager: added missing systemdjournal path property
+  * tests: fixed newman optional feature test
+  * SystemdJournalManager: replace special character before parsing conf file
+  * Command: added process timeout option, MenderManager: updated install command, increased timeout
+  * MenderManager: remove artifact file in result handling, fixed output parsing
+  * MenderManager: strip output log
+  * MenderUpdateLog: added missing log class
+  * License headers update
+  * Tests: fixed test recognition
+  * DiagnosticsManager: added process info
+  * LogManager: changed available services to list instead of objects, updated tests
+  * Gateway logs: updated endpoints, fetch specific service logs on demand
+  * Gateway: added option to change hostname
+  * Mender: stop mender-client if running before installing artifact, restart after commit
+  * composer: remove rector
+  * Mender: updated localization, added certificate fields, upload endpoint, service
+  * Mender: fixed server certificare configuration, updated form control for certificate
+  * Mender: added remount endpoint, updated tests
+  * added missing console translation for remount entry
+  * tests: fixed syntax error in postman tests
+  * Gateway logs: removed log viewer
+  * MenderManager: updated log parsing
+  * Mender: added remount service endpoints, buttons, fixed remount endpoint
+  * NetworkManager: added new autonetwork parameters, fixed toast message propagation
+  * Mender: updated spinner message
+
+  [ Roman Ondráček ]
+  * Config: add JSON editor component with highlighting
+  * Config: fix issues with new JSON editor, add a new component for JSON schema violations
+  * Config: use the new JSON editor in Scheduler editor, fix typos
+
+  [ Karel Hanák ]
+  * JsonMessage: updated card header style
+
+  [ Roman Ondráček ]
+  * Config: add missing doc strings for the JSON editor
+  * Debian packaging: bump debhelper compatibility level to 12, fix lintian errors and warnings
+  * Debian packaging: update patches for IQD-GW-01 and IQAROS
+
+  [ Karel Hanák ]
+  * iqd-gw-01: updated features patch
+  * Hostname: use privileged file manager, fixed hostname change
+  * HostnameManager: fixed network manager phpdoc
+  * LogManager: fixed journal fetch
+  * LogManagerTest: fixed journal fetch test
+  * HostnameManager: updated hostname change
+  * HostnameManager: fix hostname change for Yocto
+  * Debian: updated dependency patch for daemon version
+  * Iqrfnet: increased device enumeration timeout to 5 minutes
+  * config: added configuration for IqrfRepository extension
+  * IQRF repository: update default configuration, added vue component and endpoint to manipulate config
+  * IqrfRepository: fixed configuration reading and writing, updated frontend graphic
+  * IqrfRepository: added missing vue component license header
+
+  [ Roman Ondráček ]
+  * Config: refactor IQRF Repository configuration tool
+  * API: split Configuration manager, fix typos
+
+  [ Karel Hanák ]
+  * repository: added dpa filtering query params, fixed error where no file is returned
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 23 Jun 2021 08:29:40 +0200
+
 iqrf-gateway-webapp (2.3.0~rc5) testing; urgency=medium
 
   [ Karel Hanák ]
