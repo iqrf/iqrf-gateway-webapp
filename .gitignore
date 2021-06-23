@@ -23,7 +23,7 @@ tests/*/output/
 tests/*/*/output/
 tests/*/*/*/output/
 tests/*/*/*/*/output/
-tests/temp/
+tests/tmp/
 coverage.html
 coverage.xml
 # Sphinx

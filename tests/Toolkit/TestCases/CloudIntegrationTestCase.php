@@ -56,9 +56,9 @@ abstract class CloudIntegrationTestCase extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
-		$configPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->certPath = realpath(TMP_DIR . '/certificates/') . '/';
+		$configPath = TMP_DIR . '/configuration/';
+		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new JsonFileManager($configPath, $commandManager);
