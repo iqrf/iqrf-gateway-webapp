@@ -1,3 +1,19 @@
+iqrf-gateway-webapp (2.3.0~rc7) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * IqrfRepositoryConfig: use as feature
+  * Tests: fixed newman feature test
+  * Debian package: updated generic gw patch
+  * features: disable tr upload by default
+
+  [ Roman Ondráček ]
+  * Config: pass IQRF repository configuration into its DI extension
+  * IQRF net: update fetching DPA files from IQRF repository
+  * IQRF net: fix listing of IQRF OS upgrades
+  * IQRF net: fix condition in listing of IQRF OS upgrades
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 23 Jun 2021 19:03:55 +0200
+
 iqrf-gateway-webapp (2.3.0~rc6) testing; urgency=medium
 
   [ Roman Ondráček ]
