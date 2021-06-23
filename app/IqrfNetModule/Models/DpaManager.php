@@ -78,8 +78,9 @@ class DpaManager {
 		if ($files === []) {
 			return null;
 		}
-		$path = $files[0]->getDownloadPath();
-		$this->filesManager->setPath($path);
+		$dpaVersion = $files[0]->getDpa();
+		$this->filesManager->setUseCredentials($dpaVersion->getAttributes()->isBeta());
+		$this->filesManager->setPath($dpaVersion->getDownloadPath());
 		foreach ($this->filesManager->list()->getFiles() as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
 				if (Strings::startsWith($file->getName(), $filePrefix)) {
