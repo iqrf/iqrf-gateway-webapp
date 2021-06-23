@@ -225,6 +225,7 @@
 				"endpointMissing": "Please enter repository API endpoint."
 			},
 			"messages": {
+				"disabled": "IQRF repository extension configuration feature is disabled.",
 				"fetchFailed": "Failed to retrieve IQRF repository configuration: {error}",
 				"saveFailed": "Failed to save IQRF repository configuration: {error}",
 				"saveSuccess": "IQRF repository configuration has been successfully saved."

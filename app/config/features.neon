@@ -30,6 +30,9 @@ iqrfGatewayController:
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: false
+# IQRF Repository Extension configuration
+iqrfRepository:
+	enabled: false
 # Mender client configuration
 mender:
 	enabled: false
@@ -69,7 +72,7 @@ updater:
 	enabled: false
 # IQRF TR native upload
 trUpload:
-	enabled: false
+	enabled: true
 # Unattended upgrades
 unattendedUpgrades:
 	enabled: false

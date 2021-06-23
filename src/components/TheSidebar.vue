@@ -318,15 +318,16 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
-								name: this.$t('config.migration.title'),
-								to: '/config/migration/',
-								roles: ['power', 'normal'],
+								name: this.$t('config.repository.title'),
+								to: '/config/repository/',
+								feature: 'iqrfRepository',
+								role: ['power', 'normal'],
 							},
 							{
 								_name: 'CSidebarNavItem',
-								name: this.$t('config.repository.title'),
-								to: '/config/repository/',
-								role: ['power', 'normal'],
+								name: this.$t('config.migration.title'),
+								to: '/config/migration/',
+								roles: ['power', 'normal'],
 							}
 						],
 					},
