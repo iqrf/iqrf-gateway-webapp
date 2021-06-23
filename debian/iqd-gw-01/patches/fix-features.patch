@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -35,23 +35,23 @@ mender:
+@@ -38,23 +38,23 @@ mender:
  	enabled: false
  # Monitoring service
  monit:
@@ -46,12 +46,8 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -65,10 +65,10 @@ updater:
- 	enabled: false
- # IQRF TR native upload
- trUpload:
--	enabled: false
-+	enabled: true
+@@ -71,7 +71,7 @@ trUpload:
+ 	enabled: true
  # Unattended upgrades
  unattendedUpgrades:
 -	enabled: false
