@@ -102,12 +102,14 @@ import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
+import {NavigationGuardNext, Route} from 'vue-router';
 import {required} from 'vee-validate/dist/rules';
 
 import RepositoryConfigService from '../../services/IqrfRepository/IqrfRepositoryConfigService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
+
 
 @Component({
 	components: {
@@ -119,6 +121,16 @@ import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider
+	},
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
+			if (!vm.$store.getters['features/isEnabled']('iqrfRepository')) {
+				vm.$toast.error(
+					vm.$t('config.repository.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	metaInfo: {
 		title: 'config.repository.title',
