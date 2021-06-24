@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -27,73 +27,73 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
-use App\MaintenanceModule\Models\MonitManager;
+use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\IOException;
+use Nette\Neon\Exception as NeonException;
 
 /**
- * Monit controller
- * @Path("/")
- * @Tag("Monit")
+ * IQRF Repository controller
+ * @Path("/iqrf-repository")
+ * @Tag("IQRF Repository configuration")
  */
-class MonitController extends BaseController {
+class IqrfRepositoryController extends BaseConfigController {
 
 	/**
-	 * @var MonitManager $manager Monit manager
+	 * @var IqrfRepositoryManager IQRF Repository manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param MonitManager $manager Monit manager
+	 * @param IqrfRepositoryManager $manager IQRF Repository manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(IqrfRepositoryManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/config/monit")
+	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns current monit configuration
-	 *  response:
+	 *  summary: Returns IQRF repository extension configuration
+	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/MonitConfig'
+	 *                      $ref: '#/components/schemas/IqrfRepositoryConfig'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$config = $this->manager->getConfig();
-			return $response->writeJsonBody($config);
-		} catch (MonitConfigErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+			return $response->writeJsonBody($this->manager->readConfig());
+		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
 	/**
-	 * @Path("/config/monit")
+	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Saves updated monit configuration
+	 *  summary: Updates IQRF repository extension configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/MonitConfig'
-	 *  response:
+	 *                  $ref: '#/components/schemas/IqrfRepositoryConfig'
+	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *      '400':
@@ -105,14 +105,13 @@ class MonitController extends BaseController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('monitConfig', $request);
+	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('iqrfRepositoryConfig', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody());
+			$config = $request->getJsonBody(true);
+			$this->manager->saveConfig($config);
 			return $response->writeBody('Workaround');
-		} catch (MonitConfigErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

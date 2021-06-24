@@ -112,6 +112,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeFiles.json
 		IqrfOsUpgradeList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json
+		IqrfRepositoryConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfRepositoryConfig.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
 		LogServices:

@@ -55,6 +55,12 @@ iqrfMacros:
 	# path to IQRF IDE macros
 	path: '%appDir%/../iqrf/DPA-macros_201215.iqrfmcr'
 
+iqrfRepository:
+	apiEndpoint: %iqrfRepository.apiEndpoint%
+	credentials:
+		username: %iqrfRepository.credentials.username%
+		password: %iqrfRepository.credentials.password%
+
 middleware:
 	debug: %debugMode%
 

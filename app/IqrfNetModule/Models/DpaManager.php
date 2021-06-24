@@ -74,8 +74,13 @@ class DpaManager {
 	 * @return string|null DPA file name
 	 */
 	public function getFile(string $osBuild, Dpa $dpa): ?string {
-		$path = $this->osDpaManager->get($osBuild, $dpa->getVersion())[0]->getDownloadPath();
-		$this->filesManager->setPath($path);
+		$files = $this->osDpaManager->get($osBuild, $dpa->getVersion());
+		if ($files === []) {
+			return null;
+		}
+		$dpaVersion = $files[0]->getDpa();
+		$this->filesManager->setUseCredentials($dpaVersion->getAttributes()->isBeta());
+		$this->filesManager->setPath($dpaVersion->getDownloadPath());
 		foreach ($this->filesManager->list()->getFiles() as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
 				if (Strings::startsWith($file->getName(), $filePrefix)) {

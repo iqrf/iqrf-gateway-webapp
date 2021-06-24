@@ -165,7 +165,7 @@ class UploadController extends IqrfController {
 			}
 			$fileName = $this->dpaManager->getFile($data->osBuild, $dpa);
 			if ($fileName === null) {
-				throw new ClientErrorException('DPA file not found', ApiResponse::S404_NOT_FOUND);
+				throw new ClientErrorException('DPA file not found, or repository credentials are incorrect', ApiResponse::S404_NOT_FOUND);
 			}
 			return $response->writeJsonBody(['fileName' => $fileName]);
 		} catch (IOException $e) {

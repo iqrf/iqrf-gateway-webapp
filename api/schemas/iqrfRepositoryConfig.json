@@ -1,0 +1,57 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfRepositoryConfig.json",
+	"type": "object",
+	"title": "IQRF repository configuration",
+	"required": [
+		"apiEndpoint",
+		"credentials"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"apiEndpoint": {
+			"$id": "#/properties/apiEndpoint",
+			"title": "Repository API endpoint",
+			"type": "string",
+			"example": "https://repository.iqrfalliance.org/api"
+		},
+		"credentials": {
+			"$id": "#/properties/credentials",
+			"title": "Repository authentication credentials",
+			"type": "object",
+			"required": [
+				"username",
+				"password"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"username": {
+					"$id": "#/properties/credentials/properties/username",
+					"title": "Username",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"example": "user"
+				},
+				"password": {
+					"$id": "#/properties/credentials/properties/password",
+					"title": "Password",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"example": "pass"
+				}
+			}
+		}
+	}
+}

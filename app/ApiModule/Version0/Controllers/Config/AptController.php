@@ -29,28 +29,29 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\ConfigModule\Models\TranslatorConfigManager;
+use App\ConfigModule\Exceptions\AptErrorException;
+use App\ConfigModule\Exceptions\AptNotFoundException;
+use App\ConfigModule\Models\AptManager;
 use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
- * IQRF Gateway Translator configuration controller
- * @Path("/translator")
- * @Tag("IQRF Gateway Translator configuration")
+ * APT configuration controller
+ * @Path("/apt")
+ * @Tag("APT configuration")
  */
-class TranslatorController extends BaseConfigController {
+class AptController extends BaseConfigController {
 
 	/**
-	 * @var TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
+	 * @var AptManager APT manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
+	 * @param AptManager $manager APT manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(TranslatorConfigManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(AptManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -59,14 +60,14 @@ class TranslatorController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns current configuration of IQRF Gateway Translator
+	 *  summary: Retrieves APT configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/TranslatorConfig'
+	 *                      $ref: '#/components/schemas/AptConfiguration'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -74,13 +75,10 @@ class TranslatorController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$config = $this->manager->getConfig();
-			return $response->writeJsonBody($config);
-		} catch (JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+			return $response->writeJsonBody($this->manager->read());
+		} catch (AptErrorException | AptNotFoundException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -89,13 +87,13 @@ class TranslatorController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Saves new configuration of IQRF Gateway Translator
+	 *  summary: Updates APT configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/TranslatorConfig'
+	 *                  $ref: '#/components/schemas/AptConfiguration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -108,12 +106,12 @@ class TranslatorController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('translatorConfig', $request);
+	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('aptConfiguration', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody());
+			$this->manager->write($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (IOException $e) {
+		} catch (AptErrorException | AptNotFoundException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

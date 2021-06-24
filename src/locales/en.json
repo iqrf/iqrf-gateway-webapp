@@ -119,7 +119,7 @@
 		"fields": {
 			"address": "Address",
 			"id": "ID",
-			"username": "User name",
+			"username": "Username",
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
@@ -211,6 +211,23 @@
 				"exportFailed": "Failed to export IQRF gateway configuration: {error}",
 				"importFailed": "Failed to import IQRF gateway configuration: {error}",
 				"importSuccess": "The configuration has been imported."
+			}
+		},
+		"repository": {
+			"title": "IQRF repository",
+			"description": "Manage configuration of IQRF repository extension.",
+			"form": {
+				"endpoint": "API endpoint",
+				"credentials": "Use credentials"
+			},
+			"errors": {
+				"endpointMissing": "Please enter repository API endpoint."
+			},
+			"messages": {
+				"disabled": "IQRF repository extension configuration feature is disabled.",
+				"fetchFailed": "Failed to retrieve IQRF repository configuration: {error}",
+				"saveFailed": "Failed to save IQRF repository configuration: {error}",
+				"saveSuccess": "IQRF repository configuration has been successfully saved."
 			}
 		},
 		"daemon": {

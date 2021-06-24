@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
@@ -27,30 +27,30 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\ConfigModule\Exceptions\AptErrorException;
-use App\ConfigModule\Exceptions\AptNotFoundException;
-use App\ConfigModule\Models\AptManager;
+use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
+use App\MaintenanceModule\Models\MonitManager;
 use Nette\IOException;
 
 /**
- * APT configuration controller
- * @Path("/apt")
- * @Tag("Config manager")
+ * Monit controller
+ * @Path("/monit")
+ * @Tag("Monit configuration")
  */
-class AptController extends BaseConfigController {
+class MonitController extends BaseConfigController {
 
 	/**
-	 * @var AptManager APT manager
+	 * @var MonitManager $manager Monit manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param AptManager $manager APT manager
+	 * @param MonitManager $manager Monit manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -59,25 +59,26 @@ class AptController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Retrieves APT configuration
+	 *  summary: Returns current monit configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/AptConfiguration'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
+	 *                      $ref: '#/components/schemas/MonitConfig'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeJsonBody($this->manager->read());
-		} catch (AptErrorException | AptNotFoundException $e) {
+			$config = $this->manager->getConfig();
+			return $response->writeJsonBody($config);
+		} catch (MonitConfigErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -86,13 +87,13 @@ class AptController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Updates APT configuration
+	 *  summary: Saves updated monit configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/AptConfiguration'
+	 *                  $ref: '#/components/schemas/MonitConfig'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -105,12 +106,14 @@ class AptController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('aptConfiguration', $request);
+	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('monitConfig', $request);
 		try {
-			$this->manager->write($request->getJsonBody());
+			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (AptErrorException | AptNotFoundException | IOException $e) {
+		} catch (MonitConfigErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

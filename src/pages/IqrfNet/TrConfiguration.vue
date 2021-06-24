@@ -432,8 +432,8 @@ export default class TrConfiguration extends Vue {
 		this.config = null;
 		this.peripherals = [];
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.dispatch('spinner/show', {timeout: 60000});
-			IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+			this.$store.dispatch('spinner/show', {timeout: 300000});
+			IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 				.then((msgId: string) => this.msgId = msgId);
 		}
 	}
@@ -625,8 +625,8 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
-		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
+		this.$store.dispatch('spinner/show', {timeout: 300000});
+		IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
