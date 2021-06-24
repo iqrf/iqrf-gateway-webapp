@@ -259,7 +259,7 @@ class DiagnosticsManager {
 	 * Adds logs of Systemd journal
 	 */
 	public function addJournalLog(): void {
-		$command = $this->commandManager->run('journalctl --utc --since today --no-pager');
+		$command = $this->commandManager->run('journalctl --utc --since today --no-pager', true);
 		$this->zipManager->addFileFromText('logs/journal.log', $command->getStdout());
 	}
 
