@@ -1,3 +1,10 @@
+iqrf-gateway-webapp (2.3.0~rc8) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * Debian package: updated gw features patch
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 24 Jun 2021 12:29:52 +0200
+
 iqrf-gateway-webapp (2.3.0~rc7) testing; urgency=medium
 
   [ Karel Hanák ]
