@@ -31,6 +31,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Models\NtpManager;
+use Nette\IOException;
 
 /**
  * NTP controller
@@ -61,8 +62,10 @@ class NtpController extends GatewayController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/Ntp'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -73,7 +76,40 @@ class NtpController extends GatewayController {
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->readConfig());
-		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
+		} catch (ConfNotFoundException | InvalidConfFormatException | IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Saves new NTP configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/Ntp'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('ntp', $request);
+		try {
+			$this->manager->storeConfig($request->getJsonBody(true));
+			return $response->writeBody('Workaround');
+		} catch (ConfNotFoundException | InvalidConfFormatException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
