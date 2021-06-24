@@ -159,6 +159,9 @@ export default class NtpConfig extends Vue {
 		return GatewayService.getNtp()
 			.then((response: AxiosResponse) => {
 				this.config = response.data;
+				if (this.config.servers.length > 0 && this.config.servers[0] !== '') {
+					this.useCustomServers = true;
+				}
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -180,12 +183,12 @@ export default class NtpConfig extends Vue {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
-						this.$t('gateway.ntp.local.messages.saveSuccess').toString()
+						this.$t('gateway.ntp.messages.saveSuccess').toString()
 					);
 				});
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.ntp.local.messages.saveFailed');
+				extendedErrorToast(error, 'gateway.ntp.messages.saveFailed');
 			});
 	}
 

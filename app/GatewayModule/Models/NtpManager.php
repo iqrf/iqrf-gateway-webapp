@@ -25,6 +25,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * NTP manager
@@ -64,14 +65,39 @@ class NtpManager {
 		$this->confPath = $feature['path'];
 	}
 
+	/**
+	 * Returns NTP configuration
+	 * @return array<string, array<int, string>> NTP configuration
+	 */
 	public function readConfig(): array {
 		if ($this->utility === 'timesyncd') {
-			return $this->readTimesync();
-		} 
-		return $this->readNtp();
+			$config = $this->readTimesyncd();
+			return ['servers' => explode(' ', $config['Time']['NTP'])];
+		}
+		$config = $this->readNtp();
+		return [
+			'servers' => array_map(function ($item): string {
+				return $item[1];
+			}, $config),
+		];
 	}
 
-	private function readTimesync(): array {
+	/**
+	 * Stores NTP configuration
+	 * @param array<string, array<int, string>> $config NTP configuration
+	 */
+	public function storeConfig(array $config): void {
+		if ($this->utility === 'timesyncd') {
+			$this->storeTimesyncd($config);
+		}
+		$this->storeNtp($config);
+	}
+
+	/**
+	 * Parses and returns NTP configuration from timesyncd service
+	 * @return array<string, array<string, mixed>> NTP configuration
+	 */
+	private function readTimesyncd(): array {
 		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('Timesyncd configuration file not found.');
 		}
@@ -79,15 +105,54 @@ class NtpManager {
 		if ($config === null) {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}
-		$config = array_merge_recursive(self::TIMESYNCD_DEFAULT, $config);
-		return ['servers' => explode(' ', $config['Time']['NTP'])];
+		return array_replace_recursive(self::TIMESYNCD_DEFAULT, $config);
 	}
 
+	/**
+	 * Parses and returns NTP configuration from NTP service
+	 * @return array<int, array<int, mixed>> NTP configuration
+	 */
 	private function readNtp(): array {
 		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
-		return [];
+		$servers = [];
+		$config = explode(PHP_EOL, FileSystem::read($this->confPath));
+		$serverPattern = '/^server\s(.*)$/';
+		foreach ($config as $idx => $line) {
+			$match = Strings::match($line, $serverPattern);
+			if ($match === null) {
+				continue;
+			}
+			$ip = filter_var($match[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+			$hostname = filter_var($match[1], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+			if ($match[1] === $ip || $match[1] === $hostname) {
+				$servers[] = [$idx, $match[1]];
+			}
+		}
+		return $servers;
+	}
+
+	/**
+	 * Converts and stores NTP configuration for timesyncd service
+	 * @param array<string, array<int, string>> $config NTP configuration
+	 */
+	private function storeTimesyncd(array $config): void {
+		$current = $this->readTimesyncd();
+		$current['Time']['NTP'] = implode(' ', $config['servers']);
+		FileSystem::write($this->confPath, ConfParser::toConf($current));
+	}
+
+	/**
+	 * Converts and stores NTP configuration for NTP service
+	 */
+	private function storeNtp(array $config): void {
+		if (!file_exists($this->confPath)) {
+			throw new ConfNotFoundException('NTP cofiguration file not found.');
+		}
+		$config = explode(PHP_EOL, FileSystem::read($this->confPath));
+		$serverPattern = '/^server\s(.*)$/';
+		$newConfig = [];
 	}
 
 }
