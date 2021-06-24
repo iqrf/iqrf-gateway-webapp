@@ -48,8 +48,8 @@ nodeRed:
 	url: /node-red/
 ntp:
 	enabled: false
-	utility: timesyncd
-	path: /etc/systemd/timesyncd.conf
+	utility: ntp
+	path: /etc/ntp.conf
 # PIXLA mamagement system
 pixla:
 	enabled: false

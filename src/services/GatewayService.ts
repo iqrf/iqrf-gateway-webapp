@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import {IHostname} from '../interfaces/gatewayInfo';
+import {INTP} from '../interfaces/gatewayTime';
 import {ISystemdJournal} from '../interfaces/systemdJournal';
 
 /**
@@ -123,7 +124,7 @@ class GatewayService {
 	 * Saves NTP configuration
 	 * @param config NTP configuration
 	 */
-	setNtp(config: any): Promise<AxiosResponse> {
+	setNtp(config: INTP): Promise<AxiosResponse> {
 		return axios.put('gateway/ntp', config, {headers: authorizationHeader()});
 	}
 }
