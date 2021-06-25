@@ -159,6 +159,7 @@ class NtpManager {
 
 	/**
 	 * Converts and stores NTP configuration for NTP service
+	 * @param array<string, array<int, string>> $config NTP configuration
 	 */
 	private function storeNtp(array $config): void {
 		if (!file_exists($this->confPath)) {
