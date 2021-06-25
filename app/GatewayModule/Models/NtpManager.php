@@ -33,6 +33,21 @@ use Nette\Utils\Strings;
 class NtpManager {
 
 	/**
+	 * Used pool command pattern
+	 */
+	private const POOL_PATTERN_USED = '/^pool\s.*$/';
+
+	/**
+	 * Unused pool command pattern
+	 */
+	private const POOL_PATTERN_UNUSED = '/^#pool\s.*$/';
+
+	/**
+	 * Server command regex pattern
+	 */
+	private const SERVER_PATTERN = '/^server\s(.*)$/';
+
+	/**
 	 * Default timesyncd configuration
 	 */
 	private const TIMESYNCD_DEFAULT = [
@@ -118,9 +133,8 @@ class NtpManager {
 		}
 		$servers = [];
 		$config = explode(PHP_EOL, FileSystem::read($this->confPath));
-		$serverPattern = '/^server\s(.*)$/';
 		foreach ($config as $idx => $line) {
-			$match = Strings::match($line, $serverPattern);
+			$match = Strings::match($line, self::SERVER_PATTERN);
 			if ($match === null) {
 				continue;
 			}
@@ -145,14 +159,39 @@ class NtpManager {
 
 	/**
 	 * Converts and stores NTP configuration for NTP service
+	 * @param array<string, array<int, string>> $config NTP configuration
 	 */
 	private function storeNtp(array $config): void {
 		if (!file_exists($this->confPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
-		$config = explode(PHP_EOL, FileSystem::read($this->confPath));
-		$serverPattern = '/^server\s(.*)$/';
+		$useServers = $config['servers'] !== [];
 		$newConfig = [];
+		$lines = explode(PHP_EOL, FileSystem::read($this->confPath));
+		foreach ($lines as $line) {
+			if ($useServers) {
+				$match = Strings::match($line, self::POOL_PATTERN_USED);
+				if ($match !== null) {
+					$newConfig[] = '#' . $line;
+					continue;
+				}
+			} else {
+				$match = Strings::match($line, self::POOL_PATTERN_UNUSED);
+				if ($match !== null) {
+					$newConfig[] = Strings::substring($line, 1);
+					continue;
+				}
+			}
+			$match = Strings::match($line, self::SERVER_PATTERN);
+			if ($match !== null) {
+				continue;
+			}
+			$newConfig[] = $line;
+		}
+		foreach ($config['servers'] as $server) {
+			$newConfig[] = 'server ' . $server;
+		}
+		FileSystem::write($this->confPath, implode(PHP_EOL, $newConfig));
 	}
 
 }
