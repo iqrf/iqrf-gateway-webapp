@@ -19,7 +19,7 @@ services:
 		autowired: false
 	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandManager, @mender.fileManager)
 	monit.fileManager:
-		factory: App\CoreModule\Models\FileManager('/etc/monit')
+		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/monit')
 		autowired: false
 	monit.manager: App\MaintenanceModule\Models\MonitManager(@monit.fileManager)
 	pixla.fileManager: App\CoreModule\Models\FileManager('/etc/gwman/')
