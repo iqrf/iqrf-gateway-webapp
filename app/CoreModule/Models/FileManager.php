@@ -115,6 +115,16 @@ class FileManager implements IFileManager {
 	}
 
 	/**
+	 * Sets file permissions
+	 * @param string $fileName File name
+	 * @param int $permission Permission
+	 */
+	public function setPermission(string $fileName, int $permission): void {
+		$command = sprintf('chmod %d %s', $permission, $this->directory . '/' . $fileName);
+		$this->commandManager->run($command, true);
+	}
+
+	/**
 	 * Fixes the permissions
 	 * @param string $fileName File name
 	 */
