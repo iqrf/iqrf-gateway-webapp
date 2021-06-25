@@ -93,6 +93,7 @@ class MonitManager {
 		}
 		$configArray[$idx] = sprintf('set mmonit https://%s:%s@%s', $newConfig['username'], $newConfig['password'], $newConfig['endpoint']);
 		$this->fileManager->write(self::CONF_FILE, implode(PHP_EOL, $configArray));
+		chmod('/etc/monit/' . self::CONF_FILE, 0600);
 	}
 
 	/**
