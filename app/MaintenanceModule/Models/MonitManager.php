@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use Nette\Utils\Strings;
@@ -28,6 +29,11 @@ use Nette\Utils\Strings;
  * Monit manager
  */
 class MonitManager {
+
+	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
 
 	/**
 	 * @var FileManager $fileManager File manager
@@ -43,7 +49,8 @@ class MonitManager {
 	 * Constructor
 	 * @param FileManager $fileManager File manager
 	 */
-	public function __construct(FileManager $fileManager) {
+	public function __construct(CommandManager $commandManager, FileManager $fileManager) {
+		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
 	}
 
@@ -93,7 +100,7 @@ class MonitManager {
 		}
 		$configArray[$idx] = sprintf('set mmonit https://%s:%s@%s', $newConfig['username'], $newConfig['password'], $newConfig['endpoint']);
 		$this->fileManager->write(self::CONF_FILE, implode(PHP_EOL, $configArray));
-		chmod('/etc/monit/' . self::CONF_FILE, 0600);
+		$this->commandManager->run('chmod 0600 /etc/monit/' . self::CONF_FILE, true);
 	}
 
 	/**

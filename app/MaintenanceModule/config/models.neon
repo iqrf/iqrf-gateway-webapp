@@ -21,7 +21,7 @@ services:
 	monit.fileManager:
 		factory: App\CoreModule\Models\FileManager('/etc/monit')
 		autowired: false
-	monit.manager: App\MaintenanceModule\Models\MonitManager(@monit.fileManager)
+	monit.manager: App\MaintenanceModule\Models\MonitManager(@commandManager, @monit.fileManager)
 	pixla.fileManager: App\CoreModule\Models\FileManager('/etc/gwman/')
 	pixla.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'gwman-client')
 	pixla.manager: App\MaintenanceModule\Models\PixlaManager(@pixla.fileManager, @pixla.serviceManager)
