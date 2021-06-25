@@ -124,7 +124,7 @@ export default class NtpConfig extends Vue {
 	 * NTP configuration
 	 */
 	private config: INTP = {
-		servers: []
+		servers: ['']
 	}
 
 	/**
@@ -158,8 +158,11 @@ export default class NtpConfig extends Vue {
 		}
 		return GatewayService.getNtp()
 			.then((response: AxiosResponse) => {
-				this.config = response.data;
-				if (this.config.servers.length > 0 && this.config.servers[0] !== '') {
+				let config: INTP = response.data;
+				if (config.servers.length === 0) {
+					this.useCustomServers = false;
+				} else {
+					this.config = config;
 					this.useCustomServers = true;
 				}
 				this.$store.commit('spinner/HIDE');
@@ -174,7 +177,7 @@ export default class NtpConfig extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		let config = this.config;
+		let config = JSON.parse(JSON.stringify(this.config));
 		if (!this.useCustomServers) {
 			config.servers = [];
 		}
