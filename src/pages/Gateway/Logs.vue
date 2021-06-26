@@ -157,7 +157,11 @@ export default class LogViewer extends Vue {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.log.messages.fetchFailed');
+				if (error.response === undefined || error.response.status !== 404) {
+					extendedErrorToast(error, 'gateway.log.messages.fetchFailed');
+				} else {
+					this.$store.commit('spinner/HIDE');
+				}
 				this.logs[this.tab].loaded = true;
 			});
 	}

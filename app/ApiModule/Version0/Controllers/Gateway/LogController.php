@@ -95,7 +95,7 @@ class LogController extends GatewayController {
 	 *                  schema:
 	 *                      type: string
 	 *      '404':
-	 *          description: 'Service not found'
+	 *          description: 'Service not found or log not found'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -113,7 +113,7 @@ class LogController extends GatewayController {
 		} catch (ServiceLogNotAvailableException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (LogNotFoundException $e) {
-			throw new ServerErrorException('Log file does not exist.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ClientErrorException('Log file does not exist.', ApiResponse::S404_NOT_FOUND, $e);
 		} catch (LogEmptyException $e) {
 			throw new ServerErrorException('Log file is empty.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
