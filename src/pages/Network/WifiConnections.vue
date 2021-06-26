@@ -225,7 +225,7 @@ import VersionService from '../../services/VersionService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
-import {IAccessPoint, IAccessPointArray, NetworkInterface} from '../../interfaces/network';
+import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -410,28 +410,40 @@ export default class WifiConnections extends Vue {
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
+				let connections: Array<NetworkConnection> = response.data;
 				let apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
 					ap['showDetails'] = false;
-					let index = response.data.findIndex(con => con.name === ap.ssid);
-					if (index !== -1) {
-						ap.uuid = response.data[index].uuid;
-						if (response.data[index].interfaceName !== null) {
-							ap.interfaceName = response.data[index].interfaceName;
-						}
-					}
-					index = apArray.findIndex(arrAp => arrAp.ssid === ap.ssid);
-					if (index !== -1) {
+					const idx = apArray.findIndex(item => item.ssid === ap.ssid);
+					if (idx !== -1) {
 						if (ap.inUse) {
-							apArray[index].aps.unshift(ap);
+							apArray[idx].aps.unshift(ap);
 						} else {
-							apArray[index].aps.push(ap);
+							apArray[idx].aps.push(ap);
 						}
 					} else {
 						apArray.push({
 							ssid: ap.ssid,
 							aps: [ap]
 						});
+					}
+				}
+				for (const i in apArray) {
+					apArray[i].aps.splice(1);
+					const re = new RegExp('^' + apArray[i].ssid + '(\\s\\d+)?$');
+					const filteredConnections = connections.filter((item: NetworkConnection) => re.test(item.name));
+					if (filteredConnections.length === 0) {
+						continue;
+					}
+					for (const con of filteredConnections) {
+						if (con.interfaceName !== null) {
+							apArray[i].aps[0].interfaceName = con.interfaceName;
+							apArray[i].aps[0].uuid = con.uuid;
+							break;
+						}
+						if (apArray[i].aps[0].uuid === undefined) {
+							apArray[i].aps[0].uuid = con.uuid;
+						}
 					}
 				}
 				this.accessPoints = apArray;
