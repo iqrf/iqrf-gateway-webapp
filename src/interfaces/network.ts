@@ -22,6 +22,7 @@ export interface NetworkConnection {
 	name: string
 	type: string
 	uuid: string
+	bssid?: Array<string>
 }
 
 /**
