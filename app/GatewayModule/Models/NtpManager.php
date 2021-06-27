@@ -21,7 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\ConfigModule\Utils\ConfParser;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
+use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Nette\Utils\FileSystem;
@@ -61,9 +63,19 @@ class NtpManager {
 	];
 
 	/**
-	 * @var string $confPath Path to time sync conf file
+	 * @var string $fullPath Path to configuration file
 	 */
-	private $confPath;
+	private $fullPath;
+
+	/**
+	 * @var string $confFile Configuration file name
+	 */
+	private $confFile;
+
+	/**
+	 * @var PrivilegedFileManager $fileManager Privileged file manager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var string $utility Time sync utility
@@ -74,10 +86,12 @@ class NtpManager {
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(FeatureManager $featureManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
 		$feature = $featureManager->get('ntp');
+		$this->fullPath = $feature['path'];
+		$this->confFile = basename($this->fullPath);
+		$this->fileManager = new PrivilegedFileManager(dirname($this->fullPath), $commandManager);
 		$this->utility = $feature['utility'];
-		$this->confPath = $feature['path'];
 	}
 
 	/**
@@ -115,10 +129,10 @@ class NtpManager {
 	 * @return array<string, array<string, mixed>> NTP configuration
 	 */
 	private function readTimesyncd(): array {
-		if (!file_exists($this->confPath)) {
+		if (!file_exists($this->fullPath)) {
 			throw new ConfNotFoundException('Timesyncd configuration file not found.');
 		}
-		$config = ConfParser::toArray(FileSystem::read($this->confPath));
+		$config = ConfParser::toArray($this->fileManager->read($this->confFile));
 		if ($config === null) {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}
@@ -130,11 +144,11 @@ class NtpManager {
 	 * @return array<int, array<int, mixed>> NTP configuration
 	 */
 	private function readNtp(): array {
-		if (!file_exists($this->confPath)) {
+		if (!file_exists($this->fullPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
 		$servers = [];
-		$config = explode(PHP_EOL, FileSystem::read($this->confPath));
+		$config = explode(PHP_EOL, $this->fileManager->read($this->confFile));
 		foreach ($config as $idx => $line) {
 			$match = Strings::match($line, self::SERVER_PATTERN);
 			if ($match === null) {
@@ -156,7 +170,7 @@ class NtpManager {
 	private function storeTimesyncd(array $config): void {
 		$current = $this->readTimesyncd();
 		$current['Time']['NTP'] = implode(' ', $config['servers']);
-		FileSystem::write($this->confPath, ConfParser::toConf($current));
+		$this->fileManager->write($this->confFile, ConfParser::toConf($current));
 	}
 
 	/**
@@ -164,12 +178,12 @@ class NtpManager {
 	 * @param array<string, array<int, string>> $config NTP configuration
 	 */
 	private function storeNtp(array $config): void {
-		if (!file_exists($this->confPath)) {
+		if (!file_exists($this->fullPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
 		$useServers = $config['servers'] !== [];
 		$newConfig = [];
-		$lines = explode(PHP_EOL, FileSystem::read($this->confPath));
+		$lines = explode(PHP_EOL, FileSystem::read($this->confFile));
 		foreach ($lines as $line) {
 			if ($useServers) {
 				$match = Strings::match($line, self::POOL_PATTERN_USED);
@@ -193,7 +207,7 @@ class NtpManager {
 		foreach ($config['servers'] as $server) {
 			$newConfig[] = 'server ' . $server;
 		}
-		FileSystem::write($this->confPath, implode(PHP_EOL, $newConfig));
+		$this->fileManager->write($this->confFile, implode(PHP_EOL, $newConfig));
 	}
 
 }
