@@ -104,8 +104,9 @@ class NtpManager {
 	public function storeConfig(array $config): void {
 		if ($this->utility === 'timesyncd') {
 			$this->storeTimesyncd($config);
-		}
-		$this->storeNtp($config);
+		} else {
+			$this->storeNtp($config);
+		}	
 	}
 
 	/**
