@@ -26,7 +26,7 @@ services:
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
-	- App\GatewayModule\Models\NtpManager
+	- App\GatewayModule\Models\NtpManager(@commandManager)
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SystemdJournalManager
