@@ -211,6 +211,7 @@ class ZipArchiveManager {
 
 	/**
 	 * Checks if zip archive is empty
+	 * @return bool Is zip archive empty?
 	 */
 	public function isEmpty(): bool {
 		$count = 0;
