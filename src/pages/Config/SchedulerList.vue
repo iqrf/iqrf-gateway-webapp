@@ -592,6 +592,7 @@ export default class SchedulerList extends Vue {
 				if (error.response === undefined || error.response.status !== 404) {
 					extendedErrorToast(error, 'config.daemon.scheduler.messages.exportFailed');
 				} else {
+					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
 						this.$t('config.daemon.scheduler.messages.exportNoTasks').toString()
 					);
