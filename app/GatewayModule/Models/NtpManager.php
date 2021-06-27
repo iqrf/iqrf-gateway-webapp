@@ -106,7 +106,7 @@ class NtpManager {
 			$this->storeTimesyncd($config);
 		} else {
 			$this->storeNtp($config);
-		}	
+		}
 	}
 
 	/**
