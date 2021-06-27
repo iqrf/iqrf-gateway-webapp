@@ -46,8 +46,12 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -71,7 +71,7 @@ trUpload:
- 	enabled: true
+@@ -68,10 +68,10 @@ updater:
+ 	enabled: false
+ # IQRF TR native upload
+ trUpload:
+-	enabled: false
++	enabled: true
  # Unattended upgrades
  unattendedUpgrades:
 -	enabled: false
