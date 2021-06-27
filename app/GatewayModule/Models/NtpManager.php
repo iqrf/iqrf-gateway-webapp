@@ -87,7 +87,8 @@ class NtpManager {
 	public function readConfig(): array {
 		if ($this->utility === 'timesyncd') {
 			$config = $this->readTimesyncd();
-			return ['servers' => explode(' ', $config['Time']['NTP'])];
+			$servers = explode(' ', $config['Time']['NTP']);
+			return ['servers' => $servers === [''] ? [] : $servers];
 		}
 		$config = $this->readNtp();
 		return [
