@@ -159,7 +159,7 @@ export default class NtpConfig extends Vue {
 		return GatewayService.getNtp()
 			.then((response: AxiosResponse) => {
 				let config: INTP = response.data;
-				if (config.servers.length === 1 && config.servers[0] === '') {
+				if (config.servers.length === 0) {
 					this.useCustomServers = false;
 				} else {
 					this.config = config;
