@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
+use App\ConfigModule\Exceptions\ZipEmptyException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
@@ -79,6 +80,9 @@ class SchedulerMigrationManager {
 		$zipManager->addFolder($this->configDirectory, '');
 		if ($zipManager->exist('schema/')) {
 			$zipManager->deleteDirectory('schema');
+		}
+		if ($zipManager->isEmpty()) {
+			throw new ZipEmptyException('No files to export.');
 		}
 		$zipManager->close();
 		return $path;

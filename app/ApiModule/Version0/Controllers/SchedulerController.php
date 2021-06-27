@@ -35,6 +35,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
+use App\ConfigModule\Exceptions\ZipEmptyException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
@@ -278,16 +279,22 @@ class SchedulerController extends BaseController {
 	 *           schema:
 	 *             type: string
 	 *             format: binary
+	 *     '404':
+	 *       description: 'No tasks to export'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->migrationManager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+		try {
+			$path = $this->migrationManager->createArchive();
+			$fileName = basename($path);
+			$response->writeBody(FileSystem::read($path));
+			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+		} catch (ZipEmptyException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		}
 	}
 
 	/**

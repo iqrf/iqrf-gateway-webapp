@@ -209,4 +209,17 @@ class ZipArchiveManager {
 		$this->zip->close();
 	}
 
+	/**
+	 * Checks if zip archive is empty
+	 */
+	public function isEmpty(): bool {
+		$count = 0;
+		for ($i = 0; $i < $this->zip->count(); ++$i) {
+			if ($this->zip->statIndex($i) !== false) {
+				$count++;
+			}
+		}
+		return $count === 0;
+	}
+
 }
