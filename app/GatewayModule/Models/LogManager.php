@@ -22,7 +22,6 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use Nette\Utils\FileSystem;
@@ -95,10 +94,10 @@ class LogManager {
 			$logFiles[$file->getMTime()] = $file->getRealPath();
 		}
 		if ($logFiles === []) {
-			if ($emptyLogFound) {
-				throw new LogEmptyException();
+			if (!$emptyLogFound) {
+				throw new LogNotFoundException();
 			}
-			throw new LogNotFoundException();
+			return '';
 		}
 		krsort($logFiles);
 		return FileSystem::read(reset($logFiles));
