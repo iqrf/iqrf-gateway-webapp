@@ -87,7 +87,7 @@ class IqrfNetService {
 		options.request = {
 			'mType': 'iqmeshNetwork_BondNodeLocal',
 			'data': {
-				'repeat': 2,
+				'repeat': 1,
 				'req': {
 					'deviceAddr': address,
 				},
@@ -128,7 +128,7 @@ class IqrfNetService {
 		options.request = {
 			'mType': 'iqmeshNetwork_SmartConnect',
 			'data': {
-				'repeat': 2,
+				'repeat': 1,
 				'req': {
 					'deviceAddr': address,
 					'smartConnectCode': scCode,
@@ -356,7 +356,7 @@ class IqrfNetService {
 			options.request = {
 				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
 				'data': {
-					'repeat': 2,
+					'repeat': 1,
 					'req': {
 						'deviceAddr': [addr],
 					},
@@ -367,7 +367,7 @@ class IqrfNetService {
 			options.request = {
 				'mType': 'iqmeshNetwork_RemoveBond',
 				'data': {
-					'repeat': 2,
+					'repeat': 1,
 					'req': {
 						'deviceAddr': addr,
 					},
@@ -424,7 +424,7 @@ class IqrfNetService {
 		const request = {
 			'mType': 'iqmeshNetwork_WriteTrConf',
 			'data': {
-				'repeat': 2,
+				'repeat': 1,
 				'req': configuration,
 				'returnVerbose': true,
 			},
