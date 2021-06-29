@@ -323,7 +323,7 @@ export default class BondingManager extends Vue {
 	 * @var {string} scCode SmartConnect code
 	 */
 	private scCode = ''
-	
+
 	/**
 	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
 	 */
@@ -459,7 +459,7 @@ export default class BondingManager extends Vue {
 			});
 			return;
 		}
-		
+
 		if (this.daemon236) { // unified status codes
 			if (response.status === 1) {
 				this.$toast.error(
@@ -467,7 +467,7 @@ export default class BondingManager extends Vue {
 				);
 			} else {
 				this.$toast.error(
-					this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
+					this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 				);
 			}
 			return;
@@ -483,7 +483,7 @@ export default class BondingManager extends Vue {
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 			);
 		}
 	}
