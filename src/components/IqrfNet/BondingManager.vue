@@ -435,10 +435,10 @@ export default class BondingManager extends Vue {
 	 * Bonds a new node device via local bonding or smartconnect
 	 */
 	private bond(): void {
-		this.$store.dispatch('spinner/show', {timeout: 11000});
+		this.$store.dispatch('spinner/show', {timeout: 30000});
 		const address = this.autoAddress ? 0 : this.address;
 		if (this.bondMethod === 'local') {
-			IqrfNetService.bondLocal(address, this.buildOptions(11000, 'iqrfnet.networkManager.bondingManager.messages.bondTimeout'))
+			IqrfNetService.bondLocal(address, this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.bondTimeout'))
 				.then((msgId: string) => this.msgId = msgId);
 			this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.bondingManager.messages.bondLocalAction').toString());
 		} else if (this.bondMethod === BondingMethod.SMARTCONNECT) {
