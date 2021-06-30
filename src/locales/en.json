@@ -2528,7 +2528,7 @@
 					"rollback": "Rollback update"
 				},
 				"messages": {
-					"update": "Uploading and installing Mender artifact, this may take up to 10 minutes.",
+					"update": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
 					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
 					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, reboot the gateway for the changes to take effect.",
 					"installFailed": "Failed to install Mender artifact, see output log for details.",
