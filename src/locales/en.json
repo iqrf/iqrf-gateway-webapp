@@ -1447,7 +1447,7 @@
 					"bondNfcSuccess": "NFC reader has been successfully bonded.",
 					"bondTimeout": "Request to bond a new device timed out.",
 					"unbondTimeout": "Request to unbond device timed out.",
-					"genericBondError": "An error has occured during the bonding process.",
+					"genericBondError": "Failed to bond new node.",
 					"unbondSuccess": "Device at address {address} has been successfully unbonded.",
 					"unbondSuccessC": "Device at address {address} has been successfully unbonded from Coordinator memory.",
 					"noDevices": "There are no devices bonded in the network.",
