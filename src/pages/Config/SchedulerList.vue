@@ -588,7 +588,16 @@ export default class SchedulerList extends Vue {
 				const file = fileDownloader(response, 'application/zip', fileName);
 				file.click();
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.exportFailed'));
+			.catch((error: AxiosError) => {
+				if (error.response === undefined || error.response.status !== 404) {
+					extendedErrorToast(error, 'config.daemon.scheduler.messages.exportFailed');
+				} else {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.error(
+						this.$t('config.daemon.scheduler.messages.exportNoTasks').toString()
+					);
+				}
+			});
 	}
 
 	/**
