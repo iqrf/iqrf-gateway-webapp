@@ -1,3 +1,30 @@
+iqrf-gateway-webapp (2.3.0~rc9) testing; urgency=medium
+
+  [ Karel Hanák ]
+  * Scheduler: removed extra messages heading
+
+  [ Roman Ondráček ]
+  * IQRF net: fix typos in Bonding component
+
+  [ Karel Hanák ]
+  * DiagnosticsManager: fixed journal fetch for diagnostic
+  * MonitManager: fixup permission
+  * MonitManager: use command manager to fixup file permissions
+  * FileManager: added permission set method, MonitManager: set permissions via file manager
+  * main: removed redundant license header
+  * nginx: updated csp
+  * MonitManager: use privileged file manager
+  * Logs: ignore error handling if log file doesn't exist
+  * WifiConnections: refactor ap table building
+  * LogManager: unify daemon log behaviour with the other services
+  * IQMESH Network: unified iqmesh service repeat count, increased bond timeout
+  * localization: updated mender artifact install note
+  * MenderManager: increased install command timeout to 30 minutes
+  * BondingManager: use generic message for local bonding and smart connect until the services are refactored
+  * Scheduler: error handling for empty zip archive when exporting scheduler tasks
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 03 Jul 2021 14:04:48 +0200
+
 iqrf-gateway-webapp (2.3.0~rc8) testing; urgency=medium
 
   [ Karel Hanák ]
