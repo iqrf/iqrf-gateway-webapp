@@ -668,6 +668,7 @@
 				},
 				"messages": {
 					"exportFailed": "Failed to export scheduler tasks: {error}",
+					"exportNoTasks": "There are not tasks to export.",
 					"importFailed": "Failed to import scheduler task(s): {error}",
 					"importSuccess": "The tasks has been imported successfully.",
 					"deleteSuccess": "Scheduler task has been successfully deleted.",
