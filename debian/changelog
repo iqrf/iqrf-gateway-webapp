@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.3.0) testing; urgency=medium
+
+  * Axios: fix CORS
+  * Composer: update dependencies
+  * NPM: update dependencies
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 08 Jul 2021 16:25:00 +0200
+
 iqrf-gateway-webapp (2.3.0~rc9) testing; urgency=medium
 
   [ Karel Hanák ]
