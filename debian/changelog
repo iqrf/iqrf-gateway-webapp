@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.3.1~alpha~1.gbpa37b1a) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @a37b1a1e2dcfdcc505d1a98b2de9dba020f51e03 **
+
+  * UNRELEASED
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 08 Jul 2021 16:30:00 +0200
+
 iqrf-gateway-webapp (2.3.0) testing; urgency=medium
 
   * Axios: fix CORS
