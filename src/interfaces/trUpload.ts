@@ -21,7 +21,7 @@ export interface IqrfOsUpgrade {
 	/**
 	 * IQRF OS build
 	 */
-	osBuild: string
+	os: IIqrfOsUpgradeOs
 
 	/**
 	 * IQRF OS version
@@ -31,22 +31,73 @@ export interface IqrfOsUpgrade {
 	/**
 	 * DPA pretty version
 	 */
-	dpa: string
-
-	/**
-	 * DPA raw version
-	 */
-	dpaRaw: string
+	dpa: IIqrfOsUpgradeDpa
 
 	/**
 	 * IQRF OS notes
 	 */
 	notes: string
+}
+
+/**
+ * IQRF OS upgrade OS metadata interface
+ */
+
+export interface IIqrfOsUpgradeOs {
+	/**
+	 * OS build
+	 */
+	build: string
+
+	/**
+	 * OS version
+	 */
+	version: string
+
+	/**
+	 * OS attributes
+	 */
+	attributes: IIqrfOsUpgradeAttribes
 
 	/**
 	 * Download path
 	 */
 	downloadPath: string
+}
+
+/**
+ * IQRF OS upgrade DPA metadata interface
+ */
+export interface IIqrfOsUpgradeDpa {
+	/**
+	 * DPA version
+	 */
+	version: string
+
+	/**
+	 * DPA attributes
+	 */
+	attributes: IIqrfOsUpgradeAttribes
+
+	/**
+	 * Download path
+	 */
+	downloadPath: string
+}
+
+/**
+ * IQRF OS upgrade  attributes interface
+ */
+export interface IIqrfOsUpgradeAttribes {
+	/**
+	 * Indicates beta version
+	 */
+	beta: boolean
+
+	/**
+	 * Indicates obsolete version
+	 */
+	obsolete: boolean
 }
 
 /**
