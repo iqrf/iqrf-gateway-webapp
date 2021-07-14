@@ -109,13 +109,13 @@ limitations under the License.
 						<CButton
 							color='primary'
 							:disabled='invalid'
-							@click.prevent='save'
+							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
 						</CButton> <CButton
 							color='secondary'
 							:disabled='invalid'
-							@click.prevent='saveAndRestart'
+							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
 						</CButton>
@@ -184,37 +184,28 @@ export default class IbmCreator extends Vue {
 
 	/**
 	 * Stores new ibm cloud connection configuration in the gateway filesystem
-	 * @returns {Promise<void>} Empty promise for request chaining
+	 * @param {boolean} restart Restart daemon on save?
 	 */
-	private save(): Promise<void> {
+	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		return CloudService.create(this.serviceName, this.config)
-			.then(() => {
+		CloudService.create(this.serviceName, this.config)
+			.then(async () => {
+				if (restart) {
+					await ServiceService.restart('iqrf-gateway-daemon')
+						.then(() => {
+							this.$toast.success(
+								this.$t('service.iqrf-gateway-daemon.messages.restart')
+									.toString()
+							);
+						})
+						.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
+				}
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(this.$t('cloud.messages.success').toString());
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'cloud.ibmCloud.messages.saveFailed');
-				//return Promise.reject(error);
 			});
-	}
-
-	/**
-	 * Stores new ibm cloud connection configuration in the gateway filesystem and restarts Daemon
-	 */
-	private saveAndRestart(): void {
-		this.save().then(() => {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.restart('iqrf-gateway-daemon')
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('service.iqrf-gateway-daemon.messages.restart')
-							.toString()
-					);
-				})
-				.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
-		});
 	}
 	
 }
