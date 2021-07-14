@@ -56,7 +56,7 @@ class WebSocketClient {
 	 * @param string $url URL to IQRF Gateway Daemon's WebSocket server
 	 */
 	public function __construct(string $url) {
-		$this->loop = EventLoop\Factory::create();
+		$this->loop = EventLoop\Loop::get();
 		$envUrl = getenv('IQRFGD_WS_SERVER');
 		$this->serverUrl = ($envUrl !== false) ? $envUrl : $url;
 	}
