@@ -204,7 +204,26 @@ export default class OsUpdater extends Vue {
 		let versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
 			let upgrade: IqrfOsUpgrade = this.upgrades[i];
-			let label = this.prettyVersion(upgrade.osVersion) + ' (' + upgrade.osBuild + ')' + ', DPA ' + upgrade.dpa;
+			console.warn(upgrade);
+			let label = upgrade.os.version + ' (' + upgrade.os.build;
+			if (upgrade.os.attributes.beta) {
+				label += ', Beta version';
+			}
+			if (upgrade.os.attributes.obsolete) {
+				label += ', Obsolete';
+			}
+			label += '), DPA ' + upgrade.dpa.version;
+			if (upgrade.dpa.attributes.beta || upgrade.dpa.attributes.obsolete) {
+				label += ' (';
+				if (upgrade.dpa.attributes.beta) {
+					label += 'Beta version, ';
+				}
+				if (upgrade.dpa.attributes.obsolete) {
+					label += 'Obsolete)';
+				} else {
+					label = label.substr(0, label.length - 2) + ')';
+				}
+			}
 			versions.push({
 				value: i,
 				label: label,
@@ -232,17 +251,18 @@ export default class OsUpdater extends Vue {
 			return;
 		}
 		let upgrade = this.upgrades[this.osVersion];
+		let dpaRaw = upgrade.dpa.version.split('.').join('').padStart(4, '0');
 		let data = {
 			fromBuild: this.currentOsBuild,
 			fromVersion: this.currentOsVersion,
 			toVersion: upgrade.osVersion,
-			toBuild: upgrade.osBuild,
-			dpa: upgrade.dpaRaw,
+			toBuild: upgrade.os.build,
+			dpa: dpaRaw,
 			interface: this.interfaceType,
 			trMcuType: this.trMcuType,
 		};
-		if (upgrade.dpaRaw < '0400') {
-			Object.assign(data, {rfMode: upgrade.dpa.endsWith('STD') ? 'STD' : 'LP'});
+		if (dpaRaw < '0400') {
+			Object.assign(data, {rfMode: upgrade.dpa.version.endsWith('STD') ? 'STD' : 'LP'});
 		}
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT',
