@@ -511,6 +511,10 @@ export default class BondingManager extends Vue {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
 			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
+			);
 		}
 	}
 
