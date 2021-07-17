@@ -141,13 +141,13 @@ $theme-colors: (
 	font-style: italic;
 }
 
-.form-control:-ms-input-placeholder {
+.form-control::-ms-input-placeholder {
 	color: gray;
 	opacity: 0.7;
 	font-style: italic;
 }
 
-.form-control::-ms-input-placeholder {
+.form-control:-ms-input-placeholder {
 	color: gray;
 	opacity: 0.7;
 	font-style: italic;
