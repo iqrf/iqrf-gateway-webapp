@@ -396,7 +396,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		if (response.data.status in StatusMessages) {
 			this.$toast.error(
-				this.$t(StatusMessages[response.status]).toString()
+				this.$t(StatusMessages[response.data.status]).toString()
 			);
 			return;
 		}
