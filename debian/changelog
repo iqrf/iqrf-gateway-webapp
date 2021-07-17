@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.3.2~alpha~1.gbp515a2a) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.3.2) stable; urgency=medium
 
-  ** SNAPSHOT build @515a2a2d51a0a641f3138fa3cc1be96cf7c6f1cc **
+  [ Karel Hanák ]
+  * Prepare for version v2.3.2-alpha
+  * Clouds: connection save and restart rework
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 17 Jul 2021 07:11:37 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 17 Jul 2021 08:27:46 +0200
 
 iqrf-gateway-webapp (2.3.1) stable; urgency=medium
 
