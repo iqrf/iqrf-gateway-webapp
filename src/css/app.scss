@@ -134,3 +134,21 @@ $theme-colors: (
 .prism-editor__textarea {
 	outline: 0;
 }
+
+.form-control::placeholder {
+	color: gray;
+	opacity: 0.7;
+	font-style: italic;
+}
+
+.form-control:-ms-input-placeholder {
+	color: gray;
+	opacity: 0.7;
+	font-style: italic;
+}
+
+.form-control::-ms-input-placeholder {
+	color: gray;
+	opacity: 0.7;
+	font-style: italic;
+}
