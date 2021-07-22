@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
 		<HexUpload />
 		<DpaUpdater ref='dpaUpdater' @loaded='osDpaLoaded' />
-		<!--<OsUpdater ref='osUpdater' @loaded='osDpaLoaded' @os-upload='osInfoUpload' />-->
+		<OsUpdater ref='osUpdater' @loaded='osDpaLoaded' @os-upload='osInfoUpload' />
 	</div>
 </template>
 
@@ -71,7 +71,7 @@ export default class TrUpload extends Vue {
 
 	private loading: Array<string> = [
 		'DPA',
-		//'OS'
+		'OS'
 	]
 
 	private failed: Array<string> = []
@@ -85,7 +85,7 @@ export default class TrUpload extends Vue {
 	 * Component unwatch function
 	 */
 	private unwatch: CallableFunction = () => {return;}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 * Initializes validation rules and websocket callbacks
@@ -139,7 +139,7 @@ export default class TrUpload extends Vue {
 	 */
 	private enumerateCoordinator(): void {
 		this.$store.commit('spinner/SHOW');
-		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null) 
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -150,7 +150,7 @@ export default class TrUpload extends Vue {
 	private handleEnumResponse(response): void {
 		if (response.data.status === 0) {
 			(this.$refs.dpaUpdater as DpaUpdater).handleEnumResponse(response.data.rsp);
-			//(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
+			(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
 		} else {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
