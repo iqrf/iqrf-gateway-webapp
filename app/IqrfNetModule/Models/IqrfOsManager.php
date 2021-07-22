@@ -75,7 +75,7 @@ class IqrfOsManager {
 
 	/**
 	 * Lists available IQRF OS upgrades
-	 * @param string $currentBuild Current build of IQRF OS
+	 * @param string $build IQRF OS build
 	 * @param int $mcuType Module MCU type
 	 * @return array<int, array<string, int|string>> Available IQRF OS upgrades
 	 */
