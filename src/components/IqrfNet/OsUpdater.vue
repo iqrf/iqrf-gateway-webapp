@@ -144,7 +144,7 @@ export default class OsUpdater extends Vue {
 	private upgrades: Array<IqrfOsUpgrade> = [];
 
 	/**
-	 * @var {boolean} uploadError Indicates whether an upload error has occured
+	 * @var {boolean} uploadError Indicates whether an upload error has occurred
 	 */
 	private uploadError = false;
 
@@ -203,7 +203,6 @@ export default class OsUpdater extends Vue {
 		let versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
 			let upgrade: IqrfOsUpgrade = this.upgrades[i];
-			console.warn(upgrade);
 			let label = upgrade.os.version + ' (' + upgrade.os.build;
 			if (upgrade.os.attributes.beta) {
 				label += ', Beta version';
@@ -222,6 +221,9 @@ export default class OsUpdater extends Vue {
 				} else {
 					label = label.substr(0, label.length - 2) + ')';
 				}
+			}
+			if ((upgrade.dpa.rfMode ?? null) !== null) {
+				label += ', ' + upgrade.dpa.rfMode;
 			}
 			versions.push({
 				value: i,
@@ -253,15 +255,13 @@ export default class OsUpdater extends Vue {
 		let dpaRaw = upgrade.dpa.version.split('.').join('').padStart(4, '0');
 		let data = {
 			fromBuild: this.currentOsBuild,
-			fromVersion: this.currentOsVersion,
-			toVersion: upgrade.osVersion,
 			toBuild: upgrade.os.build,
 			dpa: dpaRaw,
 			interface: this.interfaceType,
 			trMcuType: this.trMcuType,
 		};
 		if (dpaRaw < '0400') {
-			Object.assign(data, {rfMode: upgrade.dpa.version.endsWith('STD') ? 'STD' : 'LP'});
+			Object.assign(data, {rfMode: upgrade.dpa.rfMode});
 		}
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT',

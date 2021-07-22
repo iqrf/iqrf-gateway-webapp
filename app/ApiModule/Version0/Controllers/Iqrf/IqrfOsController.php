@@ -112,7 +112,7 @@ class IqrfOsController extends IqrfController {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
 		$data = $request->getJsonBody(false);
-		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->version, $data->build, $data->mcuType);
+		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->build, $data->mcuType);
 		return $response->writeJsonBody($upgrades);
 	}
 

@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {RFMode} from '../services/IqrfRepository/OsDpaService';
+
 /**
  * IQRF OS upgrade metadata interface
  */
@@ -83,6 +85,11 @@ export interface IIqrfOsUpgradeDpa {
 	 * Download path
 	 */
 	downloadPath: string
+
+	/**
+	 * RF mode
+	 */
+	rfMode?: RFMode;
 }
 
 /**
@@ -123,7 +130,7 @@ export interface UploadUtilFile {
 	 * File name
 	 */
 	name: string
-	
+
 	/**
 	 * File type
 	 */
