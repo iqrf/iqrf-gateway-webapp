@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software,
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,9 +48,14 @@ limitations under the License.
 					<CButton 
 						color='primary'
 						:disabled='invalid'
-						@click='handleSubmit'
+						@click='submitStep(true)'
 					>
 						{{ $t('forms.changePassword') }}
+					</CButton> <CButton
+						color='secondary'
+						@click='submitStep(false)'
+					>
+						{{ $t('forms.skip') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -65,12 +70,13 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ServiceControl from '../../pages/Gateway/ServiceControl.vue';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {GatewayPasswordFeature} from '../../services/FeatureService';
 import {required} from 'vee-validate/dist/rules';
+
 import GatewayService from '../../services/GatewayService';
 
 import {AxiosError} from 'axios';
-import {GatewayPasswordFeature} from '../../services/FeatureService';
-import {extendedErrorToast} from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -85,12 +91,15 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	metaInfo: {
+		title: 'install.gwPassword.title'
+	}
 })
 
 /**
  * Gateway user password change component
  */
-export default class GatewayUserPassword extends Vue {
+export default class InstallGatewayUser extends Vue {
 	
 	/**
 	 * @var {string} password Password
@@ -126,25 +135,22 @@ export default class GatewayUserPassword extends Vue {
 	}
 
 	/**
-	 * Sets new gateway root account password
+	 * Advance the install wizard step
+	 * @param {boolean} change Change gw user password?
 	 */
-	private handleSubmit(): void {
-		this.$store.commit('spinner/SHOW');
-		GatewayService.setGatewayPassword({password: this.password})
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t(
-						'gateway.password.messages.success',
-						{user: this.user},
-					).toString()
-				);
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'gateway.password.messages.failure',
-				{user: this.user}
-			));
+	private submitStep(change: boolean): void {
+		if (change) {
+			GatewayService.setGatewayPassword({password: this.password})
+				.then(() => this.$emit('next-step'))
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'gateway.password.messages.failure',
+					{user: this.user}
+				));
+		} else {
+			this.$emit('next-step');
+		}
+
 	}
 }
 </script>

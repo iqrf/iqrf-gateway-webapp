@@ -54,8 +54,7 @@ const TrConfiguration = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/
 const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/TrUpload.vue');
 
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
-const InstallCreateUser = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallCreateUser.vue');
-const InstallationDisambiguation = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationDisambiguation.vue');
+const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
 const MissingExtension = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingExtension.vue');
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
@@ -117,12 +116,8 @@ const routes: Array<RouteConfig> = [
 		component: InstallationBase,
 		children: [
 			{
-				component: InstallationDisambiguation,
+				component: InstallationWizard,
 				path: '',
-			},
-			{
-				component: InstallCreateUser,
-				path: 'user',
 			},
 			{
 				component: InstallGatewayInfo,

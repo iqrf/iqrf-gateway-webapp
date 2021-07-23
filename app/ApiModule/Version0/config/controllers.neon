@@ -35,6 +35,7 @@ services:
 	- App\ApiModule\Version0\Controllers\Gateway\LogController
 	- App\ApiModule\Version0\Controllers\Gateway\PasswordController
 	- App\ApiModule\Version0\Controllers\Gateway\PowerController
+	- App\ApiModule\Version0\Controllers\Gateway\SshController
 	- App\ApiModule\Version0\Controllers\Gateway\SystemdJournalController
 	- App\ApiModule\Version0\Controllers\Gateway\TimeController
 	- App\ApiModule\Version0\Controllers\InstallationController
