@@ -178,6 +178,7 @@
 		"on": "On",
 		"off": "Off",
 		"skip": "Skip",
+		"changePassword": "Change password",
 		"downloadBackup": "Download backup",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
@@ -2088,9 +2089,42 @@
 	},
 	"install": {
 		"title": "Installation wizard",
-		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the first webapp's user.",
+		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
 		"createUser": {
-			"title": "Create a new user"
+			"title": "Create a new user",
+			"failure": "Failed to create new webapp user: {error}"
+		},
+		"gwPassword": {
+			"title": "Set gateway user password"
+		},
+		"ssh": {
+			"keys": {
+				"title": "Add SSH keys",
+				"useKeys": "Use key-based SSH authentication",
+				"key": "SSH public key",
+				"add": "Add SSH key",
+				"remove": "Remove SSH key",
+				"errors": {
+					"keyMissing": "Please enter SSH public key.",
+					"keyInvalid": "Invalid SSH public key format."
+				},
+				"messages": {
+					"sshKeyError": "Failed to save SSH keys: {error}"
+				}
+			},
+			"status": {
+				"title": "Set SSH service status",
+				"states": {
+					"enable": "Start SSH service on every boot.",
+					"start": "Start SSH service now, once.",
+					"disable": "Do not start SSH service."
+				},
+				"state": "Service status *",
+				"messages": {
+					"serviceError": "Failed to set service status: {error}",
+					"note": "* SSH service status can be changed later in the Gateway menu."
+				}
+			}
 		},
 		"error": {
 			"howToFix": "How to fix it",
@@ -2119,7 +2153,8 @@
 			"download": "Download as JSON"
 		},
 		"messages": {
-			"check": "Running installation check..."
+			"check": "Running installation check...",
+			"finished": "Installation process successfully completed."
 		}
 	},
 	"network": {
