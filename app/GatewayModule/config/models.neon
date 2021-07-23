@@ -29,6 +29,7 @@ services:
 	- App\GatewayModule\Models\NtpManager(@commandManager)
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
+	- App\GatewayModule\Models\SshManager
 	- App\GatewayModule\Models\SystemdJournalManager
 	- App\GatewayModule\Models\TimeManager
 	- App\GatewayModule\Models\UpdaterManager

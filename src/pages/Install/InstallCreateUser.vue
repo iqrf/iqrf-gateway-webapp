@@ -64,13 +64,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError} from 'axios';
 import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+
 import UserService from '../../services/UserService';
-import {UserCredentials} from '../../services/AuthenticationService';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import {sleep} from '../../helpers/sleep';
+import {UserCredentials} from '../../services/AuthenticationService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -124,22 +128,18 @@ export default class InstallCreateUser extends Vue {
 	private handleSubmit(): void {
 		UserService.add(this.username, this.password, this.language, this.role)
 			.then(() => {
-				const credentials: UserCredentials = new UserCredentials(this.username, this.password);
+				const credentials = new UserCredentials(this.username, this.password);
 				Promise.all([
 					this.$store.dispatch('user/signIn', credentials),
 					this.$store.dispatch('features/fetch'),
 				])
 					.then(async () => {
 						await sleep(500);
-						this.$router.push('/');
-						this.$toast.success(
-							this.$t('core.user.messages.addSuccess', {username: this.username})
-								.toString());
+						this.$emit('next-step');
 					});
-			}).catch((error: AxiosError) => {
-				if (error.response === undefined) {
-					return;
-				}
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'install.createUser.failure');
 			});
 	}
 }

@@ -55,7 +55,7 @@ class GatewayService {
 	/**
 	 * Retrieves a service log
 	 * @param service service name
-	 * @returns 
+	 * @returns
 	 */
 	getServiceLog(service: string): Promise<AxiosResponse> {
 		return axios.get('gateway/logs/' + service, {headers: authorizationHeader(), timeout: 60000});
@@ -126,6 +126,14 @@ class GatewayService {
 	 */
 	setNtp(config: INTP): Promise<AxiosResponse> {
 		return axios.put('gateway/ntp', config, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Saves SSH keys
+	 * @param {Array<string>} keys SSh keys
+	 */
+	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
+		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
 	}
 }
 
