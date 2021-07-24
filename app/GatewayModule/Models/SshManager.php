@@ -90,11 +90,11 @@ class SshManager {
 			}
 		}
 		if (!file_exists($path)) {
-			$command = $this->commandManager->run('touch ' . $path);
+			$command = $this->commandManager->run('touch ' . $path, true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
-			$command = $this->commandManager->run('chmod 644 ' . $path);
+			$command = $this->commandManager->run('chmod 644 ' . $path, true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
