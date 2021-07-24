@@ -20,6 +20,13 @@ limitations under the License.
 			{{ $t('gateway.password.title', {user: user}) }}
 		</CCardHeader>
 		<CCardBody>
+			<CElementCover
+				v-if='running'
+				:opacity='0.75'
+				style='z-index: 10000'
+			>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<ValidationProvider
@@ -117,6 +124,11 @@ export default class InstallGatewayUser extends Vue {
 	private user = 'root'
 
 	/**
+	 * @var {bool} running Indicates whether axios requests are in progress
+	 */
+	private running = false
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -140,13 +152,16 @@ export default class InstallGatewayUser extends Vue {
 	 */
 	private submitStep(change: boolean): void {
 		if (change) {
+			this.running = true;
 			GatewayService.setGatewayPassword({password: this.password})
-				.then(() => this.$emit('next-step'))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'gateway.password.messages.failure',
-					{user: this.user}
-				));
+				.then(() => {
+					this.running = false;
+					this.$emit('next-step');
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'gateway.password.messages.failure', {user: this.user});
+					this.running = false;
+				});
 		} else {
 			this.$emit('next-step');
 		}
