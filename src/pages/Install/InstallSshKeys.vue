@@ -17,7 +17,14 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardHeader>{{ $t('install.ssh.keys.title') }}</CCardHeader>
-		<CCardBody class='card-margin-bottom'>
+		<CCardBody>
+			<CElementCover
+				v-if='running'
+				:opacity='0.75'
+				style='z-index: 10000'
+			>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<div
@@ -106,6 +113,11 @@ export default class InstallSshKeys extends Vue {
 	private keys: Array<string> = ['']
 
 	/**
+	 * @var {bool} running Indicates whether axios requests are in progress
+	 */
+	private running = false
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -135,9 +147,16 @@ export default class InstallSshKeys extends Vue {
 	 */
 	private submitStep(useKeys: boolean): void {
 		if (useKeys) {
+			this.running = true;
 			GatewayService.saveSshKeys(this.keys)
-				.then(() => this.$emit('next-step'))
-				.catch((error: AxiosError) => extendedErrorToast(error, 'install.ssh.keys.messages.sshKeyError'));
+				.then(() => {
+					this.running = false;
+					this.$emit('next-step');
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'install.ssh.keys.messages.sshKeyError');
+					this.running = false;
+				});
 		} else {
 			this.$emit('next-step');
 		}
