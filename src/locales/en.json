@@ -2085,6 +2085,7 @@
 				"key": "SSH public key",
 				"add": "Add SSH key",
 				"remove": "Remove SSH key",
+				"types": "The following SSH key types are supported:",
 				"errors": {
 					"keyMissing": "Please enter SSH public key.",
 					"keyInvalid": "Invalid SSH public key format."

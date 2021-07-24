@@ -25,6 +25,19 @@ limitations under the License.
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
+			<CAlert
+				color='info'
+			>
+				{{ $t('install.ssh.keys.types') }}
+				<ul>
+					<li
+						v-for='key of keyTypes'
+						:key='key'
+					>
+						{{ key }}
+					</li>
+				</ul>
+			</CAlert>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<div
@@ -86,9 +99,9 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import GatewayService from '../../services/GatewayService';
+import SshService from '../../services/SshService';
 
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -108,6 +121,11 @@ import {AxiosError} from 'axios';
 export default class InstallSshKeys extends Vue {
 
 	/**
+	 * @var {Array<string>} keyTypes
+	 */
+	private keyTypes: Array<string> = []
+
+	/**
 	 * @var {Array<string>} keys Array of SSH keys for key-based authentication
 	 */
 	private keys: Array<string> = ['']
@@ -122,10 +140,26 @@ export default class InstallSshKeys extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
-		extend('ssh', (key: string) => {
-			const re = RegExp('^ssh-rsa AAAA[0-9A-Za-z+/]+[=]{0,3}( [^@]+@[^@]+)?$');
-			return re.test(key);
-		});
+	}
+
+	/**
+	 * Retrieves list of available SSH key types and initializes key validation rule
+	 */
+	mounted(): void {
+		SshService.listKeyTypes()
+			.then((response: AxiosResponse) => {
+				this.keyTypes = response.data;
+				extend('ssh', (key: string) => {
+					const sections = key.trim().split(' ');
+					if (sections.length < 2) {
+						return false;
+					}
+					return this.keyTypes.includes(key.split(' ')[0]);
+				});
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, '');
+			});
 	}
 
 	/**
@@ -148,7 +182,7 @@ export default class InstallSshKeys extends Vue {
 	private submitStep(useKeys: boolean): void {
 		if (useKeys) {
 			this.running = true;
-			GatewayService.saveSshKeys(this.keys)
+			SshService.saveSshKeys(this.keys)
 				.then(() => {
 					this.running = false;
 					this.$emit('next-step');

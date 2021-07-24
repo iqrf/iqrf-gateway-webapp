@@ -111,14 +111,6 @@ class GatewayService {
 	setHostname(config: IHostname): Promise<AxiosResponse> {
 		return axios.post('gateway/hostname', config, {headers: authorizationHeader()});
 	}
-
-	/**
-	 * Saves SSH keys
-	 * @param {Array<string>} keys SSh keys
-	 */
-	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
-		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
-	}
 }
 
 export default new GatewayService();

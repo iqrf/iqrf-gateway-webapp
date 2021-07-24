@@ -26,7 +26,7 @@ limitations under the License.
 				>
 					<CSpinner color='primary' />
 				</CElementCover>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='handleSubmit'>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
@@ -44,7 +44,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
+							v-slot='{valid, touched, errors}'
 							rules='required'
 							:custom-messages='{
 								required: "forms.errors.password",
