@@ -135,6 +135,7 @@ class GatewayService {
 	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
 		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
 	}
+
 }
 
 export default new GatewayService();

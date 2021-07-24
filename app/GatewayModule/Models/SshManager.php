@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
+use App\GatewayModule\Exceptions\SshKeyException;
 
 /**
  * SSH manager
@@ -60,6 +61,18 @@ class SshManager {
 		$feature = $featureManager->get('gatewayPass');
 		$this->directory = sprintf('/home/%s/.ssh', $feature['user']);
 		$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
+	}
+
+	/**
+	 * Returns array of supported key types
+	 * @return array<int, string> Array of supported key types
+	 */
+	public function listKeyTypes(): array {
+		$command = $this->commandManager->run('ssh -Q key', true);
+		if ($command->getExitCode() !== 0) {
+			throw new SshKeyException($command->getStderr());
+		}
+		return explode(PHP_EOL, $command->getStdout());
 	}
 
 	/**

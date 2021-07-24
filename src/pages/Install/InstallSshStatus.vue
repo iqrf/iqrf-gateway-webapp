@@ -26,8 +26,8 @@ limitations under the License.
 				<CSpinner color='primary' />
 			</CElementCover>
 			<CForm>
-				<CSelect
-					:value.sync='status'
+				<CInputRadioGroup
+					:checked.sync='status'
 					:options='options'
 					:label='$t("install.ssh.status.state")'
 				/>

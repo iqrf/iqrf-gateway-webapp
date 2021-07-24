@@ -29,6 +29,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\SshDirectoryException;
+use App\GatewayModule\Exceptions\SshKeyException;
 use App\GatewayModule\Models\SshManager;
 use Nette\IOException;
 
@@ -51,6 +52,33 @@ class SshController extends GatewayController {
 	public function __construct(RestApiSchemaValidator $validator, SshManager $sshManager) {
 		$this->manager = $sshManager;
 		parent::__construct($validator);
+	}
+
+	/**
+	 * @Path("/keyTypes")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Lists SSH key types
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/sshKeyTypes'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeJsonBody($this->manager->listKeyTypes());
+		} catch (SshKeyException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 	/**
