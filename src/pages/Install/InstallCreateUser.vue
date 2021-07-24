@@ -19,6 +19,13 @@ limitations under the License.
 		<CCard>
 			<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
 			<CCardBody>
+				<CElementCover
+					v-if='running'
+					:opacity='0.75'
+					style='z-index: 10000'
+				>
+					<CSpinner color='primary' />
+				</CElementCover>
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='handleSubmit'>
 						<ValidationProvider
@@ -116,6 +123,11 @@ export default class InstallCreateUser extends Vue {
 	private role = 'normal';
 
 	/**
+	 * @var {bool} running Indicates whether axios requests are in progress
+	 */
+	private running = false
+
+	/**
 	 * On component creation event handler
 	 */
 	public created(): void {
@@ -126,6 +138,7 @@ export default class InstallCreateUser extends Vue {
 	 * Handle form submit
 	 */
 	private handleSubmit(): void {
+		this.running = true;
 		UserService.add(this.username, this.password, this.language, this.role)
 			.then(() => {
 				const credentials = new UserCredentials(this.username, this.password);
@@ -135,11 +148,13 @@ export default class InstallCreateUser extends Vue {
 				])
 					.then(async () => {
 						await sleep(500);
+						this.running = false;
 						this.$emit('next-step');
 					});
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'install.createUser.failure');
+				this.running = false;
 			});
 	}
 }

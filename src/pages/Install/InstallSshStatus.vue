@@ -17,7 +17,14 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardHeader>{{ $t('install.ssh.status.title') }}</CCardHeader>
-		<CCardBody class='card-margin-bottom'>
+		<CCardBody>
+			<CElementCover
+				v-if='running'
+				:opacity='0.75'
+				style='z-index: 10000'
+			>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<CForm>
 				<CSelect
 					:value.sync='status'
@@ -76,6 +83,11 @@ export default class InstallSshStatus extends Vue {
 	private status: SSHStatus = SSHStatus.ENABLE
 
 	/**
+	 * @var {bool} running Indicates whether axios requests are in progress
+	 */
+	private running = false
+
+	/**
 	 * @constant {Array<IOption>} options SSH service status options
 	 */
 	private options: Array<IOption> = [
@@ -99,14 +111,39 @@ export default class InstallSshStatus extends Vue {
 	 */
 	private submitStep(setStatus: boolean): void {
 		if (setStatus) {
+			this.running = true;
 			if (this.status === SSHStatus.ENABLE) {
 				ServiceService.enable('ssh')
-					.then(() => this.$emit('next-step'))
-					.catch((error: AxiosError) => extendedErrorToast(error, 'install.ssh.status.messages.serviceError'));
+					.then(this.handleSuccess)
+					.catch(this.handleFailure);
+			} else if (this.status === SSHStatus.START) {
+				ServiceService.start('ssh')
+					.then(this.handleSuccess)
+					.catch(this.handleFailure);
+			} else {
+				ServiceService.disable('ssh')
+					.then(this.handleSuccess)
+					.catch(this.handleFailure);
 			}
 		} else {
 			this.$emit('next-step');
 		}
+	}
+
+	/**
+	 * Handles service status change success
+	 */
+	private handleSuccess(): void {
+		this.running = false;
+		this.$emit('next-step');
+	}
+
+	/**
+	 * Handles service status change failure
+	 */
+	private handleFailure(error: AxiosError): void {
+		extendedErrorToast(error, 'install.ssh.status.messages.serviceError');
+		this.running = false;
 	}
 }
 </script>
