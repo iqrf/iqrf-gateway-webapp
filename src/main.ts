@@ -105,6 +105,7 @@ axios.interceptors.response.use(
 				.then(() => {
 					router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
 				});
+			return;
 		}
 		return Promise.reject(error);
 	}
