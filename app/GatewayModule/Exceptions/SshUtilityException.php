@@ -23,8 +23,8 @@ namespace App\GatewayModule\Exceptions;
 use Exception;
 
 /**
- * Indicates an error related to SSH key
+ * Indicates an error related to the SSH utility
  */
-class SshKeyException extends Exception {
+class SshUtilityException extends Exception {
 
 }

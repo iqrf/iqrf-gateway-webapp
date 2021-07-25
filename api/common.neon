@@ -154,6 +154,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
 		SshKeys:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeys.json
+		SshKeyTypes:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyTypes.json
 		SystemdJournal:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdJournal.json
 		Task:
