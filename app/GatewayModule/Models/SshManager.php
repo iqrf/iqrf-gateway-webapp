@@ -24,7 +24,11 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
-use App\GatewayModule\Exceptions\SshKeyException;
+use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshUtilityException;
+use App\Models\Database\Entities\SshKey;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\SshKeyRepository;
 
 /**
  * SSH manager
@@ -47,20 +51,33 @@ class SshManager {
 	private $directory;
 
 	/**
+	 * @var EntityManager Entity manager
+	 */
+	private $entityManager;
+
+	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
 	private $fileManager;
 
 	/**
+	 * @var SshKeyRepository SSH key repository
+	 */
+	private $sshKeyRepository;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param EntityManager $entityManager Entity manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
 		$this->commandManager = $commandManager;
 		$feature = $featureManager->get('gatewayPass');
 		$this->directory = sprintf('/home/%s/.ssh', $feature['user']);
+		$this->entityManager = $entityManager;
 		$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
+		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
 	}
 
 	/**
@@ -70,7 +87,7 @@ class SshManager {
 	public function listKeyTypes(): array {
 		$command = $this->commandManager->run('ssh -Q key', true);
 		if ($command->getExitCode() !== 0) {
-			throw new SshKeyException($command->getStderr());
+			throw new SshUtilityException($command->getStderr());
 		}
 		return explode(PHP_EOL, $command->getStdout());
 	}
@@ -80,15 +97,45 @@ class SshManager {
 	 * @param array<int, string> $keys SSH public keys
 	 */
 	public function addKeys(array $keys): void {
-		$this->checkSshDirectory();
-		$currentKeys = $this->fileManager->read(self::KEYS_FILE);
-		$content = implode(PHP_EOL, $keys);
-		if (strlen($currentKeys) === 0) {
-			$currentKeys = $content;
-		} else {
-			$currentKeys .= PHP_EOL . $content;
+		$entities = [];
+		foreach ($keys as $key) {
+			$entities[] = $this->createKeyEntity($key);
 		}
-		$this->fileManager->write(self::KEYS_FILE, $currentKeys);
+		foreach ($entities as $entity) {
+			$this->entityManager->persist($entity);
+		}
+		$this->entityManager->flush();
+		$this->updateKeysFile();
+	}
+
+	/**
+	 * Validates SSH key and returns key entity
+	 * @param string $key SSH key string
+	 * @return SshKey SSH key entity
+	 */
+	private function createKeyEntity(string $key): SshKey {
+		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $key);
+		if ($command->getExitCode() !== 0) {
+			throw new SshInvalidKeyException($command->getStderr());
+		}
+		$tokens = explode(' ', $key);
+		$hash = explode(' ', $command->getStdout())[1];
+		$description = count($tokens) === 3 ? $tokens[2] : null;
+		return new SshKey($tokens[0], $tokens[1], $hash, $description);
+	}
+
+	/**
+	 * Updates the authorized keys file based on the contents of the database
+	 */
+	public function updateKeysFile(): void {
+		$this->checkSshDirectory();
+		$keys = $this->sshKeyRepository->findAll();
+		$content = '';
+		foreach ($keys as $key) {
+			assert($key instanceof SshKey);
+			$content .= $key->toString() . PHP_EOL;
+		}
+		$this->fileManager->write(self::KEYS_FILE, $content);
 	}
 
 	/**

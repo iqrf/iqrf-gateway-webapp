@@ -23,6 +23,7 @@ namespace App\Models\Database;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Entities\SshKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\WireguardInterface;
 use App\Models\Database\Entities\WireguardInterfaceIpv4;
@@ -32,6 +33,7 @@ use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
+use App\Models\Database\Repositories\SshKeyRepository;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
 use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
@@ -71,6 +73,16 @@ trait TRepositories {
 	public function getMappingRepository(): MappingRepository {
 		$repository = $this->getRepository(Mapping::class);
 		assert($repository instanceof MappingRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the SSH key repository
+	 * @return SshKeyRepository SSH key repository
+	 */
+	public function getSshKeyRepository(): SshKeyRepository {
+		$repository = $this->getRepository(SshKey::class);
+		assert($repository instanceof SshKeyRepository);
 		return $repository;
 	}
 
