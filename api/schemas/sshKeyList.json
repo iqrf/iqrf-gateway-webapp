@@ -1,0 +1,54 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyList.json",
+	"type": "object",
+	"title": "SSH key list",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"title": "SSH key entry",
+		"type": "object",
+		"required": [
+			"id",
+			"description",
+			"createdAt"
+		],
+		"properties": {
+			"id": {
+				"$id": "#/items/properties/id",
+				"title": "SSH key ID",
+				"type": "integer",
+				"minimum": 1,
+				"example": 1
+			},
+			"type": {
+				"$id": "#/items/properties/type",
+				"title": "SSH key type",
+				"type": "string",
+				"example": "ssh-rsa"
+			},
+			"description": {
+				"$id": "#/items/properties/description",
+				"title": "SSH key description",
+				"anyOf": [
+					{
+						"type": "string",
+						"example": "Description"
+					},
+					{
+						"type": "null",
+						"example": null
+					}
+				]
+			},
+			"createdAt": {
+				"$id": "#/items/properties/createdAt",
+				"title": "SSH key created date",
+				"type": "string",
+				"format": "date-time",
+				"example": "2021-07-25T00:00:00+02:00"
+			}
+		},
+		"additionalProperties": false
+	}
+}

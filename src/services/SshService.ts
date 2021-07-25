@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
+
 /**
  * SSH service
  */
@@ -27,6 +28,10 @@ class SshService {
 	 */
 	listKeyTypes(): Promise<AxiosResponse> {
 		return axios.get('gateway/ssh/keyTypes', {headers: authorizationHeader()});
+	}
+
+	listKeys(): Promise<AxiosResponse> {
+		return axios.get('gateway/ssh/keys', {headers: authorizationHeader()});
 	}
 
 	/**
