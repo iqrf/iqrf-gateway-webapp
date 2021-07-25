@@ -532,6 +532,13 @@ export default class TheSidebar extends Vue {
 					},
 					{
 						_name: 'CSidebarNavItem',
+						name: this.$t('core.ssh.title'),
+						to: '/ssh-key/',
+						icon: {content: cilLockLocked},
+						roles: ['power', 'normal'],
+					},
+					{
+						_name: 'CSidebarNavItem',
 						name: this.$t('core.documentation.title'),
 						href: this.$store.getters['features/configuration']('docs').url,
 						target: '_blank',

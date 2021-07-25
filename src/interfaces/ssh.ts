@@ -1,5 +1,3 @@
-<?php
-
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -16,39 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
-
-namespace App\Models\Database\Attributes;
-
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * Created at attribute
+ * SSH key list intreface
  */
-trait TCreatedAt {
+export interface ISshKeyList {
+	/**
+	 * SSH key ID
+	 */
+	id: number
 
 	/**
-	 * @var DateTime Created at time
-	 * @ORM\Column(type="datetime", nullable=false)
+	 * SSH key description
 	 */
-	private $createdAt;
+	description: string
 
 	/**
-	 * Returns created at time
-	 * @return DateTime Created at time
+	 * SSH key description
 	 */
-	public function getCreatedAt(): DateTime {
-		return $this->createdAt;
-	}
-
-	/**
-	 * Sets created at time
-	 * @ORM\PrePersist()
-	 * @internal
-	 */
-	public function setCreatedAt(): void {
-		$this->createdAt = new DateTime();
-	}
-
+	createdAt: string
 }

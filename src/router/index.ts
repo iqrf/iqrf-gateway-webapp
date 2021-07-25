@@ -43,6 +43,7 @@ const UserAdd = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserAd
 const UserEdit = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserEdit.vue');
 const UserList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserList.vue');
 const SignIn = () => import(/* webpackChunkName: "core" */ '@/pages/Core/SignIn.vue');
+const SshKeyList = () => import(/* webpackChunkName: "core" */'@/pages/Core/SshKeyList.vue');
 
 const IqrfNetDisambiguation = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/IqrfNetDisambiguation.vue');
 const DeviceEnumeration = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/DeviceEnumeration.vue');
@@ -941,6 +942,20 @@ const routes: Array<RouteConfig> = [
 							}
 							return {keyId};
 						},
+					},
+				],
+			},
+			{
+				path: '/ssh-key',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						path: '',
+						component: SshKeyList,
 					},
 				],
 			},
