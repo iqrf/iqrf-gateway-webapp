@@ -67,6 +67,7 @@ limitations under the License.
 						>
 							{{ $t('install.ssh.keys.remove') }}
 						</CButton> <CButton
+							v-if='idx === (keys.length - 1)'
 							color='success'
 							@click='addKey(idx - 1)'
 						>
@@ -151,7 +152,7 @@ export default class InstallSshKeys extends Vue {
 				this.keyTypes = response.data;
 				extend('ssh', (key: string) => {
 					const sections = key.trim().split(' ');
-					if (sections.length < 2) {
+					if (sections.length < 2 || sections.length > 3) {
 						return false;
 					}
 					return this.keyTypes.includes(key.split(' ')[0]);

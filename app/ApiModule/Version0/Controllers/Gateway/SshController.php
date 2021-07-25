@@ -23,14 +23,17 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\SshDirectoryException;
-use App\GatewayModule\Exceptions\SshKeyException;
+use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshUtilityException;
 use App\GatewayModule\Models\SshManager;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Nette\IOException;
 
 /**
@@ -76,7 +79,7 @@ class SshController extends GatewayController {
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->listKeyTypes());
-		} catch (SshKeyException $e) {
+		} catch (SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -109,7 +112,11 @@ class SshController extends GatewayController {
 		try {
 			$this->manager->addKeys($request->getJsonBody(true));
 			return $response->writeBody('Workaround');
-		} catch (SshDirectoryException | IOException $e) {
+		} catch (SshInvalidKeyException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (UniqueConstraintViolationException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
+		} catch (IOException | SshDirectoryException | SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
