@@ -1042,6 +1042,20 @@
 				"description": "Please enter API key description."
 			}
 		},
+		"ssh": {
+			"title": "SSH key manager",
+			"description": "Manage SSH keys.",
+			"add": "Add SSH key(s)",
+			"edit": "Edit SSH key",
+			"table": {
+				"type": "Type",
+				"description": "Description",
+				"createdAt": "Date created"
+			},
+			"messages": {
+				"listFailed": "Failed to retrieve list of existing SSH keys: {error}"
+			}
+		},
 		"user": {
 			"title": "User manager",
 			"description": "Manage users of this webapp.",

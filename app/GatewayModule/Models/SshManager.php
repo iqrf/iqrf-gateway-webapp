@@ -93,6 +93,14 @@ class SshManager {
 	}
 
 	/**
+	 * Returns array of existing SSH public keys
+	 * @return array<int, array<string, int|string|null>> List of existing SSH public keys
+	 */
+	public function listKeys(): array {
+		return $this->sshKeyRepository->listKeys();
+	}
+
+	/**
 	 * Adds SSH public keys to authorized keys
 	 * @param array<int, string> $keys SSH public keys
 	 */

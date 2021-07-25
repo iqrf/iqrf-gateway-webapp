@@ -86,6 +86,30 @@ class SshController extends GatewayController {
 
 	/**
 	 * @Path("/keys")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: List SSH keys
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schema/sshKeyList'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$keys = $this->manager->listKeys();
+		return $response->writeJsonBody($keys);
+	}
+
+	/**
+	 * @Path("/keys")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Adds SSH keys for key-based authentication
@@ -115,7 +139,7 @@ class SshController extends GatewayController {
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UniqueConstraintViolationException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
+			throw new ClientErrorException('This SSH public key already exists.', ApiResponse::S409_CONFLICT, $e);
 		} catch (IOException | SshDirectoryException | SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

@@ -127,7 +127,6 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {
 	CButton,
-	CButtonClose,
 	CCard,
 	CCardBody,
 	CCardHeader,
@@ -146,12 +145,10 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
-import { extend } from 'vee-validate';
 
 @Component({
 	components: {
 		CButton,
-		CButtonClose,
 		CCard,
 		CCardBody,
 		CCardHeader,
