@@ -25,6 +25,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshKeyNotFoundException;
 use App\GatewayModule\Exceptions\SshUtilityException;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\EntityManager;
@@ -98,6 +99,20 @@ class SshManager {
 	 */
 	public function listKeys(): array {
 		return $this->sshKeyRepository->listKeys();
+	}
+
+	/**
+	 * Returns SSH public key
+	 * @param int $id SSH public key ID
+	 * @return SshKey SSH public key entity
+	 */
+	public function getKey(int $id): SshKey {
+		$key = $this->sshKeyRepository->find($id);
+		if ($key === null) {
+			throw new SshKeyNotFoundException('SSH key entry with ID ' . strval($id) . ' not found.');
+		}
+		assert($key instanceof SshKey);
+		return $key;
 	}
 
 	/**
