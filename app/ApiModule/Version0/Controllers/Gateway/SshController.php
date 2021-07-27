@@ -23,6 +23,8 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -31,6 +33,7 @@ use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshKeyNotFoundException;
 use App\GatewayModule\Exceptions\SshUtilityException;
 use App\GatewayModule\Models\SshManager;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -106,6 +109,40 @@ class SshController extends GatewayController {
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$keys = $this->manager->listKeys();
 		return $response->writeJsonBody($keys);
+	}
+
+	/**
+	 * @Path("/key/{id}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Retrieves SSH public key
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              text/plain:
+	 *                  schema:
+	 *                      type: string
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @RequestParameters({
+	 *     @RequestParameter(name="id", type="integer", description="SSH public key ID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$id = (int) $request->getParameter('id');
+			$key = $this->manager->getKey($id);
+			return $response->writeBody($key->toString());
+		} catch (SshKeyNotFoundException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		}
 	}
 
 	/**

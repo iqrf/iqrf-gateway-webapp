@@ -1,0 +1,86 @@
+<template>
+	<CAlert
+		v-if='fetched !== null'
+		:color='fetched === true ? "primary" : "danger"'
+	>
+		<span v-if='fetched'>
+			<span v-if='fetched.length === 0'>
+				{{ $t('core.ssh.messages.typeListNone') }}
+			</span>
+			<span v-else>
+				{{ $t('core.ssh.messages.typeListSuccess') }}
+				<ul>
+					<li
+						v-for='key of types'
+						:key='key'
+					>
+						{{ key }}
+					</li>
+				</ul>
+			</span>
+		</span>
+		<span v-else>
+			{{ $t('core.ssh.messages.typeListFailed') }}
+		</span>
+	</CAlert>
+</template>
+
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
+import {CAlert} from '@coreui/vue/src';
+
+import SshService from '../../services/SshService';
+
+import {AxiosResponse} from 'axios';
+
+@Component({
+	components: {
+		CAlert,
+	},
+})
+
+/**
+ * SSH key types list component
+ */
+export default class SshKeyTypes extends Vue {
+
+	/**
+	 * @var {boolean|null} fetched Indicates that key type list request has been completed
+	 */
+	private fetched: boolean|null = null
+
+	/**
+	 * @var {Array<string>} types Array of SSH key types
+	 */
+	private types: Array<string> = []
+
+	/**
+	 * Retrieves key types
+	 */
+	created(): void {
+		SshService.listKeyTypes()
+			.then((response: AxiosResponse) => {
+				this.types = response.data;
+				this.fetched = true;
+				this.$emit('fetch');
+			})
+			.catch(() => {
+				this.fetched = false;
+				this.$emit('fetch');
+			});
+	}
+
+	/**
+	 * Validates key against supported key types
+	 * @param {string} key SSH public key to validate
+	 * @returns {boolean} True if valid, false otherwise
+	 */
+	validateKey(key: string): boolean {
+		const sections = key.trim().split(' ');
+		if (sections.length < 2 || sections.length > 3) {
+			return false;
+		}
+		return this.types.includes(sections[0]);
+	}
+}
+</script>
