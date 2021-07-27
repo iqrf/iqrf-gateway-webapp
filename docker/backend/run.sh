@@ -17,5 +17,6 @@
 
 sudo -u www-data bin/manager database:create
 sudo -u www-data bin/manager migrations:migrate --no-interaction
+sudo -u www-data bin/manager iqrf-os:import-patches
 
 php-fpm
