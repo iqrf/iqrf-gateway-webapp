@@ -25,19 +25,7 @@ limitations under the License.
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
-			<CAlert
-				color='info'
-			>
-				{{ $t('install.ssh.keys.types') }}
-				<ul>
-					<li
-						v-for='key of keyTypes'
-						:key='key'
-					>
-						{{ key }}
-					</li>
-				</ul>
-			</CAlert>
+			<SshKeyTypes ref='types' @fetch='sshValidation' />
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<div
@@ -53,7 +41,7 @@ limitations under the License.
 								ssh: "install.ssh.keys.errors.keyInvalid"
 							}'
 						>
-							<CTextarea
+							<CInput
 								v-model='keys[idx]'
 								:label='$t("install.ssh.keys.key")'
 								:is-valid='touched ? valid : null'
@@ -94,15 +82,16 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CTextarea} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import SshKeyTypes from '../../components/Gateway/SshKeyTypes.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
 import SshService from '../../services/SshService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -110,7 +99,9 @@ import {AxiosError, AxiosResponse} from 'axios';
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CTextarea,
+		CForm,
+		CInput,
+		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -143,24 +134,10 @@ export default class InstallSshKeys extends Vue {
 		extend('required', required);
 	}
 
-	/**
-	 * Retrieves list of available SSH key types and initializes key validation rule
-	 */
-	mounted(): void {
-		SshService.listKeyTypes()
-			.then((response: AxiosResponse) => {
-				this.keyTypes = response.data;
-				extend('ssh', (key: string) => {
-					const sections = key.trim().split(' ');
-					if (sections.length < 2 || sections.length > 3) {
-						return false;
-					}
-					return this.keyTypes.includes(key.split(' ')[0]);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, '');
-			});
+	private sshValidation(): void {
+		extend('ssh', (key: string) => {
+			return (this.$refs.types as SshKeyTypes).validateKey(key);
+		});
 	}
 
 	/**

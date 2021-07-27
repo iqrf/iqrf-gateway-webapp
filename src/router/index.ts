@@ -44,6 +44,7 @@ const UserEdit = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserE
 const UserList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserList.vue');
 const SignIn = () => import(/* webpackChunkName: "core" */ '@/pages/Core/SignIn.vue');
 const SshKeyList = () => import(/* webpackChunkName: "core" */'@/pages/Core/SshKeyList.vue');
+const SshKeyEdit = () => import(/* webpackChunkName "core" */'@/pages/Core/SshKeyEdit.vue');
 
 const IqrfNetDisambiguation = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/IqrfNetDisambiguation.vue');
 const DeviceEnumeration = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/DeviceEnumeration.vue');
@@ -956,6 +957,17 @@ const routes: Array<RouteConfig> = [
 					{
 						path: '',
 						component: SshKeyList,
+					},
+					{
+						component: SshKeyEdit,
+						path: 'edit/:keyId',
+						props: (route) => {
+							const keyId = Number.parseInt(route.params.keyId, 10);
+							if (Number.isNaN(keyId)) {
+								return 0;
+							}
+							return {keyId};
+						}
 					},
 				],
 			},

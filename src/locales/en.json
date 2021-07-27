@@ -1053,8 +1053,19 @@
 				"description": "Description",
 				"createdAt": "Date created"
 			},
+			"form": {
+				"key": "SSH public key"
+			},
+			"errors": {
+				"keyMissing": "Please enter SSH public key.",
+				"keyInvalid": "Invalid SSH public key format."
+			},
 			"messages": {
-				"listFailed": "Failed to retrieve list of existing SSH keys: {error}"
+				"typeListFailed": "Failed to retrieve list of supported SSH key types.",
+				"typeListNone": "No SSH key type supported.",
+				"typeListSuccess": "The following SSH key types are supported:",
+				"listFailed": "Failed to retrieve list of existing SSH keys: {error}",
+				"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}"
 			}
 		},
 		"user": {
@@ -2115,11 +2126,9 @@
 		"ssh": {
 			"keys": {
 				"title": "Add SSH keys",
-				"useKeys": "Use key-based SSH authentication",
 				"key": "SSH public key",
 				"add": "Add SSH key",
 				"remove": "Remove SSH key",
-				"types": "The following SSH key types are supported:",
 				"errors": {
 					"keyMissing": "Please enter SSH public key.",
 					"keyInvalid": "Invalid SSH public key format."

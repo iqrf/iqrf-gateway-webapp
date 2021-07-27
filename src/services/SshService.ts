@@ -30,8 +30,19 @@ class SshService {
 		return axios.get('gateway/ssh/keyTypes', {headers: authorizationHeader()});
 	}
 
+	/**
+	 * Lists SSH public keys
+	 */
 	listKeys(): Promise<AxiosResponse> {
 		return axios.get('gateway/ssh/keys', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves SSH public key
+	 * @param {number} id Key ID
+	 */
+	getKey(id: number): Promise<AxiosResponse> {
+		return axios.get('gateway/ssh/key/' + id, {headers: authorizationHeader()});
 	}
 
 	/**

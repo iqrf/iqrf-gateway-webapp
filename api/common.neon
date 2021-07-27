@@ -154,6 +154,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		SshKeyDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyDetail.json
+		SshKeyList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyList.json
 		SshKeys:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeys.json
 		SshKeyTypes:

@@ -31,6 +31,29 @@ limitations under the License.
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
 					</template>
+					<template #description='{item}'>
+						<td>
+							{{ item.description === null ? 'None' : item.description }}
+						</td>
+					</template>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
+								color='info'
+								size='sm'
+								:to='"/ssh-key/edit/" + item.id'
+							>
+								<CIcon :content='icons.edit' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton> <CButton
+								color='danger'
+								size='sm'
+							>
+								<CIcon :content='icons.delete' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
+					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
@@ -89,16 +112,20 @@ export default class SshKeyList extends Vue {
 	 */
 	private fields: Array<IField> = [
 		{
-			key: 'type',
-			label: this.$t('core.ssh.table.type').toString(),
-		},
-		{
 			key: 'description',
 			label: this.$t('core.ssh.table.description').toString(),
 		},
 		{
+			key: 'type',
+			label: this.$t('core.ssh.table.type').toString(),
+		},
+		{
 			key: 'createdAt',
 			label: this.$t('core.ssh.table.createdAt').toString(),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title').toString(),
 		},
 	]
 
