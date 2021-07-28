@@ -29,7 +29,7 @@ limitations under the License.
 						size='sm'
 					>
 						<CIcon :content='icons.add' size='sm' />
-						<span class='d-none dg-lg-inline'>
+						<span class='d-none d-lg-inline'>
 							{{ $t('core.ssh.table.add') }}
 						</span>
 					</CButton>
@@ -60,7 +60,7 @@ limitations under the License.
 								@click='item.showDetails = !item.showDetails'
 							>
 								<CIcon :content='icons.info' size='sm' />
-								<span class='d-none dg-lg-inline'>
+								<span class='d-none d-lg-inline'>
 									{{ $t('table.actions.details') }}
 								</span>
 							</CButton> <CButton
@@ -69,7 +69,7 @@ limitations under the License.
 								@click='keyToDelete = item'
 							>
 								<CIcon :content='icons.delete' size='sm' />
-								<span class='d-none dg-lg-inline'>
+								<span class='d-none d-lg-inline'>
 									{{ $t('table.actions.delete') }}
 								</span>
 							</CButton>
@@ -85,21 +85,43 @@ limitations under the License.
 											<td>{{ item.type }}</td>
 										</tr>
 										<tr>
-											<th>{{ $t('core.ssh.table.hash') }}</th>
-											<td>{{ item.hash }}</td>
-										</tr>
-										<tr>
 											<th>
-												{{ $t('core.ssh.table.key') }}
+												{{ $t('core.ssh.table.hash') }}
+											</th>
+											<td>{{ item.hash }}</td>
+											<td>
 												<CButton
+													v-clipboard:copy='item.hash'
+													v-clipboard:success='clipboardMessage'
 													color='primary'
 													size='sm'
 												>
 													<CIcon :content='icons.copy' size='sm' />
+													<span class='d-none d-lg-inline'>
+														{{ $t('forms.clipboardCopy') }}
+													</span>
 												</CButton>
+											</td>
+										</tr>
+										<tr>
+											<th>
+												{{ $t('core.ssh.table.key') }}
 											</th>
 											<td style='max-width: 60vw;'>
 												{{ item.key }}
+											</td>
+											<td>
+												<CButton
+													v-clipboard:copy='item.key'
+													v-clipboard:success='clipboardMessage'
+													color='primary'
+													size='sm'
+												>
+													<CIcon :content='icons.copy' size='sm' />
+													<span class='d-none d-lg-inline'>
+														{{ $t('forms.clipboardCopy') }}
+													</span>
+												</CButton>
 											</td>
 										</tr>
 									</tbody>
@@ -256,6 +278,15 @@ export default class SshKeyList extends Vue {
 				));
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'core.ssh.messages.deleteFailed', {id: id}));
+	}
+
+	/**
+	 * SSH public key clipboard copy function
+	 */
+	private clipboardMessage(): void {
+		this.$toast.success(
+			this.$t('core.ssh.messages.clipboardSuccess').toString()
+		);
 	}
 }
 </script>
