@@ -46,6 +46,14 @@ class SshService {
 	}
 
 	/**
+	 * Removes SSH public key
+	 * @param {number} id Key ID
+	 */
+	deleteKey(id: number): Promise<AxiosResponse> {
+		return axios.delete('gateway/ssh/key/' + id, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Saves SSH keys
 	 * @param {Array<string>} keys SSh keys
 	 */

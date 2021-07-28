@@ -91,7 +91,7 @@ class SshController extends GatewayController {
 	 * @Path("/keys")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: List SSH keys
+	 *  summary: List authorized SSH public keys
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -115,7 +115,7 @@ class SshController extends GatewayController {
 	 * @Path("/key/{id}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Retrieves SSH public key
+	 *  summary: Retrieves authorized SSH public key
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -161,6 +161,8 @@ class SshController extends GatewayController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '409':
+	 *          description: SSH public key already exists
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -169,7 +171,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('sshKeys', $request);
+		$this->validator->validateRequest('sshKeysAdd', $request);
 		try {
 			$this->manager->addKeys($request->getJsonBody(true));
 			return $response->writeBody('Workaround');
@@ -179,6 +181,34 @@ class SshController extends GatewayController {
 			throw new ClientErrorException('This SSH public key already exists.', ApiResponse::S409_CONFLICT, $e);
 		} catch (IOException | SshDirectoryException | SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/key/{id}")
+	 * @Method("DELETE")
+	 * @OpenApi("
+	 *  summary: Removes an authorized SSH public key
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
+	 * ")
+	 * @RequestParameters({
+	 *     @RequestParameter(name="id", type="integer", description="SSH public key ID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$id = (int) $request->getParameter('id');
+			$this->manager->deleteKey($id);
+			return $response->writeBody('Workaround');
+		} catch (SshKeyNotFoundException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 

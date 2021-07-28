@@ -146,7 +146,7 @@ class SshKey implements JsonSerializable {
 		return [
 			'id' => $this->getId(),
 			'type' => $this->getType(),
-			'key' => $this->getKey(),
+			'key' => $this->toString(),
 			'hash' => $this->getHash(),
 			'description' => $this->getDescription(),
 			'createdAt' => $this->getCreatedAt()->format('c'),

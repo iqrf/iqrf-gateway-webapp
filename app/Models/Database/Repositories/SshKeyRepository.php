@@ -20,31 +20,11 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
-use App\Models\Database\Entities\SshKey;
 use Doctrine\ORM\EntityRepository;
-use function assert;
 
 /**
  * SSH key repository
  */
 class SshKeyRepository extends EntityRepository {
-
-	/**
-	 * Lists existing key entries
-	 * @return array<int, array<string, int|string|null>> List of existing keys
-	 */
-	public function listKeys(): array {
-		$array = [];
-		foreach ($this->findAll() as $key) {
-			assert($key instanceof SshKey);
-			$array[] = [
-				'id' => $key->getId(),
-				'type' => $key->getType(),
-				'description' => $key->getDescription(),
-				'createdAt' => $key->getCreatedAt()->format('c'),
-			];
-		}
-		return $array;
-	}
 
 }
