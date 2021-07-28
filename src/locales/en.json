@@ -1048,23 +1048,38 @@
 			"add": "Add SSH key(s)",
 			"edit": "Edit SSH key",
 			"table": {
+				"title": "Authorized SSH public keys",
+				"add": "Add key",
+				"id": "ID",
 				"type": "Type",
+				"createdAt": "Date created",
 				"description": "Description",
-				"createdAt": "Date created"
+				"hash": "Hash",
+				"key": "Key"
 			},
 			"form": {
-				"key": "SSH public key"
+				"key": "SSH public key",
+				"add": "Add SSH key",
+				"remove": "Remove SSH key"
 			},
 			"errors": {
 				"keyMissing": "Please enter SSH public key.",
 				"keyInvalid": "Invalid SSH public key format."
+			},
+			"modal": {
+				"title": "SSH public key delete confirmation",
+				"prompt": "Are you sure you want to delete SSH public key ID {id}?"
 			},
 			"messages": {
 				"typeListFailed": "Failed to retrieve list of supported SSH key types.",
 				"typeListNone": "No SSH key type supported.",
 				"typeListSuccess": "The following SSH key types are supported:",
 				"listFailed": "Failed to retrieve list of existing SSH keys: {error}",
-				"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}"
+				"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}",
+				"deleteFailed": "Failed to delete SSH public key ID {id}: {error}",
+				"deleteSuccess": "SSH public key ID {id} has been successfully deleted.",
+				"saveFailed": "Failed to save authorized SSH public key: {error}",
+				"saveSuccess": "Authorized SSH public key has been successfully saved."
 			}
 		},
 		"user": {
@@ -2123,19 +2138,6 @@
 			"title": "Set gateway user password"
 		},
 		"ssh": {
-			"keys": {
-				"title": "Add SSH keys",
-				"key": "SSH public key",
-				"add": "Add SSH key",
-				"remove": "Remove SSH key",
-				"errors": {
-					"keyMissing": "Please enter SSH public key.",
-					"keyInvalid": "Invalid SSH public key format."
-				},
-				"messages": {
-					"sshKeyError": "Failed to save SSH keys: {error}"
-				}
-			},
 			"status": {
 				"title": "Set SSH service status",
 				"states": {
@@ -2839,7 +2841,8 @@
 			"edit": "Edit",
 			"enable": "Enable",
 			"disable": "Disable",
-			"deleteAll": "Delete all"
+			"deleteAll": "Delete all",
+			"details": "Details"
 		},
 		"messages": {
 			"noRecords": "No records have been found."

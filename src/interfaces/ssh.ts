@@ -17,7 +17,7 @@
 /**
  * SSH key list intreface
  */
-export interface ISshKeyList {
+export interface ISshKey {
 	/**
 	 * SSH key ID
 	 */
@@ -29,7 +29,27 @@ export interface ISshKeyList {
 	description: string
 
 	/**
+	 * SSH key type
+	 */
+	type: string
+
+	/**
+	 * SSH key hash
+	 */
+	hash: string
+
+	/**
+	 * SSH key
+	 */
+	key: string
+
+	/**
 	 * SSH key description
 	 */
 	createdAt: string
+
+	/**
+	 * Datatable aux
+	 */
+	showDetails?: boolean
 }
