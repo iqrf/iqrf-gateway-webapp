@@ -178,6 +178,7 @@
 		"on": "On",
 		"off": "Off",
 		"skip": "Skip",
+		"clipboardCopy": "Copy to clipboard",
 		"changePassword": "Change password",
 		"downloadBackup": "Download backup",
 		"messages": {
@@ -1071,6 +1072,7 @@
 				"prompt": "Are you sure you want to delete SSH public key ID {id}?"
 			},
 			"messages": {
+				"clipboardSuccess": "SSH public key successfully copied to clipboard.",
 				"typeListFailed": "Failed to retrieve list of supported SSH key types.",
 				"typeListNone": "No SSH key type supported.",
 				"typeListSuccess": "The following SSH key types are supported:",
