@@ -47,7 +47,7 @@ limitations under the License.
 								color='danger'
 								@click='removeKey(idx)'
 							>
-								{{ $t('core.ssh.form.delete') }}
+								{{ $t('core.ssh.form.remove') }}
 							</CButton> <CButton
 								v-if='idx === (keys.length - 1)'
 								color='success'
