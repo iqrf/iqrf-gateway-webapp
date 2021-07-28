@@ -178,7 +178,7 @@ class SshController extends GatewayController {
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UniqueConstraintViolationException $e) {
-			throw new ClientErrorException('This SSH public key already exists.', ApiResponse::S409_CONFLICT, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
 		} catch (IOException | SshDirectoryException | SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
