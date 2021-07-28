@@ -75,7 +75,7 @@ class SshManager {
 	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
 		$this->commandManager = $commandManager;
 		$feature = $featureManager->get('gatewayPass');
-		$this->directory = sprintf('/home/%s/.ssh', $feature['user']);
+		$this->directory = posix_getpwnam($feature['user'])['dir'] . '/.ssh';
 		$this->entityManager = $entityManager;
 		$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
 		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
