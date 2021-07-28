@@ -2,7 +2,7 @@
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyDetail.json",
 	"type": "object",
-	"title": "SSH key detail",
+	"title": "Authorized SSH public key",
 	"required": [
 		"id",
 		"type",
@@ -11,5 +11,14 @@
 		"description",
 		"createdAt"
 	],
-	"additionalProperties": false
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "SSH key ID",
+			"type": "integer",
+			"minimum": 0,
+			"example": 0
+		}
+	}
 }

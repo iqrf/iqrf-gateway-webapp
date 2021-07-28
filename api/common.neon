@@ -154,10 +154,12 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
 		SshKeyDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyDetail.json
+		SshKeyEdit:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyEdit.json
 		SshKeyList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyList.json
-		SshKeys:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeys.json
+		SshKeysAdd:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeysAdd.json
 		SshKeyTypes:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyTypes.json
 		SystemdJournal:

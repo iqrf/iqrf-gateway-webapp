@@ -134,3 +134,30 @@ $theme-colors: (
 .prism-editor__textarea {
 	outline: 0;
 }
+
+.datatable-header {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.datatable-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: -1px;
+}
+
+.datatable-collapse {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+	&> table {
+		margin-left: 1em;
+		margin-right: 1em;
+		th, td {
+			border: 0;
+		}
+	}
+}
