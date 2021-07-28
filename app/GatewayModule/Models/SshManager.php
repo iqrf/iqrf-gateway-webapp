@@ -98,6 +98,7 @@ class SshManager {
 	 * @return array<int, array<string, int|string|null>> List of existing SSH public keys
 	 */
 	public function listKeys(): array {
+		$this->updateKeysFile();
 		$array = [];
 		$keys = $this->sshKeyRepository->findAll();
 		foreach ($keys as $key) {
@@ -113,6 +114,7 @@ class SshManager {
 	 * @return SshKey SSH public key entity
 	 */
 	public function getKey(int $id): SshKey {
+		$this->updateKeysFile();
 		$key = $this->sshKeyRepository->find($id);
 		if ($key === null) {
 			throw new SshKeyNotFoundException('SSH key entry with ID ' . strval($id) . ' not found.');

@@ -1081,8 +1081,8 @@
 				"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}",
 				"deleteFailed": "Failed to delete SSH public key ID {id}: {error}",
 				"deleteSuccess": "SSH public key ID {id} has been successfully deleted.",
-				"saveFailed": "Failed to save authorized SSH public key: {error}",
-				"saveSuccess": "Authorized SSH public key has been successfully saved."
+				"saveFailed": "Failed to save authorized SSH public key(s): {error}",
+				"saveSuccess": "Authorized SSH public key(s) has been successfully saved."
 			}
 		},
 		"user": {
