@@ -157,7 +157,7 @@ class SshController extends GatewayController {
 	 *              schema:
 	 *                  $ref: '#/components/schemas/sshKeys'
 	 *  responses:
-	 *      '200':
+	 *      '201':
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
@@ -174,7 +174,7 @@ class SshController extends GatewayController {
 		$this->validator->validateRequest('sshKeysAdd', $request);
 		try {
 			$this->manager->addKeys($request->getJsonBody(true));
-			return $response->writeBody('Workaround');
+			return $response->withStatus(ApiResponse::S201_CREATED)->writeBody('Workaround');
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UniqueConstraintViolationException $e) {
