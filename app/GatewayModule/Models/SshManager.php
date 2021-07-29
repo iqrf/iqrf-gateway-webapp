@@ -126,23 +126,22 @@ class SshManager {
 
 	/**
 	 * Adds SSH public keys to authorized keys
-	 * @param array<int, string> $keys SSH public keys
+	 * @param array<int, array<string, string>> $items SSH public keys
 	 * @return array<int, string> Array of keys that could not be created;
 	 */
-	public function addKeys(array $keys): array {
-		$filteredKeys = array_unique($keys);
+	public function addKeys(array $items): array {
 		$failedKeys = [];
-		foreach ($filteredKeys as $key) {
-			$entity = $this->createKeyEntity($key);
+		foreach ($items as $item) {
+			$entity = $this->createKeyEntity($item);
 			$dbEntity = $this->sshKeyRepository->findByHash($entity->getHash());
 			if ($dbEntity !== null) {
-				$failedKeys[] = $key;
+				$failedKeys[] = $item['description'];
 				continue;
 			}
 			$this->entityManager->persist($entity);
 			$this->entityManager->flush();
 		}
-		if (count($failedKeys) === count($filteredKeys)) {
+		if (count($failedKeys) === count($items)) {
 			throw new SshKeyExistsException('Duplicate SSH key(s).');
 		}
 		$this->updateKeysFile();
@@ -151,17 +150,17 @@ class SshManager {
 
 	/**
 	 * Validates SSH key and returns key entity
-	 * @param string $key SSH key string
+	 * @param array<string, string> $item SSH key string
 	 * @return SshKey SSH key entity
 	 */
-	private function createKeyEntity(string $key): SshKey {
-		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $key);
+	private function createKeyEntity(array $item): SshKey {
+		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
 		if ($command->getExitCode() !== 0) {
 			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
 		}
-		$tokens = explode(' ', $key);
+		$tokens = explode(' ', $item['key']);
 		$hash = explode(' ', $command->getStdout())[1];
-		$description = count($tokens) === 3 ? $tokens[2] : null;
+		$description = $item['description'];
 		return new SshKey($tokens[0], $tokens[1], $hash, $description);
 	}
 
