@@ -16,6 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import {ISshInput} from '../interfaces/ssh';
 
 
 /**
@@ -55,9 +56,9 @@ class SshService {
 
 	/**
 	 * Saves SSH keys
-	 * @param {Array<string>} keys SSh keys
+	 * @param {Array<ISshInput>} keys SSh keys
 	 */
-	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
+	saveSshKeys(keys: Array<ISshInput>): Promise<AxiosResponse> {
 		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
 	}
 }

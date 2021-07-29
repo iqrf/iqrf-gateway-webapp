@@ -35,6 +35,20 @@ limitations under the License.
 					>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: "core.ssh.errors.descriptionMissing"
+							}'
+						>
+							<CInput
+								v-model='keys[idx].description'
+								:label='$t("core.ssh.form.description")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
 							rules='required|ssh'
 							:custom-messages='{
 								required: "core.ssh.errors.keyMissing",
@@ -42,7 +56,7 @@ limitations under the License.
 							}'
 						>
 							<CInput
-								v-model='keys[idx]'
+								v-model='keys[idx].key'
 								:label='$t("core.ssh.form.key")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -91,7 +105,8 @@ import {required} from 'vee-validate/dist/rules';
 
 import SshService from '../../services/SshService';
 
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
+import {ISshInput} from '../../interfaces/ssh';
 
 @Component({
 	components: {
@@ -120,7 +135,12 @@ export default class InstallSshKeys extends Vue {
 	/**
 	 * @var {Array<string>} keys Array of SSH keys for key-based authentication
 	 */
-	private keys: Array<string> = ['']
+	private keys: Array<ISshInput> = [
+		{
+			description: '',
+			key: '',
+		},
+	]
 
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress
@@ -144,7 +164,7 @@ export default class InstallSshKeys extends Vue {
 	 * Inserts new SSH key
 	 */
 	private addKey(): void {
-		this.keys.push('');
+		this.keys.push({description: '', key: ''});
 	}
 
 	/**
@@ -161,8 +181,13 @@ export default class InstallSshKeys extends Vue {
 		if (useKeys) {
 			this.running = true;
 			SshService.saveSshKeys(this.keys)
-				.then(() => {
+				.then((response: AxiosResponse) => {
 					this.running = false;
+					if (response.status === 200) {
+						this.$toast.info(
+							this.$t('core.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+						);
+					}
 					this.$emit('next-step');
 				})
 				.catch((error: AxiosError) => {

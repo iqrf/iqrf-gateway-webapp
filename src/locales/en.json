@@ -1054,18 +1054,19 @@
 				"id": "ID",
 				"type": "Type",
 				"createdAt": "Date created",
-				"description": "Description",
 				"hash": "Hash",
 				"key": "Key"
 			},
 			"form": {
+				"description": "Description",
 				"key": "SSH public key",
 				"add": "Add SSH key",
 				"remove": "Remove SSH key"
 			},
 			"errors": {
+				"descriptionMissing": "Please enter SSH key description.",
 				"keyMissing": "Please enter SSH public key.",
-				"keyInvalid": "Invalid SSH public key format."
+				"keyInvalid": "Invalid SSH public key format. Please enter key in format <type key>."
 			},
 			"modal": {
 				"title": "SSH public key delete confirmation",

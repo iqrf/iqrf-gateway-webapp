@@ -226,7 +226,7 @@ export default class SshKeyList extends Vue {
 		},
 		{
 			key: 'description',
-			label: this.$t('core.ssh.table.description').toString(),
+			label: this.$t('core.ssh.form.description').toString(),
 		},
 		{
 			key: 'createdAt',
