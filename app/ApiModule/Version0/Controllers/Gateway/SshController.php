@@ -107,12 +107,11 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$keys = $this->manager->listKeys();
-		return $response->writeJsonBody($keys);
+		return $response->writeJsonBody($this->manager->listKeys());
 	}
 
 	/**
-	 * @Path("/key/{id}")
+	 * @Path("/keys/{id}")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Retrieves authorized SSH public key
@@ -139,7 +138,8 @@ class SshController extends GatewayController {
 		try {
 			$id = (int) $request->getParameter('id');
 			$key = $this->manager->getKey($id);
-			return $response->writeBody($key->toString());
+			return $response->withHeader('Content-Type', 'text/plain')
+				->writeBody($key->toString());
 		} catch (SshKeyNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -177,7 +177,8 @@ class SshController extends GatewayController {
 		try {
 			$failed = $this->manager->addKeys($request->getJsonBody(true));
 			if ($failed !== []) {
-				return $response->withStatus(ApiResponse::S200_OK)->writeJsonBody(['failedKeys' => $failed]);
+				return $response->withStatus(ApiResponse::S200_OK)
+					->writeJsonBody(['failedKeys' => $failed]);
 			}
 			return $response->withStatus(ApiResponse::S201_CREATED)->writeBody('Workaround');
 		} catch (SshInvalidKeyException $e) {
@@ -190,7 +191,7 @@ class SshController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/key/{id}")
+	 * @Path("/keys/{id}")
 	 * @Method("DELETE")
 	 * @OpenApi("
 	 *  summary: Removes an authorized SSH public key
