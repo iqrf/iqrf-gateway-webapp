@@ -85,6 +85,7 @@ class SshManager {
 	/**
 	 * Returns array of supported key types
 	 * @return array<int, string> Array of supported key types
+	 * @throws SshUtilityException
 	 */
 	public function listKeyTypes(): array {
 		$command = $this->commandManager->run('ssh -Q key', true);
@@ -97,37 +98,36 @@ class SshManager {
 	/**
 	 * Returns array of existing SSH public keys
 	 * @return array<int, array<string, int|string|null>> List of existing SSH public keys
+	 * @throws SshDirectoryException
 	 */
 	public function listKeys(): array {
 		$this->updateKeysFile();
-		$array = [];
-		$keys = $this->sshKeyRepository->findAll();
-		foreach ($keys as $key) {
-			assert($key instanceof SshKey);
-			$array[] = $key->jsonSerialize();
-		}
-		return $array;
+		return $this->sshKeyRepository->findAll();
 	}
 
 	/**
 	 * Returns SSH public key
 	 * @param int $id SSH public key ID
 	 * @return SshKey SSH public key entity
+	 * @throws SshDirectoryException
+	 * @throws SshKeyNotFoundException
 	 */
 	public function getKey(int $id): SshKey {
 		$this->updateKeysFile();
 		$key = $this->sshKeyRepository->find($id);
-		if ($key === null) {
-			throw new SshKeyNotFoundException('SSH key entry with ID ' . strval($id) . ' not found.');
+		if (!($key instanceof SshKey)) {
+			throw new SshKeyNotFoundException('SSH key entry with ID ' . $id . ' not found.');
 		}
-		assert($key instanceof SshKey);
 		return $key;
 	}
 
 	/**
 	 * Adds SSH public keys to authorized keys
 	 * @param array<int, array<string, string>> $items SSH public keys
-	 * @return array<int, string> Array of keys that could not be created;
+	 * @return array<int, string> Array of keys that could not be created
+	 * @throws SshDirectoryException
+	 * @throws SshInvalidKeyException
+	 * @throws SshKeyExistsException
 	 */
 	public function addKeys(array $items): array {
 		$failedKeys = [];
@@ -152,13 +152,14 @@ class SshManager {
 	 * Validates SSH key and returns key entity
 	 * @param array<string, string> $item SSH key string
 	 * @return SshKey SSH key entity
+	 * @throws SshInvalidKeyException
 	 */
 	private function createKeyEntity(array $item): SshKey {
 		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
 		if ($command->getExitCode() !== 0) {
 			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
 		}
-		$tokens = explode(' ', $item['key']);
+		$tokens = explode(' ', $item['key'], 3);
 		$hash = explode(' ', $command->getStdout())[1];
 		$description = $item['description'];
 		return new SshKey($tokens[0], $tokens[1], $hash, $description);
@@ -167,6 +168,8 @@ class SshManager {
 	/**
 	 * Removes SSH public key from database
 	 * @param int $id SSH public key ID
+	 * @throws SshDirectoryException
+	 * @throws SshKeyNotFoundException
 	 */
 	public function deleteKey(int $id): void {
 		$key = $this->sshKeyRepository->find($id);
@@ -180,20 +183,20 @@ class SshManager {
 
 	/**
 	 * Updates the authorized keys file based on the contents of the database
+	 * @throws SshDirectoryException
 	 */
 	private function updateKeysFile(): void {
 		$this->checkSshDirectory();
 		$keys = $this->sshKeyRepository->findAll();
-		$content = '';
-		foreach ($keys as $key) {
-			assert($key instanceof SshKey);
-			$content .= $key->toString() . PHP_EOL;
-		}
+		$content = implode(PHP_EOL, array_map(function (SshKey $key): string {
+			return $key->toString();
+		}, $keys));
 		$this->fileManager->write(self::KEYS_FILE, $content);
 	}
 
 	/**
 	 * Checks if SSH directory exists
+	 * @throws SshDirectoryException
 	 */
 	private function checkSshDirectory(): void {
 		$path = $this->directory . '/' . self::KEYS_FILE;

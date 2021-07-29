@@ -23,7 +23,7 @@ limitations under the License.
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
 						<div
-							v-for='(k, idx) of keys'
+							v-for='(key, idx) of keys'
 							:key='idx'
 							class='form-group'
 						>
@@ -35,7 +35,7 @@ limitations under the License.
 								}'
 							>
 								<CInput
-									v-model='keys[idx].description'
+									v-model='key.description'
 									:label='$t("core.ssh.form.description")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -50,10 +50,11 @@ limitations under the License.
 								}'
 							>
 								<CInput
-									v-model='keys[idx].key'
+									v-model='key.key'
 									:label='$t("core.ssh.form.key")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
+									@change='updateDescription(idx)'
 								/>
 							</ValidationProvider>
 							<CButton
@@ -65,7 +66,7 @@ limitations under the License.
 							</CButton> <CButton
 								v-if='idx === (keys.length - 1)'
 								color='success'
-								@click='addKey(idx - 1)'
+								@click='addKey()'
 							>
 								{{ $t('core.ssh.form.add') }}
 							</CButton>
@@ -116,7 +117,7 @@ import {ISshInput} from '../../interfaces/ssh';
 })
 
 /**
- * 
+ *
  */
 export default class SshKeyAdd extends Vue {
 
@@ -186,5 +187,17 @@ export default class SshKeyAdd extends Vue {
 				extendedErrorToast(error, 'core.ssh.messages.saveFailed');
 			});
 	}
+
+	/**
+	 * Updates the key description if it is empty
+	 * @param index Key index
+	 */
+	private updateDescription(index: number): void {
+		if (index >= this.keys.length || this.keys[index].description.length !== 0) {
+			return;
+		}
+		this.keys[index].description = this.keys[index].key.split(' ').slice(2).join(' ');
+	}
+
 }
 </script>

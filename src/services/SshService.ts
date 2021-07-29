@@ -43,7 +43,7 @@ class SshService {
 	 * @param {number} id Key ID
 	 */
 	getKey(id: number): Promise<AxiosResponse> {
-		return axios.get('gateway/ssh/key/' + id, {headers: authorizationHeader()});
+		return axios.get('gateway/ssh/keys/' + id, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -51,7 +51,7 @@ class SshService {
 	 * @param {number} id Key ID
 	 */
 	deleteKey(id: number): Promise<AxiosResponse> {
-		return axios.delete('gateway/ssh/key/' + id, {headers: authorizationHeader()});
+		return axios.delete('gateway/ssh/keys/' + id, {headers: authorizationHeader()});
 	}
 
 	/**
