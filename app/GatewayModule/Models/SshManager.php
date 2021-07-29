@@ -25,6 +25,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshKeyExistsException;
 use App\GatewayModule\Exceptions\SshKeyNotFoundException;
 use App\GatewayModule\Exceptions\SshUtilityException;
 use App\Models\Database\Entities\SshKey;
@@ -126,17 +127,26 @@ class SshManager {
 	/**
 	 * Adds SSH public keys to authorized keys
 	 * @param array<int, string> $keys SSH public keys
+	 * @return array<int, string> Array of keys that could not be created;
 	 */
-	public function addKeys(array $keys): void {
-		$entities = [];
-		foreach ($keys as $key) {
-			$entities[] = $this->createKeyEntity($key);
-		}
-		foreach ($entities as $entity) {
+	public function addKeys(array $keys): array {
+		$filteredKeys = array_unique($keys);
+		$failedKeys = [];
+		foreach ($filteredKeys as $key) {
+			$entity = $this->createKeyEntity($key);
+			$dbEntity = $this->sshKeyRepository->findByHash($entity->getHash());
+			if ($dbEntity !== null) {
+				$failedKeys[] = $key;
+				continue;
+			}
 			$this->entityManager->persist($entity);
+			$this->entityManager->flush();
 		}
-		$this->entityManager->flush();
+		if (count($failedKeys) === count($filteredKeys)) {
+			throw new SshKeyExistsException('Duplicate SSH key(s).');
+		}
 		$this->updateKeysFile();
+		return $failedKeys;
 	}
 
 	/**
