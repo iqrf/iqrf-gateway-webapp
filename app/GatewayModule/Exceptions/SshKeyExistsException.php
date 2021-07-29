@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2021 IQRF Tech s.r.o.
- * Copyright 2019-2021 MICRORISC s.r.o.
+ * Copyright 2017 MICRORISC s.r.o.
+ * Copyright 2017-2019 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\Models\Database\Repositories;
+namespace App\GatewayModule\Exceptions;
 
-use App\Models\Database\Entities\SshKey;
-use Doctrine\ORM\EntityRepository;
+use Exception;
 
 /**
- * SSH key repository
+ * Indicates that the SSH public key already exists
  */
-class SshKeyRepository extends EntityRepository {
-
-	/**
-	 * Finds SSH public key by hash
-	 * @param string $hash SSH public key hash
-	 * @return SshKey|null SSH public key entity
-	 */
-	public function findByHash(string $hash): ?SshKey {
-		$key = $this->findOneBy(['hash' => $hash]);
-		assert($key instanceof SshKey || $key === null);
-		return $key;
-	}
+class SshKeyExistsException extends Exception {
 
 }

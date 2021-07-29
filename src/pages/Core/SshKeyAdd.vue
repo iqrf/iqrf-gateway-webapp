@@ -81,7 +81,7 @@ import {required} from 'vee-validate/dist/rules';
 
 import SshService from '../../services/SshService';
 
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -151,9 +151,15 @@ export default class SshKeyAdd extends Vue {
 	private saveKeys(): void {
 		this.$store.commit('spinner/SHOW');
 		SshService.saveSshKeys(this.keys)
-			.then(() => {
+			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('core.ssh.messages.saveSuccess').toString());
+				if (response.status === 201) {
+					this.$toast.success(this.$t('core.ssh.messages.saveSuccess').toString());
+				} else if (response.status === 200) {
+					this.$toast.info(
+						this.$t('core.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+					);
+				}
 				this.$router.push('/ssh-key/');
 			})
 			.catch((error: AxiosError) => {
