@@ -1082,6 +1082,7 @@
 				"deleteFailed": "Failed to delete SSH public key ID {id}: {error}",
 				"deleteSuccess": "SSH public key ID {id} has been successfully deleted.",
 				"saveFailed": "Failed to save authorized SSH public key(s): {error}",
+				"savePartialSuccess": "Authorized SSH public key(s) saved, the following duplicate keys were ignored: {keys}.",
 				"saveSuccess": "Authorized SSH public key(s) has been successfully saved."
 			}
 		},

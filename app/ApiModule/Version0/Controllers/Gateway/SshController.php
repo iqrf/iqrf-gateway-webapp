@@ -33,10 +33,10 @@ use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
+use App\GatewayModule\Exceptions\SshKeyExistsException;
 use App\GatewayModule\Exceptions\SshKeyNotFoundException;
 use App\GatewayModule\Exceptions\SshUtilityException;
 use App\GatewayModule\Models\SshManager;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Nette\IOException;
 
 /**
@@ -157,8 +157,10 @@ class SshController extends GatewayController {
 	 *              schema:
 	 *                  $ref: '#/components/schemas/sshKeys'
 	 *  responses:
+	 *      '200':
+	 *          description: 'Partial success, duplicate keys in body (ignored)'
 	 *      '201':
-	 *          description: Success
+	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '409':
@@ -173,11 +175,14 @@ class SshController extends GatewayController {
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('sshKeysAdd', $request);
 		try {
-			$this->manager->addKeys($request->getJsonBody(true));
+			$failed = $this->manager->addKeys($request->getJsonBody(true));
+			if ($failed !== []) {
+				return $response->withStatus(ApiResponse::S200_OK)->writeJsonBody(['failedKeys' => $failed]);
+			}
 			return $response->withStatus(ApiResponse::S201_CREATED)->writeBody('Workaround');
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (UniqueConstraintViolationException $e) {
+		} catch (SshKeyExistsException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT, $e);
 		} catch (IOException | SshDirectoryException | SshUtilityException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
