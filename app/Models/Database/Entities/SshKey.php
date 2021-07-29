@@ -158,11 +158,12 @@ class SshKey implements JsonSerializable {
 	 * @return string SSH key string
 	 */
 	public function toString(): string {
-		$description = $this->getDescription();
-		if ($description === null) {
-			$description = '';
-		}
-		return trim(sprintf('%s %s %s', $this->getType(), $this->getKey(), $description));
+		$chunks = [
+			$this->getType(),
+			$this->getKey(),
+			$this->getDescription() ?? '',
+		];
+		return trim(implode(' ', $chunks));
 	}
 
 }

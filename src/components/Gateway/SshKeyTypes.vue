@@ -77,7 +77,7 @@ export default class SshKeyTypes extends Vue {
 	 */
 	validateKey(key: string): boolean {
 		const sections = key.trim().split(' ');
-		if (sections.length !== 2) {
+		if (sections.length < 2) {
 			return false;
 		}
 		return this.types.includes(sections[0]);
