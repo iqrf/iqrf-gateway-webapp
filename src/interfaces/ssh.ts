@@ -53,3 +53,18 @@ export interface ISshKey {
 	 */
 	showDetails?: boolean
 }
+
+/**
+ * Form ssh key interface
+ */
+export interface ISshInput {
+	/**
+	 * SSH key description
+	 */
+	description: string
+
+	/**
+	 * SSH public key
+	 */
+	key: string
+}
