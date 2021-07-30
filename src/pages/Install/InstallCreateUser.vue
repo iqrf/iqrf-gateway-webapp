@@ -124,11 +124,8 @@ export default class InstallCreateUser extends Vue {
 	private handleSubmit(): void {
 		UserService.add(this.username, this.password, this.language, this.role)
 			.then(() => {
-				const credentials: UserCredentials = new UserCredentials(this.username, this.password);
-				Promise.all([
-					this.$store.dispatch('user/signIn', credentials),
-					this.$store.dispatch('features/fetch'),
-				])
+				const credentials = new UserCredentials(this.username, this.password);
+				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {
 						await sleep(500);
 						this.$router.push('/');
