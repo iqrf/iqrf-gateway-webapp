@@ -151,10 +151,7 @@ export default class SignIn extends Vue {
 	 */
 	private handleSubmit(): void {
 		const credentials = new UserCredentials(this.username, this.password);
-		Promise.all([
-			this.$store.dispatch('user/signIn', credentials),
-			this.$store.dispatch('features/fetch'),
-		])
+		this.$store.dispatch('user/signIn', credentials)
 			.then(async () => {
 				await sleep(500);
 				this.$router.push((this.$route.query.redirect as string|undefined) ?? '/');
