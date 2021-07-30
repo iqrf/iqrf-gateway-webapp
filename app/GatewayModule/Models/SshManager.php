@@ -48,7 +48,7 @@ class SshManager {
 	private $commandManager;
 
 	/**
-	 * @var string Path to SSH directory
+	 * @var string|null Path to SSH directory
 	 */
 	private $directory;
 
@@ -58,7 +58,7 @@ class SshManager {
 	private $entityManager;
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
+	 * @var PrivilegedFileManager|null Privileged file manager
 	 */
 	private $fileManager;
 
@@ -76,9 +76,12 @@ class SshManager {
 	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
 		$this->commandManager = $commandManager;
 		$feature = $featureManager->get('gatewayPass');
-		$this->directory = posix_getpwnam($feature['user'])['dir'] . '/.ssh';
+		$userInfo = posix_getpwnam($feature['user']);
+		if ($userInfo !== false) {
+			$this->directory = $userInfo['dir'] . '/.ssh';
+			$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
+		}
 		$this->entityManager = $entityManager;
-		$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
 		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
 	}
 

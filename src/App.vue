@@ -55,8 +55,9 @@ export default class App extends Vue {
 	/**
 	 * Vue lifecycle hook before created
 	 */
-	beforeCreate(): void {
-		InstallationService.check()
+	async beforeCreate(): Promise<void> {
+		await this.$store.dispatch('features/fetch');
+		await InstallationService.check()
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (!check.phpModules.allExtensionsLoaded) {
