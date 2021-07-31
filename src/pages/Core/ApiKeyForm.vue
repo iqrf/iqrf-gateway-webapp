@@ -16,11 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/api-key/add"'>
-			{{ $t('core.apiKey.add') }}
+		<h1 v-if='$route.path === "/security/api-key/add"'>
+			{{ $t('core.security.apiKey.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('core.apiKey.edit') }}
+			{{ $t('core.security.apiKey.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -29,11 +29,11 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "core.apiKey.errors.description"}'
+							:custom-messages='{required: "core.security.apiKey.errors.description"}'
 						>
 							<CInput
 								v-model='metadata.description'
-								:label='$t("core.apiKey.form.description")'
+								:label='$t("core.security.apiKey.form.description")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -41,7 +41,7 @@ limitations under the License.
 						<div class='form-group'>
 							<CInputCheckbox
 								:checked.sync='useExpiration'
-								:label='$t("core.apiKey.form.expiration")'
+								:label='$t("core.security.apiKey.form.expiration")'
 								@change='clear'
 							/>
 							<Datetime
@@ -141,8 +141,8 @@ export default class ApiKeyForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/api-key/add' ?
-			this.$t('core.apiKey.add').toString() : this.$t('core.apiKey.edit').toString();
+		return this.$route.path === '/security/api-key/add' ?
+			this.$t('core.security.apiKey.add').toString() : this.$t('core.security.apiKey.edit').toString();
 	}
 
 	/**
@@ -150,7 +150,7 @@ export default class ApiKeyForm extends Vue {
 	 * @return {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/api-key/add' ?
+		return this.$route.path === '/security/api-key/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -190,8 +190,8 @@ export default class ApiKeyForm extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.apiKey.messages.fetchFailed', {key: this.keyId});
-				this.$router.push('/api-key/');
+				extendedErrorToast(error, 'core.security.apiKey.messages.fetchFailed', {key: this.keyId});
+				this.$router.push('/security/api-key/');
 			});
 	}
 
@@ -216,18 +216,18 @@ export default class ApiKeyForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/api-key/add') {
+		if (this.$route.path === '/security/api-key/add') {
 			this.$toast.success(
-				this.$t('core.apiKey.messages.addSuccess')
+				this.$t('core.security.apiKey.messages.addSuccess')
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('core.apiKey.messages.editSuccess', {key: this.keyId})
+				this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
 					.toString()
 			);
 		}
-		this.$router.push('/api-key/');
+		this.$router.push('/security/api-key/');
 	}
 
 	/**
@@ -237,7 +237,7 @@ export default class ApiKeyForm extends Vue {
 	private handleSaveError(error: AxiosError): void {
 		extendedErrorToast(
 			error,
-			'core.apiKey.messages.' + (this.$route.path === '/api-key/add' ? 'add' : 'edit') + 'Failed',
+			'core.security.apiKey.messages.' + (this.$route.path === '/security/api-key/add' ? 'add' : 'edit') + 'Failed',
 			{key: this.keyId}
 		);
 	}

@@ -5,10 +5,10 @@
 	>
 		<span v-if='fetched'>
 			<span v-if='fetched.length === 0'>
-				{{ $t('core.ssh.messages.typeListNone') }}
+				{{ $t('core.security.ssh.messages.typeListNone') }}
 			</span>
 			<span v-else>
-				{{ $t('core.ssh.messages.typeListSuccess') }}
+				{{ $t('core.security.ssh.messages.typeListSuccess') }}
 				<ul>
 					<li
 						v-for='key of types'
@@ -20,7 +20,7 @@
 			</span>
 		</span>
 		<span v-else>
-			{{ $t('core.ssh.messages.typeListFailed') }}
+			{{ $t('core.security.ssh.messages.typeListFailed') }}
 		</span>
 	</CAlert>
 </template>

@@ -16,14 +16,14 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('core.apiKey.title') }}</h1>
+		<h1>{{ $t('core.security.apiKey.title') }}</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/api-key/add'
+					to='/security/api-key/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -55,7 +55,7 @@ limitations under the License.
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/api-key/edit/" + item.id'
+								:to='"/security/api-key/edit/" + item.id'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -78,10 +78,10 @@ limitations under the License.
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('core.apiKey.modal.title') }}
+					{{ $t('core.security.apiKey.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('core.apiKey.modal.prompt', {key: deleteKey}) }}
+			{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}
 			<template #footer>
 				<CButton
 					color='danger'
@@ -129,7 +129,7 @@ interface ApiKey {
 		CIcon
 	},
 	metaInfo: {
-		title: 'core.apiKey.title'
+		title: 'core.security.apiKey.title'
 	}
 })
 
@@ -161,15 +161,15 @@ export default class ApiKeyList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'id',
-			label: this.$t('core.apiKey.form.id'),
+			label: this.$t('core.security.apiKey.form.id'),
 		},
 		{
 			key: 'description',
-			label: this.$t('core.apiKey.form.description'),
+			label: this.$t('core.security.apiKey.form.description'),
 		},
 		{
 			key: 'expiration',
-			label: this.$t('core.apiKey.form.expiration'),
+			label: this.$t('core.security.apiKey.form.expiration'),
 		},
 		{
 			key: 'actions',
@@ -212,7 +212,7 @@ export default class ApiKeyList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.keys = response.data;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.apiKey.messages.listFetchFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.listFetchFailed'));
 	}
 
 	/**
@@ -228,10 +228,10 @@ export default class ApiKeyList extends Vue {
 		ApiKeyService.deleteApiKey(key)
 			.then(() => {
 				this.getKeys().then(() => {
-					this.$toast.success(this.$t('core.apiKey.messages.deleteSuccess', {key: key}).toString());
+					this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: key}).toString());
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.apiKey.messages.deleteFailed', {key: key}));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: key}));
 	}
 
 	/**
