@@ -340,7 +340,7 @@ export default class UserList extends Vue {
 	 * Handles user delete success REST API response
 	 * @param {IUser} user Removed user object
 	 */
-	private handleDeleteSuccess(user: IUser): void {
+	private async handleDeleteSuccess(user: IUser): Promise<void> {
 		if (user.id === this.$store.getters['user/getId']) {
 			this.$store.dispatch('user/signOut');
 			this.$store.commit('spinner/HIDE');
@@ -351,6 +351,7 @@ export default class UserList extends Vue {
 				).toString()
 			);
 			if (this.users.length === 1) {
+				await this.$store.dispatch('features/fetch');
 				this.$router.push('/install/');
 			} else {
 				this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});

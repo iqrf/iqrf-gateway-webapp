@@ -31,6 +31,12 @@ limitations under the License.
 				>
 					<CSpinner color='primary' />
 				</CElementCover>
+				<div
+					v-if='$route.path.includes("/install")' 
+					class='form-group'
+				>
+					{{ $t('core.security.ssh.messages.installNote') }}
+				</div>
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
@@ -92,7 +98,7 @@ limitations under the License.
 						</CButton> <CButton
 							v-if='$route.path.includes("/install")'
 							color='secondary'
-							@click='skipStep'
+							@click='nextStep'
 						>
 							{{ $t('forms.skip') }}
 						</CButton>
@@ -203,7 +209,7 @@ export default class SshKeyForm extends Vue {
 							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
 						);
 					}
-					this.$emit('next-step');
+					this.nextStep();
 				})
 				.catch((error: AxiosError) => {
 					extendedErrorToast(error, 'core.security.ssh.messages.saveFailed');
@@ -232,8 +238,9 @@ export default class SshKeyForm extends Vue {
 	/**
 	 * Advance the install wizard
 	 */
-	private skipStep(): void {
+	private nextStep(): void {
 		this.$emit('next-step');
+		this.$router.push('/install/ssh-status/');
 	}
 
 	/**
