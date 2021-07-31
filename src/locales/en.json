@@ -1014,77 +1014,82 @@
 			"cs": "Czech",
 			"en": "English"
 		},
-		"apiKey": {
-			"title": "API key manager",
-			"description": "Manage API keys.",
-			"add": "Add API key",
-			"edit": "Edit API key",
-			"form": {
-				"id": "ID",
-				"description": "Description",
-				"expiration": "Expiration"
+		"security": {
+			"title": "Security manager",
+			"description": "Manage security measures.",
+			"apiKey": {
+				"title": "API keys",
+				"description": "Manage API keys.",
+				"add": "Add API key",
+				"edit": "Edit API key",
+				"form": {
+					"id": "ID",
+					"description": "Description",
+					"expiration": "Expiration"
+				},
+				"modal": {
+					"title": "API key delete confirmation",
+					"prompt": "Are you sure you want to delete API key ID {key}?"
+				},
+				"messages": {
+					"invalid": "Invalid API key metadata.",
+					"notFound": "API key with this ID does not exist.",
+					"addFailed": "Failed to create new API key: {error}",
+					"addSuccess": "New API key has been successfully added.",
+					"deleteFailed": "Failed to delete API key ID {key}: {error}",
+					"deleteSuccess": "API key ID {key} has been successfully deleted.",
+					"editFailed": "Failed to change API key ID {key}: {error}",
+					"editSuccess": "API key ID {key} has been successfully updated.",
+					"fetchFailed": "Failed to retrieve API key {key}: {error}",
+					"listFetchFailed": "Failed to retrieve the list of API keys: {error}"
+				},
+				"errors": {
+					"description": "Please enter API key description."
+				}
 			},
-			"modal": {
-				"title": "API key delete confirmation",
-				"prompt": "Are you sure you want to delete API key ID {key}?"
-			},
-			"messages": {
-				"invalid": "Invalid API key metadata.",
-				"notFound": "API key with this ID does not exist.",
-				"addFailed": "Failed to create new API key: {error}",
-				"addSuccess": "New API key has been successfully added.",
-				"deleteFailed": "Failed to delete API key ID {key}: {error}",
-				"deleteSuccess": "API key ID {key} has been successfully deleted.",
-				"editFailed": "Failed to change API key ID {key}: {error}",
-				"editSuccess": "API key ID {key} has been successfully updated.",
-				"fetchFailed": "Failed to retrieve API key {key}: {error}",
-				"listFetchFailed": "Failed to retrieve the list of API keys: {error}"
-			},
-			"errors": {
-				"description": "Please enter API key description."
-			}
-		},
-		"ssh": {
-			"title": "SSH key manager",
-			"description": "Manage SSH keys.",
-			"add": "Add SSH key(s)",
-			"edit": "Edit SSH key",
-			"table": {
-				"title": "Authorized SSH public keys",
-				"add": "Add key",
-				"id": "ID",
-				"type": "Type",
-				"createdAt": "Date created",
-				"hash": "Hash",
-				"key": "Key"
-			},
-			"form": {
-				"description": "Description",
-				"key": "SSH public key",
-				"add": "Add SSH key",
-				"remove": "Remove SSH key"
-			},
-			"errors": {
-				"descriptionMissing": "Please enter SSH key description.",
-				"keyMissing": "Please enter SSH public key.",
-				"keyInvalid": "Invalid SSH public key format. Please enter key in format <type key>."
-			},
-			"modal": {
-				"title": "SSH public key delete confirmation",
-				"prompt": "Are you sure you want to delete SSH public key ID {id}?"
-			},
-			"messages": {
-				"clipboardSuccess": "SSH public key successfully copied to clipboard.",
-				"typeListFailed": "Failed to retrieve list of supported SSH key types.",
-				"typeListNone": "No SSH key type supported.",
-				"typeListSuccess": "The following SSH key types are supported:",
-				"listFailed": "Failed to retrieve list of existing SSH keys: {error}",
-				"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}",
-				"deleteFailed": "Failed to delete SSH public key ID {id}: {error}",
-				"deleteSuccess": "SSH public key ID {id} has been successfully deleted.",
-				"saveFailed": "Failed to save authorized SSH public key(s): {error}",
-				"savePartialSuccess": "Authorized SSH public key(s) saved, the following duplicate keys were ignored: {keys}.",
-				"saveSuccess": "Authorized SSH public key(s) has been successfully saved."
+			"ssh": {
+				"title": "SSH keys",
+				"description": "Manage SSH keys.",
+				"add": "Add SSH key(s)",
+				"edit": "Edit SSH key",
+				"table": {
+					"title": "Authorized SSH public keys",
+					"add": "Add key",
+					"id": "ID",
+					"type": "Type",
+					"createdAt": "Date created",
+					"hash": "Hash",
+					"key": "Key"
+				},
+				"form": {
+					"description": "Description",
+					"key": "SSH public key",
+					"add": "Add SSH key",
+					"remove": "Remove SSH key"
+				},
+				"errors": {
+					"descriptionMissing": "Please enter SSH key description.",
+					"keyMissing": "Please enter SSH public key.",
+					"keyInvalid": "Invalid SSH public key format. Please enter key in format <type key>."
+				},
+				"modal": {
+					"title": "SSH public key delete confirmation",
+					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
+				},
+				"messages": {
+					"keyClipboard": "SSH public key has been successfully copied to clipboard.",
+					"hashClipboard": "SSH key hash has been successfully copied to clipboard.",
+					"typeListFailed": "Failed to retrieve list of supported SSH key types.",
+					"typeListNone": "No SSH key type supported.",
+					"typeListSuccess": "The following SSH key types are supported:",
+					"listFailed": "Failed to retrieve list of existing SSH keys: {error}",
+					"fetchFailed": "Failed to retrieve SSH public key ID {id}: {error}",
+					"deleteFailed": "Failed to delete SSH public key ID {id}: {error}",
+					"deleteSuccess": "SSH public key ID {id} has been successfully deleted.",
+					"saveFailed": "Failed to save authorized SSH public key(s): {error}",
+					"savePartialSuccess": "Authorized SSH public key(s) saved, the following duplicate keys were ignored: {keys}.",
+					"saveSuccess": "Authorized SSH public key(s) has been successfully saved."
+				}
 			}
 		},
 		"user": {

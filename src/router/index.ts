@@ -35,16 +35,18 @@ const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gat
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
 const ServiceControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/ServiceControl.vue');
 
-const ApiKeyList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyList.vue');
-const ApiKeyForm = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyForm.vue');
 const MainDisambiguation = () => import(/* webpackChunkName: "core" */ '@/pages/Core/MainDisambiguation.vue');
 const NotFound = () => import(/* webpackChunkName: "core" */ '@/pages/Core/NotFound.vue');
 const UserAdd = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserAdd.vue');
 const UserEdit = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserEdit.vue');
 const UserList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserList.vue');
 const SignIn = () => import(/* webpackChunkName: "core" */ '@/pages/Core/SignIn.vue');
+
+const SecurityDisambiguation = () => import(/* webpackChunkName: "core" */'@/pages/Core/SecurityDisambiguation.vue');
+const ApiKeyList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyList.vue');
+const ApiKeyForm = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyForm.vue');
+const SshKeyForm = () => import(/* webpackChunkName: "core" */'@/pages/Core/SshKeyForm.vue');
 const SshKeyList = () => import(/* webpackChunkName: "core" */'@/pages/Core/SshKeyList.vue');
-const SshKeyAdd = () => import(/* webpackChunkName: "core" */'@/pages/Core/SshKeyAdd.vue');
 
 const IqrfNetDisambiguation = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/IqrfNetDisambiguation.vue');
 const DeviceEnumeration = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet/DeviceEnumeration.vue');
@@ -918,7 +920,7 @@ const routes: Array<RouteConfig> = [
 				]
 			},
 			{
-				path: '/api-key',
+				path: '/security',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -927,42 +929,56 @@ const routes: Array<RouteConfig> = [
 				children: [
 					{
 						path: '',
-						component: ApiKeyList,
+						component: SecurityDisambiguation,
 					},
 					{
-						component: ApiKeyForm,
-						path: 'add',
-					},
-					{
-						component: ApiKeyForm,
-						path: 'edit/:keyId',
-						props: (route) => {
-							const keyId = Number.parseInt(route.params.keyId, 10);
-							if (Number.isNaN(keyId)) {
-								return 0;
+						path: 'api-key',
+						component: {
+							render(c) {
+								return c('router-view');
 							}
-							return {keyId};
 						},
+						children: [
+							{
+								path: '',
+								component: ApiKeyList,
+							},
+							{
+								component: ApiKeyForm,
+								path: 'add',
+							},
+							{
+								component: ApiKeyForm,
+								path: 'edit/:keyId',
+								props: (route) => {
+									const keyId = Number.parseInt(route.params.keyId, 10);
+									if (Number.isNaN(keyId)) {
+										return 0;
+									}
+									return {keyId};
+								},
+							},
+						],
 					},
-				],
-			},
-			{
-				path: '/ssh-key',
-				component: {
-					render(c) {
-						return c('router-view');
-					}
-				},
-				children: [
 					{
-						path: '',
-						component: SshKeyList,
+						path: 'ssh-key',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: SshKeyList,
+							},
+							{
+								path: 'add',
+								component: SshKeyForm,
+							},
+						],
 					},
-					{
-						path: 'add',
-						component: SshKeyAdd,
-					},
-				],
+				]
 			},
 			{
 				component: MainDisambiguation,

@@ -16,21 +16,21 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('core.ssh.title') }}</h1>
+		<h1>{{ $t('core.security.ssh.title') }}</h1>
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				<div>
-					{{ $t('core.ssh.table.title') }}
+					{{ $t('core.security.ssh.table.title') }}
 				</div>
 				<div>
 					<CButton
 						color='success'
-						to='/ssh-key/add/'
+						to='/security/ssh-key/add/'
 						size='sm'
 					>
 						<CIcon :content='icons.add' size='sm' />
 						<span class='d-none d-lg-inline'>
-							{{ $t('core.ssh.table.add') }}
+							{{ $t('core.security.ssh.table.add') }}
 						</span>
 					</CButton>
 				</div>
@@ -81,18 +81,18 @@ limitations under the License.
 								<table>
 									<tbody>
 										<tr>
-											<th>{{ $t('core.ssh.table.type') }}</th>
+											<th>{{ $t('core.security.ssh.table.type') }}</th>
 											<td>{{ item.type }}</td>
 										</tr>
 										<tr>
 											<th>
-												{{ $t('core.ssh.table.hash') }}
+												{{ $t('core.security.ssh.table.hash') }}
 											</th>
 											<td>{{ item.hash }}</td>
 											<td>
 												<CButton
 													v-clipboard:copy='item.hash'
-													v-clipboard:success='clipboardMessage'
+													v-clipboard:success='hashClipboardMessage'
 													color='primary'
 													size='sm'
 												>
@@ -105,7 +105,7 @@ limitations under the License.
 										</tr>
 										<tr>
 											<th>
-												{{ $t('core.ssh.table.key') }}
+												{{ $t('core.security.ssh.table.key') }}
 											</th>
 											<td style='max-width: 60vw;'>
 												{{ item.key }}
@@ -113,7 +113,7 @@ limitations under the License.
 											<td>
 												<CButton
 													v-clipboard:copy='item.key'
-													v-clipboard:success='clipboardMessage'
+													v-clipboard:success='keyClipboardMessage'
 													color='primary'
 													size='sm'
 												>
@@ -138,11 +138,11 @@ limitations under the License.
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('core.ssh.modal.title') }}
+					{{ $t('core.security.ssh.modal.title') }}
 				</h5>
 			</template>
 			<span v-if='keyToDelete !== null'>
-				{{ $t('core.ssh.modal.prompt', {id: keyToDelete.id}) }}
+				{{ $t('core.security.ssh.modal.prompt', {id: keyToDelete.id}) }}
 			</span>
 			<template #footer>
 				<CButton
@@ -187,7 +187,7 @@ import {ISshKey} from '../../interfaces/ssh';
 		CModal,
 	},
 	metaInfo: {
-		title: 'core.ssh.title',
+		title: 'core.security.ssh.title',
 	},
 })
 
@@ -222,15 +222,15 @@ export default class SshKeyList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'id',
-			label: this.$t('core.ssh.table.id').toString(),
+			label: this.$t('core.security.ssh.table.id').toString(),
 		},
 		{
 			key: 'description',
-			label: this.$t('core.ssh.form.description').toString(),
+			label: this.$t('core.security.ssh.form.description').toString(),
 		},
 		{
 			key: 'createdAt',
-			label: this.$t('core.ssh.table.createdAt').toString(),
+			label: this.$t('core.security.ssh.table.createdAt').toString(),
 		},
 		{
 			key: 'actions',
@@ -261,7 +261,7 @@ export default class SshKeyList extends Vue {
 				this.keys = response.data;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.ssh.messages.listFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.listFailed'));
 	}
 
 	/**
@@ -274,19 +274,34 @@ export default class SshKeyList extends Vue {
 		SshService.deleteKey(id)
 			.then(() => {
 				this.listKeys().then(() => this.$toast.success(
-					this.$t('core.ssh.messages.deleteSuccess', {id: id}).toString()
+					this.$t('core.security.ssh.messages.deleteSuccess', {id: id}).toString()
 				));
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.ssh.messages.deleteFailed', {id: id}));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: id}));
 	}
 
 	/**
-	 * SSH public key clipboard copy function
+	 * SSH public key clipboard copy message
 	 */
-	private clipboardMessage(): void {
+	private hashClipboardMessage(): void {
+		this.clipboardMessage('hashClipboard');
+	}
+
+	/**
+	 * SSH key hash clipboard copy message
+	 */
+	private keyClipboardMessage(): void {
+		this.clipboardMessage('keyClipboard');
+	}
+
+	/**
+	 * Clipboard copy message
+	 */
+	private clipboardMessage(path: string): void {
 		this.$toast.success(
-			this.$t('core.ssh.messages.clipboardSuccess').toString()
+			this.$t('core.security.ssh.messages.' + path).toString()
 		);
 	}
+	
 }
 </script>

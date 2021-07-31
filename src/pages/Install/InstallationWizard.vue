@@ -35,7 +35,7 @@ limitations under the License.
 		</CCard>
 		<InstallCreateUser v-if='step === 1' @next-step='next' />
 		<InstallGatewayUser v-if='step === 2' @next-step='next' />
-		<InstallSshKeys v-if='step === 3' @next-step='next' />
+		<SshKeyForm v-if='step === 3' @next-step='next' />
 		<InstallSshStatus v-if='step === 4' @next-step='finishInstall' />
 	</div>
 </template>
@@ -45,8 +45,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
 import InstallCreateUser from './InstallCreateUser.vue';
 import InstallGatewayUser from './InstallGatewayUser.vue';
-import InstallSshKeys from './InstallSshKeys.vue';
 import InstallSshStatus from './InstallSshStatus.vue';
+import SshKeyForm from '../../pages/Core/SshKeyForm.vue';
 
 @Component({
 	components: {
@@ -56,8 +56,8 @@ import InstallSshStatus from './InstallSshStatus.vue';
 		CCardFooter,
 		InstallCreateUser,
 		InstallGatewayUser,
-		InstallSshKeys,
 		InstallSshStatus,
+		SshKeyForm,
 	},
 	metaInfo: {
 		title: 'install.title'
