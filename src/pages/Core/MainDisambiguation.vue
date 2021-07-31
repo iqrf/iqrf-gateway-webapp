@@ -124,12 +124,12 @@ limitations under the License.
 							{{ $t('core.user.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/api-key/'>
+					<CListGroupItem to='/security/'>
 						<header class='list-group-item-heading'>
-							{{ $t('core.apiKey.title') }}
+							{{ $t('core.security.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('core.apiKey.description') }}
+							{{ $t('core.security.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem

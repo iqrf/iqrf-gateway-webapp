@@ -16,9 +16,21 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('core.ssh.add') }}</h1>
+		<h1 v-if='!$route.path.includes("/install")'>
+			{{ $t('core.security.ssh.add') }}
+		</h1>
 		<CCard>
+			<CCardHeader v-if='$route.path.includes("/install")'>
+				{{ $t('core.security.ssh.add') }}
+			</CCardHeader>
 			<CCardBody>
+				<CElementCover
+					v-if='running'
+					:opacity='0.75'
+					style='z-index: 10000'
+				>
+					<CSpinner color='primary' />
+				</CElementCover>
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
@@ -31,12 +43,12 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "core.ssh.errors.descriptionMissing"
+									required: "core.security.ssh.errors.descriptionMissing"
 								}'
 							>
 								<CInput
 									v-model='key.description'
-									:label='$t("core.ssh.form.description")'
+									:label='$t("core.security.ssh.form.description")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -45,13 +57,13 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|ssh'
 								:custom-messages='{
-									required: "core.ssh.errors.keyMissing",
-									ssh: "core.ssh.errors.keyInvalid"
+									required: "core.security.ssh.errors.keyMissing",
+									ssh: "core.security.ssh.errors.keyInvalid"
 								}'
 							>
 								<CInput
 									v-model='key.key'
-									:label='$t("core.ssh.form.key")'
+									:label='$t("core.security.ssh.form.key")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 									@change='updateDescription(idx)'
@@ -62,13 +74,13 @@ limitations under the License.
 								color='danger'
 								@click='removeKey(idx)'
 							>
-								{{ $t('core.ssh.form.remove') }}
+								{{ $t('core.security.ssh.form.remove') }}
 							</CButton> <CButton
 								v-if='idx === (keys.length - 1)'
 								color='success'
 								@click='addKey()'
 							>
-								{{ $t('core.ssh.form.add') }}
+								{{ $t('core.security.ssh.form.add') }}
 							</CButton>
 						</div>
 						<CButton
@@ -77,6 +89,12 @@ limitations under the License.
 							@click='saveKeys'
 						>
 							{{ $t('forms.save') }}
+						</CButton> <CButton
+							v-if='$route.path.includes("/install")'
+							color='secondary'
+							@click='skipStep'
+						>
+							{{ $t('forms.skip') }}
 						</CButton>
 					</CForm>
 				</ValidationObserver>
@@ -112,14 +130,14 @@ import {ISshInput} from '../../interfaces/ssh';
 		ValidationProvider,
 	},
 	metaInfo: {
-		title: 'core.ssh.add',
+		title: 'core.security.ssh.add',
 	},
 })
 
 /**
  *
  */
-export default class SshKeyAdd extends Vue {
+export default class SshKeyForm extends Vue {
 
 	/**
 	 * @var {Array<string>} keyTypes
@@ -135,6 +153,11 @@ export default class SshKeyAdd extends Vue {
 			key: '',
 		},
 	]
+
+	/**
+	 * @var {boolean} running Indicates whether an axios request is being processed
+	 */
+	private running = false
 
 	/**
 	 * Initializes validation rules
@@ -170,22 +193,47 @@ export default class SshKeyAdd extends Vue {
 	 * Advances the install wizard step
 	 */
 	private saveKeys(): void {
-		this.$store.commit('spinner/SHOW');
-		SshService.saveSshKeys(this.keys)
-			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
-				if (response.status === 201) {
-					this.$toast.success(this.$t('core.ssh.messages.saveSuccess').toString());
-				} else if (response.status === 200) {
-					this.$toast.info(
-						this.$t('core.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
-					);
-				}
-				this.$router.push('/ssh-key/');
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.ssh.messages.saveFailed');
-			});
+		if (this.$route.path.includes('/install')) {
+			this.running = true;
+			SshService.saveSshKeys(this.keys)
+				.then((response: AxiosResponse) => {
+					this.running = false;
+					if (response.status === 200) {
+						this.$toast.info(
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+						);
+					}
+					this.$emit('next-step');
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'core.security.ssh.messages.saveFailed');
+					this.running = false;
+				});
+		} else {
+			this.$store.commit('spinner/SHOW');
+			SshService.saveSshKeys(this.keys)
+				.then((response: AxiosResponse) => {
+					this.$store.commit('spinner/HIDE');
+					if (response.status === 201) {
+						this.$toast.success(this.$t('core.security.ssh.messages.saveSuccess').toString());
+					} else if (response.status === 200) {
+						this.$toast.info(
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+						);
+					}
+					this.$router.push('/security/ssh-key/');
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'core.security.ssh.messages.saveFailed');
+				});
+		}
+	}
+
+	/**
+	 * Advance the install wizard
+	 */
+	private skipStep(): void {
+		this.$emit('next-step');
 	}
 
 	/**

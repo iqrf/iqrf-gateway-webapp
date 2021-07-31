@@ -524,18 +524,25 @@ export default class TheSidebar extends Vue {
 						roles: ['power', 'normal'],
 					},
 					{
-						_name: 'CSidebarNavItem',
-						name: this.$t('core.apiKey.title'),
-						to: '/api-key/',
-						icon: {content: cilLockLocked},
-						roles: ['power', 'normal']
-					},
-					{
-						_name: 'CSidebarNavItem',
-						name: this.$t('core.ssh.title'),
-						to: '/ssh-key/',
+						_name: 'CSidebarNavDropdown',
+						name: this.$t('core.security.title'),
+						to: '/security/',
 						icon: {content: cilLockLocked},
 						roles: ['power', 'normal'],
+						items: [
+							{
+								name: this.$t('core.security.apiKey.title'),
+								to: '/security/api-key/',
+								roles: ['power', 'normal']
+							},
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('core.security.ssh.title'),
+								to: '/security/ssh-key/',
+								feature: 'ssh',
+								roles: ['power', 'normal'],
+							},
+						]
 					},
 					{
 						_name: 'CSidebarNavItem',
