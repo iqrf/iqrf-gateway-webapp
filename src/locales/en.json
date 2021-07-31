@@ -1076,6 +1076,7 @@
 					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
 				},
 				"messages": {
+					"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
 					"keyClipboard": "SSH public key has been successfully copied to clipboard.",
 					"hashClipboard": "SSH key hash has been successfully copied to clipboard.",
 					"typeListFailed": "Failed to retrieve list of supported SSH key types.",
@@ -1299,8 +1300,9 @@
 				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
-		"password": {
-			"title": "Change {user} account password",
+		"user": {
+			"title": "Change gateway user password",
+			"user": "Gateway user: ",
 			"messages": {
 				"success": "{user} account password has been successfully changed.",
 				"failure": "Failed to change {user} account password: {error}"
@@ -2139,26 +2141,35 @@
 	"install": {
 		"title": "Installation wizard",
 		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
+		"steps": {
+			"introduction": "Introduction",
+			"webappUser": "Create webapp user",
+			"gatewayUser": "Set gateway user",
+			"sshKey": "Add SSH keys",
+			"sshService": "SSH service"
+		},
 		"createUser": {
 			"title": "Create a new user",
-			"failure": "Failed to create new webapp user: {error}"
+			"failure": "Failed to create new webapp user: {error}",
+			"note": "Create a new Webapp user to access the web interface.",
+			"createButton": "Create user"
 		},
-		"gwPassword": {
-			"title": "Set gateway user password"
+		"gwUser": {
+			"title": "Set gateway user password",
+			"note": "Set gateway user password to access the device via login shell."
 		},
 		"ssh": {
-			"status": {
-				"title": "Set SSH service status",
-				"states": {
-					"enable": "Start SSH service on every boot.",
-					"start": "Start SSH service now, once.",
-					"disable": "Do not start SSH service."
-				},
-				"state": "Service status *",
-				"messages": {
-					"serviceError": "Failed to set service status: {error}",
-					"note": "* SSH service status can be changed later in the Gateway menu."
-				}
+			"title": "Set SSH service status",
+			"states": {
+				"enable": "Start SSH service on every boot.",
+				"start": "Start SSH service now, once.",
+				"disable": "Do not start SSH service."
+			},
+			"state": "Service status *",
+			"messages": {
+				"serviceError": "Failed to set service status: {error}",
+				"note": "Set SSH service status to access the device via SSH.",
+				"reminder": "* SSH service status can be changed later in the Gateway menu."
 			}
 		},
 		"error": {

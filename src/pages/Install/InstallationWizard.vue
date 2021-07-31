@@ -16,16 +16,14 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard
-			v-if='step === 0'
-		>
+		<CCard>
 			<CCardBody>
 				{{ $t('install.invitation') }}
 			</CCardBody>
 			<CCardFooter>
 				<CButton 
 					color='primary'
-					@click='next'
+					@click='nextStep'
 				>
 					{{ $t('install.createUser.title') }}
 				</CButton> <CButton color='primary' to='/install/gateway-info'>
@@ -33,20 +31,13 @@ limitations under the License.
 				</CButton>
 			</CCardFooter>
 		</CCard>
-		<InstallCreateUser v-if='step === 1' @next-step='next' />
-		<InstallGatewayUser v-if='step === 2' @next-step='next' />
-		<SshKeyForm v-if='step === 3' @next-step='next' />
-		<InstallSshStatus v-if='step === 4' @next-step='finishInstall' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
-import InstallCreateUser from './InstallCreateUser.vue';
-import InstallGatewayUser from './InstallGatewayUser.vue';
-import InstallSshStatus from './InstallSshStatus.vue';
-import SshKeyForm from '../../pages/Core/SshKeyForm.vue';
+
 
 @Component({
 	components: {
@@ -54,10 +45,6 @@ import SshKeyForm from '../../pages/Core/SshKeyForm.vue';
 		CCard,
 		CCardBody,
 		CCardFooter,
-		InstallCreateUser,
-		InstallGatewayUser,
-		InstallSshStatus,
-		SshKeyForm,
 	},
 	metaInfo: {
 		title: 'install.title'
@@ -70,25 +57,12 @@ import SshKeyForm from '../../pages/Core/SshKeyForm.vue';
 export default class InstallationWizard extends Vue {
 
 	/**
-	 * @var {number} step Installation wizard step
+	 * Advances the isntall wizard
 	 */
-	private step = 0
-
-	/**
-	 * Conclude installer
-	 */
-	private finishInstall(): void {
-		this.$router.push('/');
-		this.$toast.success(
-			this.$t('install.messages.finished').toString()
-		);
+	private nextStep(): void {
+		this.$emit('next-step');
+		this.$router.push('/install/webapp-user/');
 	}
 
-	/**
-	 * Advance the installation wizard
-	 */
-	private next(): void {
-		this.step++;
-	}
 }
 </script>
