@@ -22,7 +22,11 @@ limitations under the License.
 					<div class='py-5'>
 						<LogoBlue :alt='$t("core.title")' width='100%' height='32pt' />
 					</div>
-					<InstallWizardStepProgress v-if='$route.path !== "/install/gateway-info"' ref='progress' style='justify-content: center;' />
+					<InstallWizardStepProgress 
+						v-if='$route.path !== "/install/gateway-info"'
+						ref='progress'
+						class='progress-position'
+					/>
 					<router-view @next-step='next' />
 				</CCol>
 			</CRow>
@@ -59,3 +63,10 @@ export default class InstallationBase extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.progress-position {
+	justify-content: center !important;
+}
+</style>
