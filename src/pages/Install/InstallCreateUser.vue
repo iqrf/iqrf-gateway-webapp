@@ -28,6 +28,9 @@ limitations under the License.
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='handleSubmit'>
+						<div class='form-group'>
+							{{ $t('install.createUser.note') }}
+						</div>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
@@ -60,7 +63,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<CButton color='primary' type='submit' :disabled='invalid'>
-							{{ $t('forms.add') }}
+							{{ $t('install.createUser.createButton') }}
 						</CButton>
 					</CForm>
 				</ValidationObserver>
@@ -146,13 +149,31 @@ export default class InstallCreateUser extends Vue {
 					.then(async () => {
 						await sleep(500);
 						this.running = false;
-						this.$emit('next-step');
+						this.nextStep();
 					});
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'install.createUser.failure');
 				this.running = false;
 			});
+	}
+
+	/**
+	 * Advances the installation wizard
+	 */
+	private nextStep(): void {
+		if (this.$store.getters['features/isEnabled']('gatewayPass')) {
+			this.$emit('next-step');
+			this.$router.push('/install/gateway-user/');
+		} else if (this.$store.getters['features/isEnabled']('ssh')) {
+			this.$emit('next-step');
+			this.$router.push('/install/ssh-keys/');
+		} else {
+			this.$router.push('/');
+			this.$toast.success(
+				this.$t('install.messages.finished').toString()
+			);
+		}
 	}
 }
 </script>

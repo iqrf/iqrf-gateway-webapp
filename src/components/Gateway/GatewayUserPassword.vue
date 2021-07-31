@@ -17,11 +17,27 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('gateway.password.title', {user: user}) }}
+			{{ $t('gateway.user.title', {user: user}) }}
 		</CCardHeader>
 		<CCardBody>
+			<CElementCover
+				v-if='running'
+				:opacity='0.75'
+				style='z-index: 10000'
+			>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
+					<div
+						v-if='$route.path.includes("/install")'
+						class='form-group'
+					>
+						{{ $t('install.gwUser.note') }}
+					</div>
+					<div class='form-group'>
+						<b>{{ $t('gateway.user.user') }}</b>{{ user }}
+					</div>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -45,12 +61,18 @@ limitations under the License.
 							</template>
 						</CInput>
 					</ValidationProvider>
-					<CButton 
+					<CButton
 						color='primary'
 						:disabled='invalid'
-						@click='handleSubmit'
+						@click='changePassword'
 					>
 						{{ $t('forms.changePassword') }}
+					</CButton> <CButton
+						v-if='$route.path.includes("/install")'
+						color='secondary'
+						@click='nextStep'
+					>
+						{{ $t('forms.skip') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -63,7 +85,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import ServiceControl from '../../pages/Gateway/ServiceControl.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import GatewayService from '../../services/GatewayService';
@@ -71,6 +92,7 @@ import GatewayService from '../../services/GatewayService';
 import {AxiosError} from 'axios';
 import {GatewayPasswordFeature} from '../../services/FeatureService';
 import {extendedErrorToast} from '../../helpers/errorToast';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
@@ -81,10 +103,14 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 		CForm,
 		CInput,
 		FontAwesomeIcon,
-		ServiceControl,
 		ValidationObserver,
 		ValidationProvider,
 	},
+	metaInfo(): MetaInfo {
+		return {
+			title: (this as GatewayUserPassword).pageTitle
+		};
+	}
 })
 
 /**
@@ -108,6 +134,20 @@ export default class GatewayUserPassword extends Vue {
 	private user = 'root'
 
 	/**
+	 * @var {bool} running Indicates whether axios requests are in progress
+	 */
+	private running = false
+
+	/**
+	 * Computes page title depending on the path
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		return this.$route.path.includes('/install') ?
+			this.$t('gateway.user.title').toString(): this.$t('service.ssh.title').toString();
+	}
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -128,23 +168,51 @@ export default class GatewayUserPassword extends Vue {
 	/**
 	 * Sets new gateway root account password
 	 */
-	private handleSubmit(): void {
-		this.$store.commit('spinner/SHOW');
-		GatewayService.setGatewayPassword({password: this.password})
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t(
-						'gateway.password.messages.success',
-						{user: this.user},
-					).toString()
-				);
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'gateway.password.messages.failure',
-				{user: this.user}
-			));
+	private changePassword(): void {
+		if (this.$route.path.includes('/install')) {
+			this.running = true;
+			GatewayService.setGatewayPassword({password: this.password})
+				.then(() => {
+					this.running = false;
+					this.nextStep();
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'gateway.password.messages.failure', {user: this.user});
+					this.running = false;
+				});
+		} else {
+			this.$store.commit('spinner/SHOW');
+			GatewayService.setGatewayPassword({password: this.password})
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t(
+							'gateway.user.messages.success',
+							{user: this.user},
+						).toString()
+					);
+				})
+				.catch((error: AxiosError) => extendedErrorToast(
+					error,
+					'gateway.user.messages.failure',
+					{user: this.user}
+				));
+		}
+	}
+
+	/**
+	 * Advances the install wizard
+	 */
+	private nextStep(): void {
+		if (this.$store.getters['features/isEnabled']('ssh')) {
+			this.$emit('next-step');
+			this.$router.push('/install/ssh-keys/');
+		} else {
+			this.$router.push('/');
+			this.$toast.success(
+				this.$t('install.messages.finished').toString()
+			);
+		}
 	}
 }
 </script>

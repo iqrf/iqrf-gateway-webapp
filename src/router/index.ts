@@ -59,7 +59,10 @@ const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet
 
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
 const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
+const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
+const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
+const InstallSshStatus = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSshStatus.vue');
 const MissingExtension = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingExtension.vue');
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
 const SudoError = () => import(/* webpackChunkName: "install" */ '@/pages/Install/SudoError.vue');
@@ -122,6 +125,22 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallationWizard,
 				path: '',
+			},
+			{
+				component: InstallCreateUser,
+				path: 'webapp-user',
+			},
+			{
+				component: GatewayUserPassword,
+				path: 'gateway-user',
+			},
+			{
+				component: SshKeyForm,
+				path: 'ssh-keys',
+			},
+			{
+				component: InstallSshStatus,
+				path: 'ssh-status',
 			},
 			{
 				component: InstallGatewayInfo,

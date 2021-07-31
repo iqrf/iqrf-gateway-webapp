@@ -96,7 +96,7 @@ import {MetaInfo} from 'vue-meta';
 	},
 	metaInfo(): MetaInfo {
 		return {
-			title: (this as unknown as ApiKeyForm).pageTitle
+			title: (this as ApiKeyForm).pageTitle
 		};
 	}
 })

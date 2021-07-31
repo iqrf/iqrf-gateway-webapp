@@ -22,7 +22,8 @@ limitations under the License.
 					<div class='py-5'>
 						<LogoBlue :alt='$t("core.title")' width='100%' height='32pt' />
 					</div>
-					<router-view />
+					<InstallWizardStepProgress v-if='$route.path !== "/install/gateway-info"' ref='progress' style='justify-content: center;' />
+					<router-view @next-step='next' />
 				</CCol>
 			</CRow>
 		</CContainer>
@@ -32,6 +33,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CCol, CRow} from '@coreui/vue/src';
+import InstallWizardStepProgress from '../../components/Install/InstallWizardStepProgress.vue';
 import LogoBlue from '../../assets/logo-blue.svg';
 
 @Component({
@@ -39,6 +41,7 @@ import LogoBlue from '../../assets/logo-blue.svg';
 		CContainer,
 		CCol,
 		CRow,
+		InstallWizardStepProgress,
 		LogoBlue,
 	},
 })
@@ -47,5 +50,12 @@ import LogoBlue from '../../assets/logo-blue.svg';
  * Installation base page component
  */
 export default class InstallationBase extends Vue {
+
+	/**
+	 * Advance the installation wizard
+	 */
+	private next(): void {
+		(this.$refs.progress as InstallWizardStepProgress).nextStep();
+	}
 }
 </script>

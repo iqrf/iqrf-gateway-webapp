@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CCard>
-		<CCardHeader>{{ $t('install.ssh.status.title') }}</CCardHeader>
+		<CCardHeader>{{ $t('install.ssh.title') }}</CCardHeader>
 		<CCardBody>
 			<CElementCover
 				v-if='running'
@@ -26,22 +26,25 @@ limitations under the License.
 				<CSpinner color='primary' />
 			</CElementCover>
 			<CForm>
+				<div class='form-group'>
+					{{ $t('install.ssh.messages.note') }}
+				</div>
 				<CInputRadioGroup
 					:checked.sync='status'
 					:options='options'
-					:label='$t("install.ssh.status.state")'
+					:label='$t("install.ssh.state")'
 				/>
 				<p>
-					<i>{{ $t('install.ssh.status.messages.note') }}</i>
+					<i>{{ $t('install.ssh.messages.reminder') }}</i>
 				</p>
 				<CButton
 					color='primary'
-					@click='submitStep(true)'
+					@click='setService'
 				>
 					{{ $t('forms.save') }}
 				</CButton> <CButton
 					color='secondary'
-					@click='submitStep(false)'
+					@click='nextStep'
 				>
 					{{ $t('forms.skip') }}
 				</CButton>
@@ -71,7 +74,7 @@ import {IOption} from '../../interfaces/coreui';
 		CSelect,
 	},
 	metaInfo: {
-		title: 'install.ssh.status.title'
+		title: 'install.ssh.title'
 	}
 })
 
@@ -93,40 +96,35 @@ export default class InstallSshStatus extends Vue {
 	private options: Array<IOption> = [
 		{
 			value: SSHStatus.ENABLE,
-			label: this.$t('install.ssh.status.states.enable').toString(),
+			label: this.$t('install.ssh.states.enable').toString(),
 		},
 		{
 			value: SSHStatus.START,
-			label: this.$t('install.ssh.status.states.start').toString(),
+			label: this.$t('install.ssh.states.start').toString(),
 		},
 		{
 			value: SSHStatus.DISABLE,
-			label: this.$t('install.ssh.status.states.disable').toString(),
+			label: this.$t('install.ssh.states.disable').toString(),
 		}
 	]
 
 	/**
 	 * Advances the install wizard step
-	 * @param {boolean} setStatus Change ssh status?
 	 */
-	private submitStep(setStatus: boolean): void {
-		if (setStatus) {
-			this.running = true;
-			if (this.status === SSHStatus.ENABLE) {
-				ServiceService.enable('ssh')
-					.then(this.handleSuccess)
-					.catch(this.handleFailure);
-			} else if (this.status === SSHStatus.START) {
-				ServiceService.start('ssh')
-					.then(this.handleSuccess)
-					.catch(this.handleFailure);
-			} else {
-				ServiceService.disable('ssh')
-					.then(this.handleSuccess)
-					.catch(this.handleFailure);
-			}
+	private setService(): void {
+		this.running = true;
+		if (this.status === SSHStatus.ENABLE) {
+			ServiceService.enable('ssh')
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
+		} else if (this.status === SSHStatus.START) {
+			ServiceService.start('ssh')
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
-			this.$emit('next-step');
+			ServiceService.disable('ssh')
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
@@ -135,15 +133,25 @@ export default class InstallSshStatus extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.running = false;
-		this.$emit('next-step');
+		this.nextStep();
 	}
 
 	/**
 	 * Handles service status change failure
 	 */
 	private handleFailure(error: AxiosError): void {
-		extendedErrorToast(error, 'install.ssh.status.messages.serviceError');
+		extendedErrorToast(error, 'install.ssh.messages.serviceError');
 		this.running = false;
+	}
+
+	/**
+	 * Finishes the install wizard
+	 */
+	private nextStep(): void {
+		this.$router.push('/');
+		this.$toast.success(
+			this.$t('install.messages.finished').toString()
+		);
 	}
 }
 </script>
