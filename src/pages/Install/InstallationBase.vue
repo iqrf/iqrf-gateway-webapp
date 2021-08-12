@@ -19,14 +19,12 @@ limitations under the License.
 		<CContainer>
 			<CRow class='justify-content-center'>
 				<CCol lg='10'>
-					<div class='py-5'>
-						<LogoBlue :alt='$t("core.title")' width='100%' height='32pt' />
+					<div class='logo'>
+						<LogoBlue :alt='$t("core.title")' />
 					</div>
-					<InstallWizardStepProgress 
-						v-if='$route.path !== "/install/gateway-info"'
-						ref='progress'
-						class='progress-position'
-					/>
+					<CCard v-if='$route.path !== "/install/gateway-info"'>
+						<InstallWizardStepProgress ref='progress' class='progress-position' />
+					</CCard>
 					<router-view @next-step='next' />
 				</CCol>
 			</CRow>
@@ -64,9 +62,20 @@ export default class InstallationBase extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
+.logo {
+	padding-bottom: 3rem;
+	padding-top: 3rem;
+
+	svg {
+		height: 32pt;
+		width: 100%;
+	}
+}
 
 .progress-position {
 	justify-content: center !important;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 </style>
