@@ -21,7 +21,7 @@ limitations under the License.
 				{{ $t('install.invitation') }}
 			</CCardBody>
 			<CCardFooter>
-				<CButton 
+				<CButton
 					color='primary'
 					@click='nextStep'
 				>
@@ -57,7 +57,7 @@ import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
 export default class InstallationWizard extends Vue {
 
 	/**
-	 * Advances the isntall wizard
+	 * Advances the install wizard
 	 */
 	private nextStep(): void {
 		this.$emit('next-step');

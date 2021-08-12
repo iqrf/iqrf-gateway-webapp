@@ -25,7 +25,7 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @var {number} step Step number
 	 */
 	private step = 0
-	
+
 	/**
 	 * @var {Array<string>} steps Array of install wizard steps
 	 */
@@ -37,33 +37,44 @@ export default class InstallWizardStepProgress extends Vue {
 	private colorConfig = {
 		progress__bubble: {
 			active: {
-				backgroundColor: '#2eb85c',
-				borderColor: '#2eb85c',
+				backgroundColor: '#337AB7',
+				borderColor: '#337AB7',
 				color: '#fff',
 			},
 			completed: {
-				backgroundColor: '#337ab7',
-				borderColor: '#337ab7',
+				backgroundColor: '#79a8d0',
+				borderColor: '#79a8d0',
 				color: '#fff',
 			},
 			inactive: {
-				backgroundColor: '#ced2d8',
-				borderColor: '#ced2d8',
-				color: '#4f5d73'
+				backgroundColor: '#a2a2a2',
+				borderColor: '#a2a2a2',
+				color: '#fff'
 			}
+		},
+		progress__bridge: {
+			active: {
+				backgroundColor: '#337AB7',
+			},
+			completed: {
+				backgroundColor: '#79a8d0',
+			},
+			inactive: {
+				backgroundColor: '#a2a2a2',
+			},
 		},
 		progress__label: {
 			active: {
-				color: '#e74c3c',
+				color: '#337AB7',
 			},
 			completed: {
-				color: '#337ab7',
+				color: '#79a8d0',
 			},
 			inactive: {
-				color: '#4f5d73',
+				color: '#a2a2a2',
 			},
 		}
-	}
+	};
 
 	/**
 	 * Builds steps for installation wizard
