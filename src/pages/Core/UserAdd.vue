@@ -36,6 +36,20 @@ limitations under the License.
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{ valid, touched, errors }'
+						rules='email'
+						:custom-messages='{
+							email: "forms.errors.emailFormat",
+						}'
+					>
+						<CInput
+							v-model='email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
 							required: "forms.errors.password",
@@ -103,7 +117,7 @@ import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
+import {email, required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 
 import {AxiosError} from 'axios';
@@ -127,6 +141,12 @@ import {AxiosError} from 'axios';
  * User manager form to add a new user
  */
 export default class UserAdd extends Vue {
+
+	/**
+	 * @var {string} email User's email
+	 */
+	private email= ''
+
 	/**
 	 * @var {string} language User's preferred language
 	 */
@@ -151,6 +171,7 @@ export default class UserAdd extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
+		extend('email', email);
 		extend('required', required);
 	}
 
@@ -161,7 +182,7 @@ export default class UserAdd extends Vue {
 		const language = this.language === '' ? 'en' : this.language;
 		const role = this.role === '' ? 'normal' : this.role;
 		this.$store.commit('spinner/SHOW');
-		UserService.add(this.username, this.password, language, role)
+		UserService.add(this.username, this.email, this.password, language, role)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

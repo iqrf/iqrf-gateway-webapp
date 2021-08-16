@@ -33,6 +33,10 @@ nettrine.dbal:
 		path: %appDir%/config/database.db
 		types:
 			ip: Darsyn\IP\Doctrine\MultiType
+			uuid: Ramsey\Uuid\Doctrine\UuidType
+			uuid_binary_ordered_time:
+				class: Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType
+				commented: false
 	debug:
 		panel: %debugMode%
 

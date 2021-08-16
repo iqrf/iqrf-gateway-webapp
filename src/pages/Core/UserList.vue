@@ -117,7 +117,7 @@ limitations under the License.
 					@click='deleteUser = null'
 				>
 					{{ $t('forms.cancel') }}
-				</CButton> 
+				</CButton>
 			</template>
 		</CModal>
 	</div>
@@ -190,7 +190,7 @@ export default class UserList extends Vue {
 	 * @var {Array<User>} users Array of user objects
 	 */
 	private users: Array<IUser> = []
-	
+
 	/**
 	 * Updates table fields by user rolr
 	 */
@@ -200,6 +200,10 @@ export default class UserList extends Vue {
 				{
 					key: 'username',
 					label: this.$t('forms.fields.username'),
+				},
+				{
+					key: 'email',
+					label: this.$t('forms.fields.email'),
 				},
 				{
 					key: 'actions',
@@ -361,7 +365,7 @@ export default class UserList extends Vue {
 		this.getUsers().then(() => {
 			this.$toast.success(
 				this.$t(
-					'core.user.messages.deleteSuccess', 
+					'core.user.messages.deleteSuccess',
 					{user: user.username}
 				).toString()
 			);

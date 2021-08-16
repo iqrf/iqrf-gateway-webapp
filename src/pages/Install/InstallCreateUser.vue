@@ -47,6 +47,21 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='email'
+							:custom-messages='{
+								email: "forms.errors.emailFormat",
+							}'
+						>
+							<CInput
+								id='email'
+								v-model='email'
+								:label='$t("forms.fields.email")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
 							v-slot='{valid, touched, errors}'
 							rules='required'
 							:custom-messages='{
@@ -80,7 +95,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import UserService from '../../services/UserService';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
+import {email, required} from 'vee-validate/dist/rules';
 import {sleep} from '../../helpers/sleep';
 import {UserCredentials} from '../../services/AuthenticationService';
 
@@ -104,6 +119,11 @@ import {AxiosError} from 'axios';
  * Create user
  */
 export default class InstallCreateUser extends Vue {
+
+	/**
+	 * Email
+	 */
+	private email = '';
 
 	/**
 	 * User name
@@ -134,6 +154,7 @@ export default class InstallCreateUser extends Vue {
 	 * On component creation event handler
 	 */
 	public created(): void {
+		extend('email', email);
 		extend('required', required);
 	}
 
@@ -142,7 +163,7 @@ export default class InstallCreateUser extends Vue {
 	 */
 	private handleSubmit(): void {
 		this.running = true;
-		UserService.add(this.username, this.password, this.language, this.role)
+		UserService.add(this.username, this.email, this.password, this.language, this.role)
 			.then(() => {
 				const credentials = new UserCredentials(this.username, this.password);
 				this.$store.dispatch('user/signIn', credentials)

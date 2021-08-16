@@ -36,6 +36,20 @@ limitations under the License.
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
+						rules='email'
+						:custom-messages='{
+							email: "forms.errors.emailFormat",
+						}'
+					>
+						<CInput
+							v-model='email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "core.user.errors.role",
@@ -122,7 +136,7 @@ import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
+import {email, required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -146,6 +160,12 @@ import {AxiosError, AxiosResponse} from 'axios';
  * User manager form to edit an existing user
  */
 export default class UserEdit extends Vue {
+
+	/**
+	 * @var {string|null} email User's email
+	 */
+	private email: string|null = null
+
 	/**
 	 * @var {string} language User's preferred language
 	 */
@@ -176,7 +196,6 @@ export default class UserEdit extends Vue {
 	 */
 	private username = ''
 
-
 	/**
 	 * @property {number} userId User id
 	 */
@@ -186,6 +205,7 @@ export default class UserEdit extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
+		extend('email', email);
 		extend('required', required);
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
@@ -193,6 +213,7 @@ export default class UserEdit extends Vue {
 				this.username = response.data.username;
 				this.language = response.data.language;
 				this.role = response.data.role;
+				this.email = response.data.email;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -229,7 +250,12 @@ export default class UserEdit extends Vue {
 	 * Updates user information
 	 */
 	private performEdit(): Promise<void> {
-		return UserService.edit(this.userId, {username: this.username, language: this.language, role: this.role})
+		return UserService.edit(this.userId, {
+			email: this.email !== '' ? this.email : null,
+			username: this.username,
+			language: this.language,
+			role: this.role
+		})
 			.then(() => {
 				this.$toast.success(
 					this.$t(
@@ -250,7 +276,10 @@ export default class UserEdit extends Vue {
 	private signOut(): void {
 		this.$store.dispatch('user/signOut')
 			.then(() => {
-				this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
+				this.$router.push({
+					path: '/sign/in',
+					query: {redirect: this.$route.path}
+				});
 			});
 	}
 }

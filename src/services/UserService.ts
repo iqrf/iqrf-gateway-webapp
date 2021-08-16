@@ -38,13 +38,15 @@ class UserService {
 	/**
 	 * Adds the new user
 	 * @param username Username
+	 * @param email Email
 	 * @param password Password
 	 * @param language Language
 	 * @param role Role
 	 */
-	add(username: string, password: string, language: string, role: string): Promise<AxiosResponse> {
+	add(username: string, email: string, password: string, language: string, role: string): Promise<AxiosResponse> {
 		const body = {
 			username: username,
+			email: email !== '' ? email : null,
 			password: password,
 			language: language,
 			role: role,
@@ -89,6 +91,14 @@ class UserService {
 	 */
 	list(): Promise<AxiosResponse> {
 		return axios.get('users', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Verifies the user
+	 * @param uuid User verification UUID
+	 */
+	verify(uuid: string): Promise<AxiosResponse> {
+		return axios.get('user/verify/' + uuid);
 	}
 }
 

@@ -86,7 +86,7 @@ class UserAddCommand extends Command {
 		$pass = $this->askPassword($input, $output);
 		$role = $this->askRole($input, $output);
 		$lang = $this->askLanguage($input, $output);
-		$user = new User($name, $pass, $role, $lang);
+		$user = new User($name, null, $pass, $role, $lang);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return 0;

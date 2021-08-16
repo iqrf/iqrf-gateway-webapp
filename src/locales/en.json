@@ -119,6 +119,7 @@
 		"fields": {
 			"address": "Address",
 			"id": "ID",
+			"email": "E-mail address",
 			"username": "Username",
 			"password": "Password",
 			"certificate": "Certificate",
@@ -138,6 +139,8 @@
 			"coordinator": "Coordinator"
 		},
 		"errors": {
+			"email": "Please enter the e-mail address.",
+			"emailFormat": "Invalid format of the e-mail address.",
 			"username": "Please enter the username.",
 			"password": "Please enter the password.",
 			"clientId": "Please enter the client ID.",

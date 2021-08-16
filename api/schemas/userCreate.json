@@ -6,6 +6,7 @@
 	"additionalProperties": false,
 	"required": [
 		"username",
+		"email",
 		"password",
 		"language",
 		"role"
@@ -17,6 +18,20 @@
 			"title": "Username",
 			"minLength": 1,
 			"example": "iqrf"
+		},
+		"email": {
+			"$id": "#/properties/email",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "idn-email"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Email",
+			"example": "iqrf@example.org"
 		},
 		"password": {
 			"$id": "#/properties/password",

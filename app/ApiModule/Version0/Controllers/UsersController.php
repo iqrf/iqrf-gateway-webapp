@@ -33,8 +33,10 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
+use App\Models\Mail\EmailVerificationMailSender;
 
 /**
  * User manager API controller
@@ -54,13 +56,20 @@ class UsersController extends BaseController {
 	private $repository;
 
 	/**
+	 * @var EmailVerificationMailSender Email verification mail sender
+	 */
+	private $sender;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
+	 * @param EmailVerificationMailSender $sender Email verification sender
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
+	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $sender, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
+		$this->sender = $sender;
 		parent::__construct($validator);
 	}
 
@@ -110,7 +119,7 @@ class UsersController extends BaseController {
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '409':
-	 *          description: Username is already used
+	 *          description: E-mail address or username is already used
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -122,15 +131,27 @@ class UsersController extends BaseController {
 		try {
 			$user = $this->repository->findOneByUserName($json['username']);
 			if ($user !== null) {
-				throw new ClientErrorException('User already exists', ApiResponse::S409_CONFLICT);
+				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
-			$user = new User($json['username'], $json['password'], $json['role'], $json['language']);
+			$email = $json['email'] ?? null;
+			if ($email !== null) {
+				$user = $this->repository->findOneByEmail($email);
+				if ($user !== null) {
+					throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
+				}
+			}
+			$user = new User($json['username'], $email, $json['password'], $json['role'], $json['language']);
+			$verification = new UserVerification($user);
 			$this->entityManager->persist($user);
+			$this->entityManager->persist($verification);
 			$this->entityManager->flush();
 		} catch (InvalidUserLanguageException $e) {
 			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidUserRoleException $e) {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
+		}
+		if ($user->getEmail() !== null) {
+			$this->sendVerificationEmail($request, $verification);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
 			->withHeader('Location', '/api/v0/users/' . $user->getId())
@@ -230,6 +251,7 @@ class UsersController extends BaseController {
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
+		$sendVerification = false;
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
@@ -239,7 +261,7 @@ class UsersController extends BaseController {
 		if (array_key_exists('username', $json)) {
 			$userWithName = $this->repository->findOneByUserName($json['username']);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {
-				throw new ClientErrorException('User already exists', ApiResponse::S409_CONFLICT);
+				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user->setUserName($json['username']);
 		}
@@ -257,10 +279,40 @@ class UsersController extends BaseController {
 				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
+		if (array_key_exists('email', $json)) {
+			$email = $json['email'];
+			if ($email !== null) {
+				$userWithEmail = $this->repository->findOneByEmail($email);
+				if ($userWithEmail !== null && $userWithEmail->getId() !== $id) {
+					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
+				}
+				$sendVerification = true;
+			}
+			$user->setEmail($email);
+			if ($user->getState() === User::STATE_VERIFIED) {
+				$user->setState(User::STATE_UNVERIFIED);
+			}
+			$user->clearVerifications();
+		}
 		$this->entityManager->persist($user);
+		if ($sendVerification) {
+			$verification = new UserVerification($user);
+			$this->entityManager->persist($verification);
+			$this->sendVerificationEmail($request, $verification);
+		}
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
 			->writeBody('Workaround');
+	}
+
+	/**
+	 * Sends user verification e-mail
+	 * @param ApiRequest $request API request
+	 * @param UserVerification $verification User verification
+	 */
+	private function sendVerificationEmail(ApiRequest $request, UserVerification $verification): void {
+		$baseUrl = explode('/api/v0/users/', (string) $request->getUri(), 2)[0];
+		$this->sender->send($verification, $baseUrl);
 	}
 
 }
