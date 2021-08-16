@@ -69,7 +69,7 @@ final class UserTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new User(self::USERNAME, self::PASSWORD, self::ROLE, self::LANGUAGE);
+		$this->entity = new User(self::USERNAME, null, self::PASSWORD, self::ROLE, self::LANGUAGE);
 	}
 
 	/**
@@ -179,6 +179,7 @@ final class UserTest extends TestCase {
 		$expected = [
 			'id' => null,
 			'username' => self::USERNAME,
+			'email' => null,
 			'role' => self::ROLE,
 			'language' => self::LANGUAGE,
 		];

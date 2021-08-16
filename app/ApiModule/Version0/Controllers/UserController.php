@@ -23,6 +23,8 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -31,8 +33,10 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
+use App\Models\Mail\PasswordRecoveryMailSender;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Throwable;
@@ -56,14 +60,21 @@ class UserController extends BaseController {
 	private $entityManager;
 
 	/**
+	 * @var PasswordRecoveryMailSender Forgotten password recovery e-mail sender
+	 */
+	private $passwordRecoverySender;
+
+	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param PasswordRecoveryMailSender $sender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, RestApiSchemaValidator $validator) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $sender) {
 		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
+		$this->passwordRecoverySender = $sender;
 		parent::__construct($validator);
 	}
 
@@ -132,6 +143,42 @@ class UserController extends BaseController {
 	}
 
 	/**
+	 * @Path("/password/recovery")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Requests the password recovery
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/PasswordRecovery'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: User not found
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('passwordRecovery', $request);
+		$body = $request->getJsonBody();
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($body['username']);
+		if ($user === null) {
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		}
+		$recovery = new PasswordRecovery($user);
+		$this->entityManager->persist($recovery);
+		$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
+		$this->passwordRecoverySender->send($recovery, $baseUrl);
+		$this->entityManager->flush();
+		return $response->writeBody('Workaround');
+	}
+
+	/**
 	 * @Path("/signIn")
 	 * @Method("POST")
 	 * @OpenApi("
@@ -191,6 +238,40 @@ class UserController extends BaseController {
 		$json = $user->jsonSerialize();
 		$json['token'] = $token->toString();
 		return $response->writeJsonBody($json);
+	}
+
+	/**
+	 * @Path("/verify/{uuid}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Verifies the user
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="uuid", type="integer", description="User verification UUID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$repository = $this->entityManager->getUserVerificationRepository();
+		$verification = $repository->findOneByUuid($request->getParameter('uuid'));
+		if ($verification === null) {
+			throw new ClientErrorException('User verification not found', ApiResponse::S404_NOT_FOUND);
+		}
+		$user = $verification->getUser();
+		if ($user->getState() === User::STATE_UNVERIFIED) {
+			$user->setState(User::STATE_VERIFIED);
+			$this->entityManager->persist($user);
+		}
+		$this->entityManager->remove($verification);
+		$this->entityManager->flush();
+		return $response;
 	}
 
 }

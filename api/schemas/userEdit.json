@@ -12,18 +12,37 @@
 			"minLength": 1,
 			"example": "iqrf"
 		},
+		"email": {
+			"$id": "#/properties/email",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "idn-email"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Email",
+			"example": "iqrf@example.org"
+		},
 		"language": {
 			"$id": "#/properties/language",
 			"type": "string",
 			"title": "Language",
-			"enum": ["en"],
+			"enum": [
+				"en"
+			],
 			"example": "en"
 		},
 		"role": {
 			"$id": "#/properties/role",
 			"type": "string",
 			"title": "Role",
-			"enum": ["normal", "power"],
+			"enum": [
+				"normal",
+				"power"
+			],
 			"example": "power"
 		}
 	}

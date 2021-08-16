@@ -23,8 +23,10 @@ namespace App\Models\Database;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\Entities\WireguardInterface;
 use App\Models\Database\Entities\WireguardInterfaceIpv4;
 use App\Models\Database\Entities\WireguardInterfaceIpv6;
@@ -33,8 +35,10 @@ use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
+use App\Models\Database\Repositories\PasswordRecoveryRepository;
 use App\Models\Database\Repositories\SshKeyRepository;
 use App\Models\Database\Repositories\UserRepository;
+use App\Models\Database\Repositories\UserVerificationRepository;
 use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
 use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
@@ -67,6 +71,16 @@ trait TRepositories {
 	}
 
 	/**
+	 * Returns the password recovery repository
+	 * @return PasswordRecoveryRepository Password recovery repository
+	 */
+	public function getPasswordRecoveryRepository(): PasswordRecoveryRepository {
+		$repository = $this->getRepository(PasswordRecovery::class);
+		assert($repository instanceof PasswordRecoveryRepository);
+		return $repository;
+	}
+
+	/**
 	 * Returns the mapping repository
 	 * @return MappingRepository Mapping repository
 	 */
@@ -93,6 +107,16 @@ trait TRepositories {
 	public function getUserRepository(): UserRepository {
 		$repository = $this->getRepository(User::class);
 		assert($repository instanceof UserRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the user verification repository
+	 * @return UserVerificationRepository User verification repository
+	 */
+	public function getUserVerificationRepository(): UserVerificationRepository {
+		$repository = $this->getRepository(UserVerification::class);
+		assert($repository instanceof UserVerificationRepository);
 		return $repository;
 	}
 

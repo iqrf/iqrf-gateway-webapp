@@ -76,5 +76,6 @@ includes:
 	- console.neon
 	- doctrine.neon
 	- guzzle.neon
+	- mailer.neon
 	- monolog.neon
 	- translation.neon

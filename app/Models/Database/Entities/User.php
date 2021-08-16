@@ -22,7 +22,9 @@ namespace App\Models\Database\Entities;
 
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
+use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use function in_array;
@@ -76,10 +78,45 @@ class User implements JsonSerializable {
 	public const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
 
 	/**
+	 * Account state: unverified e-mail address
+	 */
+	public const STATE_UNVERIFIED = 0;
+
+	/**
+	 * Account state: verified e-mail address
+	 */
+	public const STATE_VERIFIED = 1;
+
+	/**
+	 * Account state: blocked account
+	 */
+	public const STATE_BLOCKED = 2;
+
+	/**
+	 * Default account state
+	 */
+	public const STATE_DEFAULT = self::STATE_UNVERIFIED;
+
+	/**
+	 * Supported account states
+	 */
+	public const STATES = [
+		self::STATE_UNVERIFIED,
+		self::STATE_VERIFIED,
+		self::STATE_BLOCKED,
+	];
+
+	/**
 	 * @var string User name
 	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
 	private $username;
+
+	/**
+	 * @var string|null User's email
+	 * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+	 */
+	private $email;
 
 	/**
 	 * @var string Password hash
@@ -94,23 +131,39 @@ class User implements JsonSerializable {
 	private $role;
 
 	/**
+	 * @var int Account state
+	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
+	 */
+	private $state;
+
+	/**
 	 * @var string User language
 	 * @ORM\Column(type="string", length=7)
 	 */
 	private $language;
 
 	/**
+	 * @var Collection<UserVerification> User verifications
+	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
+	 */
+	private $verifications;
+
+	/**
 	 * Constructor
 	 * @param string $username User name
+	 * @param string|null $email User's email
 	 * @param string $password User password
 	 * @param string|null $role User role
 	 * @param string|null $language User language
+	 * @param int|null $state Account state
 	 */
-	public function __construct(string $username, string $password, ?string $role = null, ?string $language = null) {
+	public function __construct(string $username, ?string $email, string $password, ?string $role = null, ?string $language = null, ?int $state = null) {
 		$this->username = $username;
+		$this->email = $email;
 		$this->setPassword($password);
 		$this->setRole($role ?? self::ROLE_DEFAULT);
 		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
+		$this->setState($state ?? self::STATE_DEFAULT);
 	}
 
 	/**
@@ -119,6 +172,14 @@ class User implements JsonSerializable {
 	 */
 	public function getUserName(): string {
 		return $this->username;
+	}
+
+	/**
+	 * Returns the user's email
+	 * @return string|null User's email
+	 */
+	public function getEmail(): ?string {
+		return $this->email;
 	}
 
 	/**
@@ -154,6 +215,37 @@ class User implements JsonSerializable {
 	}
 
 	/**
+	 * Returns the user's account state
+	 * @return int User's account state
+	 */
+	public function getState(): int {
+		return $this->state;
+	}
+
+	/**
+	 * Returns all e-mail address verification
+	 * @return Collection<UserVerification> E-mail address verifications
+	 */
+	public function getVerifications(): Collection {
+		return $this->verifications;
+	}
+
+	/**
+	 * Clears all e-mail address verifications
+	 */
+	public function clearVerifications(): void {
+		$this->verifications->clear();
+	}
+
+	/**
+	 * Sets the user's email
+	 * @param string|null $email User's email
+	 */
+	public function setEmail(?string $email): void {
+		$this->email = $email;
+	}
+
+	/**
 	 * Sets the user's password
 	 * @param string $password User's password
 	 */
@@ -170,6 +262,18 @@ class User implements JsonSerializable {
 			throw new InvalidUserRoleException();
 		}
 		$this->role = $role;
+	}
+
+	/**
+	 * Sets the user's state
+	 * @param int $state User's state
+	 * @throws InvalidUserStateException
+	 */
+	public function setState(int $state): void {
+		if (!in_array($state, self::STATES, true)) {
+			throw new InvalidUserStateException();
+		}
+		$this->state = $state;
 	}
 
 	/**
@@ -194,14 +298,16 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the JSON serialized User entity
-	 * @return array<string, int|string> JSON serialized User entity
+	 * @return array<string, int|string|null> JSON serialized User entity
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->id,
 			'username' => $this->username,
+			'email' => $this->email,
 			'role' => $this->role,
 			'language' => $this->language,
+			'state' => $this->state,
 		];
 	}
 

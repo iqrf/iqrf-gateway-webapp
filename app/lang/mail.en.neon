@@ -1,0 +1,9 @@
+emailVerification:
+	title: Email address verification
+	greeting: 'Dear %username%,'
+	body: 'in order to complete your user profile at IQRF Gateway %hostname%, you need to verify your e-mail address by clicking on the link bellow.'
+	footer:
+		'''
+			Best regards,
+			IQRF Gateway %hostname%
+		'''

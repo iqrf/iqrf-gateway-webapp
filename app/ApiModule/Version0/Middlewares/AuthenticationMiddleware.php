@@ -29,6 +29,7 @@ use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -52,6 +53,7 @@ class AuthenticationMiddleware implements IMiddleware {
 		'/api/v0/installation',
 		'/api/v0/features',
 		'/api/v0/openapi',
+		'/api/v0/user/password/recovery',
 		'/api/v0/user/signIn',
 	];
 
@@ -122,6 +124,12 @@ class AuthenticationMiddleware implements IMiddleware {
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
 		$requestUrl = rtrim($request->getUri()->getPath(), '/');
 		if (in_array($requestUrl, self::WHITELISTED_PATHS, true)) {
+			return true;
+		}
+		if (Strings::match($requestUrl, '~^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$~') !== null) {
+			return true;
+		}
+		if (Strings::match($requestUrl, '~^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$~') !== null) {
 			return true;
 		}
 		return ($this->entityManager->getUserRepository()->count([]) === 0) &&
