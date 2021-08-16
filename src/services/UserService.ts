@@ -100,6 +100,37 @@ class UserService {
 	verify(uuid: string): Promise<AxiosResponse> {
 		return axios.get('user/verify/' + uuid);
 	}
+
+	/**
+	 * Requests a password recovery
+	 * @param {string} user User name
+	 */
+	requestPasswordRecovery(user: string): Promise<AxiosResponse> {
+		const body = {
+			username: user,
+		};
+		return axios.post('user/password/recovery', body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Sends a password change email
+	 * @param {string} uuid Password recovery request UUID
+	 * @param {string} password New password
+	 */
+	confirmPasswordRecovery(uuid: string, password: string): Promise<AxiosResponse> {
+		const body = {
+			password: password
+		};
+		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Requests a verification email re-send
+	 * @param {number} id User ID
+	 */
+	resendVerificationEmail(id: number): Promise<AxiosResponse> {
+		return axios.post('user/' + id + '/resendVerification', null, {headers: authorizationHeader()});
+	}
 }
 
 export default new UserService();

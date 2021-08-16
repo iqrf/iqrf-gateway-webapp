@@ -15,75 +15,73 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div class='c-app flex-row align-items-center'>
-		<CContainer>
-			<CRow class='justify-content-center'>
-				<CCol md='8'>
-					<div class='py-5'>
-						<LogoBlue :alt='$t("core.title")' width='100%' height='32pt' />
-					</div>
-					<CCard class='p-4'>
-						<CCardBody>
-							<ValidationObserver v-slot='{ invalid }'>
-								<CForm @submit.prevent='handleSubmit'>
-									<h1 class='text-center'>
-										{{ $t('core.sign.in.title') }}
-									</h1>
-									<ValidationProvider
-										v-slot='{ valid, touched, errors }'
-										rules='required'
-										:custom-messages='{required: "core.sign.in.messages.username"}'
-									>
-										<CInput
-											id='username'
-											v-model='username'
-											:label='$t("forms.fields.username")'
-											:placeholder='$t("forms.fields.username")'
-											autocomplete='username'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										>
-											<template #prepend-content>
-												<CIcon :content='icons.user' />
-											</template>
-										</CInput>
-									</ValidationProvider>
-									<ValidationProvider
-										v-slot='{ valid, touched, errors }'
-										rules='required'
-										:custom-messages='{required: "core.sign.in.messages.password"}'
-									>
-										<CInput
-											id='password'
-											v-model='password'
-											:label='$t("forms.fields.password")'
-											:placeholder='$t("forms.fields.password")'
-											type='password'
-											autocomplete='password'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										>
-											<template #prepend-content>
-												<CIcon :content='icons.lock' />
-											</template>
-										</CInput>
-									</ValidationProvider>
-									<CButton color='primary' type='submit' :disabled='invalid'>
-										{{ $t('core.sign.in.send') }}
-									</CButton>
-								</CForm>
-							</ValidationObserver>
-						</CCardBody>
-					</CCard>
-				</CCol>
-			</CRow>
-		</CContainer>
-	</div>
+	<TheWizard>
+		<CCard class='p-4'>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='handleSubmit'>
+						<h1 class='text-center'>
+							{{ $t('core.sign.in.title') }}
+						</h1>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{required: "core.sign.in.messages.username"}'
+						>
+							<CInput
+								id='username'
+								v-model='username'
+								:label='$t("forms.fields.username")'
+								:placeholder='$t("forms.fields.username")'
+								autocomplete='username'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							>
+								<template #prepend-content>
+									<CIcon :content='icons.user' />
+								</template>
+							</CInput>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{required: "core.sign.in.messages.password"}'
+						>
+							<CInput
+								id='password'
+								v-model='password'
+								:label='$t("forms.fields.password")'
+								:placeholder='$t("forms.fields.password")'
+								type='password'
+								autocomplete='password'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							>
+								<template #prepend-content>
+									<CIcon :content='icons.lock' />
+								</template>
+							</CInput>
+						</ValidationProvider>
+						<div style='display: flex; justify-content: space-between;'>
+							<CButton color='primary' type='submit' :disabled='invalid'>
+								{{ $t('core.sign.in.send') }}
+							</CButton>
+							<CLink
+								to='/account/recovery'
+							>
+								Forgot password?
+							</CLink>
+						</div>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</TheWizard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue/src';
+import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -91,6 +89,7 @@ import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
 import {Dictionary} from 'vue-router/types/router';
+import TheWizard from '../../components/TheWizard.vue';
 
 @Component({
 	components: {
@@ -101,8 +100,10 @@ import {Dictionary} from 'vue-router/types/router';
 		CForm,
 		CIcon,
 		CInput,
+		CLink,
 		CRow,
 		LogoBlue,
+		TheWizard,
 		ValidationObserver,
 		ValidationProvider,
 	},

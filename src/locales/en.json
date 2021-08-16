@@ -1,4 +1,19 @@
 {
+	"account": {
+		"recovery": {
+			"title": "Account recovery",
+			"changePassword": "Change password",
+			"changePrompt": "Please enter new password.",
+			"requestPrompt": "Please enter username and a password recovery email will be sent to the associated address.",
+			"sendEmail": "Send email",
+			"messages": {
+				"changeFailed": "Failed to change password: {error}",
+				"changeSuccess": "Password has been successfully changed.",
+				"sendFailed": "Failed to send password recovery email: {error}",
+				"sendSuccess": "An email with instructions to reset your password was sent to the address associated with the account."
+			}
+		}
+	},
 	"cloud": {
 		"title": "Clouds",
 		"description": "Add a connection into cloud services.",
@@ -1100,6 +1115,7 @@
 			"description": "Manage users of this webapp.",
 			"add": "Add a new user",
 			"edit": "Edit an existing user",
+			"resendVerification": "Re-send verification email",
 			"id": "User ID",
 			"role": "User role",
 			"roles": {
@@ -1117,6 +1133,8 @@
 				"prompt": "Are you sure you want to delete user {user}?"
 			},
 			"messages": {
+				"resendFailed": "Failed to send a new verification email: {email}.",
+				"resendSuccess": "A new verification email has been successfully sent.",
 				"usernameExists": "Username is already used.",
 				"oldPassMismatch": "The old password is incorrect.",
 				"addFailed": "Failed to create new user: {error}",

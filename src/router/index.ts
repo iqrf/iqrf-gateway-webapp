@@ -42,6 +42,9 @@ const UserEdit = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserE
 const UserList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserList.vue');
 const UserVerify = () => import(/* webpackChunkName: "core" */ '@/pages/Core/UserVerify.vue');
 const SignIn = () => import(/* webpackChunkName: "core" */ '@/pages/Core/SignIn.vue');
+const AccountBase = () => import(/* webpackChunkName: "core" */'@/pages/Core/AccountBase.vue');
+const RequestPasswordRecovery = () => import(/* webpackChunkName: "core" */'@/pages/Core/RequestPasswordRecovery.vue');
+const ConfirmPasswordRecovery = () => import(/* webpackChunkName: "core" */'@/pages/Core/ConfirmPasswordRecovery.vue');
 
 const SecurityDisambiguation = () => import(/* webpackChunkName: "core" */'@/pages/Core/SecurityDisambiguation.vue');
 const ApiKeyList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyList.vue');
@@ -118,6 +121,29 @@ const routes: Array<RouteConfig> = [
 		component: SignIn,
 		name: 'signIn',
 		path: '/sign/in',
+	},
+	{
+		component: AccountBase,
+		path: '/account',
+		children: [
+			{
+				component: RequestPasswordRecovery,
+				name: 'requestRecovery',
+				path: 'recovery',
+			},
+			{
+				component: ConfirmPasswordRecovery,
+				name: 'confirmRecovery',
+				path: 'recovery/:recoveryId',
+				props: true,
+			},
+			{
+				name: 'userVerify',
+				component: UserVerify,
+				path: 'verification/:uuid',
+				props: true,
+			}
+		]
 	},
 	{
 		path: '/install',
@@ -936,11 +962,6 @@ const routes: Array<RouteConfig> = [
 							}
 							return {userId};
 						},
-					},
-					{
-						component: UserVerify,
-						path: 'verification/:uuid',
-						props: true,
 					}
 				]
 			},
@@ -1023,12 +1044,19 @@ const router = new VueRouter({
 	routes: routes
 });
 
+const whitelist = [
+	'signIn',
+	'requestRecovery',
+	'confirmRecovery',
+	'userVerify'
+];
+
 router.beforeEach((to, from, next) => {
 	if (to.path.match('\\/user\\/verification\\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}') !== null) {
 		next();
 		return;
 	}
-	if (!to.path.startsWith('/install/') && to.name !== 'signIn') {
+	if (!to.path.startsWith('/install/') && (typeof to.name !== 'string' || !whitelist.includes(to.name))) {
 		if (!store.getters['user/isLoggedIn']) {
 			store.dispatch('user/signOut').then(() => {
 				next({path: '/sign/in', query: {redirect: to.path}});
