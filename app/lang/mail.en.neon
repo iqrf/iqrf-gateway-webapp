@@ -7,3 +7,12 @@ emailVerification:
 			Best regards,
 			IQRF Gateway %hostname%
 		'''
+passwordRecovery:
+	title: Password recovery
+	greeting: 'Dear %username%,'
+	body: 'in order to complete the forgotten password recovery at IQRF Gateway %hostname%, you need to create a new password by at the link bellow.'
+	footer:
+		'''
+			Best regards,
+			IQRF Gateway %hostname%
+		'''

@@ -306,6 +306,37 @@ class UsersController extends BaseController {
 	}
 
 	/**
+	 * @Path("/{id}/resendVerification")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Resends the verification e-mail
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="id", type="integer", description="User ID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$id = (int) $request->getParameter('id');
+		$user = $this->repository->find($id);
+		if (!($user instanceof User)) {
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		}
+		foreach ($user->getVerifications() as $verification) {
+			$this->sendVerificationEmail($request, $verification);
+		}
+		return $response->withStatus(ApiResponse::S200_OK)
+			->writeBody('Workaround');
+	}
+
+	/**
 	 * Sends user verification e-mail
 	 * @param ApiRequest $request API request
 	 * @param UserVerification $verification User verification
