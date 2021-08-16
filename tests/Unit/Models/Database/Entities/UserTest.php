@@ -60,6 +60,11 @@ final class UserTest extends TestCase {
 	private const LANGUAGE = User::LANGUAGE_ENGLISH;
 
 	/**
+	 * User account state
+	 */
+	private const STATE = User::STATE_UNVERIFIED;
+
+	/**
 	 * @var User User entity
 	 */
 	private $entity;
@@ -182,6 +187,7 @@ final class UserTest extends TestCase {
 			'email' => null,
 			'role' => self::ROLE,
 			'language' => self::LANGUAGE,
+			'state' => self::STATE,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

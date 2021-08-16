@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3ed352f7-c571-4d0b-8150-7dd0710e0e57",
+		"_postman_id": "1b24c6f0-f1b7-4271-98e7-03f616759e8a",
 		"name": "iqrf-gateway-webapp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -449,9 +449,9 @@
 											"    pm.response.to.have.header('Content-Type');",
 											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
 											"});",
-											"pm.test('Error message is \\'User already exists\\'', function () {",
+											"pm.test('Error message is \\'Username is already used\\'', function () {",
 											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('User already exists');",
+											"    pm.expect(jsonData.message).to.eql('Username is already used');",
 											"});"
 										],
 										"type": "text/javascript"
@@ -1647,22 +1647,27 @@
 	],
 	"variable": [
 		{
+			"id": "26a4d5da-f1c0-4579-8b0b-9da8b79ca9a8",
 			"key": "token",
 			"value": null
 		},
 		{
+			"id": "de9f85d2-6db1-4983-bb1c-d9ace5fb7181",
 			"key": "baseUrl",
 			"value": "localhost:8080"
 		},
 		{
+			"id": "63353b0b-c09a-4057-8c45-8089b22a2dec",
 			"key": "userId",
 			"value": ""
 		},
 		{
+			"id": "1a8c1b34-e75c-499c-892e-c3b13561ea89",
 			"key": "newUserName",
 			"value": ""
 		},
 		{
+			"id": "93cccbb6-4f25-48aa-bbf8-9d5adad2525a",
 			"key": "newUserId",
 			"value": ""
 		}
