@@ -37,7 +37,7 @@ class PasswordRecoveryMailSender extends BaseMailSender {
 		$user = $recovery->getUser();
 		$params = [
 			'hostname' => gethostname(),
-			'url' => $baseUrl . '/user/password/recovery/' . $recovery->getUuid(),
+			'url' => $baseUrl . '/account/recovery/' . $recovery->getUuid(),
 			'user' => $user,
 		];
 		$html = $template->renderToString(__DIR__ . '/templates/passwordRecovery.latte', $params);

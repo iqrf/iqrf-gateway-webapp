@@ -37,7 +37,7 @@ class EmailVerificationMailSender extends BaseMailSender {
 		$user = $verification->getUser();
 		$params = [
 			'hostname' => gethostname(),
-			'url' => $baseUrl . '/user/verification/' . $verification->getUuid(),
+			'url' => $baseUrl . '/account/verification/' . $verification->getUuid(),
 			'user' => $user,
 		];
 		$html = $template->renderToString(__DIR__ . '/templates/emailVerification.latte', $params);

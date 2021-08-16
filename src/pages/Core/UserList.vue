@@ -37,10 +37,23 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
+					</template>
+					<template #email='{item}'>
+						<td>
+							<span v-if='item.email !== null'>
+								{{ toUnicodeEmail(item.email) }}
+							</span>
+							<CIcon
+								v-else
+								class='text-danger'
+								size='xl'
+								:content='icons.noEmail'
+							/>
+						</td>
 					</template>
 					<template #role='{item}'>
 						<td>
@@ -74,6 +87,13 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								v-if='item.email !== null && item.state === 0'
+								color='warning'
+								size='sm'
+								@click='resendVerification(item.id)'
+							>
+								{{ $t('core.user.resendVerification') }}
+							</CButton> <CButton
 								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
 								color='info'
 								:to='"/user/edit/" + item.id'
@@ -137,7 +157,7 @@ import {
 	CModal
 } from '@coreui/vue/src';
 
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
@@ -145,6 +165,8 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
+
+import punycode from 'punycode/';
 
 @Component({
 	components: {
@@ -179,6 +201,7 @@ export default class UserList extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
+		noEmail: cilXCircle,
 	}
 
 	/**
@@ -223,6 +246,10 @@ export default class UserList extends Vue {
 					label: this.$t('forms.fields.username'),
 				},
 				{
+					key: 'email',
+					label: this.$t('forms.fields.email'),
+				},
+				{
 					key: 'role',
 					label: this.$t('core.user.role'),
 				},
@@ -260,6 +287,15 @@ export default class UserList extends Vue {
 				this.users = response.data;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.listFetchFailed'));
+	}
+
+	/**
+	 * Converts email string to unicode
+	 * @param {string} email Email to convert
+	 * @returns {string} Unicode email string
+	 */
+	private toUnicodeEmail(email: string): string {
+		return punycode.toUnicode(email);
 	}
 
 	/**
@@ -370,6 +406,21 @@ export default class UserList extends Vue {
 				).toString()
 			);
 		});
+	}
+
+	/**
+	 * Requests a new verification email
+	 * @param {number} userId User ID
+	 */
+	private resendVerification(userId: number): void {
+		UserService.resendVerificationEmail(userId)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('core.user.messages.resendSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.resendFailed'));
 	}
 }
 </script>
