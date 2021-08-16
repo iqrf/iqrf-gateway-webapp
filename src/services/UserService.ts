@@ -129,7 +129,7 @@ class UserService {
 	 * @param {number} id User ID
 	 */
 	resendVerificationEmail(id: number): Promise<AxiosResponse> {
-		return axios.post('user/' + id + '/resendVerification', null, {headers: authorizationHeader()});
+		return axios.post('users/' + id + '/resendVerification', null, {headers: authorizationHeader()});
 	}
 }
 

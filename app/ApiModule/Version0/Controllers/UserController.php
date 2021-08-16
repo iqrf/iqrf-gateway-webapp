@@ -152,7 +152,7 @@ class UserController extends BaseController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/PasswordRecovery'
+	 *                  $ref: '#/components/schemas/PasswordRecoveryRequest'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -163,8 +163,8 @@ class UserController extends BaseController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('passwordRecovery', $request);
+	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBody();
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($body['username']);
 		if ($user === null) {
@@ -174,6 +174,44 @@ class UserController extends BaseController {
 		$this->entityManager->persist($recovery);
 		$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
 		$this->passwordRecoverySender->send($recovery, $baseUrl);
+		$this->entityManager->flush();
+		return $response->writeBody('Workaround');
+	}
+
+	/**
+	 * @Path("/password/recovery/{uuid}")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Recovers the forgotten password
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/PasswordRecovery'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Psaaword recovery not found
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="uuid", type="integer", description="Password recovery request UUID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('passwordRecovery', $request);
+		$body = $request->getJsonBody();
+		$recoveryRequest = $this->entityManager->getPasswordRecoveryRepository()->findOneByUuid($request->getParameter('uuid'));
+		if ($recoveryRequest === null) {
+			throw new ClientErrorException('Password recovery request not found', ApiResponse::S404_NOT_FOUND);
+		}
+		$user = $recoveryRequest->getUser();
+		$user->setPassword($body['password']);
+		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');
 	}

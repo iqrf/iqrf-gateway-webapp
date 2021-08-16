@@ -92,6 +92,7 @@ limitations under the License.
 								size='sm'
 								@click='resendVerification(item.id)'
 							>
+								<CIcon :content='icons.resend' size='sm' />
 								{{ $t('core.user.resendVerification') }}
 							</CButton> <CButton
 								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
@@ -157,7 +158,7 @@ import {
 	CModal
 } from '@coreui/vue/src';
 
-import {cilPencil, cilPlus, cilTrash, cilXCircle} from '@coreui/icons';
+import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
@@ -201,6 +202,7 @@ export default class UserList extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
+		resend: cilReload,
 		noEmail: cilXCircle,
 	}
 
@@ -392,9 +394,9 @@ export default class UserList extends Vue {
 			);
 			if (this.users.length === 1) {
 				await this.$store.dispatch('features/fetch');
-				this.$router.push('/install/');
+				await this.$router.push('/install/');
 			} else {
-				this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
+				await this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
 			}
 			return;
 		}
@@ -413,6 +415,7 @@ export default class UserList extends Vue {
 	 * @param {number} userId User ID
 	 */
 	private resendVerification(userId: number): void {
+		this.$store.commit('spinner/SHOW');
 		UserService.resendVerificationEmail(userId)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
