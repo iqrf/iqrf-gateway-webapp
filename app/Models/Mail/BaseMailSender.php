@@ -4,9 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Models\Mail;
 
-use Latte\Engine;
 use Nette\Application\UI\Template;
-use Nette\Application\UI\TemplateFactory;
+use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use Nette\Localization\Translator;
 use Nette\Mail\FallbackMailer;
 
@@ -57,7 +56,6 @@ abstract class BaseMailSender {
 	protected function createTemplate(): Template {
 		$template = $this->templateFactory->createTemplate();
 		$latte = $template->getLatte();
-		assert($latte instanceof Engine);
 		$latte->addFilter('nl2br', 'nl2br');
 		$latte->addProvider('translator', $this->translator);
 		return $template;

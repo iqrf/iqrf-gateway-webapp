@@ -6,7 +6,6 @@
 	"additionalProperties": false,
 	"required": [
 		"username",
-		"email",
 		"password",
 		"language",
 		"role"
