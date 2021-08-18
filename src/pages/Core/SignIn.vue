@@ -17,12 +17,12 @@ limitations under the License.
 <template>
 	<TheWizard>
 		<CCard class='p-4'>
+			<h1 class='text-center'>
+				{{ $t('core.sign.in.title') }}
+			</h1>
 			<CCardBody>
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='handleSubmit'>
-						<h1 class='text-center'>
-							{{ $t('core.sign.in.title') }}
-						</h1>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
@@ -69,7 +69,7 @@ limitations under the License.
 							<CLink
 								to='/account/recovery'
 							>
-								Forgot password?
+								{{ $t('core.sign.in.recoverPassword') }}
 							</CLink>
 						</div>
 					</CForm>

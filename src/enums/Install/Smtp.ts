@@ -14,54 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import {SmtpProtocol} from '../enums/Install/Smtp';
-
 /**
- * Installation wizard user interface
+ * SMTP security protocols
  */
-export interface IInstallUser {
-	username: string
-	password: string
-	language: string
-	role: string
-}
-
-/**
- * Installation wizard gateway user password change interface
- */
-export interface IInstallGatewayUser {
-	change: boolean
-	username: string
-	password: string
-}
-
-/**
- * SMTP server configuration
- */
-export interface ISmtp {
-	/**
-	 * Server name
-	 */
-	host: string
-
-	/**
-	 * Port number
-	 */
-	port: number
-
-	/**
-	 * Username
-	 */
-	username: string
-
-	/**
-	 * Password
-	 */
-	password: string
-
-	/**
-	 * Security protocol
-	 */
-	protocol: SmtpProtocol
+export enum SmtpProtocol {
+	NONE = 'none',
+	SSL = 'ssl'
 }
