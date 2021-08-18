@@ -15,8 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('account.recovery.title') }}</CCardHeader>
+	<CCard class='p-4'>
+		<h1 class='text-center'>
+			{{ $t('account.recovery.title') }}
+		</h1>
 		<CCardBody>
 			<CElementCover
 				v-if='requestInProgress'
@@ -25,35 +27,40 @@ limitations under the License.
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
-			<p>
-				{{ $t('account.recovery.requestPrompt') }}
+			<div v-if='!sent'>
+				<p>
+					{{ $t('account.recovery.requestPrompt') }}
+				</p>
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm @submit.prevent='requestRecovery'>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: "core.sign.in.messages.username"
+							}'
+						>
+							<CInput
+								v-model='user'
+								:label='$t("forms.fields.username")'
+								autocomplete='username'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
+							{{ $t('account.recovery.sendEmail') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</div>
+			<p v-else class='text-center'>
+				{{ $t('account.recovery.messages.sendSuccess') }}
 			</p>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='requestRecovery'>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: "core.sign.in.messages.username"
-						}'
-					>
-						<CInput
-							v-model='user'
-							:label='$t("forms.fields.username")'
-							autocomplete='username'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton
-						color='primary'
-						type='submit'
-						:disabled='invalid'
-					>
-						{{ $t('account.recovery.sendEmail') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
 		</CCardBody>
 	</CCard>
 </template>
@@ -102,6 +109,11 @@ export default class RequestPasswordRecovery extends Vue {
 	private requestInProgress = false
 
 	/**
+	 * @var {bool} sent Indicates whether or not request was successfully sent
+	 */
+	private sent = false
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -116,10 +128,7 @@ export default class RequestPasswordRecovery extends Vue {
 		UserService.requestPasswordRecovery(this.user)
 			.then(() => {
 				this.requestInProgress = false;
-				this.$toast.success(
-					this.$t('account.recovery.messages.sendSuccess').toString()
-				);
-				this.$router.push({name: 'signIn'});
+				this.sent = true;
 			})
 			.catch((error: AxiosError) => {
 				this.requestInProgress = false;

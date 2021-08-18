@@ -15,8 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('account.recovery.title') }}</CCardHeader>
+	<CCard class='p-4'>
+		<h1 class='text-center'>
+			{{ $t('account.recovery.title') }}
+		</h1>
 		<CCardBody>
 			<CElementCover
 				v-if='requestInProgress'
@@ -39,10 +41,19 @@ limitations under the License.
 					>
 						<CInput
 							v-model='password'
+							:type='passwordVisible ? "text" : "password"'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-						/>
+						>
+							<template #append-content>
+								<span @click='passwordVisible = !passwordVisible'>
+									<FontAwesomeIcon
+										:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
+									/>
+								</span>
+							</template>
+						</CInput>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -61,6 +72,7 @@ limitations under the License.
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import TheWizard from '../../components/TheWizard.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -77,6 +89,7 @@ import {AxiosError} from 'axios';
 		CCardBody,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider
@@ -95,6 +108,11 @@ export default class ConfirmPasswordRecovery extends Vue {
 	 * @var {string} password New user password
 	 */
 	private password = ''
+
+	/**
+	 * @var {boolean} passwordVisible Controls input field visibility
+	 */
+	private passwordVisible = false
 
 	/**
 	 * @var {bool} requestInProgress Indicates whether axios requests are in progress

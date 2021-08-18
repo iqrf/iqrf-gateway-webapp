@@ -16,22 +16,29 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('core.user.verification.title') }}</h1>
-		<CCard v-if='success !== null' body-wrapper>
-			<p v-if='success'>Success</p>
-			<p v-else>Failure</p>
+		<CCard class='p-4'>
+			<h1 class='text-center'>
+				{{ $t('core.user.verification.title') }}
+			</h1>
+			<CCardBody v-if='success !== null'>
+				<p class='text-center'>
+					{{ success ? $t('core.user.verification.success') : $t('core.user.verification.failed', {error: 'placeholder'}) }}
+				</p>
+			</CCardBody>
 		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CCard} from '@coreui/vue/src';
+import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import UserService from '../../services/UserService';
 
 @Component({
 	components: {
 		CCard,
+		CCardBody,
+		CCardHeader,
 	},
 	metaInfo: {
 		title: 'core.user.verification.title',
@@ -46,8 +53,7 @@ export default class UserVerify extends Vue {
 
 	/**
 	 * @var {boolean|null} Is the verification successful?
-   * @private
-   */
+	 */
 	private success: boolean|null = null;
 
 	created(): void {

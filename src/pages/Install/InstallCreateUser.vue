@@ -165,6 +165,11 @@ export default class InstallCreateUser extends Vue {
 		this.running = true;
 		UserService.add(this.username, this.email, this.password, this.language, this.role)
 			.then(() => {
+				if (this.email.length !== 0) {
+					this.$toast.success(
+						this.$t('core.user.messages.verifyNotice').toString()
+					);
+				}
 				const credentials = new UserCredentials(this.username, this.password);
 				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {

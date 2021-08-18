@@ -10,7 +10,7 @@
 				"changeFailed": "Failed to change password: {error}",
 				"changeSuccess": "Password has been successfully changed.",
 				"sendFailed": "Failed to send password recovery email: {error}",
-				"sendSuccess": "An email with instructions to reset your password was sent to the address associated with the account."
+				"sendSuccess": "An email containing further instructions to reset your password was sent to the address associated with the account."
 			}
 		}
 	},
@@ -1031,6 +1031,23 @@
 			"cs": "Czech",
 			"en": "English"
 		},
+		"smtp": {
+			"form": {
+				"host": "Host",
+				"port": "Port",
+				"protocol": "Security protocol",
+				"protocols": {
+					"none": "None",
+					"ssl": "SSL"
+				}
+			},
+			"errors": {
+				"hostMissing": "Please enter SMTP host.",
+				"portMissing": "Please enter SMTP port.",
+				"usernameMissing": "Please enter SMTP username.",
+				"passwordMissing": "Please enter SMTP password."
+			}
+		},
 		"security": {
 			"title": "Security manager",
 			"description": "Manage security measures.",
@@ -1126,6 +1143,11 @@
 			"languages": {
 				"en": "English"
 			},
+			"verification": {
+				"title": "Account verification",
+				"success": "Your account has been successfully verified.",
+				"failed": "Account verification failed, {error}."
+			},
 			"oldPassword": "Old password (only if you want change password)",
 			"newPassword": "New password (only if you want change password)",
 			"modal": {
@@ -1133,6 +1155,7 @@
 				"prompt": "Are you sure you want to delete user {user}?"
 			},
 			"messages": {
+				"verifyNotice": "An email containing instructions to verify your account was sent to your address.",
 				"resendFailed": "Failed to send a new verification email: {email}.",
 				"resendSuccess": "A new verification email has been successfully sent.",
 				"usernameExists": "Username is already used.",
@@ -1158,6 +1181,7 @@
 				"title": "Sign in",
 				"remember": "Keep me signed in",
 				"send": "Sign in",
+				"recoverPassword": "Forgot password?",
 				"messages": {
 					"username": "Please enter your username.",
 					"password": "Please enter your password.",
