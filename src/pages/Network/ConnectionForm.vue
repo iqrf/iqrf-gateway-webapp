@@ -72,7 +72,7 @@ limitations under the License.
 										:label='$t("network.wireless.form.password")'
 									/>
 								</div>
-								<div 
+								<div
 									v-else-if='connection.wifi.security.type === "wep"'
 									class='form-group'
 								>
@@ -130,7 +130,7 @@ limitations under the License.
 												"network.wireless.errors.wepKey128Invalid"
 										}'
 									>
-										<CInput							
+										<CInput
 											v-model='connection.wifi.security.wep.keys[index]'
 											:label='$t("network.wireless.form.wep.keyNum", {index: index})'
 											:is-valid='touched ? valid : null'
@@ -299,11 +299,10 @@ limitations under the License.
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv4.method === "manual" ? "required|ipv4|dns4Subnet" : ""'
+											:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
 											:custom-messages='{
 												required: "network.connection.ipv4.errors.dns",
-												ipv4: "network.connection.ipv4.errors.addressInvalid",
-												dns4Subnet: "network.connection.ipv4.dnsNotInSubnet"
+												ipv4: "network.connection.ipv4.errors.addressInvalid"
 											}'
 										>
 											<CInput
@@ -709,7 +708,7 @@ export default class ConnectionForm extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('ipv4', (address: string) => {
-			return ip.v4({exact: true}).test(address); 
+			return ip.v4({exact: true}).test(address);
 		});
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
@@ -735,9 +734,6 @@ export default class ConnectionForm extends Vue {
 		});
 		extend('wpaPsk', (key: string) => {
 			return new RegExp(/^(\w{8,63}|[0-9a-fA-F]{64})$/).test(key);
-		});
-		extend('dns4Subnet', (address: string) => {
-			return this.ipv4SubnetCheck(address);
 		});
 	}
 
@@ -947,7 +943,7 @@ export default class ConnectionForm extends Vue {
 		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
-			delete connection.ipv4.current;	
+			delete connection.ipv4.current;
 		}
 		if (connection.ipv4.addresses.length === 0) {
 			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
@@ -1060,7 +1056,7 @@ export default class ConnectionForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
-						'network.connection.messages.' + 
+						'network.connection.messages.' +
 						(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
 						{connection: name}).toString()
 				);
@@ -1069,7 +1065,7 @@ export default class ConnectionForm extends Vue {
 				} else if (this.connection.type === ConnectionType.WIFI) {
 					this.$router.push('/network/wireless');
 				}
-				
+
 			})
 			.catch((error: AxiosError) => {
 				if (!this.handleIPChanged) {
@@ -1103,7 +1099,7 @@ export default class ConnectionForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$store.commit('blocking/SHOW',
 					this.$t(message, {address: window.location.protocol + '//' + this.connection.ipv4.addresses[0].address + loc.getPort()}).toString()
-				);	
+				);
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
