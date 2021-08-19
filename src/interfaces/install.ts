@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {SmtpProtocol} from '../enums/Install/Smtp';
+import {SmtpSecurity} from '../enums/Install/Smtp';
 
 /**
  * Installation wizard user interface
@@ -63,5 +63,5 @@ export interface ISmtp {
 	/**
 	 * Security protocol
 	 */
-	protocol: SmtpProtocol
+	protocol: SmtpSecurity
 }

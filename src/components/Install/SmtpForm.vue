@@ -62,7 +62,7 @@
 					<CSelect
 						:value.sync='configuration.protocol'
 						:options='protocols'
-						:label='$t("core.smtp.form.protocol")'
+						:label='$t("core.smtp.form.security")'
 					/>
 					<CButton
 						color='primary'
@@ -83,7 +83,7 @@ import {CCard, CCardBody, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
-import {SmtpProtocol} from '../../enums/Install/Smtp';
+import {SmtpSecurity} from '../../enums/Install/Smtp';
 
 import {IOption} from '../../interfaces/coreui';
 import {ISmtp} from '../../interfaces/install';
@@ -113,7 +113,7 @@ export default class SmtpForm extends Vue {
 		port: 465,
 		username: '',
 		password: '',
-		protocol: SmtpProtocol.NONE
+		protocol: SmtpSecurity.PLAINTEXT
 	}
 
 	/**
@@ -122,11 +122,15 @@ export default class SmtpForm extends Vue {
 	private protocols: Array<IOption> = [
 		{
 			label: this.$t('core.smtp.form.protocols.none').toString(),
-			value: SmtpProtocol.NONE,
+			value: SmtpSecurity.PLAINTEXT,
 		},
 		{
-			label: this.$t('core.smtp.form.protocols.ssl').toString(),
-			value: SmtpProtocol.SSL,
+			label: this.$t('core.smtp.form.protocols.starttls').toString(),
+			value: SmtpSecurity.STARTTLS,
+		},
+		{
+			label: this.$t('core.smtp.form.protocols.tls').toString(),
+			value: SmtpSecurity.TLS,
 		},
 	]
 

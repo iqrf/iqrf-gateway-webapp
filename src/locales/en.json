@@ -1036,10 +1036,11 @@
 			"form": {
 				"host": "Host",
 				"port": "Port",
-				"protocol": "Security protocol",
+				"security": "Connection security",
 				"protocols": {
 					"none": "None",
-					"ssl": "SSL"
+					"starttls": "STARTTLS",
+					"tls": "TLS"
 				}
 			},
 			"errors": {
