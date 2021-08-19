@@ -17,7 +17,8 @@
 /**
  * SMTP security protocols
  */
-export enum SmtpProtocol {
-	NONE = 'none',
-	SSL = 'ssl'
+export enum SmtpSecurity {
+	PLAINTEXT = 'null',
+	STARTTLS = 'tls',
+	TLS = 'ssl'
 }
