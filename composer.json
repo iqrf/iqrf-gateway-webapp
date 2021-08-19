@@ -35,7 +35,7 @@
 		"apitte/openapi": "^0.7",
 		"bgalati/monolog-sentry-handler": "^1.2",
 		"contributte/console": "^0.9",
-		"contributte/console-extra": "^0.6",
+		"contributte/console-extra": "^0.7",
 		"contributte/guzzlette": "^3.2",
 		"contributte/monolog": "^0.5",
 		"contributte/translation": "^0.9",
