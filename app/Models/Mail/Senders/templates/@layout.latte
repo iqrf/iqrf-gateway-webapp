@@ -3,43 +3,41 @@
 	<meta charset="utf-8">
 	<title>{include title}</title>
 	<style>
-		body {
+		.body {
 			background-color: #ebedef;
-			margin-left: auto;
-			margin-right: auto;
-			padding-left: 12pt;
-			padding-right: 12pt;
-			width: 100%;
-			flex: 0 0 83.3333333333%;
-			max-width: 83.3333333333%;
+			color: #000000;
 		}
-		section {
-			padding: 1.5rem !important;
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			margin-bottom: 1.5rem;
+		.content {
+			padding: 18px !important;
+			margin-bottom: 32px;
 			word-wrap: break-word;
 			background-clip: border-box;
 			border: 1px solid;
-			border-radius: 0.25rem;
-			background-color: #fff;
+			border-radius: 4px;
+			background-color: #ffffff;
 			border-color: #d8dbe0;
+		}
+		.container {
+			margin: auto;
+			padding-left: 16px;
+			padding-right: 16px;
+			max-width: 83.3333333333%;
 		}
 		img {
 			height: 32pt;
 			width: 100%;
-			padding-bottom: 3rem;
-			padding-top: 3rem;
+			padding-bottom: 32px;
+			padding-top: 32px;
+			text-align: center;
 		}
 	</style>
 </head>
-<body>
-<header>
-	<img src='../../../../../src/assets/logo-blue.svg' alt='IQRF Gateway' />
-</header>
-<section>
-	{include body}
-</section>
+<body class='body'>
+	<div class='container'>
+		<img src='../../../../../src/assets/logo-blue.svg' alt='IQRF Gateway' />
+		<div class='content'>
+			{include body}
+		</div>
+	</div>
 </body>
 </html>
