@@ -15,7 +15,7 @@
 
 extensions:
 	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
-	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension
+	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension(%consoleMode%)
 
 console:
 	name: IQRF Gateway Webapp manager
