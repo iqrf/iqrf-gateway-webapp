@@ -18,34 +18,34 @@
  */
 declare(strict_types = 1);
 
-namespace App\Models\Mail;
+namespace App\Models\Mail\Senders;
 
-use App\Models\Database\Entities\UserVerification;
+use App\Models\Database\Entities\PasswordRecovery;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Mail\Message;
 
-class EmailVerificationMailSender extends BaseMailSender {
+class PasswordRecoveryMailSender extends BaseMailSender {
 
 	/**
-	 * Sends e-mail to signed up user
-	 * @param UserVerification $verification User verification
+	 * Sends forgotten password recovery e-mail
+	 * @param PasswordRecovery $recovery Forgotten password recovery request
 	 * @param string $baseUrl Base URL
 	 */
-	public function send(UserVerification $verification, string $baseUrl = ''): void {
+	public function send(PasswordRecovery $recovery, string $baseUrl = ''): void {
 		$template = $this->createTemplate();
 		assert($template instanceof Template);
-		$user = $verification->getUser();
+		$user = $recovery->getUser();
 		$params = [
 			'hostname' => gethostname(),
-			'url' => $baseUrl . '/account/verification/' . $verification->getUuid(),
+			'url' => $baseUrl . '/account/recovery/' . $recovery->getUuid(),
 			'user' => $user,
 		];
-		$html = $template->renderToString(__DIR__ . '/templates/emailVerification.latte', $params);
+		$html = $template->renderToString(__DIR__ . '/templates/passwordRecovery.latte', $params);
 		$mail = new Message();
-		$mail->setFrom('iqrf@romanondracek.cz', $this->translator->translate('core.title'));
+		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('core.title'));
 		$mail->addTo($user->getEmail(), $user->getUserName());
-		$mail->setSubject($this->translator->translate('mail.emailVerification.title'));
-		$mail->setHtmlBody($html);
+		$mail->setSubject($this->translator->translate('mail.passwordRecovery.title'));
+		$mail->setHtmlBody($html, __DIR__ . '/templates/');
 		$this->createMailer()->send($mail);
 	}
 

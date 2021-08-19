@@ -36,7 +36,7 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
-use App\Models\Mail\PasswordRecoveryMailSender;
+use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Throwable;

@@ -1,9 +1,6 @@
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>{_mail.emailVerification.title}</title>
-</head>
-<body>
+{layout '@layout.latte'}
+{block title}{_mail.emailVerification.title}{/block}
+{block body}
 <p>
 	{_mail.emailVerification.greeting, [username => $user->getUserName()]|breakLines}
 </p>
@@ -16,5 +13,4 @@
 <p>
 	{_mail.emailVerification.footer, [hostname => $hostname]|breakLines}
 </p>
-</body>
-</html>
+{/block}

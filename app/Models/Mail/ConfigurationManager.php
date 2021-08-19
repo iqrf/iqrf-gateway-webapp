@@ -67,6 +67,14 @@ class ConfigurationManager {
 	}
 
 	/**
+	 * Returns the sender e-mail address
+	 * @return string Sender e-mail address
+	 */
+	public function getFrom(): string {
+		return $this->read()['from'];
+	}
+
+	/**
 	 * Reads mailer configuration
 	 * @return array<string, bool|int|string> Mailer configuration
 	 */

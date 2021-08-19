@@ -36,7 +36,7 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
-use App\Models\Mail\EmailVerificationMailSender;
+use App\Models\Mail\Senders\EmailVerificationMailSender;
 
 /**
  * User manager API controller
