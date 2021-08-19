@@ -25,6 +25,8 @@ parameters:
 		- app
 		- bin
 		- tests
+	excludePaths:
+		- tests/tmp/*
 	fileExtensions:
 		- php
 		- phpt
