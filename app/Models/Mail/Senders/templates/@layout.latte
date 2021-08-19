@@ -3,13 +3,16 @@
 	<meta charset="utf-8">
 	<title>{include title}</title>
 	<style>
+		body {
+			background-color: #ebedef;
+		}
 		.body {
 			background-color: #ebedef;
 			color: #000000;
+			padding: 32px;
 		}
 		.content {
 			padding: 18px !important;
-			margin-bottom: 32px;
 			word-wrap: break-word;
 			background-clip: border-box;
 			border: 1px solid;
@@ -23,20 +26,25 @@
 			padding-right: 16px;
 			max-width: 83.3333333333%;
 		}
-		img {
-			height: 32pt;
+		.header {
 			width: 100%;
-			padding-bottom: 32px;
-			padding-top: 32px;
 			text-align: center;
+			padding-bottom: 32px;
+		}
+		.logo {
+			height: 44px;
 		}
 	</style>
 </head>
-<body class='body'>
-	<div class='container'>
-		<img src='../../../../../src/assets/logo-blue.svg' alt='IQRF Gateway' />
-		<div class='content'>
-			{include body}
+<body>
+	<div class='body'>
+		<div class='container'>
+			<div class='header'>
+				<img src='logo.png' alt='IQRF Gateway' class='logo' />
+			</div>
+			<div class='content'>
+				{include body}
+			</div>
 		</div>
 	</div>
 </body>
