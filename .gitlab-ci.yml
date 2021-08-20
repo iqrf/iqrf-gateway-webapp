@@ -160,6 +160,7 @@ coding-style:
 phpstan:
   stage: coding-style
   needs: []
+  retry: 2
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
