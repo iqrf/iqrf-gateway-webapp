@@ -44,11 +44,12 @@ trait TCreatedAt {
 
 	/**
 	 * Sets created at time
+	 * @param DateTime|null $dateTime Creation date
 	 * @ORM\PrePersist()
 	 * @internal
 	 */
-	public function setCreatedAt(): void {
-		$this->createdAt = new DateTime();
+	public function setCreatedAt(?DateTime $dateTime = null): void {
+		$this->createdAt = $dateTime ?? new DateTime();
 	}
 
 }
