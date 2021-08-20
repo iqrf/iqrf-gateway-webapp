@@ -35,6 +35,15 @@ trait TCreatedAt {
 	private $createdAt;
 
 	/**
+	 * Generate created at time
+	 * @ORM\PrePersist()
+	 * @internal
+	 */
+	public function generateCreatedAt(): void {
+		$this->createdAt = new DateTime();
+	}
+
+	/**
 	 * Returns created at time
 	 * @return DateTime Created at time
 	 */
@@ -45,7 +54,6 @@ trait TCreatedAt {
 	/**
 	 * Sets created at time
 	 * @param DateTime|null $dateTime Creation date
-	 * @ORM\PrePersist()
 	 * @internal
 	 */
 	public function setCreatedAt(?DateTime $dateTime = null): void {
