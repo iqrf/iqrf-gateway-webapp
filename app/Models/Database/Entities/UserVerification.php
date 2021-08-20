@@ -22,6 +22,8 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +58,21 @@ class UserVerification {
 	 */
 	public function getUser(): User {
 		return $this->user;
+	}
+
+	/**
+	 * Checks if the password recovery request is expired
+	 * @return bool Is the password recovery request expired?
+	 */
+	public function isExpired(): bool {
+		if ($this->createdAt === null) {
+			return false;
+		}
+		$expirationInterval = new DateInterval('P1W');
+		$expiration = DateTimeImmutable::createFromMutable($this->createdAt)
+			->add($expirationInterval);
+		$now = new DateTimeImmutable();
+		return $now >= $expiration;
 	}
 
 }

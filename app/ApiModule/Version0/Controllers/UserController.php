@@ -156,6 +156,8 @@ class UserController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          description: E-mail address is not verified
 	 *      '404':
 	 *          description: User not found
 	 * ")
@@ -169,6 +171,9 @@ class UserController extends BaseController {
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($body['username']);
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		}
+		if ($user->getState() !== User::STATE_VERIFIED) {
+			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
 		}
 		$recovery = new PasswordRecovery($user);
 		$this->entityManager->persist($recovery);
@@ -192,8 +197,14 @@ class UserController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UserToken'
 	 *      '404':
 	 *          description: Psaaword recovery not found
+	 *      '410':
+	 *          description: Psaaword recovery request is expired
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="integer", description="Password recovery request UUID")
@@ -209,11 +220,19 @@ class UserController extends BaseController {
 		if ($recoveryRequest === null) {
 			throw new ClientErrorException('Password recovery request not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if ($recoveryRequest->isExpired()) {
+			$this->entityManager->remove($recoveryRequest);
+			$this->entityManager->flush();
+			throw new ClientErrorException('Password recovery request is expired', ApiResponse::S410_GONE);
+		}
 		$user = $recoveryRequest->getUser();
 		$user->setPassword($body['password']);
 		$this->entityManager->persist($user);
+		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		$json = $user->jsonSerialize();
+		$json['token'] = $this->createToken($user);
+		return $response->writeJsonBody($json);
 	}
 
 	/**
@@ -255,26 +274,8 @@ class UserController extends BaseController {
 		if (!$user->verifyPassword($credentials['password'])) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
-		try {
-			$now = new DateTimeImmutable();
-			$us = $now->format('u');
-			$now = $now->modify('-' . $us . ' usec');
-		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		$hostname = gethostname();
-		$builder = $this->configuration->builder()
-			->issuedAt($now)
-			->expiresAt($now->modify('+90 min'))
-			->withClaim('uid', $user->getId());
-		if ($hostname !== false) {
-			$builder->issuedBy($hostname)->identifiedBy($hostname);
-		}
-		$signer = $this->configuration->signer();
-		$signingKey = $this->configuration->signingKey();
-		$token = $builder->getToken($signer, $signingKey);
 		$json = $user->jsonSerialize();
-		$json['token'] = $token->toString();
+		$json['token'] = $this->createToken($user);
 		return $response->writeJsonBody($json);
 	}
 
@@ -286,6 +287,10 @@ class UserController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UserToken'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -309,7 +314,35 @@ class UserController extends BaseController {
 		}
 		$this->entityManager->remove($verification);
 		$this->entityManager->flush();
-		return $response;
+		$json = $user->jsonSerialize();
+		$json['token'] = $this->createToken($user);
+		return $response->writeJsonBody($json);
+	}
+
+	/**
+	 * Creates a new JWT token
+	 * @param User $user User
+	 * @return string JWT token
+	 */
+	private function createToken(User $user): string {
+		try {
+			$now = new DateTimeImmutable();
+			$us = $now->format('u');
+			$now = $now->modify('-' . $us . ' usec');
+		} catch (Throwable $e) {
+			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+		$hostname = gethostname();
+		$builder = $this->configuration->builder()
+			->issuedAt($now)
+			->expiresAt($now->modify('+90 min'))
+			->withClaim('uid', $user->getId());
+		if ($hostname !== false) {
+			$builder->issuedBy($hostname)->identifiedBy($hostname);
+		}
+		$signer = $this->configuration->signer();
+		$signingKey = $this->configuration->signingKey();
+		return $builder->getToken($signer, $signingKey)->toString();
 	}
 
 }
