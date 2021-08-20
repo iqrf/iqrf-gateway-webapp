@@ -30,7 +30,7 @@ limitations under the License.
 					</CListGroupItem>
 					<CListGroupItem
 						v-if='$store.getters["features/isEnabled"]("ssh")'
-                        to='/security/ssh-key/'
+						to='/security/ssh-key/'
 					>
 						<header class='list-group-item-heading'>
 							{{ $t('core.security.ssh.title') }}
