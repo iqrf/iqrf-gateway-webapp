@@ -68,6 +68,11 @@ class User implements JsonSerializable {
 	public const ROLE_POWER = 'power';
 
 	/**
+	 * User role: Iqaros user
+	 */
+	public const ROLE_IQAROS = 'iqaros';
+
+	/**
 	 * Default user role
 	 */
 	public const ROLE_DEFAULT = self::ROLE_NORMAL;
@@ -75,7 +80,11 @@ class User implements JsonSerializable {
 	/**
 	 * Supported user roles
 	 */
-	public const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
+	public const ROLES = [
+		self::ROLE_NORMAL,
+		self::ROLE_POWER,
+		self::ROLE_IQAROS,
+	];
 
 	/**
 	 * Account state: unverified e-mail address
