@@ -51,7 +51,11 @@
 			"$id": "#/properties/role",
 			"type": "string",
 			"title": "Role",
-			"enum": ["normal", "power"],
+			"enum": [
+				"normal",
+				"iqaros",
+				"power"
+			],
 			"default": "normal",
 			"example": "power"
 		}

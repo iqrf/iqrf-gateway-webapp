@@ -288,6 +288,13 @@
 					"default": true,
 					"example": true
 				},
+				"iqaros": {
+					"$id": "#/properties/factoryReset/properties/iqaros",
+					"type": "boolean",
+					"title": "Reset IQAROS",
+					"default": false,
+					"example": false
+				},
 				"network": {
 					"$id": "#/properties/factoryReset/properties/network",
 					"type": "boolean",

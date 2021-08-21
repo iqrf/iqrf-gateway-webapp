@@ -944,6 +944,7 @@
 				"factoryReset": {
 					"title": "Factory reset",
 					"daemon": "Daemon",
+					"iqaros": "IQAROS",
 					"network": "IP network",
 					"webapp": "Web application"
 				},

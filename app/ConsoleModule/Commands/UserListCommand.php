@@ -49,7 +49,7 @@ class UserListCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$header = ['ID', 'Username', 'Role', 'Language'];
+		$header = ['ID', 'Username', 'Email', 'Role', 'Language', 'State'];
 		$table = new Table($output);
 		$table->setHeaders($header);
 		$table->setRows($this->getUsers());

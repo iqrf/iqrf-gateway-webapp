@@ -54,6 +54,7 @@
 			"title": "Role",
 			"enum": [
 				"normal",
+				"iqaros",
 				"power"
 			],
 			"default": "normal",
