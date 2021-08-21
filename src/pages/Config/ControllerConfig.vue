@@ -271,6 +271,11 @@ limitations under the License.
 									:label='$t("config.controller.form.factoryReset.daemon")'
 								/>
 								<CInputCheckbox
+									v-if='config.factoryReset.iqaros !== undefined'
+									:checked.sync='config.factoryReset.iqaros'
+									:label='$t("config.controller.form.factoryReset.iqaros")'
+								/>
+								<CInputCheckbox
 									:checked.sync='config.factoryReset.network'
 									:label='$t("config.controller.form.factoryReset.network")'
 								/>

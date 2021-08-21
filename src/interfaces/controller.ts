@@ -154,6 +154,11 @@ interface IControllerFactoryReset {
 	daemon: boolean
 
 	/**
+	 * Reset IQAROS
+	 */
+	iqaros?: boolean
+
+	/**
 	 * Reset network
 	 */
 	network: boolean
