@@ -1,4 +1,4 @@
-Sets base URL for Iqaros
+Sets base URL for IQAROS
 --- a/.env
 +++ b/.env
 @@ -1,2 +1,2 @@

@@ -27,7 +27,7 @@ limitations under the License.
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
 		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
-			<LogoBig :alt='$t("core.title")' />
+			<Logo :alt='$t("core.title")' />
 		</CHeaderBrand>
 		<CHeaderNav class='ml-auto mr-3'>
 			<CDropdown
@@ -63,9 +63,9 @@ import {
 	CIcon,
 	CToggler,
 } from '@coreui/vue/src';
-import LogoBig from '../assets/logo-big.svg';
 import {cilLockLocked} from '@coreui/icons';
 import { Dictionary } from 'vue-router/types/router';
+import ThemeManager from '../helpers/themeManager';
 
 @Component({
 	components: {
@@ -77,7 +77,7 @@ import { Dictionary } from 'vue-router/types/router';
 		CHeaderNavLink,
 		CIcon,
 		CToggler,
-		LogoBig,
+		Logo: ThemeManager.getSidebarLogo(),
 	}
 })
 
@@ -91,7 +91,7 @@ export default class TheHeader extends Vue {
 	private icons: Dictionary<Array<string>> = {
 		logout: cilLockLocked
 	}
-	
+
 	/**
 	 * User signout method, redirects to the signin page
 	 */

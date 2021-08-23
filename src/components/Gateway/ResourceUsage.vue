@@ -75,6 +75,8 @@ export default class ResourceUsage extends Vue {
 			className += ' bg-danger';
 		} else if (usage >= 80) {
 			className += ' bg-warning';
+		} else {
+			className += ' bg-success';
 		}
 		return className;
 	}

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\Models\Mail\Senders;
 
 use App\Models\Database\Entities\UserVerification;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Mail\Message;
 
 class EmailVerificationMailSender extends BaseMailSender {
@@ -32,20 +31,17 @@ class EmailVerificationMailSender extends BaseMailSender {
 	 * @param string $baseUrl Base URL
 	 */
 	public function send(UserVerification $verification, string $baseUrl = ''): void {
-		$template = $this->createTemplate();
-		assert($template instanceof Template);
 		$user = $verification->getUser();
 		$params = [
 			'hostname' => gethostname(),
 			'url' => $baseUrl . '/account/verification/' . $verification->getUuid(),
 			'user' => $user,
 		];
-		$html = $template->renderToString(__DIR__ . '/templates/emailVerification.latte', $params);
+		$html = $this->renderTemplate('emailVerification.latte', $params);
 		$mail = new Message();
 		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('core.title'));
 		$mail->addTo($user->getEmail(), $user->getUserName());
-		$mail->setSubject($this->translator->translate('mail.emailVerification.title'));
-		$mail->setHtmlBody($html, __DIR__ . '/templates/');
+		$mail->setHtmlBody($html, $this->getTemplateDir());
 		$this->createMailer()->send($mail);
 	}
 

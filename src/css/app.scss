@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-$theme-colors: (
-	'primary': #337ab7,
-);
-
-@import '~@coreui/coreui/scss/coreui';
-
 .btn-group {
 	& > .dropup {
 		&:not(:last-child) > .btn {

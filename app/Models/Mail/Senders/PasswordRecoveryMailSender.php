@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\Models\Mail\Senders;
 
 use App\Models\Database\Entities\PasswordRecovery;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Mail\Message;
 
 class PasswordRecoveryMailSender extends BaseMailSender {
@@ -32,20 +31,17 @@ class PasswordRecoveryMailSender extends BaseMailSender {
 	 * @param string $baseUrl Base URL
 	 */
 	public function send(PasswordRecovery $recovery, string $baseUrl = ''): void {
-		$template = $this->createTemplate();
-		assert($template instanceof Template);
 		$user = $recovery->getUser();
 		$params = [
 			'hostname' => gethostname(),
 			'url' => $baseUrl . '/account/recovery/' . $recovery->getUuid(),
 			'user' => $user,
 		];
-		$html = $template->renderToString(__DIR__ . '/templates/passwordRecovery.latte', $params);
+		$html = $this->renderTemplate('passwordRecovery.latte', $params);
 		$mail = new Message();
 		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('core.title'));
 		$mail->addTo($user->getEmail(), $user->getUserName());
-		$mail->setSubject($this->translator->translate('mail.passwordRecovery.title'));
-		$mail->setHtmlBody($html, __DIR__ . '/templates/');
+		$mail->setHtmlBody($html, $this->getTemplateDir());
 		$this->createMailer()->send($mail);
 	}
 
