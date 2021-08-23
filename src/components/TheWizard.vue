@@ -20,7 +20,7 @@ limitations under the License.
 			<CRow class='justify-content-center'>
 				<CCol lg='10'>
 					<div class='logo'>
-						<LogoBlue :alt='$t("core.title")' />
+						<Logo :alt='$t("core.title")' />
 					</div>
 					<slot />
 				</CCol>
@@ -32,14 +32,14 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CCol, CRow} from '@coreui/vue/src';
-import LogoBlue from '../assets/logo-blue.svg';
+import ThemeManager from '../helpers/themeManager';
 
 @Component({
 	components: {
 		CContainer,
 		CCol,
 		CRow,
-		LogoBlue,
+		Logo: ThemeManager.getWizardLogo(),
 	},
 })
 

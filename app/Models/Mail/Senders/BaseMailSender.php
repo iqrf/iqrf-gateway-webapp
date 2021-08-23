@@ -6,7 +6,7 @@ namespace App\Models\Mail\Senders;
 
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\MailerFactory;
-use Nette\Application\UI\Template;
+use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use Nette\Localization\Translator;
 use Nette\Mail\FallbackMailer;
@@ -59,14 +59,33 @@ abstract class BaseMailSender {
 	}
 
 	/**
-	 * Creates the Latte template for the email
-	 * @return Template Latte template for the email
+	 * Creates the Latte template for the e-mail
+	 * @return Template Latte template for the e-mail
 	 */
 	protected function createTemplate(): Template {
 		$template = $this->templateFactory->createTemplate();
 		$latte = $template->getLatte();
 		$latte->addProvider('translator', $this->translator);
 		return $template;
+	}
+
+	/**
+	 * Returns the theme directory
+	 * @return string Theme directory
+	 */
+	protected function getTemplateDir(): string {
+		return __DIR__ . '/templates/' . $this->configuration->getTheme();
+	}
+
+	/**
+	 * Renders the Latte template for the e-mail
+	 * @param string $fileName Template file name
+	 * @param array<string, mixed> $params Template parameters
+	 * @return string Rendered template
+	 */
+	protected function renderTemplate(string $fileName, array $params): string {
+		return $this->createTemplate()
+			->renderToString($this->getTemplateDir() . '/' . $fileName, $params);
 	}
 
 }

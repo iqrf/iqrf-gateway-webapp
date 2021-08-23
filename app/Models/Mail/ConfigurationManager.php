@@ -55,6 +55,7 @@ class ConfigurationManager {
 			'context' => Expect::arrayOf('array')->dynamic(),
 			'clientHost' => Expect::string()->dynamic(),
 			'persistent' => Expect::bool(false)->dynamic(),
+			'theme' => Expect::string('generic')->dynamic(),
 		])->castTo('array');
 	}
 
@@ -72,6 +73,14 @@ class ConfigurationManager {
 	 */
 	public function getFrom(): string {
 		return $this->read()['from'];
+	}
+
+	/**
+	 * Returns the theme name
+	 * @return string Theme name
+	 */
+	public function getTheme(): string {
+		return $this->read()['theme'];
 	}
 
 	/**

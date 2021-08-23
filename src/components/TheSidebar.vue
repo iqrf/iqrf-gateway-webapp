@@ -57,8 +57,7 @@ import {
 	cilUser,
 	cilWifiSignal4,
 } from '@coreui/icons';
-import LogoBig from '../assets/logo-big.svg';
-import LogoSmall from '../assets/logo-small.svg';
+import ThemeManager from '../helpers/themeManager';
 import VueI18n from 'vue-i18n';
 
 interface NavMemberItem {
@@ -100,8 +99,8 @@ interface NavData {
 		CSidebar,
 		CSidebarBrand,
 		CSidebarMinimizer,
-		LogoBig,
-		LogoSmall,
+		LogoBig: ThemeManager.getSidebarLogo(),
+		LogoSmall: ThemeManager.getSidebarSmallLogo(),
 		SidebarIndication,
 	},
 })
@@ -180,14 +179,14 @@ export default class TheSidebar extends Vue {
 										to: '/gateway/service/iqrf-gateway-daemon/',
 										roles: ['power', 'normal'],
 									},
-									{	
+									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-controller.title'),
 										to: '/gateway/service/iqrf-gateway-controller/',
 										feature: 'iqrfGatewayController',
 										roles: ['power', 'normal'],
 									},
-									{	
+									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-translator.title'),
 										to: '/gateway/service/iqrf-gateway-translator/',
@@ -302,14 +301,14 @@ export default class TheSidebar extends Vue {
 									}
 								]
 							},
-							{	
+							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.controller.title'),
 								to: '/config/controller/',
 								feature: 'iqrfGatewayController',
 								roles: ['power', 'normal'],
 							},
-							{	
+							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.translator.title'),
 								to: '/config/translator/',
@@ -618,3 +617,10 @@ export default class TheSidebar extends Vue {
 
 }
 </script>
+
+<style lang='scss'>
+.c-sidebar-brand-full, .c-sidebar-brand-minimized {
+	max-width: 85%;
+	max-height: 85%;
+}
+</style>

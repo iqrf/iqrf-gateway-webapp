@@ -85,7 +85,6 @@ import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} f
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
 import {Dictionary} from 'vue-router/types/router';
@@ -102,7 +101,6 @@ import TheWizard from '../../components/TheWizard.vue';
 		CInput,
 		CLink,
 		CRow,
-		LogoBlue,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,

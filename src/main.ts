@@ -30,10 +30,12 @@ import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
 import store from './store';
 import router from './router';
 import i18n from './i18n';
+import ThemeManager from './helpers/themeManager';
 import UrlBuilder from './helpers/urlBuilder';
 
 import App from './App.vue';
 
+require('./css/themes/' + ThemeManager.getName() + '.scss');
 import './css/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-select/dist/vue-select.css';
