@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -38,27 +38,27 @@ mender:
+@@ -41,23 +41,23 @@
  	enabled: false
  # Monitoring service
  monit:
@@ -38,7 +38,7 @@
 -	path: /etc/systemd/timesyncd.conf
 +	utility: ntp
 +	path: /etc/ntp.conf
- # PIXLA mamagement system
+ # PIXLA management system
  pixla:
 -	enabled: false
 +	enabled: true
