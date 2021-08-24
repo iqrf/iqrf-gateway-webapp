@@ -177,7 +177,11 @@ class UserController extends BaseController {
 		}
 		$recovery = new PasswordRecovery($user);
 		$this->entityManager->persist($recovery);
-		$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
+		if (array_key_exists('baseUrl', $body)) {
+			$baseUrl = trim($body['baseUrl'], '/');
+		} else {
+			$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
+		}
 		$this->passwordRecoverySender->send($recovery, $baseUrl);
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');

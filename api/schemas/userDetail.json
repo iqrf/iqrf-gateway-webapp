@@ -9,7 +9,8 @@
 		"username",
 		"email",
 		"language",
-		"role"
+		"role",
+		"state"
 	],
 	"properties": {
 		"id": {
@@ -59,6 +60,16 @@
 			],
 			"default": "normal",
 			"example": "power"
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"type": "string",
+			"title": "Account state",
+			"enum": [
+				"unverified",
+				"verified"
+			],
+			"example": "verified"
 		}
 	}
 }

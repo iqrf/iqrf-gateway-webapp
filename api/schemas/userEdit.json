@@ -5,6 +5,12 @@
 	"title": "User Edit",
 	"additionalProperties": false,
 	"properties": {
+		"baseUrl": {
+			"$id": "#/properties/baseUrl",
+			"type": "string",
+			"title": "Frontend base URL",
+			"example": "https://iqaros.local/system/"
+		},
 		"username": {
 			"$id": "#/properties/username",
 			"type": "string",
@@ -45,6 +51,16 @@
 				"power"
 			],
 			"example": "power"
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"type": "string",
+			"title": "Account state",
+			"enum": [
+				"unverified",
+				"verified"
+			],
+			"example": "verified"
 		}
 	}
 }

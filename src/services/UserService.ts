@@ -16,6 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import UrlBuilder from '../helpers/urlBuilder';
 
 /**
  * User service
@@ -44,12 +45,14 @@ class UserService {
 	 * @param role Role
 	 */
 	add(username: string, email: string, password: string, language: string, role: string): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
 		const body = {
 			username: username,
 			email: email !== '' ? email : null,
 			password: password,
 			language: language,
 			role: role,
+			baseUrl: urlBuilder.getBaseUrl(),
 		};
 		return axios.post('users/', body, {headers: authorizationHeader()});
 	}
@@ -68,7 +71,12 @@ class UserService {
 	 * @param user User settings
 	 */
 	edit(id: number, user: any): Promise<AxiosResponse> {
-		return axios.put('users/' + id, user, {headers: authorizationHeader()});
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+			...user,
+		};
+		return axios.put('users/' + id, body, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -106,7 +114,9 @@ class UserService {
 	 * @param {string} user User name
 	 */
 	requestPasswordRecovery(user: string): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
 		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
 			username: user,
 		};
 		return axios.post('user/password/recovery', body, {headers: authorizationHeader()});
@@ -129,7 +139,11 @@ class UserService {
 	 * @param {number} id User ID
 	 */
 	resendVerificationEmail(id: number): Promise<AxiosResponse> {
-		return axios.post('users/' + id + '/resendVerification', null, {headers: authorizationHeader()});
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+		};
+		return axios.post('users/' + id + '/resendVerification', body, {headers: authorizationHeader()});
 	}
 }
 

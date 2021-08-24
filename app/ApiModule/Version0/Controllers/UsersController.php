@@ -342,7 +342,12 @@ class UsersController extends BaseController {
 	 * @param UserVerification $verification User verification
 	 */
 	private function sendVerificationEmail(ApiRequest $request, UserVerification $verification): void {
-		$baseUrl = explode('/api/v0/users/', (string) $request->getUri(), 2)[0];
+		$body = $request->getJsonBody();
+		if (array_key_exists('baseUrl', $body)) {
+			$baseUrl = trim($body['baseUrl'], '/');
+		} else {
+			$baseUrl = explode('/api/v0/users/', (string) $request->getUri(), 2)[0];
+		}
 		$this->sender->send($verification, $baseUrl);
 	}
 
