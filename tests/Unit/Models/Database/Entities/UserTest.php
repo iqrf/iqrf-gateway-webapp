@@ -187,7 +187,7 @@ final class UserTest extends TestCase {
 			'email' => null,
 			'role' => self::ROLE,
 			'language' => self::LANGUAGE,
-			'state' => self::STATE,
+			'state' => User::STATES[self::STATE],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
