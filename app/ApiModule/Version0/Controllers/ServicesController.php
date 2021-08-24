@@ -31,6 +31,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\CoreModule\Models\FeatureManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -44,6 +45,11 @@ use App\ServiceModule\Models\ServiceManager;
 class ServicesController extends BaseController {
 
 	/**
+	 * @var FeatureManager Optional features manager
+	 */
+	private $featureManager;
+
+	/**
 	 * @var ServiceManager Service manager
 	 */
 	private $manager;
@@ -52,24 +58,27 @@ class ServicesController extends BaseController {
 	 * Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
-		'gwman-client',
-		'iqrf-gateway-controller',
-		'iqrf-gateway-daemon',
-		'iqrf-gateway-translator',
-		'mender-client',
-		'monit',
-		'ssh',
-		'systemd-journald',
-		'unattended-upgrades',
+		'gwman-client' => 'pixla',
+		'iqrf-gateway-controller' => 'iqrfGatewayController',
+		'iqrf-gateway-daemon' => null,
+		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
+		'mender-client' => 'mender',
+		'monit' => 'monit',
+		'ssh' => 'ssh',
+		'systemd-journald' => 'systemdJournal',
+		'tempgw' => 'iTemp',
+		'unattended-upgrades' => 'unattendedUpgrades',
 	];
 
 	/**
 	 * Constructor
 	 * @param ServiceManager $manager Service manager
+	 * @param FeatureManager $featureManager Optional features manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ServiceManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(ServiceManager $manager, FeatureManager $featureManager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		$this->featureManager = $featureManager;
 		parent::__construct($validator);
 	}
 
@@ -91,7 +100,7 @@ class ServicesController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$services = ['services' => self::WHITELISTED_SERVICES];
+		$services = ['services' => $this->getWhitelistedServices()];
 		return $response->writeJsonBody($services);
 	}
 
@@ -144,6 +153,20 @@ class ServicesController extends BaseController {
 		} catch (NonexistentServiceException $e) {
 			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
+	}
+
+	/**
+	 * Returns the whitelisted services
+	 * @return array<string> Whitelisted services
+	 */
+	public function getWhitelistedServices(): array {
+		return array_keys(array_filter(self::WHITELISTED_SERVICES, function (?string $feature): bool {
+			if ($feature === null) {
+				return true;
+			}
+			$features = $this->featureManager->listEnabled();
+			return in_array($feature, $features, true);
+		}));
 	}
 
 	/**
@@ -332,7 +355,7 @@ class ServicesController extends BaseController {
 	 * @param string $name Service name
 	 */
 	private function isServiceWhitelisted(string $name): void {
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
+		if (!in_array($name, $this->getWhitelistedServices(), true)) {
 			throw new ClientErrorException('Unsupported service', ApiResponse::S400_BAD_REQUEST);
 		}
 	}

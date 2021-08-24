@@ -1,0 +1,30 @@
+Fix features for IQAROS
+--- a/app/config/features.neon
++++ b/app/config/features.neon
+@@ -22,7 +22,7 @@
+ 	enabled: false
+ 	user: root
+ grafana:
+-	enabled: false
++	enabled: true
+ 	url: /grafana/
+ # IQRF Gateway Controller configuration
+ iqrfGatewayController:
+@@ -35,7 +35,7 @@
+ 	enabled: false
+ # iTemp service
+ iTemp:
+-	enabled: false
++	enabled: true
+ # Mender client configuration
+ mender:
+ 	enabled: false
+@@ -47,7 +47,7 @@
+ 	enabled: false
+ # Node-RED
+ nodeRed:
+-	enabled: false
++	enabled: true
+ 	url: /node-red/
+ # PIXLA management system
+ pixla:

@@ -45,7 +45,7 @@ limitations under the License.
 					{{ $t('service.actions.stop') }}
 				</CButton> <CButton
 					v-if='service.active'
-					color='primary'
+					color='info'
 					@click='restart()'
 				>
 					{{ $t('service.actions.restart') }}
@@ -74,7 +74,7 @@ limitations under the License.
 			<br><br>
 			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
 		</CCard>
-		<AptConfig v-if='serviceName === "unattended-upgrades"' />
+		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
 		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("systemdJournal")' />
 	</div>
@@ -99,6 +99,7 @@ const whitelisted = [
 	'iqrf-gateway-daemon',
 	'iqrf-gateway-translator',
 	'ssh',
+	'tempgw',
 	'unattended-upgrades',
 	'systemd-journald',
 ];
@@ -107,6 +108,7 @@ const features = {
 	'iqrf-gateway-controller': 'iqrfGatewayController',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',
+	'tempgw': 'iTemp',
 	'unattended-upgrades': 'unattendedUpgrades',
 	'systemd-journald': 'systemdJournal',
 };

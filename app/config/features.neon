@@ -33,6 +33,9 @@ iqrfGatewayTranslator:
 # IQRF Repository Extension configuration
 iqrfRepository:
 	enabled: false
+# iTemp service
+iTemp:
+	enabled: false
 # Mender client configuration
 mender:
 	enabled: false
@@ -50,7 +53,7 @@ ntp:
 	enabled: false
 	utility: timesyncd
 	path: /etc/systemd/timesyncd.conf
-# PIXLA mamagement system
+# PIXLA management system
 pixla:
 	enabled: false
 # Remount endpoints
