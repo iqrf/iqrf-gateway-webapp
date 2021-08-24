@@ -204,6 +204,13 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('service.tempgw.title'),
+								to: '/gateway/service/tempgw/',
+								feature: 'iTemp',
+								roles: ['power', 'normal'],
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('service.unattended-upgrades.title'),
 								to: '/gateway/service/unattended-upgrades/',
 								feature: 'unattendedUpgrades',

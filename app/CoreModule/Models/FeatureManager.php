@@ -61,6 +61,9 @@ class FeatureManager {
 		'iqrfRepository' => [
 			'enabled' => false,
 		],
+		'iTemp' => [
+			'enabled' => false,
+		],
 		'mender' => [
 			'enabled' => false,
 		],

@@ -9,7 +9,7 @@
  # Default gateway user password change
  gatewayPass:
  	enabled: false
-@@ -26,7 +26,7 @@ grafana:
+@@ -26,7 +26,7 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
