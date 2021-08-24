@@ -11,6 +11,12 @@
 		"role"
 	],
 	"properties": {
+		"baseUrl": {
+			"$id": "#/properties/baseUrl",
+			"type": "string",
+			"title": "Frontend base URL",
+			"example": "https://iqaros.local/system/"
+		},
 		"username": {
 			"$id": "#/properties/username",
 			"type": "string",

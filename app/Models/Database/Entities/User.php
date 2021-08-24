@@ -110,9 +110,9 @@ class User implements JsonSerializable {
 	 * Supported account states
 	 */
 	public const STATES = [
-		self::STATE_UNVERIFIED,
-		self::STATE_VERIFIED,
-		self::STATE_BLOCKED,
+		self::STATE_UNVERIFIED => 'unverified',
+		self::STATE_VERIFIED => 'verified',
+		self::STATE_BLOCKED => 'blocked',
 	];
 
 	/**
@@ -279,7 +279,7 @@ class User implements JsonSerializable {
 	 * @throws InvalidUserStateException
 	 */
 	public function setState(int $state): void {
-		if (!in_array($state, self::STATES, true)) {
+		if (!array_key_exists($state, self::STATES)) {
 			throw new InvalidUserStateException();
 		}
 		$this->state = $state;
@@ -316,7 +316,7 @@ class User implements JsonSerializable {
 			'email' => $this->email,
 			'role' => $this->role,
 			'language' => $this->language,
-			'state' => $this->state,
+			'state' => self::STATES[$this->state],
 		];
 	}
 

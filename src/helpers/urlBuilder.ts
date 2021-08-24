@@ -76,6 +76,13 @@ export default class UrlBuilder {
 	}
 
 	/**
+	 * Returns base URL
+	 */
+	getBaseUrl(): string {
+		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + process.env.VUE_APP_BASE_URL;
+	}
+
+	/**
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
