@@ -59,9 +59,7 @@ limitations under the License.
 						</tr>
 						<tr>
 							<th>{{ $t('gateway.info.hostname') }}</th>
-							<td
-								style='display: flex; justify-content: space-between; margin-top: -1px;'
-							>
+							<td class='hostname'>
 								{{ info.hostname }}
 								<CButton
 									color='primary'
@@ -94,9 +92,10 @@ limitations under the License.
 						<tr>
 							<th>{{ $t('gateway.info.usages.disks') }}</th>
 							<td>
-								<div v-for='usage of info.diskUsages' :key='usage.fsName'>
+								<div v-for='(usage, index) in info.diskUsages' :key='usage.fsName'>
 									<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
-									<resource-usage :usage='usage' /><br>
+									<resource-usage :usage='usage' />
+									<br v-if='index !== (info.diskUsages.length - 1)'>
 								</div>
 							</td>
 						</tr>
@@ -185,7 +184,7 @@ export default class GatewayInfo extends Vue {
 	private showCoordinator = false
 
 	private icon: Array<string> = cilPencil;
-	
+
 	/**
 	 * Computes array of ip address objects from network interfaces
 	 * @returns {Array<IpAddress} Array of ip address objects
@@ -272,3 +271,17 @@ export default class GatewayInfo extends Vue {
 	}
 }
 </script>
+
+<style lang='scss' scoped>
+.table {
+	th {
+		vertical-align: middle;
+	}
+}
+
+.hostname {
+  display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+</style>
