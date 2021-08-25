@@ -12,6 +12,13 @@
 				"sendFailed": "Failed to send password recovery email: {error}",
 				"sendSuccess": "An email containing further instructions to reset your password was sent to the address associated with the account."
 			}
+		},
+		"email": {
+			"add": "Add e-mail address",
+			"messages":{
+				"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
+				"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
+			}
 		}
 	},
 	"cloud": {

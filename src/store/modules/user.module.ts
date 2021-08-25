@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import AuthenticationService, {User} from '../../services/AuthenticationService';
+import AuthenticationService, {AccountState, User, UserRole} from '../../services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';
@@ -60,24 +60,36 @@ const actions: ActionTree<UserState, any> = {
 };
 
 const getters: GetterTree<UserState, any> = {
-	isLoggedIn(state: UserState) {
+	isLoggedIn(state: UserState): boolean {
 		const now = new Date();
 		const epoch = Math.round(now.getTime() / 1000);
 		return (state.user !== null && state.expiration > epoch);
 	},
-	getId(state: UserState) {
+	isUnverified(state: UserState): boolean|null {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.state === AccountState.UNVERIFIED;
+	},
+	getId(state: UserState): number|null {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.id;
 	},
-	getName(state: UserState) {
+	getName(state: UserState): string|null {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.username;
 	},
-	getRole(state: UserState) {
+	getEmail(state: UserState): string|null {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.email;
+	},
+	getRole(state: UserState): UserRole|null {
 		if (state.user === null) {
 			return null;
 		}

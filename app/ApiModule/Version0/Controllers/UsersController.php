@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
@@ -37,6 +38,7 @@ use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\EmailVerificationMailSender;
+use Nette\Mail\FallbackMailerException;
 
 /**
  * User manager API controller
@@ -151,7 +153,11 @@ class UsersController extends BaseController {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		if ($user->getEmail() !== null) {
-			$this->sendVerificationEmail($request, $verification);
+			try {
+				$this->sendVerificationEmail($request, $verification);
+			} catch (FallbackMailerException $e) {
+				// Ignore failure
+			}
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
 			->withHeader('Location', '/api/v0/users/' . $user->getId())
@@ -298,7 +304,11 @@ class UsersController extends BaseController {
 		if ($sendVerification) {
 			$verification = new UserVerification($user);
 			$this->entityManager->persist($verification);
-			$this->sendVerificationEmail($request, $verification);
+			try {
+				$this->sendVerificationEmail($request, $verification);
+			} catch (FallbackMailerException $e) {
+				// Ignore failure
+			}
 		}
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
@@ -315,6 +325,8 @@ class UsersController extends BaseController {
 	 *          description: Success
 	 *      '404':
 	 *          description: Not found
+	 *      '500':
+	 *          description: Unable to send the e-mail
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
@@ -329,8 +341,12 @@ class UsersController extends BaseController {
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		foreach ($user->getVerifications() as $verification) {
-			$this->sendVerificationEmail($request, $verification);
+		try {
+			foreach ($user->getVerifications() as $verification) {
+				$this->sendVerificationEmail($request, $verification);
+			}
+		} catch (FallbackMailerException $e) {
+			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->withStatus(ApiResponse::S200_OK)
 			->writeBody('Workaround');
