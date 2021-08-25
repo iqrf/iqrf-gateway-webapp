@@ -33,21 +33,24 @@ const state: UserState = {
 };
 
 const actions: ActionTree<UserState, any> = {
-	signIn({commit}, credentials) {
+	setJwt({commit}, user: User) {
+		const now = new Date();
+		const epoch = Math.round(now.getTime() / 1000);
+		const jwt: JwtPayload = jwt_decode(user.token);
+		if (jwt.exp === undefined) {
+			return Promise.reject(new Error('Expiration missing in JWT token.'));
+		}
+		if (jwt.iat === undefined) {
+			return Promise.reject(new Error('Token issue timestamp missing in JWT token.'));
+		}
+		const diff = epoch - jwt.iat;
+		commit('SET_EXPIRATION', jwt.exp + diff);
+		commit('SIGN_IN', user);
+	},
+	signIn({dispatch}, credentials) {
 		return AuthenticationService.login(credentials)
 			.then((user: User) => {
-				const now = new Date();
-				const epoch = Math.round(now.getTime() / 1000);
-				const jwt: JwtPayload = jwt_decode(user.token);
-				if (jwt.exp === undefined) {
-					return Promise.reject(new Error('Expiration missing in JWT token.'));
-				}
-				if (jwt.iat === undefined) {
-					return Promise.reject(new Error('Token issue timestamp missing in JWT token.'));
-				}
-				const diff = epoch - jwt.iat;
-				commit('SET_EXPIRATION', jwt.exp + diff);
-				commit('SIGN_IN', user);
+				dispatch('setJwt', user);
 			})
 			.catch((error: AxiosError) => {
 				console.error(error);
