@@ -44,6 +44,56 @@ export class UserCredentials {
 }
 
 /**
+ * User account states
+ */
+export enum AccountState {
+
+	/**
+	 * Unverified e-mail address
+	 */
+	UNVERIFIED = 'unverified',
+
+	/**
+	 * verified e-mail address
+	 */
+	VERIFIED = 'verified',
+
+}
+
+/**
+ * User language
+ */
+export enum UserLanguage {
+
+	/**
+	 * English
+	 */
+	ENGLISH = 'en'
+
+}
+
+/**
+ * User roles
+ */
+export enum UserRole {
+
+	/**
+	 * Power user
+	 */
+	POWER = 'power',
+
+	/**
+	 * Normal user
+	 */
+	NORMAL = 'normal',
+
+	/**
+	 * IQAROS user
+	 */
+	IQAROS = 'iqaros',
+}
+
+/**
  * User
  */
 export interface User {
@@ -59,19 +109,29 @@ export interface User {
 	username: string;
 
 	/**
+	 * E-mail address
+	 */
+	email: string;
+
+	/**
 	 * User role
 	 */
-	role: string;
+	role: UserRole;
 
 	/**
 	 * User language
 	 */
-	language: string;
+	language: UserLanguage;
 
 	/**
 	 * User token
 	 */
 	token: string;
+
+	/**
+	 * Account state
+	 */
+	state: AccountState;
 
 }
 

@@ -14,9 +14,37 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<template>		
+<template>
 	<div>
 		<h1>{{ $t('core.dashboard') }}</h1>
+		<CAlert
+			v-if='userEmail === null'
+			color='warning'
+			class='d-flex justify-content-between align-items-center'
+		>
+			{{ $t('account.email.messages.missing') }}
+			<CButton
+				color='warning'
+				size='sm'
+				:to='"/user/edit/" + userId'
+			>
+				{{ $t('account.email.add') }}
+			</CButton>
+		</CAlert>
+		<CAlert
+			v-if='userEmail !== null && isUserUnverified'
+			color='warning'
+			class='d-flex justify-content-between align-items-center'
+		>
+			{{ $t('account.email.messages.unverified', {email: userEmail}) }}
+			<CButton
+				color='warning'
+				size='sm'
+				@click='resendVerification(userId)'
+			>
+				{{ $t('core.user.resendVerification') }}
+			</CButton>
+		</CAlert>
 		<CCard>
 			<CCardBody>
 				<CListGroup>
@@ -151,11 +179,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
+import {mapGetters} from 'vuex';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import UserService from '../../services/UserService';
 
 @Component({
 	components: {
+		CAlert,
+		CButton,
 		CCard,
 		CListGroup,
 		CListGroupItem
@@ -163,11 +198,36 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	metaInfo: {
 		title: 'core.dashboard',
 	},
+	computed: {
+		...mapGetters({
+			userId: 'user/getId',
+			userEmail: 'user/getEmail',
+			isUserUnverified: 'user/isUnverified',
+		}),
+	},
 })
 
 /**
  * Main disambiguation menu component
  */
 export default class MainDisambiguation extends Vue {
+
+	/**
+	 * Resends verification e-mail
+	 * @param userId User ID
+	 * @private
+	 */
+	private resendVerification(userId: number): void {
+		this.$store.commit('spinner/SHOW');
+		UserService.resendVerificationEmail(userId)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('core.user.messages.resendSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.resendFailed'));
+	}
+
 }
 </script>

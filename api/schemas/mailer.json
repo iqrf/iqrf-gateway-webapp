@@ -1,0 +1,81 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mailer.json",
+	"type": "object",
+	"title": "JWT",
+	"additionalProperties": false,
+	"required": [
+		"enabled",
+		"host",
+		"username",
+		"password",
+		"secure",
+		"from",
+		"theme"
+	],
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Mailer enablement",
+			"example": false
+		},
+		"host": {
+			"$id": "#/properties/host",
+			"type": "string",
+			"title": "SMTP host",
+			"example": "localhost"
+		},
+		"port": {
+			"$id": "#/properties/port",
+			"type": "number",
+			"title": "SMTP port",
+			"example": 465,
+			"minimum": 1,
+			"maximum": 65535
+		},
+		"username": {
+			"$id": "#/properties/username",
+			"type": "string",
+			"title": "SMTP username",
+			"example": "root"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"type": "string",
+			"title": "SMTP password",
+			"example": ""
+		},
+		"secure": {
+			"$id": "#/properties/secure",
+			"oneOf": [
+				{
+					"type": "null",
+					"description": "None"
+				},
+				{
+					"type": "string",
+					"enum": [
+						"ssl",
+						"tls"
+					],
+					"description": "ssl - TLS, tls - STARTTLS"
+				}
+			],
+			"title": "SMTP connection security",
+			"example": "root"
+		},
+		"from": {
+			"$id": "#/properties/from",
+			"type": "string",
+			"title": "Sender",
+			"example": "iqrf-gw@localhost"
+		},
+		"theme": {
+			"$id": "#/properties/theme",
+			"type": "string",
+			"title": "Mail theme",
+			"example": "generic"
+		}
+	}
+}

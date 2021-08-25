@@ -102,7 +102,7 @@ class ConfigurationManager {
 	 * @param array<string, bool|int|string> $configuration Mailer configuration to write
 	 * @throws IOException
 	 */
-	protected function write(array $configuration): void {
+	public function write(array $configuration): void {
 		$content = Neon::encode($configuration, Neon::BLOCK);
 		FileSystem::write($this->path, $content);
 	}

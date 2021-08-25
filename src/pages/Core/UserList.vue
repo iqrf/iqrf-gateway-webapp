@@ -87,7 +87,7 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
-								v-if='item.email !== null && item.state === 0'
+								v-if='item.email !== null && item.state === "unverified"'
 								color='warning'
 								size='sm'
 								@click='resendVerification(item.id)'
@@ -384,7 +384,7 @@ export default class UserList extends Vue {
 	 */
 	private async handleDeleteSuccess(user: IUser): Promise<void> {
 		if (user.id === this.$store.getters['user/getId']) {
-			this.$store.dispatch('user/signOut');
+			await this.$store.dispatch('user/signOut');
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t(

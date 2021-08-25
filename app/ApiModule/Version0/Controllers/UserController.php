@@ -39,6 +39,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
+use Nette\Mail\FallbackMailerException;
 use Throwable;
 use function gethostname;
 
@@ -160,6 +161,8 @@ class UserController extends BaseController {
 	 *          description: E-mail address is not verified
 	 *      '404':
 	 *          description: User not found
+	 *      '500':
+	 *          description: Unable to send the e-mail
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -182,7 +185,11 @@ class UserController extends BaseController {
 		} else {
 			$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
 		}
-		$this->passwordRecoverySender->send($recovery, $baseUrl);
+		try {
+			$this->passwordRecoverySender->send($recovery, $baseUrl);
+		} catch (FallbackMailerException $e) {
+			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');
 	}
