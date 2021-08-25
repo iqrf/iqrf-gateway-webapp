@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import UrlBuilder from '../helpers/urlBuilder';
+import {User} from './AuthenticationService';
 
 /**
  * User service
@@ -105,8 +106,11 @@ class UserService {
 	 * Verifies the user
 	 * @param uuid User verification UUID
 	 */
-	verify(uuid: string): Promise<AxiosResponse> {
-		return axios.get('user/verify/' + uuid);
+	verify(uuid: string): Promise<User> {
+		return axios.get('user/verify/' + uuid)
+			.then((response: AxiosResponse) => {
+				return response.data as User;
+			});
 	}
 
 	/**

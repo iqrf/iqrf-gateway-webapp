@@ -1156,6 +1156,7 @@
 			"verification": {
 				"title": "Account verification",
 				"success": "Your account has been successfully verified.",
+				"redirect": "You will be redirected to the dashboard in {countdown}.",
 				"failed": "Account verification failed, {error}."
 			},
 			"oldPassword": "Old password (only if you want change password)",
@@ -2934,6 +2935,9 @@
 		"messages": {
 			"noRecords": "No records have been found."
 		}
+	},
+	"time": {
+		"second": "{count} second | {count} seconds"
 	},
 	"messageError": "Request could not be processed: {error}"
 }

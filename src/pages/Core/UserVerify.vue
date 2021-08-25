@@ -22,7 +22,22 @@ limitations under the License.
 			</h1>
 			<CCardBody v-if='success !== null'>
 				<p class='text-center'>
-					{{ success ? $t('core.user.verification.success') : $t('core.user.verification.failed', {error: 'placeholder'}) }}
+					<span v-if='success'>
+						{{ $t('core.user.verification.success') }}
+						<vue-countdown
+							ref='countdown'
+							:auto-start='true'
+							:time='10000'
+							@end='signIn'
+						>
+							<template slot-scope='props'>
+								{{ $t('core.user.verification.redirect', {countdown: $tc('time.second', props.seconds)}) }}
+							</template>
+						</vue-countdown>
+					</span>
+					<span v-else>
+						{{ $t('core.user.verification.failed', {error: 'placeholder'}) }}
+					</span>
 				</p>
 			</CCardBody>
 		</CCard>
@@ -30,15 +45,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
+import VueCountdown from '@chenfengyuan/vue-countdown';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import UserService from '../../services/UserService';
+import {User, UserRole} from '../../services/AuthenticationService';
 
 @Component({
 	components: {
 		CCard,
 		CCardBody,
 		CCardHeader,
+		VueCountdown,
 	},
 	metaInfo: {
 		title: 'core.user.verification.title',
@@ -56,16 +74,38 @@ export default class UserVerify extends Vue {
 	 */
 	private success: boolean|null = null;
 
+	/**
+	 * User entity
+	 * @private
+	 */
+	private user: User|null = null;
+
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		UserService.verify(this.uuid)
-			.then(() => {
+			.then((user: User) => {
 				this.success = true;
+				this.user = user;
 				this.$store.commit('spinner/HIDE');
 			}).catch(() => {
 				this.success = false;
 				this.$store.commit('spinner/HIDE');
 			});
+	}
+
+	/**
+	 * Signs in the user
+	 * @private
+	 */
+	private signIn(): void {
+		if (this.user.role === UserRole.IQAROS) {
+			location.pathname = '/';
+		}
+		this.$store.dispatch('user/setJwt', this.user);
+		this.$router.push('/');
 	}
 
 }
