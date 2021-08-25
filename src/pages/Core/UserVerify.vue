@@ -48,8 +48,9 @@ limitations under the License.
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import UserService from '../../services/UserService';
+
 import {User, UserRole} from '../../services/AuthenticationService';
+import UserService from '../../services/UserService';
 
 @Component({
 	components: {
@@ -101,6 +102,9 @@ export default class UserVerify extends Vue {
 	 * @private
 	 */
 	private signIn(): void {
+		if (this.user === null) {
+			return;
+		}
 		if (this.user.role === UserRole.IQAROS) {
 			location.pathname = '/';
 		}
