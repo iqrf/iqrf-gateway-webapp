@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Models\EnumerationManager;
 use DateTime;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -40,6 +40,16 @@ class DiagnosticsManager {
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
+	 */
+	private $daemonDirectories;
+
+	/**
+	 * @var EnumerationManager IQMESH Enumeration manager
+	 */
+	private $enumerationManager;
 
 	/**
 	 * @var GatewayInfoUtil Gateway info manager
@@ -57,40 +67,18 @@ class DiagnosticsManager {
 	private $zipManager;
 
 	/**
-	 * @var string Path to a directory with IQRF Gateway Daemon's cache
-	 */
-	private $cacheDir;
-
-	/**
-	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
-	 */
-	private $confDir;
-
-	/**
-	 * @var string Path to a directory with IQRF Gateway Daemon's data
-	 */
-	private $dataDir;
-
-	/**
-	 * @var string Path to a directory with log files of IQRF Gateway Daemon
-	 */
-	private $logDir;
-
-	/**
 	 * Constructor
-	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
-	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
+	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
+	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
 	 * @param InfoManager $infoManager Gateway Info manager
-	 * @param MainManager $mainManager Main configuration manager
+	 * @param GatewayInfoUtil $gwInfo Gateway information file manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories, EnumerationManager $enumerationManager, InfoManager $infoManager, GatewayInfoUtil $gwInfo) {
 		$this->commandManager = $commandManager;
+		$this->daemonDirectories = $daemonDirectories;
+		$this->enumerationManager = $enumerationManager;
 		$this->infoManager = $infoManager;
-		$this->cacheDir = $mainManager->getCacheDir();
-		$this->confDir = $confDir;
-		$this->dataDir = $mainManager->getDataDir();
-		$this->logDir = $logDir;
 		$this->gwInfo = $gwInfo;
 	}
 
@@ -132,28 +120,28 @@ class DiagnosticsManager {
 	 * Adds a configuration of IQRF Gateway Daemon
 	 */
 	public function addConfiguration(): void {
-		$this->zipManager->addFolder($this->confDir, 'configuration');
+		$this->zipManager->addFolder($this->daemonDirectories->getConfigurationDir(), 'configuration');
 	}
 
 	/**
 	 * Adds IQRF Gateway Daemon database and scripts
 	 */
 	public function addDatabase(): void {
-		$this->zipManager->addFolder($this->dataDir . '/DB', 'DB');
+		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'DB');
 	}
 
 	/**
 	 * Adds IQRF Gateway Daemon's metadata
 	 */
 	public function addMetadata(): void {
-		$this->zipManager->addFolder($this->cacheDir . '/metaData', 'metaData');
+		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/metaData', 'metaData');
 	}
 
 	/**
 	 * Adds a configuration of IQRF Gateway Daemon's scheduler
 	 */
 	public function addScheduler(): void {
-		$this->zipManager->addFolder($this->cacheDir . '/scheduler', 'scheduler');
+		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'scheduler');
 		if ($this->zipManager->exist('scheduler/schema/')) {
 			$this->zipManager->deleteDirectory('scheduler/schema');
 		}
@@ -163,7 +151,7 @@ class DiagnosticsManager {
 	 * Adds logs of IQRF Gateway Daemon
 	 */
 	public function addDaemonLog(): void {
-		$this->zipManager->addFolder($this->logDir, 'logs/iqrf-gateway-daemon');
+		$this->zipManager->addFolder($this->daemonDirectories->getLogDir(), 'logs/iqrf-gateway-daemon');
 	}
 
 	/**
@@ -180,7 +168,7 @@ class DiagnosticsManager {
 	public function addInfo(): void {
 		$array = $this->infoManager->get();
 		try {
-			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
+			$array['coordinator'] = $this->enumerationManager->device(0);
 		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$array['coordinator'] = null;
 		}

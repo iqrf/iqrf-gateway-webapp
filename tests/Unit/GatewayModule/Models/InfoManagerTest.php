@@ -29,7 +29,7 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
-use App\IqrfNetModule\Models\EnumerationManager;
+use App\MaintenanceModule\Models\PixlaManager;
 use Mockery;
 use Mockery\MockInterface;
 use Tester\Assert;
@@ -43,11 +43,6 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InfoManagerTest extends CommandTestCase {
 
 	/**
-	 * @var MockInterface|EnumerationManager Mocked IQMESH enumeration manager
-	 */
-	private $enumerationManager;
-
-	/**
 	 * @var MockInterface|NetworkManager Mocked network manager
 	 */
 	private $networkManager;
@@ -56,6 +51,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * @var InfoManager Gateway Info manager with mocked command manager
 	 */
 	private $manager;
+
+	/**
+	 * @var MockInterface|PixlaManager Mocked PIXLA manager
+	 */
+	private $pixlaManager;
 
 	/**
 	 * @var MockInterface|VersionManager Mocked version manager
@@ -72,7 +72,6 @@ final class InfoManagerTest extends CommandTestCase {
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
 		'gw' => 'cat /etc/iqrf-gateway.json',
 		'gitBranches' => 'git branch -v --no-abbrev',
-		'pixlaToken' => 'cat /etc/gwman/customer_id',
 		'uptime' => 'uptime -p',
 	];
 
@@ -235,15 +234,6 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to get information about the Coordinator
-	 */
-	public function testGetCoordinatorInfo(): void {
-		$expected = ['request' => [], 'response' => []];
-		$this->enumerationManager->shouldReceive('device')->with(0)->andReturn($expected);
-		Assert::same($expected, $this->manager->getCoordinatorInfo());
-	}
-
-	/**
 	 * Tests the function to get disk usages
 	 */
 	public function testGetDiskUsages(): void {
@@ -262,7 +252,6 @@ final class InfoManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, null, $output);
 		Assert::same(self::EXPECTED['memoryUsage'], $this->manager->getMemoryUsage());
 	}
-
 
 	/**
 	 * Tests the function to get swap usage
@@ -304,35 +293,18 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to return PIXLA token (failure)
-	 */
-	public function testGetPixlaTokenFailure(): void {
-		$this->receiveCommand(self::COMMANDS['pixlaToken'], true);
-		Assert::null($this->manager->getPixlaToken());
-	}
-
-	/**
-	 * Tests the function to return PIXLA token (success)
-	 */
-	public function testGetPixlaTokenSuccess(): void {
-		$token = 'secretPixlaToken';
-		$this->receiveCommand(self::COMMANDS['pixlaToken'], true, $token);
-		Assert::same($token, $this->manager->getPixlaToken());
-	}
-
-	/**
 	 * Tests the function to return information about the gateway
 	 */
 	public function testGet(): void {
 		$verbose = false;
-		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->enumerationManager, $this->networkManager, $this->versionManager])->makePartial();
+		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->pixlaManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
 			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
 			->andReturn(self::EXPECTED['gwId']);
 		$manager->shouldReceive('getImage')
 			->andReturn(self::EXPECTED['gwImage']);
-		$manager->shouldReceive('getPixlaToken')
+		$this->pixlaManager->shouldReceive('getToken')
 			->andReturn(self::EXPECTED['pixla']);
 		$this->versionManager->shouldReceive('getController')
 			->andReturn(self::EXPECTED['versions']['controller']);
@@ -364,10 +336,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->enumerationManager = Mockery::mock(EnumerationManager::class);
 		$this->networkManager = Mockery::mock(NetworkManager::class);
+		$this->pixlaManager = Mockery::mock(PixlaManager::class);
 		$this->versionManager = Mockery::mock(VersionManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager, $this->networkManager, $this->versionManager);
+		$this->manager = new InfoManager($this->commandManager, $this->networkManager, $this->pixlaManager, $this->versionManager);
 	}
 
 }

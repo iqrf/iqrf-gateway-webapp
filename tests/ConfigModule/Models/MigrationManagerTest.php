@@ -27,11 +27,13 @@ declare(strict_types = 1);
 namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
+use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\MigrationManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\DaemonDirectories;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Models\ServiceManager;
 use Mockery;
@@ -70,14 +72,14 @@ final class MigrationManagerTest extends TestCase {
 	private const CONFIG_TEMP_PATH_CONTROLLER = TMP_DIR . '/migrated-configuration/controller';
 
 	/**
-	 * Path to nonexistant directory with IQRF Gateway Translator's configuration
+	 * Path to nonexistent directory with IQRF Gateway Translator's configuration
 	 */
 	private const CONFIG_TEMP_PATH_TRANSLATOR = TMP_DIR . '/migrated-configuration/translator';
 
 	/**
 	 * Path to a directory with correct JSON schemas
 	 */
-	private const SCHEMA_PATH = TESTER_DIR . '//data/cfgSchemas/';
+	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
 	/**
 	 * Path to a directory with corrupted JSON schemas
@@ -186,8 +188,13 @@ final class MigrationManagerTest extends TestCase {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$gwInfo = new GatewayInfoUtil($commandManager);
-		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
-		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
+		$mainManager = Mockery::mock(MainManager::class);
+		$mainManager->shouldReceive('getCacheDir')->andReturn(self::CACHE_TEMP_PATH);
+		$mainManager->shouldReceive('getConfigurationDir')->andReturn(self::CONFIG_TEMP_PATH);
+		$mainManager->shouldReceive('getDataDir')->andReturn(TMP_DIR);
+		$daemonDirectories = new DaemonDirectories(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, $mainManager);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $daemonDirectories, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $daemonDirectories, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
 	}
 
 	/**
