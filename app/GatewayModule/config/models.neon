@@ -18,7 +18,8 @@ services:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
 		autowired: false
 	certificateManager: App\GatewayModule\Models\CertificateManager(@certificateFileManager)
-	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\DaemonDirectories(%daemon.configDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\DiagnosticsManager
 	etc.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/')
 		autowired: false

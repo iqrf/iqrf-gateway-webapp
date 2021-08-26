@@ -24,9 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Models\EnumerationManager;
+use App\MaintenanceModule\Models\PixlaManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -50,14 +48,14 @@ class InfoManager {
 	private $commandManager;
 
 	/**
-	 * @var EnumerationManager IQMESH Enumeration manager
-	 */
-	private $enumerationManager;
-
-	/**
 	 * @var NetworkManager Network manager
 	 */
 	private $networkManager;
+
+	/**
+	 * @var PixlaManager PIXLA manager
+	 */
+	private $pixlaManager;
 
 	/**
 	 * @var VersionManager Version manager
@@ -67,14 +65,14 @@ class InfoManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
 	 * @param NetworkManager $networkManager Network manager
+	 * @param PixlaManager $pixlaManager PIXLA manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager, NetworkManager $networkManager, VersionManager $versionManager) {
+	public function __construct(CommandManager $commandManager, NetworkManager $networkManager, PixlaManager $pixlaManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
-		$this->enumerationManager = $enumerationManager;
 		$this->networkManager = $networkManager;
+		$this->pixlaManager = $pixlaManager;
 		$this->versionManager = $versionManager;
 	}
 
@@ -88,7 +86,7 @@ class InfoManager {
 			'board' => $this->getBoard(),
 			'gwId' => $this->getId(),
 			'gwImage' => $this->getImage(),
-			'pixla' => $this->getPixlaToken(),
+			'pixla' => $this->pixlaManager->getToken(),
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
@@ -148,17 +146,6 @@ class InfoManager {
 	 */
 	public function getImage(): ?string {
 		return $this->readGatewayFile()['gwImage'] ?? null;
-	}
-
-	/**
-	 * Gets information about the Coordinator
-	 * @return array<mixed> Information about the Coordinator
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 */
-	public function getCoordinatorInfo(): array {
-		return $this->enumerationManager->device(0);
 	}
 
 	/**
@@ -251,16 +238,11 @@ class InfoManager {
 	}
 
 	/**
-	 * Gets PIXLA token
-	 * @return string|null PIXLA token
+	 * Returns the gateway's hostname
+	 * @return string Hostname
 	 */
-	public function getPixlaToken(): ?string {
-		$command = 'cat /etc/gwman/customer_id';
-		$output = $this->commandManager->run($command, true)->getStdout();
-		if ($output !== '') {
-			return $output;
-		}
-		return null;
+	public function getHostname(): string {
+		return $this->networkManager->getHostname();
 	}
 
 }
