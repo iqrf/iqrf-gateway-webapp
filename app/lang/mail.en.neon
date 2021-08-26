@@ -10,7 +10,7 @@ emailVerification:
 mailerConfigurationTest:
 	title: Mailer configuration test
 	greeting: 'Dear %username%,'
-	body: 'the purpose of this e-mail is to test your configuration of the SMTP server.'
+	body: 'if you have received this email, the SMTP configuration is correct.'
 	footer:
 		'''
 			Best regards,

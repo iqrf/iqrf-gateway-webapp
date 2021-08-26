@@ -62,11 +62,11 @@ limitations under the License.
 								:toggler-text='$t("core.user.roles." + item.role)'
 								size='sm'
 							>
-								<CDropdownItem @click='changeRole(item, "normal")'>
-									{{ $t('core.user.roles.normal') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeRole(item, "power")'>
-									{{ $t('core.user.roles.power') }}
+								<CDropdownItem
+									v-for='role of roles'
+									:key='role'
+									@click='changeRole(item, role)'>
+									{{ $t('core.user.roles.' + role) }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -217,10 +217,19 @@ export default class UserList extends Vue {
 	private users: Array<IUser> = []
 
 	/**
-	 * Updates table fields by user rolr
+	 * @constant {Array<string>} roles Arrray of user roles
+	 */
+	private roles = [
+		'normal',
+		'iqaros',
+		'power'
+	]
+
+	/**
+	 * Updates table fields by user role
 	 */
 	created(): void {
-		if (this.$store.getters['user/getRole'] === 'normal') {
+		if (this.$store.getters['user/getRole'] !== 'power') {
 			this.fields = [
 				{
 					key: 'username',

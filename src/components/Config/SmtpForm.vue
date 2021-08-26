@@ -39,81 +39,96 @@ limitations under the License.
 					/>
 				</div>
 				<fieldset :disabled='!configuration.enabled'>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.smtp.errors.hostMissing"
-						}'
-					>
-						<CInput
-							v-model='configuration.host'
-							:label='$t("config.smtp.form.host")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.smtp.errors.portMissing"
-						}'
-					>
-						<CInput
-							v-model.number='configuration.port'
-							:label='$t("config.smtp.form.port")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.smtp.errors.usernameMissing"
-						}'
-					>
-						<CInput
-							v-model='configuration.username'
-							:label='$t("forms.fields.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.smtp.errors.passwordMissing"
-						}'
-					>
-						<CInput
-							v-model='configuration.password'
-							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CSelect
-						:value.sync='configuration.secure'
-						:options='protocols'
-						:label='$t("config.smtp.form.security")'
-					/>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "config.smtp.errors.fromMissing"
-						}'
-					>
-						<CInput
-							v-model='configuration.from'
-							:label='$t("config.smtp.form.from")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
+					<CRow>
+						<CCol md='6'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "config.smtp.errors.hostMissing"
+								}'
+							>
+								<CInput
+									v-model='configuration.host'
+									:label='$t("config.smtp.form.host")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "config.smtp.errors.portMissing"
+								}'
+							>
+								<CInput
+									v-model.number='configuration.port'
+									:label='$t("config.smtp.form.port")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+							<CSelect
+								:value.sync='configuration.secure'
+								:options='protocols'
+								:label='$t("config.smtp.form.security")'
+							/>
+						</CCol>
+						<CCol md='6'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "config.smtp.errors.usernameMissing"
+								}'
+							>
+								<CInput
+									v-model='configuration.username'
+									:label='$t("forms.fields.username")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "config.smtp.errors.passwordMissing"
+								}'
+							>
+								<CInput
+									v-model='configuration.password'
+									:type='passwordVisible ? "text" : "password"'
+									:label='$t("forms.fields.password")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								>
+									<template #append-content>
+										<span @click='passwordVisible = !passwordVisible'>
+											<FontAwesomeIcon
+												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
+											/>
+										</span>
+									</template>
+								</CInput>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "config.smtp.errors.fromMissing"
+								}'
+							>
+								<CInput
+									v-model='configuration.from'
+									:label='$t("config.smtp.form.from")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+						</CCol>
+					</CRow>
 				</fieldset>
 				<CButton
 					color='primary'
@@ -140,8 +155,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CForm, CInput, CSelect} from '@coreui/vue/src';
+import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
@@ -155,9 +171,12 @@ import {ISmtp} from '../../interfaces/smtp';
 
 @Component({
 	components: {
+		CCol,
 		CForm,
 		CInput,
+		CRow,
 		CSelect,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -187,7 +206,7 @@ export default class SmtpForm extends Vue {
 	}
 
 	/**
-	 * @constant {Array<IOption>} protocols Array of STMP security protocols
+	 * @constant {Array<IOption>} protocols Array of SMTP security protocols
 	 */
 	private protocols: Array<IOption> = [
 		{
@@ -203,6 +222,11 @@ export default class SmtpForm extends Vue {
 			value: SmtpSecurity.TLS,
 		},
 	]
+
+	/**
+	 * @var {bool} passwordVisible Controls visibility of password field
+	 */
+	private passwordVisible = false
 
 	/**
 	 * Initializes validation rules
@@ -223,7 +247,7 @@ export default class SmtpForm extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.running = false;
-				extendedErrorToast(error, 'config.smtp.message.fetchFailed');
+				extendedErrorToast(error, 'config.smtp.messages.fetchFailed');
 			});
 	}
 
@@ -236,13 +260,13 @@ export default class SmtpForm extends Vue {
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(
-					this.$t('config.smtp.message.saveSuccess').toString()
+					this.$t('config.smtp.messages.saveSuccess').toString()
 				);
 				this.$emit('done');
 			})
 			.catch((error: AxiosError) => {
 				this.running = false;
-				extendedErrorToast(error, 'config.smtp.message.saveFailed');
+				extendedErrorToast(error, 'config.smtp.messages.saveFailed');
 			});
 	}
 
@@ -250,13 +274,16 @@ export default class SmtpForm extends Vue {
 	 * Sends SMTP configuration test mail
 	 */
 	private test(): void {
+		this.showBlockingElement();
 		MailerService.testConfig()
 			.then(() => {
+				this.hideBlockingElement();
 				this.$toast.success(
 					this.$t('config.smtp.messages.testSuccess').toString()
 				);
 			})
 			.catch((error: AxiosError) => {
+				this.running = false;
 				extendedErrorToast(error, 'config.smtp.messages.testFailed');
 			});
 	}

@@ -99,12 +99,7 @@ export default class UserVerify extends Vue {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				this.verifyError = this.$t('core.user.messages.verifyGenericError').toString();
-				if (error.response !== undefined) {
-					if (error.response.status === 404) {
-						this.verifyError = this.$t('core.user.messages.verifyNonexistantUser').toString();
-					}
-				}
+				this.verifyError = error.response ? error.response.data.message : error.message;
 				this.success = false;
 				this.$store.commit('spinner/HIDE');
 			});
