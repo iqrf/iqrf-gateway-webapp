@@ -7,6 +7,15 @@ emailVerification:
 			Best regards,
 			IQRF Gateway %hostname%
 		'''
+mailerConfigurationTest:
+	title: Mailer configuration test
+	greeting: 'Dear %username%,'
+	body: 'the purpose of this e-mail is to test your configuration of the SMTP server.'
+	footer:
+		'''
+			Best regards,
+			IQRF Gateway %hostname%
+		'''
 passwordRecovery:
 	title: Password recovery
 	greeting: 'Dear %username%,'

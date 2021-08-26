@@ -37,6 +37,13 @@ class MailerService {
 	saveConfig(config: ISmtp): Promise<AxiosResponse> {
 		return axios.put('/config/mailer', config, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Sends SMTP configuration test mail request
+	 */
+	testConfig(): Promise<AxiosResponse> {
+		return axios.post('/config/mailer/test', null, {headers: authorizationHeader()});
+	}
 }
 
 export default new MailerService();

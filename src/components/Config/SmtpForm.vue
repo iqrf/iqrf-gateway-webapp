@@ -96,7 +96,7 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<CSelect
-						:value.sync='configuration.protocol'
+						:value.sync='configuration.secure'
 						:options='protocols'
 						:label='$t("config.smtp.form.security")'
 					/>
@@ -121,6 +121,11 @@ limitations under the License.
 					:disabled='invalid'
 				>
 					{{ $t('forms.save') }}
+				</CButton> <CButton
+					color='info'
+					@click='test'
+				>
+					{{ $t('config.smtp.test') }}
 				</CButton> <CButton
 					v-if='$route.path.includes("/install/smtp")'
 					color='secondary'
@@ -238,6 +243,21 @@ export default class SmtpForm extends Vue {
 			.catch((error: AxiosError) => {
 				this.running = false;
 				extendedErrorToast(error, 'config.smtp.message.saveFailed');
+			});
+	}
+
+	/**
+	 * Sends SMTP configuration test mail
+	 */
+	private test(): void {
+		MailerService.testConfig()
+			.then(() => {
+				this.$toast.success(
+					this.$t('config.smtp.messages.testSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.smtp.messages.testFailed');
 			});
 	}
 

@@ -29,8 +29,11 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Mail\ConfigurationManager;
+use App\Models\Mail\Senders\MailerConfigurationTestMailSender;
 use Nette\IOException;
+use Nette\Mail\FallbackMailerException;
 use Nette\Utils\JsonException;
 
 /**
@@ -46,12 +49,19 @@ class MailerController extends BaseConfigController {
 	private $manager;
 
 	/**
+	 * @var MailerConfigurationTestMailSender $mailer Mailer configuration test mail sender
+	 */
+	private $configurationTestSender;
+
+	/**
 	 * Constructor
 	 * @param ConfigurationManager $manager Mailer configuration manager
+	 * @param MailerConfigurationTestMailSender $sender Mailer configuration test mail sender
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConfigurationManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(ConfigurationManager $manager, MailerConfigurationTestMailSender $sender, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		$this->configurationTestSender = $sender;
 		parent::__construct($validator);
 	}
 
@@ -116,6 +126,31 @@ class MailerController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+	}
+
+	/**
+	 * @Path("/test")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Sends a test e-mail to verify configuration of the mailer
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '500':
+	 *          description: Unable to send the e-mail
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		try {
+			$this->configurationTestSender->send($user);
+		} catch (FallbackMailerException $e) {
+			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+		return $response->writeBody('Workaround');
 	}
 
 }
