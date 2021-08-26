@@ -1160,6 +1160,7 @@
 			"role": "User role",
 			"roles": {
 				"normal": "Normal user",
+				"iqaros": "IQAROS user",
 				"power": "Power user"
 			},
 			"language": "Language",
@@ -1179,8 +1180,6 @@
 				"prompt": "Are you sure you want to delete user {user}?"
 			},
 			"messages": {
-				"verifyNonexistentUser": "user does not exist",
-				"verifyGenericError": "an unexpected error has occured",
 				"verifyNotice": "An email containing instructions to verify your account was sent to your address.",
 				"resendFailed": "Failed to send a new verification email: {email}.",
 				"resendSuccess": "A new verification email has been successfully sent.",
