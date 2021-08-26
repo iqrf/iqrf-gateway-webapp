@@ -131,11 +131,14 @@ class UserService {
 	 * @param {string} uuid Password recovery request UUID
 	 * @param {string} password New password
 	 */
-	confirmPasswordRecovery(uuid: string, password: string): Promise<AxiosResponse> {
+	confirmPasswordRecovery(uuid: string, password: string): Promise<User> {
 		const body = {
 			password: password
 		};
-		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()});
+		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				return response.data as User;
+			});
 	}
 
 	/**

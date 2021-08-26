@@ -69,18 +69,17 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Prop} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import TheWizard from '../../components/TheWizard.vue';
-
-import {extendedErrorToast} from '../../helpers/errorToast';
-
-import {required} from 'vee-validate/dist/rules';
-import UserService from '../../services/UserService';
-
 import {AxiosError} from 'axios';
+import {Component, Vue, Prop} from 'vue-property-decorator';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+
+import TheWizard from '../../components/TheWizard.vue';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {User, UserRole} from '../../services/AuthenticationService';
+import UserService from '../../services/UserService';
 
 @Component({
 	components: {
@@ -92,7 +91,7 @@ import {AxiosError} from 'axios';
 		FontAwesomeIcon,
 		TheWizard,
 		ValidationObserver,
-		ValidationProvider
+		ValidationProvider,
 	},
 	metaInfo: {
 		title: 'account.recovery.title'
@@ -137,18 +136,23 @@ export default class ConfirmPasswordRecovery extends Vue {
 	private confirmRecovery(): void {
 		this.requestInProgress = true;
 		UserService.confirmPasswordRecovery(this.recoveryId, this.password)
-			.then(() => {
+			.then((user: User) => {
 				this.requestInProgress = false;
+				if (user.role === UserRole.IQAROS) {
+					location.pathname = '/';
+				}
+				this.$store.dispatch('user/setJwt', user);
 				this.$toast.success(
 					this.$t('account.recovery.messages.changeSuccess').toString()
 				);
-				this.$router.push({name: 'signIn'});
+				this.$router.push('/');
 			})
 			.catch((error: AxiosError) => {
 				this.requestInProgress = false;
 				extendedErrorToast(error, 'account.recovery.messages.changeFailed');
 			});
 	}
+
 }
 </script>
 
