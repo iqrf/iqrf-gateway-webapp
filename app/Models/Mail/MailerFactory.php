@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\Models\Mail;
 
 use Nette\Mail\FallbackMailer;
-use Nette\Mail\SendmailMailer;
 use Nette\Mail\SmtpMailer;
 
 /**
@@ -52,7 +51,6 @@ class MailerFactory {
 		if ($smtpMailer !== null) {
 			$mailers[] = $smtpMailer;
 		}
-		$mailers[] = new SendmailMailer();
 		return new FallbackMailer($mailers);
 	}
 
