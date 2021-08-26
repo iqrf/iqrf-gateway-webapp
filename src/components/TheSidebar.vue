@@ -331,6 +331,12 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('config.smtp.title'),
+								to: '/config/smtp/',
+								roles: ['power', 'normal'],
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('config.migration.title'),
 								to: '/config/migration/',
 								roles: ['power', 'normal'],

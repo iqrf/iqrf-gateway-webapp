@@ -15,21 +15,44 @@
  * limitations under the License.
  */
 
-/**
- * Installation wizard user interface
- */
-export interface IInstallUser {
-	username: string
-	password: string
-	language: string
-	role: string
-}
+import {SmtpSecurity} from '../enums/Config/Smtp';
 
 /**
- * Installation wizard gateway user password change interface
+ * SMTP configuration interface
  */
-export interface IInstallGatewayUser {
-	change: boolean
+export interface ISmtp {
+	/**
+	 * SMTP service enabled
+	 */
+	enabled: boolean
+
+	/**
+	 * Server name
+	 */
+	host: string
+
+	/**
+	 * Port number
+	 */
+	port: number
+
+	/**
+	 * Username
+	 */
 	username: string
+
+	/**
+	 * Password
+	 */
 	password: string
+
+	/**
+	 * Security protocol
+	 */
+	secure: SmtpSecurity
+
+	/**
+	 * Sender
+	 */
+	from: string
 }
