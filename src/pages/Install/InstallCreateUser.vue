@@ -188,18 +188,8 @@ export default class InstallCreateUser extends Vue {
 	 * Advances the installation wizard
 	 */
 	private nextStep(): void {
-		if (this.$store.getters['features/isEnabled']('gatewayPass')) {
-			this.$emit('next-step');
-			this.$router.push('/install/gateway-user/');
-		} else if (this.$store.getters['features/isEnabled']('ssh')) {
-			this.$emit('next-step');
-			this.$router.push('/install/ssh-keys/');
-		} else {
-			this.$router.push('/');
-			this.$toast.success(
-				this.$t('install.messages.finished').toString()
-			);
-		}
+		this.$emit('next-step');
+		this.$router.push('/install/smtp/');
 	}
 }
 </script>

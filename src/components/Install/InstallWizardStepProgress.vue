@@ -91,7 +91,8 @@ export default class InstallWizardStepProgress extends Vue {
 	created(): void {
 		let steps = [
 			'introduction',
-			'webappUser'
+			'webappUser',
+			'smtp'
 		];
 		if (this.$store.getters['features/isEnabled']('gatewayPass')) {
 			steps.push('gatewayUser');

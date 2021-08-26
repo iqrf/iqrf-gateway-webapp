@@ -1000,6 +1000,34 @@
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
+		},
+		"smtp": {
+			"title": "SMTP server",
+			"description": "Configure SMTP server.",
+			"form": {
+				"enabled": "Use SMTP",
+				"host": "Host",
+				"port": "Port",
+				"security": "Connection security",
+				"protocols": {
+					"none": "None",
+					"starttls": "STARTTLS",
+					"tls": "TLS"
+				},
+				"from": "Sender"
+			},
+			"errors": {
+				"hostMissing": "Please enter SMTP host.",
+				"portMissing": "Please enter SMTP port.",
+				"usernameMissing": "Please enter SMTP username.",
+				"passwordMissing": "Please enter SMTP password.",
+				"fromMissing": "Please enter sender."
+			},
+			"messages": {
+				"fetchFailed": "Failed to retrieve SMTP configuration: {error}",
+				"saveFailed": "Failed to save SMTP configuration: {error}",
+				"saveSuccess": "SMTP configuration has been successfully saved."
+			}
 		}
 	},
 	"core": {
@@ -1038,24 +1066,6 @@
 			"title": "Language",
 			"cs": "Czech",
 			"en": "English"
-		},
-		"smtp": {
-			"form": {
-				"host": "Host",
-				"port": "Port",
-				"security": "Connection security",
-				"protocols": {
-					"none": "None",
-					"starttls": "STARTTLS",
-					"tls": "TLS"
-				}
-			},
-			"errors": {
-				"hostMissing": "Please enter SMTP host.",
-				"portMissing": "Please enter SMTP port.",
-				"usernameMissing": "Please enter SMTP username.",
-				"passwordMissing": "Please enter SMTP password."
-			}
 		},
 		"security": {
 			"title": "Security manager",
@@ -2198,6 +2208,7 @@
 		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
 		"steps": {
 			"introduction": "Introduction",
+			"smtp": "Configure SMTP server",
 			"webappUser": "Create webapp user",
 			"gatewayUser": "Set gateway user",
 			"sshKey": "Add SSH keys",

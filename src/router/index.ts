@@ -64,6 +64,7 @@ const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
 const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
+const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
 const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
 const InstallSshStatus = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSshStatus.vue');
@@ -97,6 +98,7 @@ const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pa
 const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerList.vue');
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 const IqrfRepositoryConfig = () => import(/* webpackChunkName: "config" */'@/pages/Config/IqrfRepositoryConfig.vue');
+const SmtpCOnfiguration = () => import(/* webpackCunkName: "config" */'@/pages/Config/SmtpConfiguration.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
@@ -156,6 +158,10 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallCreateUser,
 				path: 'webapp-user',
+			},
+			{
+				component: InstallSmtpConfig,
+				path: 'smtp',
 			},
 			{
 				component: GatewayUserPassword,
@@ -692,6 +698,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: IqrfRepositoryConfig,
 						path: 'repository',
+					},
+					{
+						component: SmtpCOnfiguration,
+						path: 'smtp',
 					},
 					{
 						component: ConfigMigration,

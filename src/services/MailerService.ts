@@ -14,22 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {authorizationHeader} from '../helpers/authorizationHeader';
+import axios, {AxiosResponse} from 'axios';
+import {ISmtp} from '../interfaces/smtp';
 
 /**
- * Installation wizard user interface
+ * SMTP server service
  */
-export interface IInstallUser {
-	username: string
-	password: string
-	language: string
-	role: string
+class MailerService {
+
+	/**
+	 * Retrieves SMTP configuration
+	 */
+	getConfig(): Promise<AxiosResponse> {
+		return axios.get('/config/mailer', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Saves SMTP configuration
+	 * @param {ISmtp} config SMTP configuration
+	 */
+	saveConfig(config: ISmtp): Promise<AxiosResponse> {
+		return axios.put('/config/mailer', config, {headers: authorizationHeader()});
+	}
 }
 
-/**
- * Installation wizard gateway user password change interface
- */
-export interface IInstallGatewayUser {
-	change: boolean
-	username: string
-	password: string
-}
+export default new MailerService();
