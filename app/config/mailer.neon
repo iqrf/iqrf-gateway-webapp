@@ -17,4 +17,5 @@ services:
 	- App\Models\Mail\ConfigurationManager(%confDir%/smtp.neon)
 	- App\Models\Mail\MailerFactory
 	- App\Models\Mail\Senders\EmailVerificationMailSender
+	- App\Models\Mail\Senders\MailerConfigurationTestMailSender
 	- App\Models\Mail\Senders\PasswordRecoveryMailSender

@@ -1004,6 +1004,7 @@
 		"smtp": {
 			"title": "SMTP server",
 			"description": "Configure SMTP server.",
+			"test": "Test configuration",
 			"form": {
 				"enabled": "Use SMTP",
 				"host": "Host",
@@ -1026,7 +1027,9 @@
 			"messages": {
 				"fetchFailed": "Failed to retrieve SMTP configuration: {error}",
 				"saveFailed": "Failed to save SMTP configuration: {error}",
-				"saveSuccess": "SMTP configuration has been successfully saved."
+				"saveSuccess": "SMTP configuration has been successfully saved.",
+				"testFailed": "Failed to send SMTP configuration test e-mail: {error}",
+				"testSuccess": "SMTP configuration test e-mail has been successfully sent."
 			}
 		}
 	},
