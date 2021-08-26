@@ -36,7 +36,7 @@ limitations under the License.
 						</vue-countdown>
 					</span>
 					<span v-else>
-						{{ $t('core.user.verification.failed', {error: 'placeholder'}) }}
+						{{ $t('core.user.verification.failed', {error: verifyError}) }}
 					</span>
 				</p>
 			</CCardBody>
@@ -51,6 +51,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import {User, UserRole} from '../../services/AuthenticationService';
 import UserService from '../../services/UserService';
+import { AxiosError } from 'axios';
 
 @Component({
 	components: {
@@ -82,6 +83,11 @@ export default class UserVerify extends Vue {
 	private user: User|null = null;
 
 	/**
+	 * @var {string} verifyError Verification error message
+	 */
+	private verifyError = ''
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -91,7 +97,14 @@ export default class UserVerify extends Vue {
 				this.success = true;
 				this.user = user;
 				this.$store.commit('spinner/HIDE');
-			}).catch(() => {
+			})
+			.catch((error: AxiosError) => {
+				this.verifyError = this.$t('core.user.messages.verifyGenericError').toString();
+				if (error.response !== undefined) {
+					if (error.response.status === 404) {
+						this.verifyError = this.$t('core.user.messages.verifyNonexistantUser').toString();
+					}
+				}
 				this.success = false;
 				this.$store.commit('spinner/HIDE');
 			});
