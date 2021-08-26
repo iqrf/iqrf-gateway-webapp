@@ -4,12 +4,15 @@ declare(strict_types = 1);
 
 namespace App\Models\Mail\Senders;
 
+use App\GatewayModule\Models\InfoManager;
+use App\Models\Database\Entities\User;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\MailerFactory;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use Nette\Localization\Translator;
 use Nette\Mail\FallbackMailer;
+use Nette\Mail\Message;
 
 /**
  * Base e-mail sender
@@ -20,6 +23,11 @@ abstract class BaseMailSender {
 	 * @var ConfigurationManager SMTP configuration manager
 	 */
 	protected $configuration;
+
+	/**
+	 * @var InfoManager Gateway information manager
+	 */
+	protected $gatewayInfo;
 
 	/**
 	 * @var MailerFactory Mailer factory
@@ -39,12 +47,14 @@ abstract class BaseMailSender {
 	/**
 	 * Constructor
 	 * @param ConfigurationManager $configuration SMTP configuration manager
+	 * @param InfoManager $gatewayInfo Gareway information manager
 	 * @param MailerFactory $mailerFactory Mailer factory
 	 * @param TemplateFactory $templateFactory Template factory
 	 * @param Translator $translator Translator
 	 */
-	public function __construct(ConfigurationManager $configuration, MailerFactory $mailerFactory, TemplateFactory $templateFactory, Translator $translator) {
+	public function __construct(ConfigurationManager $configuration, InfoManager $gatewayInfo, MailerFactory $mailerFactory, TemplateFactory $templateFactory, Translator $translator) {
 		$this->configuration = $configuration;
+		$this->gatewayInfo = $gatewayInfo;
 		$this->mailerFactory = $mailerFactory;
 		$this->templateFactory = $templateFactory;
 		$this->translator = $translator;
@@ -56,6 +66,28 @@ abstract class BaseMailSender {
 	 */
 	protected function createMailer(): FallbackMailer {
 		return $this->mailerFactory->build();
+	}
+
+	/**
+	 * Creates a new e-mail message from the Latte template
+	 * @param string $fileName Template filename
+	 * @param array<string, mixed> $params Template params
+	 * @param User|null $user Recipient
+	 * @return Message E-mail message
+	 */
+	protected function createMessage(string $fileName, array $params = [], ?User $user = null): Message {
+		$defaultParams = [
+			'gatewayInfo' => $this->gatewayInfo,
+			'user' => $user,
+		];
+		$html = $this->renderTemplate($fileName, array_merge($defaultParams, $params));
+		$mail = new Message();
+		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('core.title'));
+		if ($user !== null) {
+			$mail->addTo($user->getEmail(), $user->getUserName());
+		}
+		$mail->setHtmlBody($html, $this->getTemplateDir());
+		return $mail;
 	}
 
 	/**
