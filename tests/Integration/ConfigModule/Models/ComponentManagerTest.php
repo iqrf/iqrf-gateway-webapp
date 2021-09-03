@@ -58,7 +58,7 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to add a new component
 	 */
 	public function testAdd(): void {
-		Environment::lock('config_main', __DIR__ . '/../../../temp/');
+		Environment::lock('config_main', TMP_DIR);
 		$expected = $this->readFile(self::FILE_NAME);
 		$this->copyFile(self::FILE_NAME);
 		$array = [
@@ -77,7 +77,7 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to delete the component
 	 */
 	public function testDelete(): void {
-		Environment::lock('config_main', __DIR__ . '/../../../temp/');
+		Environment::lock('config_main', TMP_DIR);
 		$expected = $this->readFile(self::FILE_NAME);
 		$this->copyFile(self::FILE_NAME);
 		unset($expected['components'][30]);
@@ -128,7 +128,7 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to save configuration of components
 	 */
 	public function testSave(): void {
-		Environment::lock('config_main', __DIR__ . '/../../../temp/');
+		Environment::lock('config_main', TMP_DIR);
 		$array = [
 			'name' => 'iqrf::Scheduler',
 			'libraryPath' => '',

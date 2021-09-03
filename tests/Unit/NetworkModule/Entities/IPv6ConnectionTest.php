@@ -45,7 +45,7 @@ final class IPv6ConnectionTest extends TestCase {
 	/**
 	 * NetworkManager data directory
 	 */
-	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * IPv6 gateway address

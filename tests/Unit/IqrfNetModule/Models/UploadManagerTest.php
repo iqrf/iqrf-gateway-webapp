@@ -43,7 +43,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 	/**
 	 * Data dir path
 	 */
-	private const DATA_PATH = __DIR__ . '/../../../data/upload/';
+	private const DATA_PATH = TESTER_DIR . '/data/upload/';
 
 	/**
 	 * File names
@@ -56,7 +56,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 	/**
 	 * Upload directory path
 	 */
-	private const UPLOAD_PATH = __DIR__ . '/../../../temp/upload/';
+	private const UPLOAD_PATH = TMP_DIR . '/upload/';
 
 	/**
 	 * @var UploadManager IQRF TR upload manager

@@ -172,7 +172,7 @@ class MenderManager {
 	 */
 	public function installArtifact(string $filePath): string {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 600);
+		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 1800);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout(), $filePath);
 	}
 

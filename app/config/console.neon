@@ -15,11 +15,11 @@
 
 extensions:
 	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
-	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension
+	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension(%consoleMode%)
 
 console:
 	name: IQRF Gateway Webapp manager
-	version: 2.3.0-alpha
+	version: 2.4.0-alpha
 	catchExceptions: true
 	autoExit: true
 	url: http://localhost/

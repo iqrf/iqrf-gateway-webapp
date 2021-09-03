@@ -323,7 +323,7 @@ export default class BondingManager extends Vue {
 	 * @var {string} scCode SmartConnect code
 	 */
 	private scCode = ''
-	
+
 	/**
 	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
 	 */
@@ -435,10 +435,10 @@ export default class BondingManager extends Vue {
 	 * Bonds a new node device via local bonding or smartconnect
 	 */
 	private bond(): void {
-		this.$store.dispatch('spinner/show', {timeout: 11000});
+		this.$store.dispatch('spinner/show', {timeout: 30000});
 		const address = this.autoAddress ? 0 : this.address;
 		if (this.bondMethod === 'local') {
-			IqrfNetService.bondLocal(address, this.buildOptions(11000, 'iqrfnet.networkManager.bondingManager.messages.bondTimeout'))
+			IqrfNetService.bondLocal(address, this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.bondTimeout'))
 				.then((msgId: string) => this.msgId = msgId);
 			this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.bondingManager.messages.bondLocalAction').toString());
 		} else if (this.bondMethod === BondingMethod.SMARTCONNECT) {
@@ -459,15 +459,16 @@ export default class BondingManager extends Vue {
 			});
 			return;
 		}
-		
+
 		if (this.daemon236) { // unified status codes
 			if (response.status === 1) {
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
+					//this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
+					this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 				);
 			} else {
 				this.$toast.error(
-					this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
+					this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 				);
 			}
 			return;
@@ -483,7 +484,7 @@ export default class BondingManager extends Vue {
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.networkmanager.bondingManager.messages.genericBondError').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 			);
 		}
 	}
@@ -503,11 +504,16 @@ export default class BondingManager extends Vue {
 
 		if (response.status === 1 || (response.status === 1003 && !this.daemon236)) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectBondExists', {address: this.address}).toString()
+				//this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectBondExists', {address: this.address}).toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
 			);
 		} else if ((response.status === 1000 && !this.daemon236) || response.status === 1001) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
 			);
 		}
 	}
