@@ -26,7 +26,6 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**
@@ -183,7 +182,7 @@ class NtpManager {
 		}
 		$useServers = $config['servers'] !== [];
 		$newConfig = [];
-		$lines = explode(PHP_EOL, FileSystem::read($this->confFile));
+		$lines = explode(PHP_EOL, $this->fileManager->read($this->confFile));
 		foreach ($lines as $line) {
 			if ($useServers) {
 				$match = Strings::match($line, self::POOL_PATTERN_USED);
