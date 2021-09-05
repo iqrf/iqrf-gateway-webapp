@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -14,47 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Timezone information interface
- */
-export interface ITimezone {
-	/**
-	 * Timezone name
-	 */
-	name: string
+declare(strict_types = 1);
 
-	/**
-	 * Timezone code
-	 */
-	code: string
+namespace App\GatewayModule\Exceptions;
 
-	/**
-	 * Timezone offset
-	 */
-	offset: string
-}
+use Exception;
 
 /**
- * Gateway time information interface
+ * Exception that indicates a Time/Date related error
  */
-export interface ITime extends ITimezone {
-	/**
-	 * Timestamp in seconds
-	 */
-	timestamp: number
+class TimeDateException extends Exception {
 
-	/**
-	 * Indicates whether system clock is synchronized
-	 */
-	ntpSynchronized: boolean
-}
-
-/**
- * Gateway NTP config interface
- */
-export interface INTP {
-	/**
-	 * Array of NTP servers to sync against
-	 */
-	servers: Array<string>
 }

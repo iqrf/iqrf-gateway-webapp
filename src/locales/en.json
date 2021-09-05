@@ -1164,6 +1164,7 @@
 			"currentTime": "Current gateway time",
 			"currentTimezone": "Current gateway timezone",
 			"clockFormat": "Use 12-hour clock format",
+			"ntpSync": "System clock synchronized",
 			"form": {
 				"timezone": "Change timezone",
 				"timezonePlaceholder": "Select a timezone"
@@ -1179,7 +1180,7 @@
 			}
 		},
 		"ntp": {
-			"title": "Local NTP server configuration",
+			"title": "NTP server configuration",
 			"form": {
 				"setServer": "Set own NTP server",
 				"server": "Server",

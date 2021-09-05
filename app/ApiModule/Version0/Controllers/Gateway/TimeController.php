@@ -93,7 +93,7 @@ class TimeController extends GatewayController {
 	 */
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
-		return $response->writeJsonBody(['timezones' => $timezones]);
+		return $response->writeJsonBody($timezones);
 	}
 
 	/**

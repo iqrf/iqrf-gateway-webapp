@@ -1,50 +1,46 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dateTime.json",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeGet.json",
 	"type": "object",
 	"title": "Gateway time information",
 	"required": [
-		"time"
+		"timestamp",
+		"ntpSynchronized",
+		"name",
+		"code",
+		"offset"
 	],
 	"additionalProperties": false,
 	"properties": {
-		"time": {
-			"$id": "#/properties/time",
-			"type": "object",
-			"title": "Gateway time",
-			"required": [
-				"timestamp",
-				"name",
-				"code",
-				"offset"
-			],
-			"additionalProperties": false,
-			"properties": {
-				"timestamp": {
-					"$id": "#/properties/time/properties/timestamp",
-					"type": "integer",
-					"title": "Timestamp",
-					"example": 1609506000
-				},
-				"name": {
-					"$id": "#/properties/timezone/properties/name",
-					"type": "string",
-					"title": "Timezone name",
-					"example": "Europe/Prague"
-				},
-				"code": {
-					"$id": "#/properties/timezone/properties/code",
-					"type": "string",
-					"title": "Timezone code",
-					"example": "CET"
-				},
-				"offset": {
-					"$id": "#/properties/timezone/properties/offset",
-					"type": "string",
-					"title": "Timezone offset",
-					"example": "+0100"
-				}
-			}
+		"timestamp": {
+			"$id": "#/properties/timestamp",
+			"type": "integer",
+			"title": "Timestamp",
+			"example": 1609506000
+		},
+		"ntpSynchronized": {
+			"$id": "#/properties/ntpSynchronized",
+			"type": "boolean",
+			"title": "System clock synchronized",
+			"example": true
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Timezone name",
+			"example": "Europe/Prague"
+		},
+		"code": {
+			"$id": "#/properties/code",
+			"type": "string",
+			"title": "Timezone code",
+			"example": "CET"
+		},
+		"offset": {
+			"$id": "#/properties/offset",
+			"type": "string",
+			"title": "Timezone offset",
+			"example": "+0100"
 		}
 	}
 }
