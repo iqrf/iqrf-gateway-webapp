@@ -24,11 +24,13 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
+use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
 
 /**
@@ -64,14 +66,20 @@ class TimeController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/TimeGet'
+	 *      '500':
+	 *         $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$time = $this->manager->currentTime();
-		return $response->writeJsonBody($time);
+		try {
+			$time = $this->manager->currentTime();
+			return $response->writeJsonBody($time);
+		} catch (TimeDateException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 	/**
