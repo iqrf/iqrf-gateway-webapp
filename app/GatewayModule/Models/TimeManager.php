@@ -20,11 +20,12 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\ConfigModule\Utils\ConfParser;
 use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
+use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
-use Nette\Utils\Strings;
 
 /**
  * Time manager
@@ -49,25 +50,34 @@ class TimeManager {
 	 * @return array<string, array<string, string>> Time and timezone
 	 */
 	public function currentTime(): array {
-		$array = [];
-		$command = $this->commandManager->run('date +%s');
-		$timestamp = [
-			'timestamp' => intval($command->getStdout()),
-		];
-		$timezone = $this->timezoneInfo($this->getTimezone());
-		$array['time'] = array_merge($timestamp, $timezone);
-		return $array;
+		$timestamp = $this->getTimestamp();
+		$status = $this->getStatus();
+		$timezone = $this->timezoneInfo($status['Timezone']);
+		return array_merge(['timestamp' => $timestamp, 'ntpSynchronized' => $status['NTPSynchronized']], $timezone);
 	}
 
 	/**
-	 * Parses time zone from timedatectl output
-	 * @return string Time zone string
+	 * Returns the current timestamp
+	 * @return int Timestamp
 	 */
-	public function getTimezone(): string {
-		$output = $this->commandManager->run('timedatectl | grep "Time zone"')->getStdout();
-		$pattern = '/^(Time\szone:\s)([a-zA-Z\/\_]+)(\s.*$)/';
-		$matches = Strings::match(trim($output), $pattern);
-		return $matches[2];
+	public function getTimestamp(): int {
+		$command = $this->commandManager->run('date +%s');
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
+		return intval($command->getStdout());
+	}
+
+	/**
+	 * Returns timedatectl status
+	 * @return array<string, mixed|array<string, mixed>> Timedatectl status
+	 */
+	public function getStatus(): array {
+		$command = $this->commandManager->run('timedatectl show');
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
+		return ConfParser::toArray($command->getStdout());
 	}
 
 	/**

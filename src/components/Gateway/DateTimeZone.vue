@@ -17,9 +17,9 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardBody>
-			<CRow>
+			<CRow v-if='gatewayTime !== null'>
 				<CCol md='6'>
-					<p v-if='gatewayTime !== null'>
+					<p>
 						<b>
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
@@ -44,6 +44,16 @@ limitations under the License.
 							:label-off='$t("forms.off")'
 						/>
 					</div>
+					<p>
+						<b>
+							{{ $t('gateway.datetime.ntpSync') }}
+						</b>
+						<CIcon
+							size='xl'
+							:class='gatewayTime.ntpSynchronized ? "text-success" : "text-danger"'
+							:content='gatewayTime.ntpSynchronized ? icons.sync : icons.notSync'
+						/>
+					</p>
 				</CCol>
 				<CCol md='6'>
 					<p>
@@ -82,9 +92,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCol, CForm, CIcon, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
 import vSelect from 'vue-select';
 
+import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import TimeService from '../../services/TimeService';
@@ -92,6 +103,7 @@ import TimeService from '../../services/TimeService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {IOption} from '../../interfaces/coreui';
+import { Dictionary } from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -100,6 +112,7 @@ import {IOption} from '../../interfaces/coreui';
 		CCardBody,
 		CCol,
 		CForm,
+		CIcon,
 		CInputCheckbox,
 		CRow,
 		CSelect,
@@ -139,7 +152,15 @@ export default class DateTimeZone extends Vue {
 	/**
 	 * @var {ReturnType<typeof setInterval>} timeRefreshInterval Timestamp refresh interval
 	 */
-	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null; 
+	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of coreui icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		sync: cilCheckCircle,
+		notSync: cilXCircle
+	}
 
 	/**
 	 * Retrieves gateway time and available timezones
@@ -199,7 +220,7 @@ export default class DateTimeZone extends Vue {
 		this.$store.commit('spinner/SHOW');
 		TimeService.getTime()
 			.then((response: AxiosResponse) => {
-				this.gatewayTime = response.data.time;
+				this.gatewayTime = response.data;
 				if (this.gatewayTime === null) {
 					return;
 				}
@@ -222,7 +243,7 @@ export default class DateTimeZone extends Vue {
 		TimeService.getTimezones()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.readTimezones(response.data.timezones);
+				this.readTimezones(response.data);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timezoneGetFailed'));
 	}

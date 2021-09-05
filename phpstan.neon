@@ -30,3 +30,6 @@ parameters:
 	fileExtensions:
 		- php
 		- phpt
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		- '#Constant (TESTER_DIR|TMP_DIR) not found.#'

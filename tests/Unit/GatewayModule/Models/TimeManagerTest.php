@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
+use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
 use Mockery;
 use Tester\Assert;
@@ -45,7 +46,7 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	private const COMMANDS = [
 		'timestamp' => 'date +%s',
-		'timezone' => 'timedatectl | grep "Time zone"',
+		'status' => 'timedatectl show',
 		'listTimezones' => 'timedatectl list-timezones',
 		'setTimezone' => 'timedatectl set-timezone UTC',
 		'setTimezoneNonexistent' => 'timedatectl set-timezone Nonexistent/Nonexistent',
@@ -69,35 +70,83 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	public function testCurrentTime(): void {
 		$expected = [
-			'time' => [
-				'timestamp' => 1613756375,
-				'name' => 'UTC',
-				'code' => 'UTC',
-				'offset' => '+0000',
-			],
+			'timestamp' => 1613756375,
+			'ntpSynchronized' => true,
+			'name' => 'UTC',
+			'code' => 'UTC',
+			'offset' => '+0000',
 		];
 		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
-		$timezone = 'UTC';
+		$statusCommand = new Command(self::COMMANDS['status'], 'Timezone=UTC' . PHP_EOL . 'NTPSynchronized=yes', '', 0);
 		$manager = Mockery::mock(TimeManager::class, [$this->commandManager])->makePartial();
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['timestamp']])
 			->andReturn($timestampCommand);
-		$manager->shouldReceive('getTimezone')
-			->andReturn($timezone);
+		$this->commandManager->shouldReceive('run')
+			->withArgs([self::COMMANDS['status']])
+			->andReturn($statusCommand);
+		$manager->shouldReceive('getTimestamp')
+			->andReturn($expected['timestamp']);
+		$manager->shouldReceive('getStatus')
+			->andReturn(['Timezone' => $expected['code'], 'NTPSynchronized' => $expected['ntpSynchronized']]);
+		$manager->shouldReceive('timezoneInfo')
+			->withArgs([$expected['code']])
+			->andReturn(['name' => 'UTC', 'code' => 'UTC', 'offset' => '+0000']);
 		Assert::same($expected, $manager->currentTime());
 	}
 
 	/**
-	 * Tests the function to get time zone
+	 * Tests the function to get current timestamp
 	 */
-	public function testGetTimezone(): void {
-		$timezone = 'Time zone: UTC (UTC, +0000)';
-		$command = new Command(self::COMMANDS['timezone'], $timezone, '', 0);
+	public function testGetTimestamp(): void {
+		$timestamp = 1613756375;
+		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
 		$this->commandManager->shouldReceive('run')
-			->withArgs(['timedatectl | grep "Time zone"'])
+			->withArgs([self::COMMANDS['timestamp']])
+			->andReturn($timestampCommand);
+		Assert::same($timestamp, $this->manager->getTimestamp());
+	}
+
+
+	/**
+	 * Tests the function to get current timestamp with exceptions thrown
+	 */
+	public function testGetTimestampException(): void {
+		$command = new Command(self::COMMANDS['timestamp'], '', '', 1);
+		$this->commandManager->shouldReceive('run')
+			->withArgs([self::COMMANDS['timestamp']])
 			->andReturn($command);
-		$expected = 'UTC';
-		Assert::same($expected, $this->manager->getTimezone());
+		Assert::throws(function (): void {
+			$this->manager->getTimestamp();
+		}, TimeDateException::class);
+	}
+
+	/**
+	 * Tests the function to get timedatectl status
+	 */
+	public function testGetStatus(): void {
+		$expected = [
+			'Timezone' => 'UTC',
+			'NTPSynchronized' => true,
+		];
+		$command = new Command(self::COMMANDS['status'], 'Timezone=UTC' . PHP_EOL . 'NTPSynchronized=yes', '', 0);
+		$this->commandManager->shouldReceive('run')
+			->withArgs([self::COMMANDS['status']])
+			->andReturn($command);
+		Assert::same($expected, $this->manager->getStatus());
+	}
+
+	/**
+	 * Tests the function to get timedatectl status with exception thrown
+	 */
+	public function testGetStatusException(): void {
+		$command = new Command(self::COMMANDS['status'], '', '', 1);
+		$this->commandManager->shouldReceive('run')
+			->withArgs([self::COMMANDS['status']])
+			->andReturn($command);
+		Assert::throws(function (): void {
+			$this->manager->getStatus();
+		}, TimeDateException::class);
 	}
 
 	/**

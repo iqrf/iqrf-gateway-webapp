@@ -1,48 +1,37 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneList.json",
-	"type": "object",
+	"type": "array",
 	"title": "List of available timezones",
-	"additionalProperties": false,
-	"required": [
-		"timezones"
-	],
-	"properties": {
-		"timezones": {
-			"$id": "#/properties/timezones",
-			"type": "array",
-			"title": "Timezones",
-			"additionalItems": false,
-			"items": {
-				"$id": "#/properties/timezones/items",
-				"type": "object",
-				"title": "Timezone object",
-				"required": [
-					"name",
-					"code",
-					"offset"
-				],
-				"additionalProperties": false,
-				"properties": {
-					"name": {
-						"$id": "#/properties/timezones/items/name",
-						"type": "string",
-						"title": "Timezone name",
-						"example": "Europe/Prague"
-					},
-					"code": {
-						"$id": "#/properties/timezones/items/code",
-						"type": "string",
-						"title": "Timezone code",
-						"example": "CET"
-					},
-					"offset": {
-						"$id": "#/properties/timezones/items/offset",
-						"type": "string",
-						"title": "Timezone offset",
-						"example": "+0100"
-					}
-				}
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Timezone",
+		"required": [
+			"name",
+			"code",
+			"offset"
+		],
+		"additionalProperties": false,
+		"properties": {
+			"name": {
+				"$id": "#/items/properties/name",
+				"type": "string",
+				"title": "Timezone name",
+				"example": "Europe/Prague"
+			},
+			"code": {
+				"$id": "#/items/properties/code",
+				"type": "string",
+				"title": "Timezone code",
+				"example": "CET"
+			},
+			"offset": {
+				"$id": "#/items/properties/offset",
+				"type": "string",
+				"title": "Timezone offset",
+				"example": "+0100"
 			}
 		}
 	}
