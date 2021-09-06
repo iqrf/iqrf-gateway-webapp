@@ -31,5 +31,5 @@ Fix features for IQAROS
 -	enabled: false
 +	enabled: true
  	url: /node-red/
- # PIXLA management system
- pixla:
+ ntp:
+ 	enabled: false
