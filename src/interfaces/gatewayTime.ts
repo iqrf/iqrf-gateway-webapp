@@ -48,13 +48,3 @@ export interface ITime extends ITimezone {
 	 */
 	ntpSynchronized: boolean
 }
-
-/**
- * Gateway NTP config interface
- */
-export interface INTP {
-	/**
-	 * Array of NTP servers to sync against
-	 */
-	servers: Array<string>
-}

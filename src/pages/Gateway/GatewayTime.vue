@@ -17,8 +17,8 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.datetime.title') }}</h1>
-		<DateTimeZone />
-		<NtpConfig />
+		<DateTimeZone ref='datetime' />
+		<NtpConfig v-if='$store.getters["features/isEnabled"]("ntp")' @refresh-time='refreshTime' />
 	</div>
 </template>
 
@@ -40,5 +40,13 @@ import NtpConfig from '../../components/Gateway/NtpConfig.vue';
 /**
  * Gateway time component
  */
-export default class GatewayTime extends Vue {}
+export default class GatewayTime extends Vue {
+	
+	/**
+	 * Refreshes the gateway clock
+	 */
+	private refreshTime(): void {
+		(this.$refs.datetime as DateTimeZone).getTime();
+	}
+}
 </script>

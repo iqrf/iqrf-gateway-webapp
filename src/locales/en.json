@@ -1294,6 +1294,7 @@
 				"timezone": "Please select a timezone."
 			},
 			"messages": {
+				"syncFailed": "Failed to synchronize system clock.",
 				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
 				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
 				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
