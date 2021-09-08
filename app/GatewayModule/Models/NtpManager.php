@@ -28,17 +28,11 @@ use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\ServiceModule\Models\ServiceManager;
-use Nette\Utils\Strings;
 
 /**
  * NTP manager
  */
 class NtpManager {
-
-	/**
-	 * Used pool command pattern
-	 */
-	private const POOL_PATTERN = '/^(pool\s)(\S+)(\s.*)?$/';
 
 	/**
 	 * Default timesyncd configuration
@@ -52,11 +46,6 @@ class NtpManager {
 			'PollIntervalMaxSec' => 2048,
 		],
 	];
-
-	/**
-	 * NTP service
-	 */
-	private const NTP_SERVICE = 'ntp';
 
 	/**
 	 * Timesyncd service
@@ -112,11 +101,12 @@ class NtpManager {
 	 * @return array<int, string> NTP configuration
 	 */
 	public function readConfig(): array {
-		if ($this->utility === 'timesyncd') {
-			$config = $this->readTimesyncd();
-			return explode(' ', $config['Time']['NTP']);
+		$config = $this->readTimesyncd();
+		$servers = $config['Time']['NTP'];
+		if (strlen($servers) === 0) {
+			return [];
 		}
-		return $this->readNtp();
+		return explode(' ', $config['Time']['NTP']);
 	}
 
 	/**
@@ -124,11 +114,7 @@ class NtpManager {
 	 * @param array<string> $config NTP configuration
 	 */
 	public function storeConfig(array $config): void {
-		if ($this->utility === 'timesyncd') {
-			$this->storeTimesyncd($config);
-		} else {
-			$this->storeNtp($config);
-		}
+		$this->storeTimesyncd($config);
 	}
 
 	/**
@@ -147,76 +133,31 @@ class NtpManager {
 	}
 
 	/**
-	 * Parses and returns NTP configuration from NTP service
-	 * @return array<string> NTP configuration
-	 */
-	private function readNtp(): array {
-		if (!file_exists($this->fullPath)) {
-			throw new ConfNotFoundException('NTP cofiguration file not found.');
-		}
-		$pools = [];
-		$config = explode(PHP_EOL, $this->fileManager->read($this->confFile));
-		foreach ($config as $line) {
-			$match = Strings::match($line, self::POOL_PATTERN);
-			if ($match === null) {
-				continue;
-			}
-			$pools[] = $match[2];
-		}
-		return $pools;
-	}
-
-	/**
 	 * Converts and stores NTP configuration for timesyncd service
 	 * @param array<string> $pools NTP configuration
 	 */
 	private function storeTimesyncd(array $pools): void {
 		$current = $this->readTimesyncd();
-		$current['Time']['NTP'] = implode(' ', $pools);
+		$servers = implode(' ', $pools);
+		if (strlen($servers) === 0) {
+			$current['Time']['NTP'] = null;
+		} else {
+			$current['Time']['NTP'] = $servers;
+		}
 		$this->fileManager->write($this->confFile, ConfParser::toConf($current));
-	}
-
-	/**
-	 * Converts and stores NTP configuration for NTP service
-	 * @param array<string> $pools NTP configuration
-	 */
-	private function storeNtp(array $pools): void {
-		if (!file_exists($this->fullPath)) {
-			throw new ConfNotFoundException('NTP cofiguration file not found.');
-		}
-		$config = explode(PHP_EOL, $this->fileManager->read($this->confFile));
-		$newConfig = [];
-		foreach ($config as $line) {
-			$match = Strings::match($line, self::POOL_PATTERN);
-			if ($match === null) {
-				$newConfig[] = $line;
-				continue;
-			}
-			if (!in_array($match[1], $pools, true)) {
-				continue;
-			}
-			$newConfig[] = $line;
-			unset($pools[$match[1]]);
-		}
-		foreach ($pools as $pool) {
-			$newConfig[] = 'pool ' . $pool . ' iburst';
-		}
-		$this->fileManager->write($this->confFile, implode(PHP_EOL, $newConfig));
 	}
 
 	/**
 	 * Attempts to synchronize system clock
 	 */
 	public function sync(): void {
-		if ($this->utility === 'timesyncd') {
-			$this->serviceManager->restart(self::TIMESYNCD_SERVICE);
-		} else {
-			$this->serviceManager->stop(self::NTP_SERVICE);
-			$command = $this->commandManager->run('ntpd -gq', true, 30);
-			if ($command->getExitCode() !== 0) {
-				throw new TimeDateException($command->getStderr());
-			}
-			$this->serviceManager->start(self::NTP_SERVICE);
+		$command = $this->commandManager->run('timedatectl set-ntp false', true);
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
+		$command = $this->commandManager->run('timedatectl set-ntp true', true);
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
 		}
 	}
 
