@@ -26,6 +26,8 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use App\GatewayModule\Exceptions\TimeDateException;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\Strings;
 
 /**
@@ -36,17 +38,7 @@ class NtpManager {
 	/**
 	 * Used pool command pattern
 	 */
-	private const POOL_PATTERN_USED = '/^pool\s.*$/';
-
-	/**
-	 * Unused pool command pattern
-	 */
-	private const POOL_PATTERN_UNUSED = '/^#pool\s.*$/';
-
-	/**
-	 * Server command regex pattern
-	 */
-	private const SERVER_PATTERN = '/^server\s(.*)$/';
+	private const POOL_PATTERN = '/^(pool\s)(\S+)(\s.*)?$/';
 
 	/**
 	 * Default timesyncd configuration
@@ -62,6 +54,16 @@ class NtpManager {
 	];
 
 	/**
+	 * NTP service
+	 */
+	private const NTP_SERVICE = 'ntp';
+
+	/**
+	 * Timesyncd service
+	 */
+	private const TIMESYNCD_SERVICE = 'systemd-timesyncd';
+
+	/**
 	 * @var string $fullPath Path to configuration file
 	 */
 	private $fullPath;
@@ -72,9 +74,19 @@ class NtpManager {
 	private $confFile;
 
 	/**
+	 * @var CommandManager $commandManager Commang manager
+	 */
+	private $commandManager;
+
+	/**
 	 * @var PrivilegedFileManager $fileManager Privileged file manager
 	 */
 	private $fileManager;
+
+	/**
+	 * @var ServiceManager $serviceManager Service manager
+	 */
+	private $serviceManager;
 
 	/**
 	 * @var string $utility Time sync utility
@@ -85,35 +97,31 @@ class NtpManager {
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, ServiceManager $serviceManager) {
 		$feature = $featureManager->get('ntp');
 		$this->fullPath = $feature['path'];
 		$this->confFile = basename($this->fullPath);
+		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(dirname($this->fullPath), $commandManager);
+		$this->serviceManager = $serviceManager;
 		$this->utility = $feature['utility'];
 	}
 
 	/**
 	 * Returns NTP configuration
-	 * @return array<string, array<int, string>> NTP configuration
+	 * @return array<int, string> NTP configuration
 	 */
 	public function readConfig(): array {
 		if ($this->utility === 'timesyncd') {
 			$config = $this->readTimesyncd();
-			$servers = explode(' ', $config['Time']['NTP']);
-			return ['servers' => $servers === [''] ? [] : $servers];
+			return explode(' ', $config['Time']['NTP']);
 		}
-		$config = $this->readNtp();
-		return [
-			'servers' => array_map(function ($item): string {
-				return $item[1];
-			}, $config),
-		];
+		return $this->readNtp();
 	}
 
 	/**
 	 * Stores NTP configuration
-	 * @param array<string, array<int, string>> $config NTP configuration
+	 * @param array<string> $config NTP configuration
 	 */
 	public function storeConfig(array $config): void {
 		if ($this->utility === 'timesyncd') {
@@ -140,73 +148,76 @@ class NtpManager {
 
 	/**
 	 * Parses and returns NTP configuration from NTP service
-	 * @return array<int, array<int, mixed>> NTP configuration
+	 * @return array<string> NTP configuration
 	 */
 	private function readNtp(): array {
 		if (!file_exists($this->fullPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
-		$servers = [];
+		$pools = [];
 		$config = explode(PHP_EOL, $this->fileManager->read($this->confFile));
-		foreach ($config as $idx => $line) {
-			$match = Strings::match($line, self::SERVER_PATTERN);
+		foreach ($config as $line) {
+			$match = Strings::match($line, self::POOL_PATTERN);
 			if ($match === null) {
 				continue;
 			}
-			$ip = filter_var($match[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
-			$hostname = filter_var($match[1], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
-			if ($match[1] === $ip || $match[1] === $hostname) {
-				$servers[] = [$idx, $match[1]];
-			}
+			$pools[] = $match[2];
 		}
-		return $servers;
+		return $pools;
 	}
 
 	/**
 	 * Converts and stores NTP configuration for timesyncd service
-	 * @param array<string, array<int, string>> $config NTP configuration
+	 * @param array<string> $pools NTP configuration
 	 */
-	private function storeTimesyncd(array $config): void {
+	private function storeTimesyncd(array $pools): void {
 		$current = $this->readTimesyncd();
-		$current['Time']['NTP'] = implode(' ', $config['servers']);
+		$current['Time']['NTP'] = implode(' ', $pools);
 		$this->fileManager->write($this->confFile, ConfParser::toConf($current));
 	}
 
 	/**
 	 * Converts and stores NTP configuration for NTP service
-	 * @param array<string, array<int, string>> $config NTP configuration
+	 * @param array<string> $pools NTP configuration
 	 */
-	private function storeNtp(array $config): void {
+	private function storeNtp(array $pools): void {
 		if (!file_exists($this->fullPath)) {
 			throw new ConfNotFoundException('NTP cofiguration file not found.');
 		}
-		$useServers = $config['servers'] !== [];
+		$config = explode(PHP_EOL, $this->fileManager->read($this->confFile));
 		$newConfig = [];
-		$lines = explode(PHP_EOL, $this->fileManager->read($this->confFile));
-		foreach ($lines as $line) {
-			if ($useServers) {
-				$match = Strings::match($line, self::POOL_PATTERN_USED);
-				if ($match !== null) {
-					$newConfig[] = '#' . $line;
-					continue;
-				}
-			} else {
-				$match = Strings::match($line, self::POOL_PATTERN_UNUSED);
-				if ($match !== null) {
-					$newConfig[] = Strings::substring($line, 1);
-					continue;
-				}
+		foreach ($config as $line) {
+			$match = Strings::match($line, self::POOL_PATTERN);
+			if ($match === null) {
+				$newConfig[] = $line;
+				continue;
 			}
-			$match = Strings::match($line, self::SERVER_PATTERN);
-			if ($match !== null) {
+			if (!in_array($match[1], $pools, true)) {
 				continue;
 			}
 			$newConfig[] = $line;
+			unset($pools[$match[1]]);
 		}
-		foreach ($config['servers'] as $server) {
-			$newConfig[] = 'server ' . $server;
+		foreach ($pools as $pool) {
+			$newConfig[] = 'pool ' . $pool . ' iburst';
 		}
 		$this->fileManager->write($this->confFile, implode(PHP_EOL, $newConfig));
+	}
+
+	/**
+	 * Attempts to synchronize system clock
+	 */
+	public function sync(): void {
+		if ($this->utility === 'timesyncd') {
+			$this->serviceManager->restart(self::TIMESYNCD_SERVICE);
+		} else {
+			$this->serviceManager->stop(self::NTP_SERVICE);
+			$command = $this->commandManager->run('ntpd -gq', true, 30);
+			if ($command->getExitCode() !== 0) {
+				throw new TimeDateException($command->getStderr());
+			}
+			$this->serviceManager->start(self::NTP_SERVICE);
+		}
 	}
 
 }

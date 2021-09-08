@@ -30,6 +30,7 @@ use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\NtpManager;
 use Nette\IOException;
 
@@ -110,6 +111,30 @@ class NtpController extends GatewayController {
 			$this->manager->storeConfig($request->getJsonBody(true));
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException | IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/sync")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Attempts to synchronize
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function forceSync(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$this->manager->sync();
+			return $response->writeBody('Workaround');
+		} catch (TimeDateException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

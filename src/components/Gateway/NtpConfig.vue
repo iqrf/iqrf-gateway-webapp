@@ -39,7 +39,7 @@ limitations under the License.
 					</div>
 					<div v-if='useCustomServers'>
 						<div
-							v-for='(key, idx) of config.servers'
+							v-for='(key, idx) of pools'
 							:key='idx'
 							class='form-group'
 						>
@@ -52,20 +52,20 @@ limitations under the License.
 								}'
 							>
 								<CInput
-									v-model='config.servers[idx]'
+									v-model='pools[idx]'
 									:label='$t("gateway.ntp.form.server")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<CButton
-								v-if='config.servers.length > 1'
+								v-if='pools.length > 1'
 								color='danger'
 								@click='removeServer(idx)'
 							>
 								{{ $t('gateway.ntp.form.remove') }}
 							</CButton> <CButton
-								v-if='idx === (config.servers.length -1)'
+								v-if='idx === (pools.length -1)'
 								color='success'
 								@click='addServer'
 							>
@@ -79,6 +79,11 @@ limitations under the License.
 						@click='saveConfig'
 					>
 						{{ $t('forms.save') }}
+					</CButton> <CButton
+						color='info'
+						@click='syncTime'
+					>
+						Sync time
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -94,13 +99,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '../../helpers/errorToast';
 
-import ip from 'ip-regex';
 import GatewayService from '../../services/GatewayService';
+import ip from 'ip-regex';
+import isFQDN from 'is-fqdn';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {INTP} from '../../interfaces/gatewayTime';
-
-import isFQDN from 'is-fqdn';
 
 @Component({
 	components: {
@@ -123,9 +126,7 @@ export default class NtpConfig extends Vue {
 	/**
 	 * NTP configuration
 	 */
-	private config: INTP = {
-		servers: ['']
-	}
+	private pools: Array<string> = ['']
 
 	/**
 	 * @var {boolean} useCustomServers Controls whether server fields are rendered
@@ -158,12 +159,12 @@ export default class NtpConfig extends Vue {
 		}
 		return GatewayService.getNtp()
 			.then((response: AxiosResponse) => {
-				let config: INTP = response.data;
-				if (config.servers.length === 0) {
+				let pools: Array<string> = response.data;
+				if (pools.length === 0) {
 					this.useCustomServers = false;
 				} else {
-					this.config = config;
 					this.useCustomServers = true;
+					this.pools = pools;
 				}
 				this.$store.commit('spinner/HIDE');
 			})
@@ -177,10 +178,7 @@ export default class NtpConfig extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		let config = JSON.parse(JSON.stringify(this.config));
-		if (!this.useCustomServers) {
-			config.servers = [];
-		}
+		let config = this.useCustomServers ? this.pools : [];
 		GatewayService.setNtp(config)
 			.then(() => {
 				this.getConfig().then(() => {
@@ -196,10 +194,22 @@ export default class NtpConfig extends Vue {
 	}
 
 	/**
+	 * Attempts to sync time and refresh gateway clock
+	 */
+	private syncTime(): void {
+		this.$store.commit('spinner/SHOW');
+		GatewayService.ntpSync()
+			.then(() => this.$emit('refresh-time'))
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'gateway.ntp.messages.syncFailed');
+			});
+	}
+
+	/**
 	 * Adds another server entry
 	 */
 	private addServer(): void {
-		this.config.servers.push('');
+		this.pools.push('');
 	}
 
 	/**
@@ -207,7 +217,7 @@ export default class NtpConfig extends Vue {
 	 * @param {number} idx Index of server to remove
 	 */
 	private removeServer(idx: number): void {
-		this.config.servers.splice(idx, 1);
+		this.pools.splice(idx, 1);
 	}
 
 }
