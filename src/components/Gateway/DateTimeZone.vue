@@ -216,8 +216,9 @@ export default class DateTimeZone extends Vue {
 	/**
 	 * Retrieves current gateway date, time and timezone
 	 */
-	private getTime(): void {
+	public getTime(): void {
 		this.$store.commit('spinner/SHOW');
+		this.clearActiveInterval();
 		TimeService.getTime()
 			.then((response: AxiosResponse) => {
 				this.gatewayTime = response.data;
