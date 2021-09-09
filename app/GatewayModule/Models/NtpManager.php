@@ -28,6 +28,7 @@ use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\ServiceModule\Models\ServiceManager;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 
 /**
  * NTP manager
@@ -159,13 +160,14 @@ class NtpManager {
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
-		for ($i = 0; $i < 10; $i++) {
-			sleep(1);
-			if (file_exists('/run/systemd/timesync/synchronized')) {
-				return;
+		try {
+			$command = $this->commandManager->run('while [ ! -f /run/systemd/timesync/synchronized ]; do :; done', true, 30);
+			if ($command->getExitCode() !== 0) {
+				throw new TimeDateException($command->getStderr());
 			}
-		}
-		throw new TimeDateException('Network time synchronization timed out.');
+		} catch (ProcessTimedOutException $e) {
+			throw new TimeDateException('Network time synchronization timed out.');
+		}		
 	}
 
 }
