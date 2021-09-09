@@ -1173,7 +1173,6 @@
 				"timezone": "Please select a timezone."
 			},
 			"messages": {
-				"syncFailed": "Failed to synchronize system clock.",
 				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
 				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
 				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
@@ -1181,10 +1180,10 @@
 			}
 		},
 		"ntp": {
-			"title": "NTP server configuration",
+			"title": "NTP configuration",
 			"form": {
-				"setServer": "Set own NTP server",
-				"server": "Server",
+				"setServer": "Set NTP servers manually",
+				"server": "Server address",
 				"add": "Add another server",
 				"remove": "Remove server"
 			},
@@ -1193,6 +1192,9 @@
 				"serverMissing": "Please enter a server."
 			},
 			"messages": {
+				"syncProgress": "Attempting to synchronize network time.",
+				"syncSuccess": "Network time hase been successfully synchronized.",
+				"syncFailed": "Failed to synchronize system clock: {error}",
 				"fetchFailed": "Failed to retrieve NTP configuration: {error}",
 				"saveFailed": "Failed to NTP configuration: {error}",
 				"saveSuccess": "NTP configuration has been successfully saved."

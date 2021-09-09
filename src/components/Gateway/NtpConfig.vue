@@ -168,9 +168,7 @@ export default class NtpConfig extends Vue {
 				}
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.ntp.messages.fetchFailed');
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.ntp.messages.fetchFailed'));
 	}
 
 	/**
@@ -188,9 +186,7 @@ export default class NtpConfig extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.ntp.messages.saveFailed');
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.ntp.messages.saveFailed'));
 	}
 
 	/**
@@ -198,11 +194,12 @@ export default class NtpConfig extends Vue {
 	 */
 	private syncTime(): void {
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('gateway.ntp.messages.syncProgress').toString());
 		GatewayService.ntpSync()
-			.then(() => this.$emit('refresh-time'))
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.ntp.messages.syncFailed');
-			});
+			.then(() => {
+				this.$emit('refresh-time');
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.ntp.messages.syncFailed'));
 	}
 
 	/**
