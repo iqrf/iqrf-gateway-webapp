@@ -46,7 +46,7 @@ export default class GatewayTime extends Vue {
 	 * Refreshes the gateway clock
 	 */
 	private refreshTime(): void {
-		(this.$refs.datetime as DateTimeZone).getTime();
+		(this.$refs.datetime as DateTimeZone).getTime(true);
 	}
 }
 </script>

@@ -166,7 +166,7 @@ export default class DateTimeZone extends Vue {
 	 * Retrieves gateway time and available timezones
 	 */
 	mounted(): void {
-		this.getTime();
+		this.getTime(false);
 	}
 
 	/**
@@ -215,8 +215,9 @@ export default class DateTimeZone extends Vue {
 
 	/**
 	 * Retrieves current gateway date, time and timezone
+	 * @param {boolean} sync Indicates whether time fetch was invoked by NTP sync
 	 */
-	public getTime(): void {
+	public getTime(sync: boolean): void {
 		this.$store.commit('spinner/SHOW');
 		this.clearActiveInterval();
 		TimeService.getTime()
@@ -232,19 +233,25 @@ export default class DateTimeZone extends Vue {
 				this.timeRefreshInterval = setInterval(() => {
 					this.gatewayTime!.timestamp++;
 				}, 1000);
-				this.getTimezones();
+				this.getTimezones(sync);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timeGetFailed'));
 	}
 
 	/**
 	 * Retrieve list of available timezones
+	 * @param {boolean} sync Indicates whether time fetch was invoked by NTP sync
 	 */
-	private getTimezones(): void {
+	private getTimezones(sync: boolean): void {
 		TimeService.getTimezones()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.readTimezones(response.data);
+				if (sync) {
+					this.$toast.success(
+						this.$t('gateway.ntp.messages.syncSuccess').toString()
+					);
+				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timezoneGetFailed'));
 	}
@@ -275,7 +282,7 @@ export default class DateTimeZone extends Vue {
 					this.$t('gateway.datetime.messages.timezoneSetSuccess').toString()
 				);
 				this.clearActiveInterval();
-				this.getTime();
+				this.getTime(false);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.datetime.messages.timezoneSetFailed'));
 	}

@@ -159,6 +159,13 @@ class NtpManager {
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
+		for ($i = 0; $i < 10; $i++) {
+			sleep(1);
+			if (file_exists('/run/systemd/timesync/synchronized')) {
+				return;
+			}
+		}
+		throw new TimeDateException('Network time synchronization timed out.');
 	}
 
 }
