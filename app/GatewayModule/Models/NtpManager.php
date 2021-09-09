@@ -167,7 +167,7 @@ class NtpManager {
 			}
 		} catch (ProcessTimedOutException $e) {
 			throw new TimeDateException('Network time synchronization timed out.');
-		}		
+		}
 	}
 
 }
