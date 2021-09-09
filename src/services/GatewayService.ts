@@ -131,7 +131,7 @@ class GatewayService {
 	 * Attempts to synchronize system clock
 	 */
 	ntpSync(): Promise<AxiosResponse> {
-		return axios.post('gateway/ntp/sync', null, {headers: authorizationHeader()});
+		return axios.post('gateway/ntp/sync', null, {headers: authorizationHeader(), timeout: 60000});
 	}
 
 	/**
