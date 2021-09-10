@@ -28,7 +28,6 @@ use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\ServiceModule\Models\ServiceManager;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
 
 /**
  * NTP manager
@@ -171,7 +170,6 @@ class NtpManager {
 		if ($timeout === 0) {
 			throw new TimeDateException('Network time synchronization failed.');
 		}
-
 	}
 
 }
