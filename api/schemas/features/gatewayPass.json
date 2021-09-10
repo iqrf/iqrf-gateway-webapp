@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/gatewayPass.json",
+	"type": "object",
+	"title": "Gateway password management",
+	"required": [
+		"enabled",
+		"user"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Gateway password management",
+			"example": false
+		},
+		"user": {
+			"$id": "#/properties/user",
+			"type": "string",
+			"title": "Gateway user",
+			"example": "root"
+		}
+	}
+}

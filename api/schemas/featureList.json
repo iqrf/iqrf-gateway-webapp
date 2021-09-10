@@ -21,6 +21,9 @@
 		"docs": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/docs.json"
 		},
+		"gatewayPass": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/gatewayPass.json"
+		},
 		"grafana": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
 		},

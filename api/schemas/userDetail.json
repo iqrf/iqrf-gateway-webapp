@@ -30,7 +30,7 @@
 			"oneOf": [
 				{
 					"type": "string",
-					"format": "idn-email"
+					"format": "email"
 				},
 				{
 					"type": "null"
