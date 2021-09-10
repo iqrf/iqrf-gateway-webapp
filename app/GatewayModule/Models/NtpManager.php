@@ -160,14 +160,18 @@ class NtpManager {
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
-		try {
-			$command = $this->commandManager->run('while [ ! -f /run/systemd/timesync/synchronized ]; do :; done', true, 30);
-			if ($command->getExitCode() !== 0) {
-				throw new TimeDateException($command->getStderr());
+		$timeout = 30000000;
+		while ($timeout > 0) {
+			if (file_exists('/run/systemd/timesync/synchronized')) {
+				break;
 			}
-		} catch (ProcessTimedOutException $e) {
-			throw new TimeDateException('Network time synchronization timed out.');
+			$timeout -= 100000;
+			usleep(100000);
 		}
+		if ($timeout === 0) {
+			throw new TimeDateException('Network time synchronization failed.');
+		}
+
 	}
 
 }
