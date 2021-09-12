@@ -1,10 +1,62 @@
-iqrf-gateway-webapp (2.3.3~alpha~1.gbpf885d5) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.3.3) stable; urgency=medium
 
-  ** SNAPSHOT build @f885d5f94d6f257ee26d7114a0cdd5972d159fe6 **
+  [ Karel Hanák ]
+  * Prepare for version v2.3.3-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Network: fix IPv4 address of DNS servers
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 17 Jul 2021 08:32:21 +0200
+  [ Karel Hanák ]
+  * Gateway: added NTP local servers configuration
+  * NTP configuration: fixed timesyncd reading, added storing, added ntp service configuration parsing and storing
+  * NTP configuration: update configuration for NTP utility, fixed frontend fetch
+  * NTP configuration: update configuration for NTP utility, fixed frontend fetch
+  * features: set timesync as default ntp utility
+  * NtpManager: fixed writing based on feature
+  * added ntp to features and newman tests
+  * NtpManager: fixed codestyle
+  * debian package: added ntp to features patch
+  * NTP: unified configuration object for ntp utilities
+  * NtpManager: use privileged file manager
+  * NtpManager: fixed ntp conf storing
+  * OsUpdater: fixed updates after repo changes
+  * BondingManager: fixed smartconnect error handling
+  * Iqrfnet: fixed error toast message selection
+  * Config: IqrfSpi config refactor
+  * main: fixed promise rejection error on axios authorization failure
+
+  [ Roman Ondráček ]
+  * Tests: use ninjify/nunjuck to prepare testing environment for Nette Tester
+  * Tests: remove pcov PHP extension
+  * Tests: fix WebSocket client test
+  * Composer: update dependencies
+  * Console: fix DI extension
+  * PHPStan: exclude temp dir
+
+  [ Karel Hanák ]
+  * GatewayTime: refactoring, added ntp synchronization status
+  * TimeController: handle thrown TimeDate exceptions
+  * moved features fetch to main component, removed in signIn
+
+  [ Roman Ondráček ]
+  * Gateway: fix style of Gateway Info page
+  * Gateway: refactor GW info manager
+
+  [ Karel Hanák ]
+  * DateTime: ntp sync option, refactor read and write ntp configuration
+  * NtpManager: remove ntpd handling, updated timesyncd forced sync
+  * DateTime: updated ui, success message on time sync, reload time on sync
+  * NtpManager: updated sync check
+  * NtpManager: fixed codestyle
+  * NtpManager: updated ntp sync timeout check
+
+  [ Roman Ondráček ]
+  * Gateway: fix coding style in NTP manager
+
+  [ Karel Hanák ]
+  * debian package: updated iqube patch
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 12 Sep 2021 10:48:08 +0200
 
 iqrf-gateway-webapp (2.3.2) stable; urgency=medium
 
