@@ -68,7 +68,7 @@ class ServicesController extends BaseController {
 		'systemd-journald' => 'systemdJournal',
 		'tempgw' => 'iTemp',
 		'unattended-upgrades' => 'unattendedUpgrades',
-		'watchdog' => 'watchdog'
+		'watchdog' => 'watchdog',
 	];
 
 	/**
