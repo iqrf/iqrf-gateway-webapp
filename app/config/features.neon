@@ -82,3 +82,6 @@ unattendedUpgrades:
 # IQRF Gateway Webapp version checker
 versionChecker:
 	enabled: false
+# Watchdog service
+watchdog:
+	enabled: false

@@ -2859,6 +2859,18 @@
 				"failure": "Unable to save automatic upgrades configuration."
 			}
 		},
+		"watchdog": {
+			"title": "Watchdog service",
+			"description": "Controls the Watchdog service.",
+			"messages": {
+				"disabled": "Watchdog service is disabled.",
+				"disable": "Watchdog service has been disabled.",
+				"enable": "Watchdog service has been enabled.",
+				"start": "Watchdog service has been started.",
+				"stop": "Watchdog service has been stopped.",
+				"restart": "Watchdog service has been restarted."
+			}
+		},
 		"systemd-journald": {
 			"title": "Journal service",
 			"description": "Controls the systemd journald service.",

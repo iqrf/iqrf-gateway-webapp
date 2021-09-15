@@ -111,6 +111,9 @@ class FeatureManager {
 		'versionChecker' => [
 			'enabled' => false,
 		],
+		'watchdog' => [
+			'enabled' => false,
+		],
 	];
 
 	/**

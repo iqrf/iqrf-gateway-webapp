@@ -60,6 +60,17 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("iTemp")'
+					to='/service/tempgw/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('service.tempgw.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('service.tempgw.description') }}
+					</p>
+				</CListGroupItem>
+				<CListGroupItem
 					v-if='$store.getters["features/isEnabled"]("ssh")'
 					to='/service/ssh/'
 				>
@@ -71,6 +82,17 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("systemdJournal")'
+					to='/service/systemd-journald/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('service.systemd-journald.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('service.systemd-journald.description') }}
+					</p>
+				</CListGroupItem>
+				<CListGroupItem
 					v-if='$store.getters["features/isEnabled"]("unattendedUpgrades")'
 					to='/service/unattended-upgrades/'
 				>
@@ -79,6 +101,17 @@ limitations under the License.
 					</header>
 					<p class='list-group-item-text'>
 						{{ $t('service.unattended-upgrades.description') }}
+					</p>
+				</CListGroupItem>
+				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("watchdog")'
+					to='/service/watchdog/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('service.watchdog.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('service.watchdog.description') }}
 					</p>
 				</CListGroupItem>
 				<CListGroupItem

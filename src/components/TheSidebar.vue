@@ -197,6 +197,13 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('service.tempgw.title'),
+								to: '/gateway/service/tempgw/',
+								feature: 'iTemp',
+								roles: ['power', 'normal', 'iqaros'],
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('service.ssh.title'),
 								to: '/gateway/service/ssh/',
 								feature: 'ssh',
@@ -204,9 +211,9 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
-								name: this.$t('service.tempgw.title'),
-								to: '/gateway/service/tempgw/',
-								feature: 'iTemp',
+								name: this.$t('service.systemd-journald.title'),
+								to: '/gateway/service/systemd-journald/',
+								feature: 'systemdJournal',
 								roles: ['power', 'normal', 'iqaros'],
 							},
 							{
@@ -218,9 +225,9 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
-								name: this.$t('service.systemd-journald.title'),
-								to: '/gateway/service/systemd-journald/',
-								feature: 'systemdJournal',
+								name: this.$t('service.watchdog.title'),
+								to: '/gateway/service/watchdog/',
+								feature: 'watchdog',
 								roles: ['power', 'normal', 'iqaros'],
 							},
 							{

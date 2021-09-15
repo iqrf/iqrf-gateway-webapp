@@ -98,19 +98,21 @@ const whitelisted = [
 	'iqrf-gateway-controller',
 	'iqrf-gateway-daemon',
 	'iqrf-gateway-translator',
-	'ssh',
 	'tempgw',
-	'unattended-upgrades',
+	'ssh',
 	'systemd-journald',
+	'unattended-upgrades',
+	'watchdog'
 ];
 
 const features = {
 	'iqrf-gateway-controller': 'iqrfGatewayController',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
-	'ssh': 'ssh',
 	'tempgw': 'iTemp',
-	'unattended-upgrades': 'unattendedUpgrades',
+	'ssh': 'ssh',
 	'systemd-journald': 'systemdJournal',
+	'unattended-upgrades': 'unattendedUpgrades',
+	'watchdog': 'watchdog'
 };
 
 interface IService {
