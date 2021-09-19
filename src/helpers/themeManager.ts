@@ -39,6 +39,14 @@ export default class ThemeManager {
 	}
 
 	/**
+	 * Returns the title translation key
+	 * @return {string} Title translation key
+	 */
+	static getTitleKey(): string {
+		return 'core.title.' + ThemeManager.getName();
+	}
+
+	/**
 	 * Returns the primary color
 	 * @return {string} Primary color
 	 */

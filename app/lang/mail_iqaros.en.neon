@@ -1,0 +1,24 @@
+title: 'IQAROS system'
+
+subject:
+	prefix: 'IQAROS - '
+
+greeting: 'Dear %username%,'
+
+footer:
+	'''
+		Best regards,
+		IQAROS system %gwId%
+	'''
+
+emailVerification:
+	title: Email address verification
+	body: 'in order to complete your user profile at IQAROS system %gwId%, you need to verify your e-mail address by clicking on the link bellow.'
+
+mailerConfigurationTest:
+	title: Mailer configuration test
+	body: 'if you have received this email, the SMTP configuration is correct.'
+
+passwordRecovery:
+	title: Password recovery
+	body: 'a password reset was requested for your account from IQAROS system %hostname%. To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'

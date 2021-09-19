@@ -22,8 +22,8 @@ limitations under the License.
 		@update:show='(value) => $store.commit("sidebar/set", ["show", value])'
 	>
 		<CSidebarBrand class='d-md-down-none' to='/'>
-			<LogoBig class='c-sidebar-brand-full' :alt='$t("core.title")' />
-			<LogoSmall class='c-sidebar-brand-minimized' :alt='$t("core.title")' />
+			<LogoBig class='c-sidebar-brand-full' :alt='title' />
+			<LogoSmall class='c-sidebar-brand-minimized' :alt='title' />
 		</CSidebarBrand>
 		<CRenderFunction flat :content-to-render='getNav' />
 		<SidebarIndication />
@@ -571,6 +571,14 @@ export default class TheSidebar extends Vue {
 			element._children = this.filterNavMembers(element._children);
 			return element;
 		});
+	}
+
+	/**
+	 * Returns the app title
+	 * @return {string} App title
+	 */
+	get title(): string {
+		return this.$t(ThemeManager.getTitleKey()).toString();
 	}
 
 	/**

@@ -137,6 +137,7 @@ limitations under the License.
 				>
 					{{ $t('forms.save') }}
 				</CButton> <CButton
+					v-if='hasEmail'
 					color='info'
 					@click='test'
 				>
@@ -154,18 +155,19 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
 import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {AxiosError, AxiosResponse} from 'axios';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+import {mapGetters} from 'vuex';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import {SmtpSecurity} from '../../enums/Config/Smtp';
 
 import MailerService from '../../services/MailerService';
 
-import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {ISmtp} from '../../interfaces/smtp';
 
@@ -179,7 +181,12 @@ import {ISmtp} from '../../interfaces/smtp';
 		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
+	computed: {
+		...mapGetters({
+			hasEmail: 'user/hasEmail',
+		}),
+	},
 })
 
 /**

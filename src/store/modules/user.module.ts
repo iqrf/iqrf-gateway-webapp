@@ -74,6 +74,9 @@ const getters: GetterTree<UserState, any> = {
 		}
 		return state.user.state === AccountState.UNVERIFIED;
 	},
+	hasEmail(state: UserState): boolean {
+		return state.user !== null && state.user.email !== null;
+	},
 	getId(state: UserState): number|null {
 		if (state.user === null) {
 			return null;
