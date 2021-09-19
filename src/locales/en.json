@@ -178,6 +178,7 @@
 		"cancel": "Cancel",
 		"edit": "Edit",
 		"delete": "Delete",
+		"indicateCoordinator": "Indicate coordinator",
 		"pingNodes": "Ping nodes",
 		"no": "No",
 		"refresh": "Refresh",
@@ -1602,7 +1603,9 @@
 					"getOnline": "Retrieving status of devices",
 					"bondedFailed": "Failed to retrieve list of bonded devices.",
 					"discoveredFailed": "Failed to retrieve list of discovered devices.",
-					"pingFailed": "Failed to retrieve status of devices."
+					"pingFailed": "Failed to retrieve status of devices.",
+					"indicateFailed": "Failed to indicate coordinator device.",
+					"indicateSuccess": "Coordinator indication request successfully sent."
 				}
 			},
 			"discovery": {
