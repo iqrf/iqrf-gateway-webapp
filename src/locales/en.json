@@ -313,7 +313,7 @@
 					"fetchFailed": "Failed to retrieve interfaces configuration.",
 					"noInterface": "All IQRF communication interfaces are disabled.",
 					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
-					"updateFailed": "An error occured while updating interface settings."
+					"updateFailed": "An error occurred while updating interface settings."
 				},
 				"form": {
 					"interface": "Select active interface",
@@ -416,7 +416,7 @@
 						"notFound": "Mapping not found.",
 						"deleteFailed": "Failed to delete mapping {mapping}: {error}",
 						"deleteSuccess": "Mapping {mapping} has been successfully deleted.",
-						"addSuccess": "Mapping {mapping} has been succesfully created.",
+						"addSuccess": "Mapping {mapping} has been successfully created.",
 						"editSuccess": "Mapping {mapping} has been successfully edited."
 					}
 				}
@@ -449,7 +449,7 @@
 						"EnabledSSL": "Enabled TLS",
 						"KeepAliveInterval": "Keep alive interval",
 						"ConnectTimeout": "Connection timeout",
-						"MinReconnect": "Mininum number of reconnects",
+						"MinReconnect": "Minimum number of reconnects",
 						"MaxReconnect": "Maximum number of reconnects",
 						"TrustStore": "CA certificate",
 						"PrivateKeyPassword": "Private key password",
@@ -470,7 +470,7 @@
 						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
 						"listFailed": "Failed to retrieve list of MQTT messaging instances: {error}",
 						"persistence": {
-							"0": "State of in-flight messages is lost in case of a client shutsdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
+							"0": "State of in-flight messages is lost in case of a client shutdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
 							"1": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
 							"2": "Persistence control is delegated to the application."
 						},
@@ -875,8 +875,8 @@
 						"instance": "Please enter name of logging service interface.",
 						"filename": "Please enter logging service file name.",
 						"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
-						"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
-						"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
+						"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or equal to 0.",
+						"maxNumber": "Please enter maximum number of timestamped files, greater than or equal to 0.",
 						"verbosityLevels": {
 							"channel": "Please enter the verbosity channel.",
 							"level": "Please select the verbosity level."
@@ -886,7 +886,7 @@
 			},
 			"messages": {
 				"configMiscFetch": "Retrieving miscellaneous components configuration...",
-				"configFailed": "An unexpected error has occured: {error}",
+				"configFailed": "An unexpected error has occurred: {error}",
 				"configFetchFailed": "Failed to retrieve configuration for {children}.",
 				"failedElement": "Failed to retrieve component configuration."
 			}
@@ -926,7 +926,7 @@
 				"requestTopic": "Please enter the MQTT request topic.",
 				"requestTopicInvalid": "Invalid MQTT request topic format. The request topic format should be: gateway/{GWID}/rest/requests/ (GWID is 16 hexadecimal characters).",
 				"responseTopic": "Please enter the MQTT response topic.",
-				"responseTopicInvalid": "Invalid MQTT response topic format. The response topic format should be: gateway/{GWID}/rest/responses/ (GWID is 16 hexadecaimal characters).",
+				"responseTopicInvalid": "Invalid MQTT response topic format. The response topic format should be: gateway/{GWID}/rest/responses/ (GWID is 16 hexadecimal characters).",
 				"clientId": "Please enter the MQTT client ID.",
 				"clientIdInvalid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits).",
 				"brokerAddr": "Please enter the MQTT broker address.",
@@ -1036,7 +1036,10 @@
 		}
 	},
 	"core": {
-		"title": "IQRF Gateway Webapp",
+		"title": {
+			"generic": "IQRF Gateway Webapp",
+			"iqaros": "IQAROS"
+		},
 		"dashboard": "Dashboard",
 		"documentation": {
 			"title": "Documentation",
@@ -1236,7 +1239,7 @@
 				"hostnameInvalid": "Hostname should contain letters a-z (case insensitive), digits 0-9 and a hyphen (-). Cannot start with a hyphen."
 			},
 			"messages": {
-				"success": "Hostname configuration has been succesfully changed.",
+				"success": "Hostname configuration has been successfully changed.",
 				"failed": "Failed to change hostname configuration: {error}"
 			}
 		},
@@ -1621,7 +1624,7 @@
 				},
 				"messages": {
 					"success": "The discovery process has finished successfully.",
-					"genericError": "An error has occured during the Discovery process.",
+					"genericError": "An error has occurred during the Discovery process.",
 					"spinnerNote": "Discovery is running, the process may take tens of minutes for large networks.",
 					"timeout": "The Discovery request has timed out."
 				}
@@ -1662,14 +1665,14 @@
 				},
 				"messages": {
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
-					"genericError": "An error has occured during the OTA upload process.",
+					"genericError": "An error has occurred during the OTA upload process.",
 					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
 					"hwpid": "* HWPID 65535 includes all devices.",
 					"notHexFile": "Selected file is not .hex file.",
 					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
-					"invalidContent": "An error has occured during file content parsing: {error}",
+					"invalidContent": "An error has occurred during file content parsing: {error}",
 					"invalidMemory": "Invalid memory operation: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
@@ -1693,7 +1696,7 @@
 						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
 						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
 						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
-						"loadStepHwpidSuccess": "Flash load step has been sucessfully completed for all devices with HWPID {hwpid}.",
+						"loadStepHwpidSuccess": "Flash load step has been successfully completed for all devices with HWPID {hwpid}.",
 						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
 						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
 						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
@@ -1701,9 +1704,9 @@
 						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
 						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
 					},
-					"uploadStepFail": "An error has occured during the upload step.",
-					"verifyStepFail": "An error has occured during the verification step.",
-					"loadStepFail": "An error has occured during the flash load step."
+					"uploadStepFail": "An error has occurred during the upload step.",
+					"verifyStepFail": "An error has occurred during the verification step.",
+					"loadStepFail": "An error has occurred during the flash load step."
 				}
 			},
 			"messages": {
@@ -1816,7 +1819,7 @@
 			},
 			"messages": {
 				"queueFull": "IQRF Daemon message queue full, DPA request discarded.",
-				"failure": "An error has occured while processing DPA request.",
+				"failure": "An error has occurred while processing DPA request.",
 				"success": "DPA packet has been sent successfully.",
 				"incorrect": {
 					"pcmd": "Sent DPA packet contains incorrect PCMD.",
@@ -2125,12 +2128,12 @@
 			},
 			"messages": {
 				"modalTitle": "Custom DPA handler issue detected",
-				"modalPrompt": "Custom DPA handler has been enabled in transciever configuration, but not detected. Do you wish to disable Custom DPA handler? The transciever will then be restarted.",
-				"disableFailure": "An error has occured while disabling Custom DPA handler.",
+				"modalPrompt": "Custom DPA handler has been enabled in transceiver configuration, but not detected. Do you wish to disable Custom DPA handler? The transceiver will then be restarted.",
+				"disableFailure": "An error has occurred while disabling Custom DPA handler.",
 				"osReadFailure": "Could not retrieve OS information.",
 				"readFailure": "An error has occurred while reading TR configuration.",
 				"readSuccess": "The TR configuration has been read successfully.",
-				"writeFailure": "An error has occured while saving TR configuration.",
+				"writeFailure": "An error has occurred while saving TR configuration.",
 				"writeSuccess": "The TR configuration has been saved successfully.",
 				"restartFailure": "The TR configuration has been saved successfully, but device could not be restarted.",
 				"restartSuccess": "The TR configuration has been saved successfully. Device restarted."
@@ -2173,7 +2176,7 @@
 				"messages": {
 					"gatewayUpload": "Uploading HEX file to gateway...",
 					"gatewayUploadFailed": "Failed to upload HEX file to gateway: {error}",
-					"gatewayUploadSuccess": "Hex file sucessfully uploaded to gateway.",
+					"gatewayUploadSuccess": "Hex file successfully uploaded to gateway.",
 					"trUpload": "Uploading HEX file to TR...",
 					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
 					"trUploadSuccess": "Hex file successfully uploaded to TR.",
@@ -2206,7 +2209,7 @@
 				"failure": "An error occurred during the file upload.",
 				"timeout": "Daemon API file upload request timed out.",
 				"success": "The file has been successfully uploaded into the coordinator.",
-				"genericError": "An error has occured while processing request.",
+				"genericError": "An error has occurred while processing request.",
 				"osBuildFail": "Failed to retrieve OS builds information.",
 				"osInfoFail": "Embed OS read request failed.",
 				"fetchFail": "The following component(s) failed to fetch information: {children}",
@@ -2460,7 +2463,7 @@
 					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}: {error}",
 					"disableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully disabled.",
 					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}: {error}",
-					"enableSuccess": "Wiregguard tunnel {tunnel} startup activation has been successfully enabled.",
+					"enableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully enabled.",
 					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}: {error}",
 					"fetchFailed": "Failed to retrieve configuration of Wireguard tunnel ID {tunnel}: {error}.",
 					"listFailed": "Failed to retrieve list of existing Wireguard tunnels: {error}",
@@ -2689,7 +2692,7 @@
 				"messages": {
 					"update": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
 					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
-					"commitSuccess": "Currently installed Mender artifact update has been successfully commited, reboot the gateway for the changes to take effect.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully committed, reboot the gateway for the changes to take effect.",
 					"installFailed": "Failed to install Mender artifact, see output log for details.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
 					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
@@ -2911,7 +2914,7 @@
 					"restartFailed": "Failed to restart systemd journal service: {error}",
 					"restartSuccess": "Systemd journal service has been successfully restarted.",
 					"saveFailed": "Failed to save systemd journal configuration: {error}",
-					"saveSuccess": "Systemd journal configuration sucessfully saved."
+					"saveSuccess": "Systemd journal configuration successfully saved."
 				}
 			},
 			"messages": {

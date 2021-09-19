@@ -45,12 +45,12 @@ class ConfigurationManager {
 	public function getConfigSchema(): Schema {
 		return Expect::structure([
 			'enabled' => Expect::bool(false),
-			'host' => Expect::string()->dynamic(),
-			'port' => Expect::int()->dynamic(),
-			'username' => Expect::string()->dynamic(),
-			'from' => Expect::string()->dynamic(),
-			'password' => Expect::string()->dynamic(),
-			'secure' => Expect::anyOf(null, 'ssl', 'tls')->dynamic(),
+			'host' => Expect::string('localhost')->dynamic(),
+			'port' => Expect::int(25)->dynamic(),
+			'username' => Expect::string('root')->dynamic(),
+			'from' => Expect::string('iqrf-gw@localhost.localdomain')->dynamic(),
+			'password' => Expect::string('')->dynamic(),
+			'secure' => Expect::anyOf(null, 'ssl', 'tls')->default(null)->dynamic(),
 			'timeout' => Expect::int()->dynamic(),
 			'context' => Expect::arrayOf('array')->dynamic(),
 			'clientHost' => Expect::string()->dynamic(),

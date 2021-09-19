@@ -27,7 +27,7 @@ limitations under the License.
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
 		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
-			<Logo :alt='$t("core.title")' />
+			<Logo :alt='title' />
 		</CHeaderBrand>
 		<CHeaderNav class='ml-auto mr-3'>
 			<CDropdown
@@ -90,6 +90,14 @@ export default class TheHeader extends Vue {
 	 */
 	private icons: Dictionary<Array<string>> = {
 		logout: cilLockLocked
+	}
+
+	/**
+	 * Returns the app title
+	 * @return {string} App title
+	 */
+	get title(): string {
+		return this.$t(ThemeManager.getTitleKey()).toString();
 	}
 
 	/**

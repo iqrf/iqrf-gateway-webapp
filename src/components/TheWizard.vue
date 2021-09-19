@@ -20,7 +20,7 @@ limitations under the License.
 			<CRow class='justify-content-center'>
 				<CCol lg='10'>
 					<div class='logo'>
-						<Logo :alt='$t("core.title")' />
+						<Logo :alt='title' />
 					</div>
 					<slot />
 				</CCol>
@@ -47,6 +47,14 @@ import ThemeManager from '../helpers/themeManager';
  * Installation base page component
  */
 export default class TheWizard extends Vue {
+
+	/**
+	 * Returns the app title
+	 * @return {string} App title
+	 */
+	get title(): string {
+		return this.$t(ThemeManager.getTitleKey()).toString();
+	}
 
 }
 </script>

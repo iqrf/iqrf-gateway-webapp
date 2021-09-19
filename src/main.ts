@@ -31,6 +31,7 @@ import store from './store';
 import router from './router';
 import i18n from './i18n';
 import UrlBuilder from './helpers/urlBuilder';
+import ThemeManager from './helpers/themeManager';
 
 import App from './App.vue';
 
@@ -64,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 
-Vue.prototype.$appName = 'IQRF Gateway Webapp';
+Vue.prototype.$appName = i18n.t(ThemeManager.getTitleKey());
 
 const urlBuilder: UrlBuilder = new UrlBuilder();
 
@@ -117,8 +118,8 @@ const app = new Vue({
 	render: h => h(App),
 	metaInfo: {
 		titleTemplate: (titleChunk: string): string => {
-			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') +
-				i18n.t('core.title').toString();
+			const title = i18n.t(ThemeManager.getTitleKey()).toString();
+			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') + title;
 		}
 	},
 }).$mount('#app');
