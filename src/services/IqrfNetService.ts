@@ -432,6 +432,27 @@ class IqrfNetService {
 		const options = new WebSocketOptions(request, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}
+
+	/**
+	 * Sends a batch request to indicate coordinator LEDs for 5 seconds
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
+	 */
+	indicateCoordinator(options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqrfRaw',
+			'data': {
+				'msgId': 'coordinatorIndicate',
+				'req': {
+					'rData': '00.00.02.05.FF.FF.05.06.04.FF.FF.05.07.04.FF.FF.08.09.01.FF.FF.FF.88.13.05.06.00.FF.FF.05.07.00.FF.FF.00'
+				},
+				'returnVerbose': true
+			}
+		};
+		return store.dispatch('sendRequest', options);
+	}
 }
 
 export default new IqrfNetService();

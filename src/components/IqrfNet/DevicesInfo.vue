@@ -52,9 +52,21 @@ limitations under the License.
 					</tr>
 				</tbody>
 			</table>
-			<CButton color='primary' class='w-100' @click='frcPing'>
-				{{ $t('forms.pingNodes') }}
-			</CButton>
+			<CButtonGroup class='d-flex'>
+				<CButton
+					class='w-100'
+					color='info'
+					@click='indicateCoordinator'
+				>
+					{{ $t('forms.indicateCoordinator') }}
+				</CButton> <CButton
+					class='w-100'
+					color='primary'
+					@click='frcPing'
+				>
+					{{ $t('forms.pingNodes') }}
+				</CButton>
+			</CButtonGroup>
 			<div v-if='devices.length !== 0' class='table-responsive'>
 				<table class='table table-striped device-info card-margin-bottom'>
 					<tbody>
@@ -170,6 +182,8 @@ export default class DevicesInfo extends Vue {
 					this.parseDiscoveredDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
 					this.parseFrcPing(mutation.payload);
+				} else if (mutation.payload.mType === 'iqrfRaw') {
+					this.handleIndicate(mutation.payload);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
@@ -365,6 +379,31 @@ export default class DevicesInfo extends Vue {
 	private submitFrcPing(): void {
 		this.manual = true;
 		this.frcPing();
+	}
+
+	/**
+	 * Indicates coordinator
+	 */
+	private indicateCoordinator(): void {
+		this.$store.dispatch('spinner/show', 5000);
+		IqrfNetService.indicateCoordinator(this.buildOptions(5000, 'iqrfnet.networkManager.devicesInfo.messages.indicateFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles indicate request response
+	 * @param response Daemon API response
+	 */
+	private handleIndicate(response: any): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.networkManager.devicesInfo.messages.indicateSuccess').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.devicesInfo.messages.indicateFailed').toString()
+			);
+		}
 	}
 }
 </script>
