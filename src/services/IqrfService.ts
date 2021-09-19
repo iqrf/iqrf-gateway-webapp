@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import {UploadUtilFile} from '../interfaces/trUpload';
 
@@ -43,23 +42,23 @@ class IqrfService {
 
 	/**
 	 * Retrieves IQRF OS patches
-	 * @param {Dictionary<number|string>} data API request body
+	 * @param {Record<string, number|string>} data API request body
 	 */
-	getUpgrades(data: Dictionary<number|string>): Promise<AxiosResponse> {
+	getUpgrades(data: Record<string, number|string>): Promise<AxiosResponse> {
 		return axios.post('iqrf/osUpgrades', data, {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Retrieves IQRF OS and DPA upgrade file names
-	 * @param {Dictionary<number|string>} data API request body
+	 * @param {Record<string, number|string>} data API request body
 	 */
-	getUpgradeFiles(data: Dictionary<number|string>): Promise<AxiosResponse> {
+	getUpgradeFiles(data: Record<string, number|string>): Promise<AxiosResponse> {
 		return axios.post('iqrf/osUpgradeFiles', data, {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Executes upload via IQRF Gateway Uploader
-	 * @param {Dictionary<string>} data API request body
+	 * @param {Record<string, string>} data API request body
 	 */
 	uploader(data: UploadUtilFile): Promise<AxiosResponse> {
 		return axios.post('iqrf/uploader', data, {headers: authorizationHeader(), timeout: 30000});

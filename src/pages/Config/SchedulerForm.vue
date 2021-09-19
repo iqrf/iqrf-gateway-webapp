@@ -242,7 +242,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import SchedulerService from '../../services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IOption} from '../../interfaces/coreui';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
@@ -294,9 +293,9 @@ export default class SchedulerForm extends Vue {
 	private clientId = 'SchedulerMessaging'
 
 	/**
-	 * @constant {Dictionary<string>} components Names of messaging components
+	 * @constant {Record<string, string>} components Names of messaging components
 	 */
-	private components: Dictionary<string> = {
+	private components: Record<string, string> = {
 		mq: 'iqrf::MqMessaging',
 		mqtt: 'iqrf::MqttMessaging',
 		websocket: 'iqrf::WebsocketMessaging'
@@ -308,9 +307,9 @@ export default class SchedulerForm extends Vue {
 	private cronMessage: string|null = null
 
 	/**
-	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
+	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
 	 */
-	private dateFormat: Dictionary<string|boolean> = {
+	private dateFormat: Record<string, string|boolean> = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',

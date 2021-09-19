@@ -178,9 +178,9 @@ export default class WebsocketMessagingList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
@@ -249,7 +249,7 @@ export default class WebsocketMessagingList extends Vue {
 						this.$t('config.daemon.messagings.websocket.messaging.messages.deleteSuccess', {messaging: instance})
 							.toString()
 					);
-				});	
+				});
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}

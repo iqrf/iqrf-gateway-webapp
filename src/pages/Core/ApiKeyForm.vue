@@ -79,7 +79,6 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
@@ -106,9 +105,9 @@ import {MetaInfo} from 'vue-meta';
  */
 export default class ApiKeyForm extends Vue {
 	/**
-	 * @constant {Dictionary<string|boolean} dateFormat Date formatting options
+	 * @constant {Record<string, string|boolean} dateFormat Date formatting options
 	 */
-	private dateFormat: Dictionary<string|boolean> = {
+	private dateFormat: Record<string, string|boolean> = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
@@ -119,9 +118,9 @@ export default class ApiKeyForm extends Vue {
 	}
 
 	/**
-	 * @var {Dictionary<string>} metadata API key metadata
+	 * @var {Record<string, string>} metadata API key metadata
 	 */
-	private metadata: Dictionary<string|null> = {
+	private metadata: Record<string, string|null> = {
 		description: '',
 		expiration: null
 	}

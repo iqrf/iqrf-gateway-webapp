@@ -61,7 +61,7 @@ export interface UsageData {
  */
 export default class ResourceUsage extends Vue {
 	/**
-	 * @property {Dictionary<string>} usage Dictionary of gateway device resource usage
+	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
 	 */
 	@Prop({ required: true }) usage!: UsageData
 

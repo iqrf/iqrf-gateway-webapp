@@ -650,7 +650,7 @@ export default class ConnectionForm extends Vue {
 	private pskInputType = 'password'
 
 	/**
-	 * @var {Dictionary<string>} originalIPv4 IPv4 address and method before change
+	 * @var {Record<string, string>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
 		address: '',

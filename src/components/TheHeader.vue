@@ -86,9 +86,9 @@ import ThemeManager from '../helpers/themeManager';
  */
 export default class TheHeader extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		logout: cilLockLocked
 	}
 

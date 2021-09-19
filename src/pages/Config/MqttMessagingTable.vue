@@ -87,7 +87,7 @@ limitations under the License.
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton 
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='confirmDelete(item)'
@@ -114,7 +114,7 @@ limitations under the License.
 				{{ $t('config.daemon.messagings.mqtt.modal.prompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton 
+				<CButton
 					color='danger'
 					@click='performDelete'
 				>
@@ -150,7 +150,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {extendedErrorToast} from '../../helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IMqttInstance} from '../../interfaces/messagingInterfaces';
 
@@ -229,9 +228,9 @@ export default class MqttMessagingTable extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
@@ -285,9 +284,9 @@ export default class MqttMessagingTable extends Vue {
 	/**
 	 * Saves changes in MQTT messaging instance configuration
 	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
+	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
-	private edit(instance: IMqttInstance, newSettings: Dictionary<boolean>): void {
+	private edit(instance: IMqttInstance, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
 		let settings = {
 			...instance,

@@ -32,7 +32,7 @@ export interface ITaskTimeSpec {
  */
 export interface ITaskDpaMessage {
 	mType: string
-	data: Dictionary<unknown>
+	data: Record<string, unknown>
 }
 
 /**

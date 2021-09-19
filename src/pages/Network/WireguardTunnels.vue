@@ -58,7 +58,7 @@ limitations under the License.
 								:color='item.active ? "danger" : "success"'
 								@click='changeActiveState(item.id, item.name, (item.active ? false : true))'
 							>
-								<CIcon 
+								<CIcon
 									:content='item.active ? icons.deactivate : icons.activate'
 									size='sm'
 								/>
@@ -131,7 +131,6 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import WireguardService from '../../services/WireguardService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IWG} from '../../interfaces/network';
 
@@ -155,9 +154,9 @@ import {IWG} from '../../interfaces/network';
 export default class WireguardTunnels extends Vue {
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,

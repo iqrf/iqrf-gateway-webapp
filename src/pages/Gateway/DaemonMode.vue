@@ -94,7 +94,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
@@ -147,7 +146,7 @@ export default class DaemonMode extends Vue {
 	/**
 	 * @constant {DaemonModeEnum} modes Daemon mode options
 	 */
-	private modes: Dictionary<DaemonModeEnum> = {
+	private modes: Record<string, DaemonModeEnum> = {
 		forwarding: DaemonModeEnum.forwarding,
 		operational: DaemonModeEnum.operational,
 		service: DaemonModeEnum.service

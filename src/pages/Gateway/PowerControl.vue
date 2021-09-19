@@ -41,7 +41,6 @@ import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import {cilPowerStandby, cilReload} from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
 import { MetaInfo } from 'vue-meta';
-import {Dictionary} from 'vue-router/types/router';
 import { AxiosResponse } from 'axios';
 
 @Component({
@@ -62,9 +61,9 @@ import { AxiosResponse } from 'axios';
  */
 export default class PowerControl extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		off: cilPowerStandby,
 		reboot: cilReload
 	}
@@ -86,7 +85,7 @@ export default class PowerControl extends Vue {
 	 */
 	private reboot(): void {
 		GatewayService.performReboot()
-			.then((response: AxiosResponse) => 
+			.then((response: AxiosResponse) =>
 				this.$toast.info(
 					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)

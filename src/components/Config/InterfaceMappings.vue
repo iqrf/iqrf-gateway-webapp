@@ -23,7 +23,7 @@ limitations under the License.
 				size='sm'
 				@click='invokeMappingForm()'
 			>
-				<CIcon :content='icons.add' />	
+				<CIcon :content='icons.add' />
 			</CButton>
 			<CDropdown
 				v-for='(mapping, i) of mappings'
@@ -78,7 +78,7 @@ limitations under the License.
 				</CButton>
 			</template>
 		</CModal>
-		<MappingForm 
+		<MappingForm
 			ref='mappingModal'
 			@update-mappings='getMappings'
 		/>
@@ -92,7 +92,6 @@ import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {IMapping} from '../../interfaces/mappings';
 import MappingService from '../../services/MappingService';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingForm from '../../components/Config/MappingForm.vue';
 import { extendedErrorToast } from '../../helpers/errorToast';
@@ -118,9 +117,9 @@ export default class InterfaceMappings extends Vue {
 	private deleteMapping: IMapping|null = null
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
@@ -211,7 +210,7 @@ export default class InterfaceMappings extends Vue {
 	private removeMapping(): void {
 		if (this.deleteMapping === null || this.deleteMapping.id === undefined) {
 			return;
-		} 
+		}
 		this.showModal = false;
 		this.$store.commit('spinner/SHOW');
 		MappingService.removeMapping(this.deleteMapping.id)
@@ -240,7 +239,7 @@ export default class InterfaceMappings extends Vue {
 	private invokeMappingForm(mappingId: number|null = null): void {
 		(this.$refs.mappingModal as MappingForm).showModal(mappingId);
 	}
-	
+
 	/**
 	 * Emits selected mapping to parent component to update form fields
 	 * @param {number} index Mapping index

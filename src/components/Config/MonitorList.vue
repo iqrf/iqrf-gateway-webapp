@@ -113,7 +113,7 @@ limitations under the License.
 					@click='removeInterface()'
 				>
 					{{ $t('forms.delete') }}
-				</CButton> <CButton 
+				</CButton> <CButton
 					color='secondary'
 					@click='deleteInstance = null'
 				>
@@ -135,7 +135,6 @@ import {mapGetters} from 'vuex';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 
 
@@ -163,17 +162,17 @@ import {IField} from '../../interfaces/coreui';
  */
 export default class MonitorList extends Vue {
 	/**
-	 * @constant {Dictionary<string>} componentNames Names of monitor and websocket components
+	 * @constant {Record<string, string>} componentNames Names of monitor and websocket components
 	 */
-	private componentNames: Dictionary<string> = {
+	private componentNames: Record<string, string> = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService'
 	}
 
 	/**
-	 * @var {Dictionary<string>|null} deleteInstance Monitor component instance object used in remove modal
+	 * @var {Record<string, string>|null} deleteInstance Monitor component instance object used in remove modal
 	 */
-	private deleteInstance: Dictionary<string>|null = null
+	private deleteInstance: Record<string, string>|null = null
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -210,9 +209,9 @@ export default class MonitorList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
