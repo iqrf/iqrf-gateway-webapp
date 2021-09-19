@@ -163,7 +163,6 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
 
@@ -196,9 +195,9 @@ export default class UserList extends Vue {
 	private deleteUser: IUser|null = null
 
 	/**
-	 * @var {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @var {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
@@ -336,9 +335,9 @@ export default class UserList extends Vue {
 	/**
 	 * Updates settings of a user object and then stores new values
 	 * @param {IUser} user User object
-	 * @param {Dictionary<string>} newSettings Settings to apply to the user obhect
+	 * @param {Record<string, string>} newSettings Settings to apply to the user obhect
 	 */
-	private edit(user: IUser, newSettings: Dictionary<string>) {
+	private edit(user: IUser, newSettings: Record<string, string>) {
 		if (user.id === undefined) {
 			return;
 		}

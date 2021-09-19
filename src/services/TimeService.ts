@@ -33,10 +33,10 @@ class TimeService {
 
 	/**
 	 * Sets new time
-	 * @param {Dictionary<boolean|number} data Timestamp
+	 * @param {Record<string, boolean|number} data Timestamp
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
-	setTime(data: Dictionary<boolean|number>): Promise<AxiosResponse> {
+	setTime(data: Record<string, boolean|number>): Promise<AxiosResponse> {
 		return axios.put('gateway/time', data, {headers: authorizationHeader()});
 	}
 
@@ -50,10 +50,10 @@ class TimeService {
 
 	/**
 	 * Sets new timezone
-	 * @param {Dictionary<string>} data Timezone name
+	 * @param {Record<string, string>} data Timezone name
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
-	setTimezone(data: Dictionary<string>): Promise<AxiosResponse> {
+	setTimezone(data: Record<string, string>): Promise<AxiosResponse> {
 		return axios.put('gateway/time/timezone/', data, {headers: authorizationHeader()});
 	}
 }

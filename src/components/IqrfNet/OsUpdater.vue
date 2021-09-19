@@ -21,7 +21,7 @@ limitations under the License.
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
 			</CCardHeader>
 			<CCardBody>
-				<CElementCover 
+				<CElementCover
 					v-if='loadFailed'
 					style='z-index: 1;'
 					:opacity='0.85'
@@ -86,7 +86,6 @@ import IqrfService from '../../services/IqrfService';
 import ServiceService from '../../services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IOption} from '../../interfaces/coreui';
 import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
 
@@ -153,7 +152,7 @@ export default class OsUpdater extends Vue {
 	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
 	private loadFailed = false
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 * Initializes validation rules
@@ -185,7 +184,7 @@ export default class OsUpdater extends Vue {
 	/**
 	 * Retrieves list of IQRF OS patches from database
 	 */
-	private getOsUpgrades(data: Dictionary<string|number>): void {
+	private getOsUpgrades(data: Record<string, string|number>): void {
 		IqrfService.getUpgrades(data)
 			.then((response: AxiosResponse) => {
 				this.upgrades = response.data;
@@ -309,7 +308,7 @@ export default class OsUpdater extends Vue {
 			}
 			if (!this.uploadError) {
 				this.startDaemon();
-			}	
+			}
 		});
 	}
 

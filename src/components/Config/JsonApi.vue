@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CCard body-wrapper class='border-0 card-margin-bottom'>
-		<CElementCover 
+		<CElementCover
 			v-if='loadFailed'
 			style='z-index: 1;'
 			:opacity='0.85'
@@ -75,7 +75,6 @@ import {required} from 'vee-validate/dist/rules';
 import {versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
-import {Dictionary} from 'vue-router/types/router';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
 import { extendedErrorToast } from '../../helpers/errorToast';
@@ -100,9 +99,9 @@ import { extendedErrorToast } from '../../helpers/errorToast';
  */
 export default class JsonApi extends Vue {
 	/**
-	 * @constant {Dictionary<string>} componentNames Array of JSON component names
+	 * @constant {Record<string, string>} componentNames Array of JSON component names
 	 */
-	private componentNames: Dictionary<string> = {
+	private componentNames: Record<string, string> = {
 		metaData: 'iqrf::JsonMngMetaDataApi',
 		rawApi: 'iqrf::JsonDpaApiRaw',
 		splitter: 'iqrf::JsonSplitter'

@@ -147,7 +147,6 @@ import {cilCheckAlt, cilX} from '@coreui/icons';
 
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
 
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -174,11 +173,11 @@ export default class BinaryOutputManager extends Vue {
 	 * @var {number} address Address of device implementing BinaryOutput standard
 	 */
 	private address = 1
-	
+
 	/**
-	 * @constant {Dictionary<Array<string>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		on: cilCheckAlt,
 		off: cilX
 	}

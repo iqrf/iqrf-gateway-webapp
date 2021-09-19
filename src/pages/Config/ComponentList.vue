@@ -183,20 +183,20 @@ export default class ComponentList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
 	}
-	
+
 	/**
 	 * Computes page title depending on the user role
 	 * @returns {string} Page title string
 	 */
 	get pageTitle(): string {
-		return this.$store.getters['user/getRole'] === 'power' ? 
+		return this.$store.getters['user/getRole'] === 'power' ?
 			this.$t('config.daemon.components.title').toString() : this.$t('config.selectedComponents.title').toString();
 	}
 
@@ -283,7 +283,7 @@ export default class ComponentList extends Vue {
 		return true;
 	}
 
-	
+
 	/**
 	 * Removes a Daemon component configuration
 	 */

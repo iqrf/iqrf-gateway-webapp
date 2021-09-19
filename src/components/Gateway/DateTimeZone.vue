@@ -26,7 +26,7 @@ limitations under the License.
 					</p>
 					<p style='font-size: 2em'>
 						{{ timeDisplay }}
-					</p> 
+					</p>
 					<p style='font-size: 1.5em'>
 						{{ timezoneDisplay }}
 					</p>
@@ -155,9 +155,9 @@ export default class DateTimeZone extends Vue {
 	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of coreui icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of coreui icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		sync: cilCheckCircle,
 		notSync: cilXCircle
 	}
@@ -184,7 +184,7 @@ export default class DateTimeZone extends Vue {
 		if (this.gatewayTime === null) {
 			return '';
 		}
-		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000, 
+		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000,
 			{zone: this.gatewayTime.name}).toFormat(
 			'cccc dd.LL.yyyy ' + (this.hour12 ? 'tt': 'TT')
 		);
@@ -265,7 +265,7 @@ export default class DateTimeZone extends Vue {
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,
-				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')', 
+				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
 			});
 		}
 		this.timezoneOptions = timezoneArray;

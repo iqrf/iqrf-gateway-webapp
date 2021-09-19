@@ -60,7 +60,7 @@ limitations under the License.
 							@input='resetChecks'
 						/>
 					</ValidationProvider>
-					<div 
+					<div
 						v-if='target === "network"'
 						class='form-group'
 					>
@@ -138,7 +138,7 @@ limitations under the License.
 								@click='uploadFile(false)'
 							>
 								{{ $t('forms.upload') }}
-							</CButton> <CIcon 
+							</CButton> <CIcon
 								v-if='checks.upload'
 								class='text-success'
 								:content='checkIcon'
@@ -159,7 +159,7 @@ limitations under the License.
 								@click='verifyStep'
 							>
 								{{ $t('forms.verify') }}
-							</CButton> <CIcon 
+							</CButton> <CIcon
 								v-if='checks.verify'
 								class='text-success'
 								:content='checkIcon'
@@ -180,7 +180,7 @@ limitations under the License.
 								@click='flashLoadStep'
 							>
 								{{ $t('forms.load') }}
-							</CButton> <CIcon 
+							</CButton> <CIcon
 								v-if='checks.flash'
 								class='text-success'
 								:content='checkIcon'
@@ -221,7 +221,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -337,9 +336,9 @@ export default class OtaUpload extends Vue {
 	]
 
 	/**
-	 * @var {Dictionary<boolean>} checks Upload step checks
+	 * @var {Record<string, boolean>} checks Upload step checks
 	 */
-	private checks: Dictionary<boolean> = {
+	private checks: Record<string, boolean> = {
 		upload: false,
 		verify: false,
 		flash: false,
@@ -627,7 +626,7 @@ export default class OtaUpload extends Vue {
 					this.$toast.success(
 						this.$t(address === 0 ?
 							'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
-							'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address} 
+							'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address}
 						).toString()
 					);
 				}
@@ -652,7 +651,7 @@ export default class OtaUpload extends Vue {
 				this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
 			);
 		}
-		
+
 	}
 
 	/**
@@ -713,7 +712,7 @@ export default class OtaUpload extends Vue {
 						);
 					}
 				}
-				
+
 			}
 		} else {
 			const devices: Array<number> = [];

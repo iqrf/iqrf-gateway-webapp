@@ -51,7 +51,7 @@ limitations under the License.
 						<template #ssid='{item}'>
 							<td class='table-ssid'>
 								<div>
-									<CBadge 
+									<CBadge
 										v-if='item.aps[0].inUse'
 										color='success'
 									>
@@ -223,7 +223,6 @@ import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInte
 import VersionService from '../../services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
@@ -265,9 +264,9 @@ export default class WifiConnections extends Vue {
 	private interfacesLoaded = false
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		details: cilInfo,
 		connect: cilLink,
 		disconnect: cilLinkBroken,
@@ -370,7 +369,7 @@ export default class WifiConnections extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(
-					error, 
+					error,
 					'network.connection.messages.interfacesFetchFailed'
 				);
 			});
@@ -386,13 +385,13 @@ export default class WifiConnections extends Vue {
 			.catch((error: AxiosError) => {
 				if (!this.deletedAp) {
 					extendedErrorToast(
-						error, 
+						error,
 						'network.wireless.messages.listFailed'
 					);
 				} else {
 					if (this.hostname === 'localhost') {
 						extendedErrorToast(
-							error, 
+							error,
 							'network.wireless.messages.listFailed'
 						);
 					} else {
@@ -589,7 +588,7 @@ export default class WifiConnections extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
-						'network.connection.messages.removeSuccess', 
+						'network.connection.messages.removeSuccess',
 						{connection: name}
 					).toString()
 				);

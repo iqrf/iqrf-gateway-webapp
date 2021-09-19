@@ -335,7 +335,6 @@ import OsService from '../../services/DaemonApi/OsService';
 import {IOption} from '../../interfaces/coreui';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 import {MutationPayload} from 'vuex';
-import {Dictionary} from 'vue-router/types/router';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {versionHigherEqual} from '../../helpers/versionChecker';
 
@@ -437,12 +436,12 @@ export default class TrConfiguration extends Vue {
 				.then((msgId: string) => this.msgId = msgId);
 		}
 	}
-	
+
 	/**
 	 * Computes rules for validation of RF channel input field
-	 * @returns {Dictionary<string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
+	 * @returns {Record<string, string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
 	 */
-	get rfChannelRules(): Dictionary<string|number>|undefined {
+	get rfChannelRules(): Record<string, string|number>|undefined {
 		if (this.config === null) {
 			return undefined;
 		}
@@ -459,9 +458,9 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Computes feedback messages in case rfBand field value is invalid
-	 * @returns {Dictionary<string>} Dictionary of messages for applied rules
+	 * @returns {Record<string, string>} Dictionary of messages for applied rules
 	 */
-	get rfChannelValidatorMessages(): Dictionary<string> {
+	get rfChannelValidatorMessages(): Record<string, string> {
 		let message = '';
 		if (this.config !== null) {
 			switch (this.config.rfBand) {
@@ -713,7 +712,7 @@ export default class TrConfiguration extends Vue {
 			}
 			return;
 		}
-		
+
 		if (response.data.status === 1007) { // pre-unified status codes
 			if (response.data.statusStr.includes('ERROR_TIMEOUT')) {
 				this.$toast.error(

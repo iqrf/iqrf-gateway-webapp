@@ -87,7 +87,6 @@ import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {UserCredentials} from '../../services/AuthenticationService';
 import {sleep} from '../../helpers/sleep';
-import {Dictionary} from 'vue-router/types/router';
 import TheWizard from '../../components/TheWizard.vue';
 
 @Component({
@@ -115,9 +114,9 @@ import TheWizard from '../../components/TheWizard.vue';
  */
 export default class SignIn extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		user: cilUser,
 		lock: cilLockLocked,
 	}

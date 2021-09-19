@@ -109,7 +109,6 @@ import {DateTime} from 'luxon';
 import {extendedErrorToast} from '../../helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 
 
@@ -138,9 +137,9 @@ interface ApiKey {
  */
 export default class ApiKeyList extends Vue {
 	/**
-	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
+	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
 	 */
-	private dateFormat: Dictionary<string|boolean> = {
+	private dateFormat: Record<string, string|boolean> = {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
@@ -180,9 +179,9 @@ export default class ApiKeyList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash

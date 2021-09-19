@@ -128,7 +128,6 @@ import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../serv
 import VersionService from '../../services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField, IOption} from '../../interfaces/coreui';
 import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
@@ -196,9 +195,9 @@ export default class EthernetConnections extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array fo CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
 		delete: cilTrash,
@@ -335,7 +334,7 @@ export default class EthernetConnections extends Vue {
 					);
 				}
 			});
-		
+
 	}
 }
 </script>

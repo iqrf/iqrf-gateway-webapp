@@ -97,9 +97,9 @@ export default class EthernetConnection extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array fo CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
 		delete: cilTrash,

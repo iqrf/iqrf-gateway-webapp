@@ -146,9 +146,9 @@ export default class TracerList extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
@@ -184,7 +184,7 @@ export default class TracerList extends Vue {
 				this.$emit('fetched', {name: 'tracer', success: false});
 			});
 	}
-	
+
 	/**
 	 * Removes instance of logging service component
 	 */

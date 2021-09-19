@@ -103,7 +103,6 @@ import {ToastOptions} from 'vue-toast-notification';
 import Device from '../../helpers/Device';
 import IqrfNetService from '../../services/IqrfNetService';
 
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
@@ -130,9 +129,9 @@ export default class DevicesInfo extends Vue {
 	private devices: Array<Device> = []
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
@@ -143,7 +142,7 @@ export default class DevicesInfo extends Vue {
 	 * @var {boolean} manual Manual FRC ping request
 	 */
 	private manual = false
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */

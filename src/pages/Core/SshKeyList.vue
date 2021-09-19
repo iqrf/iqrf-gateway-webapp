@@ -171,7 +171,6 @@ import {extendedErrorToast} from '../../helpers/errorToast';
 import SshService from '../../services/SshService';
 
 import {AxiosResponse, AxiosError} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {ISshKey} from '../../interfaces/ssh';
 
@@ -202,14 +201,14 @@ export default class SshKeyList extends Vue {
 	private keys: Array<ISshKey> = []
 
 	/**
-	 * @var {ISshKey|null} keyToDelete 
+	 * @var {ISshKey|null} keyToDelete
 	 */
 	private keyToDelete: ISshKey|null = null
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
-	private icons: Dictionary<Array<string>> = {
+	private icons: Record<string, Array<string>> = {
 		add: cilPlus,
 		copy: cilClipboard,
 		delete: cilTrash,
@@ -302,6 +301,6 @@ export default class SshKeyList extends Vue {
 			this.$t('core.security.ssh.messages.' + path).toString()
 		);
 	}
-	
+
 }
 </script>
