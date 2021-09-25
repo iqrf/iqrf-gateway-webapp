@@ -442,11 +442,23 @@ class IqrfNetService {
 	 */
 	indicateCoordinator(options: WebSocketOptions): Promise<string> {
 		options.request = {
-			'mType': 'iqrfRaw',
+			'mType': 'iqrfEmbedOs_Batch',
 			'data': {
-				'msgId': 'coordinatorIndicate',
+				'msgId': 'testEmbedOs',
 				'req': {
-					'rData': '00.00.02.05.FF.FF.05.06.04.FF.FF.05.07.04.FF.FF.08.09.01.FF.FF.FF.88.13.05.06.00.FF.FF.05.07.00.FF.FF.00'
+					'nAdr': 0,
+					'param': {
+						'requests': [
+							{
+								'pnum': '06',
+								'pcmd': '03'
+							},
+							{
+								'pnum': '07',
+								'pcmd': '03'
+							}
+						]
+					}
 				},
 				'returnVerbose': true
 			}
