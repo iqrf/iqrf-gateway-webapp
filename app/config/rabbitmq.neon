@@ -1,0 +1,22 @@
+rabbitmq:
+	connections:
+		default:
+			user: guest
+			password: guest
+			host: localhost
+			port: 5672
+			lazy: false
+	queues:
+		testQueue:
+			connection: default
+			autoCreate: true
+	producers:
+		testProducer:
+			queue: testQueue
+			contentType: text/plain
+			deliveryMode: 1
+
+# Enable tracy bar panel
+tracy:
+	bar:
+		- Contributte\RabbitMQ\Diagnostics\BarPanel
