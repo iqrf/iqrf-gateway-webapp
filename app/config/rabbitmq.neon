@@ -7,16 +7,18 @@ rabbitmq:
 			port: 5672
 			lazy: false
 	queues:
-		testQueue:
+		menderQueue:
 			connection: default
 			autoCreate: true
 	producers:
-		testProducer:
-			queue: testQueue
+		menderProducer:
+			queue: menderQueue
 			contentType: text/plain
 			deliveryMode: 1
-
-# Enable tracy bar panel
-tracy:
-	bar:
-		- Contributte\RabbitMQ\Diagnostics\BarPanel
+	consumers:
+		menderConsumer:
+			queue: menderQueue
+			callback: [@App\MaintenanceModule\Models\MenderConsumer, consume]
+			qos:
+				prefetchSize: 0
+				prefetchCount: 1

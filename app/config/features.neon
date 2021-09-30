@@ -38,7 +38,7 @@ iTemp:
 	enabled: false
 # Mender client configuration
 mender:
-	enabled: false
+	enabled: true
 # Monitoring service
 monit:
 	enabled: false

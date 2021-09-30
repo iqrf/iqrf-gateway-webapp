@@ -34,6 +34,7 @@
 		"apitte/negotiation": "^0.8.0",
 		"apitte/openapi": "^0.7",
 		"bgalati/monolog-sentry-handler": "^1.2",
+		"cboden/ratchet": "^0.4.3",
 		"contributte/console": "^0.9",
 		"contributte/console-extra": "^0.7",
 		"contributte/guzzlette": "^3.2",

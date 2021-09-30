@@ -24,12 +24,12 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
-use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
+use Symfony\Component\Process\Process;
 
 /**
  * Mender client configuration manager
@@ -67,18 +67,29 @@ class MenderManager {
 	private $fileManager;
 
 	/**
+	 * @var MenderQueue Mender message queue
+	 */
+	private $menderQueue;
+
+	/**
 	 * @var ServiceManager $serviceManager Service manager
 	 */
 	private $serviceManager;
+
+	/**
+	 * @var string|null $filePath Path to artifact file
+	 */
+	private $filePath;
 
 	/**
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
 	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, MenderQueue $menderQueue, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
+		$this->menderQueue = $menderQueue;
 		$this->serviceManager = $serviceManager;
 	}
 
@@ -159,10 +170,12 @@ class MenderManager {
 
 	/**
 	 * Removes uploaded artifact file
-	 * @param string $filePath Path to uploaded file
 	 */
-	public function removeArtifactFile(string $filePath): void {
-		FileSystem::delete($filePath);
+	public function removeArtifactFile(): void {
+		if ($this->filePath !== null) {
+			FileSystem::delete($this->filePath);
+			$this->filePath = null;
+		}
 	}
 
 	/**
@@ -170,10 +183,17 @@ class MenderManager {
 	 * @param string $filePath Path to mender artifact file
 	 * @return string Output log
 	 */
-	public function installArtifact(string $filePath): string {
+	public function installArtifact(string $filePath): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 1800);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout(), $filePath);
+		$this->filePath = $filePath;
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$output = $this->handleCommandResult($buffer);
+			$this->menderQueue->publish($output);
+			if ($type === Process::ERR) {
+				throw new MenderFailedException($output);
+			}
+		}, 'mender -install ' . $filePath . ' 2>&1', true, 1800);
+		$this->removeArtifactFile($filePath);
 	}
 
 	/**
@@ -183,7 +203,7 @@ class MenderManager {
 	public function commitUpdate(): string {
 		$this->checkMender();
 		$result = $this->commandManager->run('mender -commit 2>&1', true);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+		return $this->handleCommandResult($result->getStdout());
 	}
 
 	/**
@@ -193,7 +213,7 @@ class MenderManager {
 	public function rollbackUpdate(): string {
 		$this->checkMender();
 		$result = $this->commandManager->run('mender -rollback 2>&1', true);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+		return $this->handleCommandResult($result->getStdout());
 	}
 
 	/**
@@ -203,10 +223,7 @@ class MenderManager {
 	 * @param string $filePath Path to file to remove
 	 * @return string Processed output log
 	 */
-	private function handleCommandResult(int $code, string $output, ?string $filePath = null): string {
-		if ($filePath !== null) {
-			$this->removeArtifactFile($filePath);
-		}
+	private function handleCommandResult(string $output): string {
 		$lines = explode(PHP_EOL, $output);
 		$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
 		foreach ($lines as $idx => $line) {
@@ -224,13 +241,7 @@ class MenderManager {
 			}
 		}
 		$output = trim(implode(PHP_EOL, $lines));
-		if ($code === 0) {
-			return $output;
-		}
-		if ($code === 2) {
-			throw new MenderNoUpdateInProgressException($output);
-		}
-		throw new MenderFailedException($output);
+		return $output;
 	}
 
 	/**
