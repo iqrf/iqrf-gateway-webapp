@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 /**
@@ -19,28 +18,40 @@
  */
 declare(strict_types = 1);
 
-use App\CoreModule\Models\NeonConfigManager;
-use App\CoreModule\Models\WebSocketDispatcher;
+namespace App\CoreModule\Models;
+
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
-use Ratchet\App;
-use Ratchet\Server\EchoServer;
+use Nette\Neon\Neon;
+use Nette\Utils\FileSystem;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * Neon configuration file manager
+ */
+class NeonConfigManager {
 
-$configManager = new NeonConfigManager(__DIR__ . '/../app/config/swsserver.neon');
-try {
-    $config = $configManager->read();
-} catch (IOException | NeonException $e) {
-    fwrite(STDERR, $e->getMessage() . PHP_EOL);
-    return 1;
+	/**
+	 * @var string $path Path to configuration file
+	 */
+	private $path;
+
+	/**
+	 * Constructor
+	 * @param string $path Path to configuration file
+	 */
+	public function __construct(string $path) {
+		$this->path = $path;
+	}
+
+	/**
+	 * Reads neon configuration file and returns contents
+	 * @return array<string, mixed> Configuration array
+	 * @throws IOException
+	 * @throws NeonException
+	 */
+	public function read(): array {
+		$content = FileSystem::read($this->path);
+		return Neon::decode($content);
+	}
+
 }
-
-// Create Ratchet app
-$app = new App($config['host'], (int) $config['port']);
-// Register echo route
-$app->route('/echo', new EchoServer, ['*']);
-// Register mender queue route
-$app->route('/maintenance/mender', new WebSocketDispatcher, ['*']);
-// Run server
-$app->run();
