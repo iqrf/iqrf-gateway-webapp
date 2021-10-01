@@ -25,12 +25,12 @@ use Bunny\Message;
 use Contributte\RabbitMQ\Consumer\IConsumer;
 
 /**
- * Mender message queue consumer
+ * Mender MQ consumer
  */
 final class MenderConsumer implements IConsumer {
 
 	/**
-	 * Mender message queue WebSocket server endpoint
+	 * Mender MQ WebSocket server endpoint TODO: from config
 	 */
 	private const ENDPOINT = 'ws://localhost:8082/maintenance/mender';
 
@@ -39,15 +39,20 @@ final class MenderConsumer implements IConsumer {
 	 */
 	private $wsClient;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$this->wsClient = new WebSocketClient(self::ENDPOINT);
 	}
 
+	/**
+	 * Consumes a Mender MQ message and sends it to WebSocket server
+	 * @param Message $message MQ message
+	 */
 	public function consume(Message $message): int {
-		$f = fopen('php://output', 'w');
-		fputs($f, $message->content. PHP_EOL);
-		fclose($f);
 		$this->wsClient->send($message->content);
 		return IConsumer::MESSAGE_ACK;
 	}
+
 }

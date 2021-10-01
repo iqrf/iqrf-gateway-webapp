@@ -211,7 +211,8 @@ class MenderController extends BaseController {
 			$fileName = $file->getClientFilename();
 			$this->checkArtifact($fileName);
 			$filePath = $this->manager->saveArtifactFile($file);
-			return $response->writeBody($this->manager->installArtifact($filePath));
+			$this->manager->installArtifact($filePath);
+			return $response->writeBody('Workaround');
 		} catch (MenderInvalidArtifactException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (MenderFailedException $e) {
@@ -242,7 +243,8 @@ class MenderController extends BaseController {
 	 */
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeBody($this->manager->commitUpdate());
+			$this->manager->commitUpdate();
+			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (MenderMissingException $e) {
@@ -271,7 +273,8 @@ class MenderController extends BaseController {
 	 */
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeBody($this->manager->rollbackUpdate());
+			$this->manager->rollbackUpdate();
+			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (MenderMissingException $e) {

@@ -22,14 +22,13 @@ namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
-use Symfony\Component\Process\Process;
 
 /**
  * Mender client configuration manager
@@ -181,50 +180,53 @@ class MenderManager {
 	/**
 	 * Installs update from artifact and returns output
 	 * @param string $filePath Path to mender artifact file
-	 * @return string Output log
 	 */
 	public function installArtifact(string $filePath): void {
 		$this->checkMender();
 		$this->filePath = $filePath;
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
-			$output = $this->handleCommandResult($buffer);
-			$this->menderQueue->publish($output);
-			if ($type === Process::ERR) {
-				throw new MenderFailedException($output);
-			}
-		}, 'mender -install ' . $filePath . ' 2>&1', true, 1800);
-		$this->removeArtifactFile($filePath);
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender install ' . $filePath . ' 2>&1', true, 1800);
 	}
 
 	/**
 	 * Commits installed mender artifact
-	 * @return string Output log
 	 */
-	public function commitUpdate(): string {
+	public function commitUpdate(): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -commit 2>&1', true);
-		return $this->handleCommandResult($result->getStdout());
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender -commit 2>&1', true);
 	}
 
 	/**
 	 * Rolls installed mender artifact back
-	 * @return string Output log
 	 */
-	public function rollbackUpdate(): string {
+	public function rollbackUpdate(): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -rollback 2>&1', true);
-		return $this->handleCommandResult($result->getStdout());
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender -rollback 2>&1', true);
 	}
 
 	/**
 	 * Checks execution status and processes output log accordingly
-	 * @param int $code Mender execution code
-	 * @param string $output Output log before processing
-	 * @param string $filePath Path to file to remove
-	 * @return string Processed output log
+	 * @param string $type Stream type
+	 * @param string $content Content
+	 * @return string Processed
 	 */
-	private function handleCommandResult(string $output): string {
-		$lines = explode(PHP_EOL, $output);
+	private function handleCommandResult(string $type, string $content): string {
+		$message = [
+			'messageType' => $type,
+		];
+		if ($type === 'exit') {
+			$message['payload'] = $content;
+			return Json::encode($message);
+		}
+		$lines = explode(PHP_EOL, $content);
 		$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
 		foreach ($lines as $idx => $line) {
 			$matches = Strings::match($line, $pattern);
@@ -240,8 +242,8 @@ class MenderManager {
 				$lines[$idx] = trim($prefix . PHP_EOL . $lines[$idx] . PHP_EOL . $suffix);
 			}
 		}
-		$output = trim(implode(PHP_EOL, $lines));
-		return $output;
+		$message['payload'] = trim(implode(PHP_EOL, $lines));
+		return Json::encode($message);
 	}
 
 	/**

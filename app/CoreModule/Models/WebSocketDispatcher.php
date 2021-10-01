@@ -20,34 +20,63 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
+use SplObjectStorage;
+use Throwable;
 
+/**
+ * WebSocket server class
+ */
 class WebSocketDispatcher implements MessageComponentInterface {
 
+	/**
+	 * @var SplObjectStorage Connected clients
+	 */
 	protected $clients;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
-		$this->clients = new \SplObjectStorage;
+		$this->clients = new SplObjectStorage();
 	}
 
-	public function onOpen(ConnectionInterface $conn) {
+	/**
+	 * Connection opened callback
+	 * @param ConnectionInterface $conn Incoming connection
+	 */
+	public function onOpen(ConnectionInterface $conn): void {
 		$this->clients->attach($conn);
 	}
 
-	public function onMessage(ConnectionInterface $from, $msg) {
+	/**
+	 * Message received callback
+	 * @param ConnectionInterface $from Sender
+	 * @param mixed $msg Message
+	 */
+	public function onMessage(ConnectionInterface $from, $msg): void {
 		foreach ($this->clients as $client) {
-			if ($from != $client) {
+			if ($from !== $client) {
 				$client->send($msg);
 			}
 		}
 	}
 
-	public function onClose(ConnectionInterface $conn) {
+	/**
+	 * Connection closed callback
+	 * @param ConnectionInterface $conn Closed connection
+	 */
+	public function onClose(ConnectionInterface $conn): void {
 		$this->clients->detach($conn);
 	}
 
-	public function onError(ConnectionInterface $conn, \Exception $e) {
+	/**
+	 * Connection error callback
+	 * @param ConnectionInteface $conn Connection where error occured
+	 * @param Throwable $e Exception
+	 */
+	public function onError(ConnectionInterface $conn, Throwable $e): void {
 		$conn->close();
 	}
 

@@ -110,6 +110,7 @@ class CommandManager {
 		$process->setTimeout((float) $timeout);
 		$process->start($callback);
 		$process->wait();
+		$callback('exit', (string) $process->getExitCode());
 		$entity = new Command($command, $process);
 		$this->stack->addCommand($entity);
 	}

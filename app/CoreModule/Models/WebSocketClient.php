@@ -27,6 +27,7 @@ use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop;
 use React\Promise\PromiseInterface;
 use React\Socket\Connector as ReactConnector;
+use Throwable;
 
 /**
  * Generic WebSocket client
@@ -48,6 +49,11 @@ class WebSocketClient {
 		$this->url = $url;
 	}
 
+	/**
+	 * Creates a connection to WebSocket server
+	 * @param int $timeout Connection timeout
+	 * @return PromiseInterface Promise
+	 */
 	public function createConnection(int $timeout): PromiseInterface {
 		$options = [
 			'dns' => false,
@@ -68,15 +74,25 @@ class WebSocketClient {
 		return $connector($this->url);
 	}
 
+	/**
+	 * Sends a message to WebSocket server
+	 * @param string $message Message to send
+	 */
 	public function send(string $message): void {
 		$connection = $this->createConnection(10);
-		$connection->then(function (RatchetWsClient $con) use (&$message): void {
+		$inProgress = true;
+		$connection->then(function (RatchetWsClient $con) use (&$message, &$inProgress): void {
 			$con->send($message);
-		}, function (\Exception $e) {
-			$f = fopen('php://output', 'w');
-			fputs($f, 'Failed to connect: ' . $e->getMessage() . PHP_EOL);
-			fclose($f);
+			$con->close();
+			$inProgress = false;
+		}, function (Throwable $e) use (&$inProgress): void {
+			// TODO exception handling
+			$inProgress = false;
 		});
+		while ($inProgress) {
+			$this->loop->run();
+		}
+		$this->loop->stop();
 	}
 
 }

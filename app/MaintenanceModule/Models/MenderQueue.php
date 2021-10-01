@@ -23,25 +23,26 @@ namespace App\MaintenanceModule\Models;
 use Contributte\RabbitMQ\Producer\Producer;
 
 /**
- * Mender message queue
+ * Mender MQ
  */
 final class MenderQueue {
 
 	/**
-	 * @var Producer Mender message queue producer
+	 * @var Producer Mender MQ producer
 	 */
 	private Producer $menderProducer;
 
 	/**
 	 * Constructor
-	 * @param $menderProducer Mender message queue producer
+	 * @param Producer $menderProducer Mender MQ producer
 	 */
 	public function __construct(Producer $menderProducer) {
 		$this->menderProducer = $menderProducer;
 	}
 
 	/**
-	 * Publishes message to mender queue
+	 * Publishes message to MQ
+	 * @param string $message Message to publish
 	 */
 	public function publish(string $message): void {
 		$this->menderProducer->publish($message);

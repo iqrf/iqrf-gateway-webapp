@@ -94,7 +94,6 @@ test:
   parallel:
     matrix:
       - PHP_VERSION:
-        - '7.3'
         - '7.4'
         - '8.0'
   <<: *test_template
