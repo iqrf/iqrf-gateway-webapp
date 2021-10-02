@@ -93,9 +93,10 @@ test:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   parallel:
     matrix:
-      - PHP_VERSION: 7.3
-      - PHP_VERSION: 7.4
-      - PHP_VERSION: 8.0
+      - PHP_VERSION:
+        - '7.3'
+        - '7.4'
+        - '8.0'
   <<: *test_template
 
 newman:
