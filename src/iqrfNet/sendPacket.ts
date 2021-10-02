@@ -14,22 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017-2019 IQRF Tech s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 /**
  * DPA packet
@@ -100,6 +84,9 @@ class Packet {
 	 */
 	static parse(packet: string): Packet {
 		const packetArray = packet.split('.');
+		if (packetArray.length < 6) {
+			throw new Error('Invalid DPA packet length');
+		}
 		const nadrLo = packetArray.shift()!;
 		const nadrHi = packetArray.shift()!;
 		const nadr = parseInt(nadrHi + nadrLo, 16);
@@ -117,46 +104,42 @@ class Packet {
 
 	/**
 	 * Returns DPA packet string
+	 * @param {boolean} withPdata With PDATA
 	 * @returns {string} DPA packet as string
 	 */
-	toString(): string {
-		return [
+	toString(withPdata = true): string {
+		let packet = [
 			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd,
-			this.hwpid & 255, this.hwpid >> 8, ...this.pdata
-		].map(int => int.toString(16).padStart(2, '0')).join('.');
+			this.hwpid & 255, this.hwpid >> 8,
+		];
+		if (withPdata) {
+			packet = packet.concat(this.pdata);
+		}
+		return packet.map(int => int.toString(16).padStart(2, '0')).join('.');
 	}
 
 	/**
-	 * Retuyrns DPA packet string without PDATA
-	 * @returns 
+	 * Updates NADR in DPA packet
+	 * @param request DPA request to modify
+	 * @param address New NADR
+	 * @returns Modified DPA request
 	 */
-	toCompactString(): string {
-		return [
-			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd, this.hwpid & 255, this.hwpid >> 8
-		].map(int => int.toString(16).padStart(2, '0')).join('.');
+	static updateNadr(request: string, address: number): string {
+		const packet = Packet.parse(request);
+		packet.nadr = address;
+		return packet.toString();
 	}
+
+	/**
+	 * Validates DPA packet
+	 * @param packet DPA packet to validate
+	 * @returns Is valid DPA packet?
+	 */
+	static validatePacket(packet: string): boolean {
+		const re = new RegExp('^[0-9a-f]{2}\\.00\\.[0-9a-f]{2}\\.[0-7][0-9a-f]\\.([0-9a-f]{2}\\.){1,58}[0-9a-f]{2}(\\.|)$', 'i');
+		return packet.match(re) !== null;
+	}
+
 }
 
-/**
- * Validate DPA packet
- * @param packet DPA packet to validate
- * @returns Is valid DPA packet?
- */
-function validatePacket(packet: string): boolean {
-	const re = new RegExp('^[0-9a-f]{2}\\.00\\.[0-9a-f]{2}\\.[0-7][0-9a-f]\\.([0-9a-f]{2}\\.){1,58}[0-9a-f]{2}(\\.|)$', 'i');
-	return packet.match(re) !== null;
-}
-
-/**
- * Updates NADR in DPA packet
- * @param request DPA request to modify
- * @param address New NADR
- * @returns Modified DPA request
- */
-function updateNadr(request: string, address: number): string {
-	const packet = Packet.parse(request);
-	packet.nadr = address;
-	return packet.toString();
-}
-
-export default {Packet, updateNadr, validatePacket};
+export default Packet;

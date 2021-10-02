@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover 
+			<CElementCover
 				v-if='!isSocketConnected'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -183,7 +183,7 @@ limitations under the License.
 			</ValidationObserver>
 		</CCard>
 		<DpaMacros @set-packet='setPacket($event)' />
-		<CCard 
+		<CCard
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
@@ -226,7 +226,7 @@ import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
 import {maska} from 'maska';
 import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import sendPacket from '../../iqrfNet/sendPacket';
+import Packet from '../../iqrfNet/sendPacket';
 
 import {IMessagePairPacket} from '../../interfaces/iqrfnet';
 import {IOption} from '../../interfaces/coreui';
@@ -277,11 +277,6 @@ export default class SendDpaPacket extends Vue {
 	private addressOverwrite = false
 
 	/**
-	 * @var {number} intervalId Interval ID
-	 */
-	private intervalId = 0
-
-	/**
 	 * @var {string} packetNadr Packet NADR bytes
 	 */
 	private packetNadr = '00'
@@ -322,7 +317,7 @@ export default class SendDpaPacket extends Vue {
 	private activeMessagePair: IMessagePairPacket|null = null
 
 	/**
-	 * @var {number} activeIdx Indec of active message pair
+	 * @var {number} activeIdx Index of active message pair
 	 */
 	private activeIdx = 0;
 
@@ -411,7 +406,7 @@ export default class SendDpaPacket extends Vue {
 					msgId: mutation.payload.data.msgId,
 					request: JSON.stringify(mutation.payload, null, 4),
 					response: undefined,
-					label: '[' + new Date().toLocaleString() + ']: ' + sendPacket.Packet.parse(this.packet).toCompactString() + ' (' + mutation.payload.data.msgId + ')',
+					label: '[' + new Date().toLocaleString() + ']: ' + Packet.parse(this.packet).toString(false) + ' (' + mutation.payload.data.msgId + ')',
 				});
 				this.activeMessagePair = this.messages[0];
 			}
@@ -459,13 +454,13 @@ export default class SendDpaPacket extends Vue {
 			},
 		};
 		if (this.addressOverwrite) {
-			json.data.req.rData = sendPacket.updateNadr(this.packet, this.address);
+			json.data.req.rData = Packet.updateNadr(this.packet, this.address);
 		}
 		if (this.timeoutOverwrite) {
 			json.data.timeout = this.timeout;
 		}
 		let options = new WebSocketOptions(json);
-		const packet = sendPacket.Packet.parse(this.packet);
+		const packet = Packet.parse(this.packet);
 		if (packet.nadr === 255) {
 			options.timeout = 1000;
 		} else if (packet.pnum === 2 && (packet.pcmd === 5 || packet.pcmd === 11)) {
@@ -483,7 +478,7 @@ export default class SendDpaPacket extends Vue {
 	 * Handles Daemon API messageError response
 	 */
 	private handleMessageError(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
@@ -500,7 +495,7 @@ export default class SendDpaPacket extends Vue {
 	 * @param response Daemon API response payload
 	 */
 	private handleResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairPacket) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
@@ -576,8 +571,8 @@ export default class SendDpaPacket extends Vue {
 	 * Sets DPA timeout
 	 */
 	private setTimeout(): void {
-		let packet = sendPacket.Packet.parse(this.packet);
-		let newTimeout = packet.detectTimeout();
+		const packet = Packet.parse(this.packet);
+		const newTimeout = packet.detectTimeout();
 		if (newTimeout === null) {
 			this.timeoutOverwrite = false;
 			this.timeout = 1000;
