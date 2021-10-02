@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: iqrftech/iqrf-gateway-webapp:tests-buster
+image: iqrftech/iqrf-gateway-webapp:tests-bullseye
 
 stages:
   - build-docker-testing
@@ -75,32 +75,27 @@ cache:
   tags:
     - linux, docker, amd64
 
-build-docker:tests-buster:
+build-docker:tests:
   extends: .docker_template_testing
   only:
     - schedules
   variables:
-    DOCKER_FILE: docker/tests/buster.Dockerfile
-    DOCKER_TAG: tests-buster
+    DOCKER_FILE: docker/tests/bullseye.Dockerfile
+    DOCKER_TAG: tests-bullseye
 
-test:php7.3:
+test:
   before_script:
-    - update-alternatives --set php /usr/bin/php7.3
+    - update-alternatives --set php /usr/bin/php${PHP_VERSION}
     - composer install --no-progress
   script:
-    - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
+    - vendor/bin/tester -p phpdbg${PHP_VERSION} -c ./tests/php.ini -s ./tests
   after_script:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-  <<: *test_template
-
-test:php7.4:
-  before_script:
-    - update-alternatives --set php /usr/bin/php7.4
-    - composer install --no-progress
-  script:
-    - vendor/bin/tester -p phpdbg7.4 -c ./tests/php.ini -s ./tests
-  after_script:
-    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+  parallel:
+    matrix:
+      - PHP_VERSION: 7.3
+      - PHP_VERSION: 7.4
+      - PHP_VERSION: 8.0
   <<: *test_template
 
 newman:
@@ -162,7 +157,7 @@ phpstan:
   needs: []
   retry: 2
   before_script:
-    - update-alternatives --set php /usr/bin/php7.3
+    - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
     - make phpstan
@@ -187,7 +182,7 @@ qa:
   stage: coding-style
   needs: []
   before_script:
-    - update-alternatives --set php /usr/bin/php7.3
+    - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
     - make qa
