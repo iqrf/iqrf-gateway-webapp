@@ -1,5 +1,20 @@
 <template>
 	<CCard>
+		<CElementCover
+			v-if='running.install || running.commit || running.rollback'
+			style='z-index: 1;'
+			:opacity='0.85'
+		>
+			<span v-if='running.install'>
+				{{ $t('maintenance.mender.update.messages.installProgress') }}
+			</span>
+			<span v-else-if='running.commit'>
+				{{ $t('maintenance.mender.update.messages.commitProgress') }}
+			</span>
+			<span v-else>
+				{{ $t('maintenance.mender.update.messages.rollbackProgress') }}
+			</span>
+		</CElementCover>
 		<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
 			<CCardBody>
 				<h4>{{ $t('maintenance.mender.update.update') }}</h4>
@@ -69,6 +84,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import GatewayService from '../../services/GatewayService';
 import { MountModes } from '../../enums/Maintenance/Mender';
 import { extendedErrorToast } from '../../helpers/errorToast';
+import UrlBuilder from '../../helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -95,6 +111,89 @@ export default class MenderUpdateControl extends Vue {
 	private installSuccess = false
 
 	/**
+	 * @var {WebSocket|null} webSocket WebSocket object
+	 */
+	private webSocket: WebSocket|null = null
+
+	/**
+	 * @var {number} reconnectInterval WebSocket reconnect interval ID
+	 */
+	private reconnectInterval = 0
+
+	/**
+	 * @var {Dictionary}
+	 */
+	private running = {
+		install: false,
+		commit: false,
+		rollback: false,
+	}
+
+	/**
+	 * Initializes websocket
+	 */
+	mounted(): void {
+		this.setSocket();
+	}
+
+	private setSocket(): void {
+		const urlBuilder: UrlBuilder = new UrlBuilder();
+		this.webSocket = new WebSocket(urlBuilder.getWsMenderUrl());
+		this.webSocket.onmessage = (event) => {
+			this.parseMenderMessage(JSON.parse(event.data));
+		};
+		this.webSocket.onerror = () => {
+			this.webSocket?.close();
+		};
+		this.webSocket.onopen = () => {
+			window.clearInterval(this.reconnectInterval);
+			this.webSocket!.onclose = () => {
+				this.reconnectInterval = window.setInterval(() => {
+					this.setSocket();
+				}, 3000);
+			};
+		};
+	}
+
+	private parseMenderMessage(message: any): void {
+		if (message['messageType'] !== 'exit') {
+			this.updateLog(message['payload']);
+			return;
+		}
+		if (message['payload'] !== '0') {
+			if (this.running.install) {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.installFailed').toString()
+				);
+			} else if (this.running.commit) {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.commitFailed').toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
+				);
+			}
+			this.running.install = this.running.commit = this.running.rollback = false;
+			return;
+		}
+		if (this.running.install) {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.installSuccess').toString()
+			);
+		} else if (this.running.commit) {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.commitSuccess').toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.rollbackSuccess').toString()
+			);
+		}
+		this.running.install = this.running.commit = this.running.rollback = false;
+	}
+
+	/**
 	 * Retrieves selected file from file input
 	 * @return {FileList} List of uploaded files
 	 */
@@ -115,52 +214,45 @@ export default class MenderUpdateControl extends Vue {
 	 */
 	private install(): void {
 		this.installSuccess = false;
+		this.running.install = true;
 		const formData = new FormData();
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
-		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
 		MenderService.install(formData)
-			.then((response: AxiosResponse) => {
-				this.handleResponse('maintenance.mender.update.messages.installSuccess', response.data);
-				this.installSuccess = true;
-			})
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.installFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.catch(() => {
+				this.running.install = false;
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.installFailed').toString()
+				);
+			});
 	}
 
 	/**
 	 * Performs mender commit task
 	 */
 	private commit(): void {
-		this.$store.commit('spinner/SHOW');
+		this.running.commit = true;
 		MenderService.commit()
-			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.commitSuccess',
-				response.data
-			))
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.commitFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.catch(() => {
+				this.running.commit = false;
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.commitFailed').toString()
+				);
+			});
 	}
 
 	/**
 	 * Performs mender rollback task
 	 */
 	private rollback(): void {
-		this.$store.commit('spinner/SHOW');
+		this.running.rollback = true;
 		MenderService.rollback()
-			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.rollbackSuccess',
-				response.data
-			))
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.rollbackFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.catch(() => {
+				this.running.rollback = false;
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
+				);
+			});
 	}
 
 	/**
@@ -175,7 +267,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$toast.success(
 					this.$t(
 						'gateway.power.messages.rebootSuccess',
-						{time: time},						
+						{time: time},
 					).toString()
 				);
 			});
@@ -201,26 +293,6 @@ export default class MenderUpdateControl extends Vue {
 				error,
 				'maintenance.mender.update.messages.remountFailed',
 			));
-	}
-
-	/**
-	 * Handles axios response
-	 * @param {string} message Toast message to project
-	 * @param {string} output Output log
-	 */
-	private handleResponse(message: string, output: string): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t(message).toString());
-		this.updateLog(output);
-	}
-
-	/**
-	 * Handles axios error
-	 */
-	private handleError(message: string, output: string): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(this.$t(message).toString());
-		this.updateLog(output);
 	}
 
 	/**

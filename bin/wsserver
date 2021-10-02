@@ -28,7 +28,7 @@ use Ratchet\Server\EchoServer;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$configManager = new NeonConfigManager(__DIR__ . '/../app/config/swsserver.neon');
+$configManager = new NeonConfigManager(__DIR__ . '/../app/config/wsserver.neon');
 try {
     $config = $configManager->read();
 } catch (IOException | NeonException $e) {

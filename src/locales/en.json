@@ -2689,12 +2689,14 @@
 					"rollback": "Rollback update"
 				},
 				"messages": {
-					"update": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
-					"commitFailed": "Failed to commit currently installed Mender artifact update, see output log for details.",
-					"commitSuccess": "Currently installed Mender artifact update has been successfully committed, reboot the gateway for the changes to take effect.",
-					"installFailed": "Failed to install Mender artifact, see output log for details.",
+					"installProgress": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
+					"installFailed": "Failed to install Mender artifact.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",
-					"rollbackFailed": "Failed to roll currently installed Mender artifact back, see output log for details.",
+					"commitProgress": "Mender artifact commit in progress.",
+					"commitFailed": "Failed to commit currently installed Mender artifact update.",
+					"commitSuccess": "Currently installed Mender artifact update has been successfully committed, reboot the gateway for the changes to take effect.",
+					"rollbackProgress": "Mender artifact rollback in progress.",
+					"rollbackFailed": "Failed to roll currently installed Mender artifact back.",
 					"rollbackSuccess": "Currently installed Mender artifact update has been successfully rolled back.",
 					"remountSuccess": "Filesystem has been successfully remounted.",
 					"remountFailed": "Failed to remount filesystem: {error}"
