@@ -22,6 +22,7 @@ namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
+use App\MaintenanceModule\Enums\MenderActions;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
@@ -186,7 +187,8 @@ class MenderManager {
 		$this->filePath = $filePath;
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$message = $this->handleCommandResult($type, $buffer);
-			$this->menderQueue->publish($message);
+			$headers = ['action' => MenderActions::RESULT()];
+			$this->menderQueue->publish($message, $headers);
 		}, 'mender install ' . $filePath . ' 2>&1', true, 1800);
 	}
 
@@ -197,7 +199,8 @@ class MenderManager {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$message = $this->handleCommandResult($type, $buffer);
-			$this->menderQueue->publish($message);
+			$headers = ['action' => MenderActions::RESULT()];
+			$this->menderQueue->publish($message, $headers);
 		}, 'mender -commit 2>&1', true);
 	}
 
@@ -208,7 +211,8 @@ class MenderManager {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$message = $this->handleCommandResult($type, $buffer);
-			$this->menderQueue->publish($message);
+			$headers = ['action' => MenderActions::RESULT()];
+			$this->menderQueue->publish($message, $headers);
 		}, 'mender -rollback 2>&1', true);
 	}
 

@@ -18,35 +18,40 @@
  */
 declare(strict_types = 1);
 
-namespace App\MaintenanceModule\Models;
+namespace App\MaintenanceModule\Enums;
 
-use Contributte\RabbitMQ\Producer\Producer;
+use Grifart\Enum\AutoInstances;
+use Grifart\Enum\Enum;
 
 /**
- * Mender MQ
+ * Mender MQ actions enum
+ * @method static MenderActions INSTALL()
+ * @method static MenderActions COMMIT()
+ * @method static MenderActions ROLLBACK()
+ * @method static MenderActions RESULT()
  */
-final class MenderQueue {
+final class MenderActions extends Enum {
+
+	use AutoInstances;
 
 	/**
-	 * @var Producer Mender MQ producer
+	 * Install artifact
 	 */
-	private Producer $menderProducer;
+	private const INSTALL = 'install';
 
 	/**
-	 * Constructor
-	 * @param Producer $menderProducer Mender MQ producer
+	 * Commit update
 	 */
-	public function __construct(Producer $menderProducer) {
-		$this->menderProducer = $menderProducer;
-	}
+	private const COMMIT = 'commit';
 
 	/**
-	 * Publishes message to MQ
-	 * @param string $message Message content to publish
-	 * @param array<string, mixed> $headers Message headers
+	 * Rollback update
 	 */
-	public function publish(string $message, array $headers = []): void {
-		$this->menderProducer->publish($message, $headers);
-	}
+	private const ROLLBACK = 'rollback';
+
+	/**
+	 * Send mender execution result
+	 */
+	private const RESULT = 'result';
 
 }
