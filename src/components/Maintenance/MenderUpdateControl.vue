@@ -181,6 +181,7 @@ export default class MenderUpdateControl extends Vue {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.installSuccess').toString()
 			);
+			this.installSuccess = true;
 		} else if (this.running.commit) {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.commitSuccess').toString()

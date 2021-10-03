@@ -34,7 +34,7 @@ import {NavigationGuardNext, Route} from 'vue-router';
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());
 				vm.$router.push(from.path);
-			}	
+			}
 		});
 	},
 	metaInfo: {
@@ -60,7 +60,7 @@ export default class MenderUpdate extends Vue {
 		if (this.log.length === 0) {
 			this.log += log;
 		} else {
-			this.log += '\n' + log;
+			this.log += log === '.' ? log : '\n' + log;
 		}
 	}
 

@@ -223,26 +223,25 @@ class MenderManager {
 			'messageType' => $type,
 		];
 		if ($type === 'exit') {
+			$this->removeArtifactFile();
 			$message['payload'] = $content;
 			return Json::encode($message);
 		}
-		$lines = explode(PHP_EOL, $content);
+		$content = trim($content);
 		$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
-		foreach ($lines as $idx => $line) {
-			$matches = Strings::match($line, $pattern);
-			if ($matches === null) {
-				continue;
-			}
+		$matches = Strings::match($content, $pattern);
+		if ($matches === null) {
+			$message['payload'] = $content;
+		} else {
 			$matchLen = strlen($matches[0]);
-			$lines[$idx] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
-			if (strlen($line) !== $matchLen) {
-				$matchIdx = strpos($line, $matches[0], 0);
-				$prefix = substr($line, 0, $matchIdx);
-				$suffix = substr($line, $matchIdx + $matchLen);
-				$lines[$idx] = trim($prefix . PHP_EOL . $lines[$idx] . PHP_EOL . $suffix);
+			$message['payload'] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
+			if (strlen($content) !== $matchLen) {
+				$matchIdx = strpos($content, $matches[0], 0);
+				$prefix = substr($content, 0, $matchIdx);
+				$suffix = substr($content, $matchIdx + $matchLen);
+				$message['payload'] = trim($prefix . PHP_EOL . $content . PHP_EOL . $suffix);
 			}
 		}
-		$message['payload'] = trim(implode(PHP_EOL, $lines));
 		return Json::encode($message);
 	}
 
