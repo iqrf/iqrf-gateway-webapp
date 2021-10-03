@@ -62,6 +62,16 @@ server {
 		proxy_http_version 1.1;
 	}
 
+	location /mender {
+		proxy_pass http://localhost:8082/mender;
+		proxy_read_timeout 3600;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host "localhost";
+		proxy_http_version 1.1;
+	}
+
 	location ~ /\. {
 		access_log off;
 		log_not_found off;

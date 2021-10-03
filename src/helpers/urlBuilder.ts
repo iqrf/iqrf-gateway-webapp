@@ -107,7 +107,7 @@ export default class UrlBuilder {
 	 * Returns WebSocket Mender URL
 	 */
 	getWsMenderUrl(): string {
-		return this.wsProtocol + this.hostname + (this.isDev ? ':8082': this.port) + '/maintenance/mender';
+		return this.wsProtocol + this.hostname + (this.isDev ? ':8082': this.port) + '/mender';
 	}
 
 	/**

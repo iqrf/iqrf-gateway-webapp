@@ -41,6 +41,6 @@ $app = new App($config['host'], (int) $config['port']);
 // Register echo route
 $app->route('/echo', new EchoServer, ['*']);
 // Register mender queue route
-$app->route('/maintenance/mender', new WebSocketDispatcher, ['*']);
+$app->route('/mender', new WebSocketDispatcher, ['*']);
 // Run server
 $app->run();

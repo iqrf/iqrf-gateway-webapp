@@ -1,5 +1,5 @@
 [Unit]
-Description=IQRF Gateway Webapp WireGuard tunnel for %I
+Description=IQRF Gateway Webapp WireGuard tunnel %I
 After=network-online.target nss-lookup.target
 Wants=network-online.target nss-lookup.target
 

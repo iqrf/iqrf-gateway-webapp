@@ -32,7 +32,7 @@ final class MenderConsumer implements IConsumer {
 	/**
 	 * Mender MQ WebSocket server endpoint TODO: from config
 	 */
-	private const ENDPOINT = 'ws://localhost:8082/maintenance/mender';
+	private const ENDPOINT = 'ws://localhost:8082/mender';
 
 	/**
 	 * @var WebSocketClient WebSocket client
