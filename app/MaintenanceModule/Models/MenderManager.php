@@ -187,7 +187,7 @@ class MenderManager {
 		$this->filePath = $filePath;
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$this->handleCommandResult($type, $buffer);
-		}, 'mender install ' . $filePath, true, 1800);
+		}, $this->buildMenderCommand(MenderActions::INSTALL, $filePath), true, 1800);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class MenderManager {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$this->handleCommandResult($type, $buffer);
-		}, 'mender -commit', true);
+		}, $this->buildMenderCommand(MenderActions::COMMIT), true);
 	}
 
 	/**
@@ -207,7 +207,24 @@ class MenderManager {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
 			$this->handleCommandResult($type, $buffer);
-		}, 'mender -rollback', true);
+		}, $this->buildMenderCommand(MenderActions::ROLLBACK), true);
+	}
+
+	/**
+	 * Builds mender invocation command depending on the version of Mender client
+	 * @param string $action Mender action
+	 * @param string|null $filePath path to file
+	 * @return string Mender client command
+	 */
+	private function buildMenderCommand(string $action, ?string $filePath = null): string {
+		$output = $this->commandManager->run('mender -v')->getStdout();
+		$version = substr($output, 0, 5);
+		FileSystem::write('/home/khanak/mender.out', $version);
+		$command = 'mender ' . (Strings::startsWith($version, '3') ? '' : '-') . $action;
+		if ($filePath !== null) {
+			$command .= ' ' . $filePath;
+		}
+		return $command;
 	}
 
 	/**
