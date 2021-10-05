@@ -20,38 +20,29 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Mender MQ actions enum
- * @method static MenderActions INSTALL()
- * @method static MenderActions COMMIT()
- * @method static MenderActions ROLLBACK()
- * @method static MenderActions RESULT()
  */
-final class MenderActions extends Enum {
-
-	use AutoInstances;
+class MenderActions {
 
 	/**
 	 * Install artifact
 	 */
-	private const INSTALL = 'install';
+	public const INSTALL = 'install';
 
 	/**
 	 * Commit update
 	 */
-	private const COMMIT = 'commit';
+	public const COMMIT = 'commit';
 
 	/**
 	 * Rollback update
 	 */
-	private const ROLLBACK = 'rollback';
+	public const ROLLBACK = 'rollback';
 
 	/**
 	 * Send mender execution result
 	 */
-	private const RESULT = 'result';
+	public const RESULT = 'result';
 
 }

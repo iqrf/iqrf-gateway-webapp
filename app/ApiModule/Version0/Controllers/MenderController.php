@@ -219,7 +219,7 @@ class MenderController extends BaseController {
 			$fileName = $file->getClientFilename();
 			$this->checkArtifact($fileName);
 			$filePath = $this->manager->saveArtifactFile($file);
-			$headers = ['action' => MenderActions::INSTALL()];
+			$headers = ['action' => MenderActions::INSTALL];
 			$this->queue->publish($filePath, $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderInvalidArtifactException $e) {
@@ -252,7 +252,7 @@ class MenderController extends BaseController {
 	 */
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$headers = ['action' => MenderActions::COMMIT()];
+			$headers = ['action' => MenderActions::COMMIT];
 			$this->queue->publish('', $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {
@@ -283,7 +283,7 @@ class MenderController extends BaseController {
 	 */
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$headers = ['action' => MenderActions::ROLLBACK()];
+			$headers = ['action' => MenderActions::ROLLBACK];
 			$this->queue->publish('', $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {

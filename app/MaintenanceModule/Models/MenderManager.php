@@ -186,10 +186,8 @@ class MenderManager {
 		$this->checkMender();
 		$this->filePath = $filePath;
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
-			$message = $this->handleCommandResult($type, $buffer);
-			$headers = ['action' => MenderActions::RESULT()];
-			$this->menderQueue->publish($message, $headers);
-		}, 'mender install ' . $filePath . ' 2>&1', true, 1800);
+			$this->handleCommandResult($type, $buffer);
+		}, 'mender install ' . $filePath, true, 1800);
 	}
 
 	/**
@@ -198,10 +196,8 @@ class MenderManager {
 	public function commitUpdate(): void {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
-			$message = $this->handleCommandResult($type, $buffer);
-			$headers = ['action' => MenderActions::RESULT()];
-			$this->menderQueue->publish($message, $headers);
-		}, 'mender -commit 2>&1', true);
+			$this->handleCommandResult($type, $buffer);
+		}, 'mender -commit', true);
 	}
 
 	/**
@@ -210,43 +206,54 @@ class MenderManager {
 	public function rollbackUpdate(): void {
 		$this->checkMender();
 		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
-			$message = $this->handleCommandResult($type, $buffer);
-			$headers = ['action' => MenderActions::RESULT()];
-			$this->menderQueue->publish($message, $headers);
-		}, 'mender -rollback 2>&1', true);
+			$this->handleCommandResult($type, $buffer);
+		}, 'mender -rollback', true);
 	}
 
 	/**
 	 * Checks execution status and processes output log accordingly
 	 * @param string $type Stream type
 	 * @param string $content Content
-	 * @return string Processed
 	 */
-	private function handleCommandResult(string $type, string $content): string {
+	private function handleCommandResult(string $type, string $content): void {
 		$message = [
 			'messageType' => $type,
 		];
+		$headers = ['action' => MenderActions::RESULT];
 		if ($type === 'exit') {
 			$this->removeArtifactFile();
 			$message['payload'] = $content;
-			return Json::encode($message);
+			$this->menderQueue->publish(Json::encode($message), $headers);
+			return;
 		}
-		$content = trim($content);
-		$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
-		$matches = Strings::match($content, $pattern);
-		if ($matches === null) {
-			$message['payload'] = $content;
-		} else {
-			$matchLen = strlen($matches[0]);
-			$message['payload'] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
-			if (strlen($content) !== $matchLen) {
-				$matchIdx = strpos($content, $matches[0], 0);
-				$prefix = substr($content, 0, $matchIdx);
-				$suffix = substr($content, $matchIdx + $matchLen);
-				$message['payload'] = trim($prefix . PHP_EOL . $content . PHP_EOL . $suffix);
+		$lines = explode(PHP_EOL, $content);
+		foreach ($lines as $line) {
+			$line = trim($line);
+			$line = Strings::replace($line, '/\\\\"/', '');
+			if (strlen($line) === 0) {
+				continue;
 			}
+			$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
+			$matches = Strings::match($line, $pattern);
+			if ($matches !== null) {
+				$matchLen = strlen($matches[0]);
+				$message['payload'] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
+				if (strlen($line) !== $matchLen) {
+					$matchIdx = strpos($line, $matches[0], 0);
+					$prefix = trim(substr($line, 0, $matchIdx));
+					$suffix = trim(substr($line, $matchIdx + $matchLen));
+					if (strlen($prefix) !== 0) {
+						$message['payload'] = $prefix . PHP_EOL . $message['payload'];
+					}
+					if (strlen($suffix) !== 0) {
+						$message['payload'] .= PHP_EOL . $suffix;
+					}
+				}
+			} else {
+				$message['payload'] = $line;
+			}
+			$this->menderQueue->publish(Json::encode($message), $headers);
 		}
-		return Json::encode($message);
 	}
 
 	/**

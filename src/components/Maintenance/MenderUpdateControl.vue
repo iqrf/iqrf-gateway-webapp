@@ -35,13 +35,11 @@
 					{{ $t('maintenance.mender.update.form.install') }}
 				</CButton> <CButton
 					color='success'
-					:disabled='!installSuccess'
 					@click='commit'
 				>
 					{{ $t('maintenance.mender.update.form.commit') }}
 				</CButton> <CButton
 					color='danger'
-					:disabled='!installSuccess'
 					@click='rollback'
 				>
 					{{ $t('maintenance.mender.update.form.rollback') }}
@@ -106,11 +104,6 @@ export default class MenderUpdateControl extends Vue {
 	private inputEmpty = true
 
 	/**
-	 * @var {boolean} installSuccess Indicates that mender artifact has been installed
-	 */
-	private installSuccess = false
-
-	/**
 	 * @var {WebSocket|null} webSocket WebSocket object
 	 */
 	private webSocket: WebSocket|null = null
@@ -160,6 +153,9 @@ export default class MenderUpdateControl extends Vue {
 			this.updateLog(message['payload']);
 			return;
 		}
+		if (!this.running.install && !this.running.commit && !this.running.rollback) {
+			return;
+		}
 		if (message['payload'] !== '0') {
 			if (this.running.install) {
 				this.$toast.error(
@@ -181,7 +177,6 @@ export default class MenderUpdateControl extends Vue {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.installSuccess').toString()
 			);
-			this.installSuccess = true;
 		} else if (this.running.commit) {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.commitSuccess').toString()
@@ -214,12 +209,16 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender install artifact task
 	 */
 	private install(): void {
-		this.installSuccess = false;
 		this.running.install = true;
 		const formData = new FormData();
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
 		MenderService.install(formData)
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.installProgress').toString()
+				);
+			})
 			.catch(() => {
 				this.running.install = false;
 				this.$toast.error(
@@ -234,6 +233,11 @@ export default class MenderUpdateControl extends Vue {
 	private commit(): void {
 		this.running.commit = true;
 		MenderService.commit()
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.commitProgress').toString()
+				);
+			})
 			.catch(() => {
 				this.running.commit = false;
 				this.$toast.error(
@@ -248,6 +252,11 @@ export default class MenderUpdateControl extends Vue {
 	private rollback(): void {
 		this.running.rollback = true;
 		MenderService.rollback()
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.rollbackProgress').toString()
+				);
+			})
 			.catch(() => {
 				this.running.rollback = false;
 				this.$toast.error(

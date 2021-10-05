@@ -61,16 +61,16 @@ final class MenderConsumer implements IConsumer {
 		$headers = $message->headers;
 		$action = $headers['action'];
 		switch ($action) {
-			case MenderActions::INSTALL():
+			case MenderActions::INSTALL:
 				$this->menderManager->installArtifact($message->content);
 				break;
-			case MenderActions::COMMIT():
+			case MenderActions::COMMIT:
 				$this->menderManager->commitUpdate();
 				break;
-			case MenderActions::ROLLBACK():
+			case MenderActions::ROLLBACK:
 				$this->menderManager->rollbackUpdate();
 				break;
-			case MenderActions::RESULT():
+			case MenderActions::RESULT:
 				$this->wsClient->send($message->content);
 				break;
 			default:
