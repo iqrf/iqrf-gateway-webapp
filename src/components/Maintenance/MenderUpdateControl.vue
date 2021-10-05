@@ -1,14 +1,14 @@
 <template>
 	<CCard>
 		<CElementCover
-			v-if='running.install || running.commit || running.rollback'
+			v-if='actionInProgress'
 			style='z-index: 1;'
 			:opacity='0.85'
 		>
-			<span v-if='running.install'>
+			<span v-if='menderAction === "install"'>
 				{{ $t('maintenance.mender.update.messages.installProgress') }}
 			</span>
-			<span v-else-if='running.commit'>
+			<span v-else-if='menderAction === "commit"'>
 				{{ $t('maintenance.mender.update.messages.commitProgress') }}
 			</span>
 			<span v-else>
@@ -76,13 +76,16 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+import {MenderActions, MenderMessageTypes, MountModes} from '../../enums/Maintenance/Mender';
+
+import GatewayService from '../../services/GatewayService';
 import MenderService from '../../services/MenderService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import GatewayService from '../../services/GatewayService';
-import { MountModes } from '../../enums/Maintenance/Mender';
-import { extendedErrorToast } from '../../helpers/errorToast';
-import UrlBuilder from '../../helpers/urlBuilder';
+import {MutationPayload} from 'vuex';
+import {MenderMessage} from '../../interfaces/mender';
 
 @Component({
 	components: {
@@ -90,6 +93,13 @@ import UrlBuilder from '../../helpers/urlBuilder';
 		CCard,
 		CCardBody,
 		CInputFile,
+	},
+	computed: {
+		...mapGetters({
+			clientConnected: 'mender_isConnected',
+			menderAction: 'mender_action',
+			actionInProgress: 'mender_actionInProgress',
+		}),
 	},
 })
 
@@ -104,64 +114,44 @@ export default class MenderUpdateControl extends Vue {
 	private inputEmpty = true
 
 	/**
-	 * @var {WebSocket|null} webSocket WebSocket object
+	 * Component unsubscribe function
 	 */
-	private webSocket: WebSocket|null = null
+	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
-	 * @var {number} reconnectInterval WebSocket reconnect interval ID
+	 * Subscribes to Mender vuex mutations
 	 */
-	private reconnectInterval = 0
-
-	/**
-	 * @var {Dictionary}
-	 */
-	private running = {
-		install: false,
-		commit: false,
-		rollback: false,
+	created(): void {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'MENDER_SOCKET_ONMESSAGE') {
+				this.handleMenderMessage(mutation.payload);
+			}
+		});
 	}
 
 	/**
-	 * Initializes websocket
+	 * Unsubscribes from Mender vuex mutations
 	 */
-	mounted(): void {
-		this.setSocket();
+	beforeDestroy(): void {
+		this.unsubscribe();
 	}
 
-	private setSocket(): void {
-		const urlBuilder: UrlBuilder = new UrlBuilder();
-		this.webSocket = new WebSocket(urlBuilder.getWsMenderUrl());
-		this.webSocket.onmessage = (event) => {
-			this.parseMenderMessage(JSON.parse(event.data));
-		};
-		this.webSocket.onerror = () => {
-			this.webSocket?.close();
-		};
-		this.webSocket.onopen = () => {
-			window.clearInterval(this.reconnectInterval);
-			this.webSocket!.onclose = () => {
-				this.reconnectInterval = window.setInterval(() => {
-					this.setSocket();
-				}, 3000);
-			};
-		};
-	}
-
-	private parseMenderMessage(message: any): void {
-		if (message['messageType'] !== 'exit') {
+	/**
+	 * Handles Mender message from Mender ws server
+	 * @param {MenderMessage} message Mender message
+	 */
+	private handleMenderMessage(message: MenderMessage): void {
+		if (message.messageType !== MenderMessageTypes.EXIT) {
 			this.updateLog(message['payload']);
 			return;
 		}
-		if (!this.running.install && !this.running.commit && !this.running.rollback) {
-			return;
-		}
+		const action = this.$store.getters.mender_action;
 		if (message['payload'] !== '0') {
-			if (this.running.install) {
+			if (action === MenderActions.INSTALL) {
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.installFailed').toString()
 				);
-			} else if (this.running.commit) {
+			} else if (action === MenderActions.COMMIT) {
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.commitFailed').toString()
 				);
@@ -170,14 +160,14 @@ export default class MenderUpdateControl extends Vue {
 					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
 				);
 			}
-			this.running.install = this.running.commit = this.running.rollback = false;
+			this.$store.commit('MENDER_ACTION_END');
 			return;
 		}
-		if (this.running.install) {
+		if (action === MenderActions.INSTALL) {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.installSuccess').toString()
 			);
-		} else if (this.running.commit) {
+		} else if (action === MenderActions.COMMIT) {
 			this.$toast.success(
 				this.$t('maintenance.mender.update.messages.commitSuccess').toString()
 			);
@@ -186,7 +176,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$t('maintenance.mender.update.messages.rollbackSuccess').toString()
 			);
 		}
-		this.running.install = this.running.commit = this.running.rollback = false;
+		this.$store.commit('MENDER_ACTION_END');
 	}
 
 	/**
@@ -209,7 +199,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender install artifact task
 	 */
 	private install(): void {
-		this.running.install = true;
+		this.$store.commit('MENDER_ACTION_START', MenderActions.INSTALL);
 		const formData = new FormData();
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
@@ -220,7 +210,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.running.install = false;
+				this.$store.commit('MENDER_ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.installFailed').toString()
 				);
@@ -231,7 +221,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender commit task
 	 */
 	private commit(): void {
-		this.running.commit = true;
+		this.$store.commit('MENDER_ACTION_START', MenderActions.COMMIT);
 		MenderService.commit()
 			.then(() => {
 				this.$toast.info(
@@ -239,7 +229,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.running.commit = false;
+				this.$store.commit('MENDER_ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.commitFailed').toString()
 				);
@@ -250,7 +240,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender rollback task
 	 */
 	private rollback(): void {
-		this.running.rollback = true;
+		this.$store.commit('MENDER_ACTION_START', MenderActions.ROLLBACK);
 		MenderService.rollback()
 			.then(() => {
 				this.$toast.info(
@@ -258,7 +248,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.running.rollback = false;
+				this.$store.commit('MENDER_ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
 				);

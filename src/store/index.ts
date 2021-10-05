@@ -25,7 +25,7 @@ import sidebar from './modules/sidebar.module';
 import spinner from './modules/spinner.module';
 import user from './modules/user.module';
 import webSocketClient from './modules/webSocketClient.module';
-import wsClient from './modules/wsClient.module';
+import menderClient from './modules/menderClient.module';
 
 Vue.use(Vuex);
 
@@ -38,7 +38,7 @@ const store: Store<any> = new Vuex.Store({
 		spinner,
 		user,
 		webSocketClient,
-		wsClient,
+		menderClient,
 	},
 	plugins: [createPersistentState({
 		paths: [

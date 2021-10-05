@@ -23,9 +23,27 @@ export enum MenderProtocols {
 }
 
 /**
+ * Mender client actions
+ */
+export enum MenderActions {
+	INSTALL = 'install',
+	COMMIT = 'commit',
+	ROLLBACK = 'rollback',
+}
+
+/**
  * Filesystem mount modes
  */
 export enum MountModes {
 	RO = 'ro',
 	RW = 'rw',
+}
+
+/**
+ * Mender message types
+ */
+export enum MenderMessageTypes {
+	OUT = 'out',
+	ERR = 'err',
+	EXIT = 'exit'
 }
