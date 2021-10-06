@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '../../store/modules/daemonClient.module';
 
 /**
  * IQRF Standard Sensor service
@@ -39,7 +39,7 @@ class StandardSensorService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -61,7 +61,7 @@ class StandardSensorService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 }

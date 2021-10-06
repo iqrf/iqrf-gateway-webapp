@@ -16,7 +16,7 @@
  */
 import store from '../store';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import {WebSocketOptions} from '../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../store/modules/daemonClient.module';
 import axios from 'axios';
 import {AxiosResponse} from 'axios';
 
@@ -36,7 +36,7 @@ class VersionService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**

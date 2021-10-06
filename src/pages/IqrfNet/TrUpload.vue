@@ -27,7 +27,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {WebSocketClientState} from '../../store/modules/daemonClient.module';
 import DpaUpdater from '../../components/IqrfNet/DpaUpdater.vue';
 import HexUpload from '../../components/IqrfNet/HexUpload.vue';
 import OsUpdater from '../../components/IqrfNet/OsUpdater.vue';
@@ -85,14 +85,14 @@ export default class TrUpload extends Vue {
 	 * Component unwatch function
 	 */
 	private unwatch: CallableFunction = () => {return;}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 * Initializes validation rules and websocket callbacks
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
@@ -110,11 +110,11 @@ export default class TrUpload extends Vue {
 			}
 		});
 
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerateCoordinator();
@@ -139,7 +139,7 @@ export default class TrUpload extends Vue {
 	 */
 	private enumerateCoordinator(): void {
 		this.$store.commit('spinner/SHOW');
-		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null) 
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -170,7 +170,7 @@ export default class TrUpload extends Vue {
 			this.$t('iqrfnet.trUpload.messages.postUpload').toString()
 		);
 		this.unwatch = this.$store.watch(
-			(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+			(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 			(newVal: boolean, oldVal: boolean) => {
 				if (!oldVal && newVal) {
 					setTimeout(() => this.enumerateCoordinator(), 5000);

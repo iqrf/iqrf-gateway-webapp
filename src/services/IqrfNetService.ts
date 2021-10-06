@@ -16,7 +16,7 @@
  */
 import {OtaUploadAction} from '../iqrfNet/otaUploadAction';
 import store from '../store';
-import {WebSocketOptions} from '../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../store/modules/daemonClient.module';
 
 /**
  * IQRF Network service
@@ -53,7 +53,7 @@ class IqrfNetService {
 			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
 		}
 		options.request = json;
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class IqrfNetService {
 					'returnVerbose': true,
 				},
 			};
-			return store.dispatch('sendRequest', options);
+			return store.dispatch('daemon_sendRequest', options);
 		} else {
 			return this.removeBond(255, false, options);
 		}
@@ -185,7 +185,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -209,7 +209,7 @@ class IqrfNetService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -228,7 +228,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -247,7 +247,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -276,7 +276,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -298,7 +298,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -322,7 +322,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			}
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -341,7 +341,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -375,7 +375,7 @@ class IqrfNetService {
 				},
 			};
 		}
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -397,7 +397,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -406,7 +406,7 @@ class IqrfNetService {
 	 * @return Message ID
 	 */
 	sendJson(options: WebSocketOptions): Promise<string> {
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -430,7 +430,7 @@ class IqrfNetService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -463,7 +463,7 @@ class IqrfNetService {
 				'returnVerbose': true
 			}
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 }
 

@@ -213,7 +213,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -346,10 +346,10 @@ export default class SchedulerList extends Vue {
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
+			if (mutation.type === 'DAEMON_SOCKET_ONOPEN') { // websocket connection with daemon established
 				this.getTasks();
-			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
-				mutation.type === 'SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
+			} else if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' ||
+				mutation.type === 'DAEMON_SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
 			} else if (mutation.type === 'SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== []) {
@@ -357,7 +357,7 @@ export default class SchedulerList extends Vue {
 						this.tasks = [];
 					}
 				}
-			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
 					return;
 				}

@@ -152,7 +152,7 @@ import {IField} from '../../interfaces/coreui';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	}
 })

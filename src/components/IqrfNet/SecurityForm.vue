@@ -157,7 +157,7 @@ export default class SecurityForm extends Vue {
 	created(): void {
 		extend('regex', regex);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {

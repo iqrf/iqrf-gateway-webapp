@@ -211,7 +211,7 @@ interface MonitorWebSocket {
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	},
 	metaInfo(): MetaInfo {

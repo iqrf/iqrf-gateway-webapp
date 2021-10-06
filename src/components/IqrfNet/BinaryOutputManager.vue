@@ -148,7 +148,7 @@ import {cilCheckAlt, cilX} from '@coreui/icons';
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -229,7 +229,7 @@ export default class BinaryOutputManager extends Vue {
 				this.responseType = null;
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

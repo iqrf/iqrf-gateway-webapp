@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -132,7 +132,7 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	},
 	methods: {

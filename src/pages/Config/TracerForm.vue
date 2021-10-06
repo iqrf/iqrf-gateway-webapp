@@ -91,7 +91,7 @@ limitations under the License.
 									:checked.sync='configuration.timestampFiles'
 								/>
 							</div>
-							<div 
+							<div
 								v-if='configuration.timestampFiles'
 								class='form-group'
 							>
@@ -228,7 +228,7 @@ import { extendedErrorToast } from '../../helpers/errorToast';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	},
 	metaInfo(): MetaInfo {
@@ -325,7 +325,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
+	mounted(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}

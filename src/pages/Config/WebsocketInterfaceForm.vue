@@ -182,7 +182,7 @@ import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messaging
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	},
 	metaInfo(): MetaInfo {

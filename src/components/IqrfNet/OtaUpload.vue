@@ -220,7 +220,7 @@ import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -357,7 +357,7 @@ export default class OtaUpload extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {

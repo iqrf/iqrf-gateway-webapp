@@ -16,7 +16,7 @@
  */
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
 import store from '../../store';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 /**
  * IQRF Info service
@@ -33,7 +33,7 @@ class InfoService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	dalis(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
@@ -45,9 +45,9 @@ class InfoService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
-	
+
 	/**
 	 * Sends network enumerate request
 	 * @param command Enumeration command to execute
@@ -71,7 +71,7 @@ class InfoService {
 			Object.assign(request.data.req, {period: period});
 		}
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	lights(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
@@ -84,7 +84,7 @@ class InfoService {
 			}
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	nodes(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
@@ -97,7 +97,7 @@ class InfoService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	sensors(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
@@ -110,7 +110,7 @@ class InfoService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	reset(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
@@ -123,7 +123,7 @@ class InfoService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 }
 

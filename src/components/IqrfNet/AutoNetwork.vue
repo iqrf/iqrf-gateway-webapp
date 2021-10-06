@@ -246,7 +246,7 @@ limitations under the License.
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 						:disabled='!useNodes'
 					/>
-					<CButton 
+					<CButton
 						color='primary'
 						type='button'
 						:disabled='invalid'
@@ -270,7 +270,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 interface NodeMessages {
 	nodesNew: string
@@ -298,7 +298,7 @@ export default class AutoNetwork extends Vue {
 	 * @var {boolean} autoAddress Use first available address for bonding
 	 */
 	private autoAddress = false
-	
+
 	/**
 	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
 	 */
@@ -323,7 +323,7 @@ export default class AutoNetwork extends Vue {
 		nodesNew: '',
 		nodesTotal: ''
 	}
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -394,14 +394,14 @@ export default class AutoNetwork extends Vue {
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONERROR' ||
-				mutation.type === 'SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
+			if (mutation.type === 'DAEMON_SOCKET_ONERROR' ||
+				mutation.type === 'DAEMON_SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

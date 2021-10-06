@@ -134,6 +134,7 @@ export default class MenderUpdateControl extends Vue {
 	 */
 	beforeDestroy(): void {
 		this.unsubscribe();
+		this.$store.dispatch('mender_destroySocket');
 	}
 
 	/**

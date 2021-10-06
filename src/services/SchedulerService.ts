@@ -17,7 +17,7 @@
 import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import { WebSocketOptions } from '../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '../store/modules/daemonClient.module';
 import { ITaskTimeSpec } from '../interfaces/scheduler';
 
 /**
@@ -50,7 +50,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -110,11 +110,11 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
-	 * Retrieves scheduler tasks via the REST API 
+	 * Retrieves scheduler tasks via the REST API
 	 */
 	listTasksREST(): Promise<AxiosResponse> {
 		return axios.get('scheduler', {headers: authorizationHeader()});
@@ -135,7 +135,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -144,7 +144,7 @@ class SchedulerService {
 	 */
 	getTaskREST(taskId: number): Promise<AxiosResponse> {
 		return axios.get('scheduler/' + taskId, {headers: authorizationHeader()});
-	}	
+	}
 
 	/**
 	 * Removes a task specified by ID via the Daemon API
@@ -161,7 +161,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -186,7 +186,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -195,14 +195,14 @@ class SchedulerService {
 	removeAllRest(): Promise<AxiosResponse> {
 		return axios.delete('/scheduler', {headers: authorizationHeader()});
 	}
-	
+
 	/**
 	 * Exports scheduler configuration
 	 */
 	exportConfig(): Promise<AxiosResponse> {
 		return axios.get('scheduler/export', {headers: authorizationHeader(), responseType: 'arraybuffer'});
 	}
-	
+
 	/**
 	 * Import scheduler configuration
 	 * @param config scheduler configuration
