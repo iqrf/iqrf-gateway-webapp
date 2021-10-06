@@ -219,7 +219,6 @@ class MenderManager {
 	private function buildMenderCommand(string $action, ?string $filePath = null): string {
 		$output = $this->commandManager->run('mender -v')->getStdout();
 		$version = substr($output, 0, 5);
-		FileSystem::write('/home/khanak/mender.out', $version);
 		$command = 'mender ' . (Strings::startsWith($version, '3') ? '' : '-') . $action;
 		if ($filePath !== null) {
 			$command .= ' ' . $filePath;
