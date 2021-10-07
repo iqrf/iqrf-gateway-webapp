@@ -45,6 +45,7 @@ export enum InterfaceType {
 	BRIDGE = 'bridge',
 	DUMMY = 'dummy',
 	ETHERNET = 'ethernet',
+	GSM = 'gsm',
 	LOOPBACK = 'loopback',
 	TUN = 'tun',
 	VLAN = 'vlan',
