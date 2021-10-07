@@ -104,6 +104,7 @@ const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
 const WifiConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WifiConnections.vue');
+const MobileConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/MobileConnections.vue');
 const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnels.vue');
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
@@ -869,6 +870,20 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:uuid',
 								props: true,
 							}
+						]
+					},
+					{
+						path: 'mobile',
+						component: {
+							render(c) {
+								return c('router-view');
+							},
+						},
+						children: [
+							{
+								component: MobileConnections,
+								path: '',
+							},
 						]
 					},
 					{

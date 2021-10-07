@@ -2375,6 +2375,10 @@
 				"removeUnavailable": "Web interface is no longer available at this address as the removed connection profile used this address."
 			}
 		},
+		"mobile": {
+			"title": "Mobile connections",
+			"description": "Mobile connections management."
+		},
 		"wireguard": {
 			"title": "Wireguard VPN",
 			"description": "VPN management.",
