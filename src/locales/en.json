@@ -2378,7 +2378,11 @@
 		},
 		"mobile": {
 			"title": "Mobile connections",
-			"description": "Mobile connections management."
+			"description": "Mobile connections management.",
+			"messages": {
+				"noInterfaces": "No active GSM network interface detected.",
+				"noConnections": "No available GSM connections."
+			}
 		},
 		"wireguard": {
 			"title": "Wireguard VPN",

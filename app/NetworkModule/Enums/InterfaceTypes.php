@@ -29,6 +29,7 @@ use Grifart\Enum\Enum;
  * @method static InterfaceTypes BRIDGE()
  * @method static InterfaceTypes DUMMY()
  * @method static InterfaceTypes ETHERNET()
+ * @method static InterfaceTypes GSM()
  * @method static InterfaceTypes IP_TUNNEL()
  * @method static InterfaceTypes LOOPBACK()
  * @method static InterfaceTypes TUN()
@@ -60,6 +61,11 @@ final class InterfaceTypes extends Enum {
 	 * Wired Ethernet interface
 	 */
 	private const ETHERNET = 'ethernet';
+
+	/**
+	 * GSM interface
+	 */
+	private const GSM = 'gsm';
 
 	/**
 	 * IP tunnel interface
