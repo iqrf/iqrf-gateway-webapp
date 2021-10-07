@@ -54,17 +54,24 @@ final class GSMConnection implements INetworkManagerEntity {
 	private $password;
 
 	/**
+	 * @var string|null SIM PIN
+	 */
+	private $pin;
+
+	/**
 	 * Constructor
 	 * @param string $apn Access point name
 	 * @param string $number Number
 	 * @param string|null $username Username
 	 * @param string|null $password Password
+	 * @param string|null $pin SIM PIN
 	 */
-	public function __construct(string $apn, string $number, ?string $username = null, ?string $password = null) {
+	public function __construct(string $apn, string $number, ?string $username = null, ?string $password = null, ?string $pin = null) {
 		$this->apn = $apn;
 		$this->number = $number;
 		$this->username = $username;
 		$this->password = $password;
+		$this->pin = $pin;
 	}
 
 	/**
@@ -73,25 +80,21 @@ final class GSMConnection implements INetworkManagerEntity {
 	 * @return GSMConnection GSM connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		return new self($json->apn, $json->number, $json->username, $json->password);
+		return new self($json->apn, $json->number, $json->username, $json->password, $json->pin);
 	}
 
 	/**
 	 * Serializes GSM connection entity into JSON
-	 * @return array<string, string> JSON serialized entity
+	 * @return array<string, string|null> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
-		$array = [
+		return [
 			'apn' => $this->apn,
 			'number' => $this->number,
+			'username' => $this->username,
+			'password' => $this->password,
+			'pin' => $this->pin,
 		];
-		if ($this->username !== null) {
-			$array['username'] = $this->username;
-		}
-		if ($this->password !== null) {
-			$array['password'] = $this->password;
-		}
-		return $array;
 	}
 
 	/**
@@ -101,9 +104,10 @@ final class GSMConnection implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
-		$username = array_key_exists('username', $array) ? $array['username'] : null;
-		$password = array_key_exists('password', $array) ? $array['password'] : null;
-		return new self($array['apn'], $array['number'], $username, $password);
+		$username = $array['username'] ?? null;
+		$password = $array['password'] ?? null;
+		$pin = $array['pin'] ?? null;
+		return new self($array['apn'], $array['number'], $username, $password, $pin);
 	}
 
 	/**
@@ -112,6 +116,15 @@ final class GSMConnection implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = $this->jsonSerialize();
+		if ($array['username'] === null) {
+			$array['username'] = '';
+		}
+		if ($array['password'] === null) {
+			$array['password'] = '';
+		}
+		if ($array['pin'] === null) {
+			$array['pin'] = '';
+		}
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
