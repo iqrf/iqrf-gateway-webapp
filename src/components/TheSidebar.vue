@@ -404,6 +404,11 @@ export default class TheSidebar extends Vue {
 								roles: ['power', 'normal', 'iqaros'],
 							},
 							{
+								name: this.$t('network.mobile.title'),
+								to: '/network/mobile',
+								roles: ['power', 'normal', 'iqaros'],
+							},
+							{
 								name: this.$t('network.wireguard.title'),
 								to: '/network/vpn',
 								roles: ['power', 'normal', 'iqaros'],
