@@ -133,6 +133,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -145,10 +146,10 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
-										:disabled='dpaVersion !== null && (!compareVersions(dpaVersion, "3.03", "=") && !compareVersions(dpaVersion, "3.04", "="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -161,7 +162,6 @@ limitations under the License.
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
-										:disabled='dpaVersion !== null && (!compareVersions(dpaVersion, "3.03", "=") && !compareVersions(dpaVersion, "3.04", "="))'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -456,7 +456,6 @@ limitations under the License.
 									/>
 								</ValidationProvider><hr>
 								<div class='form-group'>
-									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa3') }}</i><br>
 									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa3Higher') }}</i><br>
 									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa4Lower') }}</i><br>
 									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa410') }}</i><br>
@@ -525,11 +524,10 @@ import ProductModal from '../../components/IqrfNet/ProductModal.vue';
 import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '../../enums/IqrfNet/network';
 
-import compareVersions, { compare } from 'compare-versions';
+import compareVersions, {compare} from 'compare-versions';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
 
-import {Dictionary} from 'vue-router/types/router';
 import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
 import {IProduct} from '../../interfaces/repository';
