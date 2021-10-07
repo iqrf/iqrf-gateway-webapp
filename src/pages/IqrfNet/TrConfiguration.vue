@@ -996,8 +996,8 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleSubmit(address: number): void {
 		let config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
-		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
+		this.$store.dispatch('spinner/show', {timeout: 255000});
+		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 255000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
