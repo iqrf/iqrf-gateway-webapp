@@ -210,7 +210,7 @@ export default class SendJsonRequest extends Vue {
 				this.$store.dispatch('removeMessage', this.msgId);
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'DAEMON_SOCKET_ONSEND') {
 				this.messages.unshift({
 					msgId: mutation.payload.data.msgId,
 					request: JSON.stringify(mutation.payload, null, 4),

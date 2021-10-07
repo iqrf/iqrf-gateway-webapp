@@ -160,7 +160,6 @@ import {IWsService} from '../../interfaces/messagingInterfaces';
 import {AxiosError, AxiosResponse } from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -175,11 +174,6 @@ import {mapGetters} from 'vuex';
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
 	},
 	metaInfo(): MetaInfo {
 		return {

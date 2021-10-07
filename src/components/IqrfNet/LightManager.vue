@@ -222,7 +222,7 @@ export default class LightManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'DAEMON_SOCKET_ONSEND') {
 				this.responseIndex = this.index;
 				return;
 			}

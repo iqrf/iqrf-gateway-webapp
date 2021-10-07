@@ -166,14 +166,12 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {between, integer, required, min_value} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
 import {RequiredInterface} from '../../interfaces/requiredInterfaces';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import {mapGetters} from 'vuex';
-import { extendedErrorToast } from '../../helpers/errorToast';
+import {extendedErrorToast} from '../../helpers/errorToast';
 
 interface MonitorComponents {
 	monitor: string
@@ -208,11 +206,6 @@ interface MonitorWebSocket {
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
