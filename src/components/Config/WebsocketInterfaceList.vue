@@ -170,11 +170,6 @@ import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfa
 		CIcon,
 		CModal,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
-	}
 })
 
 /**

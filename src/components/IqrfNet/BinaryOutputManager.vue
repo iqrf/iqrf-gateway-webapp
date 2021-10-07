@@ -225,7 +225,7 @@ export default class BinaryOutputManager extends Vue {
 		extend('required', required);
 		extend('between', between);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'DAEMON_SOCKET_ONSEND') {
 				this.responseType = null;
 				return;
 			}

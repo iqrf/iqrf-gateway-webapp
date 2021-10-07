@@ -350,7 +350,7 @@ export default class SchedulerList extends Vue {
 				this.getTasks();
 			} else if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' ||
 				mutation.type === 'DAEMON_SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
-			} else if (mutation.type === 'SOCKET_ONSEND') { // cleanup before tasks are retrieved
+			} else if (mutation.type === 'DAEMON_SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== []) {
 						this.taskIds = [];
@@ -403,7 +403,7 @@ export default class SchedulerList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.fetchTasks = false;
 		setTimeout(() => {
-			if (this.$store.state.webSocketClient.socket.isConnected) {
+			if (this.$store.getters.daemon_isSocketConnected) {
 				this.$store.dispatch('spinner/show', 30000);
 				SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 					.then((msgId: string) => this.storeId(msgId));
@@ -469,7 +469,7 @@ export default class SchedulerList extends Vue {
 		}
 		const task = this.deleteTask;
 		this.deleteTask = null;
-		if (this.$store.state.webSocketClient.socket.isConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.$store.dispatch('spinner/show', 30000);
 			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
@@ -511,7 +511,7 @@ export default class SchedulerList extends Vue {
 	 */
 	private removeAllTasks(): void {
 		this.showDeleteAllModal = false;
-		if (this.$store.state.webSocketClient.socket.isConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.$store.dispatch('spinner/show', 30000);
 			SchedulerService.removeAll(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
 				.then((msgId: string) => this.storeId(msgId));

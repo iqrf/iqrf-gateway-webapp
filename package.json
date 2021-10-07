@@ -61,7 +61,7 @@
 		"ip-regex": "^4.3.0",
 		"is-fqdn": "^2.0.1",
 		"jwt-decode": "^3.1.2",
-		"luxon": "^2.0.2",
+		"luxon": "1.28.0",
 		"maska": "1.4.2",
 		"prismjs": "^1.25.0",
 		"punycode": "^2.1.1",

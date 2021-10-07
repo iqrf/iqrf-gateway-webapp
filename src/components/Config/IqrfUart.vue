@@ -178,7 +178,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -203,8 +203,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -225,11 +223,6 @@ import {mapGetters} from 'vuex';
 		ValidationObserver,
 		ValidationProvider,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
-	}
 })
 
 /**

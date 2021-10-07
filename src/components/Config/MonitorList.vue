@@ -130,7 +130,6 @@ import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdown
 
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {mapGetters} from 'vuex';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
@@ -150,11 +149,6 @@ import {IField} from '../../interfaces/coreui';
 		CIcon,
 		CModal,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
-	}
 })
 
 /**

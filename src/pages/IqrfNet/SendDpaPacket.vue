@@ -406,7 +406,7 @@ export default class SendDpaPacket extends Vue {
 			return re.test(pdata);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
+			if (mutation.type === 'DAEMON_SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
 				this.messages.unshift({
 					msgId: mutation.payload.data.msgId,
 					request: JSON.stringify(mutation.payload, null, 4),

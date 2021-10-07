@@ -543,7 +543,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	mounted(): void {
 		setTimeout(() => {
-			if (this.$store.state.webSocketClient.socket.isConnected) {
+			if (this.$store.getters.daemon_isSocketConnected) {
 				this.useRest = false;
 			}
 			if (this.id && this.untouched) {

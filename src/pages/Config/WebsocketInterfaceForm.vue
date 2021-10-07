@@ -158,7 +158,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {mapGetters} from 'vuex';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
@@ -179,11 +178,6 @@ import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messaging
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
 	},
 	metaInfo(): MetaInfo {
 		return {

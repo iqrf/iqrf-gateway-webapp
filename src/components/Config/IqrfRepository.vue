@@ -108,7 +108,6 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -124,11 +123,6 @@ import {mapGetters} from 'vuex';
 		ValidationObserver,
 		ValidationProvider,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
-		}),
-	}
 })
 
 /**
