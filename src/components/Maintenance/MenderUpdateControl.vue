@@ -122,6 +122,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Subscribes to Mender vuex mutations
 	 */
 	created(): void {
+		this.$store.dispatch('mender_connectSocket');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'MENDER_SOCKET_ONMESSAGE') {
 				this.handleMenderMessage(mutation.payload);

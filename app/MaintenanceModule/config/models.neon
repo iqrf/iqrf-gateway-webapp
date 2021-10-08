@@ -14,12 +14,13 @@
 # limitations under the License.
 
 services:
-	- App\MaintenanceModule\Models\MenderConsumer
-	- App\MaintenanceModule\Models\MenderQueue(@Contributte\RabbitMQ\Client::getProducer(menderProducer))
+	- App\MaintenanceModule\Models\MenderInvoker
+	- App\MaintenanceModule\Models\MenderReporter
+	mender.reportQueue: App\MaintenanceModule\Models\MenderQueue(@Contributte\RabbitMQ\Client::getProducer(menderReportProducer))
 	mender.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
 		autowired: false
-	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandManager, @mender.fileManager)
+	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandManager, @mender.fileManager, @mender.reportQueue)
 	monit.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/monit')
 		autowired: false
