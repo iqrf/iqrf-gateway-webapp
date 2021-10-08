@@ -149,10 +149,14 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$ipv6 = IPv6Connection::jsonDeserialize($json->ipv6);
 		$type = ConnectionTypes::fromScalar($json->type);
 		$wifi = null;
+		$gsm = null;
 		if ($type->equals(ConnectionTypes::WIFI())) {
 			$wifi = WifiConnection::jsonDeserialize($json->wifi);
 		}
-		return new self($json->name, $uuid, $type, $json->interface, $autoConnect, $ipv4, $ipv6, $wifi);
+		if ($type->equals(ConnectionTypes::GSM())) {
+			$gsm = GSMConnection::jsonDeserialize($json->gsm);
+		}
+		return new self($json->name, $uuid, $type, $json->interface, $autoConnect, $ipv4, $ipv6, $wifi, $gsm);
 	}
 
 	/**
@@ -171,6 +175,9 @@ class ConnectionDetail implements INetworkManagerEntity {
 		];
 		if ($this->wifi !== null) {
 			$json['wifi'] = $this->wifi->jsonSerialize();
+		}
+		if ($this->gsm !== null) {
+			$json['gsm'] = $this->gsm->jsonSerialize();
 		}
 		return $json;
 	}
