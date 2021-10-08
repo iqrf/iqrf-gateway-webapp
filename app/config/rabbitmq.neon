@@ -7,18 +7,31 @@ rabbitmq:
 			port: 5672
 			lazy: false
 	queues:
-		menderQueue:
+		menderInvokeQueue:
+			connection: default
+			autoCreate: true
+		menderReportQueue:
 			connection: default
 			autoCreate: true
 	producers:
-		menderProducer:
-			queue: menderQueue
+		menderInvokeProducer:
+			queue: menderInvokeQueue
 			contentType: text/plain
 			deliveryMode: 1
+		menderReportProducer:
+			queue: menderReportQueue
+			contentType: application/json
+			deliveryMode: 1
 	consumers:
-		menderConsumer:
-			queue: menderQueue
-			callback: [@App\MaintenanceModule\Models\MenderConsumer, consume]
+		menderInvoker:
+			queue: menderInvokeQueue
+			callback: [@App\MaintenanceModule\Models\MenderInvoker, consume]
+			qos:
+				prefetchSize: 0
+				prefetchCount: 1
+		menderReporter:
+			queue: menderReportQueue
+			callback: [@App\MaintenanceModule\Models\MenderReporter, consume]
 			qos:
 				prefetchSize: 0
 				prefetchCount: 1

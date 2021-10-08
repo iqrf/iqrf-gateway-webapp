@@ -46,7 +46,8 @@ services:
 	- App\ApiModule\Version0\Controllers\Iqrf\MacrosController
 	- App\ApiModule\Version0\Controllers\Iqrf\UploadController
 	- App\ApiModule\Version0\Controllers\MappingController
-	- App\ApiModule\Version0\Controllers\MenderController
+	mender.invokeQueue: App\MaintenanceModule\Models\MenderQueue(@Contributte\RabbitMQ\Client::getProducer(menderInvokeProducer))
+	mender.controller: App\ApiModule\Version0\Controllers\MenderController(@mender.invokeQueue)
 	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
 	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
 	- App\ApiModule\Version0\Controllers\Network\InterfacesController

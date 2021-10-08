@@ -20,20 +20,14 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
-use App\CoreModule\Models\WebSocketClient;
 use App\MaintenanceModule\Enums\MenderActions;
 use Bunny\Message;
 use Contributte\RabbitMQ\Consumer\IConsumer;
 
 /**
- * Mender MQ consumer
+ * Mender invocation MQ consumer
  */
-final class MenderConsumer implements IConsumer {
-
-	/**
-	 * Mender MQ WebSocket server endpoint TODO: from config
-	 */
-	private const ENDPOINT = 'ws://localhost:8082/mender';
+final class MenderInvoker implements IConsumer {
 
 	/**
 	 * @var MenderManager Mender manager
@@ -41,16 +35,10 @@ final class MenderConsumer implements IConsumer {
 	private $menderManager;
 
 	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private $wsClient;
-
-	/**
 	 * Constructor
 	 */
 	public function __construct(MenderManager $menderManager) {
 		$this->menderManager = $menderManager;
-		$this->wsClient = new WebSocketClient(self::ENDPOINT);
 	}
 
 	/**
@@ -69,9 +57,6 @@ final class MenderConsumer implements IConsumer {
 				break;
 			case MenderActions::ROLLBACK:
 				$this->menderManager->rollbackUpdate();
-				break;
-			case MenderActions::RESULT:
-				$this->wsClient->send($message->content);
 				break;
 			default:
 				return IConsumer::MESSAGE_REJECT;

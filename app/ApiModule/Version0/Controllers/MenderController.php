@@ -67,14 +67,15 @@ class MenderController extends BaseController {
 
 	/**
 	 * Constructor
+	 * @param MenderQueue $queue Mender MQ
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, MenderManager $manager, MenderQueue $menderQueue, RestApiSchemaValidator $validator) {
+	public function __construct(MenderQueue $queue, FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
 		$this->manager = $manager;
-		$this->queue = $menderQueue;
+		$this->queue = $queue;
 		parent::__construct($validator);
 	}
 
