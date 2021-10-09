@@ -41,7 +41,7 @@ class ClientSocket {
 		clearTimeout(this.reconnectTimeout);
 		this.reconnectTimeout = window.setTimeout(() => {
 			if (this.store) {
-				this.storeDispatch(this.options.prefix + 'SOCKET_RECONNECT', null);
+				this.storeDispatch('SOCKET_RECONNECT', null);
 			}
 			this.connect();
 			this.registerEvents();
@@ -56,7 +56,7 @@ class ClientSocket {
 		try {
 			const message = JSON.stringify(data);
 			this.client?.send(message);
-			this.storeDispatch(this.options.prefix + 'SOCKET_ONSEND', data);
+			this.storeDispatch('SOCKET_ONSEND', data);
 		} catch (e) {
 			console.error(e);
 		}
@@ -70,7 +70,7 @@ class ClientSocket {
 			}
 			this.client[name] = (event) => {
 				if (this.store) {
-					const call = this.options.prefix + 'SOCKET_' + name;
+					const call = 'SOCKET_' + name;
 					this.storeDispatch(call, event);
 				}
 				if (this.options.reconnect && name === 'onclose') {
@@ -85,7 +85,7 @@ class ClientSocket {
 			return;
 		}
 		let type = 'commit';
-		let target = name.toUpperCase();
+		const target = this.options.prefix + name.toUpperCase();
 		let message = event;
 		if (event && event.data) {
 			if (typeof event.data === 'string') {
@@ -93,10 +93,8 @@ class ClientSocket {
 			}
 			if (message.mutation) {
 				type = 'commit';
-				target = [message.namespace || '', message.mutation].filter((e) => !!e).join('/');
 			} else if (message.action) {
 				type = 'dispatch';
-				target = [message.namespace || '', message.mutation].filter((e) => !!e).join('/');
 			}
 		}
 		this.store[type](target, message);

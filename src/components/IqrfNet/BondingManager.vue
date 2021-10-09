@@ -210,7 +210,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -351,11 +351,11 @@ export default class BondingManager extends Vue {
 			return regex.test(code);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 					this.handleEnumerationResponse(mutation.payload.data);
 					return;
@@ -391,7 +391,7 @@ export default class BondingManager extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -399,10 +399,10 @@ export default class BondingManager extends Vue {
 	 * Creates WebSocket request options object
 	 * @param {number} timeout Request timeout in milliseconds
 	 * @param {string} message Request timeout message
-	 * @returns {WebSocketOptions} WebSocket request options
+	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
-	private buildOptions(timeout: number, message: string): WebSocketOptions {
-		return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
+	private buildOptions(timeout: number, message: string): DaemonMessageOptions {
+		return new DaemonMessageOptions(null, timeout, message, () => this.msgId = null);
 	}
 
 	/**
@@ -523,7 +523,7 @@ export default class BondingManager extends Vue {
 	 */
 	private bondNfc(): void {
 		this.$store.dispatch('spinner/show', {timeout: 12000});
-		IqrfNetService.bondNfc(new WebSocketOptions(null, 12000,'iqrfnet.networkManager.bondingManager.messages.bondTimeout', () => this.msgId = null))
+		IqrfNetService.bondNfc(new DaemonMessageOptions(null, 12000,'iqrfnet.networkManager.bondingManager.messages.bondTimeout', () => this.msgId = null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

@@ -213,7 +213,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -346,23 +346,23 @@ export default class SchedulerList extends Vue {
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONOPEN') { // websocket connection with daemon established
+			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') { // websocket connection with daemon established
 				this.getTasks();
-			} else if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' ||
-				mutation.type === 'DAEMON_SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
-			} else if (mutation.type === 'DAEMON_SOCKET_ONSEND') { // cleanup before tasks are retrieved
+			} else if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' ||
+				mutation.type === 'daemonClient/SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
+			} else if (mutation.type === 'daemonClient/SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== []) {
 						this.taskIds = [];
 						this.tasks = [];
 					}
 				}
-			} else if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', mutation.payload.data.msgId);
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					this.handleList(mutation.payload.data);
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
@@ -389,7 +389,7 @@ export default class SchedulerList extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
+		this.msgIds.forEach((item) => this.$store.dispatch('daemonClient/removeMessage', item));
 		this.unsubscribe();
 	}
 
@@ -403,9 +403,9 @@ export default class SchedulerList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.fetchTasks = false;
 		setTimeout(() => {
-			if (this.$store.getters.daemon_isSocketConnected) {
+			if (this.$store.getters['daemonClient/isConnected']) {
 				this.$store.dispatch('spinner/show', 30000);
-				SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
+				SchedulerService.listTasks(new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 					.then((msgId: string) => this.storeId(msgId));
 			} else {
 				this.$store.commit('spinner/SHOW');
@@ -443,7 +443,7 @@ export default class SchedulerList extends Vue {
 	 * @param {number} taskId Scheduler task id
 	 */
 	private getTask(taskId: number): void {
-		SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000))
+		SchedulerService.getTask(taskId, new DaemonMessageOptions(null, 30000))
 			.then((msgId: string) => this.storeId(msgId));
 	}
 
@@ -469,9 +469,9 @@ export default class SchedulerList extends Vue {
 		}
 		const task = this.deleteTask;
 		this.deleteTask = null;
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
+			SchedulerService.removeTask(task, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
 		} else {
 			this.$store.commit('spinner/SHOW');
@@ -511,9 +511,9 @@ export default class SchedulerList extends Vue {
 	 */
 	private removeAllTasks(): void {
 		this.showDeleteAllModal = false;
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeAll(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
+			SchedulerService.removeAll(new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
 				.then((msgId: string) => this.storeId(msgId));
 		} else {
 			this.$store.commit('spinner/SHOW');

@@ -75,7 +75,7 @@ import VersionService from '../../services/VersionService';
 import {AxiosResponse} from 'axios';
 import {IBackupData} from '../../interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -159,14 +159,14 @@ export default class Backup extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONERROR' ||
-				mutation.type === 'DAEMON_SOCKET_ONCLOSE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONERROR' ||
+				mutation.type === 'daemonClient/SOCKET_ONCLOSE') {
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
 				return;
 			}
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
@@ -176,7 +176,7 @@ export default class Backup extends Vue {
 				this.handleBackupResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'messageError') {
 				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				this.$toast.error(
 					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
@@ -194,7 +194,7 @@ export default class Backup extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -203,7 +203,7 @@ export default class Backup extends Vue {
 	 */
 	private concludeBackup() {
 		this.$store.commit('spinner/HIDE');
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.generateBackupFile();
 		this.backupSuccessToast();
 	}
@@ -246,14 +246,14 @@ export default class Backup extends Vue {
 
 		if (this.target === NetworkTarget.COORDINATOR) {
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.error(
 				this.$t('forms.messages.coordinatorOffline').toString()
 			);
 			return;
 		} else if (this.target === NetworkTarget.NODE) {
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (data.status === -1 || data.statusStr.includes('ERROR_TIMEOUT')) { // node device offline
 				this.$toast.error(
 					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
@@ -284,7 +284,7 @@ export default class Backup extends Vue {
 		this.offlineDevices = [];
 		const address = this.target === NetworkTarget.NODE ? this.address : 0;
 		const wholeNetwork = this.target === 'network';
-		const options = new WebSocketOptions(null);
+		const options = new DaemonMessageOptions(null);
 		let message = '';
 		if (this.target === NetworkTarget.COORDINATOR) {
 			message = this.$t('iqrfnet.networkManager.backup.messages.coordinatorRunning').toString();

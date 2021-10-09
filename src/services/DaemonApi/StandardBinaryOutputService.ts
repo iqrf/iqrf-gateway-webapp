@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 export class StandardBinaryOutput {
 
@@ -51,7 +51,7 @@ class StandardBinaryOutputService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<string> {
+	enumerate(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfBinaryoutput_Enumerate',
 			'data': {
@@ -62,7 +62,7 @@ class StandardBinaryOutputService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -71,7 +71,7 @@ class StandardBinaryOutputService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	getOutputs(address: number, options: WebSocketOptions): Promise<string> {
+	getOutputs(address: number, options: DaemonMessageOptions): Promise<string> {
 		return this.setOutputs(address, [], options);
 	}
 
@@ -83,7 +83,7 @@ class StandardBinaryOutputService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	setOutputs(address: number, outputs: StandardBinaryOutput[] = [], options: WebSocketOptions): Promise<string> {
+	setOutputs(address: number, outputs: StandardBinaryOutput[] = [], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfBinaryoutput_SetOutput',
 			'data': {
@@ -96,7 +96,7 @@ class StandardBinaryOutputService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 }
 

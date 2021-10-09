@@ -225,7 +225,7 @@ import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
 
 import {maska} from 'maska';
 import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 import sendPacket from '../../iqrfNet/sendPacket';
 
 import {IMessagePairPacket} from '../../interfaces/iqrfnet';
@@ -251,7 +251,7 @@ import {RawMessage} from '../../interfaces/dpa';
 	},
 	computed: {
 		...mapGetters({
-			isSocketConnected: 'daemon_isSocketConnected',
+			isSocketConnected: 'daemonClient/isConnected',
 		}),
 	},
 	directives: {
@@ -406,7 +406,7 @@ export default class SendDpaPacket extends Vue {
 			return re.test(pdata);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
+			if (mutation.type === 'daemonClient/SOCKET_ONSEND' && mutation.payload.mType === 'iqrfRaw') {
 				this.messages.unshift({
 					msgId: mutation.payload.data.msgId,
 					request: JSON.stringify(mutation.payload, null, 4),
@@ -415,14 +415,14 @@ export default class SendDpaPacket extends Vue {
 				});
 				this.activeMessagePair = this.messages[0];
 			}
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'messageError') {
 				this.handleMessageError(mutation.payload);
 				return;
@@ -437,7 +437,7 @@ export default class SendDpaPacket extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -464,7 +464,7 @@ export default class SendDpaPacket extends Vue {
 		if (this.timeoutOverwrite) {
 			json.data.timeout = this.timeout;
 		}
-		let options = new WebSocketOptions(json);
+		let options = new DaemonMessageOptions(json);
 		const packet = sendPacket.Packet.parse(this.packet);
 		if (packet.nadr === 255) {
 			options.timeout = 1000;
@@ -475,7 +475,7 @@ export default class SendDpaPacket extends Vue {
 			options.message = 'iqrfnet.sendPacket.messages.failure';
 			this.$store.commit('spinner/SHOW');
 		}
-		this.$store.dispatch('daemon_sendRequest', options)
+		this.$store.dispatch('daemonClient/sendRequest', options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -487,8 +487,8 @@ export default class SendDpaPacket extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
-		this.$store.dispatch('removeMessage', response.data.msgId);
-		this.$store.commit('DAEMON_TRIM_MESSAGE_QUEUE');
+		this.$store.dispatch('daemonClient/removeMessage', response.data.msgId);
+		this.$store.commit('daemonClient/TRIM_MESSAGE_QUEUE');
 		this.$toast.clear();
 		this.$toast.error(
 			this.$t('iqrfnet.sendPacket.messages.queueFull').toString()

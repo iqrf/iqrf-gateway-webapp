@@ -27,7 +27,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
-import {WebSocketClientState} from '../../store/modules/daemonClient.module';
+import {DaemonClientState} from '../../interfaces/wsClient';
 import DpaUpdater from '../../components/IqrfNet/DpaUpdater.vue';
 import HexUpload from '../../components/IqrfNet/HexUpload.vue';
 import OsUpdater from '../../components/IqrfNet/OsUpdater.vue';
@@ -92,13 +92,13 @@ export default class TrUpload extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				this.handleEnumResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'messageError') {
@@ -110,11 +110,11 @@ export default class TrUpload extends Vue {
 			}
 		});
 
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerateCoordinator();
@@ -129,7 +129,7 @@ export default class TrUpload extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
@@ -170,7 +170,7 @@ export default class TrUpload extends Vue {
 			this.$t('iqrfnet.trUpload.messages.postUpload').toString()
 		);
 		this.unwatch = this.$store.watch(
-			(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
+			(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 			(newVal: boolean, oldVal: boolean) => {
 				if (!oldVal && newVal) {
 					setTimeout(() => this.enumerateCoordinator(), 5000);

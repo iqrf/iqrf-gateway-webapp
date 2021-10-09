@@ -333,7 +333,7 @@ import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
 import {IOption} from '../../interfaces/coreui';
-import {WebSocketClientState} from '../../store/modules/daemonClient.module';
+import {DaemonClientState} from '../../interfaces/wsClient';
 import {MutationPayload} from 'vuex';
 import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {versionHigherEqual} from '../../helpers/versionChecker';
@@ -430,7 +430,7 @@ export default class TrConfiguration extends Vue {
 		this.loaded = false;
 		this.config = null;
 		this.peripherals = [];
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.$store.dispatch('spinner/show', {timeout: 300000});
 			IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 				.then((msgId: string) => this.msgId = msgId);
@@ -506,13 +506,13 @@ export default class TrConfiguration extends Vue {
 		extend('max', max_value);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
 				this.$store.dispatch('spinner/hide');
 				this.handleWriteResponse(mutation.payload);
@@ -543,11 +543,11 @@ export default class TrConfiguration extends Vue {
 	 */
 	mounted(): void {
 		this.daemon236 = versionHigherEqual('2.3.6');
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.readOs();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.readOs();
@@ -562,7 +562,7 @@ export default class TrConfiguration extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}

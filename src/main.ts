@@ -72,7 +72,7 @@ const urlBuilder: UrlBuilder = new UrlBuilder();
 store.dispatch('daemon_initSocket', new ClientSocket(
 	{
 		url: urlBuilder.getWsApiUrl(),
-		prefix: 'DAEMON_',
+		prefix: 'daemonClient/',
 		autoConnect: true,
 		reconnect: true,
 		reconnectDelay: 5000,
@@ -83,7 +83,7 @@ store.dispatch('daemon_initSocket', new ClientSocket(
 store.dispatch('mender_initSocket', new ClientSocket(
 	{
 		url: urlBuilder.getWsMenderUrl(),
-		prefix: 'MENDER_',
+		prefix: 'menderClient/',
 		autoConnect: false,
 		reconnect: true,
 		reconnectDelay: 5000,
@@ -94,7 +94,7 @@ store.dispatch('mender_initSocket', new ClientSocket(
 store.dispatch('monitor_initSocket', new ClientSocket(
 	{
 		url: urlBuilder.getWsMonitorUrl(),
-		prefix: 'MONITOR_',
+		prefix: 'monitorClient/',
 		autoConnect: true,
 		reconnect: true,
 		reconnectDelay: 5000,

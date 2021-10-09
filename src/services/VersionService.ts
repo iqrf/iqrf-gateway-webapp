@@ -16,7 +16,7 @@
  */
 import store from '../store';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import {WebSocketOptions} from '../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
 import axios from 'axios';
 import {AxiosResponse} from 'axios';
 
@@ -29,14 +29,14 @@ class VersionService {
 	 * Retrieves IQRF Gateway Daemon version
 	 * @param options WebSocket request options
 	 */
-	getDaemonVersion(options: WebSocketOptions): Promise<string> {
+	getDaemonVersion(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngDaemon_Version',
 			'data': {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**

@@ -157,14 +157,14 @@ export default class SecurityForm extends Vue {
 	created(): void {
 		extend('regex', regex);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
 			this.$store.dispatch('spinner/hide');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqrfEmbedOs_SetSecurity') {
 				this.handleSecurityResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
@@ -177,7 +177,7 @@ export default class SecurityForm extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 

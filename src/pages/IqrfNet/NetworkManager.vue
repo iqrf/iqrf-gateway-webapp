@@ -74,7 +74,7 @@ import {ToastOptions} from 'vue-toast-notification';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
+			daemonVersion: 'daemonClient/getVersion',
 		}),
 	},
 	metaInfo: {
