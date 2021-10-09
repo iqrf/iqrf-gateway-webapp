@@ -47,6 +47,11 @@ limitations under the License.
 						<template #no-items-view='{}'>
 							{{ $t('network.mobile.messages.noConnections') }}
 						</template>
+						<template #interfaceName='{item}'>
+							<td>
+								{{ item.interfaceName }}
+							</td>
+						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
