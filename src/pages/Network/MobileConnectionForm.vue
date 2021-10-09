@@ -80,16 +80,22 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
+						<CInput
+							v-model='connection.gsm.number'
+							:label='$t("network.mobile.form.number")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							rules='pin'
 							:custom-messages='{
-								required: "network.mobile.errors.numberMissing"
+								pin: "network.mobile.errors.pinInvalid"
 							}'
 						>
 							<CInput
-								v-model='connection.gsm.number'
-								:label='$t("network.mobile.form.number")'
+								v-model='connection.gsm.pin'
+								:label='$t("network.mobile.form.pin")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -125,20 +131,6 @@ limitations under the License.
 							<CInput
 								v-model='connection.gsm.password'
 								:label='$t("forms.fields.password")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='pin'
-							:custom-messages='{
-								pin: "network.mobile.errors.pinInvalid"
-							}'
-						>
-							<CInput
-								v-model='connection.gsm.pin'
-								:label='$t("network.mobile.form.pin")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>

@@ -18,11 +18,11 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
 		<CCard class='card-margin-bottom'>
-			<!--<div v-if='interfacesLoaded && noInterfaces'>
+			<div v-if='interfacesLoaded && noInterfaces'>
 				<CCardBody>
 					{{ $t('network.mobile.messages.noInterfaces') }}
 				</CCardBody>
-			</div>-->
+			</div>
 			<div>
 				<CCardHeader class='border-0 datatable-header'>
 					{{ $t('network.connection.title') }}
@@ -236,6 +236,7 @@ export default class MobileConnections extends Vue {
 						{interface: connection.interfaceName, connection: connection.name}
 					).toString()
 				);
+				this.getConnections();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
