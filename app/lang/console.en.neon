@@ -20,6 +20,7 @@ features:
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
 	iqrfRepository: IQRF Repository extension configuration
+	iTemp: iTemp
 	mender: Mender
 	monit: Monit
 	networkManager: Network manager
