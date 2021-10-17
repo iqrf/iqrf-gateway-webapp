@@ -203,13 +203,13 @@ export default class MobileConnectionForm extends Vue {
 		ipv4: {
 			addresses: [],
 			dns: [],
-			gateway: '',
+			gateway: null,
 			method: 'auto',
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
-			gateway: '',
+			gateway: null,
 			method: 'ignore',
 		},
 		gsm: {
