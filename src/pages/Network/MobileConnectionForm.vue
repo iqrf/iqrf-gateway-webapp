@@ -83,8 +83,6 @@ limitations under the License.
 						<CInput
 							v-model='connection.gsm.number'
 							:label='$t("network.mobile.form.number")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
 						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
