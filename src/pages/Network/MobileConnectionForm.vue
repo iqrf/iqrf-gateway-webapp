@@ -354,7 +354,6 @@ export default class MobileConnectionForm extends Vue {
 			'network.connection.messages.' +
 			(this.$route.path.includes('/add') ? 'add' : 'edit') + '.failed'
 		);
-		this.$router.push('/network/mobile');
 	}
 }
 </script>
