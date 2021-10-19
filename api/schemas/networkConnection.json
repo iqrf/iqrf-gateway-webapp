@@ -601,7 +601,14 @@
 					"$id": "#/properties/gsm/properties/pin",
 					"title": "SIM PIN",
 					"type": "string",
-					"pattern": "^\\d{4}$",
+					"oneOf": [
+						{
+							"pattern": "^\\d{4}$"
+						},
+						{
+							"const": ""
+						}
+					],
 					"example": "1234"
 				},
 				"username": {

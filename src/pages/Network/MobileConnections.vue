@@ -68,8 +68,7 @@ limitations under the License.
 								>
 									<CIcon :content='icons.edit' size='sm' />
 									{{ $t('table.actions.edit') }}
-								</CButton>
-								<CButton
+								</CButton> <CButton
 									size='sm'
 									color='danger'
 									@click='remove(item)'
@@ -262,10 +261,12 @@ export default class MobileConnections extends Vue {
 		NetworkConnectionService.remove(connection.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t(
-					'network.connection.messages.removeSuccess',
-					{connection: connection.name},
-				).toString());
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.removeSuccess',
+						{connection: connection.name},
+					).toString()
+				);
 				this.getConnections();
 			})
 			.catch((error: AxiosError) => {
