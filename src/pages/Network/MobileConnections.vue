@@ -69,6 +69,14 @@ limitations under the License.
 									<CIcon :content='icons.edit' size='sm' />
 									{{ $t('table.actions.edit') }}
 								</CButton>
+								<CButton
+									size='sm'
+									color='danger'
+									@click='remove(item)'
+								>
+									<CIcon :content='icons.remove' size='sm' />
+									{{ $t('table.actions.delete') }}
+								</CButton>
 							</td>
 						</template>
 					</CDataTable>
@@ -243,6 +251,26 @@ export default class MobileConnections extends Vue {
 				'network.connection.messages.disconnect.failed',
 				{connection: connection.name}
 			));
+	}
+
+	/**
+	 * Removes a GSM connection
+	 * @param {NetworkConnection} connection GSM connection
+	 */
+	private remove(connection: NetworkConnection): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.remove(connection.uuid)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t(
+					'network.connection.messages.removeSuccess',
+					{connection: connection.name},
+				).toString());
+				this.getConnections();
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'network.connection.messages.removeFailed');
+			});
 	}
 }
 </script>
