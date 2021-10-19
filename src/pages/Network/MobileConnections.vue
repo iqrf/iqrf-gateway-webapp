@@ -219,7 +219,7 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name}
 					).toString()
 				);
-				this.getConnections();
+				this.getInterfaces();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -243,7 +243,7 @@ export default class MobileConnections extends Vue {
 						{interface: connection.interfaceName, connection: connection.name}
 					).toString()
 				);
-				this.getConnections();
+				this.getInterfaces();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -267,7 +267,7 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name},
 					).toString()
 				);
-				this.getConnections();
+				this.getInterfaces();
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');
