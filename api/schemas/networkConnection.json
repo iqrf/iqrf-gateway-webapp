@@ -564,6 +564,60 @@
 					]
 				}
 			}
+		},
+		"gsm": {
+			"$id": "#/properties/gsm",
+			"title": "GSM connection",
+			"type": "object",
+			"example": {
+				"apn": "internet",
+				"number": "*99#",
+				"pin": "1234",
+				"username": "gsmuser",
+				"password": "gsmpassword"
+			},
+			"required": [
+				"apn",
+				"number",
+				"pin",
+				"username",
+				"password"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"apn": {
+					"$id": "#/properties/gsm/properties/apn",
+					"title": "Access point name",
+					"type": "string",
+					"example": "internet"
+				},
+				"number": {
+					"$id": "#/properties/gsm/properties/number",
+					"title": "Number to dial",
+					"type": "string",
+					"example": "*99#"
+				},
+				"pin": {
+					"$id": "#/properties/gsm/properties/pin",
+					"title": "SIM PIN",
+					"type": "string",
+					"pattern": "^\\d{4}$",
+					"example": "1234"
+				},
+				"username": {
+					"$id": "#/properties/gsm/properties/username",
+					"title": "Username",
+					"type": "string",
+					"example": "gsmuser"
+				},
+				"password": {
+					"$id": "#/properties/gsm/properties/password",
+					"title": "Password",
+					"type": "string",
+					"example": "gsmpassword"
+				}
+			}
+
 		}
 	},
 	"allOf": [
