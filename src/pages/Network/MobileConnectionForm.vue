@@ -274,13 +274,13 @@ export default class MobileConnectionForm extends Vue {
 				});
 				this.interfaceOptions = interfaces;
 				this.$store.commit('spinner/HIDE');
-				/*if (this.interfaceOptions.length === 0) {
+				if (this.interfaceOptions.length === 0) {
 					this.$toast.error(
 						this.$t('network.mobile.messages.noInterfaces').toString()
 					);
 					this.$router.push('/network/mobile');
 					return;
-				}*/
+				}
 				if (this.uuid !== null) {
 					this.getConnection();
 				}
