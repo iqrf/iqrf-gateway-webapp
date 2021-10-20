@@ -57,7 +57,7 @@ limitations under the License.
 								<CButton
 									size='sm'
 									:color='item.interfaceName === null ? "success" : "danger"'
-									@click='item.interfaceName === null ? connect(item) : disconnect(item)'
+									@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
 								>
 									<CIcon :content='item.interfaceName === null ? icons.connect : icons.disconnect' size='sm' />
 									{{ $t('network.table.' + (item.interfaceName === null ? 'connect' : 'disconnect')) }}
@@ -71,7 +71,7 @@ limitations under the License.
 								</CButton> <CButton
 									size='sm'
 									color='danger'
-									@click='remove(item)'
+									@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
 								>
 									<CIcon :content='icons.remove' size='sm' />
 									{{ $t('table.actions.delete') }}
@@ -231,19 +231,24 @@ export default class MobileConnections extends Vue {
 	/**
 	 * Terminates a GSM connection
 	 * @param {NetworkConnection} connection GSM connection
+	 * @param {boolean} remove Remove connection
 	 */
-	private disconnect(connection: NetworkConnection): void {
+	private disconnect(connection: NetworkConnection, remove: boolean): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(connection.uuid)
+		return NetworkConnectionService.disconnect(connection.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t(
-						'network.connection.messages.disconnect.success',
-						{interface: connection.interfaceName, connection: connection.name}
-					).toString()
-				);
-				this.getInterfaces();
+				if (remove) {
+					this.remove(connection);
+				} else {
+					this.$toast.success(
+						this.$t(
+							'network.connection.messages.disconnect.success',
+							{interface: connection.interfaceName, connection: connection.name}
+						).toString()
+					);
+					this.getInterfaces();
+				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,

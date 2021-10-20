@@ -57,6 +57,7 @@ limitations under the License.
 							</label><br>
 							<CSwitch
 								id='autoconnect'
+								:checked.sync='connection.autoConnect.enabled'
 								size='lg'
 								shape='pill'
 								color='primary'
@@ -317,6 +318,12 @@ export default class MobileConnectionForm extends Vue {
 	 */
 	private saveConnection(): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		if (connection.ipv4.current) {
+			delete connection.ipv4.current;
+		}
+		if (connection.ipv6.current) {
+			delete connection.ipv6.current;
+		}
 		this.$store.commit('spinner/SHOW');
 		if (this.uuid === null) {
 			connection.uuid = uuidv4();
