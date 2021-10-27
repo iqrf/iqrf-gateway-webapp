@@ -49,6 +49,7 @@ services:
 	- App\ApiModule\Version0\Controllers\MenderController
 	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
 	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
+	- App\ApiModule\Version0\Controllers\Network\GsmController
 	- App\ApiModule\Version0\Controllers\Network\InterfacesController
 	- App\ApiModule\Version0\Controllers\Network\WifiController
 	- App\ApiModule\Version0\Controllers\Network\WireguardController
