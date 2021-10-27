@@ -943,7 +943,6 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
-		this.loaded = null;
 		this.$store.dispatch('spinner/show', {timeout: 60000});
 		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
@@ -1078,7 +1077,7 @@ export default class TrConfiguration extends Vue {
 					}
 					if (response.rsp.notMatchedNodes !== undefined) {
 						this.$toast.info(this.$t(
-							'iqrfnet.trConfiguration.messages.NotMatched',
+							'iqrfnet.trConfiguration.messages.notMatched',
 							{nodes: response.rsp.notMatchedNodes.join(', ')}
 						).toString());
 					}
