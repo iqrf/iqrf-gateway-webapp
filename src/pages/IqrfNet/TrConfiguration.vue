@@ -1083,7 +1083,7 @@ export default class TrConfiguration extends Vue {
 					}
 					this.handleSubmit(0);
 				} else {
-					this.resetDevice(255);
+					this.resetDevice(255, this.hwpid);
 				}
 			} else {
 				if (response.rsp.restartNeeded) {
@@ -1135,9 +1135,9 @@ export default class TrConfiguration extends Vue {
 	/**
 	 * Performs device reset
 	 */
-	private resetDevice(address: number): void {
+	private resetDevice(address: number, hwpid: number|null = null): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.reset(address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+		OsService.reset(address, hwpid, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

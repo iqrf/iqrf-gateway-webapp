@@ -83,7 +83,7 @@ class OsService {
 	 * @param callback Request timeout callback
 	 * @return Request message ID
 	 */
-	reset(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	reset(address: number, hwpid: number|null = null, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_Reset',
 			'data': {
@@ -94,6 +94,9 @@ class OsService {
 				'returnVerbose': true,
 			},
 		};
+		if (hwpid !== null) {
+			Object.assign(request.data.req, {hwpId: hwpid});
+		}
 		const options = new WebSocketOptions(request, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}
