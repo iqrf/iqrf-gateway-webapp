@@ -23,7 +23,7 @@ limitations under the License.
 					{{ $t('network.mobile.messages.noInterfaces') }}
 				</CCardBody>
 			</div>
-			<div>
+			<div v-else>
 				<CCardHeader class='border-0 datatable-header'>
 					{{ $t('network.connection.title') }}
 					<CButton

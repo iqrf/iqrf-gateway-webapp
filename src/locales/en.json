@@ -2383,9 +2383,14 @@
 			"form": {
 				"title": "GSM configuration",
 				"interface": "Select GSM interface",
-				"apn": "GPRS Access Point Name",
+				"apn": "Access Point Name",
+				"operator": "Operator",
 				"number": "Number to dial",
-				"pin": "PIN"
+				"pin": "PIN",
+				"operators": {
+					"O2CZ": "O2 CZ",
+					"other": "Other"
+				}
 			},
 			"errors": {
 				"interfaceMissing": "Please select a GSM interface.",
