@@ -52,6 +52,15 @@ limitations under the License.
 								{{ item.interfaceName }}
 							</td>
 						</template>
+						<template #signal='{item}'>
+							<td>
+								<CProgress
+									v-if='item.signal !== undefined'
+									:value='item.signal'
+									:color='signalColor(item.signal)'
+								/>
+							</td>
+						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
@@ -87,16 +96,16 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+import NetworkInterfaceService from '../../services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
-import {NetworkConnection} from '../../interfaces/network';
+import {IModem, NetworkConnection} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -106,6 +115,7 @@ import {NetworkConnection} from '../../interfaces/network';
 		CCardHeader,
 		CDataTable,
 		CIcon,
+		CProgress,
 	},
 	metaInfo: {
 		title: 'network.mobile.title',
@@ -133,6 +143,11 @@ export default class MobileConnections extends Vue {
 	private connections: Array<NetworkConnection> = []
 
 	/**
+	 * @var {Array<IModem>} modems Available modems
+	 */
+	private modems: Array<IModem> = []
+
+	/**
 	 * @constant {Record<string, Array<string>>} icons Table icons
 	 */
 	private icons: Record<string, Array<string>> = {
@@ -158,6 +173,12 @@ export default class MobileConnections extends Vue {
 			sorter: false,
 		},
 		{
+			key: 'signal',
+			label: this.$t('network.mobile.table.signal'),
+			filter: false,
+			sorter: false,
+		},
+		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -169,20 +190,34 @@ export default class MobileConnections extends Vue {
 	 * Builds connections table
 	 */
 	mounted(): void {
-		this.getInterfaces();
+		this.getModems();
+	}
+
+	/**
+	 * Returns color for progress bar depending on signal strength
+	 */
+	private signalColor(signal: number): string {
+		if (signal >= 67) {
+			return 'success';
+		} else if (signal >= 34) {
+			return 'warning';
+		} else {
+			return 'danger';
+		}
 	}
 
 	/**
 	 * Retrieves GSM interfaces
 	 */
-	private getInterfaces(): void {
+	private getModems(): void {
 		this.noInterfaces = false;
 		this.$store.commit('spinner/SHOW');
-		NetworkInterfaceService.list(InterfaceType.GSM)
+		NetworkInterfaceService.listModems()
 			.then((response: AxiosResponse) => {
 				this.interfacesLoaded = true;
 				this.$store.commit('spinner/HIDE');
 				if (response.data.length > 0) {
+					this.modems = response.data;
 					this.getConnections();
 				} else {
 					this.noInterfaces = true;
@@ -198,7 +233,14 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.list(ConnectionType.GSM)
 			.then((response: AxiosResponse) => {
-				this.connections = response.data;
+				let connections: Array<NetworkConnection> = response.data;
+				for (let i in connections) {
+					let idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
+					if (idx !== -1) {
+						connections[i]['signal'] = this.modems[idx].signal;
+					}
+				}
+				this.connections = connections;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.connectionFetchFailed'));
@@ -219,7 +261,7 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name}
 					).toString()
 				);
-				this.getInterfaces();
+				this.getModems();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -247,7 +289,7 @@ export default class MobileConnections extends Vue {
 							{interface: connection.interfaceName, connection: connection.name}
 						).toString()
 					);
-					this.getInterfaces();
+					this.getModems();
 				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
@@ -272,7 +314,7 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name},
 					).toString()
 				);
-				this.getInterfaces();
+				this.getModems();
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');

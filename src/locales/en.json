@@ -2381,6 +2381,9 @@
 			"description": "Mobile connections management.",
 			"add": "Add GSM connection",
 			"edit": "Edit GSM connection",
+			"table": {
+				"signal": "Signal strength"
+			},
 			"form": {
 				"title": "GSM configuration",
 				"interface": "Select GSM interface",

@@ -46,7 +46,7 @@ class GsmManager {
 
 	/**
 	 * Lists available modems
-	 * @return array<Modem> Available modems
+	 * @return array<int, array<string, int|string>> Available modems
 	 */
 	public function listModems(): array {
 		$output = $this->commandManager->run('mmcli --list-modems --output-json', true);
@@ -57,11 +57,11 @@ class GsmManager {
 		$json = [];
 		try {
 			$json = Json::decode($output->getStdout(), Json::FORCE_ARRAY);
+			foreach ($json['modem-list'] as $entry) {
+				$entities[] = $this->getModemInformation($entry)->jsonSerialize();
+			}
 		} catch (JsonException $e) {
 			throw new ModemManagerException($e->getMessage());
-		}
-		foreach ($json['modem-list'] as $entry) {
-			$entities[] = $this->getModemInformation($entry);
 		}
 		return $entities;
 	}
@@ -72,17 +72,13 @@ class GsmManager {
 	 * @return Modem Modem entity
 	 */
 	private function getModemInformation(string $path): Modem {
-		$command = sprintf('mmcli -m %s --output-json', true);
-		$output = $this->commandManager->run($command);
+		$command = sprintf('mmcli -m %s --output-json', $path);
+		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new ModemManagerException($output->getStderr());
 		}
-		try {
-			$json = Json::decode($output->getStdout());
-			return Modem::fromMmcliJson($json);
-		} catch (JsonException $e) {
-			throw new ModemManagerException($e->getMessage());
-		}
+		$json = Json::decode($output->getStdout());
+		return Modem::fromMmcliJson($json);
 	}
 
 }
