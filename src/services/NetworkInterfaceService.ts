@@ -71,6 +71,13 @@ class NetworkInterfaceService {
 		return axios.get('network/interfaces', config);
 	}
 
+	/**
+	 * Lists available modems
+	 */
+	public listModems(): Promise<AxiosResponse> {
+		return axios.get('network/gsm/modems', {headers: authorizationHeader()});
+	}
+
 }
 
 export default new NetworkInterfaceService();

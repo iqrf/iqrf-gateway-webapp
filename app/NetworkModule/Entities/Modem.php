@@ -55,7 +55,7 @@ class Modem {
 	public static function fromMmcliJson(stdClass $json): self {
 		$interface = $json->modem->generic->{'primary-port'};
 		$signal = $json->modem->generic->{'signal-quality'}->value;
-		return new self($interface, $signal);
+		return new self($interface, intval($signal));
 	}
 
 	/**

@@ -212,3 +212,11 @@ export interface IWGAllowedIP {
 	address: string
 	prefix: number
 }
+
+/**
+ * Modem interface
+ */
+export interface IModem {
+	interface: string
+	signal: number
+}
