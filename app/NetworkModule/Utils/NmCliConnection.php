@@ -63,6 +63,9 @@ class NmCliConnection {
 	public static function encode(array $array, string $prefix): string {
 		$string = '';
 		foreach ($array as $key => $value) {
+			if (gettype($value) === 'boolean') {
+				$value = $value === true ? 'yes' : 'no';
+			}
 			$string .= sprintf('%s.%s "%s" ', $prefix, $key, $value);
 		}
 		return $string;

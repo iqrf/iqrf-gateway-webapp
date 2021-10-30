@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\NetworkModule\Entities\WifiConnection
- * @covers App\NetworkModule\Entities\WifiConnection
+ * TEST: App\NetworkModule\Entities\GSMConnection
+ * @covers App\NetworkModule\Entities\GSMConnection
  * @phpVersion >= 7.3
  * @testCase
  */
@@ -35,7 +35,7 @@ use Tester\TestCase;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tets for GSM connection entity
+ * Tests for GSM connection entity
  */
 final class GSMConnectionTest extends TestCase {
 

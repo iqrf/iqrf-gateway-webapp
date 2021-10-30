@@ -94,7 +94,7 @@ class AutoConnect implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = [
-			'autoconnect' => $this->enabled ? 'yes' : 'no',
+			'autoconnect' => $this->enabled,
 			'autoconnect-priority' => $this->priority,
 			'autoconnect-retries' => $this->retries,
 		];
