@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<CCard v-if='loaded !== null && loaded'>
+		<CCard v-if='loaded !== null'>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
@@ -479,12 +479,6 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<CAlert
-			v-else-if='loaded !== null && !loaded'
-			color='danger'
-		>
-			{{ $t('iqrfnet.trConfiguration.messages.noConfig') }}
-		</CAlert>
 		<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
 		<CModal
 			:show.sync='dpaEnabledNotDetected'
