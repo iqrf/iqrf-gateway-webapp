@@ -2375,6 +2375,39 @@
 				"removeUnavailable": "Web interface is no longer available at this address as the removed connection profile used this address."
 			}
 		},
+		"mobile": {
+			"title": "Mobile connections",
+			"description": "Mobile connections management.",
+			"add": "Add GSM connection",
+			"edit": "Edit GSM connection",
+			"table": {
+				"signal": "Signal strength"
+			},
+			"form": {
+				"title": "GSM configuration",
+				"interface": "Select GSM interface",
+				"apn": "Access Point Name",
+				"operator": "Operator",
+				"number": "Number to dial",
+				"pin": "PIN",
+				"operators": {
+					"O2CZ": "O2 CZ",
+					"other": "Other"
+				}
+			},
+			"errors": {
+				"interfaceMissing": "Please select a GSM interface.",
+				"apnMissing": "Please enter access point name.",
+				"apnInvalid": "Access point name can only contain lowercase letters, numbers, dashes and dots.",
+				"numberMissing": "Please enter a number to dial.",
+				"pinInvalid": "PIN can only contain 4 digits.",
+				"credentialsMissing": "Please enter both username and password, or leave both fields empty."
+			},
+			"messages": {
+				"noInterfaces": "No active GSM network interface detected.",
+				"noConnections": "No available GSM connections."
+			}
+		},
 		"wireguard": {
 			"title": "Wireguard VPN",
 			"description": "VPN management.",
@@ -2482,6 +2515,7 @@
 				"interface": "Please select an interface."
 			},
 			"interface": "Interface",
+			"autoconnect": "Establish connection automatically",
 			"ipv4": {
 				"title": "IPv4 configuration",
 				"method": "Connection method",

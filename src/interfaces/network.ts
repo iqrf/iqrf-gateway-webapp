@@ -52,6 +52,7 @@ export interface IConnection {
 	ipv4: IConnectionIPv4
 	ipv6: IConnectionIPv6
 	wifi?: IConnectionWifi
+	gsm?: IConnectionGSM
 }
 
 export interface IConnectionAutoConnect {
@@ -101,6 +102,14 @@ export interface IConnectionWifi {
 	mode: string
 	bssids?: Array<string>
 	security: IWifiSecurity
+}
+
+export interface IConnectionGSM {
+	apn: string
+	number: string
+	username: string
+	password: string
+	pin: string
 }
 
 export interface IAccessPointArray {
@@ -202,4 +211,12 @@ export interface IWGAllowedIPs {
 export interface IWGAllowedIP {
 	address: string
 	prefix: number
+}
+
+/**
+ * Modem interface
+ */
+export interface IModem {
+	interface: string
+	signal: number
 }

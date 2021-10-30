@@ -1,0 +1,42 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/modemList.json",
+	"type": "array",
+	"title": "Modem list",
+	"examples": [
+		{
+			"interface": "cdc-wdm0",
+			"signal": "87"
+		}
+	],
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Modem",
+		"description": "Information about a LTE Modem.",
+		"required": [
+			"interface",
+			"signal"
+		],
+		"additionalProperties": false,
+		"properties": {
+			"interface": {
+				"$id": "#/items/properties/interface",
+				"title": "Modem network interface",
+				"type": "string",
+				"description": "Network interface used by the LTE modem.",
+				"example": "cdc-wdm0"
+			},
+			"signal": {
+				"$id": "#/items/properties/signal",
+				"title": "Modem signal",
+				"description": "Modem signal strength.",
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 100,
+				"example": 87
+			}
+		}
+	}
+}

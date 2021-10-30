@@ -35,6 +35,14 @@ limitations under the License.
 						{{ $t('network.wireless.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/network/mobile'>
+					<header class='list-group-item-heading'>
+						{{ $t('network.mobile.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('network.mobile.description') }}
+					</p>
+				</CListGroupItem>
 				<CListGroupItem to='/network/vpn'>
 					<header class='list-group-item-heading'>
 						{{ $t('network.wireguard.title') }}

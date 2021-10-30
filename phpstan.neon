@@ -33,3 +33,6 @@ parameters:
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		- '#Constant (TESTER_DIR|TMP_DIR) not found.#'
+		-
+			message: '#Variable property access on mixed.#'
+			path: app/NetworkModule/Entities/Modem.php

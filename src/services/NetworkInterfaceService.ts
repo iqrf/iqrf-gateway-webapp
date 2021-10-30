@@ -45,6 +45,7 @@ export enum InterfaceType {
 	BRIDGE = 'bridge',
 	DUMMY = 'dummy',
 	ETHERNET = 'ethernet',
+	GSM = 'gsm',
 	LOOPBACK = 'loopback',
 	TUN = 'tun',
 	VLAN = 'vlan',
@@ -68,6 +69,13 @@ class NetworkInterfaceService {
 			Object.assign(config, {params: {type: type}});
 		}
 		return axios.get('network/interfaces', config);
+	}
+
+	/**
+	 * Lists available modems
+	 */
+	public listModems(): Promise<AxiosResponse> {
+		return axios.get('network/gsm/modems', {headers: authorizationHeader()});
 	}
 
 }

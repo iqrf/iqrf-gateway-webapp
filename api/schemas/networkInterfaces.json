@@ -36,6 +36,7 @@
 					"bridge",
 					"dummy",
 					"ethernet",
+					"gsm",
 					"loopback",
 					"tun",
 					"vlan",

@@ -101,7 +101,7 @@ final class AutoConnectTest extends TestCase {
 	 * Tests the function to serialize the automatic connecting entity into nmcli configuration
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = 'connection.autoconnect "1" connection.autoconnect-priority "0" connection.autoconnect-retries "-1" ';
+		$expected = 'connection.autoconnect "yes" connection.autoconnect-priority "0" connection.autoconnect-retries "-1" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 
