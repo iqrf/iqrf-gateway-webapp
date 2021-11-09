@@ -57,7 +57,7 @@ class ServiceManager {
 
 	/**
 	 * Disables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -67,7 +67,7 @@ class ServiceManager {
 
 	/**
 	 * Enables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -77,7 +77,7 @@ class ServiceManager {
 
 	/**
 	 * Checks if the service is active
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -87,7 +87,7 @@ class ServiceManager {
 
 	/**
 	 * Checks if the service is enabled
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -97,7 +97,7 @@ class ServiceManager {
 
 	/**
 	 * Starts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function start(?string $serviceName = null): void {
@@ -106,7 +106,7 @@ class ServiceManager {
 
 	/**
 	 * Stops the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function stop(?string $serviceName = null): void {
@@ -115,7 +115,7 @@ class ServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function restart(?string $serviceName = null): void {
@@ -124,7 +124,7 @@ class ServiceManager {
 
 	/**
 	 * Returns status of the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @return string Service status
 	 * @throws UnsupportedInitSystemException
 	 */

@@ -53,7 +53,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Disables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
 	public function disable(?string $serviceName = null): void {
@@ -68,7 +68,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Enables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
 	public function enable(?string $serviceName = null): void {
@@ -83,7 +83,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is active
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @return bool Is service active?
 	 */
 	public function isActive(?string $serviceName = null): bool {
@@ -98,7 +98,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is enabled
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @return bool Is service enabled?
 	 * @throws NonexistentServiceException
 	 */
@@ -115,7 +115,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Starts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
 	public function start(?string $serviceName = null): void {
@@ -129,7 +129,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Stops the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
 	public function stop(?string $serviceName = null): void {
@@ -143,7 +143,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
 	public function restart(?string $serviceName = null): void {
@@ -157,7 +157,7 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Returns status of the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @return string Service status
 	 * @throws NonexistentServiceException
 	 */

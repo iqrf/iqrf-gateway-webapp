@@ -29,7 +29,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Disables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function disable(?string $serviceName = null): void {
@@ -38,7 +38,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Enables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function enable(?string $serviceName = null): void {
@@ -47,7 +47,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is active
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function isActive(?string $serviceName = null): bool {
@@ -56,7 +56,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is enabled
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function isEnabled(?string $serviceName = null): bool {
@@ -65,7 +65,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Starts IQRF Gateway Daemon
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function start(?string $serviceName = null): void {
@@ -74,7 +74,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Stops the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function stop(?string $serviceName = null): void {
@@ -83,7 +83,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function restart(?string $serviceName = null): void {
@@ -92,7 +92,7 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Returns status of the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function getStatus(?string $serviceName = null): string {
