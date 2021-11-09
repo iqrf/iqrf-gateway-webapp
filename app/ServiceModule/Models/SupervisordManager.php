@@ -52,7 +52,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Disables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function disable(?string $serviceName = null): void {
 		throw new NotImplementedException();
@@ -60,7 +60,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Enables the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function enable(?string $serviceName = null): void {
 		throw new NotImplementedException();
@@ -68,7 +68,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is active
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function isActive(?string $serviceName = null): bool {
 		throw new NotImplementedException();
@@ -76,7 +76,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is enabled
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function isEnabled(?string $serviceName = null): bool {
 		throw new NotImplementedException();
@@ -84,7 +84,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Starts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function start(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
@@ -94,7 +94,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Stops the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function stop(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
@@ -104,7 +104,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 */
 	public function restart(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
@@ -114,7 +114,7 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Returns status of the service
-	 * @var string|null $serviceName Service name
+	 * @param string|null $serviceName Service name
 	 * @return string Service status
 	 */
 	public function getStatus(?string $serviceName = null): string {
