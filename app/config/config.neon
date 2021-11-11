@@ -45,6 +45,10 @@ parameters:
 	translator:
 		# Path to directory containing IQRF Gateway Translator configuration
 		configDir: '/etc/iqrf-gateway-translator/'
+	# Uploader configuration
+	uploader:
+		# Path to directory containing IQRF Gateway Uploader configuration
+		configDir: '/etc/iqrf-gateway-uploader/'
 
 extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
