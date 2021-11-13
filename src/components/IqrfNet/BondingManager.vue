@@ -460,27 +460,13 @@ export default class BondingManager extends Vue {
 			return;
 		}
 
-		if (this.daemon236) { // unified status codes
-			if (response.status === 1) {
-				this.$toast.error(
-					//this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
-					this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
-				);
-			}
-			return;
-		}
-
 		if (response.status === 1003) {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
 			);
-		} else if (response.status === 1005) {
+		} else if (response.status === 1004) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.timeout').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.noAddressAvailable').toString()
 			);
 		} else {
 			this.$toast.error(
@@ -502,18 +488,17 @@ export default class BondingManager extends Vue {
 			return;
 		}
 
-		if (response.status === 1 || (response.status === 1003 && !this.daemon236)) {
+		if (response.status === 1003) {
 			this.$toast.error(
-				//this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectBondExists', {address: this.address}).toString()
-				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.bondExists', {address: this.address}).toString()
 			);
-		} else if ((response.status === 1000 && !this.daemon236) || response.status === 1001) {
+		} else if (response.status === 1004) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.noAddressAvailable').toString()
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.smartConnectErrorMessage', {message: response.statusStr}).toString()
 			);
 		}
 	}
