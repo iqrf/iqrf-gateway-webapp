@@ -83,7 +83,7 @@ class OsService {
 	 * @param callback Request timeout callback
 	 * @return Request message ID
 	 */
-	reset(address: number, hwpid: number|null = null, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	reset(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_Reset',
 			'data': {
@@ -94,9 +94,6 @@ class OsService {
 				'returnVerbose': true,
 			},
 		};
-		if (hwpid !== null) {
-			Object.assign(request.data.req, {hwpId: hwpid});
-		}
 		const options = new WebSocketOptions(request, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}
@@ -104,12 +101,13 @@ class OsService {
 	/**
 	 * Sends OS restart request
 	 * @param address Device address
+	 * @param hwpid HWPID
 	 * @param timeout Request timeout in milliseconds
 	 * @param message Request timeout message
 	 * @param callback Request timeout callback
 	 * @return Request message ID
 	 */
-	restart(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	restart(address: number, hwpid: number|null, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_Restart',
 			'data': {
@@ -120,6 +118,9 @@ class OsService {
 				'returnVerbose': true,
 			},
 		};
+		if (hwpid) {
+			Object.assign(request.data.req, {hwpId: hwpid});
+		}
 		const options = new WebSocketOptions(request, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}

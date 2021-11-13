@@ -78,6 +78,7 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
+									<i>{{ $t('iqrfnet.trConfiguration.messages.targetNote') }}</i><br>
 									<i>{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}</i>
 								</div>
 								<CButton
@@ -683,6 +684,21 @@ export default class TrConfiguration extends Vue {
 	private msgId: string|null = null
 
 	/**
+	 * @var {number} timeout Async reset timeout
+	 */
+	private timeout = 0
+
+	/**
+	 * @var {boolean} expectingReset Expecting coordinator reset
+	 */
+	private expectingReset = false
+
+	/**
+	 * @var {string} message Message to display
+	 */
+	private message = ''
+
+	/**
 	 * @var {Array<IEmbedPersEnabled>} peripherals Array of embedded peripherals and their states
 	 */
 	private peripherals: Array<IEmbedPersEnabled> = []
@@ -811,6 +827,16 @@ export default class TrConfiguration extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
+			if (this.expectingReset) {
+				if (mutation.payload.mType === 'iqrfRaw' && mutation.payload.data.msgId === 'async') {
+					if (mutation.payload.data.rsp.rData.startsWith('00.00.ff.3f')) {
+						window.clearTimeout(this.timeout);
+						this.expectingReset = false;
+						this.$store.dispatch('spinner/hide');
+						this.$toast.info(this.message);
+					}
+				}
+			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
@@ -824,9 +850,6 @@ export default class TrConfiguration extends Vue {
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				this.$store.dispatch('spinner/hide');
 				this.handleOsReadResponse(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
-				this.$store.dispatch('spinner/hide');
-				this.handleResetResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Restart') {
 				this.handleRestartResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_WriteCfgByte') {
@@ -925,7 +948,7 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleWriteByteResponse(response): void {
 		if (response.status === 0) {
-			this.restartDevice();
+			this.restartDevice(response.rsp.nAdr, 0);
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.disableFailure').toString()
@@ -988,6 +1011,7 @@ export default class TrConfiguration extends Vue {
 	 * @param {number} address Device address
 	 */
 	private handleSubmit(address: number): void {
+		this.message = '';
 		let config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
 		this.$store.dispatch('spinner/show', {timeout: 255000});
 		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 255000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
@@ -1060,117 +1084,78 @@ export default class TrConfiguration extends Vue {
 	 * Handles WriteTrConfiguration request response
 	 */
 	private handleWriteResponse(response): void {
+		let address = response.rsp.deviceAddr;
 		if (response.status === 0) {
 			if (this.target === NetworkTarget.NETWORK) {
-				if (response.rsp.deviceAddr === 255) {
-					if (response.rsp.notRespondedNodes !== undefined) {
-						this.$toast.info(this.$t(
-							'iqrfnet.trConfiguration.messages.notResponded',
-							{nodes: response.rsp.notRespondedNodes.join(', ')}
-						).toString());
-					}
-					if (response.rsp.notMatchedNodes !== undefined) {
-						this.$toast.info(this.$t(
-							'iqrfnet.trConfiguration.messages.notMatched',
-							{nodes: response.rsp.notMatchedNodes.join(', ')}
-						).toString());
-					}
-					this.handleSubmit(0);
-				} else {
-					this.resetDevice(255, this.hwpid);
+				if (response.rsp.notRespondedNodes !== undefined) {
+					this.message += this.$t(
+						'iqrfnet.trConfiguration.messages.notResponded',
+						{nodes: response.rsp.notRespondedNodes.join(', ')}
+					).toString();
 				}
+				if (response.rsp.notMatchedNodes !== undefined) {
+					this.message += this.$t(
+						'iqrfnet.trConfiguration.messages.notMatched',
+						{nodes: response.rsp.notMatchedNodes.join(', ')}
+					).toString();
+				}
+			}
+			if (response.rsp.restartNeeded) {
+				this.restartDevice(address, (address === 255) ? this.hwpid : null);
 			} else {
-				if (response.rsp.restartNeeded) {
-					this.resetDevice(response.rsp.deviceAddr);
+				if (this.target === NetworkTarget.NETWORK) {
+					this.message += this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString();
+					this.$toast.info(this.message);
 				} else {
-					this.$toast.success(
-						this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
-					);
+					this.$toast.info(this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString());
 				}
 			}
 			return;
 		}
 
-		if (this.daemon236) { // unified status codes
-			if (response.status === -1) {
-				this.$toast.error(
-					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
-				);
-			} else if (response.status === 8) {
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: this.address}).toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-				);
-			}
-			return;
+		if (response.status === -1) {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: address}).toString()
+			);
+		} else if (response.status === 8) {
+			this.$toast.error(
+				this.$t('forms.messages.noDevice', {address: address}).toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+			);
 		}
-
-		if (response.data.status === 1007) { // pre-unified status codes
-			if (response.data.statusStr.includes('ERROR_TIMEOUT')) {
-				this.$toast.error(
-					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
-				);
-			} else if (response.data.statusStr.includes('ERROR_NADR')) {
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: this.address}).toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-				);
-			}
-			return;
-		}
-	}
-
-	/**
-	 * Performs device reset
-	 */
-	private resetDevice(address: number, hwpid: number|null = null): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.reset(address, hwpid, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
 	 * Performs device restart
+	 * @param {number} address Device address
+	 * @param {number|null} hwpid HWPID
 	 */
-	private restartDevice(): void {
+	private restartDevice(address: number, hwpid: number|null = null): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.restart(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+		OsService.restart(address, hwpid, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Handles EmbedOs_Reset request response
-	 */
-	private handleResetResponse(response): void {
-		if (response.data.status === 0) {
-			if (this.target === NetworkTarget.NETWORK) {
-				if (response.data.rsp.nAdr === 255) {
-					this.resetDevice(0);
-					return;
-				}
-			}
-			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
-			);
-		}
-	}
-
-	/**
-	 * Handles EmbedOs_Restart request response
+	 * Handles restart response
 	 */
 	private handleRestartResponse(response): void {
 		if (response.status === 0) {
-			this.enumerate();
+			this.message += this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString();
+			if (response.rsp.nAdr === 0) {
+				this.expectingReset = true;
+				this.timeout = window.setTimeout(() => {
+					this.expectingReset = false;
+					this.$store.dispatch('spinner/hide');
+					this.$toast.error('iqrfnet.trConfiguration.messages.restartFailure').toString();
+				}, 3000);
+			} else {
+				this.$store.dispatch('spinner/hide');
+				this.$toast.info(this.message);
+			}
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
