@@ -8,7 +8,7 @@ Set theme for the IQAROS
 +VUE_APP_THEME=iqaros
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -34,7 +34,7 @@
+@@ -35,7 +35,7 @@
  
  import App from './App.vue';
  
