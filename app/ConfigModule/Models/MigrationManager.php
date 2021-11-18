@@ -68,28 +68,35 @@ class MigrationManager {
 	private $serviceManager;
 
 	/**
-	 * @var string Path to a directory with a configuration of IQRF Gateway Controller
+	 * @var string Path to IQRF Gateway Controller configuration directory
 	 */
 	private $controllerConfigDirectory;
 
 	/**
-	 * @var string Path to a directory with a configuration of IQRF Gateway Translator
+	 * @var string Path to IQRF Gateway Translator configuration directory
 	 */
 	private $translatorConfigDirectory;
 
 	/**
+	 * @var string Path to IQRF Gateway Uploader configuration directory
+	 */
+	private $uploaderConfigDirectory;
+
+	/**
 	 * Constructor
-	 * @param string $controllerConfigDirectory Path to a directory with a configuration of IQRF Gateway Controller
-	 * @param string $translatorConfigDirectory Path to a directory with a configuration of IQRF Gateway Translator
+	 * @param string $controllerConfigDirectory Path to IQRF Gateway Controller configuration directory
+	 * @param string $translatorConfigDirectory Path to IQRF Gateway Translator configuration directory
+	 * @param string $uploaderConfigDirectory Path to IQRF Gateway Uploader configuration directory
 	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, DaemonDirectories $daemonDirectories, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, DaemonDirectories $daemonDirectories, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->daemonDirectories = $daemonDirectories;
 		$this->controllerConfigDirectory = $controllerConfigDirectory;
 		$this->translatorConfigDirectory = $translatorConfigDirectory;
+		$this->uploaderConfigDirectory = $uploaderConfigDirectory;
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
 		$this->serviceManager = $serviceManager;
@@ -121,6 +128,9 @@ class MigrationManager {
 		if (file_exists($this->translatorConfigDirectory . 'config.json')) {
 			$zipManager->addFolder($this->translatorConfigDirectory, 'translator');
 		}
+		if (file_exists($this->uploaderConfigDirectory . 'config.json')) {
+			$zipManager->addFolder($this->uploaderConfigDirectory, 'uploader');
+		}
 		$zipManager->close();
 		return $path;
 	}
@@ -147,6 +157,9 @@ class MigrationManager {
 		if ($zipManager->exist('translator/config.json')) {
 			$directories[] = $this->translatorConfigDirectory;
 		}
+		if ($zipManager->exist('uploader/config.json')) {
+			$directories[] = $this->uploaderConfigDirectory;
+		}
 		foreach ($directories as $directory) {
 			$this->commandManager->run('rm -rf ' . $directory, true);
 			$this->commandManager->run('mkdir ' . $directory, true);
@@ -155,6 +168,7 @@ class MigrationManager {
 		$this->extractDaemon($zipManager);
 		$this->extractController($zipManager);
 		$this->extractTranslator($zipManager);
+		$this->extractUploader($zipManager);
 		$zipManager->close();
 		$this->serviceManager->restart();
 	}
@@ -198,8 +212,20 @@ class MigrationManager {
 	private function extractTranslator(ZipArchiveManager $archiveManager): void {
 		if ($archiveManager->exist('translator/config.json')) {
 			$archiveManager->extract($this->translatorConfigDirectory, 'translator/config.json');
-			$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config/json', true);
+			$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config.json', true);
 			$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
+		}
+	}
+
+	/**
+	 * Extracts IQRF Gateway Translator's configuration
+	 * @param ZipArchiveManager $archiveManager ZIP archive manager
+	 */
+	private function extractUploader(ZipArchiveManager $archiveManager): void {
+		if ($archiveManager->exist('uploader/config.json')) {
+			$archiveManager->extract($this->uploaderConfigDirectory, 'uploader/config.json');
+			$this->commandManager->run('cp -p ' . $this->uploaderConfigDirectory . 'uploader/config.json ' . $this->uploaderConfigDirectory . 'config.json', true);
+			$this->commandManager->run('rm -rf ' . $this->uploaderConfigDirectory . 'uploader', true);
 		}
 	}
 
@@ -211,7 +237,7 @@ class MigrationManager {
 	 * @throws NotDaemonConfigurationException
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
-		$whitelistDirs = ['daemon/', 'controller/', 'translator/', 'daemon/certs/', 'daemon/cfgSchemas/', 'daemon/scheduler/'];
+		$whitelistDirs = ['daemon/', 'controller/', 'translator/', 'uploader/', 'daemon/certs/', 'daemon/cfgSchemas/', 'daemon/scheduler/'];
 		$fileList = $zipManager->listFiles();
 		foreach ($fileList as $file) {
 			$valid = false;
@@ -252,6 +278,9 @@ class MigrationManager {
 		}
 		if (file_exists($this->translatorConfigDirectory)) {
 			$dirs[] = $this->translatorConfigDirectory;
+		}
+		if (file_exists($this->uploaderConfigDirectory)) {
+			$dirs[] = $this->uploaderConfigDirectory;
 		}
 		$posixUser = posix_getpwuid(posix_geteuid());
 		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
