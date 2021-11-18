@@ -77,6 +77,11 @@ final class MigrationManagerTest extends TestCase {
 	private const CONFIG_TEMP_PATH_TRANSLATOR = TMP_DIR . '/migrated-configuration/translator';
 
 	/**
+	 * Path to nonexistent directory with IQRF Gateway Uploader's configuration
+	 */
+	private const CONFIG_TEMP_PATH_UPLOADER = TMP_DIR . '/migrated-configuration/uploader';
+
+	/**
 	 * Path to a directory with correct JSON schemas
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
@@ -193,8 +198,8 @@ final class MigrationManagerTest extends TestCase {
 		$mainManager->shouldReceive('getConfigurationDir')->andReturn(self::CONFIG_TEMP_PATH);
 		$mainManager->shouldReceive('getDataDir')->andReturn(TMP_DIR);
 		$daemonDirectories = new DaemonDirectories(self::CONFIG_TEMP_PATH, self::CACHE_TEMP_PATH, $mainManager);
-		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $daemonDirectories, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
-		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $daemonDirectories, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, self::CONFIG_TEMP_PATH_UPLOADER, $daemonDirectories, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, self::CONFIG_TEMP_PATH_UPLOADER, $daemonDirectories, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
 	}
 
 	/**

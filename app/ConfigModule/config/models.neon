@@ -30,7 +30,7 @@ services:
 	- App\ConfigModule\Models\IqrfManager
 	- App\ConfigModule\Models\IqrfRepositoryManager(%confDir%/iqrf-repository.neon)
 	- App\ConfigModule\Models\MainManager
-	- App\ConfigModule\Models\MigrationManager(%controller.configDir%, %translator.configDir%)
+	- App\ConfigModule\Models\MigrationManager(%controller.configDir%, %translator.configDir%, %uploader.configDir%)
 	- App\ConfigModule\Models\SchedulerManager
 	- App\ConfigModule\Models\SchedulerMigrationManager
 	schemaSchedulerManager:
