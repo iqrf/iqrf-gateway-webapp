@@ -796,14 +796,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						component: TrConfiguration,
-						path: 'tr-config/:address',
-						props: (route) => {
-							const address = Number.parseInt(route.params.address, 10);
-							if (Number.isNaN(address)) {
-								return 0;
-							}
-							return {address};
-						},
+						path: 'tr-config',
 					},
 					{
 						component: TrUpload,

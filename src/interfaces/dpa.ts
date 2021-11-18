@@ -131,19 +131,21 @@ export interface Discovery {
  * Embedded peripherals implemented interface
  */
 export interface IEmbedPers {
-	coordinator: boolean
-	eeeprom: boolean
+	values?: Array<number>
+	coordinator?: boolean
+	node?: boolean
+	os?: boolean
 	eeprom: boolean
-	io: boolean
+	eeeprom: boolean
+	ram: boolean
 	ledg: boolean
 	ledr: boolean
-	node: boolean
-	os: boolean
-	pwm: boolean
-	ram: boolean
-	spi: boolean
+	spi?: boolean
+	io: boolean
 	thermometer: boolean
-	uart: boolean
+	pwm?: boolean
+	uart?: boolean
+	frc?: boolean
 }
 
 /**
@@ -158,29 +160,40 @@ export interface IEmbedPersEnabled {
  * Transciever configuration interface
  */
 export interface ITrConfiguration {
-	customDpaHandler: boolean
-	dpaAutoexec: boolean
-	dpaPeerToPeer: boolean
+	// pers
 	embPers: IEmbedPers
-	ioSetup: boolean
-	lpRxTimeout: number
-	neverSleep: boolean
+	// other
+	customDpaHandler: boolean
+	dpaPeerToPeer?: boolean
 	peerToPeer: boolean
-	rfAltDsmChannel: number
-	rfBand: string
+	localFrcReception?: boolean
+	ioSetup: boolean
+	dpaAutoexec?: boolean
+	routingOff?: boolean
+	neverSleep?: boolean
+	nodeDpaInterface?: boolean
+	uartBaudrate: number
+	// RF
+	rfBand?: string
 	rfChannelA: number
 	rfChannelB: number
-	rfPgmDualChannel: boolean
+	rfSubChannelA?: number
+	rfSubChannelB?: number
+	rfAltDsmChannel: number
+	stdAndLpNetwork?: boolean
+	txPower: number
+	rxFilter: number
+	lpRxTimeout?: number
+	// RFPGM
 	rfPgmEnableAfterReset: boolean
-	rfPgmIncorrectUpload: boolean
-	rfPgmLpMode: boolean
 	rfPgmTerminateAfter1Min: boolean
 	rfPgmTerminateMcuPin: boolean
-	routingOff: boolean
-	rxFilter: number
-	stdAndLpNetwork: boolean
-	txPower: number
-	uartBaudrate: number
+	rfPgmDualChannel: boolean
+	rfPgmLpMode: boolean
+	rfPgmIncorrectUpload?: boolean
+	// security
+	accessPassword?: string
+	securityUserKey?: string
 }
 
 /**
