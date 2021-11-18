@@ -1410,14 +1410,13 @@
 	"iqrfnet": {
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
-		"addressChange": {
-			"title": "Change network address",
-			"messages": {
-				"address": "Address has to be an integer from 0 to 239."
-			}
-		},
 		"messages": {
 			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
+		},
+		"product": {
+			"title": "Product browser",
+			"browse": "Browse products",
+			"noProduct": "Could not retrieve products."
 		},
 		"enumeration": {
 			"title": "Device enumeration",
@@ -1644,7 +1643,7 @@
 						"node": "Node",
 						"network": "Network"
 					},
-					"hwpidFilter": "Filter nodes by HWPID*",
+					"hwpidFilter": "Filter nodes by HWPID *",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
 					"uploadEeprom": "Upload EEPROM data",
@@ -2033,11 +2032,19 @@
 				"form": {
 					"ascii": "ASCII",
 					"hex": "HEX",
-					"format": "Input format",
-					"setPassword": "Set Access Password",
-					"setKey": "Set User Key"
+					"format": "Format",
+					"value": "Value *",
+					"accessPassword": "Access Password",
+					"userKey": "User Key"
+				},
+				"errors": {
+					"password": "Access password should only contain printable ascii characters.",
+					"passwordLen": "Access password should be at most 16 characters long.",
+					"key": "User key should only contain printable ascii characters.",
+					"keyLen": "User key should be at most 16 characters long."
 				},
 				"messages": {
+					"note": "* Leave blank to use default value.",
 					"success": "IQMESH security has been successfully set. Device restarted.",
 					"failure": "Could not update IQMESH security settings.",
 					"resetFailure": "IQMESH security has been successfully set, but device could not be restarted.",
@@ -2052,26 +2059,31 @@
 					"868": "868 MHz",
 					"916": "916 MHz"
 				},
+				"target": "Target",
+				"targets": {
+					"device": "Device",
+					"network": "Network"
+				},
 				"rfChannelA": "RF channel A",
 				"rfChannelB": "RF channel B",
-				"rfSubChannelA": "RF channel 2nd network",
-				"rfSubChannelB": "Alternative DSM channel",
+				"rfSubChannelA": "RF channel A subnetwork",
+				"rfSubChannelB": "RF channel B subnetwork",
 				"rfAltDsmChannel": "Alternative DSM channel",
-				"networkType": "Network type",
+				"networkType": "Network type (*6)",
 				"networkTypes": {
 					"std": "STD",
 					"stdLp": "STD and LP"
 				},
 				"txPower": "TX power",
 				"rxFilter": "RX filter",
-				"lpRxTimeout": "LP RX timeout",
+				"lpRxTimeout": "LP RX timeout (*7)",
 				"rfPgm": "RFPGM",
 				"rfPgmEnableAfterReset": "Enable after reset",
 				"rfPgmTerminateAfter1Min": "Termination after ~1 minute",
 				"rfPgmTerminateMcuPin": "Termination by MCU pin",
 				"rfPgmDualChannel": "Dual channel",
 				"rfPgmLpMode": "LP mode",
-				"rfPgmIncorrectUpload": "Incorrect upload",
+				"rfPgmIncorrectUpload": "Incorrect upload (*9)",
 				"dpa": {
 					"embeddedPeripherals": "DPA - Embedded peripherals",
 					"other": "DPA - Other"
@@ -2085,22 +2097,22 @@
 					"ram": "RAM",
 					"ledr": "LEDR",
 					"ledg": "LEDG",
-					"spi": "SPI",
+					"spi": "SPI (*4, *7)",
 					"io": "IO",
 					"thermometer": "Thermometer",
 					"pwm": "PWM",
-					"uart": "UART",
+					"uart": "UART (*7)",
 					"frc": "FRC"
 				},
 				"customDpaHandler": "Custom DPA Handler",
 				"ioSetup": "IO Setup",
-				"dpaAutoexec": "Autoexec",
-				"routingOff": "Routing off",
+				"dpaAutoexec": "Autoexec (*4)",
+				"routingOff": "Routing off (*7)",
 				"peerToPeer": "User Peer-to-Peer",
-				"localFrcReception": "Local FRC",
-				"dpaPeerToPeer": "DPA Peer-to-Peer",
-				"neverSleep": "Stay awake when not bonded",
-				"uartBaudRate": "UART interface baud rate",
+				"localFrcReception": "Local FRC (*5, *7)",
+				"dpaPeerToPeer": "DPA Peer-to-Peer (*3, *7)",
+				"neverSleep": "Stay awake when not bonded (*1, *7)",
+				"uartBaudRate": "UART interface baud rate (*8)",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
 					"2400": "2400 Bd",
@@ -2112,21 +2124,38 @@
 					"115200": "115200 Bd",
 					"230400": "230400 Bd"
 				},
-				"nodeDpaInterface": "Node DPA interface",
+				"nodeDpaInterface": "Node DPA interface (*2)",
+				"notes": {
+					"dpa3Higher": "*1 Only for DPA 3.03 or higher.",
+					"dpa4Lower": "*2 Only for DPA lower than 4.00.",
+					"dpa410": "*3 Only for DPA 4.10 or higher.",
+					"dpa414": "*4 Only for DPA 4.14 or lower.",
+					"dpa415": "*5 Only for DPA 4.15 or higher.",
+					"coordinatorOnly": "*6 Coordinator only.",
+					"nodeOnly": "*7 Node only.",
+					"uart": "*8 For UART interface. For UART peripheral DPA 4.11 or higher.",
+					"readOnly": "*9 Read only."
+				},
 				"messages": {
-					"breakInteroperability": "You will break interoperability if you disable STD and LP network.",
+					"breakInteroperability": "Disabling STD and LP network will break interoperability.",
 					"lpRxTimeout": "LP RX timeout has to be in range from 1 to 255.",
 					"rfChannel": {
 						"433": "RF Channel has to be in range from 0 to 16.",
 						"868": "RF Channel has to be in range from 0 to 67.",
 						"916": "RF Channel has to be in range from 0 to 255."
 					},
+					"address": "Address has to be an integer from 0 to 239.",
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7.",
 					"uartBaudRate": "Please select UART interface baud rate."
 				}
 			},
 			"messages": {
+				"targetNote": "Network target does not include coordinator device.",
+				"notMatched": "The following nodes did not match the selected HWPID: {nodes}.",
+				"notResponded": "The following nodes did not respond to the request: {nodes}.",
+				"invalidAddress": "Address {address} is not a valid device address.",
+				"noConfig": "TR configuration could not be read.",
 				"modalTitle": "Custom DPA handler issue detected",
 				"modalPrompt": "Custom DPA handler has been enabled in transceiver configuration, but not detected. Do you wish to disable Custom DPA handler? The transceiver will then be restarted.",
 				"disableFailure": "An error has occurred while disabling Custom DPA handler.",
@@ -2134,9 +2163,9 @@
 				"readFailure": "An error has occurred while reading TR configuration.",
 				"readSuccess": "The TR configuration has been read successfully.",
 				"writeFailure": "An error has occurred while saving TR configuration.",
-				"writeSuccess": "The TR configuration has been saved successfully.",
-				"restartFailure": "The TR configuration has been saved successfully, but device could not be restarted.",
-				"restartSuccess": "The TR configuration has been saved successfully. Device restarted."
+				"writeSuccess": "TR configuration has been saved successfully.",
+				"restartFailure": "TR configuration has been saved successfully, but device could not be restarted.",
+				"restartSuccess": "TR configuration has been saved successfully. Device restarted."
 			}
 		},
 		"trUpload": {

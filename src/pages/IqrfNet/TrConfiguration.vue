@@ -17,12 +17,79 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<AddressChanger :current-address='address' :loaded='loaded' @reload-configuration='enumerate' />
-		<CCard v-if='config !== null'>
-			<CCardHeader>{{ $t('iqrfnet.trConfiguration.title') }}</CCardHeader>
+		<CCard v-if='loaded !== null'>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='handleSubmit'>
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm>
+						<CRow>
+							<CCol>
+								<CSelect
+									:value.sync='target'
+									:options='targetOptions'
+									:label='$t("iqrfnet.trConfiguration.form.target")'
+								/>
+								<ValidationProvider
+									v-if='target === "node"'
+									v-slot='{errors, touched, valid}'
+									rules='integer|required|between:0,239'
+									:custom-messages='{
+										between: "iqrfnet.trConfiguration.form.messages.address",
+										integer: "iqrfnet.trConfiguration.form.messages.address",
+										required: "iqrfnet.trConfiguration.form.messages.address",
+									}'
+								>
+									<CInput
+										v-model.number='address'
+										type='number'
+										min='0'
+										max='239'
+										:label='$t("forms.fields.address")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									/>
+								</ValidationProvider>
+								<div
+									v-if='target === "network"'
+								>
+									<CButton
+										style='float: right;'
+										color='primary'
+										size='sm'
+										@click='showProductModal'
+									>
+										{{ $t('iqrfnet.product.browse') }}
+									</CButton>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|integer|between:0,65535'
+										:custom-messages='{
+											required: "iqrfnet.networkManager.otaUpload.errors.hwpid",
+											integer: "forms.errors.integer",
+											between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
+										}'
+									>
+										<CInput
+											v-model.number='hwpid'
+											type='number'
+											min='0'
+											max='65535'
+											:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+									<i>{{ $t('iqrfnet.trConfiguration.messages.targetNote') }}</i><br>
+									<i>{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}</i>
+								</div>
+								<CButton
+									v-if='target === "node"'
+									color='primary'
+									@click='enumerate'
+								>
+									{{ $t('forms.read') }}
+								</CButton>
+							</CCol>
+						</CRow><hr>
 						<CRow>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
@@ -37,7 +104,7 @@ limitations under the License.
 									disabled='true'
 								/>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
@@ -52,7 +119,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
@@ -67,8 +134,8 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='config.rfSubChannelA !== undefined'
-									v-slot='{ valid, touched, errors }'
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
+									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
@@ -83,8 +150,8 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='config.rfSubChannelB !== undefined'
-									v-slot='{ valid, touched, errors }'
+									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
+									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
@@ -99,8 +166,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='config.rfAltDsmChannel !== undefined'
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
@@ -114,24 +180,20 @@ limitations under the License.
 										:min='rfChannelRules.min'
 									/>
 								</ValidationProvider>
-								<CAlert v-if='address === 0 && config.stdAndLpNetwork === false' color='warning'>
+								<CAlert
+									v-if='address === 0 && config.stdAndLpNetwork === false'
+									color='warning'
+								>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
 								<CSelect
-									v-if='address === 0 && config.stdAndLpNetwork !== undefined'
 									:label='$t("iqrfnet.trConfiguration.form.networkType")'
 									:value.sync='config.stdAndLpNetwork'
-									:options='[
-										{
-											value: false, label: $t("iqrfnet.trConfiguration.form.networkTypes.std")
-										},
-										{
-											value: true, label: $t("iqrfnet.trConfiguration.form.networkTypes.stdLp")
-										}
-									]'
+									:options='networkTypeOptions'
+									:disabled='address !== 0 || target === "network"'
 								/>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									rules='integer|between:0,7|required'
 									:custom-messages='{
 										between: "iqrfnet.trConfiguration.form.messages.txPower",
@@ -141,16 +203,16 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.txPower'
-										:label='$t("iqrfnet.trConfiguration.form.txPower")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
 										type='number'
 										max='7'
 										min='0'
+										:label='$t("iqrfnet.trConfiguration.form.txPower")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									rules='integer|between:0,64|required'
 									:custom-messages='{
 										between: "iqrfnet.trConfiguration.form.messages.rxFilter",
@@ -160,16 +222,16 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.rxFilter'
-										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
 										type='number'
 										max='64'
 										min='0'
+										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									rules='integer|between:1,255|required'
 									:custom-messages='{
 										between: "iqrfnet.trConfiguration.form.messages.lpRxTimeout",
@@ -179,10 +241,13 @@ limitations under the License.
 								>
 									<CInput
 										v-model.number='config.lpRxTimeout'
+										type='number'
+										min='1'
+										max='255'
 										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										type='number'
+										:disabled='address === 0 && target !== "network"'
 									/>
 								</ValidationProvider>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
@@ -211,15 +276,125 @@ limitations under the License.
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
 									disabled='true'
 								/>
+								<h2>{{ $t('iqrfnet.trConfiguration.security.title') }}</h2>
+								<CInputCheckbox
+									:checked.sync='securityPassword'
+									:label='$t("iqrfnet.trConfiguration.security.form.accessPassword")'
+								/>
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
+									rules='security|maxlen:16'
+									:custom-messages='{
+										security: "iqrfnet.trConfiguration.security.errors.password",
+										maxlen: "iqrfnet.trConfiguration.security.errors.passwordLen"
+									}'
+								>
+									<CInput
+										v-if='securityPassword'
+										v-model='config.accessPassword'
+										:type='passwordVisibility'
+										:label='$t("iqrfnet.trConfiguration.security.form.value")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									>
+										<template #append-content>
+											<span @click='passwordVisibility = (passwordVisibility === "password" ? "text" : "password")'>
+												<FontAwesomeIcon
+													:icon='(passwordVisibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+												/>
+											</span>
+										</template>
+									</CInput>
+								</ValidationProvider>
+								<CInputCheckbox
+									:checked.sync='securityKey'
+									:label='$t("iqrfnet.trConfiguration.security.form.userKey")'
+								/>
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
+									rules='security|maxlen:16'
+									:custom-messages='{
+										security: "iqrfnet.trConfiguration.security.errors.key",
+										maxlen: "iqrfnet.trConfiguration.security.errors.keyLen"
+									}'
+								>
+									<CInput
+										v-if='securityKey'
+										v-model='config.securityUserKey'
+										:type='keyVisibility'
+										:label='$t("iqrfnet.trConfiguration.security.form.value")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+									>
+										<template #append-content>
+											<span @click='keyVisibility = (keyVisibility === "password" ? "text" : "password")'>
+												<FontAwesomeIcon
+													:icon='(keyVisibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+												/>
+											</span>
+										</template>
+									</CInput>
+								</ValidationProvider>
+								<p>
+									<i v-if='securityPassword || securityKey'>
+										{{ $t('iqrfnet.trConfiguration.security.messages.note') }}
+									</i>
+								</p>
 							</CCol>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
 								<CInputCheckbox
-									v-for='peripheral of peripherals'
-									:key='peripheral.name'
-									:checked.sync='peripheral.enabled'
-									:disabled='unchangeablePeripherals.includes(peripheral.name)'
-									:label='$t("iqrfnet.trConfiguration.form.embPers." + peripheral.name)'
+									:checked.sync='config.embPers.coordinator'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
+									:disabled='unchangeablePeripherals.includes("coordinator") || address !== 0'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.node'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
+									:disabled='unchangeablePeripherals.includes("node") || address === 0'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.os'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
+									:disabled='unchangeablePeripherals.includes("os")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.eeeprom'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ram'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledr'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.ledg'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.spi'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.io'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.thermometer'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.embPers.uart'
+									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
+									:disabled='address === 0 && target !== "network"'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
 								<CInputCheckbox
@@ -228,18 +403,18 @@ limitations under the License.
 									:disabled='!dpaHandlerDetected'
 								/>
 								<CInputCheckbox
-									v-if='config.dpaPeerToPeer !== undefined'
 									:checked.sync='config.dpaPeerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.peerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
 								/>
 								<CInputCheckbox
-									v-if='config.localFrcReception !== undefined && address !== 0'
 									:checked.sync='config.localFrcReception'
 									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.ioSetup'
@@ -248,18 +423,25 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.dpaAutoexec'
 									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
+									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.routingOff'
 									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
+									:disabled='(address === 0 && target !== "network")'
 								/>
 								<CInputCheckbox
-									v-if='config.neverSleep !== undefined'
 									:checked.sync='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
+									:disabled='(address === 0 && target !== "network") || (dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.nodeDpaInterface'
+									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
+									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.00", ">="))'
 								/>
 								<ValidationProvider
-									v-slot='{ valid, touched, errors }'
+									v-slot='{valid, touched, errors}'
 									rules='required'
 									:custom-messages='{
 										required: "iqrfnet.trConfiguration.form.messages.uartBaudrate",
@@ -273,22 +455,32 @@ limitations under the License.
 										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
 										:options='uartBaudRates'
 									/>
-								</ValidationProvider>
-								<CInputCheckbox
-									v-if='config.nodeDpaInterface !== undefined'
-									:checked.sync='config.nodeDpaInterface'
-									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
-								/>
+								</ValidationProvider><hr>
+								<div class='form-group'>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa3Higher') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa4Lower') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa410') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa414') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.dpa415') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.coordinatorOnly') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.nodeOnly') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.uart') }}</i><br>
+									<i>{{ $t('iqrfnet.trConfiguration.form.notes.readOnly') }}</i>
+								</div>
 							</CCol>
 						</CRow>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<CButton
+							color='primary'
+							:disabled='invalid'
+							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
+						>
 							{{ $t('forms.write') }}
 						</CButton>
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
-		<SecurityForm v-if='config !== null' :address='address' />
+		<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
 		<CModal
 			:show.sync='dpaEnabledNotDetected'
 			color='warning'
@@ -318,29 +510,29 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
-import {
-	between,
-	integer,
-	min_value,
-	max_value,
-	required,
-} from 'vee-validate/dist/rules';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
-import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import ProductModal from '../../components/IqrfNet/ProductModal.vue';
+
+import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
+import {NetworkTarget} from '../../enums/IqrfNet/network';
+
+import compareVersions, {compare} from 'compare-versions';
 import IqrfNetService from '../../services/IqrfNetService';
 import OsService from '../../services/DaemonApi/OsService';
+
+import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
-import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {versionHigherEqual} from '../../helpers/versionChecker';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
-		AddressChanger,
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -348,20 +540,93 @@ import {versionHigherEqual} from '../../helpers/versionChecker';
 		CForm,
 		CInput,
 		CModal,
-		SecurityForm,
+		FontAwesomeIcon,
+		ProductModal,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
+	methods: {
+		compareVersions: compareVersions.compare,
+	},
 })
 
 /**
  * Transciever configuration page component
  */
 export default class TrConfiguration extends Vue {
+
 	/**
-	 * @var {ITrConfiguration|null} config Device transciever configuration object
+	 * @property {number} defaultAddr Default address
 	 */
-	private config: ITrConfiguration|null = null
+	@Prop({required: true}) defaultAddr!: number
+
+	/**
+	 * @var {number} address Device address
+	 */
+	private address = 0
+
+	/**
+	 * @var {number} hwpid HWPID to filter devices by
+	 */
+	private hwpid = 65535;
+
+	/**
+	 * @var {NetworkTarget} target Read and write TR conf target
+	 */
+	private target = NetworkTarget.NODE
+
+	///// TR config /////
+
+	/**
+	 * @var {ITrConfiguration} config Device transciever configuration object
+	 */
+	private config: ITrConfiguration = {
+		rfBand: '868', // OS RF
+		rfChannelA: 52,
+		rfChannelB: 2,
+		rfSubChannelA: 1,
+		rfSubChannelB: 1,
+		rfPgmEnableAfterReset: false, // OS RFPGM
+		rfPgmTerminateAfter1Min: true,
+		rfPgmTerminateMcuPin: true,
+		rfPgmDualChannel: true,
+		rfPgmLpMode: false,
+		rfPgmIncorrectUpload: false,
+		embPers: { // DPA embedded peripherals
+			coordinator: false,
+			eeprom: false,
+			eeeprom: false,
+			io: false,
+			ledg: false,
+			ledr: false,
+			node: false,
+			os: false,
+			pwm: false,
+			ram: false,
+			spi: false,
+			thermometer: false,
+			uart: false,
+		},
+		stdAndLpNetwork: true, // DPA RF
+		txPower: 7,
+		rxFilter: 5,
+		lpRxTimeout: 6,
+		rfAltDsmChannel: 0,
+		customDpaHandler: false, // DPA other
+		dpaPeerToPeer: false,
+		peerToPeer: false,
+		dpaAutoexec: false,
+		localFrcReception: false,
+		ioSetup: false,
+		routingOff: false,
+		nodeDpaInterface: false,
+		neverSleep: false,
+		uartBaudrate: 9600,
+		accessPassword: '', // Security
+		securityUserKey: ''
+	}
+
+	////////////////////////
 
 	/**
 	 * @var {boolean} dpaEnabledNotDetected Indicates whether custom DPA handler is enabled but not detected
@@ -379,9 +644,39 @@ export default class TrConfiguration extends Vue {
 	private dpaVersion: string|null = null
 
 	/**
-	 * @var {boolean} loaded Indicates whether configuration has been loaded
+	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private loaded = false
+	private daemon236 = false
+
+	/**
+	 * @var {boolean} securityPassword Controls access password field availability
+	 */
+	private securityPassword = false
+
+	/**
+	 * @var {string} passwordVisibility Access password field visibility type
+	 */
+	private passwordVisibility = 'password'
+
+	/**
+	 * @var {boolean} securityKey Controls user key field availability
+	 */
+	private securityKey = false
+
+	/**
+	 * @var {string} keyVisibility User key field visibility type
+	 */
+	private keyVisibility = 'password'
+
+	/**
+	 * @var {boolean|null} loaded Indicates whether configuration has been loaded
+	 */
+	private loaded: boolean|null = null
+
+	/**
+	 * @var {boolean} productModal Controls whether or not product modal is rendered
+	 */
+	private productModal = false
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -389,7 +684,22 @@ export default class TrConfiguration extends Vue {
 	private msgId: string|null = null
 
 	/**
-	 * @var {Array<IEmbedPersEnabled} peripherals Array of embedded peripherals and their states
+	 * @var {number} timeout Async reset timeout
+	 */
+	private timeout = 0
+
+	/**
+	 * @var {boolean} expectingReset Expecting coordinator reset
+	 */
+	private expectingReset = false
+
+	/**
+	 * @var {Array<string>} message Message to display
+	 */
+	private message: Array<string> = []
+
+	/**
+	 * @var {Array<IEmbedPersEnabled>} peripherals Array of embedded peripherals and their states
 	 */
 	private peripherals: Array<IEmbedPersEnabled> = []
 
@@ -403,6 +713,34 @@ export default class TrConfiguration extends Vue {
 	]
 
 	/**
+	 * @constant {Array<IOption>} targetOptions Array of coreui conf target options
+	 */
+	private targetOptions: Array<IOption> = [
+		{
+			value: NetworkTarget.NODE,
+			label: this.$t('iqrfnet.trConfiguration.form.targets.device').toString(),
+		},
+		{
+			value: NetworkTarget.NETWORK,
+			label: this.$t('iqrfnet.trConfiguration.form.targets.network').toString(),
+		},
+	]
+
+	/**
+	 * @constant {Array<IOption>} networkTypeOptions Array of coreui network type options
+	 */
+	private networkTypeOptions: Array<IOption> = [
+		{
+			value: false,
+			label: this.$t('iqrfnet.trConfiguration.form.networkTypes.std').toString(),
+		},
+		{
+			value: true,
+			label: this.$t('iqrfnet.trConfiguration.form.networkTypes.stdLp').toString(),
+		}
+	]
+
+	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
@@ -411,31 +749,6 @@ export default class TrConfiguration extends Vue {
 	 * Component unwatch function
 	 */
 	private unwatch: CallableFunction = () => {return;}
-
-	/**
-	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
-	 */
-	private daemon236 = false
-
-	/**
-	 * @property {number} address Device address
-	 */
-	@Prop({required: true}) address!: number
-
-	/**
-	 * Device address watcher for transciever configuration retrieval
-	 */
-	@Watch('address')
-	getAddress(): void {
-		this.loaded = false;
-		this.config = null;
-		this.peripherals = [];
-		if (this.$store.getters.isSocketConnected) {
-			this.$store.dispatch('spinner/show', {timeout: 300000});
-			IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
-				.then((msgId: string) => this.msgId = msgId);
-		}
-	}
 
 	/**
 	 * Computes rules for validation of RF channel input field
@@ -504,10 +817,25 @@ export default class TrConfiguration extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('max', max_value);
+		extend('maxlen', max);
 		extend('required', required);
+		extend('security', (value: string) => {
+			const re = new RegExp(/^[ -~]{0,16}/);
+			return re.test(value);
+		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
+			}
+			if (this.expectingReset) {
+				if (mutation.payload.mType === 'iqrfRaw' && mutation.payload.data.msgId === 'async') {
+					if (mutation.payload.data.rsp.rData.startsWith('00.00.ff.3f')) {
+						window.clearTimeout(this.timeout);
+						this.expectingReset = false;
+						this.$store.dispatch('spinner/hide');
+						this.$toast.info(this.message.join(' '));
+					}
+				}
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
@@ -515,16 +843,13 @@ export default class TrConfiguration extends Vue {
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
 				this.$store.dispatch('spinner/hide');
-				this.handleWriteResponse(mutation.payload);
+				this.handleWriteResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				this.$store.dispatch('spinner/hide');
 				this.handleEnumerationResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				this.$store.dispatch('spinner/hide');
 				this.handleOsReadResponse(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
-				this.$store.dispatch('spinner/hide');
-				this.handleResetResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Restart') {
 				this.handleRestartResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_WriteCfgByte') {
@@ -542,7 +867,6 @@ export default class TrConfiguration extends Vue {
 	 * Initializes daemon version for error handling and reads configuration
 	 */
 	mounted(): void {
-		this.daemon236 = versionHigherEqual('2.3.6');
 		if (this.$store.getters.isSocketConnected) {
 			this.readOs();
 		} else {
@@ -612,7 +936,7 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleWriteByteResponse(response): void {
 		if (response.status === 0) {
-			this.restartDevice();
+			this.restartDevice(response.rsp.nAdr, 0);
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.disableFailure').toString()
@@ -624,8 +948,8 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
-		this.$store.dispatch('spinner/show', {timeout: 300000});
-		IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
+		this.$store.dispatch('spinner/show', {timeout: 60000});
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -651,6 +975,7 @@ export default class TrConfiguration extends Vue {
 				this.$t('iqrfnet.trConfiguration.messages.readFailure').toString()
 			);
 		}
+		this.loaded = false;
 	}
 
 	/**
@@ -659,10 +984,9 @@ export default class TrConfiguration extends Vue {
 	 */
 	private parseResponse(response: any): void {
 		let rsp = response.data.rsp;
-		this.config = rsp.trConfiguration;
+		this.config = {...this.config, ...rsp.trConfiguration};
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
 		this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
-		this.setEmbeddedPeripherals();
 		this.$store.dispatch('spinner/hide');
 		this.$toast.success(
 			this.$t('iqrfnet.trConfiguration.messages.readSuccess').toString()
@@ -672,107 +996,154 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Updates transciever configuration object with embed peripherals configuration and then sends WriteTrConfiguration request
+	 * @param {number} address Device address
 	 */
-	private handleSubmit(): void {
-		let config = JSON.parse(JSON.stringify(this.config));
-		config.embPers = this.getEmbeddedPeripherals();
-		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
+	private handleSubmit(address: number): void {
+		this.message = [];
+		let config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
+		this.$store.dispatch('spinner/show', {timeout: 255000});
+		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 255000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Filters configuration to be sent based on DPA and target device
+	 */
+	private filterConfigToSend(config: ITrConfiguration, address: number): ITrConfiguration {
+		if (address === 0) { // filter configuration options not available for coordinator
+			// filter RF
+			delete config.lpRxTimeout;
+			// filter peripherals
+			delete config.embPers.node;
+			delete config.embPers.spi;
+			delete config.embPers.uart;
+			// filter DPA other section
+			delete config.dpaPeerToPeer;
+			delete config.localFrcReception;
+			delete config.routingOff;
+			delete config.neverSleep;
+		} else { // filter configuration options not available for nodes
+			// filter RF
+			delete config.stdAndLpNetwork;
+			// filter peripherals
+			delete config.embPers.coordinator;
+		}
+		if (this.$store.getters['user/getRole'] === 'normal') { // normal user cannot change these
+			delete config.embPers.coordinator;
+			delete config.embPers.node;
+			delete config.embPers.os;
+		}
+		if (this.dpaVersion !== null) {
+			let dpa = this.dpaVersion;
+			if (!compare(dpa, '3.03', '=') && !compare(dpa, '3.04', '=')) {
+				delete config.rfSubChannelA;
+				delete config.rfSubChannelB;
+			}
+			if (compare(dpa, '3.03', '<')) {
+				delete config.neverSleep;
+			}
+			if (compare(dpa, '4.00', '>=')) {
+				delete config.nodeDpaInterface;
+			}
+			if (compare(dpa, '4.10', '<')) {
+				delete config.dpaPeerToPeer;
+			}
+			if (compare(dpa, '4.14', '>')) {
+				delete config.dpaAutoexec;
+				delete config.embPers.spi;
+			}
+			if (compare(dpa, '4.15', '<')) {
+				delete config.localFrcReception;
+			}
+		}
+		if (!this.securityPassword) {
+			delete config.accessPassword;
+		}
+		if (!this.securityKey) {
+			delete config.securityUserKey;
+		}
+		delete config.rfPgmIncorrectUpload;
+		delete config.rfBand;
+		delete config.embPers.values;
+		return config;
 	}
 
 	/**
 	 * Handles WriteTrConfiguration request response
 	 */
 	private handleWriteResponse(response): void {
-		if (response.data.status === 0) {
-			if (response.data.rsp.restartNeeded) {
-				this.resetDevice();
+		let address = response.rsp.deviceAddr;
+		if (response.status === 0) {
+			if (this.target === NetworkTarget.NETWORK) {
+				if (response.rsp.notRespondedNodes !== undefined) {
+					this.message.push(this.$t(
+						'iqrfnet.trConfiguration.messages.notResponded',
+						{nodes: response.rsp.notRespondedNodes.join(', ')}
+					).toString());
+				}
+				if (response.rsp.notMatchedNodes !== undefined) {
+					this.message.push(this.$t(
+						'iqrfnet.trConfiguration.messages.notMatched',
+						{nodes: response.rsp.notMatchedNodes.join(', ')}
+					).toString());
+				}
+			}
+			if (response.rsp.restartNeeded) {
+				this.restartDevice(address, (address === 255) ? this.hwpid : null);
 			} else {
-				this.$toast.success(
-					this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
-				);
+				if (this.target === NetworkTarget.NETWORK) {
+					this.message.unshift(this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString());
+					this.$toast.info(this.message.join(' '));
+				} else {
+					this.$toast.info(this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString());
+				}
 			}
 			return;
 		}
 
-		if (this.daemon236) { // unified status codes
-			if (response.data.status === -1) {
-				this.$toast.error(
-					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
-				);
-			} else if (response.data.status === 8) {
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: this.address}).toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-				);
-			}
-			return;
+		if (response.status === -1) {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: address}).toString()
+			);
+		} else if (response.status === 8) {
+			this.$toast.error(
+				this.$t('forms.messages.noDevice', {address: address}).toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+			);
 		}
-
-		if (response.data.status === 1007) { // pre-unified status codes
-			if (response.data.statusStr.includes('ERROR_TIMEOUT')) {
-				this.$toast.error(
-					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
-				);
-			} else if (response.data.statusStr.includes('ERROR_NADR')) {
-				this.$toast.error(
-					this.$t('forms.messages.noDevice', {address: this.address}).toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-				);
-			}
-			return;
-		}
-		this.$toast.error(
-			this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-		);
-	}
-
-	/**
-	 * Performs device reset
-	 */
-	private resetDevice(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
 	 * Performs device restart
+	 * @param {number} address Device address
+	 * @param {number|null} hwpid HWPID
 	 */
-	private restartDevice(): void {
+	private restartDevice(address: number, hwpid: number|null = null): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.restart(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+		OsService.restart(address, hwpid, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Handles EmbedOs_Reset request response
-	 */
-	private handleResetResponse(response): void {
-		if (response.data.status === 0) {
-			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
-			);
-		}
-	}
-
-	/**
-	 * Handles EmbedOs_Restart request response
+	 * Handles restart response
 	 */
 	private handleRestartResponse(response): void {
 		if (response.status === 0) {
-			this.enumerate();
+			this.message.unshift(this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString());
+			if (response.rsp.nAdr === 0) {
+				this.expectingReset = true;
+				this.timeout = window.setTimeout(() => {
+					this.expectingReset = false;
+					this.$store.dispatch('spinner/hide');
+					this.$toast.error('iqrfnet.trConfiguration.messages.restartFailure').toString();
+				}, 3000);
+			} else {
+				this.$store.dispatch('spinner/hide');
+				this.$toast.info(this.message.join(' '));
+			}
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
@@ -781,42 +1152,27 @@ export default class TrConfiguration extends Vue {
 	}
 
 	/**
-	 * Populates array of embedded peripherals with information from ReadTrConfiguration request
+	 * Renders product modal
 	 */
-	private setEmbeddedPeripherals(): void {
-		if (this.config === null) {
-			return;
-		}
-		let peripherals = JSON.parse(JSON.stringify(this.config.embPers));
-		this.peripherals = [];
-		for (let peripheral in peripherals) {
-			if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) { // peripheral information exists
-				continue;
-			}
-			if (typeof this.config.embPers[peripheral] !== 'boolean') { // invalid value in configuration
-				continue;
-			}
-			if (this.unchangeablePeripherals.includes(peripheral) &&
-					this.$store.getters['user/getRole'] === 'normal') {
-				continue;
-			}
-			this.peripherals.push({
-				name: peripheral,
-				enabled: this.config.embPers[peripheral],
-			});
-		}
+	private showProductModal(): void {
+		(this.$refs.productModal as ProductModal).show();
 	}
 
 	/**
-	 * Converts new configuration of embedded peripherals from array to object accepted by daemon
-	 * @returns {IEmbedPers} Dictionary of embedded peripherals
+	 * Sets HWPID from selected product
+	 * @param {IProduct} product Selected product
 	 */
-	private getEmbeddedPeripherals(): IEmbedPers {
-		let peripherals = {};
-		for (let peripheral of this.peripherals) {
-			peripherals[peripheral.name] = peripheral.enabled;
-		}
-		return (peripherals as IEmbedPers);
+	private setSelectedProduct(product: IProduct): void {
+		this.hwpid = product.hwpid;
+		(this.$refs.productModal as ProductModal).hide();
 	}
 }
 </script>
+
+<style scoped>
+.hwpid-group {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+</style>

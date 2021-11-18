@@ -412,15 +412,18 @@ class IqrfNetService {
 	/**
 	 * Writes TR configuration
 	 * @param address Device address to write the configuration to
+	 * @param hwpid HWPID to filter devices by
 	 * @param configuration New TR configuration
 	 * @param timeout Timeout in milliseconds
 	 * @param message Timeout message
 	 * @param callback Timeout callback
 	 * @return Message ID
 	 */
-	writeTrConfiguration(address: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
-		delete configuration.rfBand;
+	writeTrConfiguration(address: number, hwpid: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		configuration.deviceAddr = address;
+		if (address === 255) {
+			configuration.hwpId = hwpid;
+		}
 		const request = {
 			'mType': 'iqmeshNetwork_WriteTrConf',
 			'data': {

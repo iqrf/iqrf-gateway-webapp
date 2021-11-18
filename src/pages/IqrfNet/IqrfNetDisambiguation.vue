@@ -46,7 +46,7 @@ limitations under the License.
 						{{ $t('iqrfnet.trUpload.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/iqrfnet/tr-config/0'>
+				<CListGroupItem to='/iqrfnet/tr-config/'>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.trConfiguration.title') }}
 					</header>
