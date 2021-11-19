@@ -42,10 +42,11 @@ final class MenderQueue {
 
 	/**
 	 * Publishes message to MQ
-	 * @param string $message Message to publish
+	 * @param string $message Message content to publish
+	 * @param array<string, mixed> $headers Message headers
 	 */
-	public function publish(string $message): void {
-		$this->menderProducer->publish($message);
+	public function publish(string $message, array $headers = []): void {
+		$this->menderProducer->publish($message, $headers);
 	}
 
 }

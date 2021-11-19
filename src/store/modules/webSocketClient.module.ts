@@ -168,7 +168,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			commit('spinner/HIDE');
 			state.daemonStatus.modal = true;
 			return;
-		} 
+		}
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
@@ -247,7 +247,7 @@ const mutations: MutationTree<WebSocketClientState> = {
 		} else {
 			state.socket.isConnected = true;
 		}
-		
+
 	},
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;

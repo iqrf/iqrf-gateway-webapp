@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -14,36 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Mender client protocols
- */
-export enum MenderProtocols {
-	HTTPS = 'https',
-	WSS = 'wss'
-}
+declare(strict_types = 1);
+
+namespace App\MaintenanceModule\Enums;
 
 /**
- * Mender client actions
+ * Mender MQ actions enum
  */
-export enum MenderActions {
-	INSTALL = 'install',
-	COMMIT = 'commit',
-	ROLLBACK = 'rollback',
-}
+class MenderActions {
 
-/**
- * Filesystem mount modes
- */
-export enum MountModes {
-	RO = 'ro',
-	RW = 'rw',
-}
+	/**
+	 * Install artifact
+	 */
+	public const INSTALL = 'install';
 
-/**
- * Mender message types
- */
-export enum MenderMessageTypes {
-	OUT = 'out',
-	ERR = 'err',
-	EXIT = 'exit'
+	/**
+	 * Commit update
+	 */
+	public const COMMIT = 'commit';
+
+	/**
+	 * Rollback update
+	 */
+	public const ROLLBACK = 'rollback';
+
+	/**
+	 * Send mender execution result
+	 */
+	public const RESULT = 'result';
+
 }

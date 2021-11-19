@@ -104,6 +104,13 @@ export default class UrlBuilder {
 	}
 
 	/**
+	 * Returns WebSocket Mender URL
+	 */
+	getWsMenderUrl(): string {
+		return this.wsProtocol + this.hostname + (this.isDev ? ':8082': this.port) + '/mender';
+	}
+
+	/**
 	 * Returns REST API URL from passed hostname
 	 */
 	getRestApiUrlFromAddr(hostname: string): string {

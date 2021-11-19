@@ -47,6 +47,7 @@ library.add(faEye);
 library.add(faEyeSlash);
 
 import * as version from '../version.json';
+import MySocket from './ws/MySocket';
 
 let release = version.version;
 if (version.pipeline !== '') {
@@ -74,6 +75,17 @@ Vue.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
 	format: 'json',
 	reconnection: true,
 });
+
+const menderSocket = new MySocket(
+	{
+		'url': urlBuilder.getWsMenderUrl(),
+		autoConnect: true,
+		reconnect: true,
+		reconnectDelay: 5000,
+	},
+	'MENDER_',
+	store
+);
 
 Vue.use(CoreuiVue);
 Vue.use(VueMeta);

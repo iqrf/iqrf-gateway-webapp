@@ -1,10 +1,9 @@
 [Unit]
-Description=IQRF Gateway Webapp consumer for MQ %I
+Description=IQRF Gateway Webapp MQ %I
 After=network.target
 
 [Service]
 Type=simple
-User=www-data
 ExecStart=/bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager rabbitmq:consumer %i'
 RestartSec=5
 Restart=always

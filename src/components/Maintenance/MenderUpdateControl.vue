@@ -1,5 +1,20 @@
 <template>
 	<CCard>
+		<CElementCover
+			v-if='actionInProgress'
+			style='z-index: 1;'
+			:opacity='0.85'
+		>
+			<span v-if='menderAction === "install"'>
+				{{ $t('maintenance.mender.update.messages.installProgress') }}
+			</span>
+			<span v-else-if='menderAction === "commit"'>
+				{{ $t('maintenance.mender.update.messages.commitProgress') }}
+			</span>
+			<span v-else>
+				{{ $t('maintenance.mender.update.messages.rollbackProgress') }}
+			</span>
+		</CElementCover>
 		<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
 			<CCardBody>
 				<h4>{{ $t('maintenance.mender.update.update') }}</h4>
@@ -20,13 +35,11 @@
 					{{ $t('maintenance.mender.update.form.install') }}
 				</CButton> <CButton
 					color='success'
-					:disabled='!installSuccess'
 					@click='commit'
 				>
 					{{ $t('maintenance.mender.update.form.commit') }}
 				</CButton> <CButton
 					color='danger'
-					:disabled='!installSuccess'
 					@click='rollback'
 				>
 					{{ $t('maintenance.mender.update.form.rollback') }}
@@ -63,12 +76,16 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+import {MenderActions, MenderMessageTypes, MountModes} from '../../enums/Maintenance/Mender';
+
+import GatewayService from '../../services/GatewayService';
 import MenderService from '../../services/MenderService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import GatewayService from '../../services/GatewayService';
-import { MountModes } from '../../enums/Maintenance/Mender';
-import { extendedErrorToast } from '../../helpers/errorToast';
+import {MutationPayload} from 'vuex';
+import {MenderMessage} from '../../interfaces/mender';
 
 @Component({
 	components: {
@@ -76,6 +93,13 @@ import { extendedErrorToast } from '../../helpers/errorToast';
 		CCard,
 		CCardBody,
 		CInputFile,
+	},
+	computed: {
+		...mapGetters({
+			clientConnected: 'mender_isConnected',
+			menderAction: 'mender_action',
+			actionInProgress: 'mender_actionInProgress',
+		}),
 	},
 })
 
@@ -90,9 +114,70 @@ export default class MenderUpdateControl extends Vue {
 	private inputEmpty = true
 
 	/**
-	 * @var {boolean} installSuccess Indicates that mender artifact has been installed
+	 * Component unsubscribe function
 	 */
-	private installSuccess = false
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Subscribes to Mender vuex mutations
+	 */
+	created(): void {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'MENDER_SOCKET_ONMESSAGE') {
+				this.handleMenderMessage(mutation.payload);
+			}
+		});
+	}
+
+	/**
+	 * Unsubscribes from Mender vuex mutations
+	 */
+	beforeDestroy(): void {
+		this.unsubscribe();
+	}
+
+	/**
+	 * Handles Mender message from Mender ws server
+	 * @param {MenderMessage} message Mender message
+	 */
+	private handleMenderMessage(message: MenderMessage): void {
+		if (message.messageType !== MenderMessageTypes.EXIT) {
+			this.updateLog(message['payload']);
+			return;
+		}
+		const action = this.$store.getters.mender_action;
+		if (message['payload'] !== '0') {
+			if (action === MenderActions.INSTALL) {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.installFailed').toString()
+				);
+			} else if (action === MenderActions.COMMIT) {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.commitFailed').toString()
+				);
+			} else {
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
+				);
+			}
+			this.$store.commit('MENDER_ACTION_END');
+			return;
+		}
+		if (action === MenderActions.INSTALL) {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.installSuccess').toString()
+			);
+		} else if (action === MenderActions.COMMIT) {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.commitSuccess').toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('maintenance.mender.update.messages.rollbackSuccess').toString()
+			);
+		}
+		this.$store.commit('MENDER_ACTION_END');
+	}
 
 	/**
 	 * Retrieves selected file from file input
@@ -114,53 +199,60 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender install artifact task
 	 */
 	private install(): void {
-		this.installSuccess = false;
+		this.$store.commit('MENDER_ACTION_START', MenderActions.INSTALL);
 		const formData = new FormData();
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
-		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
 		MenderService.install(formData)
-			.then((response: AxiosResponse) => {
-				this.handleResponse('maintenance.mender.update.messages.installSuccess', response.data);
-				this.installSuccess = true;
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.installProgress').toString()
+				);
 			})
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.installFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.catch(() => {
+				this.$store.commit('MENDER_ACTION_END');
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.installFailed').toString()
+				);
+			});
 	}
 
 	/**
 	 * Performs mender commit task
 	 */
 	private commit(): void {
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('MENDER_ACTION_START', MenderActions.COMMIT);
 		MenderService.commit()
-			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.commitSuccess',
-				response.data
-			))
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.commitFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.commitProgress').toString()
+				);
+			})
+			.catch(() => {
+				this.$store.commit('MENDER_ACTION_END');
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.commitFailed').toString()
+				);
+			});
 	}
 
 	/**
 	 * Performs mender rollback task
 	 */
 	private rollback(): void {
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('MENDER_ACTION_START', MenderActions.ROLLBACK);
 		MenderService.rollback()
-			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.rollbackSuccess',
-				response.data
-			))
-			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.rollbackFailed',
-				error.response ? error.response.data.message : error.message
-			));
+			.then(() => {
+				this.$toast.info(
+					this.$t('maintenance.mender.update.messages.rollbackProgress').toString()
+				);
+			})
+			.catch(() => {
+				this.$store.commit('MENDER_ACTION_END');
+				this.$toast.error(
+					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
+				);
+			});
 	}
 
 	/**
@@ -175,7 +267,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$toast.success(
 					this.$t(
 						'gateway.power.messages.rebootSuccess',
-						{time: time},						
+						{time: time},
 					).toString()
 				);
 			});
@@ -201,26 +293,6 @@ export default class MenderUpdateControl extends Vue {
 				error,
 				'maintenance.mender.update.messages.remountFailed',
 			));
-	}
-
-	/**
-	 * Handles axios response
-	 * @param {string} message Toast message to project
-	 * @param {string} output Output log
-	 */
-	private handleResponse(message: string, output: string): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t(message).toString());
-		this.updateLog(output);
-	}
-
-	/**
-	 * Handles axios error
-	 */
-	private handleError(message: string, output: string): void {
-		this.$store.commit('spinner/HIDE');
-		this.$toast.error(this.$t(message).toString());
-		this.updateLog(output);
 	}
 
 	/**

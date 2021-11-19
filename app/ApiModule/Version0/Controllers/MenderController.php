@@ -31,12 +31,14 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CoreModule\Models\FeatureManager;
+use App\MaintenanceModule\Enums\MenderActions;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
+use App\MaintenanceModule\Models\MenderQueue;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -59,14 +61,20 @@ class MenderController extends BaseController {
 	private $manager;
 
 	/**
+	 * @var MenderQueue $queue Mender MQ
+	 */
+	private $queue;
+
+	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, MenderManager $manager, MenderQueue $menderQueue, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
 		$this->manager = $manager;
+		$this->queue = $menderQueue;
 		parent::__construct($validator);
 	}
 
@@ -211,7 +219,8 @@ class MenderController extends BaseController {
 			$fileName = $file->getClientFilename();
 			$this->checkArtifact($fileName);
 			$filePath = $this->manager->saveArtifactFile($file);
-			$this->manager->installArtifact($filePath);
+			$headers = ['action' => MenderActions::INSTALL];
+			$this->queue->publish($filePath, $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderInvalidArtifactException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
@@ -243,7 +252,8 @@ class MenderController extends BaseController {
 	 */
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->manager->commitUpdate();
+			$headers = ['action' => MenderActions::COMMIT];
+			$this->queue->publish('', $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
@@ -273,7 +283,8 @@ class MenderController extends BaseController {
 	 */
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->manager->rollbackUpdate();
+			$headers = ['action' => MenderActions::ROLLBACK];
+			$this->queue->publish('', $headers);
 			return $response->writeBody('Workaround');
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
