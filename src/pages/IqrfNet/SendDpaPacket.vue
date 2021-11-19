@@ -225,7 +225,7 @@ import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
 
 import {maska} from 'maska';
 import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 import Packet from '../../iqrfNet/sendPacket';
 
 import {IMessagePairPacket} from '../../interfaces/iqrfnet';
@@ -251,7 +251,7 @@ import {RawMessage} from '../../interfaces/dpa';
 	},
 	computed: {
 		...mapGetters({
-			isSocketConnected: 'isSocketConnected',
+			isSocketConnected: 'daemon_isSocketConnected',
 		}),
 	},
 	directives: {
@@ -410,7 +410,7 @@ export default class SendDpaPacket extends Vue {
 				});
 				this.activeMessagePair = this.messages[0];
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
@@ -470,7 +470,7 @@ export default class SendDpaPacket extends Vue {
 			options.message = 'iqrfnet.sendPacket.messages.failure';
 			this.$store.commit('spinner/SHOW');
 		}
-		this.$store.dispatch('sendRequest', options)
+		this.$store.dispatch('daemon_sendRequest', options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -483,7 +483,7 @@ export default class SendDpaPacket extends Vue {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
 		this.$store.dispatch('removeMessage', response.data.msgId);
-		this.$store.commit('TRIM_MESSAGE_QUEUE');
+		this.$store.commit('DAEMON_TRIM_MESSAGE_QUEUE');
 		this.$toast.clear();
 		this.$toast.error(
 			this.$t('iqrfnet.sendPacket.messages.queueFull').toString()

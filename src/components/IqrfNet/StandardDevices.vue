@@ -323,7 +323,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CM
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 import StandardDevice from '../../iqrfNet/StandardDevice';
 import InfoService from '../../services/DaemonApi/InfoService';
@@ -450,7 +450,7 @@ export default class StandardDevices extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {

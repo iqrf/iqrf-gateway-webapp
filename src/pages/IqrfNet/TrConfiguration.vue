@@ -526,9 +526,9 @@ import OsService from '../../services/DaemonApi/OsService';
 import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
 import {IProduct} from '../../interfaces/repository';
+import {WebSocketClientState} from '../../store/modules/daemonClient.module';
 import {MutationPayload} from 'vuex';
 import {versionHigherEqual} from '../../helpers/versionChecker';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
 @Component({
 	components: {
@@ -824,7 +824,7 @@ export default class TrConfiguration extends Vue {
 			return re.test(value);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (this.expectingReset) {
@@ -867,11 +867,11 @@ export default class TrConfiguration extends Vue {
 	 * Initializes daemon version for error handling and reads configuration
 	 */
 	mounted(): void {
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.readOs();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.readOs();

@@ -76,7 +76,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -99,7 +99,7 @@ export default class DiscoveryManager extends Vue {
 	 * @var {number} maxAddr Maximum node address
 	 */
 	private maxAddr = 239
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -123,7 +123,7 @@ export default class DiscoveryManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

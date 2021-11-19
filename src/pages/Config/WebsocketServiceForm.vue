@@ -178,7 +178,7 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	},
 	metaInfo(): MetaInfo {

@@ -19,7 +19,7 @@ import {FileFormat} from '../iqrfNet/fileFormat';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import { authorizationHeader } from '../helpers/authorizationHeader';
-import { WebSocketOptions } from '../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '../store/modules/daemonClient.module';
 
 /**
  * Native upload service
@@ -46,7 +46,7 @@ class NativeUploadService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**

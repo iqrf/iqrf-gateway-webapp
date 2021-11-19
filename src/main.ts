@@ -21,7 +21,6 @@ import * as Sentry from '@sentry/browser';
 import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';
 import Vue from 'vue';
 import VueMeta from 'vue-meta';
-import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
 import {config, library} from '@fortawesome/fontawesome-svg-core';
@@ -32,6 +31,7 @@ import router from './router';
 import i18n from './i18n';
 import UrlBuilder from './helpers/urlBuilder';
 import ThemeManager from './helpers/themeManager';
+import ClientSocket from './ws/ClientSocket';
 
 import App from './App.vue';
 
@@ -47,7 +47,6 @@ library.add(faEye);
 library.add(faEyeSlash);
 
 import * as version from '../version.json';
-import MySocket from './ws/MySocket';
 
 let release = version.version;
 if (version.pipeline !== '') {
@@ -70,22 +69,38 @@ Vue.prototype.$appName = i18n.t(ThemeManager.getTitleKey());
 
 const urlBuilder: UrlBuilder = new UrlBuilder();
 
-Vue.use(VueNativeSock, urlBuilder.getWsApiUrl(), {
-	store: store,
-	format: 'json',
-	reconnection: true,
-});
-
-const menderSocket = new MySocket(
+store.dispatch('daemon_initSocket', new ClientSocket(
 	{
-		'url': urlBuilder.getWsMenderUrl(),
+		url: urlBuilder.getWsApiUrl(),
+		prefix: 'DAEMON_',
 		autoConnect: true,
 		reconnect: true,
 		reconnectDelay: 5000,
 	},
-	'MENDER_',
-	store
-);
+	store,
+));
+
+store.dispatch('mender_initSocket', new ClientSocket(
+	{
+		url: urlBuilder.getWsMenderUrl(),
+		prefix: 'MENDER_',
+		autoConnect: false,
+		reconnect: true,
+		reconnectDelay: 5000,
+	},
+	store,
+));
+
+store.dispatch('monitor_initSocket', new ClientSocket(
+	{
+		url: urlBuilder.getWsMonitorUrl(),
+		prefix: 'MONITOR_',
+		autoConnect: true,
+		reconnect: true,
+		reconnectDelay: 5000,
+	},
+	store,
+));
 
 Vue.use(CoreuiVue);
 Vue.use(VueMeta);

@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
-
 import {MenderActions} from '../../enums/Maintenance/Mender';
 
-import {ActionTree, GetterTree, MutationTree} from 'vuex';
-import {MenderClientState} from '../../interfaces/mender';
+import {GetterTree, MutationTree} from 'vuex';
+import {MenderClientState} from '../../interfaces/wsClient';
 
 /**
  * Mender client state
@@ -52,7 +50,6 @@ const getters: GetterTree<MenderClientState, any> = {
  */
 const mutations: MutationTree<MenderClientState> = {
 	MENDER_SOCKET_ONOPEN(state: MenderClientState, event: Event) {
-		Vue.prototype.$menderSocket = event.currentTarget;
 		if (state.reconnecting) {
 			state.reconnecting = false;
 		}

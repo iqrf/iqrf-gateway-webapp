@@ -210,7 +210,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -351,7 +351,7 @@ export default class BondingManager extends Vue {
 			return regex.test(code);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

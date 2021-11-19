@@ -18,6 +18,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
+import store from '..';
 
 export class WebSocketOptions {
 	public request: Record<string, any>|null;
@@ -91,21 +92,10 @@ export interface WebSocketClientState {
 	messages: Array<WebSocketMessage>;
 
 	/**
-	 * Daemon status object
-	 */
-	daemonStatus: DaemonStatus;
-
-	/**
 	 * IQRF Gateway Daemon version object
 	 */
 	version: DaemonVersion;
 
-}
-
-export interface DaemonStatus {
-	mode: string;
-	modal: boolean;
-	queueLen: number|string;
 }
 
 /**
@@ -133,11 +123,6 @@ const state: WebSocketClientState = {
 	requests: {},
 	responses: {},
 	messages: [],
-	daemonStatus: {
-		mode: 'unknown',
-		modal: false,
-		queueLen: 'unknown',
-	},
 	version: {
 		daemonVersion: '',
 		msgId: '',
@@ -158,23 +143,22 @@ const serviceModeWhitelist = [
 ];
 
 const actions: ActionTree<WebSocketClientState, any> = {
-	sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string>|undefined {
+	daemon_sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string>|undefined {
 		const request = options.request;
 		if (request === null) {
 			console.error('Request is null');
 			return undefined;
 		}
-		if (!serviceModeWhitelist.includes(request.mType) && state.daemonStatus.mode === 'service') {
+		if (!serviceModeWhitelist.includes(request.mType) && store.getters['monitor_getMode'] === 'service') {
 			commit('spinner/HIDE');
-			state.daemonStatus.modal = true;
+			commit('MONITOR_SHOW_MODAL');
 			return;
 		}
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
 		if (request.mType === 'iqmeshNetwork_AutoNetwork') {
-			Vue.prototype.$socket.sendObj(request);
-			commit('SOCKET_ONSEND', request);
+			dispatch('daemon_sendMessage', request);
 			return Promise.resolve(request.data.msgId);
 		}
 		let timeout: number|null = null;
@@ -190,8 +174,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			}, options.timeout);
 		}
 		state.messages.push(new WebSocketMessage(request.data.msgId, timeout));
-		Vue.prototype.$socket.sendObj(request);
-		commit('SOCKET_ONSEND', request);
+		dispatch('daemon_sendMessage', request);
 		return Promise.resolve(request.data.msgId);
 	},
 	removeMessage({state, commit}, msgId): void {
@@ -202,9 +185,9 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			return;
 		}
 		window.clearTimeout(state.messages[message].timeout);
-		commit('REMOVE_MESSAGE', message);
+		commit('DAEMON_REMOVE_MESSAGE', message);
 	},
-	getVersion({state, commit}): void {
+	getVersion({state, dispatch}): void {
 		const options = new WebSocketOptions(null, 10000);
 		state.version.msgId = uuidv4();
 		options.request = {
@@ -214,31 +197,21 @@ const actions: ActionTree<WebSocketClientState, any> = {
 				'returnVerbose': true,
 			},
 		};
-		Vue.prototype.$socket.sendObj(options.request);
-		commit('SOCKET_ONSEND', options.request);
-	},
-	hideDaemonModal({commit}): void {
-		commit('HIDE_MODE_MODAL');
-	},
-	daemonStatusMode({commit}, mode: string): void {
-		commit('DAEMON_STATUS_MODE', mode);
+		dispatch('daemon_sendMessage', options.request);
 	},
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
-	isSocketConnected(state: WebSocketClientState) {
+	daemon_isSocketConnected(state: WebSocketClientState) {
 		return state.socket.isConnected;
 	},
-	daemonVersion(state: WebSocketClientState) {
+	daemon_getVersion(state: WebSocketClientState) {
 		return state.version.daemonVersion;
-	},
-	daemonStatus(state: WebSocketClientState) {
-		return state.daemonStatus;
 	},
 };
 
 const mutations: MutationTree<WebSocketClientState> = {
-	SOCKET_ONOPEN(state: WebSocketClientState, event: Event) {
+	DAEMON_SOCKET_ONOPEN(state: WebSocketClientState, event: Event) {
 		Vue.prototype.$socket = event.currentTarget;
 		if (state.socket.hasReconnected) {
 			setTimeout(() => {
@@ -249,44 +222,34 @@ const mutations: MutationTree<WebSocketClientState> = {
 		}
 
 	},
-	SOCKET_ONCLOSE(state: WebSocketClientState) {
+	DAEMON_SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
-		state.daemonStatus.mode = 'unknown';
-		state.daemonStatus.queueLen = 'unknown';
 	},
-	SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
+	DAEMON_SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
 		console.error(state, event);
 	},
-	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
+	DAEMON_SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
 		if (message.mType === 'mngDaemon_Version' && message.data.msgId === state.version.msgId) {
 			state.version.daemonVersion = message.data.rsp.version.substr(0, 6);
 		}
 		state.responses[message.data.msgId] = message;
 	},
-	SOCKET_ONSEND(state: WebSocketClientState, request: Record<string, any>) {
+	DAEMON_SOCKET_ONSEND(state: WebSocketClientState, request: Record<string, any>) {
 		state.requests[request.data.msgId] = request;
 	},
-	SOCKET_RECONNECT(state: WebSocketClientState, count: number) {
-		// eslint-disable-next-line no-console
-		console.info(state, count);
+	DAEMON_SOCKET_RECONNECT(state: WebSocketClientState) {
 		state.socket.hasReconnected = true;
 	},
-	SOCKET_RECONNECT_ERROR(state: WebSocketClientState) {
+	DAEMON_SOCKET_RECONNECT_ERROR(state: WebSocketClientState) {
 		state.socket.reconnectError = true;
 	},
-	CLEAR_MESSAGES(state: WebSocketClientState) {
+	DAEMON_CLEAR_MESSAGES(state: WebSocketClientState) {
 		state.messages = [];
 	},
-	REMOVE_MESSAGE(state: WebSocketClientState, message: number) {
+	DAEMON_REMOVE_MESSAGE(state: WebSocketClientState, message: number) {
 		state.messages.splice(message, 1);
 	},
-	HIDE_MODE_MODAL(state: WebSocketClientState) {
-		state.daemonStatus.modal = false;
-	},
-	DAEMON_STATUS_MODE(state: WebSocketClientState, mode: string) {
-		state.daemonStatus.mode = mode;
-	},
-	TRIM_MESSAGE_QUEUE(state: WebSocketClientState) {
+	DAEMON_TRIM_MESSAGE_QUEUE(state: WebSocketClientState) {
 		const overload = state.messages.slice(32, state.messages.length - 1);
 		state.messages.splice(32, state.messages.length - 1);
 		overload.forEach((item: WebSocketMessage) => {
@@ -297,9 +260,6 @@ const mutations: MutationTree<WebSocketClientState> = {
 				delete state.responses[item.msgId];
 			}
 		});
-	},
-	UPDATE_DAEMON_QUEUE_LEN(state: WebSocketClientState, len: number) {
-		state.daemonStatus.queueLen = len;
 	},
 };
 

@@ -104,7 +104,7 @@ import Device from '../../helpers/Device';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -169,7 +169,7 @@ export default class DevicesInfo extends Vue {
 	created(): void {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
@@ -190,11 +190,11 @@ export default class DevicesInfo extends Vue {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.getBondedDevices();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
+				(state, getter) => getter.daemon_isSocketConnected,
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
 						this.getBondedDevices();

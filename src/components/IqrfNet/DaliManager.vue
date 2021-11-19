@@ -65,9 +65,9 @@ limitations under the License.
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
 						</CButton> <CButton
-							v-if='i === commands.length' 
-							color='success' 
-							:disabled='invalid' 
+							v-if='i === commands.length'
+							color='success'
+							:disabled='invalid'
 							@click.prevent='addDaliCommand'
 						>
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
@@ -110,7 +110,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '../../store/modules/daemonClient.module';
 
 interface DaliAnswer {
 	status: number
@@ -144,7 +144,7 @@ export default class DaliManager extends Vue {
 	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
 	 */
 	private answers: Array<DaliAnswer> = []
-	
+
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
@@ -168,7 +168,7 @@ export default class DaliManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

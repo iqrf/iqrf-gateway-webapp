@@ -25,7 +25,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {WebSocketClientState} from '../../store/modules/daemonClient.module';
 
 @Component({})
 
@@ -60,7 +60,7 @@ export default class DaemonModeInfo extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;}
-	
+
 	/**
 	 * Component unwatch function
 	 */
@@ -71,7 +71,7 @@ export default class DaemonModeInfo extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				const response = mutation.payload;
 				if (!this.allowedMTypes.includes(response.mType)) {
 					return;
@@ -84,11 +84,11 @@ export default class DaemonModeInfo extends Vue {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.getMode();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getMode();

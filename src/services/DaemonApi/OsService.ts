@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 /**
  * OS service
@@ -50,7 +50,7 @@ class OsService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class OsService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class OsService {
 			},
 		};
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class OsService {
 			Object.assign(request.data.req, {hwpId: hwpid});
 		}
 		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 }

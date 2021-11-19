@@ -75,7 +75,7 @@ import VersionService from '../../services/VersionService';
 import {AxiosResponse} from 'axios';
 import {IBackupData} from '../../interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -139,7 +139,7 @@ export default class Backup extends Vue {
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false 
+	private daemon236 = false
 
 	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
@@ -159,14 +159,14 @@ export default class Backup extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONERROR' ||
-				mutation.type === 'SOCKET_ONCLOSE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONERROR' ||
+				mutation.type === 'DAEMON_SOCKET_ONCLOSE') {
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
 				return;
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
@@ -314,7 +314,7 @@ export default class Backup extends Vue {
 		}
 		return message;
 	}
-	
+
 	/**
 	 * Generates backup file and prompts file save
 	 */

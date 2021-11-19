@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CModal
-		:show.sync='daemonStatus.modal'
+		:show.sync='modalState'
 		color='warning'
 	>
 		<template #header>
@@ -39,8 +39,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
-import {mapGetters} from 'vuex';
-import UrlBuilder from '../helpers/urlBuilder';
+import {mapGetters, MutationPayload} from 'vuex';
 
 interface IMonitorMsgData {
 	num: number
@@ -64,7 +63,7 @@ interface IMonitorMsg {
 	},
 	computed: {
 		...mapGetters({
-			daemonStatus: 'daemonStatus',
+			modalState: 'monitor_getModalState'
 		}),
 	},
 })
@@ -75,54 +74,32 @@ interface IMonitorMsg {
 export default class DaemonModeModal extends Vue {
 
 	/**
-	 * @var {number} reconnectInterval WebSocket reconnect interval ID
+	 * Component unsubscribe function
 	 */
-	private reconnectInterval = 0
+	private unsubscribe: CallableFunction = () => {return;}
 
 	/**
-	 * @var {WebSocket} webSocket WebSocket object
-	 */
-	private webSocket: WebSocket|null = null
-
-	/**
-	 * Initializes websocket
+	 * Subscribes to Monitor vuex mutations
 	 */
 	created(): void {
-		this.setSocket();
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'MONITOR_SOCKET_ONMESSAGE') {
+				this.handleMonitorMessage(mutation.payload);
+			}
+		});
 	}
 
-	/**
-	 * Creates websocket connection to daemon monitor server and sets callbacks
-	 */
-	private setSocket(): void {
-		const urlBuilder: UrlBuilder = new UrlBuilder();
-		this.webSocket = new WebSocket(urlBuilder.getWsMonitorUrl());
-		this.webSocket.onmessage = (event) => {
-			this.parseMonitor(JSON.parse(event.data));
-		};
-		this.webSocket.onerror = ()=> {
-			this.webSocket?.close();
-		};
-		this.webSocket.onopen = () => {
-			window.clearInterval(this.reconnectInterval);
-			this.webSocket!.onclose = () => {
-				this.reconnectInterval = window.setInterval(() => {
-					this.setSocket();
-				}, 5000);
-			};
-		};
-	}
 
 	/**
 	 * Parses monitor message and applies changes to internal state
 	 * @param {IMonitorMsg} message Monitor message object
 	 */
-	private parseMonitor(message: IMonitorMsg): void {
+	private handleMonitorMessage(message: IMonitorMsg): void {
 		let mode = message.data.operMode;
-		if (mode !== this.$store.getters.daemonStatus.mode) {
-			this.$store.dispatch('daemonStatusMode', mode);
+		if (mode !== this.$store.getters['monitor_getMode']) {
+			this.$store.commit('MONITOR_SET_MODE', mode);
 		}
-		this.$store.commit('UPDATE_DAEMON_QUEUE_LEN', message.data.msgQueueLen);
+		this.$store.commit('MONITOR_UPDATE_QUEUE', message.data.msgQueueLen);
 	}
 
 	/**

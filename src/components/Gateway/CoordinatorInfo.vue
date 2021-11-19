@@ -51,7 +51,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import IqrfNetService from '../../services/IqrfNetService';
 import {CSpinner} from '@coreui/vue/src';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {WebSocketClientState} from '../../store/modules/daemonClient.module';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '../../interfaces/dpa';
 
 @Component({
@@ -117,7 +117,7 @@ export default class CoordinatorInfo extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
@@ -138,13 +138,13 @@ export default class CoordinatorInfo extends Vue {
 					}
 				}
 			}
-			
+
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();

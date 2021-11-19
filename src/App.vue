@@ -95,7 +95,7 @@ export default class App extends Vue {
 	 */
 	created(): void {
 		this.unwatch = this.$store.watch(
-			(state, getter) => getter.isSocketConnected,
+			(state, getter) => getter.daemon_isSocketConnected,
 			(newVal, oldVal) => {
 				if (!oldVal && newVal) {
 					this.$store.dispatch('getVersion');

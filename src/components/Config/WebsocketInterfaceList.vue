@@ -172,7 +172,7 @@ import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfa
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	}
 })

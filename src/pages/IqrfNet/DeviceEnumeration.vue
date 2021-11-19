@@ -120,7 +120,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
 import RfModeLp from '../../assets/lp-black.svg';
 import RfModeStd from '../../assets/std-black.svg';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
+import { WebSocketClientState } from '../../store/modules/daemonClient.module';
 import { AxiosError, AxiosResponse } from 'axios';
 import { IDeviceEnumeration, OsInfo, PeripheralEnumeration } from '../../interfaces/dpa';
 
@@ -198,7 +198,7 @@ export default class DeviceEnumeration extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE' ||
 				mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
@@ -239,11 +239,11 @@ export default class DeviceEnumeration extends Vue {
 					});
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters.daemon_isSocketConnected) {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();

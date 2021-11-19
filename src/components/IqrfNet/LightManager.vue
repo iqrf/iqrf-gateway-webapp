@@ -122,7 +122,7 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.lights') }}</th>
 						<td>{{ numLights }}</td>
-					</tr>	
+					</tr>
 				</tbody>
 				<tbody v-else>
 					<tr>
@@ -149,7 +149,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 
 @Component({
 	components: {
@@ -173,7 +173,7 @@ export default class LightManager extends Vue {
 	 * @var {number} address Address of device implementing the light standard
 	 */
 	private address = 1
-	
+
 	/**
 	 * @var {number} index Index of light to manage
 	 */
@@ -226,7 +226,7 @@ export default class LightManager extends Vue {
 				this.responseIndex = this.index;
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}

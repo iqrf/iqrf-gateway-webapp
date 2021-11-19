@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '../../store/modules/daemonClient.module';
 
 export class StandardBinaryOutput {
 
@@ -62,7 +62,7 @@ class StandardBinaryOutputService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class StandardBinaryOutputService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemon_sendRequest', options);
 	}
 }
 

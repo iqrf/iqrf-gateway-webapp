@@ -246,7 +246,7 @@ import {IOption} from '../../interfaces/coreui';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
 
 import JsonEditor from '../../components/Config/JsonEditor.vue';
@@ -508,15 +508,15 @@ export default class SchedulerForm extends Vue {
 			}
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
+			if (mutation.type === 'DAEMON_SOCKET_ONOPEN') {
 				this.useRest = false;
 				if (this.id && this.untouched) {
 					this.getTask(this.id);
 				}
-			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
-				mutation.type === 'SOCKET_ONERROR') {
+			} else if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' ||
+				mutation.type === 'DAEMON_SOCKET_ONERROR') {
 				this.useRest = true;
-			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
 					return;
 				}

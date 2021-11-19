@@ -24,7 +24,7 @@ import compareVersions, {CompareOperator} from 'compare-versions';
  * @return {boolean} Comparison result
  */
 export function versionCompare(version: string, operator: CompareOperator): boolean {
-	const daemonVersion = store.getters.daemonVersion;
+	const daemonVersion = store.getters.daemon_getVersion;
 	if (daemonVersion === '') {
 		return false;
 	}

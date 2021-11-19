@@ -117,7 +117,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import {IMessagePairRequest} from '../../interfaces/iqrfnet';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/daemonClient.module';
 import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 
 @Component({
@@ -137,7 +137,7 @@ import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 	},
 	computed: {
 		...mapGetters({
-			isSocketConnected: 'isSocketConnected',
+			isSocketConnected: 'daemon_isSocketConnected',
 		}),
 	},
 	metaInfo: {
@@ -205,7 +205,7 @@ export default class SendJsonRequest extends Vue {
 		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
+			if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' || mutation.type === 'DAEMON_SOCKET_ONERROR') {
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
 				return;
@@ -219,7 +219,7 @@ export default class SendJsonRequest extends Vue {
 				});
 				this.activeMessagePair = this.messages[0];
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {

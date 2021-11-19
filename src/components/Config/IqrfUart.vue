@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -127,7 +127,7 @@ limitations under the License.
 								</ValidationProvider>
 							</CCol>
 							<CCol
-								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null' 
+								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'
 								md='6'
 							>
 								<CInput
@@ -227,7 +227,7 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemon_getVersion',
 		}),
 	}
 })
@@ -245,7 +245,7 @@ export default class IqrfUart extends Vue {
 	 * @var {number} busEnableGpioPin UART bus enable ping
 	 */
 	private busEnableGpioPin = -1
-	
+
 	/**
 	 * @constant {string} component UART component name
 	 */
@@ -310,7 +310,7 @@ export default class IqrfUart extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false
-	
+
 	/**
 	 * Computes array of CoreUI select options for baudrate
 	 * @returns {Array<BaudRateOptions} Baudrate select options
@@ -319,7 +319,7 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */
@@ -409,7 +409,7 @@ export default class IqrfUart extends Vue {
 		}
 		return configuration;
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF UART interface component instance
 	 */
@@ -425,7 +425,7 @@ export default class IqrfUart extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
-	
+
 	/**
 	 * Handles successful REST API response
 	 */
@@ -469,6 +469,6 @@ export default class IqrfUart extends Vue {
 	private updatePort(port: string): void {
 		this.IqrfInterface = port;
 	}
-	
+
 }
 </script>
