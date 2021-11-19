@@ -14,6 +14,8 @@
 # limitations under the License.
 
 services:
+	- App\MaintenanceModule\Models\MenderConsumer
+	- App\MaintenanceModule\Models\MenderQueue(@Contributte\RabbitMQ\Client::getProducer(menderProducer))
 	mender.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
 		autowired: false

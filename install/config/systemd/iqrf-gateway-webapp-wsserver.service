@@ -1,0 +1,15 @@
+[Unit]
+Description=IQRF Gateway Webapp WebSocket server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+ExecStart=/usr/sbin/iqrf-gateway-webapp-wsserver
+StandardOutput=journal
+StandardError=journal
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

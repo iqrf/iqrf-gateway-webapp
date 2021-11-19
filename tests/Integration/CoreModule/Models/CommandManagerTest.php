@@ -66,8 +66,11 @@ final class CommandManagerTest extends TestCase {
 	 */
 	public function testRunAsync(): void {
 		$this->manager->runAsync(function (string $type, ?string $buffer): void {
-			Assert::same(Process::OUT, $type);
-			Assert::same('OK', Strings::trim($buffer));
+			if ($type === Process::OUT) {
+				Assert::same('OK', Strings::trim($buffer));
+			} else {
+				Assert::same('0', $buffer);
+			}
 		}, self::COMMAND, false, 10);
 	}
 

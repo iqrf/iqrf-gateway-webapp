@@ -33,6 +33,8 @@ parameters:
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		- '#Constant (TESTER_DIR|TMP_DIR) not found.#'
+		- '#PHPDoc tag @param for parameter \$conn with type App\\CoreModule\\Models\\ConnectionInteface is not subtype of native type Ratchet\\ConnectionInterface\.#'
+		- '#Parameter \$conn of method App\\CoreModule\\Models\\WebSocketDispatcher::onError\(\) has invalid typehint type App\\CoreModule\\Models\\ConnectionInteface\.#'
 		-
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php

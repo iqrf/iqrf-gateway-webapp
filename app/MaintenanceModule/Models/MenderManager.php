@@ -22,12 +22,11 @@ namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
-use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -67,18 +66,29 @@ class MenderManager {
 	private $fileManager;
 
 	/**
+	 * @var MenderQueue Mender message queue
+	 */
+	private $menderQueue;
+
+	/**
 	 * @var ServiceManager $serviceManager Service manager
 	 */
 	private $serviceManager;
+
+	/**
+	 * @var string|null $filePath Path to artifact file
+	 */
+	private $filePath;
 
 	/**
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
 	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, MenderQueue $menderQueue, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
+		$this->menderQueue = $menderQueue;
 		$this->serviceManager = $serviceManager;
 	}
 
@@ -159,55 +169,64 @@ class MenderManager {
 
 	/**
 	 * Removes uploaded artifact file
-	 * @param string $filePath Path to uploaded file
 	 */
-	public function removeArtifactFile(string $filePath): void {
-		FileSystem::delete($filePath);
+	public function removeArtifactFile(): void {
+		if ($this->filePath !== null) {
+			FileSystem::delete($this->filePath);
+			$this->filePath = null;
+		}
 	}
 
 	/**
 	 * Installs update from artifact and returns output
 	 * @param string $filePath Path to mender artifact file
-	 * @return string Output log
 	 */
-	public function installArtifact(string $filePath): string {
+	public function installArtifact(string $filePath): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -install ' . $filePath . ' 2>&1', true, 1800);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout(), $filePath);
+		$this->filePath = $filePath;
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender install ' . $filePath . ' 2>&1', true, 1800);
 	}
 
 	/**
 	 * Commits installed mender artifact
-	 * @return string Output log
 	 */
-	public function commitUpdate(): string {
+	public function commitUpdate(): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -commit 2>&1', true);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender -commit 2>&1', true);
 	}
 
 	/**
 	 * Rolls installed mender artifact back
-	 * @return string Output log
 	 */
-	public function rollbackUpdate(): string {
+	public function rollbackUpdate(): void {
 		$this->checkMender();
-		$result = $this->commandManager->run('mender -rollback 2>&1', true);
-		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
+		$this->commandManager->runAsync(function (string $type, ?string $buffer): void {
+			$message = $this->handleCommandResult($type, $buffer);
+			$this->menderQueue->publish($message);
+		}, 'mender -rollback 2>&1', true);
 	}
 
 	/**
 	 * Checks execution status and processes output log accordingly
-	 * @param int $code Mender execution code
-	 * @param string $output Output log before processing
-	 * @param string $filePath Path to file to remove
-	 * @return string Processed output log
+	 * @param string $type Stream type
+	 * @param string $content Content
+	 * @return string Processed
 	 */
-	private function handleCommandResult(int $code, string $output, ?string $filePath = null): string {
-		if ($filePath !== null) {
-			$this->removeArtifactFile($filePath);
+	private function handleCommandResult(string $type, string $content): string {
+		$message = [
+			'messageType' => $type,
+		];
+		if ($type === 'exit') {
+			$message['payload'] = $content;
+			return Json::encode($message);
 		}
-		$lines = explode(PHP_EOL, $output);
+		$lines = explode(PHP_EOL, $content);
 		$pattern = '/time="([0-9T+:\-]+)"\slevel=(debug|info|warning|error|fatal|panic)\smsg="([^"]+)"/';
 		foreach ($lines as $idx => $line) {
 			$matches = Strings::match($line, $pattern);
@@ -223,14 +242,8 @@ class MenderManager {
 				$lines[$idx] = trim($prefix . PHP_EOL . $lines[$idx] . PHP_EOL . $suffix);
 			}
 		}
-		$output = trim(implode(PHP_EOL, $lines));
-		if ($code === 0) {
-			return $output;
-		}
-		if ($code === 2) {
-			throw new MenderNoUpdateInProgressException($output);
-		}
-		throw new MenderFailedException($output);
+		$message['payload'] = trim(implode(PHP_EOL, $lines));
+		return Json::encode($message);
 	}
 
 	/**

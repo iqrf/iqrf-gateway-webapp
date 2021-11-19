@@ -1,0 +1,24 @@
+rabbitmq:
+	connections:
+		default:
+			user: guest
+			password: guest
+			host: localhost
+			port: 5672
+			lazy: false
+	queues:
+		menderQueue:
+			connection: default
+			autoCreate: true
+	producers:
+		menderProducer:
+			queue: menderQueue
+			contentType: text/plain
+			deliveryMode: 1
+	consumers:
+		menderConsumer:
+			queue: menderQueue
+			callback: [@App\MaintenanceModule\Models\MenderConsumer, consume]
+			qos:
+				prefetchSize: 0
+				prefetchCount: 1

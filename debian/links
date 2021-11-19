@@ -1,1 +1,2 @@
 usr/share/iqrf-gateway-webapp/bin/manager   usr/sbin/iqrf-gateway-webapp-manager
+usr/share/iqrf-gateway-webapp/bin/wsserver  usr/sbin/iqrf-gateway-webapp-wsserver

@@ -20,7 +20,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.3.0",
+		"php": ">=7.4.0",
 		"ext-json": "*",
 		"ext-openssl": "*",
 		"ext-posix": "*",
@@ -31,13 +31,15 @@
 		"apitte/core": "^0.7",
 		"apitte/debug": "^0.7",
 		"apitte/middlewares": "^0.7",
-		"apitte/negotiation": "^0.7",
+		"apitte/negotiation": "^0.8.0",
 		"apitte/openapi": "^0.7",
 		"bgalati/monolog-sentry-handler": "^1.2",
+		"cboden/ratchet": "^0.4.3",
 		"contributte/console": "^0.9",
 		"contributte/console-extra": "^0.7",
 		"contributte/guzzlette": "^3.2",
 		"contributte/monolog": "^0.5",
+		"contributte/rabbitmq": "^8.0",
 		"contributte/translation": "^0.9",
 		"darsyn/ip": "^4.0",
 		"egulias/email-validator": "^3.1",
@@ -115,7 +117,7 @@
 	"prefer-stable": true,
 	"config": {
 		"platform": {
-			"php": "7.3.0"
+			"php": "7.4.0"
 		},
 		"sort-packages": true
 	}

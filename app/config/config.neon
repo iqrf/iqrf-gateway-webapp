@@ -54,6 +54,7 @@ extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 
 iqrfMacros:
 	# path to IQRF IDE macros
@@ -82,4 +83,5 @@ includes:
 	- guzzle.neon
 	- mailer.neon
 	- monolog.neon
+	- rabbitmq.neon
 	- translation.neon
