@@ -151,7 +151,7 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemon_getVersion',
+			daemonVersion: 'daemonClient/getVersion',
 		}),
 	}
 })

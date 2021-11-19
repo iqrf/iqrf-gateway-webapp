@@ -25,6 +25,7 @@ import {MenderClientState} from '../../interfaces/wsClient';
 const state: MenderClientState = {
 	isConnected: false,
 	reconnecting: false,
+	hasReconnected: false,
 	receivedMessages: 0,
 	action: null,
 	inProgress: false,
@@ -34,13 +35,13 @@ const state: MenderClientState = {
  * Mender client getters
  */
 const getters: GetterTree<MenderClientState, any> = {
-	mender_isConnected(state: MenderClientState) {
+	isConnected(state: MenderClientState) {
 		return state.isConnected;
 	},
-	mender_action(state: MenderClientState) {
+	action(state: MenderClientState) {
 		return state.action;
 	},
-	mender_actionInProgress(state: MenderClientState) {
+	actionInProgress(state: MenderClientState) {
 		return state.inProgress;
 	},
 };
@@ -49,34 +50,35 @@ const getters: GetterTree<MenderClientState, any> = {
  * Mender client mutations
  */
 const mutations: MutationTree<MenderClientState> = {
-	MENDER_SOCKET_ONOPEN(state: MenderClientState, event: Event) {
+	SOCKET_ONOPEN(state: MenderClientState, event: Event) {
 		if (state.reconnecting) {
 			state.reconnecting = false;
 		}
 		state.isConnected = true;
 	},
-	MENDER_SOCKET_ONCLOSE(state: MenderClientState) {
+	SOCKET_ONCLOSE(state: MenderClientState) {
 		state.isConnected = false;
 	},
-	MENDER_SOCKET_RECONNECT(state: MenderClientState) {
+	SOCKET_RECONNECT(state: MenderClientState) {
 		state.reconnecting = true;
 	},
-	MENDER_SOCKET_ONERROR(state: MenderClientState, event: Event) {
+	SOCKET_ONERROR(state: MenderClientState, event: Event) {
 		console.error(state, event);
 	},
-	MENDER_SOCKET_ONMESSAGE(state: MenderClientState, message: Record<string, any>) {
+	SOCKET_ONMESSAGE(state: MenderClientState, message: Record<string, any>) {
 		state.receivedMessages += 1;
 	},
-	MENDER_ACTION_START(state: MenderClientState, action: MenderActions) {
+	ACTION_START(state: MenderClientState, action: MenderActions) {
 		state.action = action;
 		state.inProgress = true;
 	},
-	MENDER_ACTION_END(state: MenderClientState) {
+	ACTION_END(state: MenderClientState) {
 		state.inProgress = false;
 	},
 };
 
 export default {
+	namespaced: true,
 	state,
 	getters,
 	mutations,

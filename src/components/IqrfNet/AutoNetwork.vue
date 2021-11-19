@@ -270,7 +270,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 interface NodeMessages {
 	nodesNew: string
@@ -394,14 +394,14 @@ export default class AutoNetwork extends Vue {
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONERROR' ||
-				mutation.type === 'DAEMON_SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
+			if (mutation.type === 'daemonClient/SOCKET_ONERROR' ||
+				mutation.type === 'daemonClient/SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
 				return;
 			}
-			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
@@ -418,7 +418,7 @@ export default class AutoNetwork extends Vue {
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
-								this.$store.dispatch('removeMessage', this.msgId);
+								this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 								this.$emit('update-devices', {
 									message: this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString(),
 									type: 'success',
@@ -435,7 +435,7 @@ export default class AutoNetwork extends Vue {
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('removeMessage', this.msgId);
+					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 					);
@@ -448,7 +448,7 @@ export default class AutoNetwork extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
@@ -506,7 +506,7 @@ export default class AutoNetwork extends Vue {
 			submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
 		}
 		this.$store.commit('spinner/SHOW');
-		IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null))
+		IqrfNetService.autoNetwork(submitData, new DaemonMessageOptions(null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 }

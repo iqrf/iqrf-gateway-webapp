@@ -66,8 +66,8 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonMode: 'monitor_getMode',
-			isSocketConnected: 'daemon_isSocketConnected',
+			daemonMode: 'monitorClient/getMode',
+			isSocketConnected: 'daemonClient/isConnected',
 		}),
 	},
 })
@@ -82,8 +82,8 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon mode badge color
 	 */
 	get daemonModeBadgeColor(): string {
-		const daemonMode = this.$store.getters['monitor_getMode'];
-		const socketConnected = this.$store.getters.daemon_isSocketConnected;
+		const daemonMode = this.$store.getters['monitorClient/getMode'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
 		if (!socketConnected) {
 			return 'secondary';
 		}
@@ -102,8 +102,8 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon queue length badge color
 	 */
 	get daemonQueueBadgeColor(): string {
-		const queueLen = this.$store.getters['monitor_getQueueLen'];
-		const socketConnected = this.$store.getters.daemon_isSocketConnected;
+		const queueLen = this.$store.getters['monitorClient/getQueueLen'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
 		if (!socketConnected || queueLen === 'unknown') {
 			return 'secondary';
 		}
@@ -121,8 +121,8 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon queue length string
 	 */
 	get queueLen(): string {
-		const queueLen = this.$store.getters['monitor_getQueueLen'];
-		const socketConnected = this.$store.getters.daemon_isSocketConnected;
+		const queueLen = this.$store.getters['monitorClient/getQueueLen'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
 		if (!socketConnected || queueLen === 'unknown') {
 			return this.$t('daemonStatus.modes.unknown').toString();
 		}

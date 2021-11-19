@@ -63,7 +63,7 @@ interface IMonitorMsg {
 	},
 	computed: {
 		...mapGetters({
-			modalState: 'monitor_getModalState'
+			modalState: 'monitorClient/getModalState'
 		}),
 	},
 })
@@ -83,7 +83,7 @@ export default class DaemonModeModal extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'MONITOR_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'monitorClient/SOCKET_ONMESSAGE') {
 				this.handleMonitorMessage(mutation.payload);
 			}
 		});
@@ -96,17 +96,17 @@ export default class DaemonModeModal extends Vue {
 	 */
 	private handleMonitorMessage(message: IMonitorMsg): void {
 		let mode = message.data.operMode;
-		if (mode !== this.$store.getters['monitor_getMode']) {
-			this.$store.commit('MONITOR_SET_MODE', mode);
+		if (mode !== this.$store.getters['monitorClient/getMode']) {
+			this.$store.commit('monitorClient/SET_MODE', mode);
 		}
-		this.$store.commit('MONITOR_UPDATE_QUEUE', message.data.msgQueueLen);
+		this.$store.commit('monitorClient/UPDATE_QUEUE', message.data.msgQueueLen);
 	}
 
 	/**
 	 * Requests to hide modal window
 	 */
 	private hideModal(): void {
-		this.$store.dispatch('hideDaemonModal');
+		this.$store.commit('monitorClient/HIDE_MODAL');
 	}
 }
 </script>

@@ -1,4 +1,5 @@
 import {MenderActions} from '../enums/Maintenance/Mender';
+import DaemonMessage from '../ws/DaemonMessage';
 
 export interface GenericClientState {
 	/**
@@ -12,11 +13,42 @@ export interface GenericClientState {
 	reconnecting: boolean;
 
 	/**
+	 * Has client reconnected?
+	 */
+	hasReconnected: boolean;
+
+	/**
 	 * Number of received messages
 	 */
 	receivedMessages: number;
 }
 
+export interface DaemonClientState extends GenericClientState {
+	/**
+	 * Sent requests
+	 */
+	requests: Record<string, any>;
+
+	/**
+	 * Received responses
+	 */
+	responses: Record<string, any>;
+
+	/**
+	 * Message objects
+	 */
+	messages: Array<DaemonMessage>
+
+	/**
+	 * IQRF Gateway Daemon version
+	 */
+	version: string;
+
+	/**
+	 * Daemon API message ID for version request
+	 */
+	versionMsgId: string;
+}
 export interface MenderClientState extends GenericClientState {
 	/**
 	 * Last invoked Mender client action

@@ -1,7 +1,14 @@
 <template>
 	<CCard>
 		<CElementCover
-			v-if='actionInProgress'
+			v-if='!clientConnected'
+			style='z-index: 1;'
+			:opacity='0.85'
+		>
+			{{ $t('maintenance.mender.update.messages.clientReconnecting') }}
+		</CElementCover>
+		<CElementCover
+			v-if='clientConnected && actionInProgress'
 			style='z-index: 1;'
 			:opacity='0.85'
 		>
@@ -96,9 +103,9 @@ import {MenderMessage} from '../../interfaces/mender';
 	},
 	computed: {
 		...mapGetters({
-			clientConnected: 'mender_isConnected',
-			menderAction: 'mender_action',
-			actionInProgress: 'mender_actionInProgress',
+			clientConnected: 'menderClient/isConnected',
+			menderAction: 'menderClient/action',
+			actionInProgress: 'menderClient/actionInProgress',
 		}),
 	},
 })
@@ -124,7 +131,7 @@ export default class MenderUpdateControl extends Vue {
 	created(): void {
 		this.$store.dispatch('mender_connectSocket');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'MENDER_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'menderClient/SOCKET_ONMESSAGE') {
 				this.handleMenderMessage(mutation.payload);
 			}
 		});
@@ -147,7 +154,7 @@ export default class MenderUpdateControl extends Vue {
 			this.updateLog(message['payload']);
 			return;
 		}
-		const action = this.$store.getters.mender_action;
+		const action = this.$store.getters['menderClient/action'];
 		if (message['payload'] !== '0') {
 			if (action === MenderActions.INSTALL) {
 				this.$toast.error(
@@ -162,7 +169,7 @@ export default class MenderUpdateControl extends Vue {
 					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
 				);
 			}
-			this.$store.commit('MENDER_ACTION_END');
+			this.$store.commit('menderClient/ACTION_END');
 			return;
 		}
 		if (action === MenderActions.INSTALL) {
@@ -178,7 +185,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$t('maintenance.mender.update.messages.rollbackSuccess').toString()
 			);
 		}
-		this.$store.commit('MENDER_ACTION_END');
+		this.$store.commit('menderClient/ACTION_END');
 	}
 
 	/**
@@ -201,7 +208,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender install artifact task
 	 */
 	private install(): void {
-		this.$store.commit('MENDER_ACTION_START', MenderActions.INSTALL);
+		this.$store.commit('menderClient/ACTION_START', MenderActions.INSTALL);
 		const formData = new FormData();
 		const file = this.getInputFile()[0];
 		formData.append('file', file);
@@ -212,7 +219,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.$store.commit('MENDER_ACTION_END');
+				this.$store.commit('menderClient/ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.installFailed').toString()
 				);
@@ -223,7 +230,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender commit task
 	 */
 	private commit(): void {
-		this.$store.commit('MENDER_ACTION_START', MenderActions.COMMIT);
+		this.$store.commit('menderClient/ACTION_START', MenderActions.COMMIT);
 		MenderService.commit()
 			.then(() => {
 				this.$toast.info(
@@ -231,7 +238,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.$store.commit('MENDER_ACTION_END');
+				this.$store.commit('menderClient/ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.commitFailed').toString()
 				);
@@ -242,7 +249,7 @@ export default class MenderUpdateControl extends Vue {
 	 * Performs mender rollback task
 	 */
 	private rollback(): void {
-		this.$store.commit('MENDER_ACTION_START', MenderActions.ROLLBACK);
+		this.$store.commit('menderClient/ACTION_START', MenderActions.ROLLBACK);
 		MenderService.rollback()
 			.then(() => {
 				this.$toast.info(
@@ -250,7 +257,7 @@ export default class MenderUpdateControl extends Vue {
 				);
 			})
 			.catch(() => {
-				this.$store.commit('MENDER_ACTION_END');
+				this.$store.commit('menderClient/ACTION_END');
 				this.$toast.error(
 					this.$t('maintenance.mender.update.messages.rollbackFailed').toString()
 				);

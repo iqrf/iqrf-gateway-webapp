@@ -95,7 +95,7 @@ import StandardSensorService from '../../services/DaemonApi/StandardSensorServic
 
 import {ISensor, IStandardSensor} from '../../interfaces/standard';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -147,12 +147,12 @@ export default class SensorManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
@@ -170,7 +170,7 @@ export default class SensorManager extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -204,10 +204,10 @@ export default class SensorManager extends Vue {
 
 	/**
 	 * Creates WebSocket request options object
-	 * @returns {WebSocketOptions} WebSocket request options
+	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
-	private buildOptions(): WebSocketOptions {
-		return new WebSocketOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
+	private buildOptions(): DaemonMessageOptions {
+		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
 	}
 
 	/**

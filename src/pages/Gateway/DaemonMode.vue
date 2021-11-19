@@ -96,7 +96,7 @@ import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
 import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
-import {WebSocketClientState} from '../../store/modules/daemonClient.module';
+import {DaemonClientState} from '../../interfaces/wsClient';
 
 
 @Component({
@@ -172,21 +172,21 @@ export default class DaemonMode extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
 				if (mutation.payload.data.msgId === this.msgId) {
-					this.$store.dispatch('removeMessage', this.msgId);
+					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 					this.handleResponse(mutation.payload);
 				}
 			}
 		});
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.getMode();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getMode();
@@ -201,7 +201,7 @@ export default class DaemonMode extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}

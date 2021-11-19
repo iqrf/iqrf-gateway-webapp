@@ -188,13 +188,13 @@ export default class DpaUpdater extends Vue {
 	created(): void {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				if (mutation.payload.data.status === 0) {
 					this.interfaceType = mutation.payload.data.rsp.osRead.flags.interfaceType;
@@ -210,7 +210,7 @@ export default class DpaUpdater extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 

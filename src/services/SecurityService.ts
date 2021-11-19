@@ -16,7 +16,7 @@
  */
 import store from '../store';
 import {SecurityFormat} from '../iqrfNet/securityFormat';
-import { WebSocketOptions } from '../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
 
 /**
  * TR configuration security service
@@ -45,8 +45,8 @@ class SecurityService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('daemon_sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**

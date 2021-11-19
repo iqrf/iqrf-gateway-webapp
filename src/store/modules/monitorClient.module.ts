@@ -14,74 +14,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ActionTree, GetterTree, MutationTree} from 'vuex';
+import {GetterTree, MutationTree} from 'vuex';
 import {MonitorClientState} from '../../interfaces/wsClient';
 
 const state: MonitorClientState = {
 	isConnected: false,
 	reconnecting: false,
+	hasReconnected: false,
 	receivedMessages: 0,
 	mode: 'unknown',
 	modal: false,
 	queueLen: 'unknown',
 };
 
-const actions: ActionTree<MonitorClientState, any> = {
-	showModal({commit}): void {
-		commit('MONITOR_SHOW_MODAL');
-	},
-};
-
 const getters: GetterTree<MonitorClientState, any> = {
-	monitor_getMode(state: MonitorClientState): string {
+	getMode(state: MonitorClientState): string {
 		return state.mode;
 	},
-	monitor_getModalState(state: MonitorClientState): boolean {
+	getModalState(state: MonitorClientState): boolean {
 		return state.modal;
 	},
-	monitor_getQueueLen(state: MonitorClientState): number|string {
+	getQueueLen(state: MonitorClientState): number|string {
 		return state.queueLen;
 	}
 };
 
 const mutations: MutationTree<MonitorClientState> = {
-	MONITOR_SOCKET_ONOPEN(state: MonitorClientState, event: Event) {
+	SOCKET_ONOPEN(state: MonitorClientState, event: Event) {
 		if (state.reconnecting) {
 			state.reconnecting = false;
 		}
 		state.isConnected = true;
 	},
-	MONITOR_SOCKET_ONCLOSE(state: MonitorClientState) {
+	SOCKET_ONCLOSE(state: MonitorClientState) {
 		state.isConnected = false;
 		state.mode = 'unknown';
 		state.queueLen = 'unknown';
 	},
-	MONITOR_SOCKET_RECONNECT(state: MonitorClientState) {
+	SOCKET_RECONNECT(state: MonitorClientState) {
 		state.reconnecting = true;
 	},
-	MONITOR_SOCKET_ONERROR(state: MonitorClientState, event: Event) {
+	SOCKET_ONERROR(state: MonitorClientState, event: Event) {
 		console.error(state, event);
 	},
-	MONITOR_SOCKET_ONMESSAGE(state: MonitorClientState) {
+	SOCKET_ONMESSAGE(state: MonitorClientState) {
 		state.receivedMessages += 1;
 	},
-	MONITOR_SHOW_MODAL(state: MonitorClientState): void {
+	SHOW_MODAL(state: MonitorClientState): void {
 		state.modal = true;
 	},
-	MONITOR_HIDE_MODAL(state: MonitorClientState): void {
+	HIDE_MODAL(state: MonitorClientState): void {
 		state.modal = false;
 	},
-	MONITOR_SET_MODE(state: MonitorClientState, mode: string): void {
+	SET_MODE(state: MonitorClientState, mode: string): void {
 		state.mode = mode;
 	},
-	MONITOR_UPDATE_QUEUE(state: MonitorClientState, len: number): void {
+	UPDATE_QUEUE(state: MonitorClientState, len: number): void {
 		state.queueLen = len;
 	},
 };
 
 export default {
+	namespaced: true,
 	state,
-	actions,
 	getters,
 	mutations,
 };

@@ -16,7 +16,7 @@
  */
 import {OtaUploadAction} from '../iqrfNet/otaUploadAction';
 import store from '../store';
-import {WebSocketOptions} from '../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
 
 /**
  * IQRF Network service
@@ -28,7 +28,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	autoNetwork(autoNetwork: any, options: WebSocketOptions): Promise<string> {
+	autoNetwork(autoNetwork: any, options: DaemonMessageOptions): Promise<string> {
 		const json = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
@@ -53,7 +53,7 @@ class IqrfNetService {
 			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
 		}
 		options.request = json;
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	backup(address: number, network = false, options: WebSocketOptions): Promise<string> {
+	backup(address: number, network = false, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_Backup',
 			'data': {
@@ -74,7 +74,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	bondLocal(address: number, options: WebSocketOptions): Promise<string> {
+	bondLocal(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_BondNodeLocal',
 			'data': {
@@ -94,7 +94,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @returns Message ID
 	 */
-	bondNfc(options: WebSocketOptions): Promise<string> {
+	bondNfc(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfRaw',
 			'data': {
@@ -113,7 +113,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	bondSmartConnect(address: number, scCode: string, testRetries: number, options: WebSocketOptions): Promise<string> {
+	bondSmartConnect(address: number, scCode: string, testRetries: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_SmartConnect',
 			'data': {
@@ -137,7 +137,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -146,7 +146,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	clearAllBonds(coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
+	clearAllBonds(coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
 				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
@@ -158,7 +158,7 @@ class IqrfNetService {
 					'returnVerbose': true,
 				},
 			};
-			return store.dispatch('daemon_sendRequest', options);
+			return store.dispatch('daemonClient/sendRequest', options);
 		} else {
 			return this.removeBond(255, false, options);
 		}
@@ -171,7 +171,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	discovery(txPower: number, maxAddr: number, options: WebSocketOptions): Promise<string> {
+	discovery(txPower: number, maxAddr: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_Discovery',
 			'data': {
@@ -185,7 +185,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -208,8 +208,8 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('daemon_sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -217,7 +217,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	getBonded(options: WebSocketOptions): Promise<string> {
+	getBonded(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_BondedDevices',
 			'data': {
@@ -228,7 +228,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -236,7 +236,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	getDiscovered(options: WebSocketOptions): Promise<string> {
+	getDiscovered(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_DiscoveredDevices',
 			'data': {
@@ -247,7 +247,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -259,7 +259,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @returns Message ID
 	 */
-	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: WebSocketOptions): Promise<string> {
+	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_OtaUpload',
 			'data': {
@@ -276,7 +276,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -284,7 +284,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	ping(options: WebSocketOptions): Promise<string> {
+	ping(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedFrc_Send',
 			'data': {
@@ -298,7 +298,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -307,7 +307,7 @@ class IqrfNetService {
 	 * @param options Websocket request options
 	 * @returns Message ID
 	 */
-	pingSelective(nodes: Array<number>, options: WebSocketOptions): Promise<string> {
+	pingSelective(nodes: Array<number>, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedFrc_SendSelective',
 			'data': {
@@ -322,7 +322,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			}
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -330,7 +330,7 @@ class IqrfNetService {
 	 * @param {number} address Device address to read configuration from
 	 * @return {string} Message ID
 	 */
-	readTrConfiguration(address: number, options: WebSocketOptions): Promise<string> {
+	readTrConfiguration(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_ReadTrConf',
 			'data': {
@@ -341,7 +341,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -351,7 +351,7 @@ class IqrfNetService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	removeBond(addr: number, coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
+	removeBond(addr: number, coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
 				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
@@ -375,7 +375,7 @@ class IqrfNetService {
 				},
 			};
 		}
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -385,7 +385,7 @@ class IqrfNetService {
 	 * @param data Backup data
 	 * @param options WebSocket request options
 	 */
-	restore(address: number, restart: boolean, data: string, options: WebSocketOptions): Promise<string> {
+	restore(address: number, restart: boolean, data: string, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_Restore',
 			'data': {
@@ -397,7 +397,7 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -405,8 +405,8 @@ class IqrfNetService {
 	 * @param options Websocket request options
 	 * @return Message ID
 	 */
-	sendJson(options: WebSocketOptions): Promise<string> {
-		return store.dispatch('daemon_sendRequest', options);
+	sendJson(options: DaemonMessageOptions): Promise<string> {
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -432,8 +432,8 @@ class IqrfNetService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('daemon_sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -443,7 +443,7 @@ class IqrfNetService {
 	 * @param callback Timeout callback
 	 * @return Message ID
 	 */
-	indicateCoordinator(options: WebSocketOptions): Promise<string> {
+	indicateCoordinator(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedOs_Batch',
 			'data': {
@@ -466,7 +466,7 @@ class IqrfNetService {
 				'returnVerbose': true
 			}
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 }
 

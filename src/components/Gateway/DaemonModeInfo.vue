@@ -25,7 +25,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
-import {WebSocketClientState} from '../../store/modules/daemonClient.module';
+import {DaemonClientState} from '../../interfaces/wsClient';
 
 @Component({})
 
@@ -71,24 +71,24 @@ export default class DaemonModeInfo extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				const response = mutation.payload;
 				if (!this.allowedMTypes.includes(response.mType)) {
 					return;
 				}
 				this.requestRunning = false;
 				if (response.data.msgId === this.msgId) {
-					this.$store.dispatch('removeMessage', this.msgId);
+					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 					this.mode = DaemonModeService.parse(response);
 					this.$emit('notify-cinfo');
 				}
 			}
 		});
-		if (this.$store.getters.daemon_isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.getMode();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.daemon_isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getMode();
@@ -103,7 +103,7 @@ export default class DaemonModeInfo extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}

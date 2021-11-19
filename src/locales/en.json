@@ -2753,6 +2753,7 @@
 					"rollback": "Rollback update"
 				},
 				"messages": {
+					"clientReconnecting": "Failed to establish connection or the connection was lost, attempting to reconnect...",
 					"installProgress": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
 					"installFailed": "Failed to install Mender artifact.",
 					"installSuccess": "Mender artifact has been successfully installed, see output log for further instructions.",

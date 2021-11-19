@@ -246,7 +246,7 @@ import {IOption} from '../../interfaces/coreui';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
 
 import JsonEditor from '../../components/Config/JsonEditor.vue';
@@ -508,20 +508,20 @@ export default class SchedulerForm extends Vue {
 			}
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'DAEMON_SOCKET_ONOPEN') {
+			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') {
 				this.useRest = false;
 				if (this.id && this.untouched) {
 					this.getTask(this.id);
 				}
-			} else if (mutation.type === 'DAEMON_SOCKET_ONCLOSE' ||
-				mutation.type === 'DAEMON_SOCKET_ONERROR') {
+			} else if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' ||
+				mutation.type === 'daemonClient/SOCKET_ONERROR') {
 				this.useRest = true;
-			} else if (mutation.type === 'DAEMON_SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
 					return;
 				}
 				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', mutation.payload.data.msgId);
 				if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					this.handleGetTask(mutation.payload.data);
 				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
@@ -543,7 +543,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	mounted(): void {
 		setTimeout(() => {
-			if (this.$store.getters.daemon_isSocketConnected) {
+			if (this.$store.getters['daemonClient/isConnected']) {
 				this.useRest = false;
 			}
 			if (this.id && this.untouched) {
@@ -556,7 +556,7 @@ export default class SchedulerForm extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.msgIds.forEach((item: string) => this.$store.dispatch('removeMessage', item));
+		this.msgIds.forEach((item: string) => this.$store.dispatch('daemonClient/removeMessage', item));
 		this.unsubscribe();
 	}
 
@@ -642,7 +642,7 @@ export default class SchedulerForm extends Vue {
 					this.$router.push('/config/daemon/scheduler/');
 				});
 		} else {
-			SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000, null, () => this.$router.push('/config/scheduler/')))
+			SchedulerService.getTask(taskId, new DaemonMessageOptions(null, 30000, null, () => this.$router.push('/config/scheduler/')))
 				.then((msgId: string) => this.storeId(msgId));
 		}
 	}
@@ -810,7 +810,7 @@ export default class SchedulerForm extends Vue {
 					.then(() => this.successfulSave())
 					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.addFailedRest'));
 			} else {
-				SchedulerService.addTask(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit(), new WebSocketOptions(
+				SchedulerService.addTask(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit(), new DaemonMessageOptions(
 					null, 30000, 'config.daemon.scheduler.messages.processError'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
@@ -820,7 +820,7 @@ export default class SchedulerForm extends Vue {
 					.then(() => this.successfulSave())
 					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.editFailedRest'));
 			} else {
-				SchedulerService.removeTask(this.id, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
+				SchedulerService.removeTask(this.id, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
 		}
@@ -842,7 +842,7 @@ export default class SchedulerForm extends Vue {
 			this.clientId,
 			this.tasks,
 			this.prepareTaskToSubmit(),
-			new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.processError')
+			new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.processError')
 		).then((msgId: string) => this.storeId(msgId));
 	}
 

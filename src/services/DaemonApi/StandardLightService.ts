@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/daemonClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 export class StandardLight {
 
@@ -52,7 +52,7 @@ class StandardLightService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<string> {
+	enumerate(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_Enumerate',
 			'data': {
@@ -63,7 +63,7 @@ class StandardLightService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class StandardLightService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	decrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
+	decrementPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_DecrementPower',
 			'data': {
@@ -86,7 +86,7 @@ class StandardLightService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class StandardLightService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	incrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
+	incrementPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_IncrementPower',
 			'data': {
@@ -109,7 +109,7 @@ class StandardLightService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class StandardLightService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	getPower(address: number, light: number, options: WebSocketOptions): Promise<string> {
+	getPower(address: number, light: number, options: DaemonMessageOptions): Promise<string> {
 		return this.setPower(address, [new StandardLight(light, 127)], options);
 	}
 
@@ -130,7 +130,7 @@ class StandardLightService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	setPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
+	setPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_SetPower',
 			'data': {
@@ -143,7 +143,7 @@ class StandardLightService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('daemon_sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 }
