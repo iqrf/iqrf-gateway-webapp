@@ -369,7 +369,7 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								name: this.$t('iqrfnet.trConfiguration.title'),
-								to: '/iqrfnet/tr-config/0',
+								to: '/iqrfnet/tr-config/',
 								roles: ['power', 'normal', 'iqaros'],
 							},
 							{
