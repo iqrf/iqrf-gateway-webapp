@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\IFileManager;
 use App\GatewayModule\Exceptions\HostnameException;
 use Nette\IOException;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**

@@ -1,0 +1,112 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json",
+	"type": "object",
+	"title": "Gateway backup",
+	"required": [
+		"software",
+		"system"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"software": {
+			"$id": "#/properties/software",
+			"title": "Software backup",
+			"description": "Select which software configuration to backup.",
+			"type": "object",
+			"required": [
+				"daemon",
+				"webapp",
+				"uploader"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"controller": {
+					"$id": "#/properties/software/properties/controller",
+					"title": "Controller",
+					"description": "IQRF Gateway Controller configuration.",
+					"type": "boolean"
+				},
+				"daemon": {
+					"$id": "#/properties/software/properties/daemon",
+					"title": "Daemon",
+					"description": "IQRF Gateway Daemon configuration.",
+					"type": "boolean"
+				},
+				"translator": {
+					"$id": "#/properties/software/properties/translator",
+					"title": "Translator",
+					"description": "IQRF Gateway Translator configuration.",
+					"type": "boolean"
+				},
+				"uploader": {
+					"$id": "#/properties/software/properties/uploader",
+					"title": "Uploader",
+					"description": "IQRF Gateway Uploader configuration.",
+					"type": "boolean"
+				},
+				"webapp": {
+					"$id": "#/properties/software/properties/webapp",
+					"title": "Webapp",
+					"description": "IQRF Gateway Webapp configuration.",
+					"type": "boolean"
+				},
+				"mender": {
+					"$id": "#/properties/software/properties/mender",
+					"title": "Mender",
+					"description": "Mender configuration.",
+					"type": "boolean"
+				},
+				"pixla": {
+					"$id": "#/properties/software/properties/pixla",
+					"title": "PIXLA",
+					"description": "PIXLA configuration.",
+					"type": "boolean"
+				}
+			}
+		},
+		"system": {
+			"$id": "#/properties/system",
+			"title": "System backup",
+			"description": "Select which system configuration to backup.",
+			"type": "object",
+			"required": [
+				"metadata",
+				"hostname"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"metadata": {
+					"$id": "#/properties/system/metadata",
+					"title": "Gateway metadata",
+					"description": "Gateway device metadata.",
+					"type": "boolean"
+				},
+				"hostname": {
+					"$id": "#/properties/system/hostname",
+					"title": "Hostname",
+					"description": "Hostname and hosts configuration.",
+					"type": "boolean"
+				},
+				"network": {
+					"$id": "#/properties/system/network",
+					"title": "NetworkManager",
+					"description": "NetworkManager configuration and connection profiles.",
+					"type": "boolean"
+				},
+				"ntp": {
+					"$id": "#/properties/system/ntp",
+					"title": "NTP",
+					"description": "Network time protocol configuration.",
+					"type": "boolean"
+				},
+				"journal": {
+					"$id": "#/properties/system/metadata",
+					"title": "Systemd journald",
+					"description": "Systemd journald configuration.",
+					"type": "boolean"
+				}
+			}
+		}
+	}
+}

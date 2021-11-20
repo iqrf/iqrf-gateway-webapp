@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import {IHostname} from '../interfaces/gatewayInfo';
+import {IGwBackup} from '../interfaces/backup';
 import {ISystemdJournal} from '../interfaces/systemdJournal';
 
 /**
@@ -140,6 +141,14 @@ class GatewayService {
 	 */
 	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
 		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves gateway backup data
+	 * @param params Backup parameters
+	 */
+	backup(params: IGwBackup): Promise<AxiosResponse> {
+		return axios.post('gateway/backup', params, {headers: authorizationHeader(), responseType: 'arraybuffer'});
 	}
 
 }
