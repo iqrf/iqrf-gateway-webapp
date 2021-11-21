@@ -1431,10 +1431,14 @@
 					"journal": "Journal"
 				},
 				"selectAll": "Select all",
-				"deselectAll": "Deselect all"
+				"deselectAll": "Deselect all",
+				"archive": "Backup archive",
+				"restore": "Restore"
 			},
 			"messages": {
-				"backupFailed": "Failed to create gateway backup archive: {error}."
+				"backupFailed": "Failed to create gateway backup archive: {error}",
+				"restoreFailed": "Failed to restore gateway: {error}",
+				"restoreSuccess": "Gateway has been successfully restored from backup archive."
 			}
 		}
 	},

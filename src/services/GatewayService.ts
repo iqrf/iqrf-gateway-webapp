@@ -151,6 +151,19 @@ class GatewayService {
 		return axios.post('gateway/backup', params, {headers: authorizationHeader(), responseType: 'arraybuffer'});
 	}
 
+	/**
+	 * Restores gateway from backup data
+	 * @param archive Backup archive
+	 */
+	restore(archive: File): Promise<AxiosResponse> {
+		const url = 'gateway/restore';
+		const headers = {
+			...authorizationHeader(),
+			'Content-Type': archive.type,
+		};
+		return axios.post(url, archive, {headers: headers});
+	}
+
 }
 
 export default new GatewayService();

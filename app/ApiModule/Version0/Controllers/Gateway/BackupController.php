@@ -31,7 +31,12 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
+use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Models\BackupManager;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
+use Bunny\Exception\ClientException;
+use JsonException;
 use Nette\Utils\FileSystem;
 
 /**
@@ -60,7 +65,7 @@ class BackupController extends GatewayController {
 	 * @Path("/backup")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Gateway backup
+	 *  summary: Backup gateway
 	 *  requestBody:
 	 *      required: true
 	 *      content:
@@ -87,6 +92,49 @@ class BackupController extends GatewayController {
 		$fileName = basename($filePath);
 		$response->writeBody(FileSystem::read($filePath));
 		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	}
+
+	/**
+	 * @Path("/restore")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Restore gateway from backup
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/zip:
+	 *              schema:
+	 *                  type: string
+	 *                  format: binary
+	 *  responses:
+	 *      '200':
+	 *          description: 'Success'
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '415':
+	 *          description: 'Unsupported media type'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function restore(ApiRequest $request, ApiResponse $response) {
+		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
+		ContentTypeUtil::validContentType($request, $contentTypes);
+		$path = '/tmp/iqrf-gateway-backup-upload.zip';
+		FileSystem::write($path, $request->getBody()->getContents());
+		try {
+			$this->manager->restore($path);
+		} catch (InvalidBackupContentException $e) {
+			throw new ClientException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (JsonException $e) {
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (UnsupportedInitSystemException $e) {
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
+		}
+
+		FileSystem::delete($path);
+		return $response->writeBody('Workaround');
 	}
 
 }

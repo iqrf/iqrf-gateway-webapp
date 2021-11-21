@@ -104,13 +104,31 @@ limitations under the License.
 					</CButton>
 				</CForm>
 			</CCardBody>
+			<CCardBody>
+				<CForm>
+					<CInputFile
+						ref='backupArchive'
+						accept='.zip'
+						:label='$t("gateway.backup.form.archive")'
+						@click='fileInputEmpty'
+						@input='fileInputEmpty'
+					/>
+					<CButton
+						color='primary'
+						:disabled='inputEmpty'
+						@click.prevent='restore'
+					>
+						{{ $t('gateway.backup.form.restore') }}
+					</CButton>
+				</CForm>
+			</CCardBody>
 		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CRow} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCol, CForm, CInputCheckbox, CInputFile, CRow} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {fileDownloader} from '../../helpers/fileDownloader';
@@ -127,6 +145,7 @@ import {IGwBackup} from '../../interfaces/backup';
 		CCol,
 		CForm,
 		CInputCheckbox,
+		CInputFile,
 		CRow
 	},
 	metaInfo: {
@@ -160,6 +179,11 @@ export default class GatewayBackup extends Vue {
 			journal: false,
 		},
 	}
+
+	/**
+	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
+	 */
+	private inputEmpty = true
 
 	/**
 	 * Sets all checkboxes to specified value
@@ -218,6 +242,39 @@ export default class GatewayBackup extends Vue {
 			delete params.system.journal;
 		}
 		return params;
+	}
+
+	private restore(): void {
+		const files = this.getFiles();
+		if (files === null || files.length === 0) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		GatewayService.restore(files[0])
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('gateway.backup.messages.restoreSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.backup.messages.restoreFailed'));
+	}
+
+	/**
+	 * Extracts uploaded files from form configuration file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFiles(): FileList {
+		const input = ((this.$refs.backupArchive as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Checks if form configuration file input is empty
+	 */
+	private fileInputEmpty(): void {
+		const files = this.getFiles();
+		this.inputEmpty = files.length === 0;
 	}
 }
 </script>

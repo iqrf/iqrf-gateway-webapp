@@ -341,6 +341,28 @@ class BackupManager {
 	public function restore(string $path): void {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
+		$this->restoreController();
+		$this->changeOwner();
+		$directories = [
+			$this->daemonDirectories->getConfigurationDir(),
+		];
+		foreach ($directories as $directory) {
+			$this->commandManager->run('rm -rf ' . $directory, true);
+			$this->commandManager->run('mkdir ' . $directory, true);
+		}
+		$this->restoreDaemon();
+		$this->restoreGateway();
+		$this->restoreHost();
+		$this->restoreJournal();
+		$this->restoreMender();
+		$this->restoreNetwork();
+		$this->restoreNtp();
+		$this->restorePixla();
+		$this->restoreTranslator();
+		$this->restoreUploader();
+		//$this->restoreWebapp();
+		$this->zipManager->close();
+		$this->serviceManager->restart();
 	}
 
 	/**
@@ -414,7 +436,7 @@ class BackupManager {
 			} elseif (strpos($file, 'ntp/') === 0) {
 				$wl = ['timesyncd.conf'];
 				$this->isWhitelisted($wl, $file);
-			} elseif (strpos($file, 'pixla/') == 0) {
+			} elseif (strpos($file, 'pixla/') === 0) {
 				$wl = ['customer_id', 'gw_id'];
 				$this->isWhitelisted($wl, $file);
 			} elseif (strpos($file, 'translator/') === 0) {
@@ -432,6 +454,11 @@ class BackupManager {
 		}
 	}
 
+	/**
+	 * Checks if file name is whitelisted
+	 * @param array<string> $whitelist Whitelist of files
+	 * @param string $file File name
+	 */
 	private function isWhitelisted(array $whitelist, string $file): void {
 		if (!in_array(basename($file), $whitelist)) {
 			throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
@@ -439,41 +466,7 @@ class BackupManager {
 	}
 
 	/**
-	 * Extracts an archive with configurations
-	 * @param string $path Path to archive with scheduler configuration
-	 * @throws IncompleteConfigurationException
-	 * @throws JsonException
-	 * @throws UnsupportedInitSystemException
-	 */
-	public function extractArchive(string $path): void {
-		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
-		$directories = [
-			$this->daemonDirectories->getConfigurationDir(),
-		];
-		if ($zipManager->exist('controller/config.json')) {
-			$directories[] = $this->controllerConfigDirectory;
-		}
-		if ($zipManager->exist('translator/config.json')) {
-			$directories[] = $this->translatorConfigDirectory;
-		}
-		if ($zipManager->exist('uploader/config.json')) {
-			$directories[] = $this->uploaderConfigDirectory;
-		}
-		foreach ($directories as $directory) {
-			$this->commandManager->run('rm -rf ' . $directory, true);
-			$this->commandManager->run('mkdir ' . $directory, true);
-		}
-		$this->changeOwner();
-		$this->extractDaemon($zipManager);
-		$this->extractTranslator($zipManager);
-		$this->extractUploader($zipManager);
-		$zipManager->close();
-		$this->serviceManager->restart();
-	}
-
-	/**
 	 * Extracts IQRF Gateway Controller's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
 	 */
 	private function restoreController(): void {
 		$this->zipManager->extract($this->controllerConfigDirectory, 'controller/config.json');
@@ -483,16 +476,14 @@ class BackupManager {
 
 	/**
 	 * Extracts IQRF Gateway Daemon's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
 	 */
-	private function extractDaemon(ZipArchiveManager $archiveManager): void {
-		foreach ($archiveManager->listFiles() as $file) {
-			var_dump($this->daemonDirectories->getCacheDir());
+	private function restoreDaemon(): void {
+		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {
-				$archiveManager->extract($this->daemonDirectories->getCacheDir(), $file);
+				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
 			}
 			if (strpos($file, 'daemon/') === 0) {
-				$archiveManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
+				$this->zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
@@ -502,27 +493,99 @@ class BackupManager {
 	}
 
 	/**
-	 * Extracts IQRF Gateway Translator's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
+	 * Extracts gateway file
 	 */
-	private function extractTranslator(ZipArchiveManager $archiveManager): void {
-		if ($archiveManager->exist('translator/config.json')) {
-			$archiveManager->extract($this->translatorConfigDirectory, 'translator/config.json');
-			$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config.json', true);
-			$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
+	private function restoreGateway(): void {
+		$this->zipManager->extract('/etc/gateway/', 'gateway/iqrf-gateway.json');
+		$this->commandManager->run('cp -p /etc/gateway/iqrf-gateway.json /etc/', true);
+		$this->commandManager->run('rm -rf /etc/gateway', true);
+	}
+
+	/**
+	 * Extracts host information
+	 */
+	private function restoreHost(): void {
+		$this->zipManager->extract('/etc/host/', 'host/hostname');
+		$this->zipManager->extract('/etc/host/', 'host/hosts');
+		$this->commandManager->run('cp -rfp /etc/host/* /etc/', true);
+		$this->commandManager->run('rm -rf /etc/host', true);
+	}
+
+	/**
+	 * Extracts journal configuration
+	 */
+	private function restoreJournal(): void {
+		$path = dirname($this->featureManager->get('systemdJournal')['path']);
+		$this->zipManager->extract($path, 'journal/journald.conf');
+		$this->commandManager->run('cp -rfp ' . $path . 'journal/* ' . $path, true);
+		$this->commandManager->run('rm -rf ' . $path . 'journal', true);
+	}
+
+	/**
+	 * Extracts Mender configuration
+	 */
+	private function restoreMender(): void {
+		$this->zipManager->extract(self::MENDER_DIR, 'mender/mender.conf');
+		$this->zipManager->extract(self::MENDER_DIR, 'mender/mender-connect.conf');
+		$this->commandManager->run('cp -rfp ' . self::MENDER_DIR . 'mender/* ' . self::MENDER_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::MENDER_DIR . 'mender', true);
+	}
+
+	private function restoreNetwork(): void {
+		foreach ($this->zipManager->listFiles() as $file) {
+			if (strpos($file, 'nm/') === 0) {
+				$this->zipManager->extract(self::NM_DIR, $file);
+			}
 		}
+		$this->commandManager->run('cp -rfp ' . self::NM_DIR . 'nm/system-connections/* ' . self::NM_DIR . 'system-connections/', true);
+		$this->commandManager->run('rm -rf ' . self::NM_DIR . 'nm/system-connections', true);
+		$this->commandManager->run('cp -rfp ' . self::NM_DIR . 'nm/* ' . self::NM_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::NM_DIR . 'nm', true);
+	}
+
+	/**
+	 * Extracts NTP configuration
+	 */
+	private function restoreNtp(): void {
+		$path = dirname($this->featureManager->get('ntp')['path']);
+		$this->zipManager->extract($path, 'ntp/timesyncd.conf');
+		$this->commandManager->run('cp -rfp ' . $path . 'ntp/* ' . $path, true);
+		$this->commandManager->run('rm -rf ' . $path . 'ntp', true);
+	}
+
+	/**
+	 * Extracts PIXLA configuration
+	 */
+	private function restorePixla(): void {
+		$this->zipManager->extract(self::PIXLA_DIR, 'pixla/customer_id');
+		$this->zipManager->extract(self::PIXLA_DIR, 'pixla/gw_id');
+		$this->commandManager->run('cp -p ' . self::PIXLA_DIR . 'pixla/* ' . self::PIXLA_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::PIXLA_DIR . 'pixla');
 	}
 
 	/**
 	 * Extracts IQRF Gateway Translator's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
 	 */
-	private function extractUploader(ZipArchiveManager $archiveManager): void {
-		if ($archiveManager->exist('uploader/config.json')) {
-			$archiveManager->extract($this->uploaderConfigDirectory, 'uploader/config.json');
-			$this->commandManager->run('cp -p ' . $this->uploaderConfigDirectory . 'uploader/config.json ' . $this->uploaderConfigDirectory . 'config.json', true);
-			$this->commandManager->run('rm -rf ' . $this->uploaderConfigDirectory . 'uploader', true);
-		}
+	private function restoreTranslator(): void {
+		$this->zipManager->extract($this->translatorConfigDirectory, 'translator/config.json');
+		$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config.json', true);
+		$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
+	}
+
+	/**
+	 * Extracts IQRF Gateway Uploader's configuration
+	 */
+	private function restoreUploader(): void {
+		$this->zipManager->extract($this->uploaderConfigDirectory, 'uploader/config.json');
+		$this->commandManager->run('cp -p ' . $this->uploaderConfigDirectory . 'uploader/config.json ' . $this->uploaderConfigDirectory . 'config.json', true);
+		$this->commandManager->run('rm -rf ' . $this->uploaderConfigDirectory . 'uploader', true);
+	}
+
+	/**
+	 * Extracts IQRF Gateway Webapp's data
+	 */
+	private function restoreWebapp(): void {
+		//
 	}
 
 	/**
