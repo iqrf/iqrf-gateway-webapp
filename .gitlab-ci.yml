@@ -128,7 +128,7 @@ coverage:
 coverage:jest:
   image: node:lts
   before_script:
-    - npm install
+    - npm install --legacy-peer-deps
   script:
     - npm run coverage:unit-ci
   allow_failure: true
@@ -167,17 +167,25 @@ eslint:
   stage: coding-style
   needs: []
   before_script:
-    - npm install
+    - npm install --legacy-peer-deps
   script:
     - npm run lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
 
 stylelint:
   stage: coding-style
   needs: []
   before_script:
-    - npm install
+    - npm install --legacy-peer-deps
   script:
     - npm run lint:css
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
 
 qa:
   stage: coding-style
