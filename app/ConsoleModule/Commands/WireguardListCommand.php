@@ -20,12 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\WireguardInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function assert;
 
 /**
  * CLI command to list WireGuard tunnels
@@ -33,7 +31,7 @@ use function assert;
 class WireguardListCommand extends WireguardCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'wireguard:list';
 
@@ -53,7 +51,6 @@ class WireguardListCommand extends WireguardCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$tunnels = [];
 		foreach ($this->repository->findAll() as $tunnel) {
-			assert($tunnel instanceof WireguardInterface);
 			$tunnels[] = [$tunnel->getName(), $this->manager->getTunnelState($tunnel)];
 		}
 		$style = new SymfonyStyle($input, $output);

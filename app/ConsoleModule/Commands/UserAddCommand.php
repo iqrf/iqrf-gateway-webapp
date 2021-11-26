@@ -37,7 +37,7 @@ use Symfony\Component\Console\Question\Question;
 class UserAddCommand extends Command {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:add';
 

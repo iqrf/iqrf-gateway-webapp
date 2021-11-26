@@ -34,7 +34,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class UserRemoveAllCommand extends UserCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:remove-all';
 
@@ -77,7 +77,6 @@ class UserRemoveAllCommand extends UserCommand {
 			}
 		}
 		foreach ($users as $user) {
-			assert($user instanceof User);
 			$this->entityManager->remove($user);
 		}
 		$this->entityManager->flush();

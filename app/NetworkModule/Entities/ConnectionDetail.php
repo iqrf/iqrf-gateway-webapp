@@ -161,7 +161,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
 	 * Serializes network connection entity into JSON
-	 * @return array<string, string|array> JSON serialized data
+	 * @return array<string, string|array<string, array<string, string>|array<int, array<string, int|string>>|int|string|null>> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$json = [

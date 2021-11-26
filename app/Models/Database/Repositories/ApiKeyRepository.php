@@ -22,10 +22,10 @@ namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\ApiKey;
 use Doctrine\ORM\EntityRepository;
-use function assert;
 
 /**
  * API key repository
+ * @extends EntityRepository<ApiKey>
  */
 class ApiKeyRepository extends EntityRepository {
 
@@ -35,9 +35,7 @@ class ApiKeyRepository extends EntityRepository {
 	 * @return ApiKey|null API key entity
 	 */
 	public function findOneBySalt(string $salt): ?ApiKey {
-		$apiKey = $this->findOneBy(['salt' => $salt]);
-		assert($apiKey instanceof ApiKey || $apiKey === null);
-		return $apiKey;
+		return $this->findOneBy(['salt' => $salt]);
 	}
 
 	/**
@@ -47,7 +45,6 @@ class ApiKeyRepository extends EntityRepository {
 	public function listWithDescription(): array {
 		$array = [];
 		foreach ($this->findAll() as $apiKey) {
-			assert($apiKey instanceof ApiKey);
 			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
 			$array[$apiKey->getId()] = sprintf('ID: %d, description: %s, expiration: %s', $apiKey->getId(), $apiKey->getDescription(), $expiration);
 		}

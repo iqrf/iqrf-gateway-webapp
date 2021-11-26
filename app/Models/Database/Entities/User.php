@@ -152,7 +152,7 @@ class User implements JsonSerializable {
 	private $language;
 
 	/**
-	 * @var Collection<UserVerification> User verifications
+	 * @var Collection<int, UserVerification> User verifications
 	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
 	 */
 	private $verifications;
@@ -176,7 +176,7 @@ class User implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the user name
+	 * Returns the username
 	 * @return string User name
 	 */
 	public function getUserName(): string {
@@ -233,7 +233,7 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns all e-mail address verification
-	 * @return Collection<UserVerification> E-mail address verifications
+	 * @return Collection<int, UserVerification> E-mail address verifications
 	 */
 	public function getVerifications(): Collection {
 		return $this->verifications;

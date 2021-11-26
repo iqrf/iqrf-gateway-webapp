@@ -18,6 +18,12 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import {UploadUtilFile} from '../interfaces/trUpload';
 
+interface IqrfInterfacePorts {
+	cdc: Array<string>;
+	spi: Array<string>;
+	uart: Array<string>;
+}
+
 /**
  * IQRF networks service
  */
@@ -28,8 +34,9 @@ class IqrfService {
 	 */
 	getInterfacePorts(interfaceType: string): Promise<Array<string>> {
 		return axios.get('iqrf/interfaces/', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => {
-				return response.data[interfaceType] as Array<string>;
+			.then((response: AxiosResponse<any>) => {
+				const ports: IqrfInterfacePorts = response.data;
+				return ports[interfaceType] as Array<string>;
 			});
 	}
 
@@ -60,7 +67,7 @@ class IqrfService {
 	 * Executes upload via IQRF Gateway Uploader
 	 * @param {Record<string, string>} data API request body
 	 */
-	uploader(data: UploadUtilFile): Promise<AxiosResponse> {
+	uploader(data: UploadUtilFile): Promise<AxiosResponse<void>> {
 		return axios.post('iqrf/uploader', data, {headers: authorizationHeader(), timeout: 30000});
 	}
 

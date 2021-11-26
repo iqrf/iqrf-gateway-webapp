@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UserListCommand extends UserCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:list';
 
@@ -62,12 +62,9 @@ class UserListCommand extends UserCommand {
 	 * @return array<int, array<string, int|string>> Registered users
 	 */
 	private function getUsers(): array {
-		$users = [];
-		foreach ($this->repository->findAll() as $user) {
-			assert($user instanceof User);
-			$users[] = $user->jsonSerialize();
-		}
-		return $users;
+		return array_map(function (User $user): array {
+			return $user->jsonSerialize();
+		}, $this->repository->findAll());
 	}
 
 }

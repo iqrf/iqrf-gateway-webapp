@@ -33,7 +33,7 @@ use Throwable;
 class WireguardActivateCommand extends WireguardCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'wireguard:activate';
 

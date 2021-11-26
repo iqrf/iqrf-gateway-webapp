@@ -82,7 +82,7 @@ final class WifiConnection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes WiFi connection entity into JSON
-	 * @return array<string, string|array> JSON serialized entity
+	 * @return array<string, string|array<int|string, string|array<string, array<string>|int|string>>|null> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

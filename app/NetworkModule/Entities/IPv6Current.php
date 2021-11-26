@@ -62,7 +62,7 @@ final class IPv6Current implements JsonSerializable {
 
 	/**
 	 * Serializes current IPv6 configuration entity into JSON
-	 * @return array<string, array<array>|int|string> JSON serialized entity
+	 * @return array<string, array<array<string, int|string>>|int|string> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

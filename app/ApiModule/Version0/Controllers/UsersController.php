@@ -192,7 +192,6 @@ class UsersController extends BaseController {
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		assert($user instanceof User);
 		return $response->writeJsonObject($user);
 	}
 
@@ -263,7 +262,6 @@ class UsersController extends BaseController {
 		}
 		$this->validator->validateRequest('userEdit', $request);
 		$json = $request->getJsonBody();
-		assert($user instanceof User);
 		if (array_key_exists('username', $json)) {
 			$userWithName = $this->repository->findOneByUserName($json['username']);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {

@@ -22,10 +22,10 @@ namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\Mapping;
 use Doctrine\ORM\EntityRepository;
-use function assert;
 
 /**
  * Mapping repository
+ * @extends EntityRepository<Mapping>
  */
 class MappingRepository extends EntityRepository {
 
@@ -35,9 +35,7 @@ class MappingRepository extends EntityRepository {
 	 * @return Mapping|null Mapping entity
 	 */
 	public function findMappingByName(string $name): ?Mapping {
-		$mapping = $this->findOneBy(['name' => $name]);
-		assert($mapping instanceof Mapping || $mapping === null);
-		return $mapping;
+		return $this->findOneBy(['name' => $name]);
 	}
 
 	/**
@@ -47,7 +45,6 @@ class MappingRepository extends EntityRepository {
 	public function listMappingNamesWithTypes(): array {
 		$array = [];
 		foreach ($this->findAll() as $mapping) {
-			assert($mapping instanceof Mapping);
 			$array[$mapping->getId()] = sprintf('ID:%d - %s (%s)', $mapping->getId(), $mapping->getName(), $mapping->getType());
 		}
 		return $array;

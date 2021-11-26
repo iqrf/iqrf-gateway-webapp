@@ -133,18 +133,14 @@ class ServicesController extends BaseController {
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
+		/** @var array{active:bool, enabled: bool} $status */
 		$status = [];
 		try {
 			try {
-				$status['enabled'] = $this->manager->isEnabled($name);
 				$status['active'] = $this->manager->isActive($name);
+				$status['enabled'] = $this->manager->isEnabled($name);
 			} catch (NotImplementedException $e) {
-				if (isset($status['enabled'])) {
-					unset($status['enabled']);
-				}
-				if (isset($status['active'])) {
-					unset($status['active']);
-				}
+				unset($status['active'], $status['enabled']);
 			}
 			$status['status'] = $this->manager->getStatus($name);
 			return $response->writeJsonBody($status);

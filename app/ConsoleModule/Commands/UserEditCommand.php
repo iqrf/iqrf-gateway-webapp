@@ -33,7 +33,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 class UserEditCommand extends UserCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:edit';
 

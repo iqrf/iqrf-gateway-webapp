@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
+use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Wireguard interface IPv6 repository
+ * WireGuard interface IPv6 repository
+ * @extends EntityRepository<WireguardInterfaceIpv6>
  */
 class WireguardInterfaceIpv6Repository extends EntityRepository {
 

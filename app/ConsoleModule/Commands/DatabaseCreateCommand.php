@@ -31,7 +31,7 @@ use Throwable;
 class DatabaseCreateCommand extends Command {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'database:create';
 

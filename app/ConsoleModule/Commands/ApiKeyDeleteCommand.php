@@ -36,7 +36,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ApiKeyDeleteCommand extends ApiKeyCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'api-key:delete';
 

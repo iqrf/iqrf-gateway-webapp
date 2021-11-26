@@ -111,7 +111,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes IPv4 connection entity into JSON
-	 * @return array<string, array|int|string|null> JSON serialized entity
+	 * @return array<string, array<string, string>|array<int, array<string, int|string>>|int|string|null> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [

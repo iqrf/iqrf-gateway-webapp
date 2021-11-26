@@ -213,7 +213,7 @@ class FeatureManager {
 		$features = $this->read();
 		$enabled = [];
 		foreach ($features as $feature => $configuration) {
-			if (!$configuration['enabled'] ?? true) {
+			if (!($configuration['enabled'] ?? false)) {
 				continue;
 			}
 			$enabled[] = $feature;
@@ -229,7 +229,7 @@ class FeatureManager {
 		$features = $this->read();
 		$urls = [];
 		foreach ($features as $feature => $configuration) {
-			if ((!$configuration['enabled'] ?? true) || !isset($configuration['url'])) {
+			if ((!($configuration['enabled'] ?? false)) || !isset($configuration['url'])) {
 				continue;
 			}
 			$urls[$feature] = $configuration['url'];
@@ -241,6 +241,7 @@ class FeatureManager {
 	 * Sets features enablement
 	 * @param array<string> $names Feature names
 	 * @param bool $enabled Are features enabled?
+	 * @throws FeatureNotFoundException
 	 * @throws IOException
 	 */
 	public function setEnabled(array $names, bool $enabled = true): void {

@@ -33,7 +33,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MappingAddCommand extends MappingCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'mapping:add';
 

@@ -33,7 +33,6 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\MappingRepository;
-use function assert;
 
 /**
  * Mapping controller
@@ -169,7 +168,6 @@ class MappingController extends BaseController {
 		if ($mapping === null) {
 			throw new ClientErrorException('Mapping not found', ApiResponse::S404_NOT_FOUND);
 		}
-		assert($mapping instanceof Mapping);
 		return $response->writeJsonObject($mapping);
 	}
 
@@ -234,7 +232,6 @@ class MappingController extends BaseController {
 		if ($mapping === null) {
 			throw new ClientErrorException('Mapping not found', ApiResponse::S404_NOT_FOUND);
 		}
-		assert($mapping instanceof Mapping);
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBody(false);
 		$mapping->setName($json->name);

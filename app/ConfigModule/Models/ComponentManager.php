@@ -113,6 +113,7 @@ class ComponentManager implements IConfigManager {
 		$components = [];
 		$json = $this->fileManager->read($this->fileName)['components'];
 		foreach ($json as $id => $config) {
+			/** @var array{name: string, libraryPath: string, libraryName: string, enabled: bool, startLevel: int} $config Component configuration */
 			$components[$id] = Arrays::mergeTree(['id' => $id], $config);
 		}
 		return $components;

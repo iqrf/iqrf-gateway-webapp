@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\Mapping;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -31,7 +30,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MappingListCommand extends MappingCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'mapping:list';
 
@@ -51,7 +50,6 @@ class MappingListCommand extends MappingCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$mappings = [];
 		foreach ($this->repository->findAll() as $mapping) {
-			assert($mapping instanceof Mapping);
 			$mappings[] = [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate(), $mapping->getI2cPin(), $mapping->getSpiPin(), $mapping->getUartPin()];
 		}
 		$style = new SymfonyStyle($input, $output);

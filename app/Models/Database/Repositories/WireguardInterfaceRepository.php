@@ -22,22 +22,20 @@ namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\WireguardInterface;
 use Doctrine\ORM\EntityRepository;
-use function assert;
 
 /**
- * Wireguard interface repository
+ * WireGuard interface repository
+ * @extends EntityRepository<WireguardInterface>
  */
 class WireguardInterfaceRepository extends EntityRepository {
 
 	/**
-	 * Finds Wireguard interface by specified name
-	 * @param string $name Wireguard interface name
-	 * @return WireguardInterface|null Wireguard interface entity
+	 * Finds WireGuard interface by specified name
+	 * @param string $name WireGuard interface name
+	 * @return WireguardInterface|null WireGuard interface entity
 	 */
 	public function findInterfaceByName(string $name): ?WireguardInterface {
-		$interface = $this->findOneBy(['name' => $name]);
-		assert($interface instanceof WireguardInterface || $interface === null);
-		return $interface;
+		return $this->findOneBy(['name' => $name]);
 	}
 
 }

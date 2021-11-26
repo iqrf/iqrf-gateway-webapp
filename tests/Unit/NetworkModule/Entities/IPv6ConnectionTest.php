@@ -48,11 +48,6 @@ final class IPv6ConnectionTest extends TestCase {
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * IPv6 gateway address
-	 */
-	private const GATEWAY = 'fe80::1';
-
-	/**
 	 * @var IPv6Methods IPv6 connection method
 	 */
 	private $method;

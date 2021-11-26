@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * User repository
+ * @extends EntityRepository<User>
  */
 class UserRepository extends EntityRepository {
 
@@ -34,9 +35,7 @@ class UserRepository extends EntityRepository {
 	 * @return User|null User entity
 	 */
 	public function findOneByEmail(string $email): ?User {
-		$user = $this->findOneBy(['email' => $email]);
-		assert($user instanceof User || $user === null);
-		return $user;
+		return $this->findOneBy(['email' => $email]);
 	}
 
 	/**
@@ -45,9 +44,7 @@ class UserRepository extends EntityRepository {
 	 * @return User|null User entity
 	 */
 	public function findOneByUserName(string $userName): ?User {
-		$user = $this->findOneBy(['username' => $userName]);
-		assert($user instanceof User || $user === null);
-		return $user;
+		return $this->findOneBy(['username' => $userName]);
 	}
 
 	/**
@@ -55,12 +52,9 @@ class UserRepository extends EntityRepository {
 	 * @return array<string> User names
 	 */
 	public function listUserNames(): array {
-		$usernames = [];
-		foreach ($this->findAll() as $user) {
-			assert($user instanceof User);
-			$usernames[] = $user->getUserName();
-		}
-		return $usernames;
+		return array_map(function (User $user): string {
+			return $user->getUserName();
+		}, $this->findAll());
 	}
 
 }

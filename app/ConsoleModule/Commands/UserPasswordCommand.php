@@ -32,7 +32,7 @@ use Symfony\Component\Console\Question\Question;
 class UserPasswordCommand extends UserCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:password';
 

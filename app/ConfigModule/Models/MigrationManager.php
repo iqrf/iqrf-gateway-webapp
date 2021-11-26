@@ -140,6 +140,7 @@ class MigrationManager {
 	 * @param string $path Path to archive with scheduler configuration
 	 * @throws IncompleteConfigurationException
 	 * @throws JsonException
+	 * @throws NotDaemonConfigurationException
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function extractArchive(string $path): void {

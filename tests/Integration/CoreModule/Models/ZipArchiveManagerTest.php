@@ -92,7 +92,7 @@ final class ZipArchiveManagerTest extends TestCase {
 	/**
 	 * Creates the list of files
 	 * @param string $path Path to the directory
-	 * @return array<string>|array List of files in the directory
+	 * @return array<string> List of files in the directory
 	 */
 	private function createList(string $path): array {
 		$path = realpath($path) . '/';

@@ -27,7 +27,6 @@ use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\TimeDateException;
-use App\ServiceModule\Models\ServiceManager;
 
 /**
  * NTP manager
@@ -46,11 +45,6 @@ class NtpManager {
 			'PollIntervalMaxSec' => 2048,
 		],
 	];
-
-	/**
-	 * Timesyncd service
-	 */
-	private const TIMESYNCD_SERVICE = 'systemd-timesyncd';
 
 	/**
 	 * @var string $fullPath Path to configuration file
@@ -73,27 +67,15 @@ class NtpManager {
 	private $fileManager;
 
 	/**
-	 * @var ServiceManager $serviceManager Service manager
-	 */
-	private $serviceManager;
-
-	/**
-	 * @var string $utility Time sync utility
-	 */
-	private $utility;
-
-	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
 		$feature = $featureManager->get('ntp');
 		$this->fullPath = $feature['path'];
 		$this->confFile = basename($this->fullPath);
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(dirname($this->fullPath), $commandManager);
-		$this->serviceManager = $serviceManager;
-		$this->utility = $feature['utility'];
 	}
 
 	/**

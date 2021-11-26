@@ -98,6 +98,7 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to load configuration of components
 	 */
 	public function testList(): void {
+		/** @var array<array<string,bool|int|string>> $components */
 		$components = $this->readFile(self::FILE_NAME)['components'];
 		$expected = [];
 		foreach ($components as $id => $config) {

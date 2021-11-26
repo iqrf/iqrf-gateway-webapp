@@ -32,7 +32,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class WireguardDeactivateCommand extends WireguardCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'wireguard:deactivate';
 

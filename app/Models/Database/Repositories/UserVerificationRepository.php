@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * User verification repository
+ * @extends EntityRepository<UserVerification>
  */
 class UserVerificationRepository extends EntityRepository {
 
@@ -34,9 +35,7 @@ class UserVerificationRepository extends EntityRepository {
 	 * @return UserVerification|null User verification entity
 	 */
 	public function findOneByUuid(string $uuid): ?UserVerification {
-		$verification = $this->findOneBy(['uuid' => $uuid]);
-		assert($verification instanceof UserVerification || $verification === null);
-		return $verification;
+		return $this->findOneBy(['uuid' => $uuid]);
 	}
 
 }

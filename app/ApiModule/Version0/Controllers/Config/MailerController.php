@@ -44,12 +44,12 @@ use Nette\Utils\JsonException;
 class MailerController extends BaseConfigController {
 
 	/**
-	 * @var ConfigurationManager $manager Mailer configuration manager
+	 * @var ConfigurationManager Mailer configuration manager
 	 */
 	private $manager;
 
 	/**
-	 * @var MailerConfigurationTestMailSender $mailer Mailer configuration test mail sender
+	 * @var MailerConfigurationTestMailSender Mailer configuration test mail sender
 	 */
 	private $configurationTestSender;
 

@@ -100,7 +100,7 @@ class SshManager {
 
 	/**
 	 * Returns array of existing SSH public keys
-	 * @return array<int, array<string, int|string|null>> List of existing SSH public keys
+	 * @return array<int, SshKey> List of existing SSH public keys
 	 * @throws SshDirectoryException
 	 */
 	public function listKeys(): array {

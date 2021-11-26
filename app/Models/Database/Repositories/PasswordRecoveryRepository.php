@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * Password recovery repository
+ * @extends EntityRepository<PasswordRecovery>
  */
 class PasswordRecoveryRepository extends EntityRepository {
 
@@ -34,9 +35,7 @@ class PasswordRecoveryRepository extends EntityRepository {
 	 * @return PasswordRecovery|null User entity
 	 */
 	public function findOneByUuid(string $uuid): ?PasswordRecovery {
-		$recovery = $this->findOneBy(['uuid' => $uuid]);
-		assert($recovery instanceof PasswordRecovery || $recovery === null);
-		return $recovery;
+		return $this->findOneBy(['uuid' => $uuid]);
 	}
 
 }

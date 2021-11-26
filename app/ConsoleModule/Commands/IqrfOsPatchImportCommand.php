@@ -39,7 +39,7 @@ class IqrfOsPatchImportCommand extends Command {
 	private const DIR_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'iqrf-os:import-patches';
 
@@ -75,7 +75,6 @@ class IqrfOsPatchImportCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$repository = $this->entityManager->getIqrfOsPatchRepository();
 		foreach ($repository->findAll() as $patch) {
-			assert($patch instanceof IqrfOsPatch);
 			if (file_exists(self::DIR_PATH . $patch->getFileName())) {
 				continue;
 			}

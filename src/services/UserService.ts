@@ -136,7 +136,7 @@ class UserService {
 			password: password
 		};
 		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => {
+			.then((response: AxiosResponse<User>) => {
 				return response.data as User;
 			});
 	}

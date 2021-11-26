@@ -33,8 +33,9 @@ class EntityManager extends EntityManagerDecorator {
 	/**
 	 * Returns the selected repository
 	 * @internal
-	 * @param string $entityName Entity name
-	 * @return EntityRepository<mixed> Entity repository
+	 * @template TEntityClass
+	 * @param class-string $entityName Entity class name
+	 * @return EntityRepository<TEntityClass> Entity repository
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 	 */

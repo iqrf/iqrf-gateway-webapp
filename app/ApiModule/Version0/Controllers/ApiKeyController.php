@@ -35,7 +35,6 @@ use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use function assert;
 
 /**
  * API keys controller
@@ -163,7 +162,6 @@ class ApiKeyController extends BaseController {
 		if ($apiKey === null) {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
-		assert($apiKey instanceof ApiKey);
 		return $response->writeJsonObject($apiKey);
 	}
 
@@ -228,7 +226,6 @@ class ApiKeyController extends BaseController {
 		if ($apiKey === null) {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
-		assert($apiKey instanceof ApiKey);
 		$this->validator->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBody(false);
 		$apiKey->setDescription($json->description);

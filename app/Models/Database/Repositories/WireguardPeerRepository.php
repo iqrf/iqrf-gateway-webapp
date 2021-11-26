@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Repositories;
 
+use App\Models\Database\Entities\WireguardPeer;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Wireguard peer repository
+ * WireGuard peer repository
+ * @extends EntityRepository<WireguardPeer>
  */
 class WireguardPeerRepository extends EntityRepository {
 

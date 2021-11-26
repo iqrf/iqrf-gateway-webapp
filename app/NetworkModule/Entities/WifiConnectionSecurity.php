@@ -38,11 +38,6 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	public const NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
-	 * nmcli 802-1x security configuration prefix
-	 */
-	public const NMCLI_EAP_PREFIX = '802-1x';
-
-	/**
 	 * @var WifiSecurityType WiFi security type
 	 */
 	private $type;
@@ -103,7 +98,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
 	 * Serializes WiFi connection security entity into JSON
-	 * @return array<string, string|array> JSON serialized entity
+	 * @return array<string, string|array<string, array<string>|int|string>> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [

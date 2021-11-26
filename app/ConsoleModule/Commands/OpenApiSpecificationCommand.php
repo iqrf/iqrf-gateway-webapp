@@ -37,7 +37,7 @@ class OpenApiSpecificationCommand extends Command {
 	private $schemaBuilder;
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'open-api:specification';
 

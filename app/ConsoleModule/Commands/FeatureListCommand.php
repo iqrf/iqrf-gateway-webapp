@@ -31,7 +31,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FeatureListCommand extends FeatureCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'feature:list';
 

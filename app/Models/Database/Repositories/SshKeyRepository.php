@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * SSH key repository
+ * @extends EntityRepository<SshKey>
  */
 class SshKeyRepository extends EntityRepository {
 
@@ -34,9 +35,7 @@ class SshKeyRepository extends EntityRepository {
 	 * @return SshKey|null SSH public key entity
 	 */
 	public function findByHash(string $hash): ?SshKey {
-		$key = $this->findOneBy(['hash' => $hash]);
-		assert($key instanceof SshKey || $key === null);
-		return $key;
+		return $this->findOneBy(['hash' => $hash]);
 	}
 
 }

@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Wireguard interface entity
+ * WireGuard interface entity
  * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceRepository")
  * @ORM\Table(name="`wireguard_interfaces`")
  * @ORM\HasLifecycleCallbacks()
@@ -67,16 +67,16 @@ class WireguardInterface implements JsonSerializable {
 	private $ipv6;
 
 	/**
-	 * @var Collection Interface peer IDs
+	 * @var Collection<int, WireguardPeer> Interface peer IDs
 	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $peers;
 
 	/**
 	 * Constructor
-	 * @param string $name Wireguard tunnel interface name
-	 * @param string $privateKey Wireguard tunnel interface private key
-	 * @param int|null $port Wireguard tunnel interface listen port
+	 * @param string $name WireGuard tunnel interface name
+	 * @param string $privateKey WireGuard tunnel interface private key
+	 * @param int|null $port WireGuard tunnel interface listen port
 	 */
 	public function __construct(string $name, string $privateKey, ?int $port) {
 		$this->name = $name;
@@ -183,7 +183,7 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Returns interface peers
-	 * @return Collection<WireguardPeer> interface peers
+	 * @return Collection<int, WireguardPeer> Interface peers
 	 */
 	public function getPeers(): Collection {
 		return $this->peers;
@@ -191,15 +191,15 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * Sets interface peers
-	 * @param Collection $peers interface peers
+	 * @param Collection<int, WireguardPeer> $peers interface peers
 	 */
 	public function setPeers(Collection $peers): void {
 		$this->peers = $peers;
 	}
 
 	/**
-	 * Serializes wireguard interface entity into JSON
-	 * @return array<string, array<array<string, array<string, array<int, mixed>>|int|string|null>|int|string>|int|string|null> JSON serialized wireguard interface entity
+	 * Serializes WireGuard interface entity into JSON
+	 * @return array<string, array<array<string, array<string, array<int, mixed>>|int|string|null>|int|string>|int|string|null> JSON serialized WireGuard interface entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [
@@ -221,8 +221,8 @@ class WireguardInterface implements JsonSerializable {
 	}
 
 	/**
-	 * Serializes wireguard interface entity into wg utility command
-	 * @return string JSON serialized wireguard interface entity
+	 * Serializes WireGuard interface entity into wg utility command
+	 * @return string JSON serialized WireGuard interface entity
 	 */
 	public function wgSerialize(): string {
 		$command = 'wg set ' . $this->getName();

@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Wireguard peer entity
+ * WireGuard peer entity
  * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardPeerRepository")
  * @ORM\Table(name="`wireguard_peers`")
  * @ORM\HasLifecycleCallbacks()
@@ -74,7 +74,7 @@ class WireguardPeer implements JsonSerializable {
 	private $interface;
 
 	/**
-	 * @var Collection<WireguardPeerAddress> Peer allowed IPs
+	 * @var Collection<int, WireguardPeerAddress> Peer allowed IPs
 	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist"}, orphanRemoval=true)
 	 */
 	private $addresses;
@@ -86,7 +86,7 @@ class WireguardPeer implements JsonSerializable {
 	 * @param int $keepalive Peer keepalive interval
 	 * @param string $endpoint Peer endpoint
 	 * @param int $port Peer listen port
-	 * @param WireguardInterface $interface Wireguard interface
+	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
 		$this->publicKey = $publicKey;
@@ -179,16 +179,16 @@ class WireguardPeer implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard interface
-	 * @return WireguardInterface Wireguard interface
+	 * Returns WireGuard interface
+	 * @return WireguardInterface WireGuard interface
 	 */
 	public function getInterface(): WireguardInterface {
 		return $this->interface;
 	}
 
 	/**
-	 * Sets Wireguard interface
-	 * @param WireguardInterface $interface Wireguard interface
+	 * Sets WireGuard interface
+	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function setInterface(WireguardInterface $interface): void {
 		$this->interface = $interface;
@@ -203,7 +203,7 @@ class WireguardPeer implements JsonSerializable {
 	}
 
 	/**
-	 * Delets peer allowed IP address
+	 * Deletes peer allowed IP address
 	 * @param WireguardPeerAddress $address WireGuard allowed peer IP address
 	 */
 	public function deleteAddress(WireguardPeerAddress $address): void {
@@ -212,7 +212,7 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * Returns peer allowed IPs
-	 * @return Collection<WireguardPeerAddress> Peer allowed IPs
+	 * @return Collection<int, WireguardPeerAddress> Peer allowed IPs
 	 */
 	public function getAddresses(): Collection {
 		return $this->addresses;
@@ -220,15 +220,15 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * Sets peer allowed IPs
-	 * @param Collection<WireguardPeerAddress> $addresses Peer allowed IPs
+	 * @param Collection<int, WireguardPeerAddress> $addresses Peer allowed IPs
 	 */
 	public function setAddresses(Collection $addresses): void {
 		$this->addresses = $addresses;
 	}
 
 	/**
-	 * Serializes wireguard peer entity into JSON
-	 * @return array<string, array<string, array<int, mixed>>|int|string|null> JSON serialized wireguard peer entity
+	 * Serializes WireGuard peer entity into JSON
+	 * @return array<string, array<string, array<int, mixed>>|int|string|null> JSON serialized WireGuard peer entity
 	 */
 	public function jsonSerialize(): array {
 		$ipv4 = $ipv6 = [];
@@ -254,7 +254,7 @@ class WireguardPeer implements JsonSerializable {
 	}
 
 	/**
-	 * Serializes wireguard peer entity into wg utility command
+	 * Serializes WireGuard peer entity into wg utility command
 	 */
 	public function wgSerialize(): string {
 		$command = 'peer ' . $this->getPublicKey();

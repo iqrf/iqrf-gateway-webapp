@@ -20,11 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\ApiKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function assert;
 
 /**
  * CLI command for listing API keys
@@ -32,7 +30,7 @@ use function assert;
 class ApiKeyListCommand extends ApiKeyCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'api-key:list';
 
@@ -52,7 +50,6 @@ class ApiKeyListCommand extends ApiKeyCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$apiKeys = [];
 		foreach ($this->repository->findAll() as $apiKey) {
-			assert($apiKey instanceof ApiKey);
 			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
 			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];
 		}

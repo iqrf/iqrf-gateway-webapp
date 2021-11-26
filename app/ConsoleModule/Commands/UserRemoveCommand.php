@@ -32,7 +32,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class UserRemoveCommand extends UserCommand {
 
 	/**
-	 * @var string Command name
+	 * @var string|null Command name
 	 */
 	protected static $defaultName = 'user:remove';
 

@@ -68,8 +68,8 @@ class Eap implements INetworkManagerEntity {
 
 	/**
 	 * Constructor
-	 * @param EapPhaseOneMethod $phaseOne EAP phase one authentication method
-	 * @param EapPhaseTwoMethod $phaseTwo EAP phase two authentication method
+	 * @param EapPhaseOneMethod|null $phaseOne EAP phase one authentication method
+	 * @param EapPhaseTwoMethod|null $phaseTwo EAP phase two authentication method
 	 * @param string $anonymousIdentity EAP anonymous identity string
 	 * @param string $cert EAP CA certificate
 	 * @param string $identity EAP identity string
@@ -102,7 +102,7 @@ class Eap implements INetworkManagerEntity {
 
 	/**
 	 * Serializes EAP entity into JSON
-	 * @return array<string, string> JSON serialized data
+	 * @return array<string, string|null> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
