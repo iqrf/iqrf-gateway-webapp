@@ -35,7 +35,6 @@ WORKDIR /app
 
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon
-RUN sed -i "s~http://localhost:8080/~http://172.16.10.2:8080/~g" tests/features/bootstrap/BaseContext.php
 RUN chmod 777 log/ \
  && chmod 777 temp/
 RUN rm -rf app/config/database.db \
