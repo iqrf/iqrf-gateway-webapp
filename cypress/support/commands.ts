@@ -18,11 +18,15 @@
 // https://on.cypress.io/custom-commands
 
 import {UserCredentials} from '../../src/services/AuthenticationService';
+import {Store} from 'vuex';
 
-Cypress.Commands.add('signIn', (username: string, password:string): Cypress.Chainable<any> => {
+Cypress.Commands.add('signIn', (username: string, password: string): Cypress.Chainable<any> => {
 	const credentials = new UserCredentials(username, password);
 	const store = cy.window().its('app.$store');
-	return store.then((store: any): Promise<any> => {
+	return store.then((store: Store<any>): Promise<any> => {
+		if (store.getters['user/isLoggedIn']) {
+			return;
+		}
 		return Promise.all([
 			store.dispatch('user/signIn', credentials),
 			store.dispatch('features/fetch'),
