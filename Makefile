@@ -27,7 +27,7 @@ SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 
 build:
 	$(COMPOSER) install --no-dev
-	npm install
+	npm install --legacy-peer-deps
 	npm run build
 
 all: qa phpstan cc test
