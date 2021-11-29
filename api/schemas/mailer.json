@@ -69,7 +69,7 @@
 			"$id": "#/properties/from",
 			"type": "string",
 			"title": "Sender",
-			"example": "iqrf-gw@localhost"
+			"example": "iqrf-gw@localhost.localdomain"
 		},
 		"theme": {
 			"$id": "#/properties/theme",

@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -43,6 +44,11 @@ final class UserTest extends TestCase {
 	 * User name
 	 */
 	private const USERNAME = 'admin';
+
+	/**
+	 * E-mail address
+	 */
+	private const EMAIL = 'admin@iqrf.org';
 
 	/**
 	 * Password
@@ -74,7 +80,7 @@ final class UserTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new User(self::USERNAME, null, self::PASSWORD, self::ROLE, self::LANGUAGE);
+		$this->entity = new User(self::USERNAME, self::EMAIL, self::PASSWORD, self::ROLE, self::LANGUAGE);
 	}
 
 	/**
@@ -89,6 +95,13 @@ final class UserTest extends TestCase {
 	 */
 	public function testGetUserName(): void {
 		Assert::same(self::USERNAME, $this->entity->getUserName());
+	}
+
+	/**
+	 * Tests the function to get the user's email address
+	 */
+	public function testGetEmail(): void {
+		Assert::same(self::EMAIL, $this->entity->getEmail());
 	}
 
 	/**
@@ -120,6 +133,41 @@ final class UserTest extends TestCase {
 		$username = 'iqrf';
 		$this->entity->setUserName($username);
 		Assert::same($username, $this->entity->getUserName());
+	}
+
+	/**
+	 * Tests the function to set the user's email address (remove e-mail address)
+	 */
+	public function testSetEmailNull(): void {
+		$this->entity->setEmail(null);
+		Assert::null($this->entity->getEmail());
+	}
+
+	/**
+	 * Tests the function to set the user's email address (valid e-mail address)
+	 */
+	public function testSetEmailValid(): void {
+		$email = 'test@iqrf.org';
+		$this->entity->setEmail($email);
+		Assert::same($email, $this->entity->getEmail());
+	}
+
+	/**
+	 * Tests the function to set the user's email address (invalid e-mail address)
+	 */
+	public function testSetEmailInvalid(): void {
+		Assert::throws(function (): void {
+			$this->entity->setEmail('example.com');
+		}, InvalidEmailAddressException::class, 'No domain part found' . PHP_EOL . 'Domain accepts no mail (Null MX, RFC7505)');
+	}
+
+	/**
+	 * Tests the function to set the user's email address (missing MX DNS record)
+	 */
+	public function testSetEmailMissingMx(): void {
+		Assert::throws(function (): void {
+			$this->entity->setEmail('admin@example.com');
+		}, InvalidEmailAddressException::class, 'Domain accepts no mail (Null MX, RFC7505)');
 	}
 
 	/**
@@ -184,7 +232,7 @@ final class UserTest extends TestCase {
 		$expected = [
 			'id' => null,
 			'username' => self::USERNAME,
-			'email' => null,
+			'email' => self::EMAIL,
 			'role' => self::ROLE,
 			'language' => self::LANGUAGE,
 			'state' => User::STATES[self::STATE],

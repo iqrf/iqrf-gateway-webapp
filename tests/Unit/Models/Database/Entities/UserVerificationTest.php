@@ -60,7 +60,7 @@ final class UserVerificationTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->user = new User('admin', 'admin@example.com', 'admin');
+		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
 		$this->entity = new UserVerification($this->user);
 		$this->entity->setCreatedAt();
 	}

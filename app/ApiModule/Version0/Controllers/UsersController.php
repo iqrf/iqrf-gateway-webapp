@@ -31,6 +31,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -147,6 +148,8 @@ class UsersController extends BaseController {
 			$this->entityManager->persist($user);
 			$this->entityManager->persist($verification);
 			$this->entityManager->flush();
+		} catch (InvalidEmailAddressException $e) {
+			throw new ClientErrorException('Invalid email address: ' . $e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidUserLanguageException $e) {
 			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidUserRoleException $e) {

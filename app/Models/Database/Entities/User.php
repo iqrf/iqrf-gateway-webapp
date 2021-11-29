@@ -20,12 +20,17 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use JsonSerializable;
 use function in_array;
 use function password_hash;
@@ -168,7 +173,7 @@ class User implements JsonSerializable {
 	 */
 	public function __construct(string $username, ?string $email, string $password, ?string $role = null, ?string $language = null, ?int $state = null) {
 		$this->username = $username;
-		$this->email = $email;
+		$this->setEmail($email);
 		$this->setPassword($password);
 		$this->setRole($role ?? self::ROLE_DEFAULT);
 		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
@@ -249,8 +254,23 @@ class User implements JsonSerializable {
 	/**
 	 * Sets the user's email
 	 * @param string|null $email User's email
+	 * @throws InvalidEmailAddressException
 	 */
 	public function setEmail(?string $email): void {
+		if ($email !== null) {
+			$validator = new EmailValidator();
+			$validationRules = new MultipleValidationWithAnd([
+				new RFCValidation(),
+				new DNSCheckValidation(),
+			]);
+			if (!$validator->isValid($email, $validationRules)) {
+				$error = $validator->getError();
+				if ($error === null) {
+					throw new InvalidEmailAddressException();
+				}
+				throw new InvalidEmailAddressException($error->description(), $error->code());
+			}
+		}
 		$this->email = $email;
 	}
 
