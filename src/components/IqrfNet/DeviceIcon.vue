@@ -44,6 +44,6 @@ export default class DeviceIcon extends Vue {
 	/**
 	 * @property {Device|StandardDevice} device Network device
 	 */
-	@Prop({required: true}) device!: Device
+	@Prop({required: true}) device!: Device;
 }
 </script>

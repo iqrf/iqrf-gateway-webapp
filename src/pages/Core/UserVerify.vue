@@ -85,7 +85,7 @@ export default class UserVerify extends Vue {
 	/**
 	 * @var {string} verifyError Verification error message
 	 */
-	private verifyError = ''
+	private verifyError = '';
 
 	/**
 	 * Vue lifecycle hook created

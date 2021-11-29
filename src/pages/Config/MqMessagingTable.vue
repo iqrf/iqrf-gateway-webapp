@@ -161,12 +161,12 @@ export default class MqMessagingTable extends Vue {
 	/**
 	 * @constant {string} componentName MQ messaging component name
 	 */
-	private componentName = 'iqrf::MqMessaging'
+	private componentName = 'iqrf::MqMessaging';
 
 	/**
 	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
 	 */
-	private deleteInstance = ''
+	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -195,7 +195,7 @@ export default class MqMessagingTable extends Vue {
 			sorter: false,
 			filter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -204,12 +204,12 @@ export default class MqMessagingTable extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances
 	 */
-	private instances: Array<IMqInstance> = []
+	private instances: Array<IMqInstance> = [];
 
 	/**
 	 * Vue lifecycle hook mounted

@@ -66,17 +66,17 @@ export default class JsonMessage extends Vue {
 	/**
 	 * @property {string} message Message
 	 */
-	@Prop({required: true, default: null}) message!: string
+	@Prop({required: true, default: null}) message!: string;
 
 	/**
 	 * @property {string} type Message type
 	 */
-	@Prop({required: true}) type!: string
+	@Prop({required: true}) type!: string;
 
 	/**
 	 * @property {string} source Message source
 	 */
-	@Prop({required: true}) source!: string
+	@Prop({required: true}) source!: string;
 
 	/**
 	 * Updates message in clipboard

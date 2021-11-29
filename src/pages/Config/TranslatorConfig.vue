@@ -300,17 +300,17 @@ export default class TranslatorConfig extends Vue {
 	/**
 	 * @constant {string} name Name of translator service
 	 */
-	private name = 'translator'
+	private name = 'translator';
 
 	/**
 	 * @var {string} visibility Specifies form input type
 	 */
-	private visibility = 'password'
+	private visibility = 'password';
 
 	/**
 	 * @var {ITranslator|null} config IQRF Gateway Translator service configuration
 	 */
-	private config: ITranslator|null = null
+	private config: ITranslator|null = null;
 
 	/**
 	 * Vue lifecycle hook created

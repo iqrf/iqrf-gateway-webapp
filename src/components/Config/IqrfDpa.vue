@@ -104,7 +104,7 @@ export default class IqrfDpa extends Vue {
 	/**
 	 * @constant {string} componentName IQRF DPA component name
 	 */
-	private componentName = 'iqrf::IqrfDpa'
+	private componentName = 'iqrf::IqrfDpa';
 
 	/**
 	 * @var {IIqrfDpa} configuration IQRF DPA component instance configuration
@@ -113,22 +113,22 @@ export default class IqrfDpa extends Vue {
 		component: '',
 		instance: '',
 		DpaHandlerTimeout: 500,
-	}
+	};
 
 	/**
 	 * @var {string} instance IQRF DPA component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

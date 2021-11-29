@@ -164,12 +164,12 @@ export default class WireguardTunnels extends Vue {
 		deactivate: cilLinkBroken,
 		enable: cilCheckCircle,
 		disable: cilXCircle,
-	}
+	};
 
 	/**
 	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */
-	private tunnels: Array<IWG> = []
+	private tunnels: Array<IWG> = [];
 
 	/**
 	 * @constant {Array<IField>} tableField Array of CoreUI data table fields
@@ -191,12 +191,12 @@ export default class WireguardTunnels extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @var {IWG} tunnelToDelete Tunnel information used in delete modal window
 	 */
-	private tunnelToDelete: IWG|null = null
+	private tunnelToDelete: IWG|null = null;
 
 	/**
 	 * Retrieves existing Wireguard tunnels

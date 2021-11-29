@@ -148,7 +148,7 @@ export default class InstallCreateUser extends Vue {
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * On component creation event handler

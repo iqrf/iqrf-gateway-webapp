@@ -119,22 +119,22 @@ export default class SignIn extends Vue {
 	private icons: Record<string, Array<string>> = {
 		user: cilUser,
 		lock: cilLockLocked,
-	}
+	};
 
 	/**
 	 * @var {string} password User password
 	 */
-	private password = ''
+	private password = '';
 
 	/**
 	 * @var {boolean} submitted Indicates whether the login information have been submitted
 	 */
-	private submitted = false
+	private submitted = false;
 
 	/**
 	 * @var {string} username User name
 	 */
-	private username = ''
+	private username = '';
 
 	/**
 	 * Vue lifecycle hook created

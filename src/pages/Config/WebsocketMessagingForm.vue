@@ -171,7 +171,7 @@ export default class WebsocketMessagingForm extends Vue {
 	private componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
-	}
+	};
 
 	/**
 	 * @var {LocalWsMessaging} configuration WebSocket messaging component configuration
@@ -181,17 +181,17 @@ export default class WebsocketMessagingForm extends Vue {
 		instance: '',
 		acceptAsyncMsg: false,
 		RequiredInterfaces: [{instance: '', name: ''}],
-	}
+	};
 
 	/**
 	 * @var {Array<ServiceInstance>} services Array of WebSocket service component instances
 	 */
-	private services: Array<ServiceInstance> = []
+	private services: Array<ServiceInstance> = [];
 
 	/**
 	 * @property {string} instance Name of WebSocket messaging component instance
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

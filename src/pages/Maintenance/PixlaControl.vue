@@ -112,22 +112,22 @@ export default class PixlaControl extends Vue {
 	/**
 	 * @constant {string} serviceName Pixla service name
 	 */
-	private serviceName = 'gwman-client'
+	private serviceName = 'gwman-client';
 
 	/**
 	 * @var {boolean} missing Indicates whether the pixla service is not installed
 	 */
-	private missing = false
+	private missing = false;
 
 	/**
 	 * @var {boolean} unsupported Indicates whether the pixla service is supported
 	 */
-	private unsupported = false
+	private unsupported = false;
 
 	/**
 	 * @var {ServiceStatus|null} service Pixla service status object
 	 */
-	private service: ServiceStatus|null = null
+	private service: ServiceStatus|null = null;
 
 	/**
 	 * Retrieves service status

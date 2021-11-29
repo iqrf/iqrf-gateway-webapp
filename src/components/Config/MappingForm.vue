@@ -164,27 +164,27 @@ export default class MappingForm extends Vue {
 	/**
 	 * @var {number} baudRate Mapping UART baud rate
 	 */
-	private baudRate = 57600
+	private baudRate = 57600;
 
 	/**
 	 * @var {number} busPin Mapping bus enable pin number
 	 */
-	private busPin = 0
+	private busPin = 0;
 
 	/**
 	 * @var {string} deviceName Mapping device name
 	 */
-	private deviceName = ''
+	private deviceName = '';
 
 	/**
 	 * @var {boolean} gatewayMapping Indicates that mapping is for IQRF Gateway
 	 */
-	private gatewayMapping = false
+	private gatewayMapping = false;
 
 	/**
 	 * @var {number} i2cPin Mapping I2C interface enable pin number
 	 */
-	private i2cPin = 0
+	private i2cPin = 0;
 
 	/**
 	 * @var {number|null} mappingId Mapping ID
@@ -199,27 +199,27 @@ export default class MappingForm extends Vue {
 	/**
 	 * @var {string} name Mapping name
 	 */
-	private name = ''
+	private name = '';
 
 	/**
 	 * @var {number} pgmPin Mapping programming mode switch pin number
 	 */
-	private pgmPin = 0
+	private pgmPin = 0;
 
 	/**
 	 * @var {number} powerPin Mapping power enable pin number
 	 */
-	private powerPin = 0
+	private powerPin = 0;
 
 	/**
 	 * @var {number} spiPin Mapping SPI interface enable pin number
 	 */
-	private spiPin = 0
+	private spiPin = 0;
 
 	/**
 	 * @var {string} type Mapping type
 	 */
-	private type = 'spi'
+	private type = 'spi';
 
 	/**
 	 * @var {number} uartPin Mapping UART interface enable pin number
@@ -238,7 +238,7 @@ export default class MappingForm extends Vue {
 			value: 'uart',
 			label: this.$t('config.daemon.interfaces.types.uart').toString()
 		}
-	]
+	];
 
 	/**
 	 * Computes title of mapping modal

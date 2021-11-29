@@ -164,42 +164,42 @@ export default class UserEdit extends Vue {
 	/**
 	 * @var {string|null} email User's email
 	 */
-	private email: string|null = null
+	private email: string|null = null;
 
 	/**
 	 * @var {string} language User's preferred language
 	 */
-	private language = ''
+	private language = '';
 
 	/**
 	 * @var {boolean} loaded Indicates whether user information has been successfully retrieved
 	 */
-	private loaded = false
+	private loaded = false;
 
 	/**
 	 * @var {string} newPassword New user password
 	 */
-	private newPassword = ''
+	private newPassword = '';
 
 	/**
 	 * @var {string} oldPassword Current user password
 	 */
-	private oldPassword = ''
+	private oldPassword = '';
 
 	/**
 	 * @var {string} role User role
 	 */
-	private role = ''
+	private role = '';
 
 	/**
 	 * @var {string} username User name
 	 */
-	private username = ''
+	private username = '';
 
 	/**
 	 * @property {number} userId User id
 	 */
-	@Prop({required: true}) userId!: number
+	@Prop({required: true}) userId!: number;
 
 	/**
 	 * Vue lifecycle hook created

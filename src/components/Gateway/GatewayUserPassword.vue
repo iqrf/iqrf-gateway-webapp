@@ -121,22 +121,22 @@ export default class GatewayUserPassword extends Vue {
 	/**
 	 * @var {string} password Password
 	 */
-	private password = ''
+	private password = '';
 
 	/**
 	 * @var {string} visibility Form password field visibility type
 	 */
-	private visibility = 'password'
+	private visibility = 'password';
 
 	/**
 	 * @var {string} user Gateway user name
 	 */
-	private user = 'root'
+	private user = 'root';
 
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * Computes page title depending on the path

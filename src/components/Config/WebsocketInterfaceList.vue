@@ -187,12 +187,12 @@ export default class WebsocketInterfaceList extends Vue {
 	private componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
-	}
+	};
 
 	/**
 	 * @var {ModalInstance|null} deleteInstance Websocket interface instance used in remove modal
 	 */
-	private deleteInstance: ModalInstance|null = null
+	private deleteInstance: ModalInstance|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -227,7 +227,7 @@ export default class WebsocketInterfaceList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -236,7 +236,7 @@ export default class WebsocketInterfaceList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
-	}
+	};
 
 	/**
 	 * @var {Array<WsInterface>} instances Array of websocket interface instances

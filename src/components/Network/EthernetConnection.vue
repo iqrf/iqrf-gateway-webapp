@@ -95,7 +95,7 @@ export default class EthernetConnection extends Vue {
 			sorter: false,
 			filter: false,
 		}
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
@@ -106,17 +106,17 @@ export default class EthernetConnection extends Vue {
 		delete: cilTrash,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @property {Array<NetworkConnection>} connections Array of existing network connection configurations
 	 */
-	@Prop({required: true}) connections!: Array<NetworkConnection>
+	@Prop({required: true}) connections!: Array<NetworkConnection>;
 
 	/**
 	 * @property {string} interfaceName Name of network interface
 	 */
-	@Prop({required: false, default: null}) interfaceName!: string
+	@Prop({required: false, default: null}) interfaceName!: string;
 
 	/**
 	 * Vue lifecycle hook created

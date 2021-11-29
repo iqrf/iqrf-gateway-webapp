@@ -153,17 +153,17 @@ export default class SendJsonRequest extends Vue {
 	/**
 	 * @var {string|null} json Daemon API JSON message
 	 */
-	private json: string|null = null
+	private json: string|null = null;
 
 	/**
 	 * @var {string|null} msgId Daemon API message ID
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
 	 */
-	private activeMessagePair: IMessagePairRequest|null = null
+	private activeMessagePair: IMessagePairRequest|null = null;
 
 	/**
 	 * @var {number} activeIdx Index of active message pair
@@ -173,22 +173,22 @@ export default class SendJsonRequest extends Vue {
 	/**
 	 * @var {Array<IMessagePair>} messages Array of Daemon API request and response pairs
 	 */
-	private messages: Array<IMessagePairRequest> = []
+	private messages: Array<IMessagePairRequest> = [];
 
 	/**
 	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
-	private validator: DaemonApiValidator
+	private validator: DaemonApiValidator;
 
 	/**
 	 * @var {Array<string>} validatorErrors String containing JSON schema violations
 	 */
-	private validatorErrors: Array<string> = []
+	private validatorErrors: Array<string> = [];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component constructor

@@ -269,52 +269,52 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * @var {number} address Default device address
 	 */
-	private address = 0
+	private address = 0;
 
 	/**
 	 * @var {boolean} addressOverwrite Controls whether packet address bytes should be overwritten
 	 */
-	private addressOverwrite = false
+	private addressOverwrite = false;
 
 	/**
 	 * @var {string} packetNadr Packet NADR bytes
 	 */
-	private packetNadr = '00'
+	private packetNadr = '00';
 
 	/**
 	 * @var {string} packetPnum Packet PNUM byte
 	 */
-	private packetPnum = '00'
+	private packetPnum = '00';
 
 	/**
 	 * @var {string} packetPcmd Packet PCMD byte
  	 */
-	private packetPcmd = '00'
+	private packetPcmd = '00';
 
 	/**
 	 * @var {string} packetHwpid Packet HWPID bytes
 	 */
-	private packetHwpid = 'ffff'
+	private packetHwpid = 'ffff';
 
 	/**
 	 * @var {string} packetPdata Packet PDATA bytes
 	 */
-	private packetPdata = ''
+	private packetPdata = '';
 
 	/**
 	 * @var {number} timeout Default Daemon API message timeout
 	 */
-	private timeout = 1000
+	private timeout = 1000;
 
 	/**
 	 * @var {boolean} timeoutOverwrite Controls whether default Daemon API message timeout should be overwritten
 	 */
-	private timeoutOverwrite = false
+	private timeoutOverwrite = false;
 
 	/**
 	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
 	 */
-	private activeMessagePair: IMessagePairPacket|null = null
+	private activeMessagePair: IMessagePairPacket|null = null;
 
 	/**
 	 * @var {number} activeIdx Index of active message pair
@@ -324,17 +324,17 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * @var {Array<IMessagePair>} messages Array of Daemon API request and response pairs
 	 */
-	private messages: Array<IMessagePairPacket> = []
+	private messages: Array<IMessagePairPacket> = [];
 
 	/**
 	 * @var {string|null} msgId Daemon API message ID
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Generates array of message options to select from to show

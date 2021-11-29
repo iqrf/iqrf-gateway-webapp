@@ -246,7 +246,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * @constant {string} componentName Component name
 	 */
-	private componentName = 'shape::TraceFileService'
+	private componentName = 'shape::TraceFileService';
 
 	/**
 	 * @var {ITracerFile|null} configuration TraceFile component configuration
@@ -261,12 +261,12 @@ export default class TracerForm extends Vue {
 		path: '',
 		timestampFiles: false,
 		VerbosityLevels: [{channel: 0, level: 'INF'}]
-	}
+	};
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
@@ -288,12 +288,12 @@ export default class TracerForm extends Vue {
 			value: 'ERR',
 			label: this.$t('forms.fields.messageLevel.error')
 		},
-	]
+	];
 
 	/**
 	 * @property {string} instance Logging service component instance name, used for REST API communication
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

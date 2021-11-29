@@ -251,42 +251,42 @@ export default class OtaUpload extends Vue {
 	/**
 	 * @var {number} address Target device address for node target option
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @var {boolean} autoUpload Execute all steps automatically
 	 */
-	private autoUpload = false
+	private autoUpload = false;
 
 	/**
 	 * @var {number} eeepromAddress External EEPROM start address for data
 	 */
-	private eeepromAddress = 768
+	private eeepromAddress = 768;
 
 	/**
 	 * @var {boolean} fileEmpty Indicates whether file input is empty or not
 	 */
-	private fileEmpty = true
+	private fileEmpty = true;
 
 	/**
 	 * @var {string} fileName Name of file uploaded to gateway
 	 */
-	private fileName = ''
+	private fileName = '';
 
 	/**
 	 * @var {FileFormat} fileType Type of IQRF file to upload
 	 */
-	private fileType: FileFormat = FileFormat.HEX
+	private fileType: FileFormat = FileFormat.HEX;
 
 	/**
 	 * @var {boolean} uploadEepromData Should eeprom data be uploaded?
 	 */
-	private uploadEepromData = false
+	private uploadEepromData = false;
 
 	/**
 	 * @var {boolean} uploadEeepromData Should eeeprom data be uploaded?
 	 */
-	private uploadEeepromData = false
+	private uploadEeepromData = false;
 
 	/**
 	 * @constant {Array<IOption>} fileTypeOptions Array of CoreUI select options for file input
@@ -300,22 +300,22 @@ export default class OtaUpload extends Vue {
 			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.iqrf'),
 			value: FileFormat.IQRF
 		}
-	]
+	];
 
 	/**
 	 * @var {string} hwpidList HWPID to filter nodes by
 	 */
-	private hwpid = 65535
+	private hwpid = 65535;
 
 	/**
 	 * @var {string|null} msgId Message ID
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {IqrfNetworkTarget} target IQRF network upload target
 	 */
-	private target: NetworkTarget = NetworkTarget.COORDINATOR
+	private target: NetworkTarget = NetworkTarget.COORDINATOR;
 
 	/**
 	 * @constant {Array<IOption>} targetOptions Array of CoreUI select options for upload target
@@ -333,7 +333,7 @@ export default class OtaUpload extends Vue {
 			label: this.$t('iqrfnet.networkManager.otaUpload.form.targets.network'),
 			value: NetworkTarget.NETWORK,
 		},
-	]
+	];
 
 	/**
 	 * @var {Record<string, boolean>} checks Upload step checks
@@ -342,12 +342,12 @@ export default class OtaUpload extends Vue {
 		upload: false,
 		verify: false,
 		flash: false,
-	}
+	};
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Initializes validation rules

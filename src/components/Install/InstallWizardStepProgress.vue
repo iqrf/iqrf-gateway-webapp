@@ -27,12 +27,12 @@ export default class InstallWizardStepProgress extends Vue {
 	/**
 	 * @var {number} step Step number
 	 */
-	private step = 0
+	private step = 0;
 
 	/**
 	 * @var {Array<string>} steps Array of install wizard steps
 	 */
-	private steps: Array<string> = []
+	private steps: Array<string> = [];
 
 	/**
 	 * Color for the active step

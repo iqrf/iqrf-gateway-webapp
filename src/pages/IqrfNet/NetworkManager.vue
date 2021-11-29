@@ -89,7 +89,7 @@ export default class NetworkManager extends Vue {
 	/**
 	 * @const {number} activeTab Default active tab
 	 */
-	private activeTab = 0
+	private activeTab = 0;
 
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher

@@ -94,12 +94,12 @@ export default class JsonMngMetaDataApi extends Vue {
 	/**
 	 * @constant {string} componentName JSON MetaData component name
 	 */
-	private componentName = 'iqrf::JsonMngMetaDataApi'
+	private componentName = 'iqrf::JsonMngMetaDataApi';
 
 	/**
 	 * @var {string} instance JSON MetaData component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {JsonMngMetaDataApiConfig} configuration JSON MetaData component instance configuration
@@ -107,12 +107,12 @@ export default class JsonMngMetaDataApi extends Vue {
 	private configuration: JsonMngMetaDataApiConfig = {
 		instance: '',
 		metaDataToMessages: false,
-	}
+	};
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

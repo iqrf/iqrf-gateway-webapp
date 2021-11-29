@@ -50,7 +50,7 @@ export default class MenderUpdate extends Vue {
 	/**
 	 * @var {string} log Execution log
 	 */
-	private log = ''
+	private log = '';
 
 	/**
 	 * Updates mender execution output log

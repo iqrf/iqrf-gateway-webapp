@@ -172,47 +172,47 @@ export default class LightManager extends Vue {
 	/**
 	 * @var {number} address Address of device implementing the light standard
 	 */
-	private address = 1
+	private address = 1;
 	
 	/**
 	 * @var {number} index Index of light to manage
 	 */
-	private index = 0
+	private index = 0;
 
 	/**
 	 * @var {number} responseIndex Index of light in responses
 	 */
-	private responseIndex = 0
+	private responseIndex = 0;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {number} numLights Number of lights implemented by the device
 	 */
-	private numLights = 0
+	private numLights = 0;
 
 	/**
 	 * @var {number} power Power to set the light to
 	 */
-	private power = 0
+	private power = 0;
 
 	/**
 	 * @var {number} prevPower Previous power setting of the light
 	 */
-	private prevPower = 0
+	private prevPower = 0;
 
 	/**
 	 * @var {string|null} responseType Type of Light standard message
 	 */
-	private responseType: string|null = null
+	private responseType: string|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * vue lifecycle hook created

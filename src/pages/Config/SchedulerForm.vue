@@ -290,7 +290,7 @@ export default class SchedulerForm extends Vue {
 	/**
 	 * @var {string} clientId Scheduler task client ID
 	 */
-	private clientId = 'SchedulerMessaging'
+	private clientId = 'SchedulerMessaging';
 
 	/**
 	 * @constant {Record<string, string>} components Names of messaging components
@@ -299,12 +299,12 @@ export default class SchedulerForm extends Vue {
 		mq: 'iqrf::MqMessaging',
 		mqtt: 'iqrf::MqttMessaging',
 		websocket: 'iqrf::WebsocketMessaging'
-	}
+	};
 
 	/**
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
-	private cronMessage: string|null = null
+	private cronMessage: string|null = null;
 
 	/**
 	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
@@ -317,32 +317,32 @@ export default class SchedulerForm extends Vue {
 		hour: 'numeric',
 		minute: 'numeric',
 		second: 'numeric',
-	}
+	};
 
 	/**
 	 * @var {Array<IOption>} messagings Array of available messaging component instances
 	 */
-	private messagings: Array<IOption> = []
+	private messagings: Array<IOption> = [];
 
 	/**
 	 * @var {Array<string>} msgIds Array of daemon api message ids
 	 */
-	private msgIds: Array<string> = []
+	private msgIds: Array<string> = [];
 
 	/**
 	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
-	private validator: DaemonApiValidator
+	private validator: DaemonApiValidator;
 
 	/**
 	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
 	 */
-	private validatorErrors: Array<Array<string>> = [[]]
+	private validatorErrors: Array<Array<string>> = [[]];
 
 	/**
 	 * @constant {number} taskId Scheduler task id in epoch seconds
 	 */
-	private taskId = Math.floor(Date.now() / 1000)
+	private taskId = Math.floor(Date.now() / 1000);
 
 	/**
 	 * @var {Array<ILocalTask>} tasks Array of scheduler task messages
@@ -352,7 +352,7 @@ export default class SchedulerForm extends Vue {
 			message: '',
 			messaging: [''],
 		},
-	]
+	];
 
 	/**
 	 * @var {ITaskTimeSpec} timeSpec Scheduler task time specification
@@ -363,12 +363,12 @@ export default class SchedulerForm extends Vue {
 		period: 1,
 		exactTime: false,
 		startTime: ''
-	}
+	};
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
 	 */
-	private timeSpecSelected = TimeSpecTypes.EXACT
+	private timeSpecSelected = TimeSpecTypes.EXACT;
 
 	/**
 	 * @constant {Array<IOption>} timeSpecOptions Scheduler task time specification options
@@ -386,22 +386,22 @@ export default class SchedulerForm extends Vue {
 			value: TimeSpecTypes.CRON,
 			label: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.cron').toString(),
 		},
-	]
+	];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
 	 */
-	private untouched = true
+	private untouched = true;
 
 	/**
 	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler task props
 	 */
-	private useRest = true
+	private useRest = true;
 
 	/**
 	 * @constant cronPreset Cron validate presets
@@ -441,26 +441,26 @@ export default class SchedulerForm extends Vue {
 			minValue: 1970,
 			maxValue: 2099,
 		},
-	}
+	};
 
 	/**
 	 * @constant {Array<string>} dayAliases Array of day aliases for day of week range 0-6
 	 */
 	private dayAliases = [
 		'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
-	]
+	];
 
 	/**
 	 * @constant {Array<string>} monthAliases Array of month aliases for month range 1-12
 	 */
 	private monthAliases = [
 		'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
-	]
+	];
 
 	/**
 	 * @property {number} id Id of existing scheduler task
 	 */
-	@Prop({required: false, default: null}) id!: number
+	@Prop({required: false, default: null}) id!: number;
 
 	/**
 	 * Constructor

@@ -574,22 +574,22 @@ export default class ConnectionForm extends Vue {
 			gateway: '',
 			method: 'auto',
 		}
-	}
+	};
 
 	/**
 	 * @var {string} ifname Interface name
 	 */
-	private ifname = ''
+	private ifname = '';
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface options
 	 */
-	private ifnameOptions: Array<IOption> = []
+	private ifnameOptions: Array<IOption> = [];
 
 	/**
 	 * @var {boolean} powerUser Indicates that user is a power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
@@ -599,7 +599,7 @@ export default class ConnectionForm extends Vue {
 			label: this.$t('network.wireless.form.phaseOneAlgorithm.peap'),
 			value: 'peap'
 		},
-	]
+	];
 
 	/**
 	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
@@ -609,7 +609,7 @@ export default class ConnectionForm extends Vue {
 			label: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2'),
 			value: 'mschapv2'
 		},
-	]
+	];
 
 	/**
 	 * @constant {Array<IOption>} wepKeyOptions CoreUI wep key type select options
@@ -623,12 +623,12 @@ export default class ConnectionForm extends Vue {
 			label: this.$t('network.wireless.form.wep.types.passphrase'),
 			value: WepKeyType.PASSPHRASE
 		},
-	]
+	];
 
 	/**
 	 * @var {WepKeyLen} wepLen WEP key length
 	 */
-	private wepLen = WepKeyLen.BIT64
+	private wepLen = WepKeyLen.BIT64;
 
 	/**
 	 * @constant {Array<IOption>} wepLenOptions CoreUI wep key length select options
@@ -642,12 +642,12 @@ export default class ConnectionForm extends Vue {
 			label: this.$t('network.wireless.form.wep.lengths.128bit'),
 			value: WepKeyLen.BIT128,
 		},
-	]
+	];
 
 	/**
 	 * @var {string} pskInputType WPA pre-shared key input type
 	 */
-	private pskInputType = 'password'
+	private pskInputType = 'password';
 
 	/**
 	 * @var {Record<string, string>} originalIPv4 IPv4 address and method before change
@@ -655,12 +655,12 @@ export default class ConnectionForm extends Vue {
 	private originalIPv4 = {
 		address: '',
 		method: 'auto',
-	}
+	};
 
 	/**
 	 * @var {bool} handleIPChanged Controls whether or not to check for IP changes if connect fails
 	 */
-	private handleIPChanged = false
+	private handleIPChanged = false;
 
 	/**
 	 * @var {IConnectionModal} modalMessages Modal IP method change messages
@@ -668,37 +668,37 @@ export default class ConnectionForm extends Vue {
 	private modalMessages: IConnectionModal = {
 		ipv4: '',
 		ipv4Addr: '',
-	}
+	};
 
 	/**
 	 * @var {boolean} showModal Show confirmation modal?
 	 */
-	private showModal = false
+	private showModal = false;
 
 	/**
 	 * @property {string} uuid Network connection configuration id
 	 */
-	@Prop({required: false, default: null}) uuid!: string
+	@Prop({required: false, default: null}) uuid!: string;
 
 	/**
 	 * @property {string} ssid Network connection name
 	 */
-	@Prop({required: false, default: null}) ssid!: string
+	@Prop({required: false, default: null}) ssid!: string;
 
 	/**
 	 * @property {string} interfaceName Default interface name
 	 */
-	@Prop({required: false, default: null}) interfaceName!: string
+	@Prop({required: false, default: null}) interfaceName!: string;
 
 	/**
 	 * @property {string} wifiModel Wifi mode
 	 */
-	@Prop({required: false, default: null}) wifiMode!: string
+	@Prop({required: false, default: null}) wifiMode!: string;
 
 	/**
 	 * @property {string} wifiSecurity Wifi security type
 	 */
-	@Prop({required: false, default: null}) wifiSecurity!: string
+	@Prop({required: false, default: null}) wifiSecurity!: string;
 
 	/**
 	 * Initializes validation rules

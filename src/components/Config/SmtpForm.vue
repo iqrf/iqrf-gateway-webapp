@@ -197,7 +197,7 @@ export default class SmtpForm extends Vue {
 	/**
 	 * @var {boolean} running Indicates that request is in progress
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * @var {ISmtp} configuration SMTP server configuration
@@ -210,7 +210,7 @@ export default class SmtpForm extends Vue {
 		password: '',
 		secure: SmtpSecurity.PLAINTEXT,
 		from: ''
-	}
+	};
 
 	/**
 	 * @constant {Array<IOption>} protocols Array of SMTP security protocols
@@ -228,12 +228,12 @@ export default class SmtpForm extends Vue {
 			label: this.$t('config.smtp.form.protocols.tls').toString(),
 			value: SmtpSecurity.TLS,
 		},
-	]
+	];
 
 	/**
 	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
-	private passwordVisible = false
+	private passwordVisible = false;
 
 	/**
 	 * Initializes validation rules

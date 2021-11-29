@@ -47,12 +47,12 @@ export default class SshKeyTypes extends Vue {
 	/**
 	 * @var {boolean|null} fetched Indicates that key type list request has been completed
 	 */
-	private fetched: boolean|null = null
+	private fetched: boolean|null = null;
 
 	/**
 	 * @var {Array<string>} types Array of SSH key types
 	 */
-	private types: Array<string> = []
+	private types: Array<string> = [];
 
 	/**
 	 * Retrieves key types

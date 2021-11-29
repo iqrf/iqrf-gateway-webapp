@@ -156,42 +156,42 @@ export default class DeviceEnumeration extends Vue {
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {OsData|null} osData Device OS information
 	 */
-	private osData: OsInfo|null = null
+	private osData: OsInfo|null = null;
 
 	/**
 	 * @var {PeripheralEnumeration|null} peripheralData Device peripheral information
 	 */
-	private peripheralData: PeripheralEnumeration|null = null
+	private peripheralData: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {Product|null} product Device product information
 	 */
-	private product: Product|null = null
+	private product: Product|null = null;
 
 	/**
 	 * @var {IDeviceEnumeration} response Device enumeration data
 	 */
-	private response: IDeviceEnumeration|null = null
+	private response: IDeviceEnumeration|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * @property {number} address Address of device to enumerate
 	 */
-	@Prop({required: false, default: 0}) address!: number
+	@Prop({required: false, default: 0}) address!: number;
 
 	/**
 	 * Vue lifecycle hook created

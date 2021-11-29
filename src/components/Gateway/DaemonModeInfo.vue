@@ -39,32 +39,32 @@ export default class DaemonModeInfo extends Vue {
 	private allowedMTypes: Array<string> = [
 		'mngDaemon_Mode',
 		'messageError'
-	]
+	];
 
 	/**
 	 * @var {DaemonModeEnum} mode Current daemon mode
 	 */
-	private mode: DaemonModeEnum = DaemonModeEnum.unknown
+	private mode: DaemonModeEnum = DaemonModeEnum.unknown;
 
 	/**
 	 * @var {string|null} msgId daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {boolean} requestRunning indicates whether a daemon api request has been completed
 	 */
-	private requestRunning = false
+	private requestRunning = false;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 	
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

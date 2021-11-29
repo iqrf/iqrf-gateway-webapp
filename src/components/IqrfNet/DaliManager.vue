@@ -138,27 +138,27 @@ export default class DaliManager extends Vue {
 	/**
 	 * @var {number} address Address of device implementing DALI standard
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
 	 */
-	private answers: Array<DaliAnswer> = []
+	private answers: Array<DaliAnswer> = [];
 	
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
-	private commands: Array<number> = [0]
+	private commands: Array<number> = [0];
 
 	/**
 	 * @var {string|null} msgId Daemon api msg id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * Component unsubscribe functin
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

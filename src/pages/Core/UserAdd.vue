@@ -28,6 +28,7 @@ limitations under the License.
 						}'
 					>
 						<CInput
+							id='username'
 							v-model='username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
@@ -42,6 +43,7 @@ limitations under the License.
 						}'
 					>
 						<CInput
+							id='email'
 							v-model='email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
@@ -56,6 +58,7 @@ limitations under the License.
 						}'
 					>
 						<CInput
+							id='password'
 							v-model='password'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
@@ -145,27 +148,27 @@ export default class UserAdd extends Vue {
 	/**
 	 * @var {string} email User's email
 	 */
-	private email= ''
+	private email= '';
 
 	/**
 	 * @var {string} language User's preferred language
 	 */
-	private language = ''
+	private language = '';
 
 	/**
 	 * @var {string} password User password
 	 */
-	private password = ''
+	private password = '';
 
 	/**
 	 * @var {string} role User role
 	 */
-	private role = ''
+	private role = '';
 
 	/**
 	 * @var {string} username User name
 	 */
-	private username = ''
+	private username = '';
 
 	/**
 	 * Vue lifecycle hook created

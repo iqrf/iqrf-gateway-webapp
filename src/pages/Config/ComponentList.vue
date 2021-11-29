@@ -113,7 +113,6 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import { MetaInfo } from 'vue-meta';
 import { IField } from '../../interfaces/coreui';
 import { AxiosError } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 import {IComponent} from '../../interfaces/daemonComponent';
 
 @Component({
@@ -142,12 +141,12 @@ export default class ComponentList extends Vue {
 	/**
 	 * @var {string} component Name of daemon component used for remove modal
 	 */
-	private component = ''
+	private component = '';
 
 	/**
 	 * @var {Array<IComponent>} components Array of Daemon component objects
 	 */
-	private components: Array<IComponent> = []
+	private components: Array<IComponent> = [];
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -180,7 +179,7 @@ export default class ComponentList extends Vue {
 			filter: false,
 			sorter: false,
 		}
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -189,7 +188,7 @@ export default class ComponentList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
-	}
+	};
 
 	/**
 	 * Computes page title depending on the user role

@@ -148,7 +148,7 @@ export default class InteliGlueCreator extends Vue {
 	/**
 	 * @constant {string} serviceName InteliGlue cloud service name
 	 */
-	private serviceName = 'inteliGlue'
+	private serviceName = 'inteliGlue';
 
 	/**
 	 * @var {InteliGlueConfig} config InteliGlue cloud connection configuration
@@ -158,12 +158,12 @@ export default class InteliGlueCreator extends Vue {
 		assignedPort: 1234,
 		clientId: '',
 		password: ''
-	}
+	};
 
 	/**
 	 * @var {string} visibility Form password field visibility type
 	 */
-	private visibility = 'password'
+	private visibility = 'password';
 
 	/**
 	 * Vue lifecycle hook created

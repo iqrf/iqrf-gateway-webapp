@@ -105,7 +105,7 @@ export default class MiscConfiguration extends Vue {
 		'db',
 		'monitor',
 		'tracer'
-	]
+	];
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user profile is power user
@@ -120,12 +120,12 @@ export default class MiscConfiguration extends Vue {
 		'iqrfRepository',
 		'monitor',
 		'tracer',
-	]
+	];
 
 	/**
 	 * @var {Array<string>} failed Children components config fetch failed
 	 */
-	private failed: Array<string> = []
+	private failed: Array<string> = [];
 
 	/**
 	 * Vue lifecycle hook created

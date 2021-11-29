@@ -151,7 +151,7 @@ export default class IqrfRepositoryConfig extends Vue {
 			username: null,
 			password: null,
 		},
-	}
+	};
 
 	/**
 	 * @var {boolean} credentials Controls credentials rendering in form

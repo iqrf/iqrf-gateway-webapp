@@ -17,7 +17,7 @@
 import {AxiosResponse} from 'axios';
 
 /**
- * Creates a new file download element 
+ * Creates a new file download element
  * @param {AxiosResponse} response Axios request response
  * @param {string} contentType Response content MIME
  * @param {string} fileName Name of downloaded file
@@ -27,7 +27,7 @@ export function fileDownloader(response: AxiosResponse, contentType: string, fil
 	const contentDisposition = response.headers['content-disposition'];
 	if (contentDisposition) {
 		const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-		if (fileNameMatch.length === 2) {
+		if (fileNameMatch !== null && fileNameMatch.length === 2) {
 			fileName = fileNameMatch[1];
 		}
 	}

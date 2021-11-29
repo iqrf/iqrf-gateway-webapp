@@ -64,7 +64,6 @@ import {
 	CToggler,
 } from '@coreui/vue/src';
 import {cilLockLocked} from '@coreui/icons';
-import { Dictionary } from 'vue-router/types/router';
 import ThemeManager from '../helpers/themeManager';
 
 @Component({
@@ -90,7 +89,7 @@ export default class TheHeader extends Vue {
 	 */
 	private icons: Record<string, Array<string>> = {
 		logout: cilLockLocked
-	}
+	};
 
 	/**
 	 * Returns the app title

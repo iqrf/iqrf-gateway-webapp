@@ -104,7 +104,7 @@ export default class IqrfCdc extends Vue {
 	/**
 	 * @constant {string} componentName IQRF CDC interface component name
 	 */
-	private componentName = 'iqrf::IqrfCdc'
+	private componentName = 'iqrf::IqrfCdc';
 
 	/**
 	 * @var {IIqrfCdc} configuration IQRF CDC interface instance configuration
@@ -113,17 +113,17 @@ export default class IqrfCdc extends Vue {
 		component: '',
 		instance: '',
 		IqrfInterface: '',
-	}
+	};
 
 	/**
 	 * @var {string} instance Name of IQRF CDC component instance
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed

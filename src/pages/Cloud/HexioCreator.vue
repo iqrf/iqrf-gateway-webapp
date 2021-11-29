@@ -157,7 +157,7 @@ export default class HexioCreator extends Vue {
 	/**
 	 * @constant {string} serviceName Hexio cloud service name
 	 */
-	private serviceName = 'hexio'
+	private serviceName = 'hexio';
 
 	/**
 	 * @var {IHexioCloud} config Hexio cloud mqtt connection configuration
@@ -169,12 +169,12 @@ export default class HexioCreator extends Vue {
 		topicResponse: 'Iqrf/DpaResponse',
 		username: '',
 		password: ''
-	}
+	};
 
 	/**
 	 * @var {string} visibility Form password field visibility type
 	 */
-	private visibility = 'password'
+	private visibility = 'password';
 	
 	/**
 	 * Vue lifecycle hook created

@@ -135,12 +135,12 @@ export default class UdpMessagingTable extends Vue {
 	/**
 	 * @constant {string} componentName UDP messaging component name
 	 */
-	private componentName = 'iqrf::UdpMessaging'
+	private componentName = 'iqrf::UdpMessaging';
 
 	/**
 	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
 	 */
-	private deleteInstance = ''
+	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -164,7 +164,7 @@ export default class UdpMessagingTable extends Vue {
 			sorter: false,
 			filter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -173,12 +173,12 @@ export default class UdpMessagingTable extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @var {Array<IUdpInstance>} instances Array of UDP messaging component instances
 	 */
-	private instances: Array<IUdpInstance> = []
+	private instances: Array<IUdpInstance> = [];
 
 	/**
 	 * Vue lifecycle hook created

@@ -195,42 +195,42 @@ export default class WebsocketServiceForm extends Vue {
 	/**
 	 * @var {boolean} acceptOnlyLocalhost Accept connections only from localhost?
 	 */
-	private acceptOnlyLocalhost = false
+	private acceptOnlyLocalhost = false;
 
 	/**
 	 * @var {string} certificate Path to certificate for TLS
 	 */
-	private certificate = ''
+	private certificate = '';
 
 	/**
 	 * @var {string} component WebsocketService component name
 	 */
-	private component = ''
+	private component = '';
 
 	/**
 	 * @var {string} componentInstance WebsocketService component instance name
 	 */
-	private componentInstance = ''
+	private componentInstance = '';
 
 	/**
 	 * @constant {string} componentName Name of WebSocket service component
 	 */
-	private componentName = 'shape::WebsocketCppService'
+	private componentName = 'shape::WebsocketCppService';
 
 	/**
 	 * @var {string} privateKey Path to private key for TLS
 	 */
-	private privateKey = ''
+	private privateKey = '';
 
 	/**
 	 * @var {boolean} tlsEnabled Use TLS?
 	 */
-	private tlsEnabled = false
+	private tlsEnabled = false;
 
 	/**
 	 * @var {string} tlsMode TLS operating mode
 	 */
-	private tlsMode = ''
+	private tlsMode = '';
 
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
@@ -248,17 +248,17 @@ export default class WebsocketServiceForm extends Vue {
 			value: 'old',
 			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 		},
-	]
+	];
 
 	/**
 	 * @var {number} WebsocketPort Websocket port
 	 */
-	private WebsocketPort = 1338
+	private WebsocketPort = 1338;
 
 	/**
 	 * @property {string} instance WebSocket service component instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

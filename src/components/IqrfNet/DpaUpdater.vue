@@ -130,57 +130,57 @@ export default class DpaUpdater extends Vue {
 	/**
 	 * @constant {number} address Network address of device
 	 */
-	private address = 0
+	private address = 0;
 
 	/**
 	 * @var {string|null} currentDpa Current version of DPA
 	 */
-	private currentDpa: string|null = null
+	private currentDpa: string|null = null;
 
 	/**
 	 * @var {string|null} interfaceType Active IQRF communication interface
 	 */
-	private interfaceType: string|null = null
+	private interfaceType: string|null = null;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether DPA upgrades fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {string|null} osBuild IQRF OS build
 	 */
-	private osBuild: string|null = null
+	private osBuild: string|null = null;
 
 	/**
 	 * @var {number|null} trType Transciever type identifier
 	 */
-	private trType: number|null = null
+	private trType: number|null = null;
 
 	/**
 	 * @var {boolean} showModal Controls whether DPA upload modal is shown
 	 */
-	private showModal = false
+	private showModal = false;
 
 	/**
 	 * @var {string|null} version Currently selected version of DPA
 	 */
-	private version: string|null = null
+	private version: string|null = null;
 
 	/**
 	 * @var {Array<DpaVersions>} versions Array of available DPA versions to update to
 	 */
-	private versions: Array<DpaVersions> = []
+	private versions: Array<DpaVersions> = [];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

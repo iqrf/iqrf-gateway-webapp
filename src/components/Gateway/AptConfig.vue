@@ -124,27 +124,27 @@ export default class AptConfig extends Vue {
 	/**
 	 * @var {number} listUpdateInterval Package list update interval in days
 	 */
-	private listUpdateInterval = 1
+	private listUpdateInterval = 1;
 
 	/**
 	 * @var {number} upgradeInterval Package upgrade interval in days
 	 */
-	private upgradeInterval = 1
+	private upgradeInterval = 1;
 
 	/**
 	 * @var {number} removeInterval Unnecessary package removal interval in days
 	 */
-	private removeInterval = 0
+	private removeInterval = 0;
 
 	/**
 	 * @var {boolean} rebootOnKernelUpdate Reboot device after updating kernel
 	 */
-	private rebootOnKernelUpdate = false
+	private rebootOnKernelUpdate = false;
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * Vue lifecycle hook created

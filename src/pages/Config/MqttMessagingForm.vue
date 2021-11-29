@@ -358,7 +358,7 @@ export default class MqttMessagingForm extends Vue {
 	/**
 	 * @constant {string} componentName MQTT messaging component name
 	 */
-	private componentName = 'iqrf::MqttMessaging'
+	private componentName = 'iqrf::MqttMessaging';
 
 	/**
 	 * @var {IMqttInstance} configuration MQTT messaging component instance configuration
@@ -386,17 +386,17 @@ export default class MqttMessagingForm extends Vue {
 		EnabledCipherSuites: '',
 		EnableServerCertAuth: false,
 		acceptAsyncMsg: false,
-	}
+	};
 
 	/**
 	 * @var {string} visibility TLS password field visibility
 	 */
-	private visibility = 'password'
+	private visibility = 'password';
 
 	/**
 	 * @property {string} instance MQTT messaging component instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

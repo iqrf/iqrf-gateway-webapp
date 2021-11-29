@@ -50,7 +50,7 @@ export default class App extends Vue {
 	/**
 	 * Main app watch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook before created

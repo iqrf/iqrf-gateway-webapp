@@ -527,7 +527,6 @@ import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 import {IOption} from '../../interfaces/coreui';
 import {IProduct} from '../../interfaces/repository';
 import {MutationPayload} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
 
 @Component({
@@ -558,12 +557,12 @@ export default class TrConfiguration extends Vue {
 	/**
 	 * @property {number} defaultAddr Default address
 	 */
-	@Prop({required: true}) defaultAddr!: number
+	@Prop({required: true}) defaultAddr!: number;
 
 	/**
 	 * @var {number} address Device address
 	 */
-	private address = 0
+	private address = 0;
 
 	/**
 	 * @var {number} hwpid HWPID to filter devices by
@@ -573,7 +572,7 @@ export default class TrConfiguration extends Vue {
 	/**
 	 * @var {NetworkTarget} target Read and write TR conf target
 	 */
-	private target = NetworkTarget.NODE
+	private target = NetworkTarget.NODE;
 
 	///// TR config /////
 
@@ -624,84 +623,84 @@ export default class TrConfiguration extends Vue {
 		uartBaudrate: 9600,
 		accessPassword: '', // Security
 		securityUserKey: ''
-	}
+	};
 
 	////////////////////////
 
 	/**
 	 * @var {boolean} dpaEnabledNotDetected Indicates whether custom DPA handler is enabled but not detected
 	 */
-	private dpaEnabledNotDetected = false
+	private dpaEnabledNotDetected = false;
 
 	/**
 	 * @var {boolean} dpaHandlerDetected Indicates whether transciever has a custom dpa handler implemented
 	 */
-	private dpaHandlerDetected = false
+	private dpaHandlerDetected = false;
 
 	/**
 	 * @var {string|null} dpaVersion Version of DPA used by transciever
 	 */
-	private dpaVersion: string|null = null
+	private dpaVersion: string|null = null;
 
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false
+	private daemon236 = false;
 
 	/**
 	 * @var {boolean} securityPassword Controls access password field availability
 	 */
-	private securityPassword = false
+	private securityPassword = false;
 
 	/**
 	 * @var {string} passwordVisibility Access password field visibility type
 	 */
-	private passwordVisibility = 'password'
+	private passwordVisibility = 'password';
 
 	/**
 	 * @var {boolean} securityKey Controls user key field availability
 	 */
-	private securityKey = false
+	private securityKey = false;
 
 	/**
 	 * @var {string} keyVisibility User key field visibility type
 	 */
-	private keyVisibility = 'password'
+	private keyVisibility = 'password';
 
 	/**
 	 * @var {boolean|null} loaded Indicates whether configuration has been loaded
 	 */
-	private loaded: boolean|null = null
+	private loaded: boolean|null = null;
 
 	/**
 	 * @var {boolean} productModal Controls whether or not product modal is rendered
 	 */
-	private productModal = false
+	private productModal = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {number} timeout Async reset timeout
 	 */
-	private timeout = 0
+	private timeout = 0;
 
 	/**
 	 * @var {boolean} expectingReset Expecting coordinator reset
 	 */
-	private expectingReset = false
+	private expectingReset = false;
 
 	/**
 	 * @var {Array<string>} message Message to display
 	 */
-	private message: Array<string> = []
+	private message: Array<string> = [];
 
 	/**
 	 * @var {Array<IEmbedPersEnabled>} peripherals Array of embedded peripherals and their states
 	 */
-	private peripherals: Array<IEmbedPersEnabled> = []
+	private peripherals: Array<IEmbedPersEnabled> = [];
 
 	/**
 	 * @constant {Array<string>} unchangeablePeripherals Array of peripherals whose states cannot be changed
@@ -710,7 +709,7 @@ export default class TrConfiguration extends Vue {
 		'coordinator',
 		'node',
 		'os'
-	]
+	];
 
 	/**
 	 * @constant {Array<IOption>} targetOptions Array of coreui conf target options
@@ -724,7 +723,7 @@ export default class TrConfiguration extends Vue {
 			value: NetworkTarget.NETWORK,
 			label: this.$t('iqrfnet.trConfiguration.form.targets.network').toString(),
 		},
-	]
+	];
 
 	/**
 	 * @constant {Array<IOption>} networkTypeOptions Array of coreui network type options
@@ -738,17 +737,17 @@ export default class TrConfiguration extends Vue {
 			value: true,
 			label: this.$t('iqrfnet.trConfiguration.form.networkTypes.stdLp').toString(),
 		}
-	]
+	];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Computes rules for validation of RF channel input field

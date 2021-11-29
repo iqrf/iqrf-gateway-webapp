@@ -111,37 +111,37 @@ export default class OsUpdater extends Vue {
 	/**
 	 * @var {string} currentOsBuild Currently uploaded OS build
 	 */
-	private currentOsBuild = ''
+	private currentOsBuild = '';
 
 	/**
 	 * @var {string} currentOsVersion Currently uploaded OS version
 	 */
-	private currentOsVersion = ''
+	private currentOsVersion = '';
 
 	/**
 	 * @var {string} interfaceType Used IQRF interface
 	 */
-	private interfaceType = ''
+	private interfaceType = '';
 
 	/**
 	 * @var {number} osVersion Selected version of IQRF OS
 	 */
-	private osVersion: number|null = null
+	private osVersion: number|null = null;
 
 	/**
 	 * @var {Array<IOption>} selectVersions Array of available IQRF OS versions for CoreUI select
 	 */
-	private selectVersions: Array<IOption> = []
+	private selectVersions: Array<IOption> = [];
 
 	/**
 	 * @var {number} trMcuType Module TR and MCU type
 	 */
-	private trMcuType = 0
+	private trMcuType = 0;
 
 	/**
 	 * @var {Array<IqrfOsUpgrade>} upgrades Array of possible IQRF OS upgrades
 	 */
-	private upgrades: Array<IqrfOsUpgrade> = []
+	private upgrades: Array<IqrfOsUpgrade> = [];
 
 	/**
 	 * @var {boolean} uploadError Indicates whether an upload error has occured
@@ -151,7 +151,7 @@ export default class OsUpdater extends Vue {
 	/**
 	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

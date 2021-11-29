@@ -49,7 +49,7 @@ export default class InterfacePorts extends Vue {
 	/**
 	 * @var {Array<string>} ports device ports
 	 */
-	private ports: Array<string> = []
+	private ports: Array<string> = [];
 	
 	/**
 	 * @property {string} interfaceType communication interface type

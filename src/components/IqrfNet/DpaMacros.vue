@@ -80,7 +80,7 @@ export default class DpaMacros extends Vue {
 	/**
 	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
 	 */
-	private macros: Array<IDpaMacros> = []
+	private macros: Array<IDpaMacros> = [];
 
 	/**
 	 * Vue lifecycle hook created

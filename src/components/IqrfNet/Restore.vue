@@ -80,32 +80,32 @@ export default class Restore extends Vue {
 	/**
 	 * @var {Array<IRestoreData>} restoreData Array of device backup data entries
 	 */
-	private restoreData: Array<IRestoreData> = []
+	private restoreData: Array<IRestoreData> = [];
 
 	/**
 	 * @var {boolean} fileEmpty Is file input empty?
 	 */
-	private fileEmpty = true
+	private fileEmpty = true;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {boolean} restartOnRestore Restart coordinator on restore
 	 */
-	private restartOnRestore = false
+	private restartOnRestore = false;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false
+	private daemon236 = false;
 
 	/**
 	 * Vue lifecycle hook created

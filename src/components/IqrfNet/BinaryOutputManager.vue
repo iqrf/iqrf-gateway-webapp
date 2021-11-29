@@ -172,7 +172,7 @@ export default class BinaryOutputManager extends Vue {
 	/**
 	 * @var {number} address Address of device implementing BinaryOutput standard
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @constant {Record<string, Array<string>} icons Dictionary of CoreUI icons
@@ -180,42 +180,42 @@ export default class BinaryOutputManager extends Vue {
 	private icons: Record<string, Array<string>> = {
 		on: cilCheckAlt,
 		off: cilX
-	}
+	};
 
 	/**
 	 * @var {number} index Index of binary output
 	 */
-	private index = 0
+	private index = 0;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {number} numOutputs Number of binary outputs implemented by the device
 	 */
-	private numOutputs = 0
+	private numOutputs = 0;
 
 	/**
 	 * @var {string|null} responseType BinaryOutput response type
 	 */
-	private responseType: string|null = null
+	private responseType: string|null = null;
 
 	/**
 	 * @var {boolean} state Sets state of binary output specified by index
 	 */
-	private state = false
+	private state = false;
 
 	/**
 	 * @var {Array<number>} states Array of binary output states
 	 */
-	private states: Array<number> = []
+	private states: Array<number> = [];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

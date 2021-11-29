@@ -66,7 +66,7 @@ export default class PowerControl extends Vue {
 	private icons: Record<string, Array<string>> = {
 		off: cilPowerStandby,
 		reboot: cilReload
-	}
+	};
 
 	/**
 	 * Performs power off

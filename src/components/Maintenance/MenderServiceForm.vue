@@ -204,7 +204,7 @@ export default class MenderForm extends Vue {
 	/**
 	 * @constant {string} featureName Feature name
 	 */
-	private featureName = 'mender'
+	private featureName = 'mender';
 
 	/**
 	 * @var {IMenderConfig} configuration Mender configuration
@@ -217,17 +217,17 @@ export default class MenderForm extends Vue {
 		InventoryPollIntervalSeconds: 28800,
 		RetryPollIntervalSeconds: 300,
 		UpdatePollIntervalSeconds: 1800
-	}
+	};
 
 	/**
 	 * @var {boolean} uploadCert Controls Mender form
 	 */
-	private uploadCert = false
+	private uploadCert = false;
 
 	/**
 	 * @var {boolean} inputEmpty Empty status of the cert input
 	 */
-	private inputEmpty = true
+	private inputEmpty = true;
 
 	/**
 	 * @constant {Array<IOption>} protocolOptions Array of CoreUI select mender client protocol options
@@ -241,7 +241,7 @@ export default class MenderForm extends Vue {
 			label: this.$t('maintenance.mender.service.form.protocols.wss').toString(),
 			value: MenderProtocols.WSS,
 		},
-	]
+	];
 
 	/**
 	 * Vue lifecycle hook created

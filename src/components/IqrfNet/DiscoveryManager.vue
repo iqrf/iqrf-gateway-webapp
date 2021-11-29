@@ -98,22 +98,22 @@ export default class DiscoveryManager extends Vue {
 	/**
 	 * @var {number} maxAddr Maximum node address
 	 */
-	private maxAddr = 239
+	private maxAddr = 239;
 	
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {number} txPower Discovery call TX power
 	 */
-	private txPower = 6
+	private txPower = 6;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

@@ -62,29 +62,29 @@ export default class TrUpload extends Vue {
 	/**
 	 * @constant {number} address IQRF Network address of coordinator
 	 */
-	private address = 0
+	private address = 0;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	private loading: Array<string> = [
 		'DPA',
 		//'OS'
-	]
+	];
 
-	private failed: Array<string> = []
+	private failed: Array<string> = [];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 	
 	/**
 	 * Vue lifecycle hook created

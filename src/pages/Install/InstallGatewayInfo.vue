@@ -125,12 +125,12 @@ export default class InstallGatewayInfo extends Vue {
 	/**
 	 * @var {IGatewayInfo|null} info Gateway information object
 	 */
-	private info: IGatewayInfo|null = null
+	private info: IGatewayInfo|null = null;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
-	private showCoordinator = false
+	private showCoordinator = false;
 
 	/**
 	 * Computes array of IP address objects from network interfaces

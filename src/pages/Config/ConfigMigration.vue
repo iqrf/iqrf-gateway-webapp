@@ -77,7 +77,7 @@ export default class ConfigMigration extends Vue {
 	/**
 	 * @var {boolean} configEmpty Indicates whether form configuration file input is empty
 	 */
-	private configEmpty = true
+	private configEmpty = true;
 
 	/**
 	 * Exports Daemon configuration

@@ -167,12 +167,12 @@ export default class MonitorList extends Vue {
 	private componentNames: Record<string, string> = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService'
-	}
+	};
 
 	/**
 	 * @var {Record<string, string>|null} deleteInstance Monitor component instance object used in remove modal
 	 */
-	private deleteInstance: Record<string, string>|null = null
+	private deleteInstance: Record<string, string>|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -206,7 +206,7 @@ export default class MonitorList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -215,12 +215,12 @@ export default class MonitorList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
-	}
+	};
 
 	/**
 	 * @var {Array<unknown>} instances Array of monitoring component instances
 	 */
-	private instances: Array<unknown> = []
+	private instances: Array<unknown> = [];
 
 	/**
 	 * Vue lifecycle hook created

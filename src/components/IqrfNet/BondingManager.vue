@@ -234,17 +234,17 @@ export default class BondingManager extends Vue {
 	/**
 	 * @var {number} address Address to assign a newly bonded node
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @var {boolean} autoAddress Use first available address
 	 */
-	private autoAddress = false
+	private autoAddress = false;
 
 	/**
 	 * @var {BondingMethod} bondMethod Bonding method
 	 */
-	private bondMethod = BondingMethod.LOCAL
+	private bondMethod = BondingMethod.LOCAL;
 
 	/**
 	 * @constant {Array<IOption>} bondMethodOptions Bonding method options for CoreUI select
@@ -258,17 +258,17 @@ export default class BondingManager extends Vue {
 			value: BondingMethod.SMARTCONNECT,
 			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart')
 		}
-	]
+	];
 
 	/**
 	 * @var {BondingTarget} bondTarget Bonding target
 	 */
-	private bondTarget = BondingTarget.DEVICE
+	private bondTarget = BondingTarget.DEVICE;
 
 	/**
 	 * @var {boolean} bondTargetAvailable Shows bond target select
 	 */
-	private bondTargetAvailable = false
+	private bondTargetAvailable = false;
 
 	/**
 	 * @constant {Array<IOption>} bondTargetOptions Bonding target options for coreui select
@@ -282,12 +282,12 @@ export default class BondingManager extends Vue {
 			value: BondingTarget.SERVICETOOL,
 			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service')
 		}
-	]
+	];
 
 	/**
 	 * @var {Tool} tool Bond tool
 	 */
-	private bondTool = Tool.NFC
+	private bondTool = Tool.NFC;
 
 	/**
 	 * @constant {Array<IOption>} toolOptions Tool options for coreui select
@@ -297,47 +297,47 @@ export default class BondingManager extends Vue {
 			value: Tool.NFC,
 			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc')
 		}
-	]
+	];
 
 	/**
 	 * @var {number} bondingRetries Number of bonding attempts
 	 */
-	private bondingRetries = 1
+	private bondingRetries = 1;
 
 	/**
 	 * @var {boolean} modalClear Show modal for clearing all bonds
 	 */
-	private modalClear = false
+	private modalClear = false;
 
 	/**
 	 * @var {boolean} modalUnbond Show modal for node unbonding
 	 */
-	private modalUnbond = false
+	private modalUnbond = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {string} scCode SmartConnect code
 	 */
-	private scCode = ''
+	private scCode = '';
 
 	/**
 	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
 	 */
-	private unbondCoordinatorOnly = false
+	private unbondCoordinatorOnly = false;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false
+	private daemon236 = false;
 
 	/**
 	 * Vue lifecycle hook created

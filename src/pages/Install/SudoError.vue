@@ -86,22 +86,22 @@ export default class SudoError extends Vue {
 	private fixCommands = {
 		exists: 'su\napt-get install sudo',
 		userSudo: ' ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/iqrf-gateway-webapp >/dev/null'
-	}
+	};
 
 	/**
 	 * @property {string} user User under which webapp runs
 	 */
-	@Prop({required: true, default: null}) user!: string
+	@Prop({required: true, default: null}) user!: string;
 
 	/**
 	 * @property {boolean} exists Does sudo utility exist?
 	 */
-	@Prop({required: true, default: false}) exists!: boolean
+	@Prop({required: true, default: false}) exists!: boolean;
 
 	/**
 	 * @property {boolean} userSudo Can webapp executo commands with sudo?
 	 */
-	@Prop({required: true, default: false}) userSudo!: boolean
+	@Prop({required: true, default: false}) userSudo!: boolean;
 
 	/**
 	 * Initializes userSudo command with user name

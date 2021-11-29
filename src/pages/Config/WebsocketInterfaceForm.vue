@@ -202,7 +202,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	private componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
-	}
+	};
 
 	/**
 	 * @var {ModalInstance} instances Names of websocket messaging and service instances
@@ -210,7 +210,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	private instances: ModalInstance = {
 		messaging: '',
 		service: '',
-	}
+	};
 
 	/**
 	 * @var {WsMessging} messaging WebSocket messaging component instance
@@ -220,7 +220,7 @@ export default class WebsocketInterfaceForm extends Vue {
 		instance: '',
 		acceptAsyncMsg: false,
 		RequiredInterfaces: [],
-	}
+	};
 
 	/**
 	 * @var {WsService} service WebSocket service component instance
@@ -234,7 +234,7 @@ export default class WebsocketInterfaceForm extends Vue {
 		tlsMode: '',
 		certificate: '',
 		privateKey: ''
-	}
+	};
 
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
@@ -252,12 +252,12 @@ export default class WebsocketInterfaceForm extends Vue {
 			value: 'old',
 			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 		},
-	]
+	];
 
 	/**
 	 * @property {string} instance WebSocket interface instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

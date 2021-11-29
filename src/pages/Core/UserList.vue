@@ -65,7 +65,8 @@ limitations under the License.
 								<CDropdownItem
 									v-for='role of roles'
 									:key='role'
-									@click='changeRole(item, role)'>
+									@click='changeRole(item, role)'
+								>
 									{{ $t('core.user.roles.' + role) }}
 								</CDropdownItem>
 							</CDropdown>
@@ -192,7 +193,7 @@ export default class UserList extends Vue {
 	/**
 	 * @var {IUser|null} deleteUser User object used in remove modal
 	 */
-	private deleteUser: IUser|null = null
+	private deleteUser: IUser|null = null;
 
 	/**
 	 * @var {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -203,17 +204,17 @@ export default class UserList extends Vue {
 		edit: cilPencil,
 		resend: cilReload,
 		noEmail: cilXCircle,
-	}
+	};
 
 	/**
 	 * @var {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = []
+	private fields: Array<IField> = [];
 
 	/**
 	 * @var {Array<User>} users Array of user objects
 	 */
-	private users: Array<IUser> = []
+	private users: Array<IUser> = [];
 
 	/**
 	 * @constant {Array<string>} roles Arrray of user roles
@@ -222,7 +223,7 @@ export default class UserList extends Vue {
 		'normal',
 		'iqaros',
 		'power'
-	]
+	];
 
 	/**
 	 * Updates table fields by user role

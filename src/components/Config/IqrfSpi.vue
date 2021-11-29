@@ -215,27 +215,27 @@ export default class IqrfSpi extends Vue {
 	/**
 	 * @var {IIqrfSpi|null} configuration SPI component instance configuration
 	 */
-	private configuration: IIqrfSpi|null = null
+	private configuration: IIqrfSpi|null = null;
 
 	/**
 	 * @constant {string} componentName SPI component name, used for REST API communication
 	 */
-	private componentName = 'iqrf::IqrfSpi'
+	private componentName = 'iqrf::IqrfSpi';
 
 	/**
 	 * @var {string} instance SPI component instance name, used for REST API communication
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

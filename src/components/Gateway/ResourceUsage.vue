@@ -63,7 +63,7 @@ export default class ResourceUsage extends Vue {
 	/**
 	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
 	 */
-	@Prop({ required: true }) usage!: UsageData
+	@Prop({ required: true }) usage!: UsageData;
 
 	/**
 	 * Returns CSS classes for the progress bar

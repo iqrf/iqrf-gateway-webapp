@@ -126,7 +126,7 @@ export default class DevicesInfo extends Vue {
 	/**
 	 * @var {Array<Device>} devices Array of devices in network
 	 */
-	private devices: Array<Device> = []
+	private devices: Array<Device> = [];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -136,32 +136,32 @@ export default class DevicesInfo extends Vue {
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
 		unbonded: cilX
-	}
+	};
 
 	/**
 	 * @var {boolean} manual Manual FRC ping request
 	 */
-	private manual = false
+	private manual = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {ToastOptions|null} toastMessage Toast message from other components to show after grid is refreshed
 	 */
-	private toastMessage: ToastOptions|null = null
+	private toastMessage: ToastOptions|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

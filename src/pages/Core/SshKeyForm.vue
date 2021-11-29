@@ -148,7 +148,7 @@ export default class SshKeyForm extends Vue {
 	/**
 	 * @var {Array<string>} keyTypes
 	 */
-	private keyTypes: Array<string> = []
+	private keyTypes: Array<string> = [];
 
 	/**
 	 * @var {Array<string>} keys Array of SSH keys for key-based authentication
@@ -158,12 +158,12 @@ export default class SshKeyForm extends Vue {
 			description: '',
 			key: '',
 		},
-	]
+	];
 
 	/**
 	 * @var {boolean} running Indicates whether an axios request is being processed
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * Initializes validation rules

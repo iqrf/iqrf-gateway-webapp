@@ -77,12 +77,12 @@ export default class DaemonModeModal extends Vue {
 	/**
 	 * @var {number} reconnectInterval WebSocket reconnect interval ID
 	 */
-	private reconnectInterval = 0
+	private reconnectInterval = 0;
 
 	/**
 	 * @var {WebSocket} webSocket WebSocket object
 	 */
-	private webSocket: WebSocket|null = null
+	private webSocket: WebSocket|null = null;
 
 	/**
 	 * Initializes websocket

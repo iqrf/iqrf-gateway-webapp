@@ -96,22 +96,22 @@ export default class Backup extends Vue {
 	/**
 	 * @var {number} address Address of device to backup
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @var {Array<IBackupData>} deviceData Array of device backup data
 	 */
-	private deviceData: Array<IBackupData> = []
+	private deviceData: Array<IBackupData> = [];
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {Array<number>} offlineDevices Array of devices offline during the backup process
 	 */
-	private offlineDevices: Array<number> = []
+	private offlineDevices: Array<number> = [];
 
 	/**
 	 * @var {Array<unknown>} selectOptions CoreUI form select options
@@ -129,27 +129,27 @@ export default class Backup extends Vue {
 			value: NetworkTarget.NETWORK,
 			label: this.$t('iqrfnet.networkManager.backup.form.network'),
 		}
-	]
+	];
 
 	/**
 	 * @var {string} target Backup target type
 	 */
-	private target = NetworkTarget.COORDINATOR
+	private target = NetworkTarget.COORDINATOR;
 
 	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
-	private daemon236 = false 
+	private daemon236 = false; 
 
 	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
 	 */
-	private webappVersion = 'unknown'
+	private webappVersion = 'unknown';
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

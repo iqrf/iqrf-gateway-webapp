@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { text } from '@fortawesome/fontawesome-svg-core';
 import {GetterTree, MutationTree} from 'vuex';
 
 /**
@@ -25,7 +24,7 @@ export interface BlockingState {
 	 * Blocking component enabled
 	 */
 	enabled: boolean
-	
+
 	/**
 	 * Blocking component text
 	 */

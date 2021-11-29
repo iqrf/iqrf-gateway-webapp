@@ -166,7 +166,6 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {between, integer, required, min_value} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
 import {RequiredInterface} from '../../interfaces/requiredInterfaces';
@@ -231,7 +230,7 @@ export default class MonitorForm extends Vue {
 	private componentNames: MonitorComponents = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService',
-	}
+	};
 
 	/**
 	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
@@ -239,7 +238,7 @@ export default class MonitorForm extends Vue {
 	private instances: MonitorComponents = {
 		monitor: '',
 		webSocket: '',
-	}
+	};
 
 	/**
 	 * @var {MonitorInstance} monitor Daemon monitoring instance configuration
@@ -249,7 +248,7 @@ export default class MonitorForm extends Vue {
 		instance: '',
 		reportPeriod: 10,
 		RequiredInterfaces: []
-	}
+	};
 
 	/**
 	 * @var {boolean} powerUser Indicates that the user role is power user
@@ -267,7 +266,7 @@ export default class MonitorForm extends Vue {
 		tlsMode: '',
 		certificate: '',
 		privateKey: ''
-	}
+	};
 
 	/**
 	 * @var {Array<IOption>} tlsModeOptions Array of CoreUI select options for TLS mode
@@ -285,12 +284,12 @@ export default class MonitorForm extends Vue {
 			value: 'old',
 			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 		},
-	]
+	];
 
 	/**
 	 * @property {string} instance Monitoring service instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

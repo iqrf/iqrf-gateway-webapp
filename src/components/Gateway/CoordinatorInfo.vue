@@ -70,47 +70,47 @@ export default class CoordinatorInfo extends Vue {
 	private allowedMTypes: Array<string> = [
 		'iqmeshNetwork_EnumerateDevice',
 		'messageError'
-	]
+	];
 
 	/**
 	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
 	 */
-	private enumeration: PeripheralEnumeration|null = null
+	private enumeration: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {boolean} hasData Indicates whether data has been fetched successfully
 	 */
-	private hasData = false
+	private hasData = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {OsInfo|null} osInfo Information about OS of a device
 	 */
-	private osInfo: OsInfo|null = null
+	private osInfo: OsInfo|null = null;
 
 	/**
 	 * @var {boolean} requestRunning Indicates whether a daemon api request has been completed
 	 */
-	private requestRunning = false
+	private requestRunning = false;
 
 	/**
 	 * @var {TrMcu|null} trMcuType Information about transciever type
 	 */
-	private trMcuType: TrMcu|null = null
+	private trMcuType: TrMcu|null = null;
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

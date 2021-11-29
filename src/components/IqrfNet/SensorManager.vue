@@ -117,27 +117,27 @@ export default class SensorManager extends Vue {
 	/**
 	 * @var {number} address Address of device implementing the Sensor standard
 	 */
-	private address = 1
+	private address = 1;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {string|null} responseType Type of Sensor standard message
 	 */
-	private responseType: string|null = null
+	private responseType: string|null = null;
 
 	/**
 	 * @var {Array<ISensor>} sensors Array of Sensor standard objects
 	 */
-	private sensors: Array<ISensor> = []
+	private sensors: Array<ISensor> = [];
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

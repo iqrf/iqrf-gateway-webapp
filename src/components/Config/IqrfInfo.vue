@@ -148,12 +148,12 @@ export default class IqrfInfo extends Vue {
 	/**
 	 * @constant {string} name IQRF Info component name
 	 */
-	private name = 'iqrf::IqrfInfo'
+	private name = 'iqrf::IqrfInfo';
 
 	/**
 	 * @var {string} instance IQRF Info component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {IIqrfInfo} configuration IQRF Info component instance configuration
@@ -164,22 +164,22 @@ export default class IqrfInfo extends Vue {
 		enumAtStartUp: false,
 		enumPeriod: 0,
 		enumUniformDpaVer: false,
-	}
+	};
 
 	/**
 	 * @var {boolean} enumPeriodic Shows period input
 	 */
-	private enumPeriodic = false
+	private enumPeriodic = false;
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version

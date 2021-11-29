@@ -100,22 +100,22 @@ export default class MonitControl extends Vue {
 	/**
 	 * @constant {string} serviceName Monit service name
 	 */
-	private serviceName = 'monit'
+	private serviceName = 'monit';
 
 	/**
 	 * @var {boolean} missing Indicates that Mender service is not installed
 	 */
-	private missing = false
+	private missing = false;
 
 	/**
 	 * @var {boolean} unsupported Indicates that Mender service is unsupported
 	 */
-	private unsupported = false
+	private unsupported = false;
 
 	/**
 	 * @var {ServiceStatus|null} service Mender service status object
 	 */
-	private service: ServiceStatus|null = null
+	private service: ServiceStatus|null = null;
 
 	/**
 	 * Retrieves status of Monit service

@@ -101,17 +101,17 @@ export default class RequestPasswordRecovery extends Vue {
 	/**
 	 * @var {string} user User name to recover password for
 	 */
-	private user = ''
+	private user = '';
 
 	/**
 	 * @var {bool} requestInProgress Indicates whether axios requests are in progress
 	 */
-	private requestInProgress = false
+	private requestInProgress = false;
 
 	/**
 	 * @var {bool} sent Indicates whether or not request was successfully sent
 	 */
-	private sent = false
+	private sent = false;
 
 	/**
 	 * Initializes validation rules

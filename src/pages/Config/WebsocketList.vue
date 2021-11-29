@@ -50,7 +50,7 @@ export default class WebsocketList extends Vue {
 	/**
 	 * @var {boolean} powerUser Indicates whether the user is a power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * Vue lifecycle hook created

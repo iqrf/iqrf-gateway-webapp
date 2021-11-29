@@ -356,22 +356,22 @@ export default class StandardDevices extends Vue {
 	/**
 	 * @var {Array<standardDevice>} devices Auxiliary array of devices before the final grid is rendered
 	 */
-	private auxDevices: Array<StandardDevice> = []
+	private auxDevices: Array<StandardDevice> = [];
 
 	/**
 	 * @var {Array<standardDevice>} devices Standard devices for datatable
 	 */
-	private devices: Array<StandardDevice> = []
+	private devices: Array<StandardDevice> = [];
 
 	/**
 	 * @var {string|null} msgId Daemon API message ID
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {boolean} showModal Controls rendering of database reset modal
 	 */
-	private showModal = false
+	private showModal = false;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -386,7 +386,7 @@ export default class StandardDevices extends Vue {
 		enumerate: cilSpreadsheet,
 		refresh: cilSync,
 		reset: cilReload,
-	}
+	};
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table fields
@@ -438,12 +438,12 @@ export default class StandardDevices extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * Websocket store unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Subscribes a mutation handler to websocket store

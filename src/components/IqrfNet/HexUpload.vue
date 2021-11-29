@@ -75,17 +75,17 @@ export default class HexUpload extends Vue {
 	/**
 	 * @var {boolean} failed Indicates that upload request has failed
 	 */
-	private failed = false
+	private failed = false;
 
 	/**
 	 * @var {boolean} fileEmpty Indicates that the form file input is empty
 	 */
-	private fileEmpty = true
+	private fileEmpty = true;
 
 	/**
 	 * @var {boolean} fileUntouched Indicates whether the form file input has been interacted with
 	 */
-	private fileUntouched = true
+	private fileUntouched = true;
 
 	/**
 	 * Extracts uploaded files from form file input

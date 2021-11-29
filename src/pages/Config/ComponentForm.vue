@@ -134,7 +134,7 @@ export default class ComponentForm extends Vue {
 		libraryName: '',
 		enabled: false,
 		startlevel: 0
-	}
+	};
 	
 	/**
 	 * @property {string} component Daemon component name for editing

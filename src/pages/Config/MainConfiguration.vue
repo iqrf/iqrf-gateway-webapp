@@ -92,7 +92,7 @@ export default class MainConfiguration extends Vue {
 		dataDir: '',
 		deploymentDir: '',
 		userDir: ''
-	}
+	};
 	
 	/**
 	 * Vue lifecycle hook mounted

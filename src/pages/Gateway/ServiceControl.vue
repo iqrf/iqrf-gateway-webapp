@@ -173,7 +173,7 @@ export default class ServiceControl extends Vue {
 		active: false,
 		enabled: false,
 		status: null
-	}
+	};
 
 	/**
 	 * @var {string} title Page and component card title, changes with service

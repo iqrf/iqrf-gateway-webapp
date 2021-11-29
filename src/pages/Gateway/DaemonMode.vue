@@ -121,27 +121,27 @@ export default class DaemonMode extends Vue {
 	private allowedMTypes: Array<string> = [
 		'mngDaemon_Mode',
 		'messageError'
-	]
+	];
 
 	/**
 	 * @constant {string} component IDE counterpart component name
 	 */
-	private ideComponent = 'iqrf::IdeCounterpart'
+	private ideComponent = 'iqrf::IdeCounterpart';
 
 	/**
 	 * @var {IIdeCounterpart|null} ideConfiguration IDE counterpart component configuration
 	 */
-	private ideConfiguration: IIdeCounterpart|null = null
+	private ideConfiguration: IIdeCounterpart|null = null;
 
 	/**
 	 * @var {boolean} loaded Auxiliary property to help choose correct message
 	 */
-	private loaded = false
+	private loaded = false;
 
 	/**
 	 * @var {DaemonModeEnum} mode Current Daemon mode
 	 */
-	private mode: DaemonModeEnum = DaemonModeEnum.unknown
+	private mode: DaemonModeEnum = DaemonModeEnum.unknown;
 
 	/**
 	 * @constant {DaemonModeEnum} modes Daemon mode options
@@ -150,22 +150,22 @@ export default class DaemonMode extends Vue {
 		forwarding: DaemonModeEnum.forwarding,
 		operational: DaemonModeEnum.operational,
 		service: DaemonModeEnum.service
-	}
+	};
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created

@@ -87,12 +87,12 @@ export default class MenderUpdateControl extends Vue {
 	/**
 	 * @var {boolean} inputEmpty Indicates that mender artifact file input is empty
 	 */
-	private inputEmpty = true
+	private inputEmpty = true;
 
 	/**
 	 * @var {boolean} installSuccess Indicates that mender artifact has been installed
 	 */
-	private installSuccess = false
+	private installSuccess = false;
 
 	/**
 	 * Retrieves selected file from file input

@@ -67,17 +67,17 @@ export default class MissingExtension extends Vue {
 	/**
 	 * Commands to fix this issue
 	 */
-	private fixCommands = 'sudo apt-get update\nsudo apt-get install '
+	private fixCommands = 'sudo apt-get update\nsudo apt-get install ';
 
 	/**
 	 * @property {string} extensionString String of missing extensions
 	 */
-	@Prop({required: true}) extensionString!: string
+	@Prop({required: true}) extensionString!: string;
 
 	/**
 	 * @property {string} packageString String of packages to install
 	 */
-	@Prop({required: true}) packageString!: string
+	@Prop({required: true}) packageString!: string;
 
 	/**
 	 * Updates the fix command with packages

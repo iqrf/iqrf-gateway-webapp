@@ -125,7 +125,7 @@ export default class UdpMessagingForm extends Vue {
 	/**
 	 * @constant {string} componentName UDP messaging component name
 	 */
-	private componentName = 'iqrf::UdpMessaging'
+	private componentName = 'iqrf::UdpMessaging';
 
 	/**
 	 * @var {IUdpInstance} configuration UDP messaging component instance configuration
@@ -135,12 +135,12 @@ export default class UdpMessagingForm extends Vue {
 		instance: '',
 		RemotePort: 55000,
 		LocalPort: 55300
-	}
+	};
 
 	/**
 	 * @property {string} instance UDP messaging component instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

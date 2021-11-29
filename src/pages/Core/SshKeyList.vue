@@ -198,12 +198,12 @@ export default class SshKeyList extends Vue {
 	/**
 	 * @var {Array<ISshKey>} keys List of authorized SSH public keys
 	 */
-	private keys: Array<ISshKey> = []
+	private keys: Array<ISshKey> = [];
 
 	/**
 	 * @var {ISshKey|null} keyToDelete
 	 */
-	private keyToDelete: ISshKey|null = null
+	private keyToDelete: ISshKey|null = null;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -213,7 +213,7 @@ export default class SshKeyList extends Vue {
 		copy: cilClipboard,
 		delete: cilTrash,
 		info: cilInfo,
-	}
+	};
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -237,7 +237,7 @@ export default class SshKeyList extends Vue {
 			sorter: false,
 			filter: false,
 		},
-	]
+	];
 
 	/**
 	 * Retrieves list of authorized SSH public keys

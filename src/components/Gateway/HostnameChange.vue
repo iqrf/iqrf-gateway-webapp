@@ -78,14 +78,14 @@ export default class HostnameChange extends Vue {
 	/**
 	 * @var {boolean} render Controls whether or not modal is rendered
 	 */
-	private render = false
+	private render = false;
 
 	/**
 	 * @var {IHostname} config Hostnamectl configuration
 	 */
 	private config: IHostname = {
 		hostname: ''
-	}
+	};
 
 	/**
 	 * Initializes validation rules

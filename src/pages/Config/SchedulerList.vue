@@ -247,12 +247,12 @@ export default class SchedulerList extends Vue {
 		hour: 'numeric',
 		minute: 'numeric',
 		second: 'numeric',
-	}
+	};
 
 	/**
 	 * @var {number|null} deleteTask Id of scheduler task used in remove modal
 	 */
-	private deleteTask: number|null = null
+	private deleteTask: number|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -282,7 +282,7 @@ export default class SchedulerList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -293,52 +293,52 @@ export default class SchedulerList extends Vue {
 		remove: cilTrash,
 		import: cilArrowTop,
 		export: cilArrowBottom,
-	}
+	};
 
 	/**
 	 * @var {Array<string>} msgIds Array of message ids used for response handling
 	 */
-	private msgIds: Array<string> = []
+	private msgIds: Array<string> = [];
 
 	/**
 	 * @var {string|null} retrieved Specifies where the message was retrieved from
 	 */
-	private retrieved: string|null = null
+	private retrieved: string|null = null;
 
 	/**
 	 * @var {Array<number>} taskIds Array of scheduler task ids
 	 */
-	private taskIds: Array<number> = []
+	private taskIds: Array<number> = [];
 
 	/**
 	 * @var {Array<Task>} tasks Array of scheduler tasks
 	 */
-	private tasks: Array<ITaskRest>|null = null
+	private tasks: Array<ITaskRest>|null = null;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * @var {boolean} showDeleteAllModal Controls delete all modal rendering
 	 */
-	private showDeleteAllModal = false
+	private showDeleteAllModal = false;
 
 	/**
 	 * @var {boolean} showImportModal Controls import modal rendering
 	 */
-	private showImportModal = false
+	private showImportModal = false;
 
 	/**
 	 * @var {boolean} importEmpty Indicates whether file input is empty or not
 	 */
-	private importEmpty = true
+	private importEmpty = true;
 
 	/**
 	 * @var {boolean} fetchTasks Indicates whether tasks should be fetched
 	 */
-	private fetchTasks = true
+	private fetchTasks = true;
 
 	/**
 	 * Vue lifecycle hook created

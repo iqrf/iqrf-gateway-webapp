@@ -87,12 +87,12 @@ export default class LogViewer extends Vue {
 	/**
 	 * @var {number} tab Number of active tab
 	 */
-	private tab = 0
+	private tab = 0;
 
 	/**
 	 * Array of service logs
 	 */
-	private logs: Array<IServiceLog> = []
+	private logs: Array<IServiceLog> = [];
 
 	/**
 	 * @var {boolean} loaded Indicates that logs have been loaded

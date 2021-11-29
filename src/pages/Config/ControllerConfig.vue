@@ -358,12 +358,12 @@ export default class ControllerConfig extends Vue {
 			value: 'discovery',
 			label: this.$t('iqrfnet.networkManager.discovery.title').toString()
 		}
-	]
+	];
 
 	/**
 	 * @constant {string} name Name of Controller service
 	 */
-	private name = 'controller'
+	private name = 'controller';
 
 	/**
 	 * @constant {Array<IOption>} severityOptions Array of CoreUI logger severity select options
@@ -389,12 +389,12 @@ export default class ControllerConfig extends Vue {
 			value: 'error',
 			label: this.$t('forms.fields.messageLevel.error').toString()
 		}
-	]
+	];
 
 	/**
 	 * @var {IController|null} config IQRF Gateway Controller configuration
 	 */
-	private config: IController|null = null
+	private config: IController|null = null;
 
 	/**
 	 * Vue lifecycle hook created

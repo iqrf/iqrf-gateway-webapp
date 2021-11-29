@@ -297,7 +297,7 @@ export default class AutoNetwork extends Vue {
 	/**
 	 * @var {boolean} autoAddress Use first available address for bonding
 	 */
-	private autoAddress = false
+	private autoAddress = false;
 	
 	/**
 	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
@@ -309,12 +309,12 @@ export default class AutoNetwork extends Vue {
 		skipDiscoveryEachWave: false,
 		unbondUnrespondingNodes: true,
 		skipPrebonding: false,
-	}
+	};
 
 	/**
 	 * @var {string} hwpidFiltering String of HWPIDs to filter nodes by
 	 */
-	private hwpidFiltering = ''
+	private hwpidFiltering = '';
 
 	/**
 	 * @var {NodeMessages} messages Messages used in displaying AutoNetwork progress when spinner is active, bonded nodes
@@ -322,17 +322,17 @@ export default class AutoNetwork extends Vue {
 	private messages: NodeMessages = {
 		nodesNew: '',
 		nodesTotal: ''
-	}
+	};
 	
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
-	private msgId: string|null = null
+	private msgId: string|null = null;
 
 	/**
 	 * @var {string} nodeCondition AutoNetwork stop condition type for new or total nodes found in network
 	 */
-	private nodeCondition = 'new'
+	private nodeCondition = 'new';
 
 	/**
 	 * @var {AutoNetworkOverlappingNetworks} overlappingNetworks AutoNetwork overlapping networks settings
@@ -340,7 +340,7 @@ export default class AutoNetwork extends Vue {
 	private overlappingNetworks: AutoNetworkOverlappingNetworks = {
 		network: 1,
 		networks: 1
-	}
+	};
 
 	/**
 	 * @var {AutoNetworkStopConditions} stopConditions AutoNetwork process stop conditions configuration
@@ -350,37 +350,37 @@ export default class AutoNetwork extends Vue {
 		emptyWaves: 2,
 		waves: 10,
 		nodeCount: 1
-	}
+	};
 
 	/**
 	 * @var {boolean} useHwpidFiltering Filter nodes by HWPIDs
 	 */
-	private useHwpidFiltering = false
+	private useHwpidFiltering = false;
 
 	/**
 	 * @var {boolean} useNodes Use nodes found stop condition
 	 */
-	private useNodes = false
+	private useNodes = false;
 
 	/**
 	 * @var {boolean} useOverlappingNetworks Use overlapping networks settings
 	 */
-	private useOverlappingNetworks = false
+	private useOverlappingNetworks = false;
 
 	/**
 	 * @var {boolean} useWaves Use maximum number of waves stop condition
 	 */
-	private useWaves = false
+	private useWaves = false;
 
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Component unwatch function
 	 */
-	private unwatch: CallableFunction = () => {return;}
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Initializes validation rules and websocket mutation handling

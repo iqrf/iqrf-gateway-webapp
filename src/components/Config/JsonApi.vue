@@ -105,52 +105,52 @@ export default class JsonApi extends Vue {
 		metaData: 'iqrf::JsonMngMetaDataApi',
 		rawApi: 'iqrf::JsonDpaApiRaw',
 		splitter: 'iqrf::JsonSplitter'
-	}
+	};
 
 	/**
 	 * @var {string} insId JSON splitter instance ID
 	 */
-	private insId = ''
+	private insId = '';
 
 	/**
 	 * @var {IJsonMetaData|null} metaData JSON metadata configuration object
 	 */
-	private metaData: IJsonMetaData|null = null
+	private metaData: IJsonMetaData|null = null;
 
 	/**
 	 * @var {IJsonRaw|null} rawApi JSON raw api configuration object
 	 */
-	private rawApi: IJsonRaw|null = null
+	private rawApi: IJsonRaw|null = null;
 
 	/**
 	 * @var {IJsonSplitter|null} splitter JSON splitter configuration object
 	 */
-	private splitter: IJsonSplitter|null = null
+	private splitter: IJsonSplitter|null = null;
 
 	/**
 	 * @var {boolean} metaDataToMessages Should metadata be added to messages?
 	 */
-	private metaDataToMessages = false
+	private metaDataToMessages = false;
 
 	/**
 	 * @var {boolean} asyncDpaMessage Asynchronous DPA messages?
 	 */
-	private asyncDpaMessage = false
+	private asyncDpaMessage = false;
 
 	/**
 	 * @var {boolean} validateJsonResponse Should JSON responses be validated?
 	 */
-	private validateJsonResponse = false
+	private validateJsonResponse = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * @var {boolean} daemonLowerEqual236 Indicates whether daemon version is 2.3.6 or older
 	 */
-	private daemonLowerEqual236 = false
+	private daemonLowerEqual236 = false;
 
 	/**
 	 * Initializes validation rules

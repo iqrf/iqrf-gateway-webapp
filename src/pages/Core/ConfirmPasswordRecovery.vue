@@ -106,22 +106,22 @@ export default class ConfirmPasswordRecovery extends Vue {
 	/**
 	 * @var {string} password New user password
 	 */
-	private password = ''
+	private password = '';
 
 	/**
 	 * @var {boolean} passwordVisible Controls input field visibility
 	 */
-	private passwordVisible = false
+	private passwordVisible = false;
 
 	/**
 	 * @var {bool} requestInProgress Indicates whether axios requests are in progress
 	 */
-	private requestInProgress = false
+	private requestInProgress = false;
 
 	/**
 	 * @property {string} recoveryId Password recovery request ID
 	 */
-	@Prop({required: true}) recoveryId!: string
+	@Prop({required: true}) recoveryId!: string;
 
 	/**
 	 * Initializes validation rules

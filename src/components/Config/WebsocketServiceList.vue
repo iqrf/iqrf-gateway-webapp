@@ -163,12 +163,12 @@ export default class WebsocketServiceList extends Vue {
 	/**
 	 * @constant {string} componentName Websocket service component name
 	 */
-	private componentName = 'shape::WebsocketCppService'
+	private componentName = 'shape::WebsocketCppService';
 
 	/**
 	 * @var {string|null} deleteService Websocket service instance used in remove modal
 	 */
-	private deleteService: string|null = null
+	private deleteService: string|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -192,7 +192,7 @@ export default class WebsocketServiceList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -201,12 +201,12 @@ export default class WebsocketServiceList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
-	}
+	};
 
 	/**
 	 * @var {Array<WsService>} instances Array of Websocket service instances
 	 */
-	private instances: Array<IWsService> = []
+	private instances: Array<IWsService> = [];
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version

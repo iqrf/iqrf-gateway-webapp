@@ -76,7 +76,7 @@ export default class PixlaForm extends Vue {
 	/**
 	 * @var {string|null} token pixla token
 	 */
-	private token: string|null = null
+	private token: string|null = null;
 	
 	/**
 	 * Initializes validation rules

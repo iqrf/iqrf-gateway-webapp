@@ -171,17 +171,17 @@ export default class GatewayInfo extends Vue {
 	/**
 	 * @var {IGatewayInfo|null} info Gateway information object
 	 */
-	private info: IGatewayInfo|null = null
+	private info: IGatewayInfo|null = null;
 
 	/**
 	 * @var {DaemonModeEnum} mode Current Daemon mode
 	 */
-	private mode: DaemonModeEnum = DaemonModeEnum.unknown
+	private mode: DaemonModeEnum = DaemonModeEnum.unknown;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
-	private showCoordinator = false
+	private showCoordinator = false;
 
 	private icon: Array<string> = cilPencil;
 

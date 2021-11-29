@@ -228,7 +228,7 @@ export default class MobileConnectionForm extends Vue {
 			password: '',
 			pin: '',
 		},
-	}
+	};
 
 	/**
 	 * @var {GsmNumber}
@@ -238,7 +238,7 @@ export default class MobileConnectionForm extends Vue {
 	/**
 	 * @var {Array<IOption>} interfaceOptions Available GSM interfaces
 	 */
-	private interfaceOptions: Array<IOption> = []
+	private interfaceOptions: Array<IOption> = [];
 
 	/**
 	 * @constant {Array<IOption>} operatorNumbers Array of operator numbers
@@ -252,12 +252,12 @@ export default class MobileConnectionForm extends Vue {
 			label: this.$t('network.mobile.form.operators.other').toString(),
 			value: GsmNumber.OTHER
 		},
-	]
+	];
 
 	/**
 	 * @property {string} uuid GSM connection ID
 	 */
-	@Prop({required: false, default: null}) uuid!: string
+	@Prop({required: false, default: null}) uuid!: string;
 
 	/**
 	 * Computes page title from url

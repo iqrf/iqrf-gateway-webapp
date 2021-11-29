@@ -130,7 +130,7 @@ export default class MobileConnections extends Vue {
 	/**
 	 * @var {boolean} interfacesLoaded Indicates that interfaces have been loaded
 	 */
-	private interfacesLoaded = false
+	private interfacesLoaded = false;
 
 	/**
 	 * @var {boolean} noInterfaces Indicates that no GSM interfaces were found
@@ -140,12 +140,12 @@ export default class MobileConnections extends Vue {
 	/**
 	 * @var {Array<NetworkConnections>} connections Existing mobile connections
 	 */
-	private connections: Array<NetworkConnection> = []
+	private connections: Array<NetworkConnection> = [];
 
 	/**
 	 * @var {Array<IModem>} modems Available modems
 	 */
-	private modems: Array<IModem> = []
+	private modems: Array<IModem> = [];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Table icons
@@ -156,7 +156,7 @@ export default class MobileConnections extends Vue {
 		remove: cilTrash,
 		connect: cilLink,
 		disconnect: cilLinkBroken,
-	}
+	};
 
 	/**
 	 * @constant {Array<IField>} fields GSM connections table fields
@@ -184,7 +184,7 @@ export default class MobileConnections extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * Builds connections table

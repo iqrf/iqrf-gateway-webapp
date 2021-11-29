@@ -150,27 +150,27 @@ export default class EthernetConnections extends Vue {
 	/**
 	 * @var {Array<NetworkConnection>} connections Array of existing network connections
 	 */
-	private connections: Array<NetworkConnection> = []
+	private connections: Array<NetworkConnection> = [];
 
 	/**
 	 * @var {boolean} connectionsLoaded Indicates whether connections have been loaded
 	 */
-	private connectionsLoaded = false
+	private connectionsLoaded = false;
 
 	/**
 	 * @var {NetworkConnection|null} connectionModal Auxiliary connection variable for disconnect modal
 	 */
-	private connectionModal: NetworkConnection|null = null
+	private connectionModal: NetworkConnection|null = null;
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
 	 */
-	private ifNameOptions: Array<IOption> = []
+	private ifNameOptions: Array<IOption> = [];
 
 	/**
 	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
 	 */
-	private interfacesLoaded = false
+	private interfacesLoaded = false;
 
 	/**
 	 * @constant {Array<IField>} tableFields Array of CoreUI data table columns
@@ -192,7 +192,7 @@ export default class EthernetConnections extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
@@ -203,12 +203,12 @@ export default class EthernetConnections extends Vue {
 		delete: cilTrash,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @var {string} hostname Window hostname
 	 */
-	private hostname = ''
+	private hostname = '';
 
 	/**
 	 * Retrieves interfaces and connections

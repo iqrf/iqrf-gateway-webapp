@@ -162,7 +162,7 @@ export default class IbmCreator extends Vue {
 	/**
 	 * @constant {string} serviceName Ibm cloud service name
 	 */
-	private serviceName = 'ibmCloud'
+	private serviceName = 'ibmCloud';
 
 	/**
 	 * @var {IIbmCloud} config Ibm cloud connection configuration
@@ -173,7 +173,7 @@ export default class IbmCreator extends Vue {
 		deviceId: '',
 		token: '',
 		eventId: 'iqrf'
-	}
+	};
 
 	/**
 	 * Vue lifecycle hook created

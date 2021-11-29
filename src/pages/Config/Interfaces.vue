@@ -102,17 +102,17 @@ export default class Interfaces extends Vue {
 			value: 'iqrf::IqrfUart',
 			label: this.$t('config.daemon.interfaces.types.uart').toString(),
 		},
-	]
+	];
 
 	/**
 	 * @var {string} iqrfInterface Active interface
 	 */
-	private iqrfInterface = ''
+	private iqrfInterface = '';
 
 	/**
 	 * @var {Array<IComponent>} iqrfInterfaces Array of IQRF communication interfaces
 	 */
-	private iqrfInterfaces: Array<IComponent> = []
+	private iqrfInterfaces: Array<IComponent> = [];
 
 	/**
 	 * @constant {Array<string>} whitelist Array of IQRF communication component names
@@ -121,7 +121,7 @@ export default class Interfaces extends Vue {
 		'iqrf::IqrfCdc',
 		'iqrf::IqrfSpi',
 		'iqrf::IqrfUart',
-	]
+	];
 
 	/**
 	 * @var {Array<string>} children Array of components loading configuration
@@ -129,17 +129,17 @@ export default class Interfaces extends Vue {
 	private children: Array<string> = [
 		'iface',
 		'iqrfDpa'
-	]
+	];
 
 	/**
 	 * @var {Array<string>} failed Array of components that failed configuration fetch
 	 */
-	private failed: Array<string> = []
+	private failed: Array<string> = [];
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook mounted

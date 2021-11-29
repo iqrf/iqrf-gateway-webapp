@@ -178,12 +178,12 @@ export default class MqttMessagingTable extends Vue {
 	/**
 	 * @constant {string} componentName MQTT messaging component name
 	 */
-	private componentName = 'iqrf::MqttMessaging'
+	private componentName = 'iqrf::MqttMessaging';
 
 	/**
 	 * @var {string} deleteInstance MQTT messaging instance name used in remove modal
 	 */
-	private deleteInstance = ''
+	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -225,7 +225,7 @@ export default class MqttMessagingTable extends Vue {
 			sorter: false,
 			filter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -234,12 +234,12 @@ export default class MqttMessagingTable extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @var {Array<IMqttInstance>} instances Array of MQTT messaging component instances
 	 */
-	private instances: Array<IMqttInstance> = []
+	private instances: Array<IMqttInstance> = [];
 
 	/**
 	 * Vue lifecycle hook mounted

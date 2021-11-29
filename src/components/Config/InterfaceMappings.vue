@@ -114,7 +114,7 @@ export default class InterfaceMappings extends Vue {
 	/**
 	 * @var {IMapping|null} deleteMapping Mapping object to be remove
 	 */
-	private deleteMapping: IMapping|null = null
+	private deleteMapping: IMapping|null = null;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -124,27 +124,27 @@ export default class InterfaceMappings extends Vue {
 		edit: cilPencil,
 		remove: cilTrash,
 		set: cilCopy,
-	}
+	};
 
 	/**
 	 * @var {Array<IMapping>} mappings Array of mappings
 	 */
-	private mappings: Array<IMapping> = []
+	private mappings: Array<IMapping> = [];
 
 	/**
 	 * @var {string} modalMapping Name of mapping used in remove modal
 	 */
-	private modalMapping = ''
+	private modalMapping = '';
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} showModal
 	 */
-	private showModal = false
+	private showModal = false;
 
 	/**
 	 * @property {string} interfaceType Communication interface type

@@ -147,12 +147,12 @@ export default class ApiKeyList extends Vue {
 		hour: 'numeric',
 		minute: 'numeric',
 		second: 'numeric',
-	}
+	};
 
 	/**
 	 * @var {number|null} deletekey API key id used in remove modal
 	 */
-	private deleteKey: number|null = null
+	private deleteKey: number|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -176,7 +176,7 @@ export default class ApiKeyList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -185,12 +185,12 @@ export default class ApiKeyList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
-	}
+	};
 
 	/**
 	 * @var {Array<ApiKey>} keys List of API key objects
 	 */
-	private keys: Array<ApiKey> = []
+	private keys: Array<ApiKey> = [];
 
 	/**
 	 * Vue lifecycle hook created

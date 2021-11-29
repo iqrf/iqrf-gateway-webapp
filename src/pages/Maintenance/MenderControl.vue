@@ -100,22 +100,22 @@ export default class MenderControl extends Vue {
 	/**
 	 * @constant {string} serviceName Mender service name 
 	 */
-	private serviceName = 'mender-client'
+	private serviceName = 'mender-client';
 
 	/**
 	 * @var {boolean} missing Indicates that Mender service is not installed
 	 */
-	private missing = false
+	private missing = false;
 
 	/**
 	 * @var {boolean} unsupported Indicates that Mender service is unsupported
 	 */
-	private unsupported = false
+	private unsupported = false;
 
 	/**
 	 * @var {ServiceStatus|null} service Mender service status object
 	 */
-	private service: ServiceStatus|null = null
+	private service: ServiceStatus|null = null;
 
 	/**
 	 * Vue lifecycle hook mounted

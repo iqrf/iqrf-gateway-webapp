@@ -126,12 +126,12 @@ export default class NtpConfig extends Vue {
 	/**
 	 * NTP configuration
 	 */
-	private pools: Array<string> = ['']
+	private pools: Array<string> = [''];
 
 	/**
 	 * @var {boolean} useCustomServers Controls whether server fields are rendered
 	 */
-	private useCustomServers = false
+	private useCustomServers = false;
 
 	/**
 	 * Initializes validation rules

@@ -108,12 +108,12 @@ export default class MonitForm extends Vue {
 	/**
 	 * @constant {string} featureName Feature name
 	 */
-	private featureName = 'monit'
+	private featureName = 'monit';
 
 	/**
 	 * @var {IMonitConfig|null} configuration Monit configuration
 	 */
-	private configuration: IMonitConfig|null = null
+	private configuration: IMonitConfig|null = null;
 
 	/**
 	 * Initializes validation rules

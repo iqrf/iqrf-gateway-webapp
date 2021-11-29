@@ -92,12 +92,12 @@ export default class OtaUpload extends Vue {
 	/**
 	 * @constant {string} componentName name of daemon component
 	 */
-	private componentName = 'iqrf::OtaUploadService'
+	private componentName = 'iqrf::OtaUploadService';
 
 	/**
 	 * @var {string} instance name of daemon componenent instance
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {IOtaUpload} configuration OtaUpload instance configuration
@@ -107,12 +107,12 @@ export default class OtaUpload extends Vue {
 		instance: '',
 		uploadPath: '',
 		uploadPathSuffix: '',
-	}
+	};
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

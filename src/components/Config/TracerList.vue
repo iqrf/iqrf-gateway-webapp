@@ -97,7 +97,6 @@ import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import {IField} from '../../interfaces/coreui';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
@@ -119,7 +118,7 @@ export default class TracerList extends Vue {
 	/**
 	 * @constant {string} componentName Logging service component name
 	 */
-	private componentName = 'shape::TraceFileService'
+	private componentName = 'shape::TraceFileService';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -143,7 +142,7 @@ export default class TracerList extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -152,17 +151,17 @@ export default class TracerList extends Vue {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
-	}
+	};
 
 	/**
 	 * @var {Array<unknown>} instances Array of logging service component instances
 	 */
-	private instances: Array<unknown> = []
+	private instances: Array<unknown> = [];
 
 	/**
 	 * @var {string} deleteInstance Name of logging service component instance used in remove modal
 	 */
-	private deleteInstance = ''
+	private deleteInstance = '';
 
 	/**
 	 * Vue lifecycle hook created

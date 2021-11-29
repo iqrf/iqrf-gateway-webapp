@@ -83,12 +83,12 @@ export default class InstallSshStatus extends Vue {
 	/**
 	 * @var {SSHStatus} status SSH service status select
 	 */
-	private status: SSHStatus = SSHStatus.ENABLE
+	private status: SSHStatus = SSHStatus.ENABLE;
 
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * @constant {Array<IOption>} options SSH service status options
@@ -106,7 +106,7 @@ export default class InstallSshStatus extends Vue {
 			value: SSHStatus.DISABLE,
 			label: this.$t('install.ssh.states.disable').toString(),
 		}
-	]
+	];
 
 	/**
 	 * Advances the install wizard step

@@ -515,19 +515,19 @@ export default class WireguardTunnel extends Vue {
 				}
 			},
 		],
-	}
+	};
 
 	/**
 	 * @var {Array<StackType>} peerStacks Array of peer stacks
 	 */
 	private peerStacks: Array<StackType> = [
 		StackType.DUAL
-	]
+	];
 
 	/**
 	 * @var {StackType} stack Interface stack
 	 */
-	private stack = StackType.DUAL
+	private stack = StackType.DUAL;
 
 	/**
 	 * @constant {Array<IOption>} stackOptions Array of CoreUI select stack options
@@ -545,17 +545,17 @@ export default class WireguardTunnel extends Vue {
 			label: this.$t('network.wireguard.tunnels.form.stackTypes.both'),
 			value: StackType.DUAL
 		},
-	]
+	];
 
 	/**
 	 * @var {boolean} optionalPort Controls visibility of interface listen port input
 	 */
-	private optionalPort = false
+	private optionalPort = false;
 
 	/**
 	 * @property {number|null} id Wireguard tunnel id
 	 */
-	@Prop({required: false, default: null}) id!: number
+	@Prop({required: false, default: null}) id!: number;
 
 	/**
 	 * Initializes form validation rules

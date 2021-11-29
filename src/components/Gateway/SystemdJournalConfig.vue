@@ -214,17 +214,17 @@ export default class SystemdJournaldConfig extends Vue {
 	/**
 	 * @var {ISystemdJournal|null} config Systemd journal configuration
 	 */
-	private config: ISystemdJournal|null = null
+	private config: ISystemdJournal|null = null;
 
 	/**
 	 * @var {boolean} sizeRotation Use size based log rotation
 	 */
-	private sizeRotation = false
+	private sizeRotation = false;
 
 	/**
 	 * @var {boolean} timeRotation Use time based log rotation
 	 */
-	private timeRotation = false
+	private timeRotation = false;
 
 	/**
 	 * @constant {Array<IOption>} storageOptions Array of coreui select storage method options
@@ -238,7 +238,7 @@ export default class SystemdJournaldConfig extends Vue {
 			label: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
 			value: StorageMethod.PERSISTENT,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Array<IOption>} unitOptions Array of coreui select unit options
@@ -272,7 +272,7 @@ export default class SystemdJournaldConfig extends Vue {
 			label: this.$t('service.systemd-journald.config.form.units.years').toString(),
 			value: TimeUnit.YEAR,
 		},
-	]
+	];
 
 	/**
 	 * @var {boolean} failed Indicates whether configuraiton fetch failed

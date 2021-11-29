@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -127,7 +127,7 @@ limitations under the License.
 								</ValidationProvider>
 							</CCol>
 							<CCol
-								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null' 
+								v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'
 								md='6'
 							>
 								<CInput
@@ -178,7 +178,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -203,7 +203,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
-import {versionHigherEqual} from '../../helpers/versionChecker';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -239,78 +238,78 @@ export default class IqrfUart extends Vue {
 	/**
 	 * @var {number} baudRate UART baudrate
 	 */
-	private baudRate = 57600
+	private baudRate = 57600;
 
 	/**
 	 * @var {number} busEnableGpioPin UART bus enable ping
 	 */
-	private busEnableGpioPin = -1
-	
+	private busEnableGpioPin = -1;
+
 	/**
 	 * @constant {string} component UART component name
 	 */
-	private component = ''
+	private component = '';
 
 	/**
 	 * @constant {string} componentName UART component name, used for REST API communication
 	 */
-	private componentName = 'iqrf::IqrfUart'
+	private componentName = 'iqrf::IqrfUart';
 
 	/**
 	 * @var {string} componentInstance UART component instance name
 	 */
-	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
+	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0';
 
 	/**
 	 * @var {number|null} i2cEnableGpioPin I2C interface enable pin
 	 */
-	private i2cEnableGpioPin: number|null = null
+	private i2cEnableGpioPin: number|null = null;
 
 	/**
 	 * @var {string} instance UART component instance name, used for REST API communication
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {string} IqrfInterface UART interface device name
 	 */
-	private IqrfInterface = '/dev/ttyS0'
+	private IqrfInterface = '/dev/ttyS0';
 
 	/**
 	 * @var {number} pgmSwitchGpioPin UART programming mode switch pin
 	 */
-	private pgmSwitchGpioPin = -1
+	private pgmSwitchGpioPin = -1;
 
 	/**
 	 * @var {number} powerEnableGpioPin UART power enable pin
 	 */
-	private powerEnableGpioPin = 18
+	private powerEnableGpioPin = 18;
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {number|null} spiEnableGpioPin SPI interface enable pin
 	 */
-	private spiEnableGpioPin: number|null = null
+	private spiEnableGpioPin: number|null = null;
 
 	/**
 	 * @var {boolean} uartReset Should UART component instance reset?
 	 */
-	private uartReset = true
+	private uartReset = true;
 
 	/**
 	 * @var {number|null} uartEnableGpioPin UART interface enable pin
 	 */
-	private uartEnableGpioPin: number|null = null
+	private uartEnableGpioPin: number|null = null;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
-	
+	private loadFailed = false;
+
 	/**
 	 * Computes array of CoreUI select options for baudrate
 	 * @returns {Array<BaudRateOptions} Baudrate select options
@@ -319,7 +318,7 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */
@@ -409,7 +408,7 @@ export default class IqrfUart extends Vue {
 		}
 		return configuration;
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF UART interface component instance
 	 */
@@ -425,7 +424,7 @@ export default class IqrfUart extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
-	
+
 	/**
 	 * Handles successful REST API response
 	 */
@@ -469,6 +468,6 @@ export default class IqrfUart extends Vue {
 	private updatePort(port: string): void {
 		this.IqrfInterface = port;
 	}
-	
+
 }
 </script>

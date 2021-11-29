@@ -251,17 +251,17 @@ export default class WifiConnections extends Vue {
 	/**
 	 * @var {Array<IAccessPointArray>} accessPoints Array of available access points
 	 */
-	private accessPoints: Array<IAccessPointArray> = []
+	private accessPoints: Array<IAccessPointArray> = [];
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
 	 */
-	private ifNameOptions: Array<IOption> = []
+	private ifNameOptions: Array<IOption> = [];
 
 	/**
 	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
 	 */
-	private interfacesLoaded = false
+	private interfacesLoaded = false;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -273,7 +273,7 @@ export default class WifiConnections extends Vue {
 		edit: cilPencil,
 		refresh: cilReload,
 		remove: cilTrash,
-	}
+	};
 
 	/**
 	 * @constant {Array<IField>} tableFields Array of CoreUI data table columns
@@ -306,27 +306,27 @@ export default class WifiConnections extends Vue {
 			filter: false,
 			sorter: false,
 		},
-	]
+	];
 
 	/**
 	 * @var {IAccessPoint|null} disconnectAp Access point used in disconnect modal
 	 */
-	private disconnectAp: IAccessPoint|null = null
+	private disconnectAp: IAccessPoint|null = null;
 
 	/**
 	 * @var {IAccessPoint|null} deleteAp Access point used in delete modal
 	 */
-	private deleteAp: IAccessPoint|null = null
+	private deleteAp: IAccessPoint|null = null;
 
 	/**
 	 * @var {boolean} deletedAP Indicates that AP has just been deleted
 	 */
-	private deletedAp = false
+	private deletedAp = false;
 
 	/**
 	 * @var {string} Hostname Window hostname
 	 */
-	private hostname = ''
+	private hostname = '';
 
 	/**
 	 * Retrieves data for table

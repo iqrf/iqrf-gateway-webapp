@@ -123,7 +123,6 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/coreui';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Dictionary } from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -146,12 +145,12 @@ export default class WebsocketMessagingList extends Vue {
 	/**
 	 * @constant {string} componentName Websocket messaging component name
 	 */
-	private componentName = 'iqrf::WebsocketMessaging'
+	private componentName = 'iqrf::WebsocketMessaging';
 
 	/**
 	 * @var {string|null} deleteInstance Websocket messaging instance used in remove modal
 	 */
-	private deleteInstance: string|null = null
+	private deleteInstance: string|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -175,7 +174,7 @@ export default class WebsocketMessagingList extends Vue {
 			filter: false,
 			sorter: false,
 		}
-	]
+	];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
@@ -184,12 +183,12 @@ export default class WebsocketMessagingList extends Vue {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
-	}
+	};
 
 	/**
 	 * @var {Array<WsMessaging>} instances Array of Websocket messaging instances
 	 */
-	private instances: Array<WsMessaging> = []
+	private instances: Array<WsMessaging> = [];
 
 	/**
 	 * Vue lifecycle hook created

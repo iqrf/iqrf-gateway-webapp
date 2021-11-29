@@ -71,12 +71,12 @@ export default class ProductModal extends Vue {
 	/**
 	 * @var {boolean} show Controls whether or not the product modal is rendered
 	 */
-	private render = false
+	private render = false;
 
 	/**
 	 * @var {Array<IProduct>} products Array of products from repository
 	 */
-	private products: Array<IProduct> = []
+	private products: Array<IProduct> = [];
 
 	/**
 	 * @constant {Array<IField>} fields Array of coreui data table fields
@@ -100,7 +100,7 @@ export default class ProductModal extends Vue {
 			sorter: false,
 			filter: false,
 		},
-	]
+	];
 
 	/**
 	 * @constant {Array<string>} icon Check icon for select button

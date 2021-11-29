@@ -37,7 +37,7 @@ export default class MenderUpdateLog extends Vue {
 	/**
 	 * @property {string} log Log
 	 */
-	@Prop({required: true, default: null}) log!: string
+	@Prop({required: true, default: null}) log!: string;
 }
 </script>
 

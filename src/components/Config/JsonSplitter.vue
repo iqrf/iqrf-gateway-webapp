@@ -101,12 +101,12 @@ export default class JsonSplitter extends Vue {
 	/**
 	 * @constant {string} componentName JSON Splitter component name
 	 */
-	private componentName = 'iqrf::JsonSplitter'
+	private componentName = 'iqrf::JsonSplitter';
 
 	/**
 	 * @var {string} instance JSON Splitter component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {IJsonSplitter} configuration JSON Splitter component instance configuration
@@ -115,12 +115,12 @@ export default class JsonSplitter extends Vue {
 		instance: '',
 		validateJsonResponse: false,
 		insId: '',
-	}
+	};
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

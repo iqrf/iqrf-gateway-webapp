@@ -115,7 +115,7 @@ export default class ApiKeyForm extends Vue {
 		hour: 'numeric',
 		minute: 'numeric',
 		second: 'numeric',
-	}
+	};
 
 	/**
 	 * @var {Record<string, string>} metadata API key metadata
@@ -123,17 +123,17 @@ export default class ApiKeyForm extends Vue {
 	private metadata: Record<string, string|null> = {
 		description: '',
 		expiration: null
-	}
+	};
 
 	/**
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
-	private useExpiration = false
+	private useExpiration = false;
 
 	/**
 	 * @property {number} keyId API key id
 	 */
-	@Prop({required: false, default: null}) keyId!: number
+	@Prop({required: false, default: null}) keyId!: number;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

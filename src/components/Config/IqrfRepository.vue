@@ -139,12 +139,12 @@ export default class IqrfRepository extends Vue {
 	/**
 	 * @constant {string} name IQRF Repository component name, used for REST API communication
 	 */
-	private name = 'iqrf::JsCache'
+	private name = 'iqrf::JsCache';
 
 	/**
 	 * @var {string} instance IQRF Repository component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {IIqrfRepository} configuration IQRF Repository component instance configuration
@@ -155,22 +155,22 @@ export default class IqrfRepository extends Vue {
 		urlRepo: '',
 		checkPeriodInMinutes: 0,
 		downloadIfRepoCacheEmpty: true,
-	}
+	};
 
 	/**
 	 * @var {boolean} checkEnabled Enable periodical update check
 	 */
-	private checkEnabled = false
+	private checkEnabled = false;
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
-	private powerUser = false
+	private powerUser = false;
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

@@ -103,7 +103,6 @@ import TimeService from '../../services/TimeService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {IOption} from '../../interfaces/coreui';
-import { Dictionary } from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -129,12 +128,12 @@ export default class DateTimeZone extends Vue {
 	/**
 	 * @var {ITime|null} gatewayTime Gateway timezone information
 	 */
-	private gatewayTime: ITime|null = null
+	private gatewayTime: ITime|null = null;
 
 	/**
 	 * @var {boolean} hour12 Use 12-hour clock to display time
 	 */
-	private hour12 = false
+	private hour12 = false;
 
 	/**
 	 * @var {IOption} timezone Currently selected timezone
@@ -142,17 +141,17 @@ export default class DateTimeZone extends Vue {
 	private timezone: IOption = {
 		label: '',
 		value: '',
-	}
+	};
 
 	/**
 	 * @var {Array<IOption>} timezoneOptions Array of available timezones at Gateway
 	 */
-	private timezoneOptions: Array<IOption> = []
+	private timezoneOptions: Array<IOption> = [];
 
 	/**
 	 * @var {ReturnType<typeof setInterval>} timeRefreshInterval Timestamp refresh interval
 	 */
-	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null
+	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of coreui icons
@@ -160,7 +159,7 @@ export default class DateTimeZone extends Vue {
 	private icons: Record<string, Array<string>> = {
 		sync: cilCheckCircle,
 		notSync: cilXCircle
-	}
+	};
 
 	/**
 	 * Retrieves gateway time and available timezones

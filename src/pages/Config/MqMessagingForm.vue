@@ -119,7 +119,7 @@ export default class MqMessagingForm extends Vue {
 	/**
 	 * @constant {string} componentName MQ messaging component name
 	 */
-	private componentName = 'iqrf::MqMessaging'
+	private componentName = 'iqrf::MqMessaging';
 
 	/**
 	 * @var {MqInstance} configuration MQ messaging component instance configuration
@@ -130,12 +130,12 @@ export default class MqMessagingForm extends Vue {
 		LocalMqName: '',
 		RemoteMqName: '',
 		acceptAsyncMsg: false,
-	}
+	};
 
 	/**
 	 * @property {string} instance MQ messaging component instance name
 	 */
-	@Prop({required: false, default: ''}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
 	 * Computes page title depending on the action (add, edit)

@@ -90,12 +90,12 @@ export default class JsonRawApi extends Vue {
 	/**
 	 * @constant {string} componentName JSON RawApi component name
 	 */
-	private componentName = 'iqrf::JsonDpaApiRaw'
+	private componentName = 'iqrf::JsonDpaApiRaw';
 
 	/**
 	 * @var {string} instances JSON RawApi component instance name
 	 */
-	private instance = ''
+	private instance = '';
 
 	/**
 	 * @var {IJsonRaw} configuration JSON RawApi component instance configuration
@@ -103,12 +103,12 @@ export default class JsonRawApi extends Vue {
 	private configuration: IJsonRaw = {
 		instance: '',
 		asyncDpaMessage: false,
-	}
+	};
 
 	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
-	private loadFailed = false
+	private loadFailed = false;
 
 	/**
 	 * Vue lifecycle hook created

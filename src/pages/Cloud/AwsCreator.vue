@@ -124,17 +124,17 @@ export default class AwsCreator extends Vue {
 	/**
 	 * @var {string} endpoint Aws cloud endpoint
 	 */
-	private endpoint = ''
+	private endpoint = '';
 
 	/**
 	 * @var {boolean} certEmpty Indicates whether the form certificate file input is empty
 	 */
-	private certEmpty = true
+	private certEmpty = true;
 
 	/**
 	 * @var {boolean} keyEmpty Indicates whether the form key file input is empty
 	 */
-	private keyEmpty = true
+	private keyEmpty = true;
 
 	/**
 	 * Vue lifecycle hook created
