@@ -1,8 +1,35 @@
-iqrf-gateway-webapp (2.4.0~alpha~1.gbped5dd2) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @ed5dd211a0afe18b578a7c2a0415b7a1923d1932 **
+  [ Roman Ondráček ]
+  * Debian packaging: fix changelog
+  * Debian packaging: fix patches
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 14 Nov 2021 18:38:55 +0100
+  [ Karel Hanák ]
+  * added missing license header, removed duplicate translation
+  * TrConfiguration: form rework, error handling for unicast and network target, added product hwpid modal browser
+  * NPM: downgrade luxon to 1.28.0
+  * MigrationManager: include uploader configuration if available, updated tests
+  * NetworkModule: fixed AutoConnect entity nmcli parsing
+  * NetworkModule: updated redundant autoconnect statement
+  * Sidebar: updated trconfig path
+  * MainDisambiguation: show maintenance item conditionally
+  * vue config: updated webpack svg rule
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies, fix coding style in backend
+  * Docker: fix image for REST API testing
+  * GitLab CI: fix NPM install
+  * Cypress: add basic E2E tests for user management
+  * NPM: update dependencies, fix coding style in frontend
+  * IQRF: add patches for IQRF OS 4.05D
+  * Core: add e-mail address validation
+  * Composer: update Apitte stack
+  * NPM: downgrade ESLint
+
+  [ Karel Hanák ]
+  * NPM: downgrade compare-versions
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 29 Nov 2021 23:43:28 +0100
 
 iqrf-gateway-webapp (2.3.0) testing; urgency=medium
 
