@@ -53,7 +53,7 @@
 		"@sentry/tracing": "^6.15.0",
 		"axios": "^0.24.0",
 		"color": "^3.2.1",
-		"compare-versions": "^4.1.1",
+		"compare-versions": "^3.6.0",
 		"cron-validate": "^1.4.3",
 		"cronstrue": "^1.122.0",
 		"file-saver": "^2.0.5",
