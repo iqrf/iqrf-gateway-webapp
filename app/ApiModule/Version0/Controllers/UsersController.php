@@ -365,7 +365,11 @@ class UsersController extends BaseController {
 		} else {
 			$baseUrl = explode('/api/v0/users/', (string) $request->getUri(), 2)[0];
 		}
-		$this->sender->send($verification, $baseUrl);
+		try {
+			$this->sender->send($verification, $baseUrl);
+		} catch (FallbackMailerException $e) {
+			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 }
