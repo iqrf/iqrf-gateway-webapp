@@ -28,7 +28,7 @@ LABEL maintainer="roman.ondracek@iqrf.com"
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions intl xsl zip
+RUN install-php-extensions intl sockets xsl zip
 
 COPY --from=builder /app /app
 WORKDIR /app
