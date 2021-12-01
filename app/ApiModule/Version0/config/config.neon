@@ -19,4 +19,4 @@ includes:
 	- models.neon
 
 services:
-    api.core.errorHandler: App\ApiModule\Version0\ErrorHandler
+	api.core.errorHandler: App\ApiModule\Version0\ErrorHandler
