@@ -17,3 +17,6 @@ includes:
 	- controllers.neon
 	- middlewares.neon
 	- models.neon
+
+services:
+    api.core.errorHandler: App\ApiModule\Version0\ErrorHandler
