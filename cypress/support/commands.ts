@@ -21,6 +21,7 @@ import {UserCredentials} from '../../src/services/AuthenticationService';
 import {Store} from 'vuex';
 
 Cypress.Commands.add('signIn', (username: string, password: string): Cypress.Chainable<any> => {
+	cy.visit('/sign/in');
 	const credentials = new UserCredentials(username, password);
 	const store = cy.window().its('app.$store');
 	return store.then((store: Store<any>): Promise<any> => {

@@ -1,8 +1,8 @@
 <template>
 	<VueStepProgressIndicator
 		:colors='colorConfig'
-		:steps='steps'
-		:active-step='step'
+		:steps='progressSteps'
+		:active-step='activeStep'
 	/>
 </template>
 
@@ -25,18 +25,21 @@ import ThemeManager from '../../helpers/themeManager';
 export default class InstallWizardStepProgress extends Vue {
 
 	/**
-	 * @var {number} step Step number
+	 * @type {number} Step number
 	 */
 	private step = 0;
 
 	/**
-	 * @var {Array<string>} steps Array of install wizard steps
+	 * @type {Array<string>} Array of install wizard steps
 	 */
-	private steps: Array<string> = [];
+	private steps: Record<string, string> = {
+		'introduction': '/install/',
+		'webappUser': '/install/webapp-user/',
+		'smtp': '/install/smtp/',
+	};
 
 	/**
-	 * Color for the active step
-	 * @private
+	 * @type {Color} Color for the active step
 	 */
 	private activeColor = ThemeManager.getPrimaryColor();
 
@@ -86,26 +89,38 @@ export default class InstallWizardStepProgress extends Vue {
 	};
 
 	/**
+	 * Returns the active step index
+	 * @return {number} Index of the active step
+	 */
+	get activeStep(): number {
+		return Object.values(this.steps).findIndex((url: string): boolean => (url === this.$route.path));
+	}
+
+	/**
+	 * Returns list of steps for the progress indicator
+	 * @return {Array<string>} List of steps
+	 */
+	get progressSteps(): Array<string> {
+		return Object.keys(this.steps).map((item: string) => this.$t('install.steps.' + item).toString());
+	}
+
+	/**
 	 * Builds steps for installation wizard
 	 */
 	created(): void {
-		let steps = [
-			'introduction',
-			'webappUser',
-			'smtp'
-		];
 		if (this.$store.getters['features/isEnabled']('gatewayPass')) {
-			steps.push('gatewayUser');
+			this.steps['gatewayUser'] = '/install/gateway-user/';
 		}
 		if (this.$store.getters['features/isEnabled']('ssh')) {
-			steps.push('sshKey', 'sshService');
+			this.steps['sshKey'] = '/install/ssh-keys/';
+			this.steps['sshService'] = '/install/ssh-status/';
 		}
-		this.steps = steps.map((item: string) => this.$t('install.steps.' + item).toString());
 	}
 
 	/**
 	 * Returns color for the completed step
 	 * @private
+	 * @return {Color} Color for the completed step
 	 */
 	private static getCompletedColor(): Color {
 		let color: Color = Color(ThemeManager.getPrimaryColor());
@@ -115,6 +130,7 @@ export default class InstallWizardStepProgress extends Vue {
 	/**
 	 * Returns color for the inactive step
 	 * @private
+	 * @return {Color} Color for the inactive step
 	 */
 	private static getInactiveColor(): Color {
 		return InstallWizardStepProgress.getCompletedColor().grayscale();
