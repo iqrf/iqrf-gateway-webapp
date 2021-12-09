@@ -1,4 +1,6 @@
 /**
+ * Copyright 2017-2021 IQRF Tech s.r.o.
+ * Copyright 2019-2021 MICRORISC s.r.o.
  * Copyright 2021 Roman Ondráček <xondra58@stud.fit.vutbr.cz>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +21,9 @@
 const faker = require('faker');
 
 context('User management', () => {
+
+	const username = faker.internet.userName();
+	const password = faker.internet.password();
 
 	it('Add a new user', () => {
 		cy.visit('/');
@@ -45,8 +50,6 @@ context('User management', () => {
 			expect(location.pathname).to.eq('/user/add/');
 			expect(location.search).to.be.empty;
 		});
-		const username = faker.internet.userName();
-		const password = faker.internet.password();
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)
@@ -150,6 +153,44 @@ context('User management', () => {
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/user/add/');
+			expect(location.search).to.be.empty;
+		});
+	});
+
+	it('Delete created user', () => {
+		cy.visit('/');
+		cy.signIn('admin', 'iqrf');
+		cy.visit('/user/');
+		cy.location().should((location) => {
+			expect(location.hash).to.be.empty;
+			expect(location.pathname).to.eq('/user/');
+			expect(location.search).to.be.empty;
+		});
+		cy.get('[aria-label="column name: \'username\' filter input"]')
+			.type(username)
+			.should('have.value', username);
+		cy.get('.card-body tbody tr td')
+			.should('have.length', 3)
+			.first()
+			.contains(username);
+		cy.get('.card-body tbody tr td.col-actions')
+			.contains('Delete')
+			.click();
+		cy.get('header.modal-header')
+			.contains('User delete confirmation');
+		cy.get('div.modal-body')
+			.contains('Are you sure you want to delete user ' + username + '?');
+		cy.get('footer.modal-footer button.btn')
+			.contains('Delete')
+			.click();
+		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
+			.contains('User ' + username + ' has been deleted successfully.');
+		cy.get('.card-body tbody tr td')
+			.should('have.length', 1)
+			.contains('No records have been found.');
+		cy.location().should((location) => {
+			expect(location.hash).to.be.empty;
+			expect(location.pathname).to.eq('/user/');
 			expect(location.search).to.be.empty;
 		});
 	});
