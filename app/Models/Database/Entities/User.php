@@ -259,11 +259,13 @@ class User implements JsonSerializable {
 	public function setEmail(?string $email): void {
 		if ($email !== null) {
 			$validator = new EmailValidator();
-			$validationRules = new MultipleValidationWithAnd([
+			$validationRules = [
 				new RFCValidation(),
-				new DNSCheckValidation(),
-			]);
-			if (!$validator->isValid($email, $validationRules)) {
+			];
+			if (function_exists('dns_get_record')) {
+				$validationRules[] = new DNSCheckValidation();
+			}
+			if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
 				$error = $validator->getError();
 				if ($error === null) {
 					throw new InvalidEmailAddressException();
