@@ -1,10 +1,15 @@
-iqrf-gateway-webapp (2.4.0~rc2~1.gbpe997bf) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.0~rc2) testing; urgency=medium
 
-  ** SNAPSHOT build @e997bfdd3e86712cd22379199729a30e15d54b00 **
+  * Prepare for version 2.4.0-rc2
+  * Docker: add sockets PHP extension to API testing Docker image
+  * API: add custom error handler with CORS support
+  * API: fix configuration indentation
+  * Installation wizard: fix progress indicator
+  * IQRF net: add missing update time for IQRF OS patches
+  * Core: use DNS validation rules for email address validation only if DNS extension is available
+  * Cypress: add E2E test for user removal
 
-  * UNRELEASED
-
- -- Roman Ondráček <roman@romanondracek.cz>  Mon, 29 Nov 2021 23:50:40 +0100
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 10 Dec 2021 16:50:00 +0100
 
 iqrf-gateway-webapp (2.4.0~rc1) testing; urgency=medium
 
