@@ -51,7 +51,7 @@ class ConfigurationManager {
 			'from' => Expect::string('iqrf-gw@localhost.localdomain')->dynamic(),
 			'password' => Expect::string('')->dynamic(),
 			'secure' => Expect::anyOf(null, 'ssl', 'tls')->default(null)->dynamic(),
-			'timeout' => Expect::int()->dynamic(),
+			'timeout' => Expect::int(20)->dynamic(),
 			'context' => Expect::arrayOf('array')->dynamic(),
 			'clientHost' => Expect::string()->dynamic(),
 			'persistent' => Expect::bool(false)->dynamic(),

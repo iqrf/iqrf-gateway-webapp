@@ -55,4 +55,24 @@ export interface ISmtp {
 	 * Sender
 	 */
 	from: string
+
+	/**
+	 * Mail theme
+	 */
+	theme?: string
+
+	/**
+	 * Context for connecting to the SMTP server
+	 */
+	context?: Record<string, Record<string, any>>
+
+	/**
+	 * SMTP client hostname
+	 */
+	clientHost?: string|null
+
+	/**
+	 * Persistent connection to SMTP server
+	 */
+	persistent?: boolean
 }

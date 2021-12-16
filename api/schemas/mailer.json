@@ -24,7 +24,18 @@
 			"$id": "#/properties/host",
 			"type": "string",
 			"title": "SMTP host",
-			"example": "localhost"
+			"example": "localhost",
+			"oneOf": [
+				{
+					"format": "hostname"
+				},
+				{
+					"format": "ipv4"
+				},
+				{
+					"format": "ipv6"
+				}
+			]
 		},
 		"port": {
 			"$id": "#/properties/port",
@@ -68,6 +79,7 @@
 		"from": {
 			"$id": "#/properties/from",
 			"type": "string",
+			"format": "email",
 			"title": "Sender",
 			"example": "iqrf-gw@localhost.localdomain"
 		},
@@ -76,6 +88,31 @@
 			"type": "string",
 			"title": "Mail theme",
 			"example": "generic"
+		},
+		"timeout": {
+			"$id": "#/properties/timeout",
+			"type": "number",
+			"title": "SMTP connection timeout (default 20 s)",
+			"example": 20
+		},
+		"context": {
+			"$id": "#/properties/context",
+			"type": "array",
+			"title": "Context for connecting to the SMTP server",
+			"example": []
+		},
+		"clientHost": {
+			"$id": "#/properties/clientHost",
+			"type": "string",
+			"format": "hostname",
+			"title": "SMTP client hostname",
+			"example": "iqrf-gw.localhost.localdomain"
+		},
+		"persistent": {
+			"$id": "#/properties/persistent",
+			"type": "boolean",
+			"title": "Persistent connection to SMTP server",
+			"example": false
 		}
 	}
 }

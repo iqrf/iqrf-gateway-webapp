@@ -35,6 +35,9 @@ class MailerService {
 	 * @param {ISmtp} config SMTP configuration
 	 */
 	saveConfig(config: ISmtp): Promise<AxiosResponse> {
+		if (config.clientHost === null) {
+			delete config.clientHost;
+		}
 		return axios.put('/config/mailer', config, {headers: authorizationHeader()});
 	}
 
