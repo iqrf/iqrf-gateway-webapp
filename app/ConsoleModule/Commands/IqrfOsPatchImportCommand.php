@@ -23,7 +23,6 @@ namespace App\ConsoleModule\Commands;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\EntityManager;
 use Nette\Utils\Finder;
-use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -83,7 +82,6 @@ class IqrfOsPatchImportCommand extends Command {
 			$this->entityManager->flush();
 		}
 		foreach (Finder::findFiles('*.iqrf')->in(self::DIR_PATH) as $file) {
-			assert($file instanceof SplFileInfo);
 			$fileName = $file->getFilename();
 			if ($repository->findOneBy(['fileName' => $fileName]) !== null) {
 				$output->writeln('IQRF OS patch ' . $file->getFilename() . ' has been already imported.');

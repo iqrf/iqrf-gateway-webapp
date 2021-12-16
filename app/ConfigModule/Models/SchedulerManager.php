@@ -29,7 +29,6 @@ use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
-use SplFileInfo;
 use stdClass;
 
 /**
@@ -85,7 +84,6 @@ class SchedulerManager {
 	public function deleteAll(): void {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			assert($file instanceof SplFileInfo);
 			$this->fileManager->delete($file->getBasename('.json'));
 		}
 	}
@@ -99,7 +97,6 @@ class SchedulerManager {
 	public function getFileName(int $taskId): string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			assert($file instanceof SplFileInfo);
 			$fileName = $file->getBasename('.json');
 			try {
 				$task = $this->fileManager->read($fileName);
@@ -135,7 +132,6 @@ class SchedulerManager {
 		$tasks = [];
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			assert($file instanceof SplFileInfo);
 			$fileName = $file->getBasename('.json');
 			try {
 				$data = $this->readFile($fileName);
