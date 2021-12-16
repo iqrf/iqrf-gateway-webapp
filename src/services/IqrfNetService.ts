@@ -438,10 +438,8 @@ class IqrfNetService {
 
 	/**
 	 * Sends a batch request to indicate coordinator LEDs for 5 seconds
-	 * @param timeout Timeout in milliseconds
-	 * @param message Timeout message
-	 * @param callback Timeout callback
-	 * @return Message ID
+	 * @param {WebSocketOptions} options WebSocket request options
+	 * @return {Promise<string>} Message ID
 	 */
 	indicateCoordinator(options: WebSocketOptions): Promise<string> {
 		options.request = {
@@ -453,10 +451,12 @@ class IqrfNetService {
 					'param': {
 						'requests': [
 							{
+								'hwpid': 'ffff',
 								'pnum': '06',
 								'pcmd': '03'
 							},
 							{
+								'hwpid': 'ffff',
 								'pnum': '07',
 								'pcmd': '03'
 							}
