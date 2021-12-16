@@ -1184,7 +1184,7 @@
 			},
 			"messages": {
 				"verifyNotice": "An email containing instructions to verify your account was sent to your address.",
-				"resendFailed": "Failed to send a new verification email: {email}.",
+				"resendFailed": "Failed to send a new verification email.",
 				"resendSuccess": "A new verification email has been successfully sent.",
 				"usernameExists": "Username is already used.",
 				"oldPassMismatch": "The old password is incorrect.",

@@ -99,7 +99,7 @@ import {email, required} from 'vee-validate/dist/rules';
 import {sleep} from '../../helpers/sleep';
 import {UserCredentials} from '../../services/AuthenticationService';
 
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
@@ -164,8 +164,8 @@ export default class InstallCreateUser extends Vue {
 	private handleSubmit(): void {
 		this.running = true;
 		UserService.add(this.username, this.email, this.password, this.language, this.role)
-			.then(() => {
-				if (this.email.length !== 0) {
+			.then((response: AxiosResponse) => {
+				if (response.data.emailSent === true) {
 					this.$toast.success(
 						this.$t('core.user.messages.verifyNotice').toString()
 					);

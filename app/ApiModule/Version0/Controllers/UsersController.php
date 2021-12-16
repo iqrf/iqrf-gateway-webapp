@@ -155,16 +155,18 @@ class UsersController extends BaseController {
 		} catch (InvalidUserRoleException $e) {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 		}
+		$responseBody = ['emailSent' => false];
 		if ($user->getEmail() !== null) {
 			try {
 				$this->sendVerificationEmail($request, $verification);
+				$responseBody['emailSent'] = true;
 			} catch (FallbackMailerException $e) {
 				// Ignore failure
 			}
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
 			->withHeader('Location', '/api/v0/users/' . $user->getId())
-			->writeBody('Workaround');
+			->writeJsonBody($responseBody);
 	}
 
 	/**
