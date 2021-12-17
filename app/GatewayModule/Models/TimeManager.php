@@ -26,6 +26,7 @@ use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
+use Throwable;
 
 /**
  * Time manager
@@ -89,7 +90,11 @@ class TimeManager {
 		$timezones = explode(PHP_EOL, $command->getStdout());
 		$array = [];
 		foreach ($timezones as $timezone) {
-			$array[] = $this->timezoneInfo($timezone);
+			try {
+				$array[] = $this->timezoneInfo($timezone);
+			} catch (Throwable $e) {
+				continue;
+			}
 		}
 		return $array;
 	}
