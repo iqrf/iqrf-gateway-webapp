@@ -171,7 +171,14 @@ class UserController extends BaseController {
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBody();
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($body['username']);
+		$userRepository = $this->entityManager->getUserRepository();
+		if (array_key_exists('username', $body)) {
+			$user = $userRepository->findOneByUserName($body['username']);
+		} elseif (array_key_exists('email', $body)) {
+			$user = $userRepository->findOneByEmail($body['email']);
+		} else {
+			throw new ClientErrorException('E-mail address or username is required', ApiResponse::S400_BAD_REQUEST);
+		}
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
