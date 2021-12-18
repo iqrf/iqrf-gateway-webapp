@@ -80,16 +80,18 @@ class IqrfNetService {
 	/**
 	 * Bonds a node locally
 	 * @param address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
+	 * @param testRetries Number of FRC test requests to send
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	bondLocal(address: number, options: WebSocketOptions): Promise<string> {
+	bondLocal(address: number, testRetries: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_BondNodeLocal',
 			'data': {
 				'repeat': 1,
 				'req': {
 					'deviceAddr': address,
+					'bondingTestRetries': testRetries,
 				},
 				'returnVerbose': true,
 			},
