@@ -1,3 +1,23 @@
+iqrf-gateway-webapp (2.4.0) testing; urgency=medium
+
+  [ Roman Ondráček ]
+  * Prepare for version 2.4.0-rc3
+  * Core: fix SMTP mailer configuration editor
+  * Install: fix toast message if no verification e-mail is sent
+  * Backend: fix coding style
+  * IQRF net: fix HWPID in Indicate coordinator request
+
+  [ Karel Hanák ]
+  * TimeManager: ignore missing timezones
+
+  [ Roman Ondráček ]
+  * Core: add password recovery option using email address
+
+  [ Karel Hanák ]
+  * IqrfNet: include bonding retries in IQMESH BondNodeLocal request
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sun, 19 Dec 2021 20:50:00 +0100
+
 iqrf-gateway-webapp (2.4.0~rc2) testing; urgency=medium
 
   * Prepare for version 2.4.0-rc2
