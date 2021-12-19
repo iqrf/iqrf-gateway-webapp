@@ -89,7 +89,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * IQRF Gateway Daemon's version
 	 */
-	private const NEW_DAEMON_VERSION = 'v2.4.0';
+	private const NEW_DAEMON_VERSION = 'v2.5.0-alpha';
 
 	/**
 	 * IQRF Gateway Daemon's version command
@@ -99,7 +99,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * IQRF Gateway Daemon's version string
 	 */
-	private const NEW_DAEMON_VERSION_STR = 'IQRF Gateway Daemon v2.4.0';
+	private const NEW_DAEMON_VERSION_STR = 'IQRF Gateway Daemon v2.5.0-alpha';
 
 	/**
 	 * IQRF Gateway Uploader's version
@@ -114,7 +114,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * IQRF Gateway Webapp's version
 	 */
-	private const WEBAPP_VERSION = 'v2.4.0';
+	private const WEBAPP_VERSION = 'v2.5.0-alpha';
 
 	/**
 	 * Sets up the test environment
