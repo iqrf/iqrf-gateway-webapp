@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.security.ssh.title') }}</h1>
 		<CCard>
-			<CCardHeader class='datatable-header'>
+			<CCardHeader class='datatable-header border-0'>
 				<div>
 					{{ $t('core.security.ssh.table.title') }}
 				</div>
@@ -39,9 +39,10 @@ limitations under the License.
 				<CDataTable
 					:items='keys'
 					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
+					:striped='true'
 					:pagination='true'
+					:items-per-page='20'
+					:column-filter='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>

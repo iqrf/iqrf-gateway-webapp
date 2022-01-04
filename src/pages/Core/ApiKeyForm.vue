@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/security/api-key/add"'>
+		<h1 v-if='$route.path === "/security/api-key/add/"'>
 			{{ $t('core.security.apiKey.add') }}
 		</h1>
 		<h1 v-else>
@@ -140,7 +140,7 @@ export default class ApiKeyForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/security/api-key/add' ?
+		return this.$route.path === '/security/api-key/add/' ?
 			this.$t('core.security.apiKey.add').toString() : this.$t('core.security.apiKey.edit').toString();
 	}
 
@@ -149,7 +149,7 @@ export default class ApiKeyForm extends Vue {
 	 * @return {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/security/api-key/add' ?
+		return this.$route.path === '/security/api-key/add/' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -215,7 +215,7 @@ export default class ApiKeyForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/security/api-key/add') {
+		if (this.$route.path === '/security/api-key/add/') {
 			this.$toast.success(
 				this.$t('core.security.apiKey.messages.addSuccess')
 					.toString()

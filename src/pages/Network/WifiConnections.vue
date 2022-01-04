@@ -546,7 +546,7 @@ export default class WifiConnections extends Vue {
 	 */
 	private addConnection(ap: IAccessPoint) {
 		this.$router.push({
-			name: 'add-wireless-connection',
+			name: this.$t('network.connection.add').toString(),
 			params: {
 				ssid: ap.ssid,
 				interfaceName: ap.interfaceName!,

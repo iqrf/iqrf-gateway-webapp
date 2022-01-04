@@ -91,7 +91,7 @@ limitations under the License.
 									:checked.sync='configuration.timestampFiles'
 								/>
 							</div>
-							<div 
+							<div
 								v-if='configuration.timestampFiles'
 								class='form-group'
 							>
@@ -325,7 +325,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
+	mounted(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
@@ -423,12 +423,7 @@ export default class TracerForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push({
-			name: 'misc',
-			params: {
-				tabName: 'tracer'
-			}
-		});
+		this.$router.push('/config/daemon/misc/');
 	}
 
 }

@@ -1082,6 +1082,9 @@
 				"description": "Manage API keys.",
 				"add": "Add API key",
 				"edit": "Edit API key",
+				"table": {
+					"title": "Authorized API keys"
+				},
 				"form": {
 					"id": "ID",
 					"description": "Description",
@@ -1110,7 +1113,7 @@
 			"ssh": {
 				"title": "SSH keys",
 				"description": "Manage SSH keys.",
-				"add": "Add SSH key(s)",
+				"add": "Add SSH key",
 				"edit": "Edit SSH key",
 				"table": {
 					"title": "Authorized SSH public keys",
@@ -1161,6 +1164,9 @@
 			"resendVerification": "Re-send verification email",
 			"id": "User ID",
 			"role": "User role",
+			"table": {
+				"title": "Webapp users"
+			},
 			"roles": {
 				"normal": "Normal user",
 				"iqaros": "IQAROS user",
@@ -2539,6 +2545,7 @@
 		"connection": {
 			"title": "Available connections",
 			"name": "Name",
+			"add": "Add connection",
 			"edit": "Edit connection",
 			"errors": {
 				"name": "Please enter a connection name.",

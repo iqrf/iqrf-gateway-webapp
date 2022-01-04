@@ -18,7 +18,10 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.user.title') }}</h1>
 		<CCard>
-			<CCardHeader class='border-0'>
+			<CCardHeader class='datatable-header border-0'>
+				<div>
+					{{ $t('core.user.table.title') }}
+				</div>
 				<CButton
 					color='success'
 					to='/user/add/'
@@ -26,7 +29,9 @@ limitations under the License.
 					class='float-right'
 				>
 					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
+					<span class='d-none d-lg-inline'>
+						{{ $t('table.actions.add') }}
+					</span>
 				</CButton>
 			</CCardHeader>
 			<CCardBody>

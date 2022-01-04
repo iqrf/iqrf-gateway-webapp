@@ -48,6 +48,9 @@ limitations under the License.
 				</CDropdownItem>
 			</CDropdown>
 		</CHeaderNav>
+		<CSubheader>
+			<CBreadcrumbRouter class='border-0 mb-0' />
+		</CSubheader>
 	</CHeader>
 </template>
 
@@ -55,6 +58,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {
 	CBadge,
+	CBreadcrumbRouter,
 	CDropdown,
 	CHeader,
 	CHeaderBrand,
@@ -69,6 +73,7 @@ import ThemeManager from '../helpers/themeManager';
 @Component({
 	components: {
 		CBadge,
+		CBreadcrumbRouter,
 		CDropdown,
 		CHeader,
 		CHeaderBrand,

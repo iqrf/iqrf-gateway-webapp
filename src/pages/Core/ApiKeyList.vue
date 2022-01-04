@@ -18,15 +18,20 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.security.apiKey.title') }}</h1>
 		<CCard>
-			<CCardHeader class='border-0'>
+			<CCardHeader class='datatable-header border-0'>
+				<div>
+					{{ $t('core.security.apiKey.table.title') }}
+				</div>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/security/api-key/add'
+					to='/security/api-key/add/'
 				>
 					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
+					<span class='d-none d-lg-inline'>
+						{{ $t('table.actions.add') }}
+					</span>
 				</CButton>
 			</CCardHeader>
 			<CCardBody>

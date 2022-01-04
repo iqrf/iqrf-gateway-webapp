@@ -16,6 +16,7 @@
  */
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
+import i18n from '../i18n';
 
 import TheDashboard from '../components/TheDashboard.vue';
 
@@ -206,9 +207,13 @@ const routes: Array<RouteConfig> = [
 	{
 		path: '/',
 		component: TheDashboard,
+		name: i18n.t('core.dashboard').toString(),
+		redirect: '/',
 		children: [
 			{
 				path: '/cloud',
+				name: i18n.t('cloud.title').toString(),
+				redirect: '/cloud/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -222,27 +227,34 @@ const routes: Array<RouteConfig> = [
 					{
 						component: AzureCreator,
 						path: 'azure',
+						name: i18n.t('cloud.msAzure.title').toString(),
 					},
 					{
 						component: AwsCreator,
 						path: 'aws',
+						name: i18n.t('cloud.amazonAws.title').toString(),
 					},
 					{
 						component: HexioCreator,
 						path: 'hexio',
+						name: i18n.t('cloud.hexio.title').toString(),
 					},
 					{
 						component: IbmCreator,
 						path: 'ibm-cloud',
+						name: i18n.t('cloud.ibmCloud.title').toString(),
 					},
 					{
 						component: InteliGlueCreator,
 						path: 'inteli-glue',
+						name: i18n.t('cloud.intelimentsInteliGlue.title').toString(),
 					},
 				]
 			},
 			{
 				path: '/config',
+				name: i18n.t('config.title').toString(),
+				redirect: '/config/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -254,173 +266,9 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
-						path: 'main',
-						redirect: 'daemon/main',
-					},
-					{
-						path: 'component',
-						redirect: (store.getters['user/getRole'] === 'power' ? 'daemon/component' : 'daemon'),
-					},
-					{
-						path: 'component/add',
-						redirect: 'daemon/component/add',
-					},
-					{
-						path: 'component/edit/:component',
-						redirect: 'daemon/component/edit/:component',
-					},
-					{
-						path: 'iqrf-cdc',
-						redirect: 'daemon/interfaces',
-					},
-					{
-						path: 'iqrf-dpa',
-						redirect: 'daemon/interfaces',
-					},
-					{
-						path: 'iqrf-spi',
-						redirect: 'daemon/interfaces',
-					},
-					{
-						path: 'iqrf-uart',
-						redirect: 'daemon/interfaces',
-					},
-					{
-						path: 'iqrf-info',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'iqrf-repository',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'json-raw-api',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'json-mng-meta-data-api',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'json-splitter',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'monitor',
-						redirect: {
-							name: 'misc'
-						},
-					},
-					{
-						path: 'monitor/add',
-						redirect: 'daemon/misc/monitor/add',
-					},
-					{
-						path: 'monitor/edit/:instance',
-						redirect: 'daemon/misc/monitor/edit/:instance',
-					},
-					{
-						path: 'mq',
-						redirect: 'daemon/messagings/mq',
-					},
-					{
-						path: 'mq/add',
-						redirect: 'daemon/messagings/mq/add',
-					},
-					{
-						path: 'mq/edit/:instance',
-						redirect: 'daemon/messagings/mq/edit/:instance',
-					},
-					{
-						path: 'mqtt',
-						redirect: 'daemon/messagings/mqtt'
-					},
-					{
-						path: 'mqtt/add',
-						redirect: 'daemon/messagings/mqtt/add',
-					},
-					{
-						path: 'mqtt/edit/:instance',
-						redirect: 'daemon/messagings/mqtt/edit/:instance',
-					},
-					{
-						path: 'udp',
-						redirect: 'daemon/messagings/udp',
-					},
-					{
-						path: 'udp/add',
-						redirect: 'daemon/messagings/udp/add',
-					},
-					{
-						path: 'udp/edit/:instance',
-						redirect: 'daemon/messagings/udp/edit/:instance',
-					},
-					{
-						path: 'websocket',
-						redirect: 'daemon/messagings/websocket',
-					},
-					{
-						path: 'websocket/add',
-						redirect: 'daemon/messagings/websocket/add',
-					},
-					{
-						path: 'websocket/edit/:instnace',
-						redirect: 'daemon/messagings/weboscket/edit/:instance',
-					},
-					{
-						path: 'websocket/add-messaging',
-						redirect: 'daemon/messagings/websocket/add-messaging',
-					},
-					{
-						path: 'websocket/edit-messaging/:instance',
-						redirect: 'daemon/messagings/websocket/edit-messaging/:instance',
-					},
-					{
-						path: 'websocket/add-service',
-						redirect: 'daemon/messagings/websocket/add-service',
-					},
-					{
-						path: 'websocket/edit-service/:instance',
-						redirect: 'daemon/messagings/websocket/edit-service/:instance',
-					},
-					{
-						path: 'scheduler',
-						redirect: 'daemon/scheduler',
-					},
-					{
-						path: 'scheduler/add',
-						redirect: 'daemon/scheduler/add',
-					},
-					{
-						path: 'scheduler/edit/:id',
-						redirect: 'daemon/scheduler/edit/:id',
-					},
-					{
-						path: 'tracer',
-						redirect: {
-							name: 'misc'
-						}
-					},
-					{
-						path: 'tracer/add',
-						redirect: 'daemon/misc/tracer/add',
-					},
-					{
-						path: 'tracer/edit/:instance',
-						redirect: 'daemon/misc/tracer/edit/:instance',
-					},
-					{
 						path: 'daemon',
+						name: i18n.t('config.daemon.title').toString(),
+						redirect: '/config/daemon/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -428,15 +276,18 @@ const routes: Array<RouteConfig> = [
 						},
 						children: [
 							{
-								path: '',
 								component: DaemonDisambiguation,
+								path: '',
 							},
 							{
 								component: MainConfiguration,
 								path: 'main',
+								name: i18n.t('config.daemon.main.title').toString(),
 							},
 							{
 								path: 'component',
+								name: i18n.t('config.daemon.components.title').toString(),
+								redirect: '/config/daemon/component/',
 								component: {
 									render(c) {
 										return c('router-view');
@@ -444,26 +295,31 @@ const routes: Array<RouteConfig> = [
 								},
 								children: [
 									{
+										component: ComponentList,
 										path: '',
-										component: ComponentList
 									},
 									{
 										component: ComponentForm,
 										path: 'add',
+										name: i18n.t('config.daemon.components.add').toString(),
 									},
 									{
 										component: ComponentForm,
 										path: 'edit/:component',
+										name: i18n.t('config.daemon.components.edit').toString(),
 										props: true,
 									},
 								],
 							},
 							{
-								path: 'interfaces',
 								component: Interfaces,
+								path: 'interfaces',
+								name: i18n.t('config.daemon.interfaces.title').toString(),
 							},
 							{
 								path: 'messagings',
+								name: i18n.t('config.daemon.messagings.title').toString(),
+								redirect: '/config/daemon/messagings/',
 								component: {
 									render(c) {
 										return c('router-view');
@@ -476,6 +332,8 @@ const routes: Array<RouteConfig> = [
 									},
 									{
 										path: 'websocket',
+										name: i18n.t('config.daemon.messagings.websocket.title').toString(),
+										redirect: '/config/daemon/messagings/websocket/',
 										component: {
 											render(c) {
 												return c('router-view');
@@ -489,34 +347,42 @@ const routes: Array<RouteConfig> = [
 											{
 												component: WebsocketInterfaceForm,
 												path: 'add',
+												name: i18n.t('config.daemon.messagings.websocket.interface.add').toString(),
 											},
 											{
 												component: WebsocketMessagingForm,
 												path: 'add-messaging',
+												name: i18n.t('config.daemon.messagings.websocket.messaging.add').toString(),
 											},
 											{
 												component: WebsocketServiceForm,
 												path: 'add-service',
+												name: i18n.t('config.daemon.messagings.websocket.service.add').toString(),
 											},
 											{
 												component: WebsocketInterfaceForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.messagings.websocket.interface.edit').toString(),
 												props: true,
 											},
 											{
 												component: WebsocketMessagingForm,
 												path: 'edit-messaging/:instance',
+												name: i18n.t('config.daemon.messagings.websocket.messaging.edit').toString(),
 												props: true,
 											},
 											{
 												component: WebsocketServiceForm,
 												path: 'edit-service/:instance',
+												name: i18n.t('config.daemon.messagings.websocket.service.edit').toString(),
 												props: true,
 											},
 										],
 									},
 									{
 										path: 'mq',
+										name: i18n.t('config.daemon.messagings.mq.title').toString(),
+										redirect: '/config/daemon/messagings/mq/',
 										component: {
 											render(c) {
 												return c('router-view');
@@ -524,22 +390,26 @@ const routes: Array<RouteConfig> = [
 										},
 										children: [
 											{
-												path: '',
 												component: MqMessagingTable,
+												path: '',
 											},
 											{
 												component: MqMessagingForm,
 												path: 'add',
+												name: i18n.t('config.daemon.messagings.mq.add').toString(),
 											},
 											{
 												component: MqMessagingForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.messagings.mq.edit').toString(),
 												props: true,
 											},
 										],
 									},
 									{
 										path: 'mqtt',
+										name: i18n.t('config.daemon.messagings.mqtt.title').toString(),
+										redirect: '/config/daemon/messagings/mqtt/',
 										component: {
 											render(c) {
 												return c('router-view');
@@ -553,16 +423,20 @@ const routes: Array<RouteConfig> = [
 											{
 												component: MqttMessagingForm,
 												path: 'add',
+												name: i18n.t('config.daemon.messagings.mqtt.add').toString(),
 											},
 											{
 												component: MqttMessagingForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.messagings.mqtt.edit').toString(),
 												props: true,
 											},
 										],
 									},
 									{
 										path: 'udp',
+										name: i18n.t('config.daemon.messagings.udp.title').toString(),
+										redirect: '/config/daemon/messagings/udp/',
 										component: {
 											render(c) {
 												return c('router-view');
@@ -576,10 +450,12 @@ const routes: Array<RouteConfig> = [
 											{
 												component: UdpMessagingForm,
 												path: 'add',
+												name: i18n.t('config.daemon.messagings.udp.add').toString(),
 											},
 											{
 												component: UdpMessagingForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.messagings.udp.edit').toString(),
 												props: true,
 											},
 										],
@@ -588,6 +464,8 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								path: 'scheduler',
+								name: i18n.t('config.daemon.scheduler.title').toString(),
+								redirect: '/config/daemon/scheduler/',
 								component: {
 									render(c) {
 										return c('router-view');
@@ -595,16 +473,18 @@ const routes: Array<RouteConfig> = [
 								},
 								children: [
 									{
-										path: '',
 										component: SchedulerList,
+										path: '',
 									},
 									{
+										component: SchedulerForm,
 										path: 'add',
-										component: SchedulerForm,
+										name: i18n.t('config.daemon.scheduler.add').toString(),
 									},
 									{
-										path: 'edit/:id',
 										component: SchedulerForm,
+										path: 'edit/:id',
+										name: i18n.t('config.daemon.scheduler.edit').toString(),
 										props: (route) => {
 											const id = Number.parseInt(route.params.id, 10);
 											if (Number.isNaN(id)) {
@@ -617,6 +497,8 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								path: 'misc',
+								name: i18n.t('config.daemon.misc.title').toString(),
+								redirect: '/config/daemon/misc/',
 								component: {
 									render(c) {
 										return c('router-view');
@@ -624,27 +506,10 @@ const routes: Array<RouteConfig> = [
 								},
 								children: [
 									{
-										name: 'misc',
 										path: '',
 										component: MiscConfiguration,
-										props: (route) => {
-											if (route.params.tabName !== undefined) {
-												return {tabName: route.params.tabName};
-											}
-											if (route.redirectedFrom === undefined) {
-												return {tabName: 'json'};
-											}
-											const redirect = (route.redirectedFrom.endsWith('/') ? route.redirectedFrom.slice(0, -1): route.redirectedFrom);
-											if (redirect.endsWith('json-mng-meta-data-api') || redirect.endsWith('json-raw-api') || redirect.endsWith('json-splitter')) {
-												return {tabName: 'json'};
-											}
-											if (redirect.endsWith('iqrf-repository')) {
-												return {tabName: 'repository'};
-											}
-											if (redirect.endsWith('iqrf-info')) {
-												return {tabName: 'db'};
-											}
-											return {tabName: redirect.split('/').pop()};
+										props: () => {
+											return {tabName: 'json'};
 										},
 									},
 									{
@@ -658,10 +523,12 @@ const routes: Array<RouteConfig> = [
 											{
 												component: MonitorForm,
 												path: 'add',
+												name: i18n.t('config.daemon.misc.monitor.add').toString(),
 											},
 											{
 												component: MonitorForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.misc.monitor.edit').toString(),
 												props: true,
 											},
 										],
@@ -677,10 +544,12 @@ const routes: Array<RouteConfig> = [
 											{
 												component: TracerForm,
 												path: 'add',
+												name: i18n.t('config.daemon.misc.tracer.add').toString(),
 											},
 											{
 												component: TracerForm,
 												path: 'edit/:instance',
+												name: i18n.t('config.daemon.misc.tracer.edit').toString(),
 												props: true,
 											},
 										],
@@ -692,27 +561,34 @@ const routes: Array<RouteConfig> = [
 					{
 						component: TranslatorConfig,
 						path: 'translator',
+						name: i18n.t('config.translator.title').toString(),
 					},
 					{
 						component: ControllerConfig,
 						path: 'controller',
+						name: i18n.t('config.controller.title').toString(),
 					},
 					{
 						component: IqrfRepositoryConfig,
 						path: 'repository',
+						name: i18n.t('config.repository.title').toString(),
 					},
 					{
 						component: SmtpCOnfiguration,
 						path: 'smtp',
+						name: i18n.t('config.smtp.title').toString(),
 					},
 					{
 						component: ConfigMigration,
 						path: 'migration',
+						name: i18n.t('config.migration.title').toString(),
 					},
 				]
 			},
 			{
 				path: '/gateway',
+				name: i18n.t('gateway.title').toString(),
+				redirect: '/gateway/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -726,30 +602,36 @@ const routes: Array<RouteConfig> = [
 					{
 						component: GatewayInfo,
 						path: 'info',
+						name: i18n.t('gateway.info.title').toString(),
 					},
 					{
 						component: GatewayTime,
 						path: 'date-time',
+						name: i18n.t('gateway.datetime.title').toString(),
 					},
 					{
 						component: Logs,
 						path: 'log',
+						name: i18n.t('gateway.log.title').toString(),
 					},
 					{
 						component: DaemonMode,
 						path: 'change-mode',
+						name: i18n.t('gateway.mode.title').toString(),
 					},
 					{
 						component: PowerControl,
 						path: 'power',
+						name: i18n.t('gateway.power.title').toString(),
 					},
 					{
 						component: IqrfServiceDisambiguation,
-						path: 'iqrf-services'
+						path: 'iqrf-services',
+						name: i18n.t('service.iqrf.title').toString(),
 					},
 					{
 						component: ServiceControl,
-						name: 'serviceControl',
+						name: 'Systemd service control',
 						path: 'service/:serviceName',
 						props: true,
 					},
@@ -757,6 +639,8 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/iqrfnet',
+				name: i18n.t('iqrfnet.title').toString(),
+				redirect: '/iqrfnet/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -770,6 +654,7 @@ const routes: Array<RouteConfig> = [
 					{
 						component: DeviceEnumeration,
 						path: 'enumeration/:address',
+						name: i18n.t('iqrfnet.enumeration.title').toString(),
 						props: (route) => {
 							const address = Number.parseInt(route.params.address, 10);
 							if (Number.isNaN(address)) {
@@ -781,31 +666,39 @@ const routes: Array<RouteConfig> = [
 					{
 						component: NetworkManager,
 						path: 'network',
+						name: i18n.t('iqrfnet.networkManager.title').toString(),
 					},
 					{
 						component: StandardManager,
 						path: 'standard',
+						name: i18n.t('iqrfnet.standard.title').toString(),
 					},
 					{
 						component: SendDpaPacket,
 						path: 'send-raw',
+						name: i18n.t('iqrfnet.sendPacket.title').toString(),
 					},
 					{
 						component: SendJsonRequest,
 						path: 'send-json',
+						name: i18n.t('iqrfnet.sendJson.title').toString(),
 					},
 					{
 						component: TrConfiguration,
 						path: 'tr-config',
+						name: i18n.t('iqrfnet.trConfiguration.title').toString(),
 					},
 					{
 						component: TrUpload,
 						path: 'tr-upload',
+						name: i18n.t('iqrfnet.trUpload.title').toString(),
 					},
 				]
 			},
 			{
 				path: '/network',
+				name: i18n.t('network.title').toString(),
+				redirect: '/network/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -818,6 +711,8 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'ethernet',
+						name: i18n.t('network.ethernet.title').toString(),
+						redirect: '/network/ethernet/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -831,9 +726,10 @@ const routes: Array<RouteConfig> = [
 							{
 								component: ConnectionForm,
 								path: 'add',
+								name: i18n.t('network.ethernet.add').toString(),
 							},
 							{
-								name: 'edit-ethernet-connection',
+								name: i18n.t('network.ethernet.edit').toString(),
 								component: ConnectionForm,
 								path: 'edit/:uuid',
 								props: true,
@@ -842,6 +738,8 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'wireless',
+						name: i18n.t('network.wireless.title').toString(),
+						redirect: '/network/wireless/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -853,21 +751,23 @@ const routes: Array<RouteConfig> = [
 								path: '',
 							},
 							{
-								name: 'add-wireless-connection',
 								component: ConnectionForm,
 								path: 'add',
+								name: i18n.t('network.connection.add').toString(),
 								props: true,
 							},
 							{
-								name: 'edit-wireless-connection',
 								component: ConnectionForm,
 								path: 'edit/:uuid',
+								name: i18n.t('network.connectin.edit').toString(),
 								props: true,
 							}
 						]
 					},
 					{
 						path: 'mobile',
+						name: i18n.t('network.mobile.title').toString(),
+						redirect: '/network/mobile/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -881,16 +781,20 @@ const routes: Array<RouteConfig> = [
 							{
 								component: MobileConnectionForm,
 								path: 'add',
+								name: i18n.t('network.mobile.add').toString(),
 							},
 							{
 								component: MobileConnectionForm,
 								path: 'edit/:uuid',
+								name: i18n.t('network.mobile.edit').toString(),
 								props: true,
 							},
 						]
 					},
 					{
 						path: 'vpn',
+						name: i18n.t('network.wireguard.title').toString(),
+						redirect: '/network/vpn/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -903,12 +807,13 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								component: WireguardTunnel,
-								path: 'add'
+								path: 'add',
+								name: i18n.t('network.wireguard.tunnels.add').toString(),
 							},
 							{
 								component: WireguardTunnel,
 								path: 'edit/:id',
-								props: (route) => {
+								name: i18n.t('network.wireguard.tunnels.edit').toString(),								props: (route) => {
 									const id = Number.parseInt(route.params.id, 10);
 									if (Number.isNaN(id)) {
 										return 0;
@@ -922,6 +827,8 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/maintenance',
+				name: i18n.t('maintenance.title').toString(),
+				redirect: '/maintenance/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -935,9 +842,12 @@ const routes: Array<RouteConfig> = [
 					{
 						component: PixlaControl,
 						path: 'pixla',
+						name: i18n.t('maintenance.pixla.title').toString(),
 					},
 					{
 						path: 'mender',
+						name: i18n.t('maintenance.mender.title').toString(),
+						redirect: '/maintenance/mender/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -951,21 +861,26 @@ const routes: Array<RouteConfig> = [
 							{
 								component: MenderControl,
 								path: 'service',
+								name: i18n.t('maintenance.mender.service.title').toString(),
 							},
 							{
 								component: MenderUpdate,
 								path: 'update',
+								name: i18n.t('maintenance.mender.update.title').toString(),
 							},
 						],
 					},
 					{
 						component: MonitControl,
 						path: 'monit',
+						name: i18n.t('maintenance.monit.title').toString(),
 					},
 				]
 			},
 			{
 				path: '/user',
+				name: i18n.t('core.user.title').toString(),
+				redirect: '/user/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -979,10 +894,12 @@ const routes: Array<RouteConfig> = [
 					{
 						component: UserAdd,
 						path: 'add',
+						name: i18n.t('core.user.add').toString(),
 					},
 					{
 						component: UserEdit,
 						path: 'edit/:userId',
+						name: i18n.t('core.user.edit').toString(),
 						props: (route) => {
 							const userId = Number.parseInt(route.params.userId, 10);
 							if (Number.isNaN(userId)) {
@@ -995,6 +912,8 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/security',
+				name: i18n.t('core.security.title').toString(),
+				redirect: '/security/',
 				component: {
 					render(c) {
 						return c('router-view');
@@ -1007,6 +926,8 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'api-key',
+						name: i18n.t('core.security.apiKey.title').toString(),
+						redirect: '/security/api-key/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -1020,10 +941,12 @@ const routes: Array<RouteConfig> = [
 							{
 								component: ApiKeyForm,
 								path: 'add',
+								name: i18n.t('core.security.apiKey.add').toString(),
 							},
 							{
 								component: ApiKeyForm,
 								path: 'edit/:keyId',
+								name: i18n.t('core.security.apiKey.edit').toString(),
 								props: (route) => {
 									const keyId = Number.parseInt(route.params.keyId, 10);
 									if (Number.isNaN(keyId)) {
@@ -1036,6 +959,8 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'ssh-key',
+						name: i18n.t('core.security.ssh.title').toString(),
+						redirect: '/security/ssh-key/',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -1043,12 +968,14 @@ const routes: Array<RouteConfig> = [
 						},
 						children: [
 							{
-								path: '',
 								component: SshKeyList,
+								path: '',
+
 							},
 							{
-								path: 'add',
 								component: SshKeyForm,
+								path: 'add',
+								name: i18n.t('core.security.ssh.add').toString(),
 							},
 						],
 					},
@@ -1059,8 +986,9 @@ const routes: Array<RouteConfig> = [
 				path: '',
 			},
 			{
-				path: '*',
 				component: NotFound,
+				path: '*',
+				name: i18n.t('core.error.404.title').toString(),
 			},
 		],
 	}
