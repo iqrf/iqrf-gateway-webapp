@@ -74,6 +74,8 @@ install:
 	cp -r www/ $(DATA_DIR)
 	install -d $(SYSTEMD_DIR)
 	install -m 0644 install/config/systemd/* $(SYSTEMD_DIR)
+	install -d $(CONFIG_DIR)/nginx
+	install -m 0644 install/config/nginx/* $(CONFIG_DIR)/nginx
 	install -d -o www-data $(LOG_DIR)
 	install -d -o www-data ${DESTDIR}/var/lib/iqrf-gateway-webapp
 	# Delete documentation
