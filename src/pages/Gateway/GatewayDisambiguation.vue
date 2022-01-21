@@ -100,6 +100,14 @@ limitations under the License.
 						{{ $t('gateway.power.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/gateway/backup/'>
+					<header class='list-group-item-heading'>
+						{{ $t('gateway.backup.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('gateway.backup.description') }}
+					</p>
+				</CListGroupItem>
 			</CListGroup>
 		</CCard>
 	</div>
