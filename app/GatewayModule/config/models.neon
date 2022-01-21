@@ -14,6 +14,7 @@
 # limitations under the License.
 
 services:
+	- App\GatewayModule\Models\BackupManager(%controller.configDir%, %translator.configDir%, %uploader.configDir%)
 	certificateFileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
 		autowired: false

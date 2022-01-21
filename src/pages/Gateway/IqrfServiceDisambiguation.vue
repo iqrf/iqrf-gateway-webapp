@@ -27,7 +27,10 @@ limitations under the License.
 						{{ $t('service.iqrf-gateway-daemon.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/gateway/service/iqrf-gateway-controller/'>
+				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")'
+					to='/gateway/service/iqrf-gateway-controller/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('service.iqrf-gateway-controller.title') }}
 					</header>
@@ -35,7 +38,10 @@ limitations under the License.
 						{{ $t('service.iqrf-gateway-controller.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/gateway/service/iqrf-gateway-translator/'>
+				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
+					to='/gateway/service/iqrf-gateway-translator/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('service.iqrf-gateway-translator.title') }}
 					</header>

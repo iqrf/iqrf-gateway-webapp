@@ -34,6 +34,7 @@ const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gatew
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
 const ServiceControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/ServiceControl.vue');
+const GatewayBackup = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayBackup.vue');
 
 const MainDisambiguation = () => import(/* webpackChunkName: "core" */ '@/pages/Core/MainDisambiguation.vue');
 const NotFound = () => import(/* webpackChunkName: "core" */ '@/pages/Core/NotFound.vue');
@@ -752,6 +753,10 @@ const routes: Array<RouteConfig> = [
 						name: 'serviceControl',
 						path: 'service/:serviceName',
 						props: true,
+					},
+					{
+						component: GatewayBackup,
+						path: 'backup',
 					},
 				]
 			},
