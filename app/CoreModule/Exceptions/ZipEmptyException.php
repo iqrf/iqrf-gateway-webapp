@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ConfigModule\Exceptions;
+namespace App\CoreModule\Exceptions;
 
 use Exception;
 

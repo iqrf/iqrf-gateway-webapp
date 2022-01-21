@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
+use App\CoreModule\Exceptions\ZipEmptyException;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Models\BackupManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -87,10 +88,14 @@ class BackupController extends GatewayController {
 	 */
 	public function backup(ApiRequest $request, ApiResponse $response) {
 		$this->validator->validateRequest('gatewayBackup', $request);
-		$filePath = $this->manager->backup($request->getJsonBody(true));
-		$fileName = basename($filePath);
-		$response->writeBody(FileSystem::read($filePath));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+		try {
+			$filePath = $this->manager->backup($request->getJsonBody(true));
+			$fileName = basename($filePath);
+			$response->writeBody(FileSystem::read($filePath));
+			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+		} catch (ZipEmptyException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		}
 	}
 
 	/**

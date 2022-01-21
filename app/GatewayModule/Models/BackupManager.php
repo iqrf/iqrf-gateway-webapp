@@ -20,22 +20,19 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\ConfigModule\Exceptions\IncompleteConfigurationException;
-use App\ConfigModule\Exceptions\NotDaemonConfigurationException;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use App\CoreModule\Exceptions\ZipEmptyException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Models\DaemonDirectories;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
@@ -79,6 +76,11 @@ class BackupManager {
 	 * Path to webapp configuration
 	 */
 	private const WEBAPP_DIR = __DIR__ . '/../../config/';
+
+	/**
+	 * Path to webapp nginx configuration
+	 */
+	private const NGINX_DIR = '/etc/iqrf-gateway-webapp/nginx/';
 
 	/**
 	 * @var string Path to IQRF Gateway Controller configuration directory
@@ -162,19 +164,12 @@ class BackupManager {
 	public function backup(array $params): string {
 		$path = $this->getArchivePath();
 		$this->zipManager = new ZipArchiveManager($path);
-		if ($params['software']['controller']) {
+		if ($params['software']['iqrf']) {
+			$this->backupGatewayFile();
 			$this->backupController();
-		}
-		if ($params['software']['daemon']) {
 			$this->backupDaemon();
-		}
-		if ($params['software']['translator']) {
 			$this->backupTranslator();
-		}
-		if ($params['software']['uploader']) {
 			$this->backupUploader();
-		}
-		if ($params['software']['webapp']) {
 			$this->backupWebapp();
 		}
 		if ($params['software']['mender']) {
@@ -182,9 +177,6 @@ class BackupManager {
 		}
 		if ($params['software']['pixla']) {
 			$this->backupPixla();
-		}
-		if ($params['system']['metadata']) {
-			$this->backupMetadata();
 		}
 		if ($params['system']['hostname']) {
 			$this->backupHost();
@@ -198,8 +190,20 @@ class BackupManager {
 		if ($params['system']['journal']) {
 			$this->backupJournal();
 		}
+		if ($this->zipManager->isEmpty()) {
+			throw new ZipEmptyException("Nothing to backup.");
+		}
 		$this->zipManager->close();
 		return $path;
+	}
+
+	/**
+	 * Backup gateway metadata
+	 */
+	private function backupGatewayFile(): void {
+		if (file_exists(self::GW_PATH)) {
+			$this->zipManager->addFile(self::GW_PATH, 'gateway/iqrf-gateway.json');
+		}
 	}
 
 	/**
@@ -248,6 +252,7 @@ class BackupManager {
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'features.neon', 'webapp/features.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'smtp.neon', 'webapp/smtp.neon');
+		$this->zipManager->addFolder(self::NGINX_DIR, 'webapp/nginx');
 	}
 
 	/**
@@ -270,15 +275,6 @@ class BackupManager {
 	private function backupPixla(): void {
 		if (file_exists(self::PIXLA_DIR)) {
 			$this->zipManager->addFolder(self::PIXLA_DIR, 'pixla');
-		}
-	}
-
-	/**
-	 * Backup gateway metadata
-	 */
-	private function backupMetadata(): void {
-		if (file_exists(self::GW_PATH)) {
-			$this->zipManager->addFile(self::GW_PATH, 'gateway/iqrf-gateway.json');
 		}
 	}
 
@@ -342,7 +338,6 @@ class BackupManager {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
 		$this->restoreController();
-		$this->changeOwner();
 		$directories = [
 			$this->daemonDirectories->getConfigurationDir(),
 		];
@@ -361,9 +356,9 @@ class BackupManager {
 		$this->restoreTranslator();
 		$this->restoreUploader();
 		$this->restoreWebapp();
+		$this->changeOwner();
 		$this->zipManager->close();
 		$this->serviceManager->restart();
-
 	}
 
 	/**
@@ -447,7 +442,16 @@ class BackupManager {
 				$wl = ['config.json'];
 				$this->isWhitelisted($wl, $file);
 			} elseif (strpos($file, 'webapp/') === 0) {
-				$wl = ['database.db', 'features.neon', 'iqrf-repository.neon', 'smtp.neon'];
+				$wl = [
+					'database.db',
+					'features.neon',
+					'iqrf-repository.neon',
+					'smtp.neon',
+					'iqrf-gateway-webapp.localhost',
+					'iqrf-gateway-webapp-https.localhost',
+					'iqrf-gateway-webapp-iqaros.localhost',
+					'iqrf-gateway-webapp-iqaros-https.localhost',
+				];
 				$this->isWhitelisted($wl, $file);
 			} else {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
@@ -591,7 +595,18 @@ class BackupManager {
 	 * Extracts IQRF Gateway Webapp's data
 	 */
 	private function restoreWebapp(): void {
-		//
+		foreach ($this->zipManager->listFiles() as $file) {
+			if (strpos($file, 'webapp/nginx/') === 0) {
+				$this->zipManager->extract(self::NGINX_DIR, $file);
+			}
+			if (strpos($file, 'webapp/') === 0) {
+				$this->zipManager->extract(self::WEBAPP_DIR, $file);
+			}
+		}
+		$this->commandManager->run('cp -p' . self::NGINX_DIR . 'webapp/nginx/* ' . self::NGINX_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::NGINX_DIR . 'webapp', true);
+		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/* ' . self::WEBAPP_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::WEBAPP_DIR . 'webapp', true);
 	}
 
 	/**
