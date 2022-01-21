@@ -1415,21 +1415,17 @@
 			},
 			"form": {
 				"software": {
-					"controller": "IQRF Gateway Controller",
-					"daemon": "IQRF Gateway Daemon",
-					"translator": "IQRF Gateway Translator",
-					"uploader": "IQRF Gateway Uploader",
-					"webapp": "IQRF Gateway Webapp",
+					"iqrf": "IQRF Software",
 					"mender": "Mender",
 					"pixla": "PIXLA"
 				},
 				"system": {
-					"metadata": "Gateway device metadata",
 					"hostname": "Hostname",
 					"network": "Network manager",
 					"ntp": "NTP",
 					"journal": "Journal"
 				},
+				"selectAll": "Select all",
 				"deselectAll": "Deselect all",
 				"archive": "Backup archive",
 				"restore": "Restore"

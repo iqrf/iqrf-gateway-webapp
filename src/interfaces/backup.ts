@@ -24,17 +24,12 @@ export interface IGwBackup {
 }
 
 export interface IGwBackupSoftware {
-	controller?: boolean
-	daemon: boolean
-	translator?: boolean
-	uploader: boolean
-	webapp: boolean
+	iqrf?: boolean
 	mender?: boolean
 	pixla?: boolean
 }
 
 export interface IGwBackupSystem {
-	metadata: boolean
 	hostname: boolean
 	network?: boolean
 	ntp?: boolean

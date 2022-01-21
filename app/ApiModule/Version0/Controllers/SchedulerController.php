@@ -35,10 +35,10 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
-use App\ConfigModule\Exceptions\ZipEmptyException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
+use App\CoreModule\Exceptions\ZipEmptyException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
