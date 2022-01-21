@@ -86,7 +86,7 @@ class BackupController extends GatewayController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function backup(ApiRequest $request, ApiResponse $response) {
+	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('gatewayBackup', $request);
 		try {
 			$filePath = $this->manager->backup($request->getJsonBody(true));
@@ -122,7 +122,7 @@ class BackupController extends GatewayController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function restore(ApiRequest $request, ApiResponse $response) {
+	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
 		ContentTypeUtil::validContentType($request, $contentTypes);
 		$path = '/tmp/iqrf-gateway-backup-upload.zip';
@@ -136,7 +136,6 @@ class BackupController extends GatewayController {
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
-
 		FileSystem::delete($path);
 		return $response->writeBody('Workaround');
 	}

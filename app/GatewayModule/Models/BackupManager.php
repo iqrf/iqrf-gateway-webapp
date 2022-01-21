@@ -28,7 +28,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
-use App\GatewayModule\Models\DaemonDirectories;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
@@ -158,7 +157,7 @@ class BackupManager {
 
 	/**
 	 * Creates a gateway backup zip archive
-	 * @param array $params Backup parameters
+	 * @param array<string, array<string, bool>> $params Backup parameters
 	 * @return string Path to backup zip archive
 	 */
 	public function backup(array $params): string {
@@ -184,14 +183,14 @@ class BackupManager {
 		if ($params['system']['network']) {
 			$this->backupNetworkManager();
 		}
-		if ($params['system']['ntp']){
+		if ($params['system']['ntp']) {
 			$this->backupNtp();
 		}
 		if ($params['system']['journal']) {
 			$this->backupJournal();
 		}
 		if ($this->zipManager->isEmpty()) {
-			throw new ZipEmptyException("Nothing to backup.");
+			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
 		return $path;
@@ -465,7 +464,7 @@ class BackupManager {
 	 * @param string $file File name
 	 */
 	private function isWhitelisted(array $whitelist, string $file): void {
-		if (!in_array(basename($file), $whitelist)) {
+		if (!in_array(basename($file), $whitelist, true)) {
 			throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 		}
 	}
@@ -481,7 +480,6 @@ class BackupManager {
 
 	/**
 	 * Extracts and restores IQRF Gateway Daemon's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
 	 */
 	private function restoreDaemon(): void {
 		foreach ($this->zipManager->listFiles() as $file) {
@@ -574,7 +572,6 @@ class BackupManager {
 
 	/**
 	 * Extracts and restores IQRF Gateway Translator's configuration
-	 * @param ZipArchiveManager $archiveManager ZIP archive manager
 	 */
 	private function restoreTranslator(): void {
 		$this->zipManager->extract($this->translatorConfigDirectory, 'translator/config.json');
