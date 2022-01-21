@@ -37,26 +37,8 @@ limitations under the License.
 						<CCol>
 							<h3>{{ $t('gateway.backup.headings.software') }}</h3>
 							<CInputCheckbox
-								v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")'
-								:checked.sync='migration.software.controller'
-								:label='$t("gateway.backup.form.software.controller")'
-							/>
-							<CInputCheckbox
-								:checked.sync='migration.software.daemon'
-								:label='$t("gateway.backup.form.software.daemon")'
-							/>
-							<CInputCheckbox
-								v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
-								:checked.sync='migration.software.translator'
-								:label='$t("gateway.backup.form.software.translator")'
-							/>
-							<CInputCheckbox
-								:checked.sync='migration.software.uploader'
-								:label='$t("gateway.backup.form.software.uploader")'
-							/>
-							<CInputCheckbox
-								:checked.sync='migration.software.webapp'
-								:label='$t("gateway.backup.form.software.webapp")'
+								:checked.sync='migration.software.iqrf'
+								:label='$t("gateway.backup.form.software.iqrf")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("mender")'
@@ -71,10 +53,6 @@ limitations under the License.
 						</CCol>
 						<CCol>
 							<h3>{{ $t('gateway.backup.headings.system') }}</h3>
-							<CInputCheckbox
-								:checked.sync='migration.system.metadata'
-								:label='$t("gateway.backup.form.system.metadata")'
-							/>
 							<CInputCheckbox
 								:checked.sync='migration.system.hostname'
 								:label='$t("gateway.backup.form.system.hostname")'
@@ -163,16 +141,11 @@ export default class GatewayBackup extends Vue {
 	 */
 	private migration: IGwBackup = {
 		software: {
-			controller: false,
-			daemon: false,
-			translator: false,
-			uploader: false,
-			webapp: false,
+			iqrf: false,
 			mender: false,
 			pixla: false,
 		},
 		system: {
-			metadata: false,
 			hostname: false,
 			network: false,
 			ntp: false,
@@ -215,31 +188,23 @@ export default class GatewayBackup extends Vue {
 	}
 
 	/**
-	 * Filters unavailable features from request parameters
-	 * @param {IGwBackup} params Request parameters
-	 * @return {IGwBackup} Filtered request parameters
+	 * Uploads backup archive and attempts to restore gw
 	 */
 	private filterFeatures(params: IGwBackup): IGwBackup {
-		if (!this.$store.getters['features/isEnabled']('iqrfGatewayController')) {
-			delete params.software.controller;
-		}
-		if (!this.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
-			delete params.software.translator;
-		}
 		if (!this.$store.getters['features/isEnabled']('mender')) {
-			delete params.software.mender;
+			params.software.mender = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('pixla')) {
-			delete params.software.pixla;
+			params.software.pixla = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('networkManager')) {
-			delete params.system.network;
+			params.system.network = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('ntp')) {
-			delete params.system.ntp;
+			params.system.ntp = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('systemdJournal')) {
-			delete params.system.journal;
+			params.system.journal = false;
 		}
 		return params;
 	}

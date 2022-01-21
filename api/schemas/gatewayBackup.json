@@ -15,40 +15,16 @@
 			"description": "Select which software configuration to backup.",
 			"type": "object",
 			"required": [
-				"daemon",
-				"webapp",
-				"uploader"
+				"iqrf",
+				"mender",
+				"pixla"
 			],
 			"additionalProperties": false,
 			"properties": {
-				"controller": {
-					"$id": "#/properties/software/properties/controller",
-					"title": "Controller",
-					"description": "IQRF Gateway Controller configuration.",
-					"type": "boolean"
-				},
-				"daemon": {
-					"$id": "#/properties/software/properties/daemon",
-					"title": "Daemon",
-					"description": "IQRF Gateway Daemon configuration.",
-					"type": "boolean"
-				},
-				"translator": {
-					"$id": "#/properties/software/properties/translator",
-					"title": "Translator",
-					"description": "IQRF Gateway Translator configuration.",
-					"type": "boolean"
-				},
-				"uploader": {
-					"$id": "#/properties/software/properties/uploader",
-					"title": "Uploader",
-					"description": "IQRF Gateway Uploader configuration.",
-					"type": "boolean"
-				},
-				"webapp": {
-					"$id": "#/properties/software/properties/webapp",
-					"title": "Webapp",
-					"description": "IQRF Gateway Webapp configuration.",
+				"iqrf": {
+					"$id": "#/properties/software/properties/iqrf",
+					"title": "IQRF Software",
+					"description": "Controller, Daemon, Translator, Webapp and Uploader if available.",
 					"type": "boolean"
 				},
 				"mender": {
@@ -71,17 +47,13 @@
 			"description": "Select which system configuration to backup.",
 			"type": "object",
 			"required": [
-				"metadata",
-				"hostname"
+				"hostname",
+				"network",
+				"ntp",
+				"journal"
 			],
 			"additionalProperties": false,
 			"properties": {
-				"metadata": {
-					"$id": "#/properties/system/metadata",
-					"title": "Gateway metadata",
-					"description": "Gateway device metadata.",
-					"type": "boolean"
-				},
 				"hostname": {
 					"$id": "#/properties/system/hostname",
 					"title": "Hostname",
