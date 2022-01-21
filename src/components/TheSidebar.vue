@@ -229,6 +229,12 @@ export default class TheSidebar extends Vue {
 								to: '/gateway/power/',
 								roles: ['power', 'normal', 'iqaros'],
 							},
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('gateway.backup.title'),
+								to: '/gateway/backup/',
+								roles: ['power', 'normal', 'iqaros'],
+							}
 						],
 					},
 					{
