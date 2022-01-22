@@ -26,10 +26,10 @@ grafana:
 	url: /grafana/
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
-	enabled: true
+	enabled: false
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
-	enabled: true
+	enabled: false
 # IQRF Repository Extension configuration
 iqrfRepository:
 	enabled: false
@@ -38,24 +38,24 @@ iTemp:
 	enabled: false
 # Mender client configuration
 mender:
-	enabled: true
+	enabled: false
 # Monitoring service
 monit:
 	enabled: false
 # Network manager
 networkManager:
-	enabled: true
+	enabled: false
 # Node-RED
 nodeRed:
 	enabled: false
 	url: /node-red/
 ntp:
-	enabled: true
+	enabled: false
 	utility: timesyncd
 	path: /etc/systemd/timesyncd.conf
 # PIXLA management system
 pixla:
-	enabled: true
+	enabled: false
 # Remount endpoints
 remount:
 	enabled: false
