@@ -350,6 +350,7 @@ class BackupManager {
 			$this->commandManager->run('rm -rf ' . $directory, true);
 			$this->commandManager->run('mkdir ' . $directory, true);
 		}
+		$this->changeOwner();
 		$this->restoreDaemon();
 		$this->restoreHost();
 		$this->restoreJournal();
@@ -360,7 +361,6 @@ class BackupManager {
 		$this->restoreTranslator();
 		$this->restoreUploader();
 		$this->restoreWebapp();
-		$this->changeOwner();
 		$this->zipManager->close();
 		$this->serviceManager->restart();
 	}
