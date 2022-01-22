@@ -55,9 +55,7 @@ trait TRepositories {
 	 * @return ApiKeyRepository API key repository
 	 */
 	public function getApiKeyRepository(): ApiKeyRepository {
-		$repository = $this->getRepository(ApiKey::class);
-		assert($repository instanceof ApiKeyRepository);
-		return $repository;
+		return $this->getRepository(ApiKey::class);
 	}
 
 	/**
@@ -65,9 +63,7 @@ trait TRepositories {
 	 * @return IqrfOsPatchRepository IQRF OS patch repository
 	 */
 	public function getIqrfOsPatchRepository(): IqrfOsPatchRepository {
-		$repository = $this->getRepository(IqrfOsPatch::class);
-		assert($repository instanceof IqrfOsPatchRepository);
-		return $repository;
+		return $this->getRepository(IqrfOsPatch::class);
 	}
 
 	/**
@@ -75,9 +71,7 @@ trait TRepositories {
 	 * @return PasswordRecoveryRepository Password recovery repository
 	 */
 	public function getPasswordRecoveryRepository(): PasswordRecoveryRepository {
-		$repository = $this->getRepository(PasswordRecovery::class);
-		assert($repository instanceof PasswordRecoveryRepository);
-		return $repository;
+		return $this->getRepository(PasswordRecovery::class);
 	}
 
 	/**
@@ -85,9 +79,7 @@ trait TRepositories {
 	 * @return MappingRepository Mapping repository
 	 */
 	public function getMappingRepository(): MappingRepository {
-		$repository = $this->getRepository(Mapping::class);
-		assert($repository instanceof MappingRepository);
-		return $repository;
+		return $this->getRepository(Mapping::class);
 	}
 
 	/**
@@ -95,9 +87,7 @@ trait TRepositories {
 	 * @return SshKeyRepository SSH key repository
 	 */
 	public function getSshKeyRepository(): SshKeyRepository {
-		$repository = $this->getRepository(SshKey::class);
-		assert($repository instanceof SshKeyRepository);
-		return $repository;
+		return $this->getRepository(SshKey::class);
 	}
 
 	/**
@@ -105,9 +95,7 @@ trait TRepositories {
 	 * @return UserRepository User repository
 	 */
 	public function getUserRepository(): UserRepository {
-		$repository = $this->getRepository(User::class);
-		assert($repository instanceof UserRepository);
-		return $repository;
+		return $this->getRepository(User::class);
 	}
 
 	/**
@@ -115,9 +103,7 @@ trait TRepositories {
 	 * @return UserVerificationRepository User verification repository
 	 */
 	public function getUserVerificationRepository(): UserVerificationRepository {
-		$repository = $this->getRepository(UserVerification::class);
-		assert($repository instanceof UserVerificationRepository);
-		return $repository;
+		return $this->getRepository(UserVerification::class);
 	}
 
 	/**
@@ -125,9 +111,7 @@ trait TRepositories {
 	 * @return WireguardInterfaceIpv4Repository Wireguard interface ipv6 repository
 	 */
 	public function getWireguardInterfaceIpv4Repository(): WireguardInterfaceIpv4Repository {
-		$repository = $this->getRepository(WireguardInterfaceIpv4::class);
-		assert($repository instanceof WireguardInterfaceIpv4Repository);
-		return $repository;
+		return $this->getRepository(WireguardInterfaceIpv4::class);
 	}
 
 	/**
@@ -135,9 +119,7 @@ trait TRepositories {
 	 * @return WireguardInterfaceIpv6Repository Wireguard interface ipv4 repository
 	 */
 	public function getWireguardInterfaceIpv6Repository(): WireguardInterfaceIpv6Repository {
-		$repository = $this->getRepository(WireguardInterfaceIpv6::class);
-		assert($repository instanceof WireguardInterfaceIpv6Repository);
-		return $repository;
+		return $this->getRepository(WireguardInterfaceIpv6::class);
 	}
 
 	/**
@@ -145,9 +127,7 @@ trait TRepositories {
 	 * @return WireguardInterfaceRepository Wireguard interface repository
 	 */
 	public function getWireguardInterfaceRepository(): WireguardInterfaceRepository {
-		$repository = $this->getRepository(WireguardInterface::class);
-		assert($repository instanceof WireguardInterfaceRepository);
-		return $repository;
+		return $this->getRepository(WireguardInterface::class);
 	}
 
 	/**
@@ -155,9 +135,7 @@ trait TRepositories {
 	 * @return WireguardPeerRepository Wireguard peer repository
 	 */
 	public function getWireguardPeerRepository(): WireguardPeerRepository {
-		$repository = $this->getRepository(WireguardPeer::class);
-		assert($repository instanceof WireguardPeerRepository);
-		return $repository;
+		return $this->getRepository(WireguardPeer::class);
 	}
 
 	/**
@@ -165,9 +143,7 @@ trait TRepositories {
 	 * @return WireguardPeerAddressRepository Wireguard peer repository
 	 */
 	public function getWireguardPeerAddressRepository(): WireguardPeerAddressRepository {
-		$repository = $this->getRepository(WireguardPeerAddress::class);
-		assert($repository instanceof WireguardPeerAddressRepository);
-		return $repository;
+		return $this->getRepository(WireguardPeerAddress::class);
 	}
 
 }
