@@ -409,6 +409,7 @@ class BackupManager {
 				try {
 					$this->schemaManager->validate($json);
 				} catch (InvalidJsonException $e) {
+					$this->zipManager->close();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
 			} elseif (strpos($file, 'gateway/') === 0) {
@@ -453,6 +454,7 @@ class BackupManager {
 				];
 				$this->isWhitelisted($wl, $file);
 			} else {
+				$this->zipManager->close();
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
 		}
@@ -465,6 +467,7 @@ class BackupManager {
 	 */
 	private function isWhitelisted(array $whitelist, string $file): void {
 		if (!in_array(basename($file), $whitelist, true)) {
+			$this->zipManager->close();
 			throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 		}
 	}
