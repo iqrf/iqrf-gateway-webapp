@@ -77,6 +77,11 @@ class BackupManager {
 	private const WEBAPP_DIR = __DIR__ . '/../../config/';
 
 	/**
+	 * Path to webapp database
+	 */
+	private const WEBAPP_DB_DIR = '/var/lib/iqrf-gateway-webapp/';
+
+	/**
 	 * Path to webapp nginx configuration
 	 */
 	private const NGINX_DIR = '/etc/iqrf-gateway-webapp/nginx/';
@@ -247,7 +252,7 @@ class BackupManager {
 	 * Backup webapp data
 	 */
 	private function backupWebapp(): void {
-		$this->zipManager->addFile(self::WEBAPP_DIR . 'database.db', 'webapp/database.db');
+		$this->zipManager->addFile(self::WEBAPP_DB_DIR . 'database.db', 'webapp/database.db');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'features.neon', 'webapp/features.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'smtp.neon', 'webapp/smtp.neon');
@@ -336,6 +341,7 @@ class BackupManager {
 	public function restore(string $path): void {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
+		$this->restoreGatewayFile();
 		$this->restoreController();
 		$directories = [
 			$this->daemonDirectories->getConfigurationDir(),
@@ -345,7 +351,6 @@ class BackupManager {
 			$this->commandManager->run('mkdir ' . $directory, true);
 		}
 		$this->restoreDaemon();
-		$this->restoreGateway();
 		$this->restoreHost();
 		$this->restoreJournal();
 		$this->restoreMender();
@@ -473,6 +478,15 @@ class BackupManager {
 	}
 
 	/**
+	 * Extracts and restores gateway file
+	 */
+	private function restoreGatewayFile(): void {
+		$this->zipManager->extract('/etc/gateway/', 'gateway/iqrf-gateway.json');
+		$this->commandManager->run('cp -p /etc/gateway/iqrf-gateway.json /etc/', true);
+		$this->commandManager->run('rm -rf /etc/gateway', true);
+	}
+
+	/**
 	 * Extracts and restores IQRF Gateway Controller's configuration
 	 */
 	private function restoreController(): void {
@@ -497,15 +511,6 @@ class BackupManager {
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
-	}
-
-	/**
-	 * Extracts and restores gateway file
-	 */
-	private function restoreGateway(): void {
-		$this->zipManager->extract('/etc/gateway/', 'gateway/iqrf-gateway.json');
-		$this->commandManager->run('cp -p /etc/gateway/iqrf-gateway.json /etc/', true);
-		$this->commandManager->run('rm -rf /etc/gateway', true);
 	}
 
 	/**
@@ -605,7 +610,8 @@ class BackupManager {
 		}
 		$this->commandManager->run('cp -p' . self::NGINX_DIR . 'webapp/nginx/* ' . self::NGINX_DIR, true);
 		$this->commandManager->run('rm -rf ' . self::NGINX_DIR . 'webapp', true);
-		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/* ' . self::WEBAPP_DIR, true);
+		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/database.db ' . self::WEBAPP_DB_DIR, true);
+		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/*.neon ' . self::WEBAPP_DIR, true);
 		$this->commandManager->run('rm -rf ' . self::WEBAPP_DIR . 'webapp', true);
 	}
 
