@@ -94,6 +94,15 @@ class ZipArchiveManager {
 	 * @param string $filename File name in the archive
 	 */
 	public function addFile(string $path, string $filename): void {
+		$tokens = explode(DIRECTORY_SEPARATOR, $filename);
+		array_pop($tokens);
+		if ($tokens !== []) {
+			$dirs = [];
+			foreach ($tokens as $token) {
+				$dirs[] = $token;
+				$this->zip->addEmptyDir(implode('/', $dirs));
+			}
+		}
 		$this->zip->addFile($path, $filename);
 	}
 
@@ -139,7 +148,8 @@ class ZipArchiveManager {
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
-			return $this->zip->locateName($var, ZipArchive::FL_NOCASE) !== false;
+			$res = $this->zip->locateName($var, ZipArchive::FL_NOCASE);
+			return $res !== false;
 		}
 		if (is_iterable($var)) {
 			foreach ($var as $file) {
