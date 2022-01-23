@@ -42,19 +42,14 @@ use ZipArchive;
 class BackupManager {
 
 	/**
-	 * Path to gateway file
+	 * Path to temporary backup directory
 	 */
-	private const GW_PATH = '/etc/iqrf-gateway.json';
+	private const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * Path to hosts file
+	 * Path to system configuration directory
 	 */
-	private const HOSTS_PATH = '/etc/hosts';
-
-	/**
-	 * Path to hostname file
-	 */
-	private const HOSTNAME_PATH = '/etc/hostname';
+	private const CONF_PATH = '/etc/';
 
 	/**
 	 * Path to mender configuration
@@ -205,8 +200,9 @@ class BackupManager {
 	 * Backup gateway metadata
 	 */
 	private function backupGatewayFile(): void {
-		if (file_exists(self::GW_PATH)) {
-			$this->zipManager->addFile(self::GW_PATH, 'gateway/iqrf-gateway.json');
+		$path = self::CONF_PATH . 'iqrf-gateway.json';
+		if (file_exists($path)) {
+			$this->zipManager->addFile($path, 'gateway/iqrf-gateway.json');
 		}
 	}
 
@@ -256,7 +252,7 @@ class BackupManager {
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'features.neon', 'webapp/features.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
 		$this->zipManager->addFile(self::WEBAPP_DIR . 'smtp.neon', 'webapp/smtp.neon');
-		$this->zipManager->addFolder(self::NGINX_DIR, 'webapp/nginx');
+		$this->zipManager->addFolder(self::NGINX_DIR, 'nginx');
 	}
 
 	/**
@@ -286,8 +282,8 @@ class BackupManager {
 	 * Backup hosts and hostname
 	 */
 	private function backupHost(): void {
-		$this->zipManager->addFile(self::HOSTNAME_PATH, 'host/hostname');
-		$this->zipManager->addFile(self::HOSTS_PATH, 'host/hosts');
+		$this->zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
+		$this->zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
 	}
 
 	/**
@@ -341,28 +337,68 @@ class BackupManager {
 	public function restore(string $path): void {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
-		$this->restoreGatewayFile();
-		$this->restoreController();
-		$directories = [
-			$this->daemonDirectories->getConfigurationDir(),
+		$this->remakeDirs();
+		$this->changeOwner();
+		if ($this->zipManager->exist('gateway/')) {
+			$this->restoreGatewayFile();
+		}
+		if ($this->zipManager->exist('controller/')) {
+			$this->restoreController();
+		}
+		if ($this->zipManager->exist('daemon/')) {
+			$this->restoreDaemon();
+		}
+		if ($this->zipManager->exist('host/')) {
+			$this->restoreHost();
+		}
+		if ($this->zipManager->exist('journal/')) {
+			$this->restoreJournal();
+		}
+		if ($this->zipManager->exist('mender/')) {
+			$this->restoreMender();
+		}
+		if ($this->zipManager->exist('network/')) {
+			$this->restoreNetwork();
+		}
+		if ($this->zipManager->exist('ntp/')) {
+			$this->restoreNtp();
+		}
+		if ($this->zipManager->exist('pixla/')) {
+			$this->restorePixla();
+		}
+		if ($this->zipManager->exist('translator/')) {
+			$this->restoreTranslator();
+		}
+		if ($this->zipManager->exist('uploader/')) {
+			$this->restoreUploader();
+		}
+		if ($this->zipManager->exist('webapp/')) {
+			$this->restoreWebapp();
+		}
+		$this->zipManager->close();
+		$this->serviceManager->restart();
+	}
+
+	/**
+	 * Recreates directories
+	 */
+	public function remakeDirs(): void {
+		$iqrf = [
+			'controller' => $this->controllerConfigDirectory,
+			'daemon' => $this->daemonDirectories->getConfigurationDir(),
+			'translator' => $this->translatorConfigDirectory,
+			'uploader' => $this->uploaderConfigDirectory,
 		];
+		$directories = [];
+		foreach ($iqrf as $k => $v) {
+			if ($this->zipManager->exist($k) && file_exists($v)) {
+				$directories[] = $v;
+			}
+		}
 		foreach ($directories as $directory) {
 			$this->commandManager->run('rm -rf ' . $directory, true);
 			$this->commandManager->run('mkdir ' . $directory, true);
 		}
-		$this->changeOwner();
-		$this->restoreDaemon();
-		$this->restoreHost();
-		$this->restoreJournal();
-		$this->restoreMender();
-		$this->restoreNetwork();
-		$this->restoreNtp();
-		$this->restorePixla();
-		$this->restoreTranslator();
-		$this->restoreUploader();
-		$this->restoreWebapp();
-		$this->zipManager->close();
-		$this->serviceManager->restart();
 	}
 
 	/**
@@ -386,6 +422,7 @@ class BackupManager {
 			'translator/',
 			'uploader/',
 			'webapp/',
+			'nginx/',
 		];
 		$files = $this->zipManager->listFiles();
 		foreach ($files as $file) {
@@ -452,6 +489,10 @@ class BackupManager {
 					'features.neon',
 					'iqrf-repository.neon',
 					'smtp.neon',
+				];
+				$this->isWhitelisted($wl, $file);
+			} elseif (strpos($file, 'nginx/') === 0) {
+				$wl = [
 					'iqrf-gateway-webapp.localhost',
 					'iqrf-gateway-webapp-https.localhost',
 					'iqrf-gateway-webapp-iqaros.localhost',
@@ -481,9 +522,9 @@ class BackupManager {
 	 * Extracts and restores gateway file
 	 */
 	private function restoreGatewayFile(): void {
-		$this->zipManager->extract('/etc/gateway/', 'gateway/iqrf-gateway.json');
-		$this->commandManager->run('cp -p /etc/gateway/iqrf-gateway.json /etc/', true);
-		$this->commandManager->run('rm -rf /etc/gateway', true);
+		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
+		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'gateway/iqrf-gateway.json ' . self::CONF_PATH, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'gateway', true);
 	}
 
 	/**
@@ -517,10 +558,10 @@ class BackupManager {
 	 * Extracts and restores host information
 	 */
 	private function restoreHost(): void {
-		$this->zipManager->extract('/etc/host/', 'host/hostname');
-		$this->zipManager->extract('/etc/host/', 'host/hosts');
-		$this->commandManager->run('cp -rfp /etc/host/* /etc/', true);
-		$this->commandManager->run('rm -rf /etc/host', true);
+		$this->zipManager->extract(self::TMP_PATH, 'host/hostname');
+		$this->zipManager->extract(self::TMP_PATH, 'host/hosts');
+		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'host/* ' . self::CONF_PATH, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'host', true);
 	}
 
 	/**
@@ -528,19 +569,19 @@ class BackupManager {
 	 */
 	private function restoreJournal(): void {
 		$path = dirname($this->featureManager->get('systemdJournal')['path']);
-		$this->zipManager->extract($path, 'journal/journald.conf');
-		$this->commandManager->run('cp -rfp ' . $path . 'journal/* ' . $path, true);
-		$this->commandManager->run('rm -rf ' . $path . 'journal', true);
+		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
+		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'journal/journald.conf ' . $path, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal', true);
 	}
 
 	/**
 	 * Extracts and restores Mender configuration
 	 */
 	private function restoreMender(): void {
-		$this->zipManager->extract(self::MENDER_DIR, 'mender/mender.conf');
-		$this->zipManager->extract(self::MENDER_DIR, 'mender/mender-connect.conf');
-		$this->commandManager->run('cp -rfp ' . self::MENDER_DIR . 'mender/* ' . self::MENDER_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::MENDER_DIR . 'mender', true);
+		$this->zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
+		$this->zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
+		$this->commandManager->run('cp -r --no-preserve=mode,ownership ' . self::TMP_PATH . 'mender/* ' . self::MENDER_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'mender', true);
 	}
 
 	/**
@@ -563,19 +604,19 @@ class BackupManager {
 	 */
 	private function restoreNtp(): void {
 		$path = dirname($this->featureManager->get('ntp')['path']);
-		$this->zipManager->extract($path, 'ntp/timesyncd.conf');
-		$this->commandManager->run('cp -rfp ' . $path . 'ntp/* ' . $path, true);
-		$this->commandManager->run('rm -rf ' . $path . 'ntp', true);
+		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
+		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'ntp/timesyncd.conf ' . $path, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp', true);
 	}
 
 	/**
 	 * Extracts and restores PIXLA configuration
 	 */
 	private function restorePixla(): void {
-		$this->zipManager->extract(self::PIXLA_DIR, 'pixla/customer_id');
-		$this->zipManager->extract(self::PIXLA_DIR, 'pixla/gw_id');
-		$this->commandManager->run('cp -p ' . self::PIXLA_DIR . 'pixla/* ' . self::PIXLA_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::PIXLA_DIR . 'pixla');
+		$this->zipManager->extract(self::TMP_PATH, 'pixla/customer_id');
+		$this->zipManager->extract(self::TMP_PATH, 'pixla/gw_id');
+		$this->commandManager->run('cp -r --no-preserve=mode,ownership ' . self::TMP_PATH . 'pixla/* ' . self::PIXLA_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'pixla', true);
 	}
 
 	/**
@@ -601,18 +642,16 @@ class BackupManager {
 	 */
 	private function restoreWebapp(): void {
 		foreach ($this->zipManager->listFiles() as $file) {
-			if (strpos($file, 'webapp/nginx/') === 0) {
-				$this->zipManager->extract(self::NGINX_DIR, $file);
-			}
-			if (strpos($file, 'webapp/') === 0) {
-				$this->zipManager->extract(self::WEBAPP_DIR, $file);
+			if (strpos($file, 'nginx/') === 0 || strpos($file, 'webapp/') === 0) {
+				$this->zipManager->extract(self::TMP_PATH, $file);
 			}
 		}
-		$this->commandManager->run('cp -p' . self::NGINX_DIR . 'webapp/nginx/* ' . self::NGINX_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::NGINX_DIR . 'webapp', true);
-		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/database.db ' . self::WEBAPP_DB_DIR, true);
-		$this->commandManager->run('cp -p ' . self::WEBAPP_DIR . 'webapp/*.neon ' . self::WEBAPP_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::WEBAPP_DIR . 'webapp', true);
+		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::WEBAPP_DB_DIR, true);
+		$this->commandManager->run('rm ' . self::TMP_PATH . 'webapp/database.db', true);
+		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . self::WEBAPP_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'webapp', true);
+		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_DIR, true);
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nginx', true);
 	}
 
 	/**
