@@ -28,6 +28,19 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
+use App\GatewayModule\Models\Backup\ControllerBackup;
+use App\GatewayModule\Models\Backup\DaemonBackup;
+use App\GatewayModule\Models\Backup\GatewayFileBackup;
+use App\GatewayModule\Models\Backup\HostBackup;
+use App\GatewayModule\Models\Backup\JournalBackup;
+use App\GatewayModule\Models\Backup\MenderBackup;
+use App\GatewayModule\Models\Backup\MonitBackup;
+use App\GatewayModule\Models\Backup\NetworkManagerBackup;
+use App\GatewayModule\Models\Backup\NtpBackup;
+use App\GatewayModule\Models\Backup\PixlaBackup;
+use App\GatewayModule\Models\Backup\TranslatorBackup;
+use App\GatewayModule\Models\Backup\UploaderBackup;
+use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
@@ -40,46 +53,6 @@ use ZipArchive;
  * Tool for migrating configuration
  */
 class BackupManager {
-
-	/**
-	 * Path to temporary backup directory
-	 */
-	private const TMP_PATH = '/tmp/backup/';
-
-	/**
-	 * Path to system configuration directory
-	 */
-	private const CONF_PATH = '/etc/';
-
-	/**
-	 * Path to mender configuration
-	 */
-	private const MENDER_DIR = '/etc/mender/';
-
-	/**
-	 * Path to pixla configuration
-	 */
-	private const PIXLA_DIR = '/etc/gwman/';
-
-	/**
-	 * Path to NetworkManager configuration
-	 */
-	private const NM_DIR = '/etc/NetworkManager/';
-
-	/**
-	 * Path to webapp configuration
-	 */
-	private const WEBAPP_DIR = __DIR__ . '/../../config/';
-
-	/**
-	 * Path to webapp database
-	 */
-	private const WEBAPP_DB_DIR = '/var/lib/iqrf-gateway-webapp/';
-
-	/**
-	 * Path to webapp nginx configuration
-	 */
-	private const NGINX_DIR = '/etc/iqrf-gateway-webapp/nginx/';
 
 	/**
 	 * @var string Path to IQRF Gateway Controller configuration directory
@@ -163,155 +136,44 @@ class BackupManager {
 	public function backup(array $params): string {
 		$path = $this->getArchivePath();
 		$this->zipManager = new ZipArchiveManager($path);
-		if ($params['software']['iqrf']) {
-			$this->backupGatewayFile();
-			$this->backupController();
-			$this->backupDaemon();
-			$this->backupTranslator();
-			$this->backupUploader();
-			$this->backupWebapp();
-		}
-		if ($params['software']['mender']) {
-			$this->backupMender();
-		}
-		if ($params['software']['pixla']) {
-			$this->backupPixla();
-		}
+		$managers = [];
 		if ($params['system']['hostname']) {
-			$this->backupHost();
+			$managers[] = new HostBackup($this->commandManager, $this->zipManager);
 		}
-		if ($params['system']['network']) {
-			$this->backupNetworkManager();
-		}
-		if ($params['system']['ntp']) {
-			$this->backupNtp();
+		if ($params['software']['iqrf']) {
+			$managers[] = new GatewayFileBackup($this->commandManager, $this->zipManager);
+			$managers[] = new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager);
+			$managers[] = new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager);
+			$managers[] = new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager);
+			$managers[] = new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager);
+			$managers[] = new WebappBackup($this->commandManager, $this->zipManager);
 		}
 		if ($params['system']['journal']) {
-			$this->backupJournal();
+			$managers[] = new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager);
+		}
+		if ($params['software']['mender']) {
+			$managers[] = new MenderBackup($this->commandManager, $this->zipManager);
+		}
+		if ($params['software']['monit']) {
+			$managers[] = new MonitBackup($this->commandManager, $this->zipManager);
+		}
+		if ($params['system']['network']) {
+			$managers[] = new NetworkManagerBackup($this->commandManager, $this->zipManager);
+		}
+		if ($params['system']['ntp']) {
+			$managers[] = new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager);
+		}
+		if ($params['software']['pixla']) {
+			$managers[] = new PixlaBackup($this->commandManager, $this->zipManager);
+		}
+		foreach ($managers as $manager) {
+			$manager->backup();
 		}
 		if ($this->zipManager->isEmpty()) {
 			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
 		return $path;
-	}
-
-	/**
-	 * Backup gateway metadata
-	 */
-	private function backupGatewayFile(): void {
-		$path = self::CONF_PATH . 'iqrf-gateway.json';
-		if (file_exists($path)) {
-			$this->zipManager->addFile($path, 'gateway/iqrf-gateway.json');
-		}
-	}
-
-	/**
-	 * Backup controller configuration
-	 */
-	private function backupController(): void {
-		if (file_exists($this->controllerConfigDirectory . 'config.json')) {
-			$this->zipManager->addFolder($this->controllerConfigDirectory, 'controller');
-		}
-	}
-
-	/**
-	 * Backup daemon configuration
-	 */
-	private function backupDaemon(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getConfigurationDir(), 'daemon');
-		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
-		if ($this->zipManager->exist('daemon/scheduler/schema/')) {
-			$this->zipManager->deleteDirectory('daemon/scheduler/schema');
-		}
-	}
-
-	/**
-	 * Backup translator configuration
-	 */
-	private function backupTranslator(): void {
-		if (file_exists($this->translatorConfigDirectory . 'config.json')) {
-			$this->zipManager->addFolder($this->translatorConfigDirectory, 'translator');
-		}
-	}
-
-	/**
-	 * Backup uploader configuration
-	 */
-	private function backupUploader(): void {
-		if (file_exists($this->uploaderConfigDirectory . 'config.json')) {
-			$this->zipManager->addFolder($this->uploaderConfigDirectory, 'uploader');
-		}
-	}
-
-	/**
-	 * Backup webapp data
-	 */
-	private function backupWebapp(): void {
-		$this->zipManager->addFile(self::WEBAPP_DB_DIR . 'database.db', 'webapp/database.db');
-		$this->zipManager->addFile(self::WEBAPP_DIR . 'features.neon', 'webapp/features.neon');
-		$this->zipManager->addFile(self::WEBAPP_DIR . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
-		$this->zipManager->addFile(self::WEBAPP_DIR . 'smtp.neon', 'webapp/smtp.neon');
-		$this->zipManager->addFolder(self::NGINX_DIR, 'nginx');
-	}
-
-	/**
-	 * Backup mender client and connect configuration
-	 */
-	private function backupMender(): void {
-		$file = self::MENDER_DIR . 'mender.conf';
-		if (file_exists($file)) {
-			$this->zipManager->addFile($file, 'mender/mender.conf');
-		}
-		$file = self::MENDER_DIR . 'mender-connect.conf';
-		if (file_exists($file)) {
-			$this->zipManager->addFile($file, 'mender/mender-connect.conf');
-		}
-	}
-
-	/**
-	 * Backup pixla configuration
-	 */
-	private function backupPixla(): void {
-		if (file_exists(self::PIXLA_DIR)) {
-			$this->zipManager->addFolder(self::PIXLA_DIR, 'pixla');
-		}
-	}
-
-	/**
-	 * Backup hosts and hostname
-	 */
-	private function backupHost(): void {
-		$this->zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
-		$this->zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
-	}
-
-	/**
-	 * Backup NetworkManager configuration and connection profiles
-	 */
-	private function backupNetworkManager(): void {
-		$this->zipManager->addFile(self::NM_DIR . 'NetworkManager.conf', 'nm/NetworkManager.conf');
-		$this->zipManager->addFolder(self::NM_DIR . 'system-connections', 'nm/system-connections');
-	}
-
-	/**
-	 * Backup NTP configuration
-	 */
-	private function backupNtp(): void {
-		$path = $this->featureManager->get('ntp')['path'];
-		if (file_exists($path)) {
-			$this->zipManager->addFile($path, 'ntp/timesyncd.conf');
-		}
-	}
-
-	/**
-	 * Backup journal configuration
-	 */
-	private function backupJournal(): void {
-		$path = $this->featureManager->get('systemdJournal')['path'];
-		if (file_exists($path)) {
-			$this->zipManager->addFile($path, 'journal/journald.conf');
-		}
 	}
 
 	/**
@@ -337,68 +199,48 @@ class BackupManager {
 	public function restore(string $path): void {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
-		$this->remakeDirs();
-		$this->changeOwner();
+		$managers = [];
 		if ($this->zipManager->exist('gateway/')) {
-			$this->restoreGatewayFile();
+			$managers[] = new GatewayFileBackup($this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('controller/')) {
-			$this->restoreController();
+			$managers[] = new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('daemon/')) {
-			$this->restoreDaemon();
+			$managers[] = new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('host/')) {
-			$this->restoreHost();
+			$managers[] = new HostBackup($this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('journal/')) {
-			$this->restoreJournal();
+			$managers[] = new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('mender/')) {
-			$this->restoreMender();
+			$managers[] = new MenderBackup($this->commandManager, $this->zipManager);
 		}
-		if ($this->zipManager->exist('network/')) {
-			$this->restoreNetwork();
+		if ($this->zipManager->exist('nm/')) {
+			$managers[] = new NetworkManagerBackup($this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('ntp/')) {
-			$this->restoreNtp();
+			$managers[] = new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('pixla/')) {
-			$this->restorePixla();
+			$managers[] = new PixlaBackup($this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('translator/')) {
-			$this->restoreTranslator();
+			$managers[] = new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('uploader/')) {
-			$this->restoreUploader();
+			$managers[] = new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager);
 		}
 		if ($this->zipManager->exist('webapp/')) {
-			$this->restoreWebapp();
+			$managers[] = new WebappBackup($this->commandManager, $this->zipManager);
+		}
+		foreach ($managers as $manager) {
+			$manager->restore();
 		}
 		$this->zipManager->close();
 		$this->serviceManager->restart();
-	}
-
-	/**
-	 * Recreates directories
-	 */
-	public function remakeDirs(): void {
-		$iqrf = [
-			'controller' => $this->controllerConfigDirectory,
-			'daemon' => $this->daemonDirectories->getConfigurationDir(),
-			'translator' => $this->translatorConfigDirectory,
-			'uploader' => $this->uploaderConfigDirectory,
-		];
-		$directories = [];
-		foreach ($iqrf as $k => $v) {
-			if ($this->zipManager->exist($k) && file_exists($v)) {
-				$directories[] = $v;
-			}
-		}
-		foreach ($directories as $directory) {
-			$this->commandManager->run('rm -rf ' . $directory, true);
-			$this->commandManager->run('mkdir ' . $directory, true);
-		}
 	}
 
 	/**
@@ -415,6 +257,7 @@ class BackupManager {
 			'host/',
 			'journal/',
 			'mender/',
+			'monit/',
 			'nm/',
 			'nm/system-connections/',
 			'ntp/',
@@ -436,7 +279,7 @@ class BackupManager {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
 			if (strpos($file, 'controller/') === 0) {
-				$this->isWhitelisted(['config.json'], $file);
+				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'daemon/') === 0) {
 				$matches = Strings::match($file, '~^\w+\_\_\w+\.json$~');
 				if (!is_array($matches)) {
@@ -455,50 +298,31 @@ class BackupManager {
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
 			} elseif (strpos($file, 'gateway/') === 0) {
-				$wl = ['iqrf-gateway.json'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(GatewayFileBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'host/') === 0) {
-				$wl = ['hostname', 'hosts'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(HostBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'journal/') === 0) {
-				$wl = ['journald.conf'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(JournalBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'mender/') === 0) {
-				$wl = ['mender.conf', 'mender-connect.conf'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(MenderBackup::WHITELIST, $file);
+			} elseif (strpos($file, 'monit/') === 0) {
+				$this->isWhitelisted(MonitBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'nm/system-connections/') === 0) {
 				continue;
 			} elseif (strpos($file, 'nm/') === 0) {
-				$wl = ['NetworkManager.conf'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'ntp/') === 0) {
-				$wl = ['timesyncd.conf'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(NtpBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'pixla/') === 0) {
-				$wl = ['customer_id', 'gw_id'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(PixlaBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'translator/') === 0) {
-				$wl = ['config.json'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'uploader/') === 0) {
-				$wl = ['config.json'];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(UploaderBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'webapp/') === 0) {
-				$wl = [
-					'database.db',
-					'features.neon',
-					'iqrf-repository.neon',
-					'smtp.neon',
-				];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(WebappBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'nginx/') === 0) {
-				$wl = [
-					'iqrf-gateway-webapp.localhost',
-					'iqrf-gateway-webapp-https.localhost',
-					'iqrf-gateway-webapp-iqaros.localhost',
-					'iqrf-gateway-webapp-iqaros-https.localhost',
-				];
-				$this->isWhitelisted($wl, $file);
+				$this->isWhitelisted(WebappBackup::NGINX_WHITELIST, $file);
 			} else {
 				$this->zipManager->close();
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
@@ -515,164 +339,6 @@ class BackupManager {
 		if (!in_array(basename($file), $whitelist, true)) {
 			$this->zipManager->close();
 			throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
-		}
-	}
-
-	/**
-	 * Extracts and restores gateway file
-	 */
-	private function restoreGatewayFile(): void {
-		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
-		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'gateway/iqrf-gateway.json ' . self::CONF_PATH, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'gateway', true);
-	}
-
-	/**
-	 * Extracts and restores IQRF Gateway Controller's configuration
-	 */
-	private function restoreController(): void {
-		$this->zipManager->extract($this->controllerConfigDirectory, 'controller/config.json');
-		$this->commandManager->run('cp -p ' . $this->controllerConfigDirectory . 'controller/config.json ' . $this->controllerConfigDirectory . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->controllerConfigDirectory . 'controller', true);
-	}
-
-	/**
-	 * Extracts and restores IQRF Gateway Daemon's configuration
-	 */
-	private function restoreDaemon(): void {
-		foreach ($this->zipManager->listFiles() as $file) {
-			if (strpos($file, 'daemon/scheduler/') === 0) {
-				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
-			}
-			if (strpos($file, 'daemon/') === 0) {
-				$this->zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
-			}
-		}
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
-	}
-
-	/**
-	 * Extracts and restores host information
-	 */
-	private function restoreHost(): void {
-		$this->zipManager->extract(self::TMP_PATH, 'host/hostname');
-		$this->zipManager->extract(self::TMP_PATH, 'host/hosts');
-		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'host/* ' . self::CONF_PATH, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'host', true);
-	}
-
-	/**
-	 * Extracts and restores journal configuration
-	 */
-	private function restoreJournal(): void {
-		$path = dirname($this->featureManager->get('systemdJournal')['path']);
-		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
-		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'journal/journald.conf ' . $path, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal', true);
-	}
-
-	/**
-	 * Extracts and restores Mender configuration
-	 */
-	private function restoreMender(): void {
-		$this->zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
-		$this->zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
-		$this->commandManager->run('cp -r --no-preserve=mode,ownership ' . self::TMP_PATH . 'mender/* ' . self::MENDER_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'mender', true);
-	}
-
-	/**
-	 * Extracts and restores NMCLI connections
-	 */
-	private function restoreNetwork(): void {
-		foreach ($this->zipManager->listFiles() as $file) {
-			if (strpos($file, 'nm/') === 0) {
-				$this->zipManager->extract(self::NM_DIR, $file);
-			}
-		}
-		$this->commandManager->run('cp -rfp ' . self::NM_DIR . 'nm/system-connections/* ' . self::NM_DIR . 'system-connections/', true);
-		$this->commandManager->run('rm -rf ' . self::NM_DIR . 'nm/system-connections', true);
-		$this->commandManager->run('cp -rfp ' . self::NM_DIR . 'nm/* ' . self::NM_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::NM_DIR . 'nm', true);
-	}
-
-	/**
-	 * Extracts and restores NTP configuration
-	 */
-	private function restoreNtp(): void {
-		$path = dirname($this->featureManager->get('ntp')['path']);
-		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
-		$this->commandManager->run('cp --no-preserve=mode,ownership ' . self::TMP_PATH . 'ntp/timesyncd.conf ' . $path, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp', true);
-	}
-
-	/**
-	 * Extracts and restores PIXLA configuration
-	 */
-	private function restorePixla(): void {
-		$this->zipManager->extract(self::TMP_PATH, 'pixla/customer_id');
-		$this->zipManager->extract(self::TMP_PATH, 'pixla/gw_id');
-		$this->commandManager->run('cp -r --no-preserve=mode,ownership ' . self::TMP_PATH . 'pixla/* ' . self::PIXLA_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'pixla', true);
-	}
-
-	/**
-	 * Extracts and restores IQRF Gateway Translator's configuration
-	 */
-	private function restoreTranslator(): void {
-		$this->zipManager->extract($this->translatorConfigDirectory, 'translator/config.json');
-		$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
-	}
-
-	/**
-	 * Extracts IQRF Gateway Uploader's configuration
-	 */
-	private function restoreUploader(): void {
-		$this->zipManager->extract($this->uploaderConfigDirectory, 'uploader/config.json');
-		$this->commandManager->run('cp -p ' . $this->uploaderConfigDirectory . 'uploader/config.json ' . $this->uploaderConfigDirectory . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->uploaderConfigDirectory . 'uploader', true);
-	}
-
-	/**
-	 * Extracts IQRF Gateway Webapp's data
-	 */
-	private function restoreWebapp(): void {
-		foreach ($this->zipManager->listFiles() as $file) {
-			if (strpos($file, 'nginx/') === 0 || strpos($file, 'webapp/') === 0) {
-				$this->zipManager->extract(self::TMP_PATH, $file);
-			}
-		}
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::WEBAPP_DB_DIR, true);
-		$this->commandManager->run('rm ' . self::TMP_PATH . 'webapp/database.db', true);
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . self::WEBAPP_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'webapp', true);
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_DIR, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nginx', true);
-	}
-
-	/**
-	 * Changes ownership of directory for JSON configuration files of IQRF Gateway Daemon
-	 */
-	private function changeOwner(): void {
-		$dirs = [$this->daemonDirectories->getConfigurationDir()];
-		if (file_exists($this->controllerConfigDirectory)) {
-			$dirs[] = $this->controllerConfigDirectory;
-		}
-		if (file_exists($this->translatorConfigDirectory)) {
-			$dirs[] = $this->translatorConfigDirectory;
-		}
-		if (file_exists($this->uploaderConfigDirectory)) {
-			$dirs[] = $this->uploaderConfigDirectory;
-		}
-		$posixUser = posix_getpwuid(posix_geteuid());
-		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		foreach ($dirs as $dir) {
-			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
-			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
 	}
 

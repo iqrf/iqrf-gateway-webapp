@@ -46,6 +46,11 @@ limitations under the License.
 								:label='$t("gateway.backup.form.software.mender")'
 							/>
 							<CInputCheckbox
+								v-if='$store.getters["features/isEnabled"]("monit")'
+								:checked.sync='migration.software.monit'
+								:label='$t("gateway.backup.form.software.monit")'
+							/>
+							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("pixla")'
 								:checked.sync='migration.software.pixla'
 								:label='$t("gateway.backup.form.software.pixla")'
@@ -142,6 +147,7 @@ export default class GatewayBackup extends Vue {
 	private migration: IGwBackup = {
 		software: {
 			iqrf: false,
+			monit: false,
 			mender: false,
 			pixla: false,
 		},
@@ -191,6 +197,9 @@ export default class GatewayBackup extends Vue {
 	 * Uploads backup archive and attempts to restore gw
 	 */
 	private filterFeatures(params: IGwBackup): IGwBackup {
+		if (!this.$store.getters['features/isEnabled']('monit')) {
+			params.software.monit = false;
+		}
 		if (!this.$store.getters['features/isEnabled']('mender')) {
 			params.software.mender = false;
 		}
