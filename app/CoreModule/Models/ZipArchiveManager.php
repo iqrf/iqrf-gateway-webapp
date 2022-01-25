@@ -57,6 +57,13 @@ class ZipArchiveManager {
 	}
 
 	/**
+	 * Adds an empty folder to the ZIP archive from the given path
+	 */
+	public function addEmptyFolder(string $name): void {
+		$this->zip->addEmptyDir($name);
+	}
+
+	/**
 	 * Adds a folder to the ZIP archive from the given path
 	 * @param string $path The path to the folder to add
 	 * @param string $name Directory name in the archive

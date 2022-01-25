@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
+use Nette\Utils\Finder;
 
 /**
  * Privileged file manager
@@ -80,10 +81,26 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
+		$command = $this->commandManager->run('mkdir -p ' . $this->directory . '/' . dirname($fileName), true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
 		$command = $this->commandManager->run('tee ' . $this->directory . '/' . $fileName, true, 60, $content);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
+	}
+
+	/**
+	 * Returns list of files in directory
+	 * @return array<int, string> List of files
+	 */
+	public function listFiles(): array {
+		$files = [];
+		foreach (Finder::findFiles('*')->from($this->directory) as $file) {
+			$files[] = $file->getRealPath();
+		}
+		return $files;
 	}
 
 }
