@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -14,68 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+declare(strict_types = 1);
+
+namespace App\GatewayModule\Models\Backup;
 
 /**
- * Gateway backup interface
+ * Interface for backup managers
  */
-export interface IGwBackup {
-	/**
-	 * Software configuration
-	 */
-	software: IGwBackupSoftware
+interface IBackupManager {
 
 	/**
-	 * System configuration
+	 * Temporary backup directory
 	 */
-	system: IGwBackupSystem
-}
-
-/**
- * Gateway software backup interface
- */
-export interface IGwBackupSoftware {
-	/**
-	 * IQRF Software
-	 */
-	iqrf: boolean
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * Mender
+	 * Performs backup
 	 */
-	mender: boolean
+	public function backup(): void;
 
 	/**
-	 * M/Monit
+	 * Performs restore
 	 */
-	monit: boolean
+	public function restore(): void;
 
-	/**
-	 * Pixla
-	 */
-	pixla: boolean
-}
-
-/**
- * Gateway system backup interface
- */
-export interface IGwBackupSystem {
-	/**
-	 * Hostname and hosts
-	 */
-	hostname: boolean
-
-	/**
-	 * Network manager
-	 */
-	network: boolean
-
-	/**
-	 * NTP/Timesync
-	 */
-	ntp: boolean
-
-	/**
-	 * Systemd journal
-	 */
-	journal: boolean
 }

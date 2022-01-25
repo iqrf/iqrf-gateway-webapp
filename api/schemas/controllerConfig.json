@@ -375,6 +375,37 @@
 			},
 			"additionalProperties": false
 		},
+		"powerOff": {
+			"$id": "#/properties/powerOff",
+			"type": "object",
+			"title": "Power off pin configuration",
+			"examples": [
+				{
+					"sda": 12,
+					"sck": 12
+				}
+			],
+			"required": [
+				"sda",
+				"sck"
+			],
+			"properties": {
+				"sda": {
+					"$id": "#/properties/powerOff/properties/sda",
+					"type": "number",
+					"title": "Data pin",
+					"description": "I2C data line pin.",
+					"example": 12
+				},
+				"sck": {
+					"$id": "#/properties/powerOff/properties/sck",
+					"type": "number",
+					"title": "Clock pin",
+					"description": "I2C clock pin.",
+					"example": 11
+				}
+			}
+		},
 		"resetButton": {
 			"$id": "#/properties/resetButton",
 			"type": "object",

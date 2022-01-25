@@ -17,6 +17,7 @@
 			"required": [
 				"iqrf",
 				"mender",
+				"monit",
 				"pixla"
 			],
 			"additionalProperties": false,
@@ -31,6 +32,12 @@
 					"$id": "#/properties/software/properties/mender",
 					"title": "Mender",
 					"description": "Mender configuration.",
+					"type": "boolean"
+				},
+				"monit": {
+					"$id": "#/properties/software/properties/monit",
+					"title": "Monit",
+					"description": "Monit configuration.",
 					"type": "boolean"
 				},
 				"pixla": {
