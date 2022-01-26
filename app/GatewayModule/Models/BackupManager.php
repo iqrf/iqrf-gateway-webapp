@@ -55,6 +55,11 @@ use ZipArchive;
 class BackupManager {
 
 	/**
+	 * Path to temporary backup directory
+	 */
+	private const TMP_PATH = '/tmp/backup/';
+
+	/**
 	 * @var string Path to IQRF Gateway Controller configuration directory
 	 */
 	private $controllerConfigDirectory;
@@ -173,6 +178,7 @@ class BackupManager {
 			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
 		return $path;
 	}
 
@@ -240,6 +246,7 @@ class BackupManager {
 			$manager->restore();
 		}
 		$this->zipManager->close();
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
 		$this->serviceManager->restart();
 	}
 
