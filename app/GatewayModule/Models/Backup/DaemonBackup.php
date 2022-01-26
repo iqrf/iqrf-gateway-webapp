@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
 
@@ -64,6 +65,12 @@ class DaemonBackup implements IBackupManager {
 		if ($this->zipManager->exist('daemon/scheduler/schema/')) {
 			$this->zipManager->deleteDirectory('daemon/scheduler/schema');
 		}
+		$manager = new PrivilegedFileManager($this->daemonDirectories->getConfigurationDir() . '/certs/core/', $this->commandManager);
+		foreach ($manager->listFiles() as $file) {
+			$name = basename($file);
+			$this->zipManager->addFileFromText('daemon/certs/core/' . $name, $manager->read($name));
+		}
+		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
 	}
 
 	/**
@@ -74,15 +81,19 @@ class DaemonBackup implements IBackupManager {
 		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {
 				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
-			}
-			if (strpos($file, 'daemon/') === 0) {
+			} elseif (strpos($file, 'daemon/DB/') === 0) {
+				$this->zipManager->extract($this->daemonDirectories->getDataDir() . '/DB/', $file);
+			} elseif (strpos($file, 'daemon/') === 0) {
 				$this->zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
+		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . 'DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . 'DB', true);
+		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . 'DB/daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
+		$this->fixCertificatePermissions();
 	}
 
 	/**
@@ -99,6 +110,13 @@ class DaemonBackup implements IBackupManager {
 			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
 			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
+	}
+
+	/**
+	 * Fixes certificate permissions
+	 */
+	private function fixCertificatePermissions(): void {
+		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
 	}
 
 }
