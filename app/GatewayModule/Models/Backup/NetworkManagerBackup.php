@@ -93,7 +93,7 @@ class NetworkManagerBackup implements IBackupManager {
 				if (strpos($file, 'system-connections/') !== false) {
 					$this->fileManager->write('system-connections/' . basename($file), FileSystem::read(self::TMP_PATH . $file));
 				} else {
-					$this->fileManager->write(basename($file), self::TMP_PATH . $file);
+					$this->fileManager->write(basename($file), FileSystem::read(self::TMP_PATH . $file));
 				}
 			}
 		}
