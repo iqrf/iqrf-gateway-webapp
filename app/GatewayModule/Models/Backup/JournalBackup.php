@@ -38,6 +38,11 @@ class JournalBackup implements IBackupManager {
 	];
 
 	/**
+	 * Service name
+	 */
+	private const SERVICE = 'systemd-timesyncd';
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -73,12 +78,14 @@ class JournalBackup implements IBackupManager {
 	/**
 	 * Performs systemd journal backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, array &$services): void {
 		if (!$params['system']['journal']) {
 			return;
 		}
 		$this->zipManager->addFile($this->path . '/journald.conf', 'journal/journald.conf');
+		$services[] = self::SERVICE;
 	}
 
 	/**

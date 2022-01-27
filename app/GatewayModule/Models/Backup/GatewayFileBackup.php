@@ -28,16 +28,16 @@ use App\CoreModule\Models\ZipArchiveManager;
 class GatewayFileBackup implements IBackupManager {
 
 	/**
-	 * Path to configuration directory
-	 */
-	private const CONF_PATH = '/etc/';
-
-	/**
 	 * Gateway files whitelist
 	 */
 	public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
+
+	/**
+	 * Path to configuration directory
+	 */
+	private const CONF_PATH = '/etc/';
 
 	/**
 	 * @var string Gateway ID
@@ -69,8 +69,9 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * Performs gateway file backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, ?array &$services = null): void {
 		$this->gwId = $this->gwId;
 		$this->gwToken = $this->gwToken;
 		if (!$params['software']['iqrf']) {

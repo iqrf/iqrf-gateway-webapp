@@ -29,21 +29,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 class WebappBackup implements IBackupManager {
 
 	/**
-	 * Path to Webapp configuration directory
-	 */
-	private const CONF_PATH = __DIR__ . '/../../../config/';
-
-	/**
-	 * Path to Webapp database directory
-	 */
-	private const DB_PATH = '/var/lib/iqrf-gateway-webapp/';
-
-	/**
-	 * Path to Webapp nginx configuration directory
-	 */
-	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
-
-	/**
 	 * List of whitelisted webapp files
 	 */
 	public const WHITELIST = [
@@ -62,6 +47,21 @@ class WebappBackup implements IBackupManager {
 		'iqrf-gateway-webapp-iqaros.localhost',
 		'iqrf-gateway-webapp-iqaros-https.localhost',
 	];
+
+	/**
+	 * Path to Webapp configuration directory
+	 */
+	private const CONF_PATH = __DIR__ . '/../../../config/';
+
+	/**
+	 * Path to Webapp database directory
+	 */
+	private const DB_PATH = '/var/lib/iqrf-gateway-webapp/';
+
+	/**
+	 * Path to Webapp nginx configuration directory
+	 */
+	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -86,8 +86,9 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * Performs Webapp backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, ?array &$services = null): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}

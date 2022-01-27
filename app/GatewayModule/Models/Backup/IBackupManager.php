@@ -33,8 +33,9 @@ interface IBackupManager {
 	/**
 	 * Performs backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void;
+	public function backup(array $params, array &$services): void;
 
 	/**
 	 * Performs restore
