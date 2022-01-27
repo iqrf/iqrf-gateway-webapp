@@ -33,13 +33,16 @@ class BackupUtil {
 		$user = posix_getpwuid(posix_geteuid());
 		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandManager(true, $commandStack);
+		$out = fopen('/tmp/backup_restore_log', 'a+');
+		fwrite($out, implode(',', $dirs));
 		foreach ($dirs as $dir) {
 			$commandManager->run('rm -rf ' . $dir, true);
 			$commandManager->run('mkdir ' . $dir, true);
-			$commandManager->run('chown' . $owner . ' ' . $dir, true);
+			$commandManager->run('chown ' . $owner . ' ' . $dir, true);
 			$commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
+		fclose($out);
 	}
 
 }

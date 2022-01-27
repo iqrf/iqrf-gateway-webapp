@@ -97,7 +97,7 @@ class DaemonBackup implements IBackupManager {
 		if (!$this->zipManager->exist('daemon/')) {
 			return;
 		}
-		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir()]);
+		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir(), $this->daemonDirectories->getDataDir() . '/DB/']);
 		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {
 				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);

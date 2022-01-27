@@ -62,7 +62,6 @@ class ZipArchiveManager {
 	 */
 	public function addEmptyFolder(string $directory): void {
 		$tokens = explode(DIRECTORY_SEPARATOR, $directory);
-		array_pop($tokens);
 		if ($tokens !== []) {
 			$dirs = [];
 			foreach ($tokens as $token) {
@@ -176,11 +175,16 @@ class ZipArchiveManager {
 	 * @param string $file Name of file to extract
 	 */
 	public function extract(string $destinationPath, string $file = ''): void {
+		$out = fopen('/tmp/backup_restore_log', 'a+');
 		if ($file === '') {
-			$this->zip->extractTo($destinationPath);
+			$succ = $this->zip->extractTo($destinationPath);
 		} else {
-			$this->zip->extractTo($destinationPath, $file);
+			$succ = $this->zip->extractTo($destinationPath, $file);
 		}
+		if (!$succ) {
+			fwrite($out, 'Failed to extract file ' . $file . ' to ' . $destinationPath);
+		}
+		fclose($out);
 	}
 
 	/**
