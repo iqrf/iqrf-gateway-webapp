@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 
@@ -58,6 +59,7 @@ class ServiceManager {
 	/**
 	 * Disables the service
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -68,6 +70,7 @@ class ServiceManager {
 	/**
 	 * Enables the service
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -78,6 +81,7 @@ class ServiceManager {
 	/**
 	 * Checks if the service is active
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -88,6 +92,7 @@ class ServiceManager {
 	/**
 	 * Checks if the service is enabled
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
@@ -98,6 +103,7 @@ class ServiceManager {
 	/**
 	 * Starts the service
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function start(?string $serviceName = null): void {
@@ -107,6 +113,7 @@ class ServiceManager {
 	/**
 	 * Stops the service
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function stop(?string $serviceName = null): void {
@@ -116,6 +123,7 @@ class ServiceManager {
 	/**
 	 * Restarts the service
 	 * @param string|null $serviceName Service name
+	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function restart(?string $serviceName = null): void {

@@ -192,7 +192,6 @@ class MigrationManager {
 	 */
 	private function extractDaemon(ZipArchiveManager $archiveManager): void {
 		foreach ($archiveManager->listFiles() as $file) {
-			var_dump($this->daemonDirectories->getCacheDir());
 			if (strpos($file, 'daemon/scheduler/') === 0) {
 				$archiveManager->extract($this->daemonDirectories->getCacheDir(), $file);
 			}

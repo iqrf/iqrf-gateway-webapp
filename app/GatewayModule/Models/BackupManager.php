@@ -41,8 +41,10 @@ use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Throwable;
@@ -154,30 +156,16 @@ class BackupManager {
 			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
 			new WebappBackup($this->commandManager, $this->zipManager),
 		];
+		$services = [];
 		foreach ($managers as $manager) {
-			$manager->backup($params);
+			$manager->backup($params, $services);
 		}
+		$this->backupServices($services);
 		if ($this->zipManager->isEmpty()) {
 			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
-		return $path;
-	}
-
-	/**
-	 * Generates backup archive path
-	 * @return string Path to backup archive
-	 */
-	private function getArchivePath(): string {
-		try {
-			$date = new DateTime();
-			$gwId = $this->gwInfo->getProperty('gwId');
-			$gwId = $gwId === null ? '' : strtolower($gwId);
-			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', $gwId, $date->format('c'));
-		} catch (Throwable $e) {
-			$path = '/tmp/iqrf-gateway-backup.zip';
-		}
 		return $path;
 	}
 
@@ -201,13 +189,60 @@ class BackupManager {
 			new WebappBackup($this->commandManager, $this->zipManager),
 			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
 		];
-		$this->gwInfo->getProperty('gwId');
 		foreach ($managers as $manager) {
 			$manager->restore();
 		}
+		$this->restoreServices();
 		$this->zipManager->close();
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
 		$this->serviceManager->restart();
+	}
+
+	/**
+	 * Generates backup archive path
+	 * @return string Path to backup archive
+	 */
+	private function getArchivePath(): string {
+		try {
+			$date = new DateTime();
+			$gwId = $this->gwInfo->getProperty('gwId');
+			$gwId = $gwId === null ? '' : strtolower($gwId);
+			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', $gwId, $date->format('c'));
+		} catch (Throwable $e) {
+			$path = '/tmp/iqrf-gateway-backup.zip';
+		}
+		return $path;
+	}
+
+	/**
+	 * Checks and exports status of services
+	 * @param array<int, string> $services Array of services to backup
+	 */
+	private function backupServices(array $services): void {
+		$enabledServices = [];
+		foreach ($services as $service) {
+			try {
+				$enabledServices[$service] = $this->serviceManager->isEnabled($service);
+			} catch (NonexistentServiceException $e) {
+				continue;
+			}
+		}
+		$this->zipManager->addFileFromText('services/enabled_services', Json::encode($enabledServices));
+	}
+
+	/**
+	 * Restores service status
+	 */
+	private function restoreServices(): void {
+		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services');
+		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services'));
+		foreach ($services as $service => $enabled) {
+			if ($enabled === true) {
+				$this->serviceManager->enable($service);
+			} else {
+				$this->serviceManager->disable($service);
+			}
+		}
 	}
 
 	/**
@@ -229,6 +264,7 @@ class BackupManager {
 			'nm/system-connections/',
 			'ntp/',
 			'pixla/',
+			'services/',
 			'translator/',
 			'uploader/',
 			'webapp/',
@@ -238,16 +274,16 @@ class BackupManager {
 		foreach ($files as $file) {
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
-				if (strpos($file, $dir) === 0) {
+				if (Strings::startsWith($file, $dir)) {
 					$valid = true;
 				}
 			}
 			if (!$valid) {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
-			if (strpos($file, 'controller/') === 0) {
+			if (Strings::startsWith($file, 'controller/')) {
 				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'daemon/') === 0) {
+			} elseif (Strings::startsWith($file, 'daemon/')) {
 				$matches = Strings::match($file, '~^\w+\_\_\w+\.json$~');
 				if (!is_array($matches)) {
 					continue;
@@ -264,29 +300,31 @@ class BackupManager {
 					$this->zipManager->close();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
-			} elseif (strpos($file, 'gateway/') === 0) {
+			} elseif (Strings::startsWith($file, 'gateway/')) {
 				$this->isWhitelisted(GatewayFileBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'host/') === 0) {
+			} elseif (Strings::startsWith($file, 'host/')) {
 				$this->isWhitelisted(HostBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'journal/') === 0) {
+			} elseif (Strings::startsWith($file, 'journal/')) {
 				$this->isWhitelisted(JournalBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'mender/') === 0) {
+			} elseif (Strings::startsWith($file, 'mender/')) {
 				$this->isWhitelisted(MenderBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'monit/') === 0) {
+			} elseif (Strings::startsWith($file, 'monit/')) {
 				$this->isWhitelisted(MonitBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'nm/system-connections/') === 0) {
+			} elseif (Strings::startsWith($file, 'nm/system-connections/')) {
 				continue;
-			} elseif (strpos($file, 'nm/') === 0) {
+			} elseif (Strings::startsWith($file, 'nm/')) {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'ntp/') === 0) {
+			} elseif (Strings::startsWith($file, 'ntp/')) {
 				$this->isWhitelisted(NtpBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'translator/') === 0) {
+			} elseif (Strings::startsWith($file, 'services/')) {
+				$this->isWhitelisted(['enabled_services'], $file);
+			} elseif (Strings::startsWith($file, 'translator/')) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'uploader/') === 0) {
+			} elseif (Strings::startsWith($file, 'uploader/')) {
 				$this->isWhitelisted(UploaderBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'webapp/') === 0) {
+			} elseif (Strings::startsWith($file, 'webapp/')) {
 				$this->isWhitelisted(WebappBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'nginx/') === 0) {
+			} elseif (Strings::startsWith($file, 'nginx/')) {
 				$this->isWhitelisted(WebappBackup::NGINX_WHITELIST, $file);
 			} else {
 				$this->zipManager->close();

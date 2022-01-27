@@ -31,17 +31,17 @@ use Nette\Utils\FileSystem;
 class HostBackup implements IBackupManager {
 
 	/**
-	 * Path to configuration directory
-	 */
-	private const CONF_PATH = '/etc/';
-
-	/**
 	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'hostname',
 		'hosts',
 	];
+
+	/**
+	 * Path to configuration directory
+	 */
+	private const CONF_PATH = '/etc/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -72,8 +72,9 @@ class HostBackup implements IBackupManager {
 	/**
 	 * Performs host backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, ?array &$services = null): void {
 		if (!$params['system']['hostname']) {
 			return;
 		}
