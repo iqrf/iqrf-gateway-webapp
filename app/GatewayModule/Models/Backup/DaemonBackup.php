@@ -32,6 +32,11 @@ use App\GatewayModule\Models\Utils\BackupUtil;
 class DaemonBackup implements IBackupManager {
 
 	/**
+	 * Service name
+	 */
+	private const SERVICE = 'iqrf-gateway-daemon';
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -60,8 +65,9 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * Performs Daemon backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, array &$services): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
@@ -81,6 +87,7 @@ class DaemonBackup implements IBackupManager {
 			$this->zipManager->deleteDirectory('daemon/scheduler/schema');
 		}
 		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
+		$services[] = self::SERVICE;
 	}
 
 	/**

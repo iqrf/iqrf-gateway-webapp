@@ -31,16 +31,21 @@ use Nette\Utils\FileSystem;
 class NetworkManagerBackup implements IBackupManager {
 
 	/**
-	 * Path to NetworkManager configuration directory
-	 */
-	private const CONF_PATH = '/etc/NetworkManager/';
-
-	/**
 	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'NetworkManager.conf',
 	];
+
+	/**
+	 * Service name
+	 */
+	public const SERVICE = 'NetworkManager';
+
+	/**
+	 * Path to NetworkManager configuration directory
+	 */
+	private const CONF_PATH = '/etc/NetworkManager/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -71,8 +76,9 @@ class NetworkManagerBackup implements IBackupManager {
 	/**
 	 * Performs NetworkManager backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, array &$services): void {
 		if (!$params['system']['network']) {
 			return;
 		}
@@ -85,6 +91,7 @@ class NetworkManagerBackup implements IBackupManager {
 				$this->zipManager->addFileFromText('nm/system-connections/' . $name, $this->fileManager->read('system-connections/' . $name));
 			}
 		}
+		$services[] = self::SERVICE;
 	}
 
 	/**

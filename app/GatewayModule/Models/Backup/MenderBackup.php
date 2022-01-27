@@ -31,17 +31,25 @@ use Nette\Utils\FileSystem;
 class MenderBackup implements IBackupManager {
 
 	/**
-	 * Path to Mender configuration directory
-	 */
-	private const CONF_PATH = '/etc/mender/';
-
-	/**
 	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'mender.conf',
 		'mender-connect.conf',
 	];
+
+	/**
+	 * Service names
+	 */
+	private const SERVICES = [
+		'mender-client',
+		'mender-connect',
+	];
+
+	/**
+	 * Path to Mender configuration directory
+	 */
+	private const CONF_PATH = '/etc/mender/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -72,13 +80,15 @@ class MenderBackup implements IBackupManager {
 	/**
 	 * Performs Mender backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, array &$services): void {
 		if (!$params['software']['mender']) {
 			return;
 		}
 		$this->zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
 		$this->zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
+		$services = array_merge($services, self::SERVICES);
 	}
 
 	/**

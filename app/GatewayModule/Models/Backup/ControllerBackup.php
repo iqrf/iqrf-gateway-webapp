@@ -22,6 +22,7 @@ namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\Utils\BackupUtil;
 
 /**
  * Controller backup manager
@@ -34,6 +35,11 @@ class ControllerBackup implements IBackupManager {
 	public const WHITELIST = [
 		'config.json',
 	];
+
+	/**
+	 * Service name
+	 */
+	private const SERVICE = 'iqrf-gateway-controller';
 
 	/**
 	 * @var string Path to Controller configuration directory;
@@ -64,14 +70,16 @@ class ControllerBackup implements IBackupManager {
 	/**
 	 * Performs Controller backup
 	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params): void {
+	public function backup(array $params, array &$services): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
 		if (file_exists($this->path)) {
 			$this->zipManager->addFolder($this->path, 'controller');
 		}
+		$services[] = self::SERVICE;
 	}
 
 	/**
@@ -81,22 +89,10 @@ class ControllerBackup implements IBackupManager {
 		if (!$this->zipManager->exist('controller/')) {
 			return;
 		}
-		$this->recreateDirectory();
+		BackupUtil::recreateDirectories([$this->path]);
 		$this->zipManager->extract($this->path, 'controller/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);
 		$this->commandManager->run('rm -rf ' . $this->path . 'controller', true);
-	}
-
-	/**
-	 * Recreates Controller configuration directory
-	 */
-	private function recreateDirectory(): void {
-		$this->commandManager->run('rm -rf ' . $this->path, true);
-		$this->commandManager->run('mkdir ' . $this->path, true);
-		$posixUser = posix_getpwuid(posix_geteuid());
-		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		$this->commandManager->run('chown ' . $owner . ' ' . $this->path, true);
-		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->path, true);
 	}
 
 }
