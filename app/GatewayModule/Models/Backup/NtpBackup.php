@@ -72,8 +72,12 @@ class NtpBackup implements IBackupManager {
 
 	/**
 	 * Performs NTP backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['system']['ntp']) {
+			return;
+		}
 		$this->zipManager->addFile($this->path . '/timesyncd.conf', 'ntp/timesyncd.conf');
 	}
 
@@ -81,6 +85,9 @@ class NtpBackup implements IBackupManager {
 	 * Performs NTP restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('ntp/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
 		$this->fileManager->write($this->path . 'timesyncd.conf', FileSystem::read(self::TMP_PATH . 'ntp/timesyncd.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp');

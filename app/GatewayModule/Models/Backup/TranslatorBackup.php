@@ -63,8 +63,12 @@ class TranslatorBackup implements IBackupManager {
 
 	/**
 	 * Performs Translator backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['iqrf']) {
+			return;
+		}
 		if (file_exists($this->path)) {
 			$this->zipManager->addFolder($this->path, 'translator');
 		}
@@ -74,6 +78,9 @@ class TranslatorBackup implements IBackupManager {
 	 * Performs Translator restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('translator/')) {
+			return;
+		}
 		$this->recreateDirectory();
 		$this->zipManager->extract($this->path, 'translator/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'translator/config.json ' . $this->path . 'config.json', true);

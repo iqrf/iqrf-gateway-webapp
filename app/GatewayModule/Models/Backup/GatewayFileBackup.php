@@ -20,10 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use Nette\Utils\FileSystem;
 
 /**
  * Gateway file backup manager
@@ -36,21 +33,21 @@ class GatewayFileBackup implements IBackupManager {
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * List of whitelisted files
+	 * Gateway files whitelist
 	 */
 	public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
 
 	/**
-	 * @var CommandManager Command manager
+	 * @var string Gateway ID
 	 */
-	private $commandManager;
+	private $gwId;
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
+	 * @var string Gateway token
 	 */
-	private $fileManager;
+	private $gwToken;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -59,19 +56,26 @@ class GatewayFileBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param string $gwId Gateway ID
+	 * @param string $gwToken Gateway token
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+	public function __construct(string $gwId, string $gwToken, ZipArchiveManager $zipManager) {
+		$this->gwId = $gwId;
+		$this->gwToken = $gwToken;
 		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs gateway file backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		$this->gwId = $this->gwId;
+		$this->gwToken = $this->gwToken;
+		if (!$params['software']['iqrf']) {
+			return;
+		}
 		$this->zipManager->addFile(self::CONF_PATH . 'iqrf-gateway.json', 'gateway/iqrf-gateway.json');
 	}
 
@@ -79,9 +83,9 @@ class GatewayFileBackup implements IBackupManager {
 	 * Performs gateway file restore
 	 */
 	public function restore(): void {
-		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
-		$this->fileManager->write('iqrf-gateway.json', FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'gateway');
+		if (!$this->zipManager->exist('gateway/')) {
+			return;
+		}
 	}
 
 }

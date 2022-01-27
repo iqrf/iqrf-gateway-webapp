@@ -71,8 +71,12 @@ class MenderBackup implements IBackupManager {
 
 	/**
 	 * Performs Mender backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['mender']) {
+			return;
+		}
 		$this->zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
 		$this->zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
 	}
@@ -81,6 +85,9 @@ class MenderBackup implements IBackupManager {
 	 * Performs Mender restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('mender/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
 		$this->zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
 		$this->fileManager->write('mender.conf', FileSystem::read(self::TMP_PATH . 'mender/mender.conf'));

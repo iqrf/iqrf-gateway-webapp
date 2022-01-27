@@ -63,8 +63,12 @@ class ControllerBackup implements IBackupManager {
 
 	/**
 	 * Performs Controller backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['iqrf']) {
+			return;
+		}
 		if (file_exists($this->path)) {
 			$this->zipManager->addFolder($this->path, 'controller');
 		}
@@ -74,6 +78,9 @@ class ControllerBackup implements IBackupManager {
 	 * Performs Controller restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('controller/')) {
+			return;
+		}
 		$this->recreateDirectory();
 		$this->zipManager->extract($this->path, 'controller/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);

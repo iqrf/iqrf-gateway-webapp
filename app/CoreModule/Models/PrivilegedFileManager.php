@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
-use Nette\Utils\Finder;
 
 /**
  * Privileged file manager
@@ -96,11 +95,11 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return array<int, string> List of files
 	 */
 	public function listFiles(): array {
-		$files = [];
-		foreach (Finder::findFiles('*')->from($this->directory) as $file) {
-			$files[] = $file->getRealPath();
+		$command = $this->commandManager->run('find ' . $this->directory);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
 		}
-		return $files;
+		return explode(PHP_EOL, $command->getStdout());
 	}
 
 }

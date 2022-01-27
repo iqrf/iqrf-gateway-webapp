@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
+use App\GatewayModule\Models\Utils\BackupUtil;
 
 /**
  * Daemon backup manager
@@ -58,17 +59,26 @@ class DaemonBackup implements IBackupManager {
 
 	/**
 	 * Performs Daemon backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getConfigurationDir(), 'daemon');
+	public function backup(array $params): void {
+		if (!$params['software']['iqrf']) {
+			return;
+		}
+		$dir = $this->daemonDirectories->getConfigurationDir();
+		$manager = new PrivilegedFileManager($dir, $this->commandManager);
+		foreach ($manager->listFiles() as $file) {
+			if (is_dir($file)) {
+				continue;
+			}
+			$name = substr($file, strlen($dir));
+			if (strlen($name) > 0) {
+				$this->zipManager->addFileFromText('daemon/' . $name, $manager->read($name));
+			}
+		}
 		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
 		if ($this->zipManager->exist('daemon/scheduler/schema/')) {
 			$this->zipManager->deleteDirectory('daemon/scheduler/schema');
-		}
-		$manager = new PrivilegedFileManager($this->daemonDirectories->getConfigurationDir() . '/certs/core/', $this->commandManager);
-		foreach ($manager->listFiles() as $file) {
-			$name = basename($file);
-			$this->zipManager->addFileFromText('daemon/certs/core/' . $name, $manager->read($name));
 		}
 		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
 	}
@@ -77,7 +87,10 @@ class DaemonBackup implements IBackupManager {
 	 * Performs Daemon restore
 	 */
 	public function restore(): void {
-		$this->recreateDirectories();
+		if (!$this->zipManager->exist('daemon/')) {
+			return;
+		}
+		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir()]);
 		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {
 				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
@@ -93,29 +106,13 @@ class DaemonBackup implements IBackupManager {
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
-		$this->fixCertificatePermissions();
+		$this->fixMetadata();
 	}
 
 	/**
-	 * Recreates Daemon directories
+	 * Fixes metadata for restored files
 	 */
-	private function recreateDirectories(): void {
-		$directory = $this->daemonDirectories->getConfigurationDir();
-		$this->commandManager->run('rm -rf ' . $directory, true);
-		$this->commandManager->run('mkdir ' . $directory, true);
-		$subdirs = [$this->daemonDirectories->getConfigurationDir()];
-		$posixUser = posix_getpwuid(posix_geteuid());
-		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		foreach ($subdirs as $dir) {
-			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
-			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
-		}
-	}
-
-	/**
-	 * Fixes certificate permissions
-	 */
-	private function fixCertificatePermissions(): void {
+	private function fixMetadata(): void {
 		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
 	}
 
