@@ -70,8 +70,12 @@ class NetworkManagerBackup implements IBackupManager {
 
 	/**
 	 * Performs NetworkManager backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['system']['network']) {
+			return;
+		}
 		$this->zipManager->addFile(self::CONF_PATH . 'NetworkManager.conf', 'nm/NetworkManager.conf');
 		$this->zipManager->addEmptyFolder('nm/system-connections');
 		$files = $this->fileManager->listFiles();
@@ -87,6 +91,9 @@ class NetworkManagerBackup implements IBackupManager {
 	 * Performs NetworkManager restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('nm/')) {
+			return;
+		}
 		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'nm/') === 0) {
 				$this->zipManager->extract(self::TMP_PATH, $file);

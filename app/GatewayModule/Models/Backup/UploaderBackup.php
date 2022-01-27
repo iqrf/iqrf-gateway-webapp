@@ -63,8 +63,12 @@ class UploaderBackup implements IBackupManager {
 
 	/**
 	 * Performs Uploader backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['iqrf']) {
+			return;
+		}
 		if (file_exists($this->path)) {
 			$this->zipManager->addFolder($this->path, 'uploader');
 		}
@@ -74,6 +78,9 @@ class UploaderBackup implements IBackupManager {
 	 * Performs Uploader restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('uploader/')) {
+			return;
+		}
 		$this->recreateDirectory();
 		$this->zipManager->extract($this->path, 'uploader/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'uploader/config.json ' . $this->path . 'config.json', true);

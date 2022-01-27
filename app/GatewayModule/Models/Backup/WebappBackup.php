@@ -85,8 +85,12 @@ class WebappBackup implements IBackupManager {
 
 	/**
 	 * Performs Webapp backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['iqrf']) {
+			return;
+		}
 		$this->zipManager->addFile(self::CONF_PATH . 'features.neon', 'webapp/features.neon');
 		$this->zipManager->addFile(self::CONF_PATH . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
 		$this->zipManager->addFile(self::CONF_PATH . 'smtp.neon', 'webapp/smtp.neon');
@@ -98,6 +102,9 @@ class WebappBackup implements IBackupManager {
 	 * Performs Webapp restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('webapp/') && !$this->zipManager->exist('nginx/')) {
+			return;
+		}
 		foreach ($this->zipManager->listFiles() as $file) {
 			if (strpos($file, 'nginx/') === 0 || strpos($file, 'webapp/') === 0) {
 				$this->zipManager->extract(self::TMP_PATH, $file);

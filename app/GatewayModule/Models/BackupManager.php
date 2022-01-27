@@ -37,7 +37,6 @@ use App\GatewayModule\Models\Backup\MenderBackup;
 use App\GatewayModule\Models\Backup\MonitBackup;
 use App\GatewayModule\Models\Backup\NetworkManagerBackup;
 use App\GatewayModule\Models\Backup\NtpBackup;
-use App\GatewayModule\Models\Backup\PixlaBackup;
 use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
@@ -141,38 +140,22 @@ class BackupManager {
 	public function backup(array $params): string {
 		$path = $this->getArchivePath();
 		$this->zipManager = new ZipArchiveManager($path);
-		$managers = [];
-		if ($params['system']['hostname']) {
-			$managers[] = new HostBackup($this->commandManager, $this->zipManager);
-		}
-		if ($params['software']['iqrf']) {
-			$managers[] = new GatewayFileBackup($this->commandManager, $this->zipManager);
-			$managers[] = new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager);
-			$managers[] = new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager);
-			$managers[] = new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager);
-			$managers[] = new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager);
-			$managers[] = new WebappBackup($this->commandManager, $this->zipManager);
-		}
-		if ($params['system']['journal']) {
-			$managers[] = new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager);
-		}
-		if ($params['software']['mender']) {
-			$managers[] = new MenderBackup($this->commandManager, $this->zipManager);
-		}
-		if ($params['software']['monit']) {
-			$managers[] = new MonitBackup($this->commandManager, $this->zipManager);
-		}
-		if ($params['system']['network']) {
-			$managers[] = new NetworkManagerBackup($this->commandManager, $this->zipManager);
-		}
-		if ($params['system']['ntp']) {
-			$managers[] = new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager);
-		}
-		if ($params['software']['pixla']) {
-			$managers[] = new PixlaBackup($this->commandManager, $this->zipManager);
-		}
+		$managers = [
+			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
+			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
+			new HostBackup($this->commandManager, $this->zipManager),
+			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
+			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
+			new MenderBackup($this->commandManager, $this->zipManager),
+			new MonitBackup($this->commandManager, $this->zipManager),
+			new NetworkManagerBackup($this->commandManager, $this->zipManager),
+			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
+			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
+			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
+			new WebappBackup($this->commandManager, $this->zipManager),
+		];
 		foreach ($managers as $manager) {
-			$manager->backup();
+			$manager->backup($params);
 		}
 		if ($this->zipManager->isEmpty()) {
 			throw new ZipEmptyException('Nothing to backup.');
@@ -205,43 +188,20 @@ class BackupManager {
 	public function restore(string $path): void {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
-		$managers = [];
-		if ($this->zipManager->exist('gateway/')) {
-			$managers[] = new GatewayFileBackup($this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('controller/')) {
-			$managers[] = new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('daemon/')) {
-			$managers[] = new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('host/')) {
-			$managers[] = new HostBackup($this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('journal/')) {
-			$managers[] = new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('mender/')) {
-			$managers[] = new MenderBackup($this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('nm/')) {
-			$managers[] = new NetworkManagerBackup($this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('ntp/')) {
-			$managers[] = new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('pixla/')) {
-			$managers[] = new PixlaBackup($this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('translator/')) {
-			$managers[] = new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('uploader/')) {
-			$managers[] = new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager);
-		}
-		if ($this->zipManager->exist('webapp/')) {
-			$managers[] = new WebappBackup($this->commandManager, $this->zipManager);
-		}
+		$managers = [
+			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
+			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
+			new HostBackup($this->commandManager, $this->zipManager),
+			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
+			new MenderBackup($this->commandManager, $this->zipManager),
+			new NetworkManagerBackup($this->commandManager, $this->zipManager),
+			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
+			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
+			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
+			new WebappBackup($this->commandManager, $this->zipManager),
+			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
+		];
+		$this->gwInfo->getProperty('gwId');
 		foreach ($managers as $manager) {
 			$manager->restore();
 		}
@@ -320,8 +280,6 @@ class BackupManager {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'ntp/') === 0) {
 				$this->isWhitelisted(NtpBackup::WHITELIST, $file);
-			} elseif (strpos($file, 'pixla/') === 0) {
-				$this->isWhitelisted(PixlaBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'translator/') === 0) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
 			} elseif (strpos($file, 'uploader/') === 0) {

@@ -71,8 +71,12 @@ class HostBackup implements IBackupManager {
 
 	/**
 	 * Performs host backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['system']['hostname']) {
+			return;
+		}
 		$this->zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
 		$this->zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
 	}
@@ -81,6 +85,9 @@ class HostBackup implements IBackupManager {
 	 * Performs host restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('host/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'host/hostname');
 		$this->zipManager->extract(self::TMP_PATH, 'host/hosts');
 		$this->fileManager->write('hostname', FileSystem::read(self::TMP_PATH . 'host/hostname'));

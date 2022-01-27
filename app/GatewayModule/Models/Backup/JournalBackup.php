@@ -72,8 +72,12 @@ class JournalBackup implements IBackupManager {
 
 	/**
 	 * Performs systemd journal backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['system']['journal']) {
+			return;
+		}
 		$this->zipManager->addFile($this->path . '/journald.conf', 'journal/journald.conf');
 	}
 
@@ -81,6 +85,9 @@ class JournalBackup implements IBackupManager {
 	 * Performs systemd journal restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('journal/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
 		$this->fileManager->write($this->path . 'journald.conf', FileSystem::read(self::TMP_PATH . 'journal/journald.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal');
