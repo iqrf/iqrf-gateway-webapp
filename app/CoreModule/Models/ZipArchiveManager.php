@@ -58,9 +58,18 @@ class ZipArchiveManager {
 
 	/**
 	 * Adds an empty folder to the ZIP archive from the given path
+	 * @param string $directory Directory path
 	 */
-	public function addEmptyFolder(string $name): void {
-		$this->zip->addEmptyDir($name);
+	public function addEmptyFolder(string $directory): void {
+		$tokens = explode(DIRECTORY_SEPARATOR, $directory);
+		array_pop($tokens);
+		if ($tokens !== []) {
+			$dirs = [];
+			foreach ($tokens as $token) {
+				$dirs[] = $token;
+				$this->zip->addEmptyDir(implode('/', $dirs));
+			}
+		}
 	}
 
 	/**
@@ -101,15 +110,7 @@ class ZipArchiveManager {
 	 * @param string $filename File name in the archive
 	 */
 	public function addFile(string $path, string $filename): void {
-		$tokens = explode(DIRECTORY_SEPARATOR, $filename);
-		array_pop($tokens);
-		if ($tokens !== []) {
-			$dirs = [];
-			foreach ($tokens as $token) {
-				$dirs[] = $token;
-				$this->zip->addEmptyDir(implode('/', $dirs));
-			}
-		}
+		$this->addEmptyFolder($filename);
 		$this->zip->addFile($path, $filename);
 	}
 
@@ -155,8 +156,7 @@ class ZipArchiveManager {
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
-			$res = $this->zip->locateName($var, ZipArchive::FL_NOCASE);
-			return $res !== false;
+			return $this->zip->locateName($var, ZipArchive::FL_NOCASE) !== false;
 		}
 		if (is_iterable($var)) {
 			foreach ($var as $file) {

@@ -70,8 +70,12 @@ class MonitBackup implements IBackupManager {
 
 	/**
 	 * Performs Monit backup
+	 * @param array<string, array<string, bool>> $params Request parameters
 	 */
-	public function backup(): void {
+	public function backup(array $params): void {
+		if (!$params['software']['monit']) {
+			return;
+		}
 		$this->zipManager->addEmptyFolder('monit');
 		$this->zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
 	}
@@ -80,6 +84,9 @@ class MonitBackup implements IBackupManager {
 	 * Performs Monit restore
 	 */
 	public function restore(): void {
+		if (!$this->zipManager->exist('monit/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->write('monitrc', FileSystem::read(self::TMP_PATH . 'monit/monitrc'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'monit', true);
