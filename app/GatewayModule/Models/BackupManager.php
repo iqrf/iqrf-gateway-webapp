@@ -182,6 +182,7 @@ class BackupManager {
 			new HostBackup($this->commandManager, $this->zipManager),
 			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
 			new MenderBackup($this->commandManager, $this->zipManager),
+			new MonitBackup($this->commandManager, $this->zipManager),
 			new NetworkManagerBackup($this->commandManager, $this->zipManager),
 			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
 			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
@@ -219,6 +220,7 @@ class BackupManager {
 	 * @param array<int, string> $services Array of services to backup
 	 */
 	private function backupServices(array $services): void {
+		$services[] = 'gwman-client';
 		$enabledServices = [];
 		foreach ($services as $service) {
 			try {
@@ -227,6 +229,7 @@ class BackupManager {
 				continue;
 			}
 		}
+		$this->zipManager->addEmptyFolder('services');
 		$this->zipManager->addFileFromText('services/enabled_services', Json::encode($enabledServices));
 	}
 
