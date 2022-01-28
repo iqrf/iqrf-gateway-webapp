@@ -96,6 +96,11 @@ class BackupManager {
 	private $gwInfo;
 
 	/**
+	 * @var PowerManager Power manager
+	 */
+	private $powerManager;
+
+	/**
 	 * @var ComponentSchemaManager JSON schema manager
 	 */
 	private $schemaManager;
@@ -118,17 +123,19 @@ class BackupManager {
 	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
+	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, DaemonDirectories $daemonDirectories, CommandManager $commandManager, FeatureManager $featureManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, DaemonDirectories $daemonDirectories, CommandManager $commandManager, FeatureManager $featureManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->daemonDirectories = $daemonDirectories;
 		$this->controllerConfigDirectory = $controllerConfigDirectory;
 		$this->translatorConfigDirectory = $translatorConfigDirectory;
 		$this->uploaderConfigDirectory = $uploaderConfigDirectory;
 		$this->commandManager = $commandManager;
 		$this->featureManager = $featureManager;
+		$this->powerManager = $powerManager;
 		$this->schemaManager = $schemaManager;
 		$this->serviceManager = $serviceManager;
 		$this->gwInfo = $gwInfo;
@@ -172,14 +179,14 @@ class BackupManager {
 	/**
 	 * Restores gateway from backed up configuration
 	 * @param string $path Path to archive containing configuration
+	 * @return array<string, int> Reboot timestamp
 	 */
-	public function restore(string $path): void {
+	public function restore(string $path): array {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
 		$managers = [
 			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
 			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
-			new HostBackup($this->commandManager, $this->zipManager),
 			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
 			new MenderBackup($this->commandManager, $this->zipManager),
 			new MonitBackup($this->commandManager, $this->zipManager),
@@ -189,6 +196,7 @@ class BackupManager {
 			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
 			new WebappBackup($this->commandManager, $this->zipManager),
 			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
+			new HostBackup($this->commandManager, $this->zipManager),
 		];
 		foreach ($managers as $manager) {
 			$manager->restore();
@@ -196,7 +204,7 @@ class BackupManager {
 		$this->restoreServices();
 		$this->zipManager->close();
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
-		$this->serviceManager->restart();
+		return $this->powerManager->reboot();
 	}
 
 	/**
@@ -237,6 +245,9 @@ class BackupManager {
 	 * Restores service status
 	 */
 	private function restoreServices(): void {
+		if (!$this->zipManager->exist('services/')) {
+			return;
+		}
 		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services');
 		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services'));
 		foreach ($services as $service => $enabled) {

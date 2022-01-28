@@ -112,7 +112,11 @@ class BackupController extends GatewayController {
 	 *                  format: binary
 	 *  responses:
 	 *      '200':
-	 *          description: 'Success'
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/PowerControl'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '415':
@@ -128,7 +132,9 @@ class BackupController extends GatewayController {
 		$path = '/tmp/iqrf-gateway-backup-upload.zip';
 		FileSystem::write($path, $request->getBody()->getContents());
 		try {
-			$this->manager->restore($path);
+			$reboot = $this->manager->restore($path);
+			FileSystem::delete($path);
+			return $response->writeJsonBody($reboot);
 		} catch (InvalidBackupContentException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
@@ -136,8 +142,6 @@ class BackupController extends GatewayController {
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
-		FileSystem::delete($path);
-		return $response->writeBody('Workaround');
 	}
 
 }
