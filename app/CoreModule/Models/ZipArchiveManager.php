@@ -62,12 +62,10 @@ class ZipArchiveManager {
 	 */
 	public function addEmptyFolder(string $directory): void {
 		$tokens = explode(DIRECTORY_SEPARATOR, $directory);
-		if ($tokens !== []) {
-			$dirs = [];
-			foreach ($tokens as $token) {
-				$dirs[] = $token;
-				$this->zip->addEmptyDir(implode('/', $dirs));
-			}
+		$dirs = [];
+		foreach ($tokens as $token) {
+			$dirs[] = $token;
+			$this->zip->addEmptyDir(implode('/', $dirs));
 		}
 	}
 
@@ -109,7 +107,7 @@ class ZipArchiveManager {
 	 * @param string $filename File name in the archive
 	 */
 	public function addFile(string $path, string $filename): void {
-		$this->addEmptyFolder($filename);
+		$this->addEmptyFolder(dirname($filename));
 		$this->zip->addFile($path, $filename);
 	}
 
