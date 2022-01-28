@@ -90,7 +90,7 @@ class JournalBackup implements IBackupManager {
 		if (!$params['system']['journal']) {
 			return;
 		}
-		$this->zipManager->addFile($this->path . '/' . $this->file, 'journal/' . $this->file);
+		$this->zipManager->addFile($this->path . '/' . $this->file, 'journal/journald.conf');
 		$services[] = self::SERVICE;
 	}
 
@@ -101,8 +101,8 @@ class JournalBackup implements IBackupManager {
 		if (!$this->zipManager->exist('journal/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'journal/' . $this->file);
-		$this->fileManager->write($this->path . $this->file, FileSystem::read(self::TMP_PATH . 'journal/' . $this->file));
+		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
+		$this->fileManager->write($this->path . '/' . $this->file, FileSystem::read(self::TMP_PATH . 'journal/journald.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal');
 	}
 
