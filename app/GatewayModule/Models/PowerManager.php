@@ -54,7 +54,7 @@ class PowerManager {
 	 * @return array<string, int> Restart timestamp
 	 */
 	public function reboot(): array {
-		//$this->commandManager->run('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
+		$this->commandManager->run('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
 		return $this->calculateNextMinute();
 	}
 
