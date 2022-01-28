@@ -83,26 +83,31 @@ limitations under the License.
 						color='primary'
 						type='submit'
 					>
-						{{ $t('gateway.backup.title') }}
+						{{ $t('gateway.backup.form.backup') }}
 					</CButton>
 				</CForm>
 			</CCardBody>
+		</CCard>
+		<CCard>
 			<CCardBody>
 				<CForm>
-					<CInputFile
-						ref='backupArchive'
-						accept='.zip'
-						:label='$t("gateway.backup.form.archive")'
-						@click='fileInputEmpty'
-						@input='fileInputEmpty'
-					/>
-					<CButton
-						color='primary'
-						:disabled='inputEmpty'
-						@click.prevent='restore'
-					>
-						{{ $t('gateway.backup.form.restore') }}
-					</CButton>
+					<div class='form-group'>
+						<CInputFile
+							ref='backupArchive'
+							accept='.zip'
+							:label='$t("gateway.backup.form.archive")'
+							@click='fileInputEmpty'
+							@input='fileInputEmpty'
+						/>
+						<CButton
+							color='primary'
+							:disabled='inputEmpty'
+							@click.prevent='restore'
+						>
+							{{ $t('gateway.backup.form.restore') }}
+						</CButton>
+					</div>
+					<i>{{ $t('gateway.backup.messages.restoreNote') }}</i>
 				</CForm>
 			</CCardBody>
 		</CCard>

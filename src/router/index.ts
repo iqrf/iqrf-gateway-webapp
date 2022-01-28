@@ -77,7 +77,6 @@ const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pa
 const DaemonDisambiguation = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/DaemonDisambiguation.vue');
 const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/Interfaces.vue');
 const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
-const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
@@ -705,10 +704,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: SmtpCOnfiguration,
 						path: 'smtp',
-					},
-					{
-						component: ConfigMigration,
-						path: 'migration',
 					},
 				]
 			},

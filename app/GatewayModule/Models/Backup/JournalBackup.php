@@ -58,6 +58,11 @@ class JournalBackup implements IBackupManager {
 	private $path;
 
 	/**
+	 * @var string File name
+	 */
+	private $file;
+
+	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private $zipManager;
@@ -71,6 +76,7 @@ class JournalBackup implements IBackupManager {
 	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
 		$this->commandManager = $commandManager;
 		$this->path = dirname($path);
+		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
 		$this->zipManager = $zipManager;
 	}
@@ -84,7 +90,7 @@ class JournalBackup implements IBackupManager {
 		if (!$params['system']['journal']) {
 			return;
 		}
-		$this->zipManager->addFile($this->path . '/journald.conf', 'journal/journald.conf');
+		$this->zipManager->addFile($this->path . '/' . $this->file, 'journal/' . $this->file);
 		$services[] = self::SERVICE;
 	}
 
@@ -95,8 +101,8 @@ class JournalBackup implements IBackupManager {
 		if (!$this->zipManager->exist('journal/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
-		$this->fileManager->write($this->path . 'journald.conf', FileSystem::read(self::TMP_PATH . 'journal/journald.conf'));
+		$this->zipManager->extract(self::TMP_PATH, 'journal/' . $this->file);
+		$this->fileManager->write($this->path . $this->file, FileSystem::read(self::TMP_PATH . 'journal/' . $this->file));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal');
 	}
 
