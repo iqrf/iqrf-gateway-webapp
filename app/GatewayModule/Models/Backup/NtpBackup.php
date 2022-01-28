@@ -58,6 +58,11 @@ class NtpBackup implements IBackupManager {
 	private $path;
 
 	/**
+	 * @var string File name
+	 */
+	private $file;
+
+	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private $zipManager;
@@ -71,6 +76,7 @@ class NtpBackup implements IBackupManager {
 	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
 		$this->commandManager = $commandManager;
 		$this->path = dirname($path);
+		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
 		$this->zipManager = $zipManager;
 	}
@@ -84,7 +90,7 @@ class NtpBackup implements IBackupManager {
 		if (!$params['system']['ntp']) {
 			return;
 		}
-		$this->zipManager->addFile($this->path . '/timesyncd.conf', 'ntp/timesyncd.conf');
+		$this->zipManager->addFile($this->path . '/' . $this->file, 'ntp/' . $this->file);
 		$services[] = self::SERVICE;
 	}
 
@@ -95,8 +101,8 @@ class NtpBackup implements IBackupManager {
 		if (!$this->zipManager->exist('ntp/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
-		$this->fileManager->write($this->path . 'timesyncd.conf', FileSystem::read(self::TMP_PATH . 'ntp/timesyncd.conf'));
+		$this->zipManager->extract(self::TMP_PATH, 'ntp/' . $this->file);
+		$this->fileManager->write($this->path . $this->file, FileSystem::read(self::TMP_PATH . 'ntp/' . $this->file));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp');
 	}
 

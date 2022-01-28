@@ -224,23 +224,6 @@
 		"title": "Configuration",
 		"description": "Edit configuration.",
 		"success": "The configuration has been saved successfully.",
-		"migration": {
-			"title": "Migration",
-			"description": "Migration of gateway service configurations.",
-			"form": {
-				"importButton": "Configuration to import",
-				"import": "Import configuration",
-				"export": "Export configuration"
-			},
-			"errors": {
-				"import": "Please select a ZIP archive with a configuration to import."
-			},
-			"messages": {
-				"exportFailed": "Failed to export IQRF gateway configuration: {error}",
-				"importFailed": "Failed to import IQRF gateway configuration: {error}",
-				"importSuccess": "The configuration has been imported."
-			}
-		},
 		"repository": {
 			"title": "IQRF repository",
 			"description": "Manage configuration of IQRF repository extension.",
@@ -1428,10 +1411,12 @@
 				},
 				"selectAll": "Select all",
 				"deselectAll": "Deselect all",
-				"archive": "Backup archive",
+				"archive": "Archive to restore from",
+				"backup": "Backup",
 				"restore": "Restore"
 			},
 			"messages": {
+				"restoreNote": "Gateway will be restarted at the end of the restore process.",
 				"backupFailed": "Failed to create gateway backup archive: {error}",
 				"restoreFailed": "Failed to restore gateway: {error}",
 				"restoreSuccess": "Gateway successfully restored from backup archive and will reboot at {time}."
