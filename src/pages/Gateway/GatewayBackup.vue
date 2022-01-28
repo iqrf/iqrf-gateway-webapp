@@ -225,10 +225,11 @@ export default class GatewayBackup extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		GatewayService.restore(files[0])
-			.then(() => {
+			.then((response: AxiosResponse) => {
+				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('gateway.backup.messages.restoreSuccess').toString()
+					this.$t('gateway.backup.messages.restoreSuccess', {time: time}).toString()
 				);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.backup.messages.restoreFailed'));

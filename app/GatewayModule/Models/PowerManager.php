@@ -42,16 +42,29 @@ class PowerManager {
 
 	/**
 	 * Powers off IQRF Gateway
+	 * @return array<string, int> Shutdown timestamp
 	 */
-	public function powerOff(): void {
+	public function powerOff(): array {
 		$this->commandManager->run('shutdown -P `date --date "now + 60 seconds" "+%H:%M"`', true);
+		return $this->calculateNextMinute();
 	}
 
 	/**
 	 * Reboots IQRF Gateway
+	 * @return array<string, int> Restart timestamp
 	 */
-	public function reboot(): void {
-		$this->commandManager->run('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
+	public function reboot(): array {
+		//$this->commandManager->run('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
+		return $this->calculateNextMinute();
+	}
+
+	/**
+	 * Calculates timestamp for the next whole minute
+	 * @return array<string, int> Timestamp
+	 */
+	private function calculateNextMinute(): array {
+		$timestamp = (int) (ceil(time() / 60) * 60);
+		return ['timestamp' => $timestamp];
 	}
 
 }

@@ -1407,7 +1407,7 @@
 			"log-read": "Cannot read log file."
 		},
 		"backup": {
-			"title": "Backup",
+			"title": "Backup & Restore",
 			"description": "Gateway backup and restore management.",
 			"headings": {
 				"software": "Software configuration",
@@ -1434,7 +1434,7 @@
 			"messages": {
 				"backupFailed": "Failed to create gateway backup archive: {error}",
 				"restoreFailed": "Failed to restore gateway: {error}",
-				"restoreSuccess": "Gateway has been successfully restored from backup archive."
+				"restoreSuccess": "Gateway successfully restored from backup archive and will reboot at {time}."
 			}
 		}
 	},
