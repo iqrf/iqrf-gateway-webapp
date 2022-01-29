@@ -100,7 +100,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return array<int, string> List of directories
 	 */
 	public function listDirectories(): array {
-		$command = $this->commandManager->run('find ' . $this->directory . ' -type d');
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type d', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -112,7 +112,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return array<int, string> List of files
 	 */
 	public function listFiles(): array {
-		$command = $this->commandManager->run('find ' . $this->directory . ' -type f');
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type f', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
