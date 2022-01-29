@@ -91,11 +91,23 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Returns list of subdirectories in directory
+	 * @return array<int, string> List of directories
+	 */
+	public function listDirectories(): array {
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type d');
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+		return explode(PHP_EOL, $command->getStdout());
+	}
+
+	/**
 	 * Returns list of files in directory
 	 * @return array<int, string> List of files
 	 */
 	public function listFiles(): array {
-		$command = $this->commandManager->run('find ' . $this->directory);
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type f');
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
