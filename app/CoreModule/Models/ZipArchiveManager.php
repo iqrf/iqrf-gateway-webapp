@@ -53,6 +53,7 @@ class ZipArchiveManager {
 	 * @param string $content The content of text file
 	 */
 	public function addFileFromText(string $filename, string $content): void {
+		$this->addEmptyFolder(dirname($filename));
 		$this->zip->addFromString($filename, $content);
 	}
 
