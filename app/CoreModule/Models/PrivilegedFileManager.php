@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
+use Nette\Utils\Strings;
 
 /**
  * Privileged file manager
@@ -54,7 +55,8 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function read(string $fileName): string {
-		$command = $this->commandManager->run('cat ' . $this->directory . '/' . $fileName, true);
+		$path = $this->buildPath($fileName);
+		$command = $this->commandManager->run('cat ' . $path, true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -67,7 +69,8 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
-		$command = $this->commandManager->run('rm -rf ' . $this->directory . '/' . $fileName, true);
+		$path = $this->buildPath($fileName);
+		$command = $this->commandManager->run('rm -rf ' . $path, true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -80,11 +83,13 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
-		$command = $this->commandManager->run('mkdir -p ' . $this->directory . '/' . dirname($fileName), true);
+		$path = $this->buildPath(dirname($fileName));
+		$command = $this->commandManager->run('mkdir -p ' . $path, true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
-		$command = $this->commandManager->run('tee ' . $this->directory . '/' . $fileName, true, 60, $content);
+		$path = $this->buildPath($fileName);
+		$command = $this->commandManager->run('tee ' . $path, true, 60, $content);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -112,6 +117,19 @@ class PrivilegedFileManager implements IFileManager {
 			throw new IOException($command->getStderr());
 		}
 		return explode(PHP_EOL, $command->getStdout());
+	}
+
+	/**
+	 * Returns path to subdirectory or file, if the path contains spaces, returned string is surrounded in quotation marks
+	 * @param string $name Name of subdirectory or file
+	 * @return string Path to subdirectory or file
+	 */
+	private function buildPath(string $name): string {
+		$path = $this->directory . '/' . $name;
+		if (Strings::contains($path, ' ')) {
+			$path = '"' . $path . '"';
+		}
+		return $path;
 	}
 
 }
