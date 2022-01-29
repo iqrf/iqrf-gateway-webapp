@@ -47,6 +47,11 @@ class DaemonBackup implements IBackupManager {
 	private $daemonDirectories;
 
 	/**
+	 * @var PrivilegedFileManager Privileged file manager
+	 */
+	private $fileManager;
+
+	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private $zipManager;
@@ -59,6 +64,7 @@ class DaemonBackup implements IBackupManager {
 	public function __construct(DaemonDirectories $daemonDirectories, CommandManager $commandManager, ZipArchiveManager $zipManager) {
 		$this->commandManager = $commandManager;
 		$this->daemonDirectories = $daemonDirectories;
+		$this->fileManager = new PrivilegedFileManager($daemonDirectories->getConfigurationDir(), $this->commandManager);
 		$this->zipManager = $zipManager;
 	}
 
@@ -72,14 +78,10 @@ class DaemonBackup implements IBackupManager {
 			return;
 		}
 		$dir = $this->daemonDirectories->getConfigurationDir();
-		$manager = new PrivilegedFileManager($dir, $this->commandManager);
-		foreach ($manager->listFiles() as $file) {
-			if (is_dir($file)) {
-				continue;
-			}
+		foreach ($this->fileManager->listFiles() as $file) {
 			$name = substr($file, strlen($dir));
 			if (strlen($name) > 0) {
-				$this->zipManager->addFileFromText('daemon/' . $name, $manager->read($name));
+				$this->zipManager->addFileFromText('daemon/' . $name, $this->fileManager->read($name));
 			}
 		}
 		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
@@ -120,6 +122,10 @@ class DaemonBackup implements IBackupManager {
 	 * Fixes metadata for restored files
 	 */
 	private function fixMetadata(): void {
+		$this->commandManager->run('chmod -R 0666 ' . $this->daemonDirectories->getConfigurationDir(), true);
+		foreach ($this->fileManager->listDirectories() as $dir) {
+			$this->commandManager->run('chmod 0777 ' . $dir, true);
+		}
 		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
 	}
 
