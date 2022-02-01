@@ -162,7 +162,7 @@ class GatewayService {
 			...authorizationHeader(),
 			'Content-Type': archive.type,
 		};
-		return axios.post(url, archive, {headers: headers});
+		return axios.post(url, archive, {headers: headers, timeout: 120000});
 	}
 
 }
