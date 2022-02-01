@@ -37,6 +37,7 @@ use App\GatewayModule\Models\Backup\MenderBackup;
 use App\GatewayModule\Models\Backup\MonitBackup;
 use App\GatewayModule\Models\Backup\NetworkManagerBackup;
 use App\GatewayModule\Models\Backup\NtpBackup;
+use App\GatewayModule\Models\Backup\TimeBackup;
 use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
@@ -59,6 +60,14 @@ class BackupManager {
 	 * Path to temporary backup directory
 	 */
 	private const TMP_PATH = '/tmp/backup/';
+
+	/**
+	 * Services to include in backup
+	 */
+	private const SERVICES = [
+		'gwman-client',
+		'ssh',
+	];
 
 	/**
 	 * @var string Path to IQRF Gateway Controller configuration directory
@@ -159,6 +168,7 @@ class BackupManager {
 			new MonitBackup($this->commandManager, $this->zipManager),
 			new NetworkManagerBackup($this->commandManager, $this->zipManager),
 			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
+			new TimeBackup($this->commandManager, $this->zipManager),
 			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
 			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
 			new WebappBackup($this->commandManager, $this->zipManager),
@@ -184,6 +194,7 @@ class BackupManager {
 	public function restore(string $path): array {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
+		$this->checkImage();
 		$managers = [
 			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
 			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
@@ -192,6 +203,7 @@ class BackupManager {
 			new MonitBackup($this->commandManager, $this->zipManager),
 			new NetworkManagerBackup($this->commandManager, $this->zipManager),
 			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
+			new TimeBackup($this->commandManager, $this->zipManager),
 			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
 			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
 			new WebappBackup($this->commandManager, $this->zipManager),
@@ -228,7 +240,7 @@ class BackupManager {
 	 * @param array<int, string> $services Array of services to backup
 	 */
 	private function backupServices(array $services): void {
-		$services[] = 'gwman-client';
+		$services = array_merge($services, self::SERVICES);
 		$enabledServices = [];
 		foreach ($services as $service) {
 			try {
@@ -251,10 +263,14 @@ class BackupManager {
 		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services');
 		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services'));
 		foreach ($services as $service => $enabled) {
-			if ($enabled === true) {
-				$this->serviceManager->enable($service);
-			} else {
-				$this->serviceManager->disable($service);
+			try {
+				if ($enabled === true) {
+					$this->serviceManager->enable($service);
+				} else {
+					$this->serviceManager->disable($service);
+				}
+			} catch (NonexistentServiceException $e) {
+				continue;
 			}
 		}
 	}
@@ -279,6 +295,7 @@ class BackupManager {
 			'ntp/',
 			'pixla/',
 			'services/',
+			'time/',
 			'translator/',
 			'uploader/',
 			'webapp/',
@@ -332,6 +349,8 @@ class BackupManager {
 				$this->isWhitelisted(NtpBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'services/')) {
 				$this->isWhitelisted(['enabled_services'], $file);
+			} elseif (Strings::startsWith($file, 'time/')) {
+				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'translator/')) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'uploader/')) {
@@ -356,6 +375,20 @@ class BackupManager {
 		if (!in_array(basename($file), $whitelist, true)) {
 			$this->zipManager->close();
 			throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
+		}
+	}
+
+	/**
+	 * Checks if the backup archive is intended for the current gateway image version
+	 */
+	private function checkImage(): void {
+		if (!$this->zipManager->exist('gateway/')) {
+			return;
+		}
+		$this->zipManager->extract(self::TMP_PATH . 'gateway/iqrf-gateway.json');
+		$restoreGwInfo = Json::decode(FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
+		if ($this->gwInfo->getProperty('gwImage') !== $restoreGwInfo['gwImage']) {
+			throw new InvalidBackupContentException('Gateway image and backup archive version mismatch.');
 		}
 	}
 
