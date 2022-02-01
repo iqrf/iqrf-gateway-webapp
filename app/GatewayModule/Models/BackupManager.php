@@ -215,7 +215,7 @@ class BackupManager {
 		}
 		$this->restoreServices();
 		$this->zipManager->close();
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
+		$this->cleanup();
 		return $this->powerManager->reboot();
 	}
 
@@ -329,6 +329,7 @@ class BackupManager {
 					$this->schemaManager->validate($json);
 				} catch (InvalidJsonException $e) {
 					$this->zipManager->close();
+					$this->cleanup();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
 			} elseif (Strings::startsWith($file, 'gateway/')) {
@@ -361,6 +362,7 @@ class BackupManager {
 				$this->isWhitelisted(WebappBackup::NGINX_WHITELIST, $file);
 			} else {
 				$this->zipManager->close();
+				$this->cleanup();
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
 		}
@@ -385,11 +387,20 @@ class BackupManager {
 		if (!$this->zipManager->exist('gateway/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH . 'gateway/iqrf-gateway.json');
+		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
 		$restoreGwInfo = Json::decode(FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
 		if ($this->gwInfo->getProperty('gwImage') !== $restoreGwInfo['gwImage']) {
+			$this->zipManager->close();
+			$this->cleanup();
 			throw new InvalidBackupContentException('Gateway image and backup archive version mismatch.');
 		}
+	}
+
+	/**
+	 * Cleans up temporary backup directory
+	 */
+	private function cleanup(): void {
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
 	}
 
 }
