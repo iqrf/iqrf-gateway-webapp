@@ -174,16 +174,11 @@ class ZipArchiveManager {
 	 * @param string $file Name of file to extract
 	 */
 	public function extract(string $destinationPath, string $file = ''): void {
-		$out = fopen('/tmp/backup_restore_log', 'a+');
 		if ($file === '') {
-			$succ = $this->zip->extractTo($destinationPath);
+			$this->zip->extractTo($destinationPath);
 		} else {
-			$succ = $this->zip->extractTo($destinationPath, $file);
+			$this->zip->extractTo($destinationPath, $file);
 		}
-		if (!$succ) {
-			fwrite($out, 'Failed to extract file ' . $file . ' to ' . $destinationPath);
-		}
-		fclose($out);
 	}
 
 	/**
