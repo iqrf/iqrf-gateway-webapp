@@ -68,6 +68,10 @@ limitations under the License.
 								:label='$t("gateway.backup.form.system.network")'
 							/>
 							<CInputCheckbox
+								:checked.sync='migration.system.time'
+								:label='$t("gateway.backup.form.system.time")'
+							/>
+							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("ntp")'
 								:checked.sync='migration.system.ntp'
 								:label='$t("gateway.backup.form.system.ntp")'
@@ -159,6 +163,7 @@ export default class GatewayBackup extends Vue {
 		system: {
 			hostname: false,
 			network: false,
+			time: false,
 			ntp: false,
 			journal: false,
 		},
@@ -183,10 +188,11 @@ export default class GatewayBackup extends Vue {
 	}
 
 	/**
-	 * Migrates gateway data
+	 * Performs gateway backup
 	 */
 	private backup(): void {
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('gateway.backup.messages.backup').toString());
 		let params = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
 		GatewayService.backup(params)
 			.then((response: AxiosResponse) => {
@@ -223,12 +229,16 @@ export default class GatewayBackup extends Vue {
 		return params;
 	}
 
+	/**
+	 * Performs gateway restore
+	 */
 	private restore(): void {
 		const files = this.getFiles();
 		if (files === null || files.length === 0) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('gateway.backup.messages.restore').toString());
 		GatewayService.restore(files[0])
 			.then((response: AxiosResponse) => {
 				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();

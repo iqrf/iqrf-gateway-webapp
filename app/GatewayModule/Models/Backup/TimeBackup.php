@@ -21,26 +21,21 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\TimeManager;
 use Nette\Utils\FileSystem;
 
 /**
- * Systemd journal backup manager
+ * Time backup manager
  */
-class JournalBackup implements IBackupManager {
+class TimeBackup implements IBackupManager {
 
 	/**
 	 * Whitelisted files
 	 */
 	public const WHITELIST = [
-		'journald.conf',
+		'timezone',
 	];
-
-	/**
-	 * Service name
-	 */
-	private const SERVICE = 'systemd-timesyncd';
 
 	/**
 	 * @var CommandManager Command manager
@@ -48,19 +43,9 @@ class JournalBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
+	 * @var TimeManager Time manager
 	 */
-	private $fileManager;
-
-	/**
-	 * @var string Path to NTP configuration directory
-	 */
-	private $path;
-
-	/**
-	 * @var string File name
-	 */
-	private $file;
+	private $timeManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -69,41 +54,38 @@ class JournalBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param string $path Path to NTP configuration directory
 	 * @param CommandManager $commandManager Command manager
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
 		$this->commandManager = $commandManager;
-		$this->path = dirname($path);
-		$this->file = basename($path);
-		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
+		$this->timeManager = new TimeManager($this->commandManager);
 		$this->zipManager = $zipManager;
 	}
 
 	/**
-	 * Performs systemd journal backup
+	 * Performs time backup
 	 * @param array<string, array<string, bool>> $params Request parameters
 	 * @param array<string, bool> $services Array of services
 	 */
 	public function backup(array $params, array &$services): void {
-		if (!$params['system']['journal']) {
+		if (!$params['system']['time']) {
 			return;
 		}
-		$this->zipManager->addFile($this->path . '/' . $this->file, 'journal/journald.conf');
-		$services[] = self::SERVICE;
+		$timezone = $this->timeManager->getStatus()['Timezone'];
+		$this->zipManager->addFileFromText('time/timezone', $timezone);
 	}
 
 	/**
-	 * Performs systemd journal restore
+	 * Performs time restore
 	 */
 	public function restore(): void {
-		if (!$this->zipManager->exist('journal/')) {
+		if (!$this->zipManager->exist('time/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
-		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'journal/journald.conf'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal');
+		$this->zipManager->extract(self::TMP_PATH, 'time/timezone');
+		$this->timeManager->setTimezone(FileSystem::read(self::TMP_PATH . 'time/timezone'));
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'time');
 	}
 
 }

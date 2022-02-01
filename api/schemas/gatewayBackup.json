@@ -56,6 +56,7 @@
 			"required": [
 				"hostname",
 				"network",
+				"time",
 				"ntp",
 				"journal"
 			],
@@ -71,6 +72,12 @@
 					"$id": "#/properties/system/network",
 					"title": "NetworkManager",
 					"description": "NetworkManager configuration and connection profiles.",
+					"type": "boolean"
+				},
+				"time": {
+					"$id": "#/properties/system/time",
+					"title": "Time",
+					"description": "Timezone configuration.",
 					"type": "boolean"
 				},
 				"ntp": {

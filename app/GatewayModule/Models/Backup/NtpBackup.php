@@ -102,7 +102,7 @@ class NtpBackup implements IBackupManager {
 			return;
 		}
 		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
-		$this->fileManager->write($this->path . '/' . $this->file, FileSystem::read(self::TMP_PATH . 'ntp/timesyncd.conf'));
+		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'ntp/timesyncd.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp');
 	}
 

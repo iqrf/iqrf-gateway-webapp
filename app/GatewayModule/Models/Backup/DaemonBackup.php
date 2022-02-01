@@ -78,6 +78,9 @@ class DaemonBackup implements IBackupManager {
 			return;
 		}
 		$dir = $this->daemonDirectories->getConfigurationDir();
+		if (!file_exists($dir)) {
+			return;
+		}
 		foreach ($this->fileManager->listFiles() as $file) {
 			$name = substr($file, strlen($dir));
 			if (strlen($name) > 0) {

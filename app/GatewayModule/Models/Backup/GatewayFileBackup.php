@@ -100,9 +100,6 @@ class GatewayFileBackup implements IBackupManager {
 	 * @param array<string, bool> $services Array of services
 	 */
 	public function backup(array $params, ?array &$services = null): void {
-		if (!$params['software']['iqrf']) {
-			return;
-		}
 		if (file_exists(self::CONF_PATH . 'iqrf-gateway.json')) {
 			$this->zipManager->addFile(self::CONF_PATH . 'iqrf-gateway.json', 'gateway/iqrf-gateway.json');
 		}
