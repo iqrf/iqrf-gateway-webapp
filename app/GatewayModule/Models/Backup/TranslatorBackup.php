@@ -52,13 +52,20 @@ class TranslatorBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param string $path Path to translator configuration directory
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager) {
+	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -83,6 +90,7 @@ class TranslatorBackup implements IBackupManager {
 		if (!$zipManager->exist('translator/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring IQRF Gateway Translator configuration.');
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'translator/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'translator/config.json ' . $this->path . 'config.json', true);

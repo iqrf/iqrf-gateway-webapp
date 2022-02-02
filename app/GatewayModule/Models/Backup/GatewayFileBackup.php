@@ -79,12 +79,18 @@ class GatewayFileBackup implements IBackupManager {
 	private $gwToken;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
 	 */
-	public function __construct(GatewayInfoUtil $gwInfo) {
+	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
 		$this->gwId = Strings::lower($gwInfo->getProperty('gwId'));
 		$this->gwToken = $gwInfo->getProperty('gwToken');
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -107,6 +113,7 @@ class GatewayFileBackup implements IBackupManager {
 			return;
 		}
 		if (file_exists(self::MQTT_PATH)) {
+			$this->restoreLogger->log('Restoring IQRF Gateway Daemon MQTT component configuration.');
 			$config = Json::decode(FileSystem::read(self::MQTT_PATH), Json::FORCE_ARRAY);
 			if (Strings::match($config['ClientId'], self::GWID_PATTERN) !== null) {
 				$config['ClientId'] = $this->gwId;
@@ -120,6 +127,7 @@ class GatewayFileBackup implements IBackupManager {
 			FileSystem::write(self::MQTT_PATH, Json::encode($config));
 		}
 		if (file_exists(self::SPLITTER_PATH)) {
+			$this->restoreLogger->log('Restoring IQRF Gateway Daemon Splitter component configuration.');
 			$config = Json::decode(FileSystem::read(self::SPLITTER_PATH), Json::FORCE_ARRAY);
 			$config['insId'] = $this->gwToken;
 			FileSystem::write(self::SPLITTER_PATH, Json::encode($config));

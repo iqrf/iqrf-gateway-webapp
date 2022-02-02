@@ -43,6 +43,11 @@ class TimeBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * @var TimeManager Time manager
 	 */
 	private $timeManager;
@@ -50,10 +55,12 @@ class TimeBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 * @param TimeManager $timeManager Time manager
 	 */
-	public function __construct(CommandManager $commandManager, TimeManager $timeManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger, TimeManager $timeManager) {
 		$this->commandManager = $commandManager;
+		$this->restoreLogger = $restoreLogger;
 		$this->timeManager = $timeManager;
 	}
 
@@ -78,6 +85,7 @@ class TimeBackup implements IBackupManager {
 		if (!$zipManager->exist('time/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring gateway timezone.');
 		$zipManager->extract(self::TMP_PATH, 'time/timezone');
 		$this->timeManager->setTimezone(FileSystem::read(self::TMP_PATH . 'time/timezone'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'time');

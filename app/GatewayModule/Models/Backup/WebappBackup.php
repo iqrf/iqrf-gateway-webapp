@@ -69,11 +69,18 @@ class WebappBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -105,6 +112,7 @@ class WebappBackup implements IBackupManager {
 				$zipManager->extract(self::TMP_PATH, $file);
 			}
 		}
+		$this->restoreLogger->log('Restoring IQRF Gateway Webapp configuration, database and nginx configuration.');
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::DB_PATH, true);
 		$this->commandManager->run('rm ' . self::TMP_PATH . 'webapp/database.db', true);
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . self::CONF_PATH, true);

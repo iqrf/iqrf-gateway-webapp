@@ -34,7 +34,6 @@ const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gatew
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
 const ServiceControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/ServiceControl.vue');
-const GatewayBackup = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayBackup.vue');
 
 const MainDisambiguation = () => import(/* webpackChunkName: "core" */ '@/pages/Core/MainDisambiguation.vue');
 const NotFound = () => import(/* webpackChunkName: "core" */ '@/pages/Core/NotFound.vue');
@@ -110,6 +109,7 @@ const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
+const GatewayBackup = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/GatewayBackup.vue');
 const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
 const MenderDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderDisambiguation.vue');
 const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
@@ -749,10 +749,6 @@ const routes: Array<RouteConfig> = [
 						path: 'service/:serviceName',
 						props: true,
 					},
-					{
-						component: GatewayBackup,
-						path: 'backup',
-					},
 				]
 			},
 			{
@@ -931,6 +927,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: MaintenanceDisambiguation,
 						path: '',
+					},
+					{
+						component: GatewayBackup,
+						path: 'backup',
 					},
 					{
 						component: PixlaControl,

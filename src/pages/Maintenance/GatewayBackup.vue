@@ -16,70 +16,72 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('gateway.backup.title') }}</h1>
+		<h1>{{ $t('maintenance.backup.title') }}</h1>
 		<CCard>
 			<CCardBody>
 				<CForm @submit.prevent='backup'>
-					<CButton
-						color='primary'
-						size='sm'
-						@click='setAll(true)'
-					>
-						{{ $t('gateway.backup.form.selectAll') }}
-					</CButton> <CButton
-						color='secondary'
-						size='sm'
-						@click='setAll(false)'
-					>
-						{{ $t('gateway.backup.form.deselectAll') }}
-					</CButton>
+					<div class='form-group'>
+						<CButton
+							color='primary'
+							size='sm'
+							@click='setAll(true)'
+						>
+							{{ $t('maintenance.backup.form.selectAll') }}
+						</CButton> <CButton
+							color='secondary'
+							size='sm'
+							@click='setAll(false)'
+						>
+							{{ $t('maintenance.backup.form.deselectAll') }}
+						</CButton>
+					</div>
 					<CRow>
 						<CCol>
-							<h3>{{ $t('gateway.backup.headings.software') }}</h3>
+							<h3>{{ $t('maintenance.backup.headings.software') }}</h3>
 							<CInputCheckbox
 								:checked.sync='migration.software.iqrf'
-								:label='$t("gateway.backup.form.software.iqrf")'
+								:label='$t("maintenance.backup.form.software.iqrf")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("mender")'
 								:checked.sync='migration.software.mender'
-								:label='$t("gateway.backup.form.software.mender")'
+								:label='$t("maintenance.backup.form.software.mender")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("monit")'
 								:checked.sync='migration.software.monit'
-								:label='$t("gateway.backup.form.software.monit")'
+								:label='$t("maintenance.backup.form.software.monit")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("pixla")'
 								:checked.sync='migration.software.pixla'
-								:label='$t("gateway.backup.form.software.pixla")'
+								:label='$t("maintenance.backup.form.software.pixla")'
 							/>
 						</CCol>
 						<CCol>
-							<h3>{{ $t('gateway.backup.headings.system') }}</h3>
+							<h3>{{ $t('maintenance.backup.headings.system') }}</h3>
 							<CInputCheckbox
 								:checked.sync='migration.system.hostname'
-								:label='$t("gateway.backup.form.system.hostname")'
+								:label='$t("maintenance.backup.form.system.hostname")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("networkManager")'
 								:checked.sync='migration.system.network'
-								:label='$t("gateway.backup.form.system.network")'
+								:label='$t("maintenance.backup.form.system.network")'
 							/>
 							<CInputCheckbox
 								:checked.sync='migration.system.time'
-								:label='$t("gateway.backup.form.system.time")'
+								:label='$t("maintenance.backup.form.system.time")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("ntp")'
 								:checked.sync='migration.system.ntp'
-								:label='$t("gateway.backup.form.system.ntp")'
+								:label='$t("maintenance.backup.form.system.ntp")'
 							/>
 							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("systemdJournal")'
 								:checked.sync='migration.system.journal'
-								:label='$t("gateway.backup.form.system.journal")'
+								:label='$t("maintenance.backup.form.system.journal")'
 							/>
 						</CCol>
 					</CRow>
@@ -87,7 +89,7 @@ limitations under the License.
 						color='primary'
 						type='submit'
 					>
-						{{ $t('gateway.backup.form.backup') }}
+						{{ $t('maintenance.backup.form.backup') }}
 					</CButton>
 				</CForm>
 			</CCardBody>
@@ -99,7 +101,7 @@ limitations under the License.
 						<CInputFile
 							ref='backupArchive'
 							accept='.zip'
-							:label='$t("gateway.backup.form.archive")'
+							:label='$t("maintenance.backup.form.archive")'
 							@click='fileInputEmpty'
 							@input='fileInputEmpty'
 						/>
@@ -108,10 +110,10 @@ limitations under the License.
 							:disabled='inputEmpty'
 							@click.prevent='restore'
 						>
-							{{ $t('gateway.backup.form.restore') }}
+							{{ $t('maintenance.backup.form.restore') }}
 						</CButton>
 					</div>
-					<i>{{ $t('gateway.backup.messages.restoreNote') }}</i>
+					<i>{{ $t('maintenance.backup.messages.restoreNote') }}</i>
 				</CForm>
 			</CCardBody>
 		</CCard>
@@ -141,7 +143,7 @@ import {IGwBackup} from '../../interfaces/backup';
 		CRow
 	},
 	metaInfo: {
-		title: 'gateway.backup.title',
+		title: 'maintenance.backup.title',
 	},
 })
 
@@ -192,7 +194,7 @@ export default class GatewayBackup extends Vue {
 	 */
 	private backup(): void {
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('gateway.backup.messages.backup').toString());
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.backup.messages.backup').toString());
 		let params = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
 		GatewayService.backup(params)
 			.then((response: AxiosResponse) => {
@@ -201,7 +203,7 @@ export default class GatewayBackup extends Vue {
 				this.$store.commit('spinner/HIDE');
 				file.click();
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.backup.messages.backupFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.backup.messages.backupFailed'));
 	}
 
 	/**
@@ -238,16 +240,16 @@ export default class GatewayBackup extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('gateway.backup.messages.restore').toString());
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.backup.messages.restore').toString());
 		GatewayService.restore(files[0])
 			.then((response: AxiosResponse) => {
 				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('gateway.backup.messages.restoreSuccess', {time: time}).toString()
+					this.$t('maintenance.backup.messages.restoreSuccess', {time: time}).toString()
 				);
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.backup.messages.restoreFailed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed'));
 	}
 
 	/**

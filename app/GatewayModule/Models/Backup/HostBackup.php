@@ -54,12 +54,19 @@ class HostBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -83,6 +90,7 @@ class HostBackup implements IBackupManager {
 		if (!$zipManager->exist('host/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring gateway host.');
 		$zipManager->extract(self::TMP_PATH, 'host/hostname');
 		$zipManager->extract(self::TMP_PATH, 'host/hosts');
 		$this->fileManager->write('hostname', FileSystem::read(self::TMP_PATH . 'host/hostname'));

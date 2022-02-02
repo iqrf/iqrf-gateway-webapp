@@ -229,12 +229,6 @@ export default class TheSidebar extends Vue {
 								to: '/gateway/power/',
 								roles: ['power', 'normal', 'iqaros'],
 							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('gateway.backup.title'),
-								to: '/gateway/backup/',
-								roles: ['power', 'normal', 'iqaros'],
-							}
 						],
 					},
 					{
@@ -457,6 +451,12 @@ export default class TheSidebar extends Vue {
 						route: '/maintenance/',
 						icon: {content: cilSync},
 						_children: [
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('maintenance.backup.title'),
+								to: '/maintenance/backup/',
+								roles: ['power', 'normal', 'iqaros'],
+							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.pixla.title'),
