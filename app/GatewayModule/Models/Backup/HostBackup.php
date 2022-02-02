@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Host backup manager
  */
-class HostBackup implements IBackupManager {
+class HostBackup {
 
 	/**
 	 * List of whitelisted files
@@ -37,6 +37,8 @@ class HostBackup implements IBackupManager {
 		'hostname',
 		'hosts',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to configuration directory

@@ -27,7 +27,7 @@ use App\GatewayModule\Models\Utils\BackupUtil;
 /**
  * Translator backup manager
  */
-class TranslatorBackup implements IBackupManager {
+class TranslatorBackup {
 
 	/**
 	 * List of whitelisted files

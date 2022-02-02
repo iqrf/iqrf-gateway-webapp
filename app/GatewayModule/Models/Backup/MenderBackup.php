@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Mender backup manager
  */
-class MenderBackup implements IBackupManager {
+class MenderBackup {
 
 	/**
 	 * List of whitelisted files
@@ -45,6 +45,8 @@ class MenderBackup implements IBackupManager {
 		'mender-client',
 		'mender-connect',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to Mender configuration directory

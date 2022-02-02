@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Time backup manager
  */
-class TimeBackup implements IBackupManager {
+class TimeBackup {
 
 	/**
 	 * Whitelisted files
@@ -36,6 +36,8 @@ class TimeBackup implements IBackupManager {
 	public const WHITELIST = [
 		'timezone',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * @var CommandManager Command manager

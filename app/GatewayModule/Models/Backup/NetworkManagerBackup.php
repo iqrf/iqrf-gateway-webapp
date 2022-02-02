@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * NetworkManager backup manager
  */
-class NetworkManagerBackup implements IBackupManager {
+class NetworkManagerBackup {
 
 	/**
 	 * List of whitelisted files
@@ -36,6 +36,8 @@ class NetworkManagerBackup implements IBackupManager {
 	public const WHITELIST = [
 		'NetworkManager.conf',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Service name

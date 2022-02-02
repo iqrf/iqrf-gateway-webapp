@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Monit backup manager
  */
-class MonitBackup implements IBackupManager {
+class MonitBackup {
 
 	/**
 	 * List of whitelisted files
@@ -36,6 +36,8 @@ class MonitBackup implements IBackupManager {
 	public const WHITELIST = [
 		'monitrc',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Service name
