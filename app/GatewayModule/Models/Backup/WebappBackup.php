@@ -26,7 +26,7 @@ use App\CoreModule\Models\ZipArchiveManager;
 /**
  * Webapp backup manager
  */
-class WebappBackup implements IBackupManager {
+class WebappBackup {
 
 	/**
 	 * List of whitelisted webapp files
@@ -47,6 +47,8 @@ class WebappBackup implements IBackupManager {
 		'iqrf-gateway-webapp-iqaros.localhost',
 		'iqrf-gateway-webapp-iqaros-https.localhost',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to Webapp configuration directory

@@ -52,20 +52,14 @@ class DaemonBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 * @param DaemonDirectories $daemonDirectories Daemon directories
 	 */
-	public function __construct(DaemonDirectories $daemonDirectories, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories) {
 		$this->commandManager = $commandManager;
 		$this->daemonDirectories = $daemonDirectories;
 		$this->fileManager = new PrivilegedFileManager($daemonDirectories->getConfigurationDir(), $this->commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
@@ -73,7 +67,7 @@ class DaemonBackup implements IBackupManager {
 	 * @param array<string, array<string, bool>> $params Request parameters
 	 * @param array<string, bool> $services Array of services
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
@@ -84,21 +78,20 @@ class DaemonBackup implements IBackupManager {
 		foreach ($this->fileManager->listFiles() as $file) {
 			$name = substr($file, strlen($dir));
 			if (strlen($name) > 0) {
-				$this->zipManager->addFileFromText('daemon/' . $name, $this->fileManager->read($name));
+				$zipManager->addFileFromText('daemon/' . $name, $this->fileManager->read($name));
 			}
 		}
-		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
-		if ($this->zipManager->exist('daemon/scheduler/schema/')) {
-			$this->zipManager->deleteDirectory('daemon/scheduler/schema');
+		$zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
+		if ($zipManager->exist('daemon/scheduler/schema/')) {
+			$zipManager->deleteDirectory('daemon/scheduler/schema');
 		}
-		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
-		$services[] = self::SERVICE;
+		$zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
 	}
 
 	/**
 	 * Performs Daemon restore
 	 */
-	public function restore(): void {
+	public function restore(ZipArchiveManager $zipManager): void {
 		if (!$this->zipManager->exist('daemon/')) {
 			return;
 		}

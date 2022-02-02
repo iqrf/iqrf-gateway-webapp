@@ -32,6 +32,7 @@ use App\GatewayModule\Models\Backup\ControllerBackup;
 use App\GatewayModule\Models\Backup\DaemonBackup;
 use App\GatewayModule\Models\Backup\GatewayFileBackup;
 use App\GatewayModule\Models\Backup\HostBackup;
+use App\GatewayModule\Models\Backup\IBackupManager;
 use App\GatewayModule\Models\Backup\JournalBackup;
 use App\GatewayModule\Models\Backup\MenderBackup;
 use App\GatewayModule\Models\Backup\MonitBackup;
@@ -68,6 +69,12 @@ class BackupManager {
 		'gwman-client',
 		'ssh',
 	];
+
+
+	/**
+	 * @var IBackupManager[] Backup managers
+	 */
+	private $backupManagers;
 
 	/**
 	 * @var string Path to IQRF Gateway Controller configuration directory
@@ -129,6 +136,7 @@ class BackupManager {
 	 * @param string $controllerConfigDirectory Path to IQRF Gateway Controller configuration directory
 	 * @param string $translatorConfigDirectory Path to IQRF Gateway Translator configuration directory
 	 * @param string $uploaderConfigDirectory Path to IQRF Gateway Uploader configuration directory
+	 * @param IBackupManager[] $backupManagers Backup managers
 	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
@@ -137,11 +145,12 @@ class BackupManager {
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, DaemonDirectories $daemonDirectories, CommandManager $commandManager, FeatureManager $featureManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, array $backupManagers, DaemonDirectories $daemonDirectories, CommandManager $commandManager, FeatureManager $featureManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->daemonDirectories = $daemonDirectories;
 		$this->controllerConfigDirectory = $controllerConfigDirectory;
 		$this->translatorConfigDirectory = $translatorConfigDirectory;
 		$this->uploaderConfigDirectory = $uploaderConfigDirectory;
+		$this->backupManagers = $backupManagers;
 		$this->commandManager = $commandManager;
 		$this->featureManager = $featureManager;
 		$this->powerManager = $powerManager;
@@ -158,24 +167,9 @@ class BackupManager {
 	public function backup(array $params): string {
 		$path = $this->getArchivePath();
 		$this->zipManager = new ZipArchiveManager($path);
-		$managers = [
-			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
-			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
-			new HostBackup($this->commandManager, $this->zipManager),
-			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
-			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
-			new MenderBackup($this->commandManager, $this->zipManager),
-			new MonitBackup($this->commandManager, $this->zipManager),
-			new NetworkManagerBackup($this->commandManager, $this->zipManager),
-			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
-			new TimeBackup($this->commandManager, $this->zipManager),
-			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
-			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
-			new WebappBackup($this->commandManager, $this->zipManager),
-		];
 		$services = [];
-		foreach ($managers as $manager) {
-			$manager->backup($params, $services);
+		foreach ($this->backupManagers as $manager) {
+			$manager->backup($params, $this->zipManager);
 		}
 		$this->backupServices($services);
 		if ($this->zipManager->isEmpty()) {
@@ -195,23 +189,8 @@ class BackupManager {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$this->validate();
 		$this->checkImage();
-		$managers = [
-			new ControllerBackup($this->controllerConfigDirectory, $this->commandManager, $this->zipManager),
-			new DaemonBackup($this->daemonDirectories, $this->commandManager, $this->zipManager),
-			new JournalBackup($this->featureManager->get('systemdJournal')['path'], $this->commandManager, $this->zipManager),
-			new MenderBackup($this->commandManager, $this->zipManager),
-			new MonitBackup($this->commandManager, $this->zipManager),
-			new NetworkManagerBackup($this->commandManager, $this->zipManager),
-			new NtpBackup($this->featureManager->get('ntp')['path'], $this->commandManager, $this->zipManager),
-			new TimeBackup($this->commandManager, $this->zipManager),
-			new TranslatorBackup($this->translatorConfigDirectory, $this->commandManager, $this->zipManager),
-			new UploaderBackup($this->uploaderConfigDirectory, $this->commandManager, $this->zipManager),
-			new WebappBackup($this->commandManager, $this->zipManager),
-			new GatewayFileBackup($this->gwInfo->getProperty('gwId'), $this->gwInfo->getProperty('gwToken'), $this->zipManager),
-			new HostBackup($this->commandManager, $this->zipManager),
-		];
-		foreach ($managers as $manager) {
-			$manager->restore();
+		foreach ($this->backupManagers as $manager) {
+			$manager->restore($this->zipManager);
 		}
 		$this->restoreServices();
 		$this->zipManager->close();

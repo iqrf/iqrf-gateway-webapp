@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
+use App\CoreModule\Models\ZipArchiveManager;
+
 /**
  * Interface for backup managers
  */
@@ -33,13 +35,13 @@ interface IBackupManager {
 	/**
 	 * Performs backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void;
+	public function backup(array $params, ZipArchiveManager $zipManager): void;
 
 	/**
 	 * Performs restore
 	 */
-	public function restore(): void;
+	public function restore(ZipArchiveManager $zipManager): void;
 
 }
