@@ -64,16 +64,23 @@ class JournalBackup implements IBackupManager {
 	private $file;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$path = $featureManager->get('systemdJournal')['path'];
 		$this->path = dirname($path);
 		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -96,6 +103,7 @@ class JournalBackup implements IBackupManager {
 		if (!$zipManager->exist('journal/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring systemd-journal configuration.');
 		$zipManager->extract(self::TMP_PATH, 'journal/journald.conf');
 		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'journal/journald.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'journal');

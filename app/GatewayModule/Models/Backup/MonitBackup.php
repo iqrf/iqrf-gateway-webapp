@@ -58,12 +58,18 @@ class MonitBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -90,6 +96,7 @@ class MonitBackup implements IBackupManager {
 		if (!$zipManager->exist('monit/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring Monit configuration.');
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->write('monitrc', FileSystem::read(self::TMP_PATH . 'monit/monitrc'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'monit', true);

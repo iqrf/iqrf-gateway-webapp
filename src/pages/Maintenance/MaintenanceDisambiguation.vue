@@ -19,6 +19,14 @@ limitations under the License.
 		<h1>{{ $t('maintenance.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
+				<CListGroupItem to='/gateway/backup/'>
+					<header class='list-group-item-heading'>
+						{{ $t('gateway.backup.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('gateway.backup.description') }}
+					</p>
+				</CListGroupItem>
 				<CListGroupItem
 					v-if='$store.getters["features/isEnabled"]("pixla")'
 					to='/maintenance/pixla/'
@@ -61,23 +69,11 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {NavigationGuardNext, Route} from 'vue-router';
-
 @Component({
 	components: {
 		CCard,
 		CListGroup,
 		CListGroupItem,
-	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
-		next((vm: Vue) => {
-			if (!vm.$store.getters['features/isEnabled']('mender') &&
-				!vm.$store.getters['features/isEnabled']('monit') &&
-				!vm.$store.getters['features/isEnabled']('pixla')) {
-				vm.$toast.error(vm.$t('maintenance.disabled').toString());
-				vm.$router.push(from.path);
-			}
-		});
 	},
 	metaInfo: {
 		title: 'maintenance.title',
