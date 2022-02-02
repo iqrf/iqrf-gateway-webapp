@@ -41,6 +41,7 @@ interface IBackupManager {
 
 	/**
 	 * Performs restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void;
 

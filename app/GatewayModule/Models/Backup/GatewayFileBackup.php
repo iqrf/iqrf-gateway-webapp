@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -28,7 +29,7 @@ use Nette\Utils\Strings;
 /**
  * Gateway file backup manager
  */
-class GatewayFileBackup {
+class GatewayFileBackup implements IBackupManager {
 
 	/**
 	 * Gateway files whitelist
@@ -78,38 +79,31 @@ class GatewayFileBackup {
 	private $gwToken;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
-	 * @param string $gwId Gateway ID
-	 * @param string $gwToken Gateway token
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 * @param GatewayInfoUtil $gwInfo Gateway information utility
 	 */
-	public function __construct(string $gwId, string $gwToken, ZipArchiveManager $zipManager) {
-		$this->gwId = Strings::lower($gwId);
-		$this->gwToken = $gwToken;
-		$this->zipManager = $zipManager;
+	public function __construct(GatewayInfoUtil $gwInfo) {
+		$this->gwId = Strings::lower($gwInfo->getProperty('gwId'));
+		$this->gwToken = $gwInfo->getProperty('gwToken');
 	}
 
 	/**
 	 * Performs gateway file backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, ?array &$services = null): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (file_exists(self::CONF_PATH . 'iqrf-gateway.json')) {
-			$this->zipManager->addFile(self::CONF_PATH . 'iqrf-gateway.json', 'gateway/iqrf-gateway.json');
+			$zipManager->addFile(self::CONF_PATH . 'iqrf-gateway.json', 'gateway/iqrf-gateway.json');
 		}
 	}
 
 	/**
 	 * Performs gateway file restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('gateway/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('gateway/')) {
 			return;
 		}
 		if (file_exists(self::MQTT_PATH)) {

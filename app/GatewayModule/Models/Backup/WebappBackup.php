@@ -26,7 +26,7 @@ use App\CoreModule\Models\ZipArchiveManager;
 /**
  * Webapp backup manager
  */
-class WebappBackup {
+class WebappBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted webapp files
@@ -47,8 +47,6 @@ class WebappBackup {
 		'iqrf-gateway-webapp-iqaros.localhost',
 		'iqrf-gateway-webapp-iqaros-https.localhost',
 	];
-
-	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to Webapp configuration directory
@@ -71,46 +69,40 @@ class WebappBackup {
 	private $commandManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Webapp backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, ?array &$services = null): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
-		$this->zipManager->addFile(self::CONF_PATH . 'features.neon', 'webapp/features.neon');
-		$this->zipManager->addFile(self::CONF_PATH . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
-		$this->zipManager->addFile(self::CONF_PATH . 'smtp.neon', 'webapp/smtp.neon');
-		$this->zipManager->addFile(self::DB_PATH . 'database.db', 'webapp/database.db');
-		$this->zipManager->addFolder(self::NGINX_PATH, 'nginx');
+		$zipManager->addFile(self::CONF_PATH . 'features.neon', 'webapp/features.neon');
+		$zipManager->addFile(self::CONF_PATH . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
+		$zipManager->addFile(self::CONF_PATH . 'smtp.neon', 'webapp/smtp.neon');
+		$zipManager->addFile(self::DB_PATH . 'database.db', 'webapp/database.db');
+		$zipManager->addFolder(self::NGINX_PATH, 'nginx');
 	}
 
 	/**
 	 * Performs Webapp restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('webapp/') && !$this->zipManager->exist('nginx/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('webapp/') && !$zipManager->exist('nginx/')) {
 			return;
 		}
-		foreach ($this->zipManager->listFiles() as $file) {
+		foreach ($zipManager->listFiles() as $file) {
 			if (strpos($file, 'nginx/') === 0 || strpos($file, 'webapp/') === 0) {
-				$this->zipManager->extract(self::TMP_PATH, $file);
+				$zipManager->extract(self::TMP_PATH, $file);
 			}
 		}
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::DB_PATH, true);

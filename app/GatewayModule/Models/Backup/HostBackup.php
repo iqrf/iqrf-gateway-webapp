@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Host backup manager
  */
-class HostBackup {
+class HostBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -37,8 +37,6 @@ class HostBackup {
 		'hostname',
 		'hosts',
 	];
-
-	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to configuration directory
@@ -56,43 +54,37 @@ class HostBackup {
 	private $fileManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs host backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, ?array &$services = null): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['system']['hostname']) {
 			return;
 		}
-		$this->zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
-		$this->zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
+		$zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
+		$zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
 	}
 
 	/**
 	 * Performs host restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('host/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('host/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'host/hostname');
-		$this->zipManager->extract(self::TMP_PATH, 'host/hosts');
+		$zipManager->extract(self::TMP_PATH, 'host/hostname');
+		$zipManager->extract(self::TMP_PATH, 'host/hosts');
 		$this->fileManager->write('hostname', FileSystem::read(self::TMP_PATH . 'host/hostname'));
 		$this->fileManager->write('hosts', FileSystem::read(self::TMP_PATH . 'host/hosts'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'host');

@@ -34,7 +34,7 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	private const SERVICE = 'iqrf-gateway-daemon';
+	public const SERVICE = 'iqrf-gateway-daemon';
 
 	/**
 	 * @var CommandManager Command manager
@@ -65,7 +65,7 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * Performs Daemon backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
@@ -90,19 +90,20 @@ class DaemonBackup implements IBackupManager {
 
 	/**
 	 * Performs Daemon restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$this->zipManager->exist('daemon/')) {
+		if (!$zipManager->exist('daemon/')) {
 			return;
 		}
 		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir(), $this->daemonDirectories->getDataDir() . '/DB/']);
-		foreach ($this->zipManager->listFiles() as $file) {
+		foreach ($zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {
-				$this->zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
+				$zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
 			} elseif (strpos($file, 'daemon/DB/') === 0) {
-				$this->zipManager->extract($this->daemonDirectories->getDataDir() . '/DB/', $file);
+				$zipManager->extract($this->daemonDirectories->getDataDir() . '/DB/', $file);
 			} elseif (strpos($file, 'daemon/') === 0) {
-				$this->zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
+				$zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . 'DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . 'DB', true);

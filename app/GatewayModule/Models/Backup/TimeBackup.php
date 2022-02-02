@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Time backup manager
  */
-class TimeBackup {
+class TimeBackup implements IBackupManager {
 
 	/**
 	 * Whitelisted files
@@ -36,8 +36,6 @@ class TimeBackup {
 	public const WHITELIST = [
 		'timezone',
 	];
-
-	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -50,42 +48,37 @@ class TimeBackup {
 	private $timeManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 * @param TimeManager $timeManager Time manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager, TimeManager $timeManager) {
 		$this->commandManager = $commandManager;
-		$this->timeManager = new TimeManager($this->commandManager);
-		$this->zipManager = $zipManager;
+		$this->timeManager = $timeManager;
 	}
 
 	/**
 	 * Performs time backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['system']['time']) {
 			return;
 		}
 		$timezone = $this->timeManager->getStatus()['Timezone'];
-		$this->zipManager->addFileFromText('time/timezone', $timezone);
+		$zipManager->addFileFromText('time/timezone', $timezone);
 	}
 
 	/**
 	 * Performs time restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('time/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('time/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'time/timezone');
+		$zipManager->extract(self::TMP_PATH, 'time/timezone');
 		$this->timeManager->setTimezone(FileSystem::read(self::TMP_PATH . 'time/timezone'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'time');
 	}

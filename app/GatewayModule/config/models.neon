@@ -16,7 +16,32 @@
 services:
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%controller.configDir%, @commandManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup(@commandManager)
-	- App\GatewayModule\Models\BackupManager(%controller.configDir%, %translator.configDir%, %uploader.configDir%, [@controllerBackup])
+	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
+	hostBackup: App\GatewayModule\Models\Backup\HostBackup(@commandManager)
+	journalBackup: App\GatewayModule\Models\Backup\JournalBackup(@commandManager)
+	menderBackup: App\GatewayModule\Models\Backup\MenderBackup(@commandManager)
+	monitBackup: App\GatewayModule\Models\Backup\MonitBackup(@commandManager)
+	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup(@commandManager)
+	ntpBackup: App\GatewayModule\Models\Backup\NtpBackup(@commandManager)
+	timeBackup: App\GatewayModule\Models\Backup\TimeBackup(@commandManager)
+	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%, @commandManager)
+	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%, @commandManager)
+	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(@commandManager)
+	- App\GatewayModule\Models\BackupManager([
+		@controllerBackup,
+		@daemonBackup,
+		@hostBackup,
+		@journalBackup,
+		@menderBackup,
+		@monitBackup,
+		@networkManagerBackup,
+		@ntpBackup,
+		@timeBackup,
+		@translatorBackup,
+		@uploaderBackup,
+		@webappBackup,
+		@gatewayFileBackup
+	])
 	certificateFileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
 		autowired: false

@@ -42,7 +42,7 @@ class ControllerBackup implements IBackupManager {
 	public const SERVICE = 'iqrf-gateway-controller';
 
 	/**
-	 * @var string Path to Controller configuration directory;
+	 * @var string Path to controller configuration directory;
 	 */
 	private $path;
 
@@ -53,6 +53,7 @@ class ControllerBackup implements IBackupManager {
 
 	/**
 	 * Constructor
+	 * @param string $path Path to controller configuration directory
 	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct(string $path, CommandManager $commandManager) {

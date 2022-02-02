@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * NetworkManager backup manager
  */
-class NetworkManagerBackup {
+class NetworkManagerBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -36,8 +36,6 @@ class NetworkManagerBackup {
 	public const WHITELIST = [
 		'NetworkManager.conf',
 	];
-
-	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Service name
@@ -60,52 +58,45 @@ class NetworkManagerBackup {
 	private $fileManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs NetworkManager backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['system']['network']) {
 			return;
 		}
-		$this->zipManager->addFile(self::CONF_PATH . 'NetworkManager.conf', 'nm/NetworkManager.conf');
-		$this->zipManager->addEmptyFolder('nm/system-connections');
+		$zipManager->addFile(self::CONF_PATH . 'NetworkManager.conf', 'nm/NetworkManager.conf');
+		$zipManager->addEmptyFolder('nm/system-connections');
 		$files = $this->fileManager->listFiles();
 		foreach ($files as $file) {
 			if (strpos($file, DIRECTORY_SEPARATOR . 'system-connections' . DIRECTORY_SEPARATOR) !== false) {
 				$name = basename($file);
-				$this->zipManager->addFileFromText('nm/system-connections/' . $name, $this->fileManager->read('system-connections/' . $name));
+				$zipManager->addFileFromText('nm/system-connections/' . $name, $this->fileManager->read('system-connections/' . $name));
 			}
 		}
-		$services[] = self::SERVICE;
 	}
 
 	/**
 	 * Performs NetworkManager restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('nm/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('nm/')) {
 			return;
 		}
-		foreach ($this->zipManager->listFiles() as $file) {
+		foreach ($zipManager->listFiles() as $file) {
 			if (strpos($file, 'nm/') === 0) {
-				$this->zipManager->extract(self::TMP_PATH, $file);
+				$zipManager->extract(self::TMP_PATH, $file);
 				if (strpos($file, 'system-connections/') !== false) {
 					$this->fileManager->write('system-connections/' . basename($file), FileSystem::read(self::TMP_PATH . $file));
 				} else {
