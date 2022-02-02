@@ -59,7 +59,7 @@ trait TRepositories {
 	}
 
 	/**
-	 * Returns the IQRF OS pach repository
+	 * Returns the IQRF OS patch repository
 	 * @return IqrfOsPatchRepository IQRF OS patch repository
 	 */
 	public function getIqrfOsPatchRepository(): IqrfOsPatchRepository {
@@ -107,40 +107,40 @@ trait TRepositories {
 	}
 
 	/**
-	 * Returns the wireguard interface ipv4 repository
-	 * @return WireguardInterfaceIpv4Repository Wireguard interface ipv6 repository
+	 * Returns the WireGuard interface IPv4 repository
+	 * @return WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
 	public function getWireguardInterfaceIpv4Repository(): WireguardInterfaceIpv4Repository {
 		return $this->getRepository(WireguardInterfaceIpv4::class);
 	}
 
 	/**
-	 * Returns the wireguard interface ipv6 repository
-	 * @return WireguardInterfaceIpv6Repository Wireguard interface ipv4 repository
+	 * Returns the WireGuard interface IPv6 repository
+	 * @return WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
 	public function getWireguardInterfaceIpv6Repository(): WireguardInterfaceIpv6Repository {
 		return $this->getRepository(WireguardInterfaceIpv6::class);
 	}
 
 	/**
-	 * Returns the wireguard interface repository
-	 * @return WireguardInterfaceRepository Wireguard interface repository
+	 * Returns the WireGuard interface repository
+	 * @return WireguardInterfaceRepository WireGuard interface repository
 	 */
 	public function getWireguardInterfaceRepository(): WireguardInterfaceRepository {
 		return $this->getRepository(WireguardInterface::class);
 	}
 
 	/**
-	 * Returns the wireguard peer repository
-	 * @return WireguardPeerRepository Wireguard peer repository
+	 * Returns the WireGuard peer repository
+	 * @return WireguardPeerRepository WireGuard peer repository
 	 */
 	public function getWireguardPeerRepository(): WireguardPeerRepository {
 		return $this->getRepository(WireguardPeer::class);
 	}
 
 	/**
-	 * Returns the wireguard peer repository
-	 * @return WireguardPeerAddressRepository Wireguard peer repository
+	 * Returns the WireGuard peer address repository
+	 * @return WireguardPeerAddressRepository WireGuard peer address repository
 	 */
 	public function getWireguardPeerAddressRepository(): WireguardPeerAddressRepository {
 		return $this->getRepository(WireguardPeerAddress::class);
