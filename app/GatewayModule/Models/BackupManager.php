@@ -25,11 +25,9 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Exceptions\ZipEmptyException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Models\Backup\ControllerBackup;
-use App\GatewayModule\Models\Backup\DaemonBackup;
 use App\GatewayModule\Models\Backup\GatewayFileBackup;
 use App\GatewayModule\Models\Backup\HostBackup;
 use App\GatewayModule\Models\Backup\IBackupManager;
@@ -70,41 +68,15 @@ class BackupManager {
 		'ssh',
 	];
 
-
 	/**
-	 * @var IBackupManager[] Backup managers
+	 * @var array<IBackupManager> Backup managers
 	 */
 	private $backupManagers;
-
-	/**
-	 * @var string Path to IQRF Gateway Controller configuration directory
-	 */
-	private $controllerConfigDirectory;
-
-	/**
-	 * @var string Path to IQRF Gateway Translator configuration directory
-	 */
-	private $translatorConfigDirectory;
-
-	/**
-	 * @var string Path to IQRF Gateway Uploader configuration directory
-	 */
-	private $uploaderConfigDirectory;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
-
-	/**
-	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
-	 */
-	private $daemonDirectories;
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private $featureManager;
 
 	/**
 	 * @var GatewayInfoUtil Gateway info manager
@@ -133,26 +105,16 @@ class BackupManager {
 
 	/**
 	 * Constructor
-	 * @param string $controllerConfigDirectory Path to IQRF Gateway Controller configuration directory
-	 * @param string $translatorConfigDirectory Path to IQRF Gateway Translator configuration directory
-	 * @param string $uploaderConfigDirectory Path to IQRF Gateway Uploader configuration directory
-	 * @param IBackupManager[] $backupManagers Backup managers
-	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
+	 * @param array<IBackupManager> $backupManagers Backup managers
 	 * @param CommandManager $commandManager Command manager
-	 * @param FeatureManager $featureManager Feature manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(string $controllerConfigDirectory, string $translatorConfigDirectory, string $uploaderConfigDirectory, array $backupManagers, DaemonDirectories $daemonDirectories, CommandManager $commandManager, FeatureManager $featureManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
-		$this->daemonDirectories = $daemonDirectories;
-		$this->controllerConfigDirectory = $controllerConfigDirectory;
-		$this->translatorConfigDirectory = $translatorConfigDirectory;
-		$this->uploaderConfigDirectory = $uploaderConfigDirectory;
+	public function __construct(array $backupManagers, CommandManager $commandManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->backupManagers = $backupManagers;
 		$this->commandManager = $commandManager;
-		$this->featureManager = $featureManager;
 		$this->powerManager = $powerManager;
 		$this->schemaManager = $schemaManager;
 		$this->serviceManager = $serviceManager;
@@ -170,6 +132,14 @@ class BackupManager {
 		$services = [];
 		foreach ($this->backupManagers as $manager) {
 			$manager->backup($params, $this->zipManager);
+			if (defined(get_class($manager) . '::SERVICE')) {
+				$classService = get_class($manager)::SERVICE;
+				if (is_array($classService)) {
+					$services = array_merge($services, $classService);
+				} else {
+					$services[] = $classService;
+				}
+			}
 		}
 		$this->backupServices($services);
 		if ($this->zipManager->isEmpty()) {

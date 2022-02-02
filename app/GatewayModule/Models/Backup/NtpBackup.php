@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
@@ -28,7 +29,7 @@ use Nette\Utils\FileSystem;
 /**
  * NTP backup manager
  */
-class NtpBackup {
+class NtpBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -37,12 +38,10 @@ class NtpBackup {
 		'timesyncd.conf',
 	];
 
-	public const TMP_PATH = '/tmp/backup/';
-
 	/**
 	 * Service name
 	 */
-	private const SERVICE = 'systemd-timesyncd';
+	public const SERVICE = 'systemd-timesyncd';
 
 	/**
 	 * @var CommandManager Command manager
@@ -65,45 +64,39 @@ class NtpBackup {
 	private $file;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
-	 * @param string $path Path to NTP configuration directory
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
 		$this->commandManager = $commandManager;
+		$path = $featureManager->get('ntp')['path'];
 		$this->path = dirname($path);
 		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs NTP backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['system']['ntp']) {
 			return;
 		}
-		$this->zipManager->addFile($this->path . '/' . $this->file, 'ntp/timesyncd.conf');
-		$services[] = self::SERVICE;
+		$zipManager->addFile($this->path . '/' . $this->file, 'ntp/timesyncd.conf');
 	}
 
 	/**
 	 * Performs NTP restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('ntp/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('ntp/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
+		$zipManager->extract(self::TMP_PATH, 'ntp/timesyncd.conf');
 		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'ntp/timesyncd.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'ntp');
 	}
