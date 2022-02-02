@@ -39,7 +39,7 @@ class ControllerBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	private const SERVICE = 'iqrf-gateway-controller';
+	public const SERVICE = 'iqrf-gateway-controller';
 
 	/**
 	 * @var string Path to Controller configuration directory;
@@ -52,45 +52,38 @@ class ControllerBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(string $path, CommandManager $commandManager) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Controller backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
 		if (file_exists($this->path)) {
-			$this->zipManager->addFolder($this->path, 'controller');
+			$zipManager->addFolder($this->path, 'controller');
 		}
-		$services[] = self::SERVICE;
 	}
 
 	/**
 	 * Performs Controller restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('controller/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('controller/')) {
 			return;
 		}
 		BackupUtil::recreateDirectories([$this->path]);
-		$this->zipManager->extract($this->path, 'controller/config.json');
+		$zipManager->extract($this->path, 'controller/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);
 		$this->commandManager->run('rm -rf ' . $this->path . 'controller', true);
 	}

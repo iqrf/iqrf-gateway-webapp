@@ -27,7 +27,7 @@ use App\GatewayModule\Models\Utils\BackupUtil;
 /**
  * Uploader backup manager
  */
-class UploaderBackup implements IBackupManager {
+class UploaderBackup {
 
 	/**
 	 * List of whitelisted files
@@ -35,6 +35,8 @@ class UploaderBackup implements IBackupManager {
 	public const WHITELIST = [
 		'config.json',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * @var string Path to Uploader configuration directory

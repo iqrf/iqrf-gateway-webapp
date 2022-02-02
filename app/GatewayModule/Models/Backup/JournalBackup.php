@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Systemd journal backup manager
  */
-class JournalBackup implements IBackupManager {
+class JournalBackup {
 
 	/**
 	 * Whitelisted files
@@ -36,6 +36,8 @@ class JournalBackup implements IBackupManager {
 	public const WHITELIST = [
 		'journald.conf',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Service name

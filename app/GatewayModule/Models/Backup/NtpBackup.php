@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * NTP backup manager
  */
-class NtpBackup implements IBackupManager {
+class NtpBackup {
 
 	/**
 	 * List of whitelisted files
@@ -36,6 +36,8 @@ class NtpBackup implements IBackupManager {
 	public const WHITELIST = [
 		'timesyncd.conf',
 	];
+
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Service name

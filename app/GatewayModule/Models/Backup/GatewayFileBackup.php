@@ -28,7 +28,7 @@ use Nette\Utils\Strings;
 /**
  * Gateway file backup manager
  */
-class GatewayFileBackup implements IBackupManager {
+class GatewayFileBackup {
 
 	/**
 	 * Gateway files whitelist
