@@ -27,7 +27,7 @@ use App\GatewayModule\Models\Utils\BackupUtil;
 /**
  * Uploader backup manager
  */
-class UploaderBackup {
+class UploaderBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -36,10 +36,8 @@ class UploaderBackup {
 		'config.json',
 	];
 
-	public const TMP_PATH = '/tmp/backup/';
-
 	/**
-	 * @var string Path to Uploader configuration directory
+	 * @var string Path to uploader configuration directory
 	 */
 	private $path;
 
@@ -49,44 +47,39 @@ class UploaderBackup {
 	private $commandManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
+	 * @param string $path Path to uploader configuration directory
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(string $path, CommandManager $commandManager) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Uploader backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, ?array &$services = null): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
 		if (file_exists($this->path)) {
-			$this->zipManager->addFolder($this->path, 'uploader');
+			$zipManager->addFolder($this->path, 'uploader');
 		}
 	}
 
 	/**
 	 * Performs Uploader restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('uploader/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('uploader/')) {
 			return;
 		}
 		BackupUtil::recreateDirectories([$this->path]);
-		$this->zipManager->extract($this->path, 'uploader/config.json');
+		$zipManager->extract($this->path, 'uploader/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'uploader/config.json ' . $this->path . 'config.json', true);
 		$this->commandManager->run('rm -rf ' . $this->path . 'uploader', true);
 	}

@@ -27,7 +27,7 @@ use App\GatewayModule\Models\Utils\BackupUtil;
 /**
  * Translator backup manager
  */
-class TranslatorBackup {
+class TranslatorBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -39,10 +39,10 @@ class TranslatorBackup {
 	/**
 	 * Service name
 	 */
-	private const SERVICE = 'iqrf-gateway-translator';
+	public const SERVICE = 'iqrf-gateway-translator';
 
 	/**
-	 * @var string Path to Translator configuration directory
+	 * @var string Path to translator configuration directory
 	 */
 	private $path;
 
@@ -52,45 +52,39 @@ class TranslatorBackup {
 	private $commandManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
+	 * @param string $path Path to translator configuration directory
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(string $path, CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(string $path, CommandManager $commandManager) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Translator backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
 		if (file_exists($this->path)) {
-			$this->zipManager->addFolder($this->path, 'translator');
+			$zipManager->addFolder($this->path, 'translator');
 		}
-		$services[] = self::SERVICE;
 	}
 
 	/**
-	 * Performs Translator restore
+	 * Performs Translator restore3
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('translator/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('translator/')) {
 			return;
 		}
 		BackupUtil::recreateDirectories([$this->path]);
-		$this->zipManager->extract($this->path, 'translator/config.json');
+		$zipManager->extract($this->path, 'translator/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'translator/config.json ' . $this->path . 'config.json', true);
 		$this->commandManager->run('rm -rf ' . $this->path . 'translator', true);
 	}

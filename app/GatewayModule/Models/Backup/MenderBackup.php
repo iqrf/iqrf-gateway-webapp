@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Mender backup manager
  */
-class MenderBackup {
+class MenderBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -41,12 +41,10 @@ class MenderBackup {
 	/**
 	 * Service names
 	 */
-	private const SERVICES = [
+	public const SERVICE = [
 		'mender-client',
 		'mender-connect',
 	];
-
-	public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Path to Mender configuration directory
@@ -64,44 +62,37 @@ class MenderBackup {
 	private $fileManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Mender backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['mender']) {
 			return;
 		}
-		$this->zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
-		$this->zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
-		$services = array_merge($services, self::SERVICES);
+		$zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
+		$zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
 	}
 
 	/**
 	 * Performs Mender restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('mender/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('mender/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
-		$this->zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
+		$zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
+		$zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
 		$this->fileManager->write('mender.conf', FileSystem::read(self::TMP_PATH . 'mender/mender.conf'));
 		$this->fileManager->write('mender-connect.conf', FileSystem::read(self::TMP_PATH . 'mender/mender-connect.conf'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'mender');

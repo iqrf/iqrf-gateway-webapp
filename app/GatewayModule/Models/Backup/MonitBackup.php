@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Monit backup manager
  */
-class MonitBackup {
+class MonitBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -37,12 +37,10 @@ class MonitBackup {
 		'monitrc',
 	];
 
-	public const TMP_PATH = '/tmp/backup/';
-
 	/**
 	 * Service name
 	 */
-	private const SERVICE = 'monit';
+	public const SERVICE = 'monit';
 
 	/**
 	 * Path to Monit configuration directory
@@ -60,43 +58,39 @@ class MonitBackup {
 	private $fileManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
-	 */
-	private $zipManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function __construct(CommandManager $commandManager, ZipArchiveManager $zipManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->zipManager = $zipManager;
 	}
 
 	/**
 	 * Performs Monit backup
 	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param array<string, bool> $services Array of services
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function backup(array $params, array &$services): void {
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
 		if (!$params['software']['monit']) {
 			return;
 		}
-		$this->zipManager->addEmptyFolder('monit');
-		$this->zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
-		$services[] = self::SERVICE;
+		if (!file_exists(self::CONF_PATH)) {
+			return;
+		}
+		$zipManager->addEmptyFolder('monit');
+		$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
 	}
 
 	/**
 	 * Performs Monit restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function restore(): void {
-		if (!$this->zipManager->exist('monit/')) {
+	public function restore(ZipArchiveManager $zipManager): void {
+		if (!$zipManager->exist('monit/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'monit/monitrc');
+		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->write('monitrc', FileSystem::read(self::TMP_PATH . 'monit/monitrc'));
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'monit', true);
 		$this->fixMetadata();
