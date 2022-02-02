@@ -62,12 +62,19 @@ class MenderBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -91,6 +98,7 @@ class MenderBackup implements IBackupManager {
 		if (!$zipManager->exist('mender/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring Mender configuration.');
 		$zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
 		$zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
 		$this->fileManager->write('mender.conf', FileSystem::read(self::TMP_PATH . 'mender/mender.conf'));

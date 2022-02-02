@@ -52,13 +52,20 @@ class ControllerBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param string $path Path to controller configuration directory
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager) {
+	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -83,6 +90,7 @@ class ControllerBackup implements IBackupManager {
 		if (!$zipManager->exist('controller/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring IQRF Gateway Controller configuration.');
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'controller/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);

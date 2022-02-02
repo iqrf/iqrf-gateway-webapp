@@ -58,12 +58,19 @@ class NetworkManagerBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -94,6 +101,7 @@ class NetworkManagerBackup implements IBackupManager {
 		if (!$zipManager->exist('nm/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring NetworkManager configuration and connection profiles.');
 		foreach ($zipManager->listFiles() as $file) {
 			if (strpos($file, 'nm/') === 0) {
 				$zipManager->extract(self::TMP_PATH, $file);
@@ -104,8 +112,8 @@ class NetworkManagerBackup implements IBackupManager {
 				}
 			}
 		}
-		$this->setPermissions();
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nm');
+		$this->setPermissions();
 	}
 
 	/**

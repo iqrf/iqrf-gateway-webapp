@@ -47,13 +47,20 @@ class UploaderBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param string $path Path to uploader configuration directory
 	 * @param CommandManager $commandManager Command manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager) {
+	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -78,6 +85,7 @@ class UploaderBackup implements IBackupManager {
 		if (!$zipManager->exist('uploader/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring IQRF Gateway Uploader configuration.');
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'uploader/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'uploader/config.json ' . $this->path . 'config.json', true);

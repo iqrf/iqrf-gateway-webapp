@@ -52,14 +52,21 @@ class DaemonBackup implements IBackupManager {
 	private $fileManager;
 
 	/**
+	 * @var RestoreLogger Restore logger
+	 */
+	private $restoreLogger;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param DaemonDirectories $daemonDirectories Daemon directories
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories) {
+	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->daemonDirectories = $daemonDirectories;
 		$this->fileManager = new PrivilegedFileManager($daemonDirectories->getConfigurationDir(), $this->commandManager);
+		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**
@@ -96,6 +103,7 @@ class DaemonBackup implements IBackupManager {
 		if (!$zipManager->exist('daemon/')) {
 			return;
 		}
+		$this->restoreLogger->log('Restoring IQRF Gateway Daemon configuration, scheduler and database.');
 		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir(), $this->daemonDirectories->getDataDir() . '/DB/']);
 		foreach ($zipManager->listFiles() as $file) {
 			if (strpos($file, 'daemon/scheduler/') === 0) {

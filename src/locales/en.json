@@ -1388,42 +1388,6 @@
 		},
 		"errors": {
 			"log-read": "Cannot read log file."
-		},
-		"backup": {
-			"title": "Backup & Restore",
-			"description": "Gateway backup and restore management.",
-			"headings": {
-				"software": "Software configuration",
-				"system": "System configuration"
-			},
-			"form": {
-				"software": {
-					"iqrf": "IQRF Software",
-					"mender": "Mender",
-					"monit": "Monit",
-					"pixla": "PIXLA"
-				},
-				"system": {
-					"hostname": "Hostname",
-					"network": "Network manager",
-					"time": "Timezone",
-					"ntp": "NTP",
-					"journal": "Journal"
-				},
-				"selectAll": "Select all",
-				"deselectAll": "Deselect all",
-				"archive": "Archive to restore from",
-				"backup": "Backup",
-				"restore": "Restore"
-			},
-			"messages": {
-				"backup": "Gateway backup in progress.",
-				"restore": "Restoring gateway configuration from backup archive.",
-				"restoreNote": "Gateway will be restarted at the end of the restore process.",
-				"backupFailed": "Failed to create gateway backup archive: {error}",
-				"restoreFailed": "Failed to restore gateway: {error}",
-				"restoreSuccess": "Gateway successfully restored from backup archive and will reboot at {time}."
-			}
 		}
 	},
 	"iqrfnet": {
@@ -2707,6 +2671,42 @@
 			},
 			"errors": {
 				"token": "Please enter PIXLA platform token."
+			}
+		},
+		"backup": {
+			"title": "Backup & Restore",
+			"description": "Gateway backup and restore management.",
+			"headings": {
+				"software": "Software configuration",
+				"system": "System configuration"
+			},
+			"form": {
+				"software": {
+					"iqrf": "IQRF Gateway Software",
+					"mender": "Mender client",
+					"monit": "Monit client",
+					"pixla": "PIXLA client"
+				},
+				"system": {
+					"hostname": "Hostname",
+					"network": "Network manager",
+					"time": "Timezone",
+					"ntp": "NTP",
+					"journal": "Journal"
+				},
+				"selectAll": "Select all",
+				"deselectAll": "Deselect all",
+				"archive": "Archive to restore from",
+				"backup": "Backup",
+				"restore": "Restore"
+			},
+			"messages": {
+				"backup": "Gateway backup in progress.",
+				"restore": "Restoring gateway configuration from backup archive.",
+				"restoreNote": "Gateway will be restarted at the end of the restore process.",
+				"backupFailed": "Failed to create gateway backup archive: {error}",
+				"restoreFailed": "Failed to restore gateway: {error}",
+				"restoreSuccess": "Gateway successfully restored from backup archive and will reboot at {time}."
 			}
 		},
 		"mender": {

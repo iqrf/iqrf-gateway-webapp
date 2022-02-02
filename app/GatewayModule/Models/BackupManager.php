@@ -105,7 +105,7 @@ class BackupManager {
 
 	/**
 	 * Constructor
-	 * @param array<IBackupManager> $backupManagers Backup managers
+	 * @param Array<IBackupManager> $backupManagers Backup managers
 	 * @param CommandManager $commandManager Command manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager

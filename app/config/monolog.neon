@@ -33,3 +33,12 @@ monolog:
 			processors:
 				- Monolog\Processor\MemoryPeakUsageProcessor()
 				- Monolog\Processor\WebProcessor()
+		restore:
+			handlers:
+				-
+					type: Monolog\Handler\StreamHandler
+					arguments:
+						- %logDir%/iqrf-gateway-webapp/restore.log
+						- Monolog\Logger::NOTICE
+	manager:
+		enabled: true
