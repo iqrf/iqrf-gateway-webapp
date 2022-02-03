@@ -22,6 +22,7 @@ namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\SshManager;
 
 /**
  * Webapp backup manager
@@ -69,6 +70,11 @@ class WebappBackup implements IBackupManager {
 	private $commandManager;
 
 	/**
+	 * @var SshManager SSH manager
+	 */
+	private $sshManager;
+
+	/**
 	 * @var RestoreLogger Restore logger
 	 */
 	private $restoreLogger;
@@ -76,10 +82,12 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param SshManager $sshManager SSH manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(CommandManager $commandManager, SshManager $sshManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
+		$this->sshManager = $sshManager;
 		$this->restoreLogger = $restoreLogger;
 	}
 
@@ -119,6 +127,7 @@ class WebappBackup implements IBackupManager {
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'webapp', true);
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_PATH, true);
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nginx', true);
+		$this->sshManager->updateKeysFile();
 	}
 
 }

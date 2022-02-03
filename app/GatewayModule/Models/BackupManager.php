@@ -65,7 +65,7 @@ class BackupManager {
 	 */
 	private const SERVICES = [
 		'gwman-client',
-		'ssh',
+		'ssh'
 	];
 
 	/**

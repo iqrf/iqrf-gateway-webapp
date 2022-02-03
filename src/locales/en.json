@@ -2690,8 +2690,7 @@
 				"system": {
 					"hostname": "Hostname",
 					"network": "Network manager",
-					"time": "Timezone",
-					"ntp": "NTP",
+					"time": "Time synchronization",
 					"journal": "Journal"
 				},
 				"selectAll": "Select all",
