@@ -188,7 +188,7 @@ class SshManager {
 	 * Updates the authorized keys file based on the contents of the database
 	 * @throws SshDirectoryException
 	 */
-	private function updateKeysFile(): void {
+	public function updateKeysFile(): void {
 		$this->checkSshDirectory();
 		$keys = $this->sshKeyRepository->findAll();
 		$content = implode(PHP_EOL, array_map(function (SshKey $key): string {

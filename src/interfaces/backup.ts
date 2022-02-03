@@ -70,14 +70,9 @@ export interface IGwBackupSystem {
 	network: boolean
 
 	/**
-	 * Timezone
+	 * Timezone and NTP configuration
 	 */
 	time: boolean
-
-	/**
-	 * NTP/Timesync
-	 */
-	ntp: boolean
 
 	/**
 	 * Systemd journal

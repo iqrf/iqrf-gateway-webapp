@@ -74,11 +74,6 @@ limitations under the License.
 								:label='$t("maintenance.backup.form.system.time")'
 							/>
 							<CInputCheckbox
-								v-if='$store.getters["features/isEnabled"]("ntp")'
-								:checked.sync='migration.system.ntp'
-								:label='$t("maintenance.backup.form.system.ntp")'
-							/>
-							<CInputCheckbox
 								v-if='$store.getters["features/isEnabled"]("systemdJournal")'
 								:checked.sync='migration.system.journal'
 								:label='$t("maintenance.backup.form.system.journal")'
@@ -166,7 +161,6 @@ export default class GatewayBackup extends Vue {
 			hostname: false,
 			network: false,
 			time: false,
-			ntp: false,
 			journal: false,
 		},
 	}
@@ -221,9 +215,6 @@ export default class GatewayBackup extends Vue {
 		}
 		if (!this.$store.getters['features/isEnabled']('networkManager')) {
 			params.system.network = false;
-		}
-		if (!this.$store.getters['features/isEnabled']('ntp')) {
-			params.system.ntp = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('systemdJournal')) {
 			params.system.journal = false;
