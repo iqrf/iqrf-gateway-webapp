@@ -57,7 +57,6 @@
 				"hostname",
 				"network",
 				"time",
-				"ntp",
 				"journal"
 			],
 			"additionalProperties": false,
@@ -77,13 +76,7 @@
 				"time": {
 					"$id": "#/properties/system/time",
 					"title": "Time",
-					"description": "Timezone configuration.",
-					"type": "boolean"
-				},
-				"ntp": {
-					"$id": "#/properties/system/ntp",
-					"title": "NTP",
-					"description": "Network time protocol configuration.",
+					"description": "Timezone and NTP configuration.",
 					"type": "boolean"
 				},
 				"journal": {
