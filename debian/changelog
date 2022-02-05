@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.4.2~alpha~1.gbp815f7e) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @815f7e14e2c02aded07b73f73f1ddf967b65025f **
+
+  * UNRELEASED
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 05 Feb 2022 14:53:55 +0100
+
 iqrf-gateway-webapp (2.4.1) stable; urgency=medium
 
   [ Roman Ondráček ]
