@@ -1,10 +1,20 @@
-iqrf-gateway-webapp (2.4.1~alpha~1.gbp935e32) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.1) stable; urgency=medium
 
-  ** SNAPSHOT build @935e322ac4754c2f2a1295f1f162119cec16c845 **
+  [ Roman Ondráček ]
+  * Prepare for version 2.4.1-alpha
+  * Composer: update dependencies
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * Makefile: include nginx configuration in install job
+  * phpstan: ignore false missing method error
 
- -- Roman Ondráček <roman@romanondracek.cz>  Sun, 19 Dec 2021 20:55:00 +0100
+  [ Roman Ondráček ]
+  * Doctrine: fix PHPStan issues
+
+  [ Karel Hanák ]
+  * api: added I2C pins to controller configuration jsonschema
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 05 Feb 2022 14:45:54 +0100
 
 iqrf-gateway-webapp (2.4.0) testing; urgency=medium
 
