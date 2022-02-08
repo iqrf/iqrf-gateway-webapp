@@ -110,11 +110,9 @@ export default class JsonMessage extends Vue {
 </script>
 
 <style scoped>
-
 .message-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
-
 </style>

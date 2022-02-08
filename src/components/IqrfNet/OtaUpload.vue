@@ -761,11 +761,9 @@ export default class OtaUpload extends Vue {
 </script>
 
 <style scoped>
-
 .step-check {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
-
 </style>

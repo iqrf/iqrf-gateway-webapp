@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
 			<div class='form-group'>
-				<CRow style='margin-bottom: 1.25rem'>
+				<CRow style='margin-bottom: 1.25rem;'>
 					<CCol>
 						<b>
 							{{ $t('gateway.info.gwMode') }}
@@ -52,7 +52,7 @@ limitations under the License.
 				v-if='ideConfiguration !== null'
 				class='form-group'
 			>
-				<CRow style='margin-bottom: 1.25rem'>
+				<CRow style='margin-bottom: 1.25rem;'>
 					<CCol>
 						<b>
 							{{ $t('gateway.mode.startupMode') }}

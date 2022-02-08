@@ -401,10 +401,8 @@ export default class WebsocketInterfaceList extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }
-
 </style>
 

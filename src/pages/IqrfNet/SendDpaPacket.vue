@@ -46,7 +46,7 @@ limitations under the License.
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 									:disabled='addressOverwrite'
-									style='float: left; width: 25%'
+									class='dpa-section'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -64,7 +64,7 @@ limitations under the License.
 									:label='$t("iqrfnet.sendPacket.form.pnum")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
-									style='float: left; width: 25%'
+									class='dpa-section'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -82,7 +82,7 @@ limitations under the License.
 									:label='$t("iqrfnet.sendPacket.form.pcmd")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
-									style='float: left; width: 25%'
+									class='dpa-section'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -100,7 +100,7 @@ limitations under the License.
 									:label='$t("iqrfnet.sendPacket.form.hwpid")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
-									style='float: left; width: 25%'
+									class='dpa-section'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -583,3 +583,10 @@ export default class SendDpaPacket extends Vue {
 	}
 }
 </script>
+
+<style lang='scss'>
+.dpa-section {
+	float: left;
+	width: 25%;
+}
+</style>

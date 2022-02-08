@@ -645,7 +645,8 @@ export default class TheSidebar extends Vue {
 </script>
 
 <style lang='scss'>
-.c-sidebar-brand-full, .c-sidebar-brand-minimized {
+.c-sidebar-brand-full,
+.c-sidebar-brand-minimized {
 	max-width: 85%;
 	max-height: 85%;
 }

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<table 
+	<table
 		v-if='!$store.getters["sidebar/isMinimized"]'
 		class='table'
 	>
@@ -140,14 +140,12 @@ table {
 .item {
 	border-top: 0;
 	text-align: left;
-	padding: 0;
-	padding-left: 1.25rem;
+	padding: 0 0 0 1.25rem;
 }
 
 .status {
 	border-top: 0;
 	text-align: right;
-	padding: 0;
-	padding-right: 1.25rem
+	padding: 0 1.25rem 0 0;
 }
 </style>

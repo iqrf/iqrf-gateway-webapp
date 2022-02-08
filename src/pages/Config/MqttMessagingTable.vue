@@ -339,7 +339,6 @@ export default class MqttMessagingTable extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }

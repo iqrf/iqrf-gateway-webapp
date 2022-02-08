@@ -288,7 +288,6 @@ export default class MqMessagingTable extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }

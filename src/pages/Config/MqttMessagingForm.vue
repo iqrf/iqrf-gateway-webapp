@@ -243,7 +243,7 @@ limitations under the License.
 						</CRow>
 						<CRow>
 							<CCol>
-								<label style='font-size: 1.5rem'>
+								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
 								<CSwitch
@@ -424,7 +424,7 @@ export default class MqttMessagingForm extends Vue {
 	/**
 	 * Computes array of CoreUI qos select options
 	 * @returns {Array<IOption>} QoS select options
-	 */	
+	 */
 	get qosOptions(): Array<IOption> {
 		const options = [0, 1, 2];
 		return options.map((option) => {
@@ -434,7 +434,7 @@ export default class MqttMessagingForm extends Vue {
 			};
 		});
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

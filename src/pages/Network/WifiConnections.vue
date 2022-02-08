@@ -604,8 +604,7 @@ export default class WifiConnections extends Vue {
 }
 </script>
 
-<style scoped>
-
+<style lang='scss' scoped>
 .table-ssid {
 	display: flex;
 	align-items: center;
@@ -624,8 +623,10 @@ export default class WifiConnections extends Vue {
 	margin-right: 1em;
 }
 
-.table th, td {
-	border: 0px;
+.table {
+	th,
+	td {
+		border: 0;
+	}
 }
-
 </style>

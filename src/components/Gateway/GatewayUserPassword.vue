@@ -23,7 +23,7 @@ limitations under the License.
 			<CElementCover
 				v-if='running'
 				:opacity='0.75'
-				style='z-index: 10000'
+				style='z-index: 10000;'
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
@@ -117,7 +117,7 @@ import {MetaInfo} from 'vue-meta';
  * Gateway user password change component
  */
 export default class GatewayUserPassword extends Vue {
-	
+
 	/**
 	 * @var {string} password Password
 	 */

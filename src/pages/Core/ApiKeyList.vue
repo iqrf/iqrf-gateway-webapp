@@ -245,7 +245,6 @@ export default class ApiKeyList extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }
