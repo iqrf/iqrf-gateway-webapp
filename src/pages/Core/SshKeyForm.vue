@@ -27,12 +27,12 @@ limitations under the License.
 				<CElementCover
 					v-if='running'
 					:opacity='0.75'
-					style='z-index: 10000'
+					style='z-index: 10000;'
 				>
 					<CSpinner color='primary' />
 				</CElementCover>
 				<div
-					v-if='$route.path.includes("/install")' 
+					v-if='$route.path.includes("/install")'
 					class='form-group'
 				>
 					{{ $t('core.security.ssh.messages.installNote') }}

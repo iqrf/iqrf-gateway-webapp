@@ -59,12 +59,13 @@ export default class LoadingSpinner extends Vue {
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.75);
+	background-color: rgb(0 0 0 / 75%);
 	z-index: 9999;
 	cursor: wait;
 	overflow: auto;
 	text-align: center;
-	&:before {
+
+	&::before {
 		content: '';
 		display: inline-block;
 		height: 100%;
@@ -104,6 +105,7 @@ export default class LoadingSpinner extends Vue {
 	0% {
 		transform: rotate(0deg);
 	}
+
 	100% {
 		transform: rotate(360deg);
 	}

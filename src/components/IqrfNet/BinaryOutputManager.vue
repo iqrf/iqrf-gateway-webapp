@@ -381,8 +381,8 @@ export default class BinaryOutputManager extends Vue {
 
 <style scoped>
 .scroll-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+	display: block;
+	overflow-x: auto;
+	white-space: nowrap;
 }
 </style>

@@ -27,7 +27,7 @@ limitations under the License.
 						@input='isEmpty'
 						@click='isEmpty'
 					/>
-					<p v-if='fileEmpty && !fileUntouched' style='color:red'>
+					<p v-if='fileEmpty && !fileUntouched' style='color: red;'>
 						{{ $t('iqrfnet.trUpload.hexUpload.errors.file') }}
 					</p>
 				</div>
@@ -118,7 +118,7 @@ export default class HexUpload extends Vue {
 		);
 		NativeUploadService.uploadREST(formData)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/UPDATE_TEXT', 
+				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess').toString()
 				);
 				this.stopDaemon(response.data);

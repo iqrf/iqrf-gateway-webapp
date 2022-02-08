@@ -52,7 +52,6 @@ export default class InstallationBase extends Vue {
 </script>
 
 <style lang='scss' scoped>
-
 .progress-position {
 	justify-content: center !important;
 	padding-left: 1rem;

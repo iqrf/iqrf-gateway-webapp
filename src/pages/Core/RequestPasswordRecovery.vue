@@ -23,7 +23,7 @@ limitations under the License.
 			<CElementCover
 				v-if='requestInProgress'
 				:opacity='0.75'
-				style='z-index: 10000'
+				style='z-index: 10000;'
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
