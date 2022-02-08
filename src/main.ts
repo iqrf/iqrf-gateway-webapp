@@ -43,8 +43,7 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;
-library.add(faEye);
-library.add(faEyeSlash);
+library.add(faEye, faEyeSlash);
 
 import * as version from '../version.json';
 
