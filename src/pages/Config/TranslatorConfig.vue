@@ -180,15 +180,15 @@ limitations under the License.
 								>
 									<CInput
 										v-model='config.mqtt.pw'
+										:type='passwordVisible ? "text" : "password"'
 										:label='$t("forms.fields.password")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:type='visibility'
 									>
 										<template #append-content>
-											<span @click='visibility = (visibility === "password" ? "text" : "password")'>
+											<span @click='passwordVisible = !passwordVisible'>
 												<FontAwesomeIcon
-													:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+													:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 												/>
 											</span>
 										</template>
@@ -303,9 +303,9 @@ export default class TranslatorConfig extends Vue {
 	private name = 'translator';
 
 	/**
-	 * @var {string} visibility Specifies form input type
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
-	private visibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * @var {ITranslator|null} config IQRF Gateway Translator service configuration

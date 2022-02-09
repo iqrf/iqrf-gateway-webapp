@@ -149,16 +149,15 @@ limitations under the License.
 								>
 									<CInput
 										v-model='connection.wifi.security.psk'
-										:type='pskInputType'
-										visibility
+										:type='pskVisible ? "text" : "password"'
 										:label='$t("network.wireless.form.psk")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									>
 										<template #append-content>
-											<span @click='pskInputType = pskInputType === "password" ? "text" : "password"'>
+											<span @click='pskVisible = !pskVisible'>
 												<FontAwesomeIcon
-													:icon='(pskInputType === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+													:icon='(pskVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 												/>
 											</span>
 										</template>
@@ -645,9 +644,9 @@ export default class ConnectionForm extends Vue {
 	];
 
 	/**
-	 * @var {string} pskInputType WPA pre-shared key input type
+	 * @var {boolean} pskVisible Controls visibility of PSK field
 	 */
-	private pskInputType = 'password';
+	private pskVisible = false;
 
 	/**
 	 * @var {Record<string, string>} originalIPv4 IPv4 address and method before change
