@@ -109,7 +109,7 @@ export default class ConfirmPasswordRecovery extends Vue {
 	private password = '';
 
 	/**
-	 * @var {boolean} passwordVisible Controls input field visibility
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
 	private passwordVisible = false;
 

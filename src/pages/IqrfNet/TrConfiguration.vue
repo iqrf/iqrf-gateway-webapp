@@ -292,15 +292,15 @@ limitations under the License.
 									<CInput
 										v-if='securityPassword'
 										v-model='config.accessPassword'
-										:type='passwordVisibility'
+										:type='passwordVisible ? "text" : "password"'
 										:label='$t("iqrfnet.trConfiguration.security.form.value")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									>
 										<template #append-content>
-											<span @click='passwordVisibility = (passwordVisibility === "password" ? "text" : "password")'>
+											<span @click='passwordVisible = !passwordVisible'>
 												<FontAwesomeIcon
-													:icon='(passwordVisibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+													:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 												/>
 											</span>
 										</template>
@@ -321,15 +321,15 @@ limitations under the License.
 									<CInput
 										v-if='securityKey'
 										v-model='config.securityUserKey'
-										:type='keyVisibility'
+										:type='keyVisible ? "text" : "password"'
 										:label='$t("iqrfnet.trConfiguration.security.form.value")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									>
 										<template #append-content>
-											<span @click='keyVisibility = (keyVisibility === "password" ? "text" : "password")'>
+											<span @click='keyVisible = !keyVisible'>
 												<FontAwesomeIcon
-													:icon='(keyVisibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+													:icon='(keyVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 												/>
 											</span>
 										</template>
@@ -653,9 +653,9 @@ export default class TrConfiguration extends Vue {
 	private securityPassword = false;
 
 	/**
-	 * @var {string} passwordVisibility Access password field visibility type
+	 * @var {boolean} passwordVisible Controls visibility of password field
 	 */
-	private passwordVisibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * @var {boolean} securityKey Controls user key field availability
@@ -663,9 +663,9 @@ export default class TrConfiguration extends Vue {
 	private securityKey = false;
 
 	/**
-	 * @var {string} keyVisibility User key field visibility type
+	 * @var {boolean} keyVisible Controls visibility of key field
 	 */
-	private keyVisibility = 'password';
+	private keyVisible = false;
 
 	/**
 	 * @var {boolean|null} loaded Indicates whether configuration has been loaded

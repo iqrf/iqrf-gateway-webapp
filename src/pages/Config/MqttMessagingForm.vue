@@ -279,13 +279,13 @@ limitations under the License.
 							<CCol md='6'>
 								<CInput
 									v-model='configuration.PrivateKeyPassword'
-									:type='visibility'
+									:type='passwordVisible ? "text" : "password"'
 									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
 								>
 									<template #append-content>
-										<span @click='visibility = (visibility === "password" ? "text": "password")'>
+										<span @click='passwordVisible = !passwordVisible'>
 											<FontAwesomeIcon
-												:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 											/>
 										</span>
 									</template>
@@ -389,9 +389,9 @@ export default class MqttMessagingForm extends Vue {
 	};
 
 	/**
-	 * @var {string} visibility TLS password field visibility
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
-	private visibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * @property {string} instance MQTT messaging component instance name

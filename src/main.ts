@@ -42,7 +42,7 @@ import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-config.autoAddCss = false;
+config.autoAddCss = true;
 library.add(faEye, faEyeSlash);
 
 import * as version from '../version.json';
