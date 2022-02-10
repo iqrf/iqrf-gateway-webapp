@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\BackupUtil;
 
@@ -47,6 +48,11 @@ class ControllerBackup implements IBackupManager {
 	private $path;
 
 	/**
+	 * @var bool Indicates whether feature is enabled
+	 */
+	private $featureEnabled;
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -60,12 +66,14 @@ class ControllerBackup implements IBackupManager {
 	 * Constructor
 	 * @param string $path Path to controller configuration directory
 	 * @param CommandManager $commandManager Command manager
+	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->path = $path;
 		$this->commandManager = $commandManager;
 		$this->restoreLogger = $restoreLogger;
+		$this->featureEnabled = $featureManager->get('iqrfGatewayController')['enabled'];
 	}
 
 	/**
@@ -74,7 +82,7 @@ class ControllerBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['iqrf']) {
+		if (!$params['software']['iqrf'] || !$this->featureEnabled) {
 			return;
 		}
 		if (file_exists($this->path)) {
@@ -87,7 +95,7 @@ class ControllerBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('controller/')) {
+		if (!$zipManager->exist('controller/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring IQRF Gateway Controller configuration.');

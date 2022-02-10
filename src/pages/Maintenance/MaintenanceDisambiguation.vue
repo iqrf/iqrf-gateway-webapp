@@ -19,12 +19,12 @@ limitations under the License.
 		<h1>{{ $t('maintenance.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/gateway/backup/'>
+				<CListGroupItem to='/maintenance/backup/'>
 					<header class='list-group-item-heading'>
-						{{ $t('gateway.backup.title') }}
+						{{ $t('maintenance.backup.title') }}
 					</header>
 					<p class='list-group-item-text'>
-						{{ $t('gateway.backup.description') }}
+						{{ $t('maintenance.backup.description') }}
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
