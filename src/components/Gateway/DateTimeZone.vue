@@ -24,10 +24,10 @@ limitations under the License.
 							{{ $t('gateway.datetime.currentTime') }}
 						</b>
 					</p>
-					<p style='font-size: 2em'>
+					<p style='font-size: 2em;'>
 						{{ timeDisplay }}
 					</p>
-					<p style='font-size: 1.5em'>
+					<p style='font-size: 1.5em;'>
 						{{ timezoneDisplay }}
 					</p>
 					<div class='form-group'>

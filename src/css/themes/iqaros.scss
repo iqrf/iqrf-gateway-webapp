@@ -18,6 +18,7 @@
 @import './colors/iqaros';
 @import '~@coreui/coreui/scss/coreui.scss';
 
-.c-header-dark, .c-sidebar-dark {
+.c-header-dark,
+.c-sidebar-dark {
 	background: map-get($theme-colors, 'dark') !important;
 }

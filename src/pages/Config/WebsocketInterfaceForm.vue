@@ -71,7 +71,7 @@ limitations under the License.
 						</CCol>
 						<CCol>
 							<div>
-								<label style='font-size: 1.5rem'>
+								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
 								</label>
 								<CSwitch

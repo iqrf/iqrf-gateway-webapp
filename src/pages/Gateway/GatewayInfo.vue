@@ -280,7 +280,7 @@ export default class GatewayInfo extends Vue {
 }
 
 .hostname {
-  display: flex;
+	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }

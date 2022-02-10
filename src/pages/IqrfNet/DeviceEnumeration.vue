@@ -52,7 +52,7 @@ limitations under the License.
 								<td>
 									<img
 										:alt='response.product'
-										class='productPicture'
+										class='product-picture'
 										:src='product.picture'
 									>
 								</td>
@@ -85,11 +85,11 @@ limitations under the License.
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.rfMode') }}</th>
 								<td v-if='peripheralData.flags.rfModeStd'>
-									<RfModeStd alt='STD' class='rfModeIcon' />
+									<RfModeStd alt='STD' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.std') }}</strong>
 								</td>
 								<td v-else-if='peripheralData.flags.rfModeLp'>
-									<RfModeLp alt='LP' class='rfModeIcon' />
+									<RfModeLp alt='LP' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.lp') }}</strong>
 								</td>
 							</tr>
@@ -276,14 +276,14 @@ export default class DeviceEnumeration extends Vue {
 
 <style scoped>
 @media (max-width: 768px) {
-	.productPicture {
+	.product-picture {
 		max-height: 100%;
 		max-width: 100%;
 	}
 }
 
 @media (min-width: 768px) {
-	.productPicture {
+	.product-picture {
 		max-height: 33%;
 		max-width: 33%;
 	}

@@ -237,7 +237,6 @@ export default class UdpMessagingTable extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }

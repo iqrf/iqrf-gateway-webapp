@@ -110,9 +110,11 @@ class DiagnosticsManager {
 		$this->addUploaderLog();
 		$this->addWebappLog();
 		$this->addJournalLog();
+		$this->addSyslog();
 		$this->addInstalledPackages();
 		$this->addProcesses();
 		$this->zipManager->close();
+		$this->cleanup();
 		return $path;
 	}
 
@@ -251,6 +253,19 @@ class DiagnosticsManager {
 		$this->zipManager->addFileFromText('logs/journal.log', $command->getStdout());
 	}
 
+	public function addSyslog(): void {
+		$product = $this->gwInfo->getProperty('gwImage');
+		if (Strings::contains($product, 'armbian')) {
+				$this->commandManager->run('mkdir -p /tmp/syslog/log.hdd/', true);
+				$this->commandManager->run('cp /var/log.hdd/syslog* /tmp/syslog/log.hdd/', true);
+		}
+		$this->commandManager->run('mkdir -p /tmp/syslog/', true);
+		$this->commandManager->run('cp /var/log/syslog* /tmp/syslog/', true);
+		$this->commandManager->run('find /tmp/syslog -type d -exec chmod 777 {} \;', true);
+		$this->commandManager->run('find /tmp/syslog -type f -exec chmod 666 {} \;', true);
+		$this->zipManager->addFolder('/tmp/syslog', 'syslog');
+	}
+
 	/**
 	 * Adds list of installed packages
 	 */
@@ -270,6 +285,13 @@ class DiagnosticsManager {
 			$output = $this->commandManager->run('ps -axeu', true)->getStdout();
 			$this->zipManager->addFileFromText('processes.txt', $output);
 		}
+	}
+
+	/**
+	 * Cleans up auxiliary directories
+	 */
+	public function cleanup(): void {
+		$this->commandManager->run('rm -rf /tmp/syslog', true);
 	}
 
 }

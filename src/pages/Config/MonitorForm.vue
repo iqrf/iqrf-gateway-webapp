@@ -81,7 +81,7 @@ limitations under the License.
 						</CCol>
 						<CCol md='6'>
 							<div>
-								<label style='font-size: 1.5rem'>
+								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
 								<CSwitch

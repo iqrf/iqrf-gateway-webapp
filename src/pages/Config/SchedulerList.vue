@@ -702,7 +702,6 @@ export default class SchedulerList extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }

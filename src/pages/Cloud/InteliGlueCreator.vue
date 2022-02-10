@@ -77,15 +77,15 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.password'
+								:type='passwordVisible ? "text" : "password"'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-								:type='visibility'
 							>
 								<template #append-content>
-									<span @click='changeVisibility'>
+									<span @click='passwordVisible = !passwordVisible'>
 										<FontAwesomeIcon
-											:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+											:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 										/>
 									</span>
 								</template>
@@ -161,9 +161,9 @@ export default class InteliGlueCreator extends Vue {
 	};
 
 	/**
-	 * @var {string} visibility Form password field visibility type
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
-	private visibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * Vue lifecycle hook created
@@ -199,13 +199,6 @@ export default class InteliGlueCreator extends Vue {
 				extendedErrorToast(error, 'cloud.intelimentsInteliGlue.messages.saveFailed');
 				return Promise.reject();
 			});
-	}
-
-	/**
-	 * Changes password input field visibility
-	 */
-	private changeVisibility(): void {
-		this.visibility = this.visibility === 'password' ? 'text': 'password';
 	}
 }
 </script>

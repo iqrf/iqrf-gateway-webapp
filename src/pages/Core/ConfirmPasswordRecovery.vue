@@ -23,7 +23,7 @@ limitations under the License.
 			<CElementCover
 				v-if='requestInProgress'
 				:opacity='0.75'
-				style='z-index: 10000'
+				style='z-index: 10000;'
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
@@ -109,7 +109,7 @@ export default class ConfirmPasswordRecovery extends Vue {
 	private password = '';
 
 	/**
-	 * @var {boolean} passwordVisible Controls input field visibility
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
 	private passwordVisible = false;
 

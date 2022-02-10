@@ -401,7 +401,7 @@
 					"$id": "#/properties/powerOff/properties/sck",
 					"type": "number",
 					"title": "Clock pin",
-					"description": "I2C clock pin.",
+					"description": "I2C clock line pin.",
 					"example": 11
 				}
 			}

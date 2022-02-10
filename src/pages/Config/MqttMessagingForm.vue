@@ -243,7 +243,7 @@ limitations under the License.
 						</CRow>
 						<CRow>
 							<CCol>
-								<label style='font-size: 1.5rem'>
+								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
 								<CSwitch
@@ -279,13 +279,13 @@ limitations under the License.
 							<CCol md='6'>
 								<CInput
 									v-model='configuration.PrivateKeyPassword'
-									:type='visibility'
+									:type='passwordVisible ? "text" : "password"'
 									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
 								>
 									<template #append-content>
-										<span @click='visibility = (visibility === "password" ? "text": "password")'>
+										<span @click='passwordVisible = !passwordVisible'>
 											<FontAwesomeIcon
-												:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
+												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
 											/>
 										</span>
 									</template>
@@ -389,9 +389,9 @@ export default class MqttMessagingForm extends Vue {
 	};
 
 	/**
-	 * @var {string} visibility TLS password field visibility
+	 * @var {bool} passwordVisible Controls visibility of password field
 	 */
-	private visibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * @property {string} instance MQTT messaging component instance name
@@ -424,7 +424,7 @@ export default class MqttMessagingForm extends Vue {
 	/**
 	 * Computes array of CoreUI qos select options
 	 * @returns {Array<IOption>} QoS select options
-	 */	
+	 */
 	get qosOptions(): Array<IOption> {
 		const options = [0, 1, 2];
 		return options.map((option) => {
@@ -434,7 +434,7 @@ export default class MqttMessagingForm extends Vue {
 			};
 		});
 	}
-	
+
 	/**
 	 * Computes the text of form submit button depending on the action (add, edit)
 	 * @returns {string} Button text

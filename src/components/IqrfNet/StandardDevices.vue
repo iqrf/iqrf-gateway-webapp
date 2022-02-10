@@ -894,9 +894,11 @@ export default class StandardDevices extends Vue {
 	margin-right: 1em;
 }
 
-.table th, td {
-	vertical-align: top;
-	border: 0px;
+.table {
+	th,
+	td {
+		vertical-align: top;
+		border: 0;
+	}
 }
-
 </style>

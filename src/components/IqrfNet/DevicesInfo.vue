@@ -410,7 +410,8 @@ export default class DevicesInfo extends Vue {
 <style scoped lang='scss'>
 @media (min-width: 440px) and (max-width: 1400px) {
 	.device-info {
-		td, th {
+		td,
+		th {
 			padding: 0.5rem;
 		}
 	}
@@ -418,7 +419,8 @@ export default class DevicesInfo extends Vue {
 
 @media (max-width: 440px) {
 	.device-info {
-		td, th {
+		td,
+		th {
 			padding: 0.25rem;
 		}
 	}

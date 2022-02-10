@@ -21,6 +21,7 @@
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
 		}
+
 		&:not(:first-child) > .btn {
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
@@ -32,11 +33,13 @@
 	.c-sidebar-nav-link.c-active {
 		font-weight: bold;
 	}
+
 	.c-sidebar-nav-dropdown {
 		.c-sidebar-nav-dropdown {
 			.c-sidebar-nav-dropdown-items {
 				text-indent: 0.3rem;
 			}
+
 			.c-sidebar-nav-dropdown {
 				.c-sidebar-nav-dropdown-items {
 					text-indent: 0.6rem;
@@ -76,13 +79,14 @@
 	text-align: right;
 }
 
-.rfModeIcon {
+.rf-mode-icon {
 	height: 1em;
 	width: 1em;
 }
 
 .table {
-	th, td {
+	th,
+	td {
 		vertical-align: middle;
 	}
 }
@@ -147,10 +151,13 @@
 	display: flex;
 	align-items: flex-start;
 	justify-content: left;
-	&> table {
+
+	& > table {
 		margin-left: 1em;
 		margin-right: 1em;
-		th, td {
+
+		th,
+		td {
 			border: 0;
 		}
 	}
