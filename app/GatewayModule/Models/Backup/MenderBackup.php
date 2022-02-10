@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
@@ -52,6 +53,11 @@ class MenderBackup implements IBackupManager {
 	private const CONF_PATH = '/etc/mender/';
 
 	/**
+	 * @var bool Indicates whether feature is enabled
+	 */
+	private $featureEnabled;
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -69,12 +75,14 @@ class MenderBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param FeatureManager $featureManager FeatureManager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
 		$this->restoreLogger = $restoreLogger;
+		$this->featureEnabled = $featureManager->get('mender')['enabled'];
 	}
 
 	/**
@@ -83,11 +91,13 @@ class MenderBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['mender']) {
+		if (!$params['software']['mender'] || !$this->featureEnabled) {
 			return;
 		}
-		$zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
-		$zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
+		if (file_exists(self::CONF_PATH)) {
+			$zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
+			$zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
+		}
 	}
 
 	/**
@@ -95,7 +105,7 @@ class MenderBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('mender/')) {
+		if (!$zipManager->exist('mender/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring Mender configuration.');

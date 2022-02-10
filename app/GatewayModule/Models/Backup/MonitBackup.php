@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
@@ -48,6 +49,11 @@ class MonitBackup implements IBackupManager {
 	private const CONF_PATH = '/etc/monit/';
 
 	/**
+	 * @var bool Indicates whether feature is enabled
+	 */
+	private $featureEnabled;
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -65,11 +71,14 @@ class MonitBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param FeatureManager $featureManager Feature manager
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
 		$this->restoreLogger = $restoreLogger;
+		$this->featureEnabled = $featureManager->get('monit')['enabled'];
 	}
 
 	/**
@@ -78,14 +87,14 @@ class MonitBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['monit']) {
+		if (!$params['software']['monit'] || !$this->featureEnabled) {
 			return;
 		}
-		if (!file_exists(self::CONF_PATH)) {
-			return;
-		}
-		$zipManager->addEmptyFolder('monit');
 		$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
+		if (file_exists(self::CONF_PATH)) {
+			$zipManager->addEmptyFolder('monit');
+			$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
+		}
 	}
 
 	/**
@@ -93,7 +102,7 @@ class MonitBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('monit/')) {
+		if (!$zipManager->exist('monit/') || $this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring Monit configuration.');

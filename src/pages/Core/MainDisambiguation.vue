@@ -88,12 +88,7 @@ limitations under the License.
 							{{ $t('cloud.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("mender") ||
-							$store.getters["features/isEnabled"]("monit") ||
-							$store.getters["features/isEnabled"]("pixla")'
-						to='/maintenance/'
-					>
+					<CListGroupItem to='/maintenance/'>
 						<header class='list-group-item-heading'>
 							{{ $t('maintenance.title') }}
 						</header>
