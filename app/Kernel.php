@@ -61,7 +61,7 @@ class Kernel {
 		}
 		$configurator->addParameters(['confDir' => $confDir]);
 		try {
-			$iqrfRepositoryManager = new IqrfRepositoryManager(__DIR__ . '/config/iqrf-repository.neon');
+			$iqrfRepositoryManager = new IqrfRepositoryManager($confDir . '/iqrf-repository.neon');
 			$configurator->addDynamicParameters(['iqrfRepository' => $iqrfRepositoryManager->readConfig()]);
 		} catch (IOException | Exception $e) {
 			// File not found/is corrupted - do nothing
