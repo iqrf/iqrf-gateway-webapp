@@ -44,16 +44,6 @@ class JournalBackup implements IBackupManager {
 	public const SERVICE = 'systemd-timesyncd';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private $fileManager;
-
-	/**
 	 * @var string Path to NTP configuration directory
 	 */
 	private $path;
@@ -62,6 +52,21 @@ class JournalBackup implements IBackupManager {
 	 * @var string File name
 	 */
 	private $file;
+
+	/**
+	 * @var bool Indicates whether feature is enabled
+	 */
+	private $featureEnabled;
+
+	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
+
+	/**
+	 * @var PrivilegedFileManager Privileged file manager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
@@ -76,11 +81,12 @@ class JournalBackup implements IBackupManager {
 	 */
 	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
-		$path = $featureManager->get('systemdJournal')['path'];
-		$this->path = dirname($path);
-		$this->file = basename($path);
-		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
 		$this->restoreLogger = $restoreLogger;
+		$feature = $featureManager->get('systemdJournal');
+		$this->path = dirname($feature['path']);
+		$this->file = basename($feature['path']);
+		$this->featureEnabled = $feature['enabled'];
+		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
 	}
 
 	/**
@@ -89,7 +95,7 @@ class JournalBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['system']['journal']) {
+		if (!$params['system']['journal'] || !$this->featureEnabled) {
 			return;
 		}
 		$zipManager->addFile($this->path . '/' . $this->file, 'journal/journald.conf');
@@ -100,7 +106,7 @@ class JournalBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('journal/')) {
+		if (!$zipManager->exist('journal/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring systemd-journal configuration.');
