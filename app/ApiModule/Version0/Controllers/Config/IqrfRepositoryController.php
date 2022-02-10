@@ -67,19 +67,13 @@ class IqrfRepositoryController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/IqrfRepositoryConfig'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			return $response->writeJsonBody($this->manager->readConfig());
-		} catch (NeonException | IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		return $response->writeJsonBody($this->manager->readConfig());
 	}
 
 	/**

@@ -34,7 +34,7 @@ class IqrfRepositoryManager {
 	 * Default configuration
 	 */
 	private const DEFAULT_CONFIG = [
-		'apiEndpoint' => '',
+		'apiEndpoint' => 'https://repository.iqrfalliance.org/api',
 		'credentials' => [
 			'username' => null,
 			'password' => null,
@@ -71,13 +71,14 @@ class IqrfRepositoryManager {
 	/**
 	 * Reads and returns IQRF repository configuration
 	 * @return array<string, array<string, string|null>|string> IQRF Repository integration configuration
-	 * @throws IOException
-	 * @throws NeonException
 	 */
 	public function readConfig(): array {
-		$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
-		$content['credentials'] = array_merge(self::DEFAULT_CONFIG['credentials'], $content['credentials'] ?? []);
-		return array_merge(self::DEFAULT_CONFIG, $content);
+		try {
+			$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
+			return array_replace_recursive(self::DEFAULT_CONFIG, $content);
+		} catch (IOException | NeonException $e) {
+			return self::DEFAULT_CONFIG;
+		}
 	}
 
 }
