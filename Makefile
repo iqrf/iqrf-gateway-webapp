@@ -66,6 +66,7 @@ install:
 	install -d $(DATA_DIR)
 	cp -r api/ $(DATA_DIR)
 	cp -r app/ $(DATA_DIR)
+	rm -rf $(DATA_DIR)/app/config/
 	cp -r bin/ $(DATA_DIR)
 	cp -r db/ $(DATA_DIR)
 	cp -r iqrf/ $(DATA_DIR)
