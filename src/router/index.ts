@@ -64,6 +64,7 @@ const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
 const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
+const InstallRestore = () => import(/** webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
 const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
 const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
@@ -109,7 +110,7 @@ const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
-const GatewayBackup = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/GatewayBackup.vue');
+const BackupRestore = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/BackupRestore.vue');
 const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
 const MenderDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderDisambiguation.vue');
 const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
@@ -180,6 +181,10 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallGatewayInfo,
 				path: 'gateway-info',
+			},
+			{
+				component: InstallRestore,
+				path: 'restore',
 			},
 			{
 				component: MissingMigration,
@@ -929,8 +934,8 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
-						component: GatewayBackup,
-						path: 'backup',
+						component: BackupRestore,
+						path: 'backup-restore',
 					},
 					{
 						component: PixlaControl,

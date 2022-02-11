@@ -58,14 +58,6 @@ limitations under the License.
 							{{ $t('config.smtp.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/migration/'>
-						<header class='list-group-item-heading'>
-							{{ $t('config.migration.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.migration.description') }}
-						</p>
-					</CListGroupItem>
 					<CListGroupItem to='/config/repository/'>
 						<header class='list-group-item-heading'>
 							{{ $t('config.repository.title') }}

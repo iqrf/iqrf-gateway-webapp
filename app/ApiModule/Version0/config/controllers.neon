@@ -15,6 +15,7 @@
 
 services:
 	- App\ApiModule\Version0\Controllers\ApiKeyController
+	- App\ApiModule\Version0\Controllers\BackupController
 	- App\ApiModule\Version0\Controllers\CertificateController
 	- App\ApiModule\Version0\Controllers\Cloud\AwsController
 	- App\ApiModule\Version0\Controllers\Cloud\AzureController
@@ -31,7 +32,6 @@ services:
 	- App\ApiModule\Version0\Controllers\Config\TranslatorController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController
 	- App\ApiModule\Version0\Controllers\FeatureController
-	- App\ApiModule\Version0\Controllers\Gateway\BackupController
 	- App\ApiModule\Version0\Controllers\Gateway\HostnameController
 	- App\ApiModule\Version0\Controllers\Gateway\InfoController
 	- App\ApiModule\Version0\Controllers\Gateway\LogController

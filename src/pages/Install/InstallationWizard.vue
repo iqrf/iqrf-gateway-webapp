@@ -28,6 +28,8 @@ limitations under the License.
 					{{ $t('install.createUser.title') }}
 				</CButton> <CButton color='primary' to='/install/gateway-info'>
 					{{ $t('install.gwInfo.button') }}
+				</CButton> <CButton color='primary' to='/install/restore'>
+					{{ $t('install.restore.button') }}
 				</CButton>
 			</CCardFooter>
 		</CCard>

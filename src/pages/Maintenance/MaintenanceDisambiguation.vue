@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('maintenance.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/maintenance/backup/'>
+				<CListGroupItem to='/maintenance/backup-restore/'>
 					<header class='list-group-item-heading'>
 						{{ $t('maintenance.backup.title') }}
 					</header>

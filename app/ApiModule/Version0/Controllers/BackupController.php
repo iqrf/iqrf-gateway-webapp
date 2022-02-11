@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers\Gateway;
+namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
@@ -29,7 +29,6 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CoreModule\Exceptions\ZipEmptyException;
@@ -41,10 +40,10 @@ use Nette\Utils\FileSystem;
 
 /**
  * Backup controller
- * @Path("/")
- * @Tag("Gateway backup")
+ * @Path("/maintenance")
+ * @Tag("Backup & Restore")
  */
-class BackupController extends GatewayController {
+class BackupController extends BaseController{
 
 	/**
 	 * @var BackupManager Backup manager
