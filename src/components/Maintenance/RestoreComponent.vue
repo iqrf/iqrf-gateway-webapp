@@ -22,6 +22,7 @@ limitations under the License.
 			style='z-index: 10000;'
 		>
 			<CSpinner color='primary' />
+			{{ $t('maintenance.backup.messages.restore') }}
 		</CElementCover>
 		<CForm>
 			<div class='form-group'>
@@ -94,6 +95,9 @@ export default class GatewayBackup extends Vue {
 				this.$toast.success(
 					this.$t('maintenance.backup.messages.restoreSuccess', {time: time}).toString()
 				);
+				if (this.$route.path.includes('/install/restore')) {
+					this.$router.push('/');
+				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed'));
 	}
@@ -119,7 +123,7 @@ export default class GatewayBackup extends Vue {
 	 * Shows interface blocking element depending on the location
 	 */
 	private showBlockingElement(): void {
-		if (this.$route.path.includes('/install/smtp')) {
+		if (this.$route.path.includes('/install/restore')) {
 			this.running = true;
 		} else {
 			this.$store.commit('spinner/SHOW');
@@ -131,7 +135,7 @@ export default class GatewayBackup extends Vue {
 	 * Hides interface blocking element depending on the location
 	 */
 	private hideBlockingElement(): void {
-		if (this.$route.path.includes('/install/smtp')) {
+		if (this.$route.path.includes('/install/restore')) {
 			this.running = false;
 		} else {
 			this.$store.commit('spinner/HIDE');
