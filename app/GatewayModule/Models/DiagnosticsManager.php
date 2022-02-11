@@ -242,7 +242,9 @@ class DiagnosticsManager {
 	 */
 	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';
-		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
+		if (file_exists($logDir)) {
+			$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
+		}
 	}
 
 	/**

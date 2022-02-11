@@ -1,0 +1,12 @@
+Fixes webapp log directory path in DiagnosticsManager.php
+--- a/app/GatewayModule/Models/DiagnosticsManager.php
++++ b/app/GatewayModule/Models/DiagnosticsManager.php
+@@ -241,7 +241,7 @@ class DiagnosticsManager {
+ 	 * Adds logs of IQRF Gateway Webapp
+ 	 */
+ 	public function addWebappLog(): void {
+-		$logDir = __DIR__ . '/../../../log/';
++		$logDir = '/var/log/iqrf-gateway-webapp/';
+ 		if (file_exists($logDir)) {
+ 			$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
+ 		}
