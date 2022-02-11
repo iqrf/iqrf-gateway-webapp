@@ -29,7 +29,7 @@ use Nette\Utils\FileSystem;
 /**
  * NTP backup manager
  */
-class NtpBackup implements IBackupManager {
+class TimesyncdBackup implements IBackupManager {
 
 	/**
 	 * List of whitelisted files
@@ -98,7 +98,7 @@ class NtpBackup implements IBackupManager {
 		if (!$params['system']['time'] || !$this->featureEnabled) {
 			return;
 		}
-		$zipManager->addFile($this->path . '/' . $this->file, 'timesync/timesyncd.conf');
+		$zipManager->addFile($this->path . '/' . $this->file, 'timesyncd/timesyncd.conf');
 	}
 
 	/**
@@ -106,13 +106,13 @@ class NtpBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('timesync/') || !$this->featureEnabled) {
+		if (!$zipManager->exist('timesyncd/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring Timesyncd configuration.');
-		$zipManager->extract(self::TMP_PATH, 'timesync/timesyncd.conf');
-		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'timesync/timesyncd.conf'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'timesync');
+		$zipManager->extract(self::TMP_PATH, 'timesyncd/timesyncd.conf');
+		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'timesyncd/timesyncd.conf'));
+		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'timesyncd');
 	}
 
 }

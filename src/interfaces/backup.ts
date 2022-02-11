@@ -18,22 +18,22 @@
 /**
  * Gateway backup interface
  */
-export interface IGwBackup {
+export interface IBackup {
 	/**
 	 * Software configuration
 	 */
-	software: IGwBackupSoftware
+	software: IBackupSoftware
 
 	/**
 	 * System configuration
 	 */
-	system: IGwBackupSystem
+	system: IBackupSystem
 }
 
 /**
  * Gateway software backup interface
  */
-export interface IGwBackupSoftware {
+export interface IBackupSoftware {
 	/**
 	 * IQRF Software
 	 */
@@ -58,7 +58,7 @@ export interface IGwBackupSoftware {
 /**
  * Gateway system backup interface
  */
-export interface IGwBackupSystem {
+export interface IBackupSystem {
 	/**
 	 * Hostname and hosts
 	 */

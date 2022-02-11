@@ -2290,6 +2290,10 @@
 			"button": "Show GW info",
 			"download": "Download as JSON"
 		},
+		"restore": {
+			"title": "Gateway restore",
+			"button": "Restore gateway"
+		},
 		"messages": {
 			"check": "Running installation check...",
 			"finished": "Installation process successfully completed."
