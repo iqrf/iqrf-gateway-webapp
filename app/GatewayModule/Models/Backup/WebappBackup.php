@@ -50,9 +50,9 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * Path to Webapp configuration directory
+	 * @var string Path to configuration directory
 	 */
-	private const CONF_PATH = __DIR__ . '/../../../config/';
+	private $path;
 
 	/**
 	 * Path to Webapp database directory
@@ -81,11 +81,13 @@ class WebappBackup implements IBackupManager {
 
 	/**
 	 * Constructor
+	 * @param string $path Path to configuration directory
 	 * @param CommandManager $commandManager Command manager
 	 * @param SshManager $sshManager SSH manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, SshManager $sshManager, RestoreLogger $restoreLogger) {
+	public function __construct(string $path, CommandManager $commandManager, SshManager $sshManager, RestoreLogger $restoreLogger) {
+		$this->path = $path;
 		$this->commandManager = $commandManager;
 		$this->sshManager = $sshManager;
 		$this->restoreLogger = $restoreLogger;
@@ -100,9 +102,9 @@ class WebappBackup implements IBackupManager {
 		if (!$params['software']['iqrf']) {
 			return;
 		}
-		$zipManager->addFile(self::CONF_PATH . 'features.neon', 'webapp/features.neon');
-		$zipManager->addFile(self::CONF_PATH . 'iqrf-repository.neon', 'webapp/iqrf-repository.neon');
-		$zipManager->addFile(self::CONF_PATH . 'smtp.neon', 'webapp/smtp.neon');
+		$zipManager->addFile($this->path . '/features.neon', 'webapp/features.neon');
+		$zipManager->addFile($this->path . '/iqrf-repository.neon', 'webapp/iqrf-repository.neon');
+		$zipManager->addFile($this->path . '/smtp.neon', 'webapp/smtp.neon');
 		$zipManager->addFile(self::DB_PATH . 'database.db', 'webapp/database.db');
 		$zipManager->addFolder(self::NGINX_PATH, 'nginx');
 	}
@@ -123,7 +125,7 @@ class WebappBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring IQRF Gateway Webapp configuration, database and nginx configuration.');
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::DB_PATH, true);
 		$this->commandManager->run('rm ' . self::TMP_PATH . 'webapp/database.db', true);
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . self::CONF_PATH, true);
+		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . $this->path, true);
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'webapp', true);
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_PATH, true);
 		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nginx', true);

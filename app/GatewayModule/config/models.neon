@@ -27,7 +27,7 @@ services:
 	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup
 	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%)
 	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%)
-	webappBackup: App\GatewayModule\Models\Backup\WebappBackup
+	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%confDir%)
 	- App\GatewayModule\Models\BackupManager([
 		@controllerBackup,
 		@daemonBackup,
