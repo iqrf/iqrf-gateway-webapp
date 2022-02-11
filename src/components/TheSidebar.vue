@@ -455,7 +455,7 @@ export default class TheSidebar extends Vue {
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.backup.title'),
-								to: '/maintenance/backup/',
+								to: '/maintenance/backup-restore/',
 								roles: ['power', 'normal', 'iqaros'],
 							},
 							{

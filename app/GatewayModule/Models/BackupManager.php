@@ -35,8 +35,8 @@ use App\GatewayModule\Models\Backup\JournalBackup;
 use App\GatewayModule\Models\Backup\MenderBackup;
 use App\GatewayModule\Models\Backup\MonitBackup;
 use App\GatewayModule\Models\Backup\NetworkManagerBackup;
-use App\GatewayModule\Models\Backup\NtpBackup;
 use App\GatewayModule\Models\Backup\TimeBackup;
+use App\GatewayModule\Models\Backup\TimesyncdBackup;
 use App\GatewayModule\Models\Backup\TranslatorBackup;
 use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
@@ -241,10 +241,10 @@ class BackupManager {
 			'monit/',
 			'nm/',
 			'nm/system-connections/',
-			'ntp/',
 			'pixla/',
 			'services/',
 			'time/',
+			'timesyncd/',
 			'translator/',
 			'uploader/',
 			'webapp/',
@@ -295,12 +295,12 @@ class BackupManager {
 				continue;
 			} elseif (Strings::startsWith($file, 'nm/')) {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'ntp/')) {
-				$this->isWhitelisted(NtpBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'services/')) {
 				$this->isWhitelisted(['enabled_services'], $file);
 			} elseif (Strings::startsWith($file, 'time/')) {
 				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
+			} elseif (Strings::startsWith($file, 'timesyncd/')) {
+				$this->isWhitelisted(TimesyncdBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'translator/')) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'uploader/')) {

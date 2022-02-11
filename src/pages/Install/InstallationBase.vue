@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<TheWizard>
-		<CCard v-if='$route.path !== "/install/gateway-info"'>
+		<CCard v-if='!stepBlacklist.includes($route.path)'>
 			<InstallWizardStepProgress ref='progress' class='progress-position' />
 		</CCard>
 		<router-view @next-step='next' />
@@ -41,6 +41,14 @@ import TheWizard from '../../components/TheWizard.vue';
  * Installation base page component
  */
 export default class InstallationBase extends Vue {
+
+	/**
+	 * @constant {Array<string>} stepBlacklist
+	 */
+	private stepBlacklist: Array<string> = [
+		'/install/gateway-info',
+		'/install/restore',
+	];
 
 	/**
 	 * Advance the installation wizard
