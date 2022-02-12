@@ -35,6 +35,13 @@ interface IFileManager {
 	public function delete(string $fileName): void;
 
 	/**
+	 * Checks if the file exists
+	 * @param string $fileName File name
+	 * @return bool Is file exists?
+	 */
+	public function exists(string $fileName): bool;
+
+	/**
 	 * Reads the file
 	 * @param string $fileName File name
 	 * @return mixed File content

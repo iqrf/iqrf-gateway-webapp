@@ -45,7 +45,7 @@ class PrivilegedFileManager implements IFileManager {
 	 */
 	public function __construct(string $directory, CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->directory = $directory;
+		$this->directory = rtrim(Strings::replace($directory, '~\'~', '\\\''), '/');
 	}
 
 	/**
@@ -55,8 +55,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function read(string $fileName): string {
-		$path = $this->buildPath($fileName);
-		$command = $this->commandManager->run('cat ' . $path, true);
+		$command = $this->commandManager->run('cat ' . $this->buildPath($fileName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -69,11 +68,19 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
-		$path = $this->buildPath($fileName);
-		$command = $this->commandManager->run('rm -rf ' . $path, true);
+		$command = $this->commandManager->run('rm -rf ' . $this->buildPath($fileName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
+	}
+	/**
+	 * Checks if the file exists
+	 * @param string $fileName File name
+	 * @return bool Is file exists?
+	 */
+	public function exists(string $fileName): bool {
+		$command = $this->commandManager->run('test -f ' . $this->buildPath($fileName), true);
+		return $command->getExitCode() === 0;
 	}
 
 	/**
@@ -83,13 +90,15 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
-		$path = $this->buildPath(dirname($fileName));
-		$command = $this->commandManager->run('mkdir -p ' . $path, true);
+		$dirName = dirname($fileName);
+		if ($dirName === '.') {
+			$dirName = '';
+		}
+		$command = $this->commandManager->run('mkdir -p ' . $this->buildPath($dirName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
-		$path = $this->buildPath($fileName);
-		$command = $this->commandManager->run('tee ' . $path, true, 60, $content);
+		$command = $this->commandManager->run('tee ' . $this->buildPath($fileName), true, 60, $content);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -125,11 +134,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return string Path to subdirectory or file
 	 */
 	private function buildPath(string $name): string {
-		$path = $this->directory . '/' . $name;
-		if (Strings::contains($path, ' ')) {
-			$path = '"' . $path . '"';
-		}
-		return $path;
+		return '\'' . $this->directory . '/' . Strings::replace($name, '~\'~', '\\\'') . '\'';
 	}
 
 }
