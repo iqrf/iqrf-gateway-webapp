@@ -44,7 +44,5 @@ import RestoreComponent from '../../components/Maintenance/RestoreComponent.vue'
 /**
  * Installation wizard restore page
  */
-export default class InstallRestore extends Vue {
-
-}
+export default class InstallRestore extends Vue {}
 </script>
