@@ -22,7 +22,6 @@ limitations under the License.
 			style='z-index: 10000;'
 		>
 			<CSpinner color='primary' />
-			{{ $t('maintenance.backup.messages.restore') }}
 		</CElementCover>
 		<CForm>
 			<div class='form-group'>
