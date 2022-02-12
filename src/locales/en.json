@@ -2291,7 +2291,7 @@
 			"download": "Download as JSON"
 		},
 		"restore": {
-			"title": "Gateway restore",
+			"title": "Restore gateway from backup",
 			"button": "Restore gateway"
 		},
 		"messages": {

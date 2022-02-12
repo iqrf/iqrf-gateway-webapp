@@ -102,7 +102,7 @@ class MonitBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('monit/') || $this->featureEnabled) {
+		if (!$zipManager->exist('monit/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring Monit configuration.');
