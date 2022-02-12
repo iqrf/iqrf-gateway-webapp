@@ -1,0 +1,82 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/operator.json",
+	"type": "object",
+	"title": "Operator",
+	"description": "Information about a mobile network operator",
+	"example": {
+		"id": 1,
+		"code": 23001,
+		"name": "T-Mobile CZ",
+		"apn": "internet.t-mobile.cz",
+		"username": "gprs",
+		"password": "gprs"
+	},
+	"required": [
+		"id",
+		"code",
+		"name",
+		"apn",
+		"username",
+		"password"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "ID",
+			"description": "Operator ID",
+			"type": "integer",
+			"example": 1
+		},
+		"code": {
+			"$id": "#/properties/code",
+			"title": "Code",
+			"description": "Operator MCC-MNC code.",
+			"type": "integer",
+			"example": 23001
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"title": "Name",
+			"description": "Operator name.",
+			"type": "string",
+			"example": "T-Mobile CZ"
+		},
+		"apn": {
+			"$id": "#/properties/apn",
+			"title": "APN",
+			"description": "Acess point name.",
+			"type": "string",
+			"example": "internet.t-mobile.cz"
+		},
+		"username": {
+			"$id": "#/properties/username",
+			"title": "Username",
+			"description": "Username for authorization.",
+			"oneOf": [
+				{
+					"type": "string",
+					"example": "gprs"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"title": "Password",
+			"description": "Password for authorization.",
+			"oneOf": [
+				{
+					"type": "string",
+					"example": "gprs"
+				},
+				{
+					"type": "null"
+				}
+			]
+		}
+	}
+}

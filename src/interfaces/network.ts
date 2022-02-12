@@ -106,7 +106,6 @@ export interface IConnectionWifi {
 
 export interface IConnectionGSM {
 	apn: string
-	number: string
 	username: string
 	password: string
 	pin: string

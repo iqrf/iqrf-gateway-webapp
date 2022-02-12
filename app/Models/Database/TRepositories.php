@@ -35,6 +35,7 @@ use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
+use App\Models\Database\Repositories\OperatorRepository;
 use App\Models\Database\Repositories\PasswordRecoveryRepository;
 use App\Models\Database\Repositories\SshKeyRepository;
 use App\Models\Database\Repositories\UserRepository;
@@ -80,6 +81,10 @@ trait TRepositories {
 	 */
 	public function getMappingRepository(): MappingRepository {
 		return $this->getRepository(Mapping::class);
+	}
+
+	public function getOperatorRepository(): OperatorRepository {
+		return $this->getRepository(Operator::class);
 	}
 
 	/**

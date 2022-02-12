@@ -28,6 +28,8 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\OperatorRepository;
 use App\NetworkModule\Exceptions\ModemManagerException;
 use App\NetworkModule\Models\GsmManager;
 
@@ -43,12 +45,19 @@ class GsmController extends NetworkController {
 	private $gsmManager;
 
 	/**
+	 * @var OperatorRepository Operator repository
+	 */
+	private $operatorRepository;
+
+	/**
 	 * Constructor
 	 * @param GsmManager $gsmManager GSM manager
+	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(GsmManager $gsmManager, RestApiSchemaValidator $validator) {
+	public function __construct(GsmManager $gsmManager, EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->gsmManager = $gsmManager;
+		$this->operatorRepository = $entityManager->getOperatorRepository();
 		parent::__construct($validator);
 	}
 
@@ -77,6 +86,28 @@ class GsmController extends NetworkController {
 		} catch (ModemManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+	}
+
+	/**
+	 * @Path("/operators")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Lists pre-defined operator information
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schema/OperatorList'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function listOperators(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$operators = $this->operatorRepository->findAll();
+		return $response->writeJsonBody($operators);
 	}
 
 }

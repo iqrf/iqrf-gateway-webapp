@@ -1,0 +1,24 @@
+[
+	{
+		"id": 23001,
+		"name": "T-Mobile CZ",
+		"apn": "internet.t-mobile.cz",
+		"username": "gprs",
+		"password": "gprs"
+	},
+	{
+		"id": 23002,
+		"name": "O2 CZ",
+		"apn": "internet"
+	},
+	{
+		"id": 23003,
+		"name": "Vodafone CZ",
+		"apn": "internet"
+	},
+	{
+		"id": 23102,
+		"name": "T-Mobile SK",
+		"apn": "internet"
+	}
+]

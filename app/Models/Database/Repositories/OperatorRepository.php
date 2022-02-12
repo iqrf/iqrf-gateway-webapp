@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -14,10 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+declare(strict_types = 1);
+
+namespace App\Models\Database\Repositories;
+
+use App\Models\Database\Entities\Operator;
+use Doctrine\ORM\EntityRepository;
+
 /**
- * GSM operator numbers
+ * Operator repository
+ * @extends OperatorRepository<Operator>
  */
-export enum GsmNumber {
-	O2CZ = '*99#',
-	OTHER = 'other',
+class OperatorRepository extends EntityRepository {
+
 }
