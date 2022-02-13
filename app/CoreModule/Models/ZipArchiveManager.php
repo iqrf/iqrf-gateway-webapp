@@ -53,7 +53,10 @@ class ZipArchiveManager {
 	 * @param string $content The content of text file
 	 */
 	public function addFileFromText(string $filename, string $content): void {
-		$this->addEmptyFolder(dirname($filename));
+		$dirname = dirname($filename);
+		if ($dirname !== '.') {
+			$this->addEmptyFolder($dirname);
+		}
 		$this->zip->addFromString($filename, $content);
 	}
 
@@ -108,7 +111,10 @@ class ZipArchiveManager {
 	 * @param string $filename File name in the archive
 	 */
 	public function addFile(string $path, string $filename): void {
-		$this->addEmptyFolder(dirname($filename));
+		$dirname = dirname($filename);
+		if ($dirname !== '.') {
+			$this->addEmptyFolder($dirname);
+		}
 		$this->zip->addFile($path, $filename);
 	}
 
@@ -120,6 +126,10 @@ class ZipArchiveManager {
 	 */
 	public function addJsonFromArray(string $filename, array $jsonData): void {
 		$json = Json::encode($jsonData, Json::PRETTY);
+		$dirname = dirname($filename);
+		if ($dirname !== '.') {
+			$this->addEmptyFolder($dirname);
+		}
 		$this->zip->addFromString($filename, $json);
 	}
 

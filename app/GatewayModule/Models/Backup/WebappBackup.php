@@ -23,6 +23,7 @@ namespace App\GatewayModule\Models\Backup;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\SshManager;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**
@@ -125,12 +126,20 @@ class WebappBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring IQRF Gateway Webapp configuration, database and nginx configuration.');
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . self::DB_PATH, true);
-		$this->commandManager->run('rm ' . self::TMP_PATH . 'webapp/database.db', true);
+		FileSystem::delete(self::TMP_PATH . 'webapp/database.db');
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . $this->path, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'webapp', true);
+		FileSystem::delete(self::TMP_PATH . 'webapp');
 		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_PATH, true);
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nginx', true);
+		FileSystem::delete(self::TMP_PATH . 'nginx');
 		$this->sshManager->updateKeysFile();
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
 	}
 
 }

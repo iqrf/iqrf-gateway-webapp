@@ -41,7 +41,9 @@ class TimesyncdBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'systemd-timesyncd';
+	public const SERVICES = [
+		'systemd-timesyncd',
+	];
 
 	/**
 	 * @var string Path to NTP configuration directory
@@ -54,14 +56,14 @@ class TimesyncdBackup implements IBackupManager {
 	private $file;
 
 	/**
-	 * @var bool Indicates whether feature is enabled
-	 */
-	private $featureEnabled;
-
-	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var bool Indicates whether feature is enabled
+	 */
+	private $featureEnabled;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
@@ -86,7 +88,7 @@ class TimesyncdBackup implements IBackupManager {
 		$this->path = dirname($feature['path']);
 		$this->file = basename($feature['path']);
 		$this->featureEnabled = $feature['enabled'];
-		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
+		$this->fileManager = new PrivilegedFileManager($this->path, $this->commandManager);
 	}
 
 	/**
@@ -111,8 +113,25 @@ class TimesyncdBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring Timesyncd configuration.');
 		$zipManager->extract(self::TMP_PATH, 'timesyncd/timesyncd.conf');
-		$this->fileManager->write($this->file, FileSystem::read(self::TMP_PATH . 'timesyncd/timesyncd.conf'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'timesyncd');
+		$this->fileManager->copy($this->file, self::TMP_PATH . 'timesyncd/timesyncd.conf');
+		FileSystem::delete(self::TMP_PATH . 'timesyncd');
+		$this->fixPrivileges();
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		$this->commandManager->run('chown root:root ' . $this->path . '/' . $this->file, true);
+		$this->commandManager->run('chmod 0644 ' . $this->path . '/' . $this->file, true);
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

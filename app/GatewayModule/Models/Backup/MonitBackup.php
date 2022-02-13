@@ -41,7 +41,9 @@ class MonitBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'monit';
+	public const SERVICES = [
+		'monit',
+	];
 
 	/**
 	 * Path to Monit configuration directory
@@ -107,16 +109,25 @@ class MonitBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring Monit configuration.');
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
-		$this->fileManager->write('monitrc', FileSystem::read(self::TMP_PATH . 'monit/monitrc'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'monit', true);
-		$this->fixMetadata();
+		$this->fileManager->copy('monitrc', self::TMP_PATH . 'monit/monitrc');
+		FileSystem::delete(self::TMP_PATH . 'monit');
+		$this->fixPrivileges();
 	}
 
 	/**
-	 * Fixes metadata for restored files
+	 * Fixes privileges for restored files
 	 */
-	private function fixMetadata(): void {
-		$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . 'monitrc');
+	private function fixPrivileges(): void {
+		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'monitrc', true);
+		$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . 'monitrc', true);
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

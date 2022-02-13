@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\TimeManager;
 use Nette\Utils\FileSystem;
@@ -38,11 +37,6 @@ class TimeBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
 	 * @var RestoreLogger Restore logger
 	 */
 	private $restoreLogger;
@@ -54,12 +48,10 @@ class TimeBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 * @param TimeManager $timeManager Time manager
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger, TimeManager $timeManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(RestoreLogger $restoreLogger, TimeManager $timeManager) {
 		$this->restoreLogger = $restoreLogger;
 		$this->timeManager = $timeManager;
 	}
@@ -88,7 +80,15 @@ class TimeBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring gateway timezone.');
 		$zipManager->extract(self::TMP_PATH, 'time/timezone');
 		$this->timeManager->setTimezone(FileSystem::read(self::TMP_PATH . 'time/timezone'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'time');
+		FileSystem::delete(self::TMP_PATH . 'time');
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
 	}
 
 }

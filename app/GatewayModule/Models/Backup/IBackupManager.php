@@ -45,4 +45,10 @@ interface IBackupManager {
 	 */
 	public function restore(ZipArchiveManager $zipManager): void;
 
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array;
+
 }

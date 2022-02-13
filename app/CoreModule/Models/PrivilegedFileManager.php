@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**
@@ -102,6 +103,15 @@ class PrivilegedFileManager implements IFileManager {
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
+	}
+
+	/**
+	 * Copies file to a destination
+	 * @param string $destination Destination path
+	 * @param string $fileName Source file path
+	 */
+	public function copy(string $destination, string $fileName): void {
+		$this->write($destination, FileSystem::read($fileName));
 	}
 
 	/**

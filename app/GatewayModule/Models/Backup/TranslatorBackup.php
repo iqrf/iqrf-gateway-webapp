@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\BackupUtil;
+use Nette\Utils\FileSystem;
 
 /**
  * Translator backup manager
@@ -40,7 +41,9 @@ class TranslatorBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'iqrf-gateway-translator';
+	public const SERVICES = [
+		'iqrf-gateway-translator',
+	];
 
 	/**
 	 * @var string Path to translator configuration directory
@@ -102,7 +105,15 @@ class TranslatorBackup implements IBackupManager {
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'translator/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'translator/config.json ' . $this->path . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->path . 'translator', true);
+		FileSystem::delete($this->path . 'translator');
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }
