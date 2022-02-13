@@ -23,6 +23,7 @@ namespace App\GatewayModule\Models\Backup;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\BackupUtil;
+use Nette\Utils\FileSystem;
 
 /**
  * Uploader backup manager
@@ -89,7 +90,15 @@ class UploaderBackup implements IBackupManager {
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'uploader/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'uploader/config.json ' . $this->path . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->path . 'uploader', true);
+		FileSystem::delete($this->path . 'uploader');
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
 	}
 
 }

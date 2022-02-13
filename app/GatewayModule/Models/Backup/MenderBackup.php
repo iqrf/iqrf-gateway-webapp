@@ -42,7 +42,7 @@ class MenderBackup implements IBackupManager {
 	/**
 	 * Service names
 	 */
-	public const SERVICE = [
+	public const SERVICES = [
 		'mender-client',
 		'mender-connect',
 	];
@@ -111,9 +111,28 @@ class MenderBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring Mender configuration.');
 		$zipManager->extract(self::TMP_PATH, 'mender/mender.conf');
 		$zipManager->extract(self::TMP_PATH, 'mender/mender-connect.conf');
-		$this->fileManager->write('mender.conf', FileSystem::read(self::TMP_PATH . 'mender/mender.conf'));
-		$this->fileManager->write('mender-connect.conf', FileSystem::read(self::TMP_PATH . 'mender/mender-connect.conf'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'mender');
+		$this->fileManager->copy('mender.conf', self::TMP_PATH . 'mender/mender.conf');
+		$this->fileManager->copy('mender-connect.conf', self::TMP_PATH . 'mender/mender-connect.conf');
+		FileSystem::delete(self::TMP_PATH . 'mender');
+		$this->fixPrivileges();
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		foreach (self::WHITELIST as $file) {
+			$this->commandManager->run('chown root:root ' . self::CONF_PATH . $file, true);
+			$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . $file, true);
+		}
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

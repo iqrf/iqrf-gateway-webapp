@@ -95,10 +95,13 @@ export default class GatewayBackup extends Vue {
 					this.$t('maintenance.backup.messages.restoreSuccess', {time: time}).toString()
 				);
 				if (this.$route.path.includes('/install/restore')) {
-					this.$router.push('/');
+					this.$router.push('/sign/in');
 				}
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed'));
+			.catch((error: AxiosError) => {
+				this.hideBlockingElement();
+				extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed');
+			});
 	}
 
 	/**

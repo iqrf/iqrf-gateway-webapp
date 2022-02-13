@@ -93,9 +93,28 @@ class HostBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring gateway host.');
 		$zipManager->extract(self::TMP_PATH, 'host/hostname');
 		$zipManager->extract(self::TMP_PATH, 'host/hosts');
-		$this->fileManager->write('hostname', FileSystem::read(self::TMP_PATH . 'host/hostname'));
-		$this->fileManager->write('hosts', FileSystem::read(self::TMP_PATH . 'host/hosts'));
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'host');
+		$this->fileManager->copy('hostname', self::TMP_PATH . 'host/hostname');
+		$this->fileManager->copy('hosts', self::TMP_PATH . 'host/hosts');
+		FileSystem::delete(self::TMP_PATH . 'host');
+		$this->fixPrivileges();
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		foreach (self::WHITELIST as $file) {
+			$this->commandManager->run('chown root:root ' . self::CONF_PATH . $file, true);
+			$this->commandManager->run('chmod 0644 ' . self::CONF_PATH . $file, true);
+		}
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
 	}
 
 }

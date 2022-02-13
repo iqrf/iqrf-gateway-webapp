@@ -42,7 +42,9 @@ class NetworkManagerBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'NetworkManager';
+	public const SERVICES = [
+		'NetworkManager',
+	];
 
 	/**
 	 * Path to NetworkManager configuration directory
@@ -117,21 +119,32 @@ class NetworkManagerBackup implements IBackupManager {
 			if (Strings::startsWith($file, 'nm/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 				if (Strings::contains($file, 'system-connections/')) {
-					$this->fileManager->write('system-connections/' . basename($file), FileSystem::read(self::TMP_PATH . $file));
+					$this->fileManager->copy('system-connections/' . basename($file), self::TMP_PATH . $file);
 				} else {
-					$this->fileManager->write(basename($file), FileSystem::read(self::TMP_PATH . $file));
+					$this->fileManager->copy(basename($file), self::TMP_PATH . $file);
 				}
 			}
 		}
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH . 'nm');
-		$this->setPermissions();
+		FileSystem::delete(self::TMP_PATH . 'nm');
+		$this->fixPrivileges();
 	}
 
 	/**
-	 * Sets permissions for connection profiles
+	 * Fixes privileges for restored files
 	 */
-	private function setPermissions(): void {
+	private function fixPrivileges(): void {
+		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'NetworkManager.conf', true);
+		$this->commandManager->run('chmod 0644 ' . self::CONF_PATH . 'NetworkManager.conf', true);
+		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'system-connections/*', true);
 		$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . 'system-connections/*', true);
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

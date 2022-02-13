@@ -132,21 +132,14 @@ class BackupManager {
 		$services = [];
 		foreach ($this->backupManagers as $manager) {
 			$manager->backup($params, $this->zipManager);
-			if (defined(get_class($manager) . '::SERVICE')) {
-				$classService = get_class($manager)::SERVICE;
-				if (is_array($classService)) {
-					$services = array_merge($services, $classService);
-				} else {
-					$services[] = $classService;
-				}
-			}
+			$services = array_merge($services, $manager->getServices());
 		}
 		$this->backupServices($services);
 		if ($this->zipManager->isEmpty()) {
 			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
+		$this->cleanup();
 		return $path;
 	}
 
@@ -199,7 +192,7 @@ class BackupManager {
 			}
 		}
 		$this->zipManager->addEmptyFolder('services');
-		$this->zipManager->addFileFromText('services/enabled_services', Json::encode($enabledServices));
+		$this->zipManager->addFileFromText('services/enabled_services.json', Json::encode($enabledServices));
 	}
 
 	/**
@@ -209,8 +202,8 @@ class BackupManager {
 		if (!$this->zipManager->exist('services/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services');
-		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services'));
+		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services.json');
+		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services.json'));
 		foreach ($services as $service => $enabled) {
 			try {
 				if ($enabled === true) {

@@ -35,7 +35,9 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'iqrf-gateway-daemon';
+	public const SERVICES = [
+		'iqrf-gateway-daemon',
+	];
 
 	/**
 	 * @var CommandManager Command manager
@@ -121,18 +123,26 @@ class DaemonBackup implements IBackupManager {
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
-		$this->fixMetadata();
+		$this->fixPrivileges();
 	}
 
 	/**
-	 * Fixes metadata for restored files
+	 * Fixes privileges for restored files
 	 */
-	private function fixMetadata(): void {
+	private function fixPrivileges(): void {
 		$this->commandManager->run('chmod -R 0666 ' . $this->daemonDirectories->getConfigurationDir(), true);
 		foreach ($this->fileManager->listDirectories() as $dir) {
 			$this->commandManager->run('chmod 0777 ' . $dir, true);
 		}
 		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

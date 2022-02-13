@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\BackupUtil;
+use Nette\Utils\FileSystem;
 
 /**
  * Controller backup manager
@@ -40,7 +41,9 @@ class ControllerBackup implements IBackupManager {
 	/**
 	 * Service name
 	 */
-	public const SERVICE = 'iqrf-gateway-controller';
+	public const SERVICES = [
+		'iqrf-gateway-controller',
+	];
 
 	/**
 	 * @var string Path to controller configuration directory;
@@ -102,7 +105,15 @@ class ControllerBackup implements IBackupManager {
 		BackupUtil::recreateDirectories([$this->path]);
 		$zipManager->extract($this->path, 'controller/config.json');
 		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);
-		$this->commandManager->run('rm -rf ' . $this->path . 'controller', true);
+		FileSystem::delete($this->path . 'controller');
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

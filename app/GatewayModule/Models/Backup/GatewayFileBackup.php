@@ -134,4 +134,12 @@ class GatewayFileBackup implements IBackupManager {
 		}
 	}
 
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
+	}
+
 }
