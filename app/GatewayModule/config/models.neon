@@ -18,7 +18,7 @@ services:
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%controller.configDir%)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
-	hostBackup: App\GatewayModule\Models\Backup\HostBackup
+	hostBackup: App\GatewayModule\Models\Backup\HostBackup(%sysConfDir%)
 	journalBackup: App\GatewayModule\Models\Backup\JournalBackup
 	menderBackup: App\GatewayModule\Models\Backup\MenderBackup
 	monitBackup: App\GatewayModule\Models\Backup\MonitBackup
@@ -28,7 +28,7 @@ services:
 	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%)
 	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%)
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%confDir%)
-	- App\GatewayModule\Models\BackupManager([
+	- App\GatewayModule\Models\BackupManager(%backup.dir%, [
 		@controllerBackup,
 		@daemonBackup,
 		@hostBackup,
@@ -63,5 +63,5 @@ services:
 	- App\GatewayModule\Models\SystemdJournalManager
 	- App\GatewayModule\Models\TimeManager
 	- App\GatewayModule\Models\UpdaterManager
-	- App\GatewayModule\Models\Utils\GatewayInfoUtil
+	- App\GatewayModule\Models\Utils\GatewayInfoUtil(%sysConfDir%)
 	- App\GatewayModule\Models\VersionManager

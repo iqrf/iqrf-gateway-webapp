@@ -56,17 +56,17 @@ use ZipArchive;
 class BackupManager {
 
 	/**
-	 * Path to temporary backup directory
-	 */
-	private const TMP_PATH = '/tmp/backup/';
-
-	/**
 	 * Services to include in backup
 	 */
 	private const SERVICES = [
 		'gwman-client',
 		'ssh',
 	];
+
+	/**
+	 * @var string Path to temporary backup directory
+	 */
+	private $tmpPath;
 
 	/**
 	 * @var array<IBackupManager> Backup managers
@@ -105,6 +105,7 @@ class BackupManager {
 
 	/**
 	 * Constructor
+	 * @param string $tmpPath Path to temporary backup directory
 	 * @param Array<IBackupManager> $backupManagers Backup managers
 	 * @param CommandManager $commandManager Command manager
 	 * @param PowerManager $powerManager Power manager
@@ -112,7 +113,8 @@ class BackupManager {
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(array $backupManagers, CommandManager $commandManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+	public function __construct(string $tmpPath, array $backupManagers, CommandManager $commandManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
+		$this->tmpPath = $tmpPath;
 		$this->backupManagers = $backupManagers;
 		$this->commandManager = $commandManager;
 		$this->powerManager = $powerManager;
@@ -146,7 +148,7 @@ class BackupManager {
 			throw new ZipEmptyException('Nothing to backup.');
 		}
 		$this->zipManager->close();
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
+		$this->commandManager->run('rm -rf ' . $this->tmpPath, true);
 		return $path;
 	}
 
@@ -198,6 +200,9 @@ class BackupManager {
 				continue;
 			}
 		}
+		if ($enabledServices === []) {
+			return;
+		}
 		$this->zipManager->addEmptyFolder('services');
 		$this->zipManager->addFileFromText('services/enabled_services', Json::encode($enabledServices));
 	}
@@ -209,8 +214,8 @@ class BackupManager {
 		if (!$this->zipManager->exist('services/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services');
-		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services'));
+		$this->zipManager->extract($this->tmpPath, 'services/enabled_services');
+		$services = Json::decode(FileSystem::read($this->tmpPath . 'services/enabled_services'));
 		foreach ($services as $service => $enabled) {
 			try {
 				if ($enabled === true) {
@@ -336,8 +341,8 @@ class BackupManager {
 		if (!$this->zipManager->exist('gateway/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
-		$restoreGwInfo = Json::decode(FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
+		$this->zipManager->extract($this->tmpPath, 'gateway/iqrf-gateway.json');
+		$restoreGwInfo = Json::decode(FileSystem::read($this->tmpPath . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
 		if ($this->gwInfo->getProperty('gwImage') !== $restoreGwInfo['gwImage']) {
 			$this->zipManager->close();
 			$this->cleanup();
@@ -349,7 +354,7 @@ class BackupManager {
 	 * Cleans up temporary backup directory
 	 */
 	private function cleanup(): void {
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
+		$this->commandManager->run('rm -rf ' . $this->tmpPath, true);
 	}
 
 }

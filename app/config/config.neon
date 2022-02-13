@@ -17,6 +17,9 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# Gateway backup
+	backup:
+		dir: '/tmp/backup'
 	# Controller configuration
 	controller:
 		# Path to directory containing IQRF Gateway Controller's configuration
@@ -37,10 +40,13 @@ parameters:
 		schemaDir: '/etc/iqrf-gateway-daemon/cfgSchemas/'
 		# URL to IQRF Gateway Daemon's WebSocket server
 		wsServer: 'ws://localhost:1338'
-	# Sentry configuration
+	# Webapp log directory
 	logDir: '/var/log/'
+	# Sentry configuration
 	sentry:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
+	# System configuration directory
+	sysConfDir: '/etc/'
 	# Translator configuration
 	translator:
 		# Path to directory containing IQRF Gateway Translator configuration

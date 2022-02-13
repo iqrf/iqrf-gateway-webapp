@@ -39,9 +39,9 @@ class HostBackup implements IBackupManager {
 	];
 
 	/**
-	 * Path to configuration directory
+	 * @var string Path to configuration directory
 	 */
-	private const CONF_PATH = '/etc/';
+	private $path;
 
 	/**
 	 * @var CommandManager Command manager
@@ -60,12 +60,14 @@ class HostBackup implements IBackupManager {
 
 	/**
 	 * Constructor
+	 * @param string $path Path to configuration directory
 	 * @param CommandManager $commandManager Command manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
+		$this->path = $path;
 		$this->commandManager = $commandManager;
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+		$this->fileManager = new PrivilegedFileManager($this->path, $commandManager);
 		$this->restoreLogger = $restoreLogger;
 	}
 
@@ -78,8 +80,8 @@ class HostBackup implements IBackupManager {
 		if (!$params['system']['hostname']) {
 			return;
 		}
-		$zipManager->addFile(self::CONF_PATH . 'hostname', 'host/hostname');
-		$zipManager->addFile(self::CONF_PATH . 'hosts', 'host/hosts');
+		$zipManager->addFile($this->path . 'hostname', 'host/hostname');
+		$zipManager->addFile($this->path . 'hosts', 'host/hosts');
 	}
 
 	/**

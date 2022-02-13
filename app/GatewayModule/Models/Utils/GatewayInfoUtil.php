@@ -26,11 +26,6 @@ use App\CoreModule\Models\JsonFileManager;
 class GatewayInfoUtil {
 
 	/**
-	 * Path to directory containing gateway file
-	 */
-	private const DIR = '/etc/';
-
-	/**
 	 * Gateway file name
 	 */
 	private const FILE_NAME = 'iqrf-gateway';
@@ -42,10 +37,11 @@ class GatewayInfoUtil {
 
 	/**
 	 * Constructor
+	 * @param string $dir Path to directory containing gateway file
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->fileManager = new JsonFileManager(self::DIR, $commandManager);
+	public function __construct(string $dir, CommandManager $commandManager) {
+		$this->fileManager = new JsonFileManager($dir, $commandManager);
 	}
 
 	/**

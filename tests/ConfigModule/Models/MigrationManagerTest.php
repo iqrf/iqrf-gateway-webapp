@@ -82,6 +82,11 @@ final class MigrationManagerTest extends TestCase {
 	private const CONFIG_TEMP_PATH_UPLOADER = TMP_DIR . '/migrated-configuration/uploader';
 
 	/**
+	 * Path to a directory with gateway file
+	 */
+	private const GATEWAY_UTIL_PATH = TESTER_DIR . '/data/gateway/';
+
+	/**
 	 * Path to a directory with correct JSON schemas
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
@@ -192,7 +197,7 @@ final class MigrationManagerTest extends TestCase {
 		$serviceManager->shouldReceive('restart');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$gwInfo = new GatewayInfoUtil($commandManager);
+		$gwInfo = new GatewayInfoUtil(self::GATEWAY_UTIL_PATH, $commandManager);
 		$mainManager = Mockery::mock(MainManager::class);
 		$mainManager->shouldReceive('getCacheDir')->andReturn(self::CACHE_TEMP_PATH);
 		$mainManager->shouldReceive('getConfigurationDir')->andReturn(self::CONFIG_TEMP_PATH);
