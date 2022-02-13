@@ -289,7 +289,7 @@ class BackupManager {
 			} elseif (Strings::startsWith($file, 'nm/')) {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'services/')) {
-				$this->isWhitelisted(['enabled_services'], $file);
+				$this->isWhitelisted(['enabled_services.json'], $file);
 			} elseif (Strings::startsWith($file, 'time/')) {
 				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'timesyncd/')) {
