@@ -25,6 +25,7 @@ use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
 use App\GatewayModule\Models\Utils\BackupUtil;
+use Nette\Utils\Strings;
 
 /**
  * Daemon backup manager
@@ -106,11 +107,11 @@ class DaemonBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring IQRF Gateway Daemon configuration, scheduler and database.');
 		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir(), $this->daemonDirectories->getDataDir() . '/DB/']);
 		foreach ($zipManager->listFiles() as $file) {
-			if (strpos($file, 'daemon/scheduler/') === 0) {
+			if (Strings::startsWith($file, 'daemon/scheduler/')) {
 				$zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
-			} elseif (strpos($file, 'daemon/DB/') === 0) {
+			} elseif (Strings::startsWith($file, 'daemon/DB/')) {
 				$zipManager->extract($this->daemonDirectories->getDataDir() . '/DB/', $file);
-			} elseif (strpos($file, 'daemon/') === 0) {
+			} elseif (Strings::startsWith($file, 'daemon/')) {
 				$zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
