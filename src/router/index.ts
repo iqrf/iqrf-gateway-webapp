@@ -64,7 +64,7 @@ const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
 const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
-const InstallRestore = () => import(/** webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
+const InstallRestore = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
 const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
 const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
