@@ -23,6 +23,7 @@ namespace App\GatewayModule\Models\Backup;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\SshManager;
+use Nette\Utils\Strings;
 
 /**
  * Webapp backup manager
@@ -118,7 +119,7 @@ class WebappBackup implements IBackupManager {
 			return;
 		}
 		foreach ($zipManager->listFiles() as $file) {
-			if (strpos($file, 'nginx/') === 0 || strpos($file, 'webapp/') === 0) {
+			if (Strings::startsWith($file, 'nginx/') || Strings::startsWith($file, 'webapp/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 			}
 		}

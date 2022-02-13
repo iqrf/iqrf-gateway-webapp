@@ -25,6 +25,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * NetworkManager backup manager
@@ -95,7 +96,7 @@ class NetworkManagerBackup implements IBackupManager {
 			$zipManager->addEmptyFolder('nm/system-connections');
 			$files = $this->fileManager->listFiles();
 			foreach ($files as $file) {
-				if (strpos($file, DIRECTORY_SEPARATOR . 'system-connections' . DIRECTORY_SEPARATOR) !== false) {
+				if (Strings::contains($file, DIRECTORY_SEPARATOR . 'system-connections' . DIRECTORY_SEPARATOR)) {
 					$name = basename($file);
 					$zipManager->addFileFromText('nm/system-connections/' . $name, $this->fileManager->read('system-connections/' . $name));
 				}
@@ -113,9 +114,9 @@ class NetworkManagerBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring NetworkManager configuration and connection profiles.');
 		foreach ($zipManager->listFiles() as $file) {
-			if (strpos($file, 'nm/') === 0) {
+			if (Strings::startsWith($file, 'nm/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
-				if (strpos($file, 'system-connections/') !== false) {
+				if (Strings::contains($file, 'system-connections/')) {
 					$this->fileManager->write('system-connections/' . basename($file), FileSystem::read(self::TMP_PATH . $file));
 				} else {
 					$this->fileManager->write(basename($file), FileSystem::read(self::TMP_PATH . $file));
