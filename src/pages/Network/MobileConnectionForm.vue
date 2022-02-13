@@ -81,16 +81,9 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CSelect
-							:value.sync='operator'
-							:label='$t("network.mobile.form.operator")'
-							:options='operatorNumbers'
-							@change='updateNumber'
-						/>
 						<CInput
 							v-model='connection.gsm.number'
 							:label='$t("network.mobile.form.number")'
-							:disabled='operator !== "other"'
 						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -117,9 +110,6 @@ limitations under the License.
 						>
 							<CInput
 								v-model='connection.gsm.username'
-								:rules='{
-									required: connection.gsm.password.length > 0
-								}'
 								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -161,7 +151,6 @@ import {CButton, CCard, CCardBody, CForm, CInput, CSelect, CSwitch} from '@coreu
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {GsmNumber} from '../../enums/Network/GsmNumber';
 import {required} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
 import NetworkConnectionService from '../../services/NetworkConnectionService';
@@ -223,7 +212,7 @@ export default class MobileConnectionForm extends Vue {
 		},
 		gsm: {
 			apn: '',
-			number: GsmNumber.O2CZ,
+			number: '',
 			username: '',
 			password: '',
 			pin: '',
@@ -231,28 +220,9 @@ export default class MobileConnectionForm extends Vue {
 	};
 
 	/**
-	 * @var {GsmNumber}
-	 */
-	private operator: GsmNumber = GsmNumber.O2CZ;
-
-	/**
 	 * @var {Array<IOption>} interfaceOptions Available GSM interfaces
 	 */
 	private interfaceOptions: Array<IOption> = [];
-
-	/**
-	 * @constant {Array<IOption>} operatorNumbers Array of operator numbers
-	 */
-	private operatorNumbers: Array<IOption> = [
-		{
-			label: this.$t('network.mobile.form.operators.O2CZ').toString(),
-			value: GsmNumber.O2CZ,
-		},
-		{
-			label: this.$t('network.mobile.form.operators.other').toString(),
-			value: GsmNumber.OTHER
-		},
-	];
 
 	/**
 	 * @property {string} uuid GSM connection ID
@@ -287,17 +257,6 @@ export default class MobileConnectionForm extends Vue {
 	 */
 	mounted(): void {
 		this.getInterfaces();
-	}
-
-	private updateNumber(): void {
-		if (this.connection.gsm === undefined) {
-			return;
-		}
-		if (this.operator === GsmNumber.OTHER) {
-			this.connection.gsm.number = '';
-		} else {
-			this.connection.gsm.number = this.operator;
-		}
 	}
 
 	/**
