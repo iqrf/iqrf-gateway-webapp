@@ -14,6 +14,35 @@
 # limitations under the License.
 
 services:
+	- App\GatewayModule\Models\Backup\RestoreLogger
+	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%controller.configDir%)
+	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
+	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
+	hostBackup: App\GatewayModule\Models\Backup\HostBackup
+	journalBackup: App\GatewayModule\Models\Backup\JournalBackup
+	menderBackup: App\GatewayModule\Models\Backup\MenderBackup
+	monitBackup: App\GatewayModule\Models\Backup\MonitBackup
+	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup
+	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
+	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup
+	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%)
+	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%)
+	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%confDir%)
+	- App\GatewayModule\Models\BackupManager([
+		@controllerBackup,
+		@daemonBackup,
+		@hostBackup,
+		@journalBackup,
+		@menderBackup,
+		@monitBackup,
+		@networkManagerBackup,
+		@timeBackup,
+		@timesyncdBackup,
+		@translatorBackup,
+		@uploaderBackup,
+		@webappBackup,
+		@gatewayFileBackup
+	])
 	certificateFileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
 		autowired: false

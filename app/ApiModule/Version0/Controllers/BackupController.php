@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers\Config;
+namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
@@ -29,68 +29,79 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
-use App\ConfigModule\Exceptions\IncompleteConfigurationException;
-use App\ConfigModule\Exceptions\NotDaemonConfigurationException;
-use App\ConfigModule\Models\MigrationManager;
+use App\CoreModule\Exceptions\ZipEmptyException;
+use App\GatewayModule\Exceptions\InvalidBackupContentException;
+use App\GatewayModule\Models\BackupManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
+use JsonException;
 use Nette\Utils\FileSystem;
-use Nette\Utils\JsonException;
 
 /**
- * Configuration migration controller
- * @Path("/daemon/migration")
- * @Tag("IQRF Gateway Daemon configuration migration")
+ * Backup controller
+ * @Path("/maintenance")
+ * @Tag("Backup & Restore")
  */
-class MigrationController extends BaseConfigController {
+class BackupController extends BaseController{
 
 	/**
-	 * @var MigrationManager Configuration migration manager
+	 * @var BackupManager Backup manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param MigrationManager $manager Configuration migration manager
+	 * @param BackupManager $manager Backup manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MigrationManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(BackupManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/export")
-	 * @Method("GET")
+	 * @Path("/backup")
+	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Exports the configuration
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Backup gateway
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *  responses:
+	 *      '200':
+	 *          description: 'Success'
+	 *          content:
+	 *              application/zip:
+	 *                 schema:
+	 *                     type: string
+	 *                     format: binary
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('gatewayBackup', $request);
+		try {
+			$filePath = $this->manager->backup($request->getJsonBody(true));
+			$fileName = basename($filePath);
+			$response->writeBody(FileSystem::read($filePath));
+			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+		} catch (ZipEmptyException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		}
 	}
 
 	/**
-	 * @Path("/import")
+	 * @Path("/restore")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Imports the configuration
+	 *  summary: Restore gateway from backup
 	 *  requestBody:
 	 *      required: true
 	 *      content:
@@ -100,7 +111,11 @@ class MigrationController extends BaseConfigController {
 	 *                  format: binary
 	 *  responses:
 	 *      '200':
-	 *          description: 'Success'
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/PowerControl'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '415':
@@ -110,24 +125,22 @@ class MigrationController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
 		ContentTypeUtil::validContentType($request, $contentTypes);
-		$path = '/tmp/iqrf-gateway-configuration-upload.zip';
+		$path = '/tmp/iqrf-gateway-backup-upload.zip';
 		FileSystem::write($path, $request->getBody()->getContents());
 		try {
-			$this->manager->extractArchive($path);
+			$reboot = $this->manager->restore($path);
+			FileSystem::delete($path);
+			return $response->writeJsonBody($reboot);
+		} catch (InvalidBackupContentException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (IncompleteConfigurationException $e) {
-			throw new ClientErrorException('Incomplete configuration', ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (NotDaemonConfigurationException $e) {
-			throw new ClientErrorException('Invalid daemon configuration file', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
-		FileSystem::delete($path);
-		return $response->writeBody('Workaround');
 	}
 
 }

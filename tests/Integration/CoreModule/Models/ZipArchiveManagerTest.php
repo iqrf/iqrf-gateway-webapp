@@ -117,6 +117,21 @@ final class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to check if the directory exists in the archive (a non-existing dir)
+	 */
+	public function testExistNonExistingDir(): void {
+		Assert::false($this->manager->exist('nonsense/'));
+	}
+
+
+	/**
+	 * Tests the function to check if the directory exists in the archive (a single file)
+	 */
+	public function testExistDir(): void {
+		Assert::true($this->manager->exist('daemon/'));
+	}
+
+	/**
 	 * Tests the function to check if the file(s) exist(s) in the archive (a non-existing file)
 	 */
 	public function testExistNonExistingFile(): void {

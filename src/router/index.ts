@@ -64,6 +64,7 @@ const TrUpload = () => import(/* webpackChunkName: "iqrfNet" */ '@/pages/IqrfNet
 const InstallationBase = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationBase.vue');
 const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallationWizard.vue');
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
+const InstallRestore = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
 const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
 const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
@@ -76,7 +77,6 @@ const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pa
 const DaemonDisambiguation = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/DaemonDisambiguation.vue');
 const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/Interfaces.vue');
 const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
-const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
@@ -110,6 +110,7 @@ const WireguardTunnels = () => import(/* webpackChunkName: "network" */ '@/pages
 const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/Network/WireguardTunnel.vue');
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
+const BackupRestore = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/BackupRestore.vue');
 const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
 const MenderDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderDisambiguation.vue');
 const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
@@ -180,6 +181,10 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallGatewayInfo,
 				path: 'gateway-info',
+			},
+			{
+				component: InstallRestore,
+				path: 'restore',
 			},
 			{
 				component: MissingMigration,
@@ -705,10 +710,6 @@ const routes: Array<RouteConfig> = [
 						component: SmtpCOnfiguration,
 						path: 'smtp',
 					},
-					{
-						component: ConfigMigration,
-						path: 'migration',
-					},
 				]
 			},
 			{
@@ -931,6 +932,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: MaintenanceDisambiguation,
 						path: '',
+					},
+					{
+						component: BackupRestore,
+						path: 'backup-restore',
 					},
 					{
 						component: PixlaControl,

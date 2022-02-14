@@ -18,13 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\ConfigModule\Exceptions;
+namespace App\GatewayModule\Models\Backup;
 
-use Exception;
+use Contributte\Monolog\LoggerManager;
 
 /**
- * Exception indicating that a zip archive is empty
+ * Logger wrapper for backup and restore process
  */
-class ZipEmptyException extends Exception {
+class RestoreLogger {
+
+	/**
+	 * @var LoggerManager $loggerManager Logger manager
+	 */
+	private $loggerManager;
+
+	/**
+	 * @param LoggerManager $loggerManager Logger manager
+	 */
+	public function __construct(LoggerManager $loggerManager) {
+		$this->loggerManager = $loggerManager;
+	}
+
+	/**
+	 * Logs a message
+	 * @param string $message Message to log
+	 */
+	public function log(string $message): void {
+		$this->loggerManager->get('restore')->notice($message);
+	}
 
 }

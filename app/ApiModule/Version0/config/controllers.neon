@@ -15,6 +15,7 @@
 
 services:
 	- App\ApiModule\Version0\Controllers\ApiKeyController
+	- App\ApiModule\Version0\Controllers\BackupController
 	- App\ApiModule\Version0\Controllers\CertificateController
 	- App\ApiModule\Version0\Controllers\Cloud\AwsController
 	- App\ApiModule\Version0\Controllers\Cloud\AzureController
@@ -26,7 +27,6 @@ services:
 	- App\ApiModule\Version0\Controllers\Config\DaemonController
 	- App\ApiModule\Version0\Controllers\Config\IqrfRepositoryController
 	- App\ApiModule\Version0\Controllers\Config\MailerController
-	- App\ApiModule\Version0\Controllers\Config\MigrationController
 	- App\ApiModule\Version0\Controllers\Config\MonitController
 	- App\ApiModule\Version0\Controllers\Config\TranslatorController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController

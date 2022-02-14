@@ -1,0 +1,91 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json",
+	"type": "object",
+	"title": "Gateway backup",
+	"required": [
+		"software",
+		"system"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"software": {
+			"$id": "#/properties/software",
+			"title": "Software backup",
+			"description": "Select which software configuration to backup.",
+			"type": "object",
+			"required": [
+				"iqrf",
+				"mender",
+				"monit",
+				"pixla"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"iqrf": {
+					"$id": "#/properties/software/properties/iqrf",
+					"title": "IQRF Software",
+					"description": "Controller, Daemon, Translator, Webapp and Uploader if available.",
+					"type": "boolean"
+				},
+				"mender": {
+					"$id": "#/properties/software/properties/mender",
+					"title": "Mender",
+					"description": "Mender configuration.",
+					"type": "boolean"
+				},
+				"monit": {
+					"$id": "#/properties/software/properties/monit",
+					"title": "Monit",
+					"description": "Monit configuration.",
+					"type": "boolean"
+				},
+				"pixla": {
+					"$id": "#/properties/software/properties/pixla",
+					"title": "PIXLA",
+					"description": "PIXLA configuration.",
+					"type": "boolean"
+				}
+			}
+		},
+		"system": {
+			"$id": "#/properties/system",
+			"title": "System backup",
+			"description": "Select which system configuration to backup.",
+			"type": "object",
+			"required": [
+				"hostname",
+				"network",
+				"time",
+				"journal"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"hostname": {
+					"$id": "#/properties/system/hostname",
+					"title": "Hostname",
+					"description": "Hostname and hosts configuration.",
+					"type": "boolean"
+				},
+				"network": {
+					"$id": "#/properties/system/network",
+					"title": "NetworkManager",
+					"description": "NetworkManager configuration and connection profiles.",
+					"type": "boolean"
+				},
+				"time": {
+					"$id": "#/properties/system/time",
+					"title": "Time",
+					"description": "Timezone and NTP configuration.",
+					"type": "boolean"
+				},
+				"journal": {
+					"$id": "#/properties/system/metadata",
+					"title": "Systemd journald",
+					"description": "Systemd journald configuration.",
+					"type": "boolean"
+				}
+			}
+		}
+	}
+}

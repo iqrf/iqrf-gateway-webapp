@@ -18,43 +18,37 @@
  */
 declare(strict_types = 1);
 
-namespace App\CoreModule\Models;
+namespace App\GatewayModule\Models\Backup;
 
-use Nette\IOException;
+use App\CoreModule\Models\ZipArchiveManager;
 
 /**
- * File manager interface
+ * Interface for backup managers
  */
-interface IFileManager {
+interface IBackupManager {
 
 	/**
-	 * Deletes the file
-	 * @param string $fileName File name
-	 * @throws IOException
+	 * Temporary backup directory
 	 */
-	public function delete(string $fileName): void;
+	public const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * Checks if the file exists
-	 * @param string $fileName File name
-	 * @return bool Is file exists?
+	 * Performs backup
+	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function exists(string $fileName): bool;
+	public function backup(array $params, ZipArchiveManager $zipManager): void;
 
 	/**
-	 * Reads the file
-	 * @param string $fileName File name
-	 * @return mixed File content
-	 * @throws IOException
+	 * Performs restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
-	public function read(string $fileName);
+	public function restore(ZipArchiveManager $zipManager): void;
 
 	/**
-	 * Writes into the file
-	 * @param string $fileName File name
-	 * @param mixed $content File content
-	 * @throws IOException
+	 * Returns service names
+	 * @return array<string> Service names
 	 */
-	public function write(string $fileName, $content): void;
+	public function getServices(): array;
 
 }

@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * Privileged file manager
@@ -44,7 +46,7 @@ class PrivilegedFileManager implements IFileManager {
 	 */
 	public function __construct(string $directory, CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->directory = $directory;
+		$this->directory = rtrim(Strings::replace($directory, '~\'~', '\\\''), '/');
 	}
 
 	/**
@@ -54,7 +56,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function read(string $fileName): string {
-		$command = $this->commandManager->run('cat ' . $this->directory . '/' . $fileName, true);
+		$command = $this->commandManager->run('cat ' . $this->buildPath($fileName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -67,10 +69,19 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
-		$command = $this->commandManager->run('rm -rf ' . $this->directory . '/' . $fileName, true);
+		$command = $this->commandManager->run('rm -rf ' . $this->buildPath($fileName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
+	}
+	/**
+	 * Checks if the file exists
+	 * @param string $fileName File name
+	 * @return bool Is file exists?
+	 */
+	public function exists(string $fileName): bool {
+		$command = $this->commandManager->run('test -f ' . $this->buildPath($fileName), true);
+		return $command->getExitCode() === 0;
 	}
 
 	/**
@@ -80,10 +91,60 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
-		$command = $this->commandManager->run('tee ' . $this->directory . '/' . $fileName, true, 60, $content);
+		$dirName = dirname($fileName);
+		if ($dirName === '.') {
+			$dirName = '';
+		}
+		$command = $this->commandManager->run('mkdir -p ' . $this->buildPath($dirName), true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
+		$command = $this->commandManager->run('tee ' . $this->buildPath($fileName), true, 60, $content);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Copies file to a destination
+	 * @param string $destination Destination path
+	 * @param string $fileName Source file path
+	 */
+	public function copy(string $destination, string $fileName): void {
+		$this->write($destination, FileSystem::read($fileName));
+	}
+
+	/**
+	 * Returns list of subdirectories in directory
+	 * @return array<int, string> List of directories
+	 */
+	public function listDirectories(): array {
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type d', true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+		return explode(PHP_EOL, $command->getStdout());
+	}
+
+	/**
+	 * Returns list of files in directory
+	 * @return array<int, string> List of files
+	 */
+	public function listFiles(): array {
+		$command = $this->commandManager->run('find ' . $this->directory . ' -type f', true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+		return explode(PHP_EOL, $command->getStdout());
+	}
+
+	/**
+	 * Returns path to subdirectory or file, if the path contains spaces, returned string is surrounded in quotation marks
+	 * @param string $name Name of subdirectory or file
+	 * @return string Path to subdirectory or file
+	 */
+	private function buildPath(string $name): string {
+		return '\'' . $this->directory . '/' . Strings::replace($name, '~\'~', '\\\'') . '\'';
 	}
 
 }

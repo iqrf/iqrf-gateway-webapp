@@ -335,12 +335,6 @@ export default class TheSidebar extends Vue {
 								to: '/config/smtp/',
 								roles: ['power', 'normal'],
 							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('config.migration.title'),
-								to: '/config/migration/',
-								roles: ['power', 'normal'],
-							}
 						],
 					},
 					{
@@ -458,6 +452,12 @@ export default class TheSidebar extends Vue {
 						icon: {content: cilSync},
 						roles: ['power', 'normal'],
 						_children: [
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('maintenance.backup.title'),
+								to: '/maintenance/backup-restore/',
+								roles: ['power', 'normal', 'iqaros'],
+							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.pixla.title'),
