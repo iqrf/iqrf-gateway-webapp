@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
@@ -113,13 +112,11 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	private function recreateDirectories(array $dirs): void {
 		$user = posix_getpwuid(posix_geteuid());
 		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
-		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(true, $commandStack);
 		foreach ($dirs as $dir) {
-			$commandManager->run('rm -rf ' . $dir, true);
-			$commandManager->run('mkdir ' . $dir, true);
-			$commandManager->run('chown ' . $owner . ' ' . $dir, true);
-			$commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
+			$this->commandManager->run('rm -rf ' . $dir, true);
+			$this->commandManager->run('mkdir ' . $dir, true);
+			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
+			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
 	}
 
