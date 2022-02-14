@@ -23,13 +23,11 @@ namespace App\GatewayModule\Models\Backup;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\GatewayModule\Models\Utils\BackupUtil;
-use Nette\Utils\FileSystem;
 
 /**
  * Controller backup manager
  */
-class ControllerBackup implements IBackupManager {
+class ControllerBackup extends IqrfSoftwareBackup {
 
 	/**
 	 * List of whitelisted files
@@ -46,24 +44,19 @@ class ControllerBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to controller configuration directory;
+	 * ZIP directory
 	 */
-	private $path;
+	private const DIR = 'controller';
 
 	/**
-	 * @var bool Indicates whether feature is enabled
+	 * Feature name
 	 */
-	private $featureEnabled;
+	private const FEATURE = 'iqrfGatewayController';
 
 	/**
-	 * @var CommandManager Command manager
+	 * Software name
 	 */
-	private $commandManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private $restoreLogger;
+	private const SOFTWARE = 'IQRF Gateway Controller';
 
 	/**
 	 * Constructor
@@ -73,10 +66,7 @@ class ControllerBackup implements IBackupManager {
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->path = $path;
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('iqrfGatewayController')['enabled'];
+		parent::__construct(self::SOFTWARE, self::DIR, self::FEATURE, $path, $commandManager, $featureManager, $restoreLogger);
 	}
 
 	/**
@@ -85,12 +75,7 @@ class ControllerBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['iqrf'] || !$this->featureEnabled) {
-			return;
-		}
-		if (file_exists($this->path)) {
-			$zipManager->addFolder($this->path, 'controller');
-		}
+		parent::backup($params, $zipManager);
 	}
 
 	/**
@@ -98,14 +83,7 @@ class ControllerBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('controller/') || !$this->featureEnabled) {
-			return;
-		}
-		$this->restoreLogger->log('Restoring IQRF Gateway Controller configuration.');
-		BackupUtil::recreateDirectories([$this->path]);
-		$zipManager->extract($this->path, 'controller/config.json');
-		$this->commandManager->run('cp -p ' . $this->path . 'controller/config.json ' . $this->path . 'config.json', true);
-		FileSystem::delete($this->path . 'controller');
+		parent::restore($zipManager);
 	}
 
 	/**

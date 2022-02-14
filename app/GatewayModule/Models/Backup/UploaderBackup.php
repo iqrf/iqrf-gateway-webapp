@@ -21,14 +21,13 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\GatewayModule\Models\Utils\BackupUtil;
-use Nette\Utils\FileSystem;
 
 /**
  * Uploader backup manager
  */
-class UploaderBackup implements IBackupManager {
+class UploaderBackup extends IqrfSoftwareBackup {
 
 	/**
 	 * List of whitelisted files
@@ -38,30 +37,29 @@ class UploaderBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to uploader configuration directory
+	 * ZIP directory
 	 */
-	private $path;
+	private const DIR = 'uploader';
 
 	/**
-	 * @var CommandManager Command manager
+	 * Feature name
 	 */
-	private $commandManager;
+	private const FEATURE = 'trUpload';
 
 	/**
-	 * @var RestoreLogger Restore logger
+	 * Software name
 	 */
-	private $restoreLogger;
+	private const SOFTWARE = 'IQRF Gateway Uploader';
 
 	/**
 	 * Constructor
-	 * @param string $path Path to uploader configuration directory
+	 * @param string $path Path to Uploader configuration directory
 	 * @param CommandManager $commandManager Command manager
+	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager, RestoreLogger $restoreLogger) {
-		$this->path = $path;
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		parent::__construct(self::SOFTWARE, self::DIR, self::FEATURE, $path, $commandManager, $featureManager, $restoreLogger);
 	}
 
 	/**
@@ -70,12 +68,7 @@ class UploaderBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['iqrf']) {
-			return;
-		}
-		if (file_exists($this->path)) {
-			$zipManager->addFolder($this->path, 'uploader');
-		}
+		parent::backup($params, $zipManager);
 	}
 
 	/**
@@ -83,14 +76,7 @@ class UploaderBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('uploader/')) {
-			return;
-		}
-		$this->restoreLogger->log('Restoring IQRF Gateway Uploader configuration.');
-		BackupUtil::recreateDirectories([$this->path]);
-		$zipManager->extract($this->path, 'uploader/config.json');
-		$this->commandManager->run('cp -p ' . $this->path . 'uploader/config.json ' . $this->path . 'config.json', true);
-		FileSystem::delete($this->path . 'uploader');
+		parent::restore($zipManager);
 	}
 
 	/**
