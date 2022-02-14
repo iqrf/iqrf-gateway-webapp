@@ -23,13 +23,11 @@ namespace App\GatewayModule\Models\Backup;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\GatewayModule\Models\Utils\BackupUtil;
-use Nette\Utils\FileSystem;
 
 /**
  * Translator backup manager
  */
-class TranslatorBackup implements IBackupManager {
+class TranslatorBackup extends IqrfSoftwareBackup {
 
 	/**
 	 * List of whitelisted files
@@ -46,37 +44,29 @@ class TranslatorBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to translator configuration directory
+	 * ZIP directory
 	 */
-	private $path;
+	private const DIR = 'translator';
 
 	/**
-	 * @var bool Indicates whether feature is enabled
+	 * Feature name
 	 */
-	private $featureEnabled;
+	private const FEATURE = 'iqrfGatewayTranslator';
 
 	/**
-	 * @var CommandManager Command manager
+	 * Software name
 	 */
-	private $commandManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private $restoreLogger;
+	private const SOFTWARE = 'IQRF Gateway Translator';
 
 	/**
 	 * Constructor
-	 * @param string $path Path to translator configuration directory
+	 * @param string $path Path to Translator configuration directory
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->path = $path;
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('iqrfGatewayTranslator')['enabled'];
+		parent::__construct(self::SOFTWARE, self::DIR, self::FEATURE, $path, $commandManager, $featureManager, $restoreLogger);
 	}
 
 	/**
@@ -85,27 +75,15 @@ class TranslatorBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['software']['iqrf'] || !$this->featureEnabled) {
-			return;
-		}
-		if (file_exists($this->path)) {
-			$zipManager->addFolder($this->path, 'translator');
-		}
+		parent::backup($params, $zipManager);
 	}
 
 	/**
-	 * Performs Translator restore3
+	 * Performs Translator restore
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('translator/') || !$this->featureEnabled) {
-			return;
-		}
-		$this->restoreLogger->log('Restoring IQRF Gateway Translator configuration.');
-		BackupUtil::recreateDirectories([$this->path]);
-		$zipManager->extract($this->path, 'translator/config.json');
-		$this->commandManager->run('cp -p ' . $this->path . 'translator/config.json ' . $this->path . 'config.json', true);
-		FileSystem::delete($this->path . 'translator');
+		parent::restore($zipManager);
 	}
 
 	/**
