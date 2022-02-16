@@ -117,8 +117,8 @@ class DaemonBackup implements IBackupManager {
 				$zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . 'DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . 'DB', true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . 'DB/daemon', true);
+		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . '/DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . '/DB', true);
+		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . '/DB/daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
