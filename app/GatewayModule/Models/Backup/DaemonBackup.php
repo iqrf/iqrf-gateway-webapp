@@ -107,7 +107,13 @@ class DaemonBackup implements IBackupManager {
 			return;
 		}
 		$this->restoreLogger->log('Restoring IQRF Gateway Daemon configuration, scheduler and database.');
-		BackupUtil::recreateDirectories([$this->daemonDirectories->getConfigurationDir(), $this->daemonDirectories->getDataDir() . '/DB/']);
+		BackupUtil::recreateDirectories([
+			$this->daemonDirectories->getConfigurationDir(),
+			$this->daemonDirectories->getDataDir() . '/DB/',
+		]);
+		$user = posix_getpwuid(posix_geteuid());
+		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->daemonDirectories->getCacheDir(), true);
 		foreach ($zipManager->listFiles() as $file) {
 			if (Strings::startsWith($file, 'daemon/scheduler/')) {
 				$zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
@@ -119,8 +125,8 @@ class DaemonBackup implements IBackupManager {
 		}
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . '/DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . '/DB', true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . '/DB/daemon', true);
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
+		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . '/daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . '/scheduler', true);
+		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . '/daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
 		$this->fixPrivileges();
