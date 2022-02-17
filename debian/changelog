@@ -1,10 +1,80 @@
-iqrf-gateway-webapp (2.4.2~alpha~1.gbp815f7e) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.2) stable; urgency=medium
 
-  ** SNAPSHOT build @815f7e14e2c02aded07b73f73f1ddf967b65025f **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.2-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Docker: add missing sockets PHP extension to backend image
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 05 Feb 2022 14:53:55 +0100
+  [ Karel Hanák ]
+  * debian package: updated feature patch for iqd-gw-01
+  * fontawesome: force latest packages
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * StyleLint: fix configuration, fix coding style
+
+  [ Karel Hanák ]
+  * DiagnosticsManager: added syslog
+  * refactor password input icon visibility logic
+
+  [ Roman Ondráček ]
+  * Makefile: remove unused configuration directory
+  * Kernel: fix path to IQRF Repository configuration file
+  * Config: fix IQRF Repository configuration manager, add missing tests for it
+
+  [ Karel Hanák ]
+  * DiagnosticsManager: fixed webapp log dir path
+  * Sidebar: hide entries for iqaros role
+  * MobileConnectionForm: removed operator select
+  * Gateway: backup and restore feature base, controller, manager, frontend components and services
+  * Gateway backup: simplified api request and schema, updated interfaces and localization, backend refactor
+  * BackupController and BackupManager: fixed coding style
+  * BackupManager: close archive on error, fixed features
+  * BackupManager: fixed database file backup and restore
+  * BackupManager: fixed daemon directories ownership
+  * BackupManager: use tmp to store data on fs before replacing old files; ZipManager: added recursive path creation for addFile
+  * Gateway backup: refactor into classes, use PrivilegedFileManager
+  * NetworkManagerBackup: fixed NM restore
+  * DaemonBackup: added IqrfInfo to backup archive, fixed inclusin of certificates
+  * GatewayBackup: updated backup classes, simplified BackupManager, reworked PrivilegedFileManager list files
+  * Gateway backup: include services, move auxiliary information to classes
+  * GatewayBackup: configure select daemon components according to gwid
+  * GatewayBackup: fixed errors in DaemonBackup and auxiliary BackupUtil; ZipArchiveManager: fixed folder creation
+  * ZipArchiveManager: fixed code for phpstan
+  * GatewayBackup: reboot gateway on restore, updated frontend localization
+  * GatewayBackup: fixed journal and ntp backup and restoration, removed old migration component
+  * GatewayBackup: unify ntp and journal configuration
+  * GatewayBackup: update daemon backup, fix permissions; PrivilegedFileManager: updated listFiles, added listDirectories
+  * PrivilegedFileManager: added handling for files containing whitespaces
+  * PrivilegedFileManager: run commands to list directories and files with sudo
+  * Gateway backup: added ssh service, timezone, fixed ntp and journal restore, daemon error handling
+  * ZipArchiveManager: removed debug prints; BackupManager: fixed image version check; extended restore request timeout
+  * GatewayBackup: pass managers through DI
+  * GatewayBackup: use DI to pass backup classes
+  * GatewayBackup: moved to maintenance, added restore logging, updated frontend
+  * GatewayBackup: restore SSH keys, updated frontend
+  * GatewayBackup: added feature check before backup and restore, fixed codestyle, fixed frontend translations and disambiguation entries
+  * GatewayBackup: updated ntp to timesync, split backup and restore to separate components, added restore to installation wizard
+  * WebappBackup: fixed dir path
+  * RestoreComponent: redirect to root
+  * MonitBackup: fixed restore condition; fixed spinner for restore in install wizard
+
+  [ Roman Ondráček ]
+  * Core: add basic tests for privileged file manager
+
+  [ Karel Hanák ]
+  * router: fixed webpack chunk for installer restore component
+  * GatewayBackup: use Nette utilities instead of base functions for better readability
+  * GatewayBackup: refactoring backup managers, removed migration controller and manager
+  * BackupManager: fixed enabled services whitelist
+  * GatewayBackup: added abstract class for backup and restore of IQRF software
+  * IqrfSoftwareBackup: use class member command manager
+  * DaemonBackup: fixed db restore path
+  * DaemonBackup: update owner of cache dir
+  * iqaros: updated features patch
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 17 Feb 2022 13:26:35 +0100
 
 iqrf-gateway-webapp (2.4.1) stable; urgency=medium
 
