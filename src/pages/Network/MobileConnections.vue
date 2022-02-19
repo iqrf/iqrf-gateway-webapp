@@ -91,12 +91,16 @@ limitations under the License.
 				</CCardBody>
 			</div>
 		</CCard>
+		<CCard body-wrapper>
+			<NetworkOperators />
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import NetworkOperators from '../../components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -116,6 +120,7 @@ import {IModem, NetworkConnection} from '../../interfaces/network';
 		CDataTable,
 		CIcon,
 		CProgress,
+		NetworkOperators,
 	},
 	metaInfo: {
 		title: 'network.mobile.title',

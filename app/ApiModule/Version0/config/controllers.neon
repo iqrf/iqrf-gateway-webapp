@@ -51,6 +51,7 @@ services:
 	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
 	- App\ApiModule\Version0\Controllers\Network\GsmController
 	- App\ApiModule\Version0\Controllers\Network\InterfacesController
+	- App\ApiModule\Version0\Controllers\Network\OperatorController
 	- App\ApiModule\Version0\Controllers\Network\WifiController
 	- App\ApiModule\Version0\Controllers\Network\WireguardController
 	- App\ApiModule\Version0\Controllers\OpenApiController
