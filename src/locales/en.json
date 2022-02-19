@@ -168,7 +168,8 @@
 			"clientId": "Please enter the client ID.",
 			"requestTopic": "Please enter the topic for requests.",
 			"responseTopic": "Please enter the topic for responses.",
-			"integer": "This parameter should be an integer."
+			"integer": "This parameter should be an integer.",
+			"credentials": "Please enter both username and password, or leave both fields empty."
 		},
 		"import": "Import",
 		"export": "Export",
@@ -2770,6 +2771,41 @@
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
 				"removeFailed": "Failed to delete network connection {connection}: {error}"
+			}
+		},
+		"operators": {
+			"title": "Network operators",
+			"apply": "Apply operator",
+			"edit": "Edit operator",
+			"delete": "Remove operator",
+			"form": {
+				"add": "Add network operator",
+				"edit": "Edit network operator",
+				"name": "Operator name",
+				"code": "Operator MCC-MCN code",
+				"apn": "Access Point Name (APN)",
+				"username": "APN username",
+				"password": "APN password"
+			},
+			"modal": {
+				"title": "Network operator delete confirmation",
+				"prompt": "Are you sure you want to delete network operator {name}?"
+			},
+			"errors": {
+				"apnRequired": "Please enter network operator APN.",
+				"codeDigits": "MCC-MNC code should be 5 digits long.",
+				"codeRequired": "Please enter network operator code.",
+				"nameRequired": "Please enter network operator name."
+			},
+			"messages": {
+				"addFailed": "Failed to add new network operator: {error}.",
+				"addSuccess": "New network operator {operator} has been successfully added.",
+				"deleteFailed": "Failed to delete network operator {name}: {error}.",
+				"deleteSuccess": "Network operator {operator} has been successfully deleted.",
+				"editFailed": "Failed to edit network operator {operator}: {error}.",
+				"editSuccess": "Network operator {operator} has been successfully edited.",
+				"getFailed": "Failed to retrieve network operator configuration: {error}.",
+				"listFailed": "Failed to retrieve list of available network operators: {error}."
 			}
 		},
 		"table": {
