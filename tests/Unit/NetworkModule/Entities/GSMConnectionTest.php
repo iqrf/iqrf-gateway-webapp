@@ -50,11 +50,6 @@ final class GSMConnectionTest extends TestCase {
 	private const APN = 'internet';
 
 	/**
-	 * GSM number to dial
-	 */
-	private const NUMBER = '*99#';
-
-	/**
 	 * Username
 	 */
 	private const USERNAME = 'testuser';
@@ -83,8 +78,8 @@ final class GSMConnectionTest extends TestCase {
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new GSMConnection(self::APN, self::NUMBER, self::USERNAME, self::PASSWORD, self::PIN);
-		$this->nullEntity = new GSMConnection(self::APN, self::NUMBER);
+		$this->entity = new GSMConnection(self::APN, self::USERNAME, self::PASSWORD, self::PIN);
+		$this->nullEntity = new GSMConnection(self::APN);
 	}
 
 	/**
@@ -93,7 +88,6 @@ final class GSMConnectionTest extends TestCase {
 	public function testJsonDeserialize(): void {
 		$connection = ArrayHash::from([
 			'apn' => self::APN,
-			'number' => self::NUMBER,
 			'username' => self::USERNAME,
 			'password' => self::PASSWORD,
 			'pin' => self::PIN,
@@ -109,7 +103,6 @@ final class GSMConnectionTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$expected = [
 			'apn' => self::APN,
-			'number' => self::NUMBER,
 			'username' => self::USERNAME,
 			'password' => self::PASSWORD,
 			'pin' => self::PIN,
@@ -131,9 +124,9 @@ final class GSMConnectionTest extends TestCase {
 	 * Tests the function to serialize GSM connection entity to nmcli connection configuration
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = sprintf('gsm.apn "%s" gsm.number "%s" gsm.username "%s" gsm.password "%s" gsm.pin "%s" ', self::APN, self::NUMBER, self::USERNAME, self::PASSWORD, self::PIN);
+		$expected = sprintf('gsm.apn "%s" gsm.username "%s" gsm.password "%s" gsm.pin "%s" ', self::APN, self::USERNAME, self::PASSWORD, self::PIN);
 		Assert::same($expected, $this->entity->nmCliSerialize());
-		$expected = sprintf('gsm.apn "%s" gsm.number "%s" gsm.username "" gsm.password "" gsm.pin "" ', self::APN, self::NUMBER);
+		$expected = sprintf('gsm.apn "%s" gsm.username "" gsm.password "" gsm.pin "" ', self::APN);
 		Assert::same($expected, $this->nullEntity->nmCliSerialize());
 	}
 

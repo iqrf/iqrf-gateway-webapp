@@ -571,14 +571,12 @@
 			"type": "object",
 			"example": {
 				"apn": "internet",
-				"number": "*99#",
 				"pin": "1234",
 				"username": "gsmuser",
 				"password": "gsmpassword"
 			},
 			"required": [
 				"apn",
-				"number",
 				"pin",
 				"username",
 				"password"
@@ -590,12 +588,6 @@
 					"title": "Access point name",
 					"type": "string",
 					"example": "internet"
-				},
-				"number": {
-					"$id": "#/properties/gsm/properties/number",
-					"title": "Number to dial",
-					"type": "string",
-					"example": "*99#"
 				},
 				"pin": {
 					"$id": "#/properties/gsm/properties/pin",

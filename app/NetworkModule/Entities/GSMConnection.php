@@ -39,11 +39,6 @@ final class GSMConnection implements INetworkManagerEntity {
 	private $apn;
 
 	/**
-	 * @var string GSM number
-	 */
-	private $number;
-
-	/**
 	 * @var string|null Username
 	 */
 	private $username;
@@ -61,14 +56,12 @@ final class GSMConnection implements INetworkManagerEntity {
 	/**
 	 * Constructor
 	 * @param string $apn Access point name
-	 * @param string $number Number
 	 * @param string|null $username Username
 	 * @param string|null $password Password
 	 * @param string|null $pin SIM PIN
 	 */
-	public function __construct(string $apn, string $number, ?string $username = null, ?string $password = null, ?string $pin = null) {
+	public function __construct(string $apn, ?string $username = null, ?string $password = null, ?string $pin = null) {
 		$this->apn = $apn;
-		$this->number = $number;
 		$this->username = $username;
 		$this->password = $password;
 		$this->pin = $pin;
@@ -80,7 +73,7 @@ final class GSMConnection implements INetworkManagerEntity {
 	 * @return GSMConnection GSM connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		return new self($json->apn, $json->number, $json->username, $json->password, $json->pin);
+		return new self($json->apn, $json->username, $json->password, $json->pin);
 	}
 
 	/**
@@ -90,7 +83,6 @@ final class GSMConnection implements INetworkManagerEntity {
 	public function jsonSerialize(): array {
 		return [
 			'apn' => $this->apn,
-			'number' => $this->number,
 			'username' => $this->username,
 			'password' => $this->password,
 			'pin' => $this->pin,
@@ -107,7 +99,7 @@ final class GSMConnection implements INetworkManagerEntity {
 		$username = $array['username'] ?? null;
 		$password = $array['password'] ?? null;
 		$pin = $array['pin'] ?? null;
-		return new self($array['apn'], $array['number'], $username, $password, $pin);
+		return new self($array['apn'], $username, $password, $pin);
 	}
 
 	/**
