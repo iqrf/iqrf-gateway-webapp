@@ -28,7 +28,7 @@ limitations under the License.
 			<CDropdown
 				v-for='(operator, i) of operators'
 				:key='i'
-				:toggler-text='operator.name'
+				:toggler-text='operator.getName()'
 				color='primary'
 				placement='top-start'
 			>
@@ -67,6 +67,8 @@ import NetworkOperatorForm from './NetworkOperatorForm.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 
+import NetworkOperator from '../../entities/NetworkOperator';
+
 import NetworkOperatorService from '../../services/NetworkOperatorService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -93,7 +95,7 @@ export default class NetworkOperators extends Vue {
 	/**
 	 * @var {Array<IOperator>} operators Array of network operators
 	 */
-	private operators: Array<IOperator> = [];
+	private operators: Array<NetworkOperator> = [];
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of icons
@@ -117,7 +119,13 @@ export default class NetworkOperators extends Vue {
 	 */
 	private getOperators(): Promise<void> {
 		return NetworkOperatorService.getOperators()
-			.then((rsp: AxiosResponse) => this.operators = rsp.data)
+			.then((rsp: AxiosResponse) => {
+				let operators: Array<NetworkOperator> = [];
+				rsp.data.forEach((operator: IOperator) => {
+					operators.push(new NetworkOperator(operator));
+				});
+				this.operators = operators;
+			})
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.listFailed'));
 	}
 
@@ -133,7 +141,7 @@ export default class NetworkOperators extends Vue {
 	 * @param {number} idx Operator index
 	 */
 	private editOperator(idx: number): void {
-		const id = this.operators[idx].id!;
+		const id = this.operators[idx].getId();
 		(this.$refs.operatorForm as NetworkOperatorForm).activateModal(id);
 	}
 
@@ -142,8 +150,8 @@ export default class NetworkOperators extends Vue {
 	 * @param {number} idx Operator index
 	 */
 	private deleteOperator(idx: number): void {
-		const id = this.operators[idx].id!;
-		const name = this.operators[idx].name;
+		const id = this.operators[idx].getId();
+		const name = this.operators[idx].getName();
 		(this.$refs.operatorDelete as NetworkOperatorDeleteModal).activateModal(id, name);
 	}
 }

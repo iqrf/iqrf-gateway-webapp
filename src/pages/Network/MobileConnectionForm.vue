@@ -162,6 +162,7 @@ import {IConnection, IOperator} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {NetworkInterface} from '../../interfaces/gatewayInfo';
+import NetworkOperator from '../../entities/NetworkOperator';
 
 @Component({
 	components: {
@@ -362,19 +363,15 @@ export default class MobileConnectionForm extends Vue {
 
 	/**
 	 * Updates GSM connection object
-	 * @param {IOperator} operator Network operator configuration
+	 * @param {NetworkOperator} operator Network operator
 	 */
-	private updateGsm(operator: IOperator): void {
+	private updateGsm(operator: NetworkOperator): void {
 		if (this.connection.gsm === undefined) {
 			return;
 		}
-		this.connection.gsm.apn = operator.apn;
-		if (operator.username !== undefined) {
-			this.connection.gsm.username = operator.username;
-		}
-		if (operator.password !== undefined) {
-			this.connection.gsm.password = operator.password;
-		}
+		this.connection.gsm.apn = operator.getApn();
+		this.connection.gsm.username = operator.getUsername();
+		this.connection.gsm.password = operator.getPassword();
 	}
 }
 </script>
