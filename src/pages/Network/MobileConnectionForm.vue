@@ -127,7 +127,7 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<NetworkOperators @apply='updateGsm' />
+
 						<CButton
 							color='primary'
 							type='submit'
@@ -138,6 +138,9 @@ limitations under the License.
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
+		</CCard>
+		<CCard body-wrapper>
+			<NetworkOperators @apply='updateGsm' />
 		</CCard>
 	</div>
 </template>
@@ -270,13 +273,13 @@ export default class MobileConnectionForm extends Vue {
 				});
 				this.interfaceOptions = interfaces;
 				this.$store.commit('spinner/HIDE');
-				/*if (this.interfaceOptions.length === 0) {
+				if (this.interfaceOptions.length === 0) {
 					this.$toast.error(
 						this.$t('network.mobile.messages.noInterfaces').toString()
 					);
 					this.$router.push('/ip-network/mobile');
 					return;
-				}*/
+				}
 				if (this.uuid !== null) {
 					this.getConnection();
 				}
