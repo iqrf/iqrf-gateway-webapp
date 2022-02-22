@@ -17,7 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 import UrlBuilder from '../helpers/urlBuilder';
-import {User} from './AuthenticationService';
+import {User, UserInfo} from './AuthenticationService';
 
 /**
  * User service
@@ -91,8 +91,11 @@ class UserService {
 	/**
 	 * Returns information about the logged in user
 	 */
-	getLoggedIn(): Promise<AxiosResponse> {
-		return axios.get('user', {headers: authorizationHeader()});
+	getLoggedIn(): Promise<UserInfo> {
+		return axios.get('user', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				return response.data as UserInfo;
+			});
 	}
 
 	/**

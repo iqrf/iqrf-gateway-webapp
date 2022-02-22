@@ -45,6 +45,7 @@ const SignIn = () => import(/* webpackChunkName: "core" */ '@/pages/Core/SignIn.
 const AccountBase = () => import(/* webpackChunkName: "core" */'@/pages/Core/AccountBase.vue');
 const RequestPasswordRecovery = () => import(/* webpackChunkName: "core" */'@/pages/Core/RequestPasswordRecovery.vue');
 const ConfirmPasswordRecovery = () => import(/* webpackChunkName: "core" */'@/pages/Core/ConfirmPasswordRecovery.vue');
+const UserProfile = () => import(/* webpackChunkName: "core" */'@/pages/Core/UserProfile.vue');
 
 const SecurityDisambiguation = () => import(/* webpackChunkName: "core" */'@/pages/Core/SecurityDisambiguation.vue');
 const ApiKeyList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyList.vue');
@@ -1058,6 +1059,10 @@ const routes: Array<RouteConfig> = [
 						],
 					},
 				]
+			},
+			{
+				component: UserProfile,
+				path: 'profile',
 			},
 			{
 				component: MainDisambiguation,

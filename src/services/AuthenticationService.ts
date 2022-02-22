@@ -94,15 +94,35 @@ export enum UserRole {
 }
 
 /**
- * User
+ * User information with JWT
  */
-export interface User {
+export interface User extends UserInfo {
 
+	/**
+	 * User token
+	 */
+	token: string;
+}
+
+/**
+ * User information without JWT
+ */
+export interface UserInfo extends IUserBase {
 	/**
 	 * User ID
 	 */
 	id: number;
 
+	/**
+	 * Account state
+	 */
+	state: AccountState;
+}
+
+/**
+ * Simplified user edit interface
+ */
+export interface IUserBase {
 	/**
 	 * Username
 	 */
@@ -114,25 +134,14 @@ export interface User {
 	email: string;
 
 	/**
-	 * User role
-	 */
-	role: UserRole;
-
-	/**
 	 * User language
 	 */
 	language: UserLanguage;
 
 	/**
-	 * User token
+	 * User role
 	 */
-	token: string;
-
-	/**
-	 * Account state
-	 */
-	state: AccountState;
-
+	role: UserRole;
 }
 
 /**

@@ -35,13 +35,17 @@ limitations under the License.
 				:in-nav='true'
 				class='c-header-nav-items'
 				placement='bottom-end'
-				add-menu-classes='pt-0'
+				add-menu-classes='pt-0 pb-0'
 			>
 				<template #toggler>
 					<CHeaderNavLink class='dropdown-toggle'>
 						{{ $store.getters['user/getName'] }}
 					</CHeaderNavLink>
 				</template>
+				<CDropdownItem to='/profile'>
+					<CIcon :content='icons.profile' />
+					{{ $t('core.profile.title') }}
+				</CDropdownItem>
 				<CDropdownItem @click='signOut'>
 					<CIcon :content='icons.logout' />
 					{{ $t('core.sign.out.title') }}
@@ -63,7 +67,7 @@ import {
 	CIcon,
 	CToggler,
 } from '@coreui/vue/src';
-import {cilLockLocked} from '@coreui/icons';
+import {cilLockLocked, cilUser} from '@coreui/icons';
 import ThemeManager from '../helpers/themeManager';
 
 @Component({
@@ -88,7 +92,8 @@ export default class TheHeader extends Vue {
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
 	 */
 	private icons: Record<string, Array<string>> = {
-		logout: cilLockLocked
+		logout: cilLockLocked,
+		profile: cilUser,
 	};
 
 	/**
