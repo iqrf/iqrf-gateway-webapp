@@ -1136,6 +1136,23 @@
 				}
 			}
 		},
+		"profile": {
+			"title": "User profile",
+			"description": "Edit user profile.",
+			"form": {
+				"oldPassword": "Current password",
+				"newPassword": "New password",
+				"editProfile": "Edit profile",
+				"changePassword": "Change password"
+			},
+			"messages": {
+				"changePassword": "Changing password will log you out of the current session.",
+				"changePasswordFailed": "Failed to change password: {error}.",
+				"changePasswordSuccess": "Password successfully changed.",
+				"saveFailed": "Failed to save user profile changes: {error}.",
+				"saveSuccess": "User profile changes successfully saved."
+			}
+		},
 		"user": {
 			"title": "User manager",
 			"description": "Manage users of this webapp.",

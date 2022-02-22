@@ -290,14 +290,18 @@ class UsersController extends BaseController {
 		}
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
-			if ($email !== null) {
+			if ($email !== null && $email !== '') {
 				$userWithEmail = $this->repository->findOneByEmail($email);
 				if ($userWithEmail !== null && $userWithEmail->getId() !== $id) {
 					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
 				}
 				$sendVerification = true;
 			}
-			$user->setEmail($email);
+			try {
+				$user->setEmail($email);
+			} catch (InvalidEmailAddressException $e) {
+				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			}
 			if ($user->getState() === User::STATE_VERIFIED) {
 				$user->setState(User::STATE_UNVERIFIED);
 			}

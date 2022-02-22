@@ -1,0 +1,176 @@
+<!--
+Copyright 2017-2021 IQRF Tech s.r.o.
+Copyright 2019-2021 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<template>
+	<CCard>
+		<CCardHeader>
+			<b>{{ $t('core.profile.form.editProfile') }}</b>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='save'>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: "forms.errors.username",
+						}'
+					>
+						<CInput
+							v-model='user.username'
+							:label='$t("forms.fields.username")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='email'
+						:custom-messages='{
+							email: "forms.errors.emailFormat",
+						}'
+					>
+						<CInput
+							v-model='user.email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: "core.user.errors.language",
+						}'
+					>
+						<CSelect
+							:value.sync='user.role'
+							:label='$t("core.user.language")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+							:options='languageOptions'
+						/>
+					</ValidationProvider>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
+</template>
+
+<script lang='ts'>
+// Components
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+// Module properties
+import {email, required} from 'vee-validate/dist/rules';
+// Auxiliary functions
+import {extendedErrorToast} from '../../helpers/errorToast';
+// Services
+import UserService from '../../services/UserService';
+// Interfaces
+import {AxiosError} from 'axios';
+import {IUserBase, UserLanguage, UserRole} from '../../services/AuthenticationService';
+import {IOption} from '../../interfaces/coreui';
+
+@Component({
+	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		CSelect,
+		ValidationObserver,
+		ValidationProvider,
+	},
+})
+
+/**
+ * User profile edit form component
+ */
+export default class UserProfileForm extends Vue {
+	/**
+	 * @var {number} id User ID
+	 */
+	private id = 0;
+
+	/**
+	 * @var {IUserBase} user User
+	 */
+	private user: IUserBase = {
+		username: '',
+		email: '',
+		language: UserLanguage.ENGLISH,
+		role: UserRole.IQAROS,
+	}
+
+	/**
+	 * @constant {Array<IOption>} languageOptions Language options for CoreUI select
+	 */
+	private languageOptions: Array<IOption> = [
+		{
+			value: UserLanguage.ENGLISH,
+			label: this.$t('core.user.languages.en'),
+		},
+	]
+
+	/**
+	 * Initializes validation rules
+	 */
+	created(): void {
+		extend('email', email);
+		extend('required', required);
+		this.getUser();
+	}
+
+	/**
+	 * Retrieves information about user from store
+	 */
+	private getUser(): void {
+		this.id = this.$store.getters['user/getId'];
+		this.user.username = this.$store.getters['user/getName'];
+		this.user.email = this.$store.getters['user/getEmail'] ?? '';
+		this.user.language = this.$store.getters['user/getLanguage'];
+		this.user.role = this.$store.getters['user/getRole'];
+	}
+
+	/**
+	 * Saves changes to user profile
+	 */
+	private save(): void {
+		this.$store.commit('spinner/SHOW');
+		UserService.edit(this.id, this.user)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('core.profile.messages.saveSuccess').toString()
+				);
+				this.$store.dispatch('user/updateInfo');
+			})
+			.catch((err: AxiosError) => extendedErrorToast(err, 'core.profile.messages.saveFailed'));
+	}
+}
+</script>

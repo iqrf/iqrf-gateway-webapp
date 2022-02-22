@@ -257,6 +257,9 @@ class User implements JsonSerializable {
 	 * @throws InvalidEmailAddressException
 	 */
 	public function setEmail(?string $email): void {
+		if ($email === '') {
+			$email = null;
+		}
 		if ($email !== null) {
 			$validator = new EmailValidator();
 			$validationRules = [

@@ -56,7 +56,10 @@ limitations under the License.
 							{{ $t('gateway.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/config/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.title') }}
 						</header>
@@ -64,7 +67,10 @@ limitations under the License.
 							{{ $t('config.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/iqrfnet/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/iqrfnet/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('iqrfnet.title') }}
 						</header>
@@ -72,7 +78,10 @@ limitations under the License.
 							{{ $t('iqrfnet.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem v-if='$store.getters["features/isEnabled"]("networkManager")' to='/network/'>
+					<CListGroupItem
+						v-if='$store.getters["features/isEnabled"]("networkManager") && $store.getters["user/getRole"] !== "iqaros"'
+						to='/network/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('network.title') }}
 						</header>
@@ -80,7 +89,10 @@ limitations under the License.
 							{{ $t('network.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/cloud/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/cloud/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('cloud.title') }}
 						</header>
@@ -88,7 +100,10 @@ limitations under the License.
 							{{ $t('cloud.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/maintenance/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/maintenance/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('maintenance.title') }}
 						</header>
@@ -109,7 +124,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed")'
+						v-if='$store.getters["features/isEnabled"]("nodeRed") && $store.getters["user/getRole"] !== "iqaros"'
 						:href='$store.getters["features/configuration"]("nodeRed").url'
 						target='_blank'
 					>
@@ -121,7 +136,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed")'
+						v-if='$store.getters["features/isEnabled"]("nodeRed") && $store.getters["user/getRole"] !== "iqaros"'
 						:href='$store.getters["features/configuration"]("nodeRed").url + "ui/"'
 						target='_blank'
 					>
@@ -133,7 +148,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("supervisord")'
+						v-if='$store.getters["features/isEnabled"]("supervisord") && $store.getters["user/getRole"] !== "iqaros"'
 						:href='$store.getters["features/configuration"]("supervisord").url'
 						target='_blank'
 					>
@@ -144,7 +159,10 @@ limitations under the License.
 							{{ $t('core.supervisor.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/user/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/user/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('core.user.title') }}
 						</header>
@@ -152,7 +170,10 @@ limitations under the License.
 							{{ $t('core.user.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/security/'>
+					<CListGroupItem
+						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						to='/security/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('core.security.title') }}
 						</header>

@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import AuthenticationService, {AccountState, User, UserRole} from '../../services/AuthenticationService';
+import AuthenticationService, {AccountState, User, UserInfo, UserRole} from '../../services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';
+import UserService from '../../services/UserService';
 
 /**
  * User state
@@ -33,6 +34,16 @@ const state: UserState = {
 };
 
 const actions: ActionTree<UserState, any> = {
+	updateInfo({commit}) {
+		return UserService.getLoggedIn()
+			.then((user: UserInfo) => {
+				commit('SET_INFO', user);
+			})
+			.catch((error: AxiosError) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
+	},
 	setJwt({commit}, user: User) {
 		const now = new Date();
 		const epoch = Math.round(now.getTime() / 1000);
@@ -95,6 +106,12 @@ const getters: GetterTree<UserState, any> = {
 		}
 		return state.user.email;
 	},
+	getLanguage(state: UserState): string|null {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.language;
+	},
 	getRole(state: UserState): UserRole|null {
 		if (state.user === null) {
 			return null;
@@ -110,6 +127,12 @@ const getters: GetterTree<UserState, any> = {
 };
 
 const mutations: MutationTree<UserState> = {
+	SET_INFO(state: UserState, data: UserInfo) {
+		if (state.user === null) {
+			return;
+		}
+		state.user = {...state.user, ...data};
+	},
 	SET_EXPIRATION(state: UserState, expiration: number) {
 		state.expiration = expiration;
 	},
