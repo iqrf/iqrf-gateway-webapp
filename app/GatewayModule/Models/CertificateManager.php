@@ -37,29 +37,9 @@ use Nette\IOException;
 class CertificateManager {
 
 	/**
-	 * @var Certificate|null TLS certificate
-	 */
-	private $certificate;
-
-	/**
-	 * @var CertificateParser TLS certificate parser
-	 */
-	private $certificateParser;
-
-	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
 	private $fileManager;
-
-	/**
-	 * @var KeyParser Private key parser
-	 */
-	private $keyParser;
-
-	/**
-	 * @var PrivateKey|null Private key
-	 */
-	private $privateKey;
 
 	/**
 	 * Constructor
@@ -67,20 +47,6 @@ class CertificateManager {
 	 */
 	public function __construct(PrivilegedFileManager $fileManager) {
 		$this->fileManager = $fileManager;
-		$this->certificateParser = new CertificateParser();
-		$this->keyParser = new KeyParser();
-		try {
-			$certificate = $this->fileManager->read('cert.pem');
-			$this->certificate = $certificate === '' ? null : new Certificate($certificate);
-		} catch (IOException $e) {
-			$this->certificate = null;
-		}
-		try {
-			$privateKey = $this->fileManager->read('privkey.pem');
-			$this->privateKey = $privateKey === '' ? null : new PrivateKey($privateKey);
-		} catch (IOException $e) {
-			$this->privateKey = null;
-		}
 	}
 
 	/**
@@ -89,7 +55,8 @@ class CertificateManager {
 	 * @throws CertificateNotFoundException
 	 */
 	public function getInfo(): array {
-		$certificate = $this->certificateParser->parse($this->getCertificate());
+		$certificateParser = new CertificateParser();
+		$certificate = $certificateParser->parse($this->getCertificate());
 		return [
 			'subject' => $certificate->getSubject(),
 			'issuer' => $certificate->getIssuer(),
@@ -106,10 +73,15 @@ class CertificateManager {
 	 * @throws CertificateNotFoundException
 	 */
 	public function getCertificate(): Certificate {
-		if ($this->certificate === null) {
+		try {
+			$certificate = $this->fileManager->read('cert.pem');
+			if ($certificate === '') {
+				throw new CertificateNotFoundException();
+			}
+			return new Certificate($certificate);
+		} catch (IOException $e) {
 			throw new CertificateNotFoundException();
 		}
-		return $this->certificate;
 	}
 
 	/**
@@ -118,10 +90,15 @@ class CertificateManager {
 	 * @throws PrivateKeyNotFoundException
 	 */
 	public function getPrivateKey(): PrivateKey {
-		if ($this->privateKey === null) {
+		try {
+			$privateKey = $this->fileManager->read('privkey.pem');
+			if ($privateKey === '') {
+				throw new PrivateKeyNotFoundException();
+			}
+			return new PrivateKey($privateKey);
+		} catch (IOException $e) {
 			throw new PrivateKeyNotFoundException();
 		}
-		return $this->privateKey;
 	}
 
 	/**
@@ -139,7 +116,8 @@ class CertificateManager {
 	 * @throws PrivateKeyNotFoundException
 	 */
 	public function getParsedPrivateKey(): ParsedKey {
-		return $this->keyParser->parse($this->getPrivateKey());
+		$keyParser = new KeyParser();
+		return $keyParser->parse($this->getPrivateKey());
 	}
 
 }
