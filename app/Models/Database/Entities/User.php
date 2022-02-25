@@ -257,24 +257,23 @@ class User implements JsonSerializable {
 	 * @throws InvalidEmailAddressException
 	 */
 	public function setEmail(?string $email): void {
-		if ($email === '') {
-			$email = null;
+		if ($email === null || $email === '') {
+			$this->email = null;
+			return;
 		}
-		if ($email !== null) {
-			$validator = new EmailValidator();
-			$validationRules = [
-				new RFCValidation(),
-			];
-			if (function_exists('dns_get_record')) {
-				$validationRules[] = new DNSCheckValidation();
+		$validator = new EmailValidator();
+		$validationRules = [
+			new RFCValidation(),
+		];
+		if (function_exists('dns_get_record')) {
+			$validationRules[] = new DNSCheckValidation();
+		}
+		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
+			$error = $validator->getError();
+			if ($error === null) {
+				throw new InvalidEmailAddressException();
 			}
-			if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
-				$error = $validator->getError();
-				if ($error === null) {
-					throw new InvalidEmailAddressException();
-				}
-				throw new InvalidEmailAddressException($error->description(), $error->code());
-			}
+			throw new InvalidEmailAddressException($error->description(), $error->code());
 		}
 		$this->email = $email;
 	}

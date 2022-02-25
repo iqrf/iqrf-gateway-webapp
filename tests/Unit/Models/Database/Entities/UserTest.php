@@ -144,6 +144,14 @@ final class UserTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to set the user's email address (remove e-mail address)
+	 */
+	public function testSetEmailEmptyString(): void {
+		$this->entity->setEmail('');
+		Assert::null($this->entity->getEmail());
+	}
+
+	/**
 	 * Tests the function to set the user's email address (valid e-mail address)
 	 */
 	public function testSetEmailValid(): void {
