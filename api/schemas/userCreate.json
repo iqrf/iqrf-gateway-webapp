@@ -58,12 +58,13 @@
 			"type": "string",
 			"title": "Role",
 			"enum": [
+				"admin",
 				"normal",
-				"iqaros",
-				"power"
+				"basicadmin",
+				"basic"
 			],
 			"default": "normal",
-			"example": "power"
+			"example": "normal"
 		}
 	}
 }
