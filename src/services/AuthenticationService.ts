@@ -76,11 +76,10 @@ export enum UserLanguage {
  * User roles
  */
 export enum UserRole {
-
 	/**
-	 * Power user
+	 * Admin user
 	 */
-	POWER = 'power',
+	ADMIN = 'admin',
 
 	/**
 	 * Normal user
@@ -88,9 +87,14 @@ export enum UserRole {
 	NORMAL = 'normal',
 
 	/**
-	 * IQAROS user
+	 * Basic user with user management
 	 */
-	IQAROS = 'iqaros',
+	BASICADMIN = 'basicadmin',
+
+	/**
+	 * Basic user
+	 */
+	BASIC = 'basic',
 }
 
 /**

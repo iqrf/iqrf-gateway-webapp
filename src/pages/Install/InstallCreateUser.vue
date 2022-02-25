@@ -97,7 +97,7 @@ import UserService from '../../services/UserService';
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
 import {sleep} from '../../helpers/sleep';
-import {UserCredentials} from '../../services/AuthenticationService';
+import {UserCredentials, UserRole} from '../../services/AuthenticationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 
@@ -143,7 +143,7 @@ export default class InstallCreateUser extends Vue {
 	/**
 	 * User role
 	 */
-	private role = 'normal';
+	private role = UserRole.ADMIN;
 
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress

@@ -138,7 +138,7 @@ export default class ConfirmPasswordRecovery extends Vue {
 		UserService.confirmPasswordRecovery(this.recoveryId, this.password)
 			.then((user: User) => {
 				this.requestInProgress = false;
-				if (user.role === UserRole.IQAROS) {
+				if (user.role === UserRole.BASIC) {
 					location.pathname = '/';
 				}
 				this.$store.dispatch('user/setJwt', user);

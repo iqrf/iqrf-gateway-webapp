@@ -1162,9 +1162,10 @@
 			"id": "User ID",
 			"role": "User role",
 			"roles": {
+				"admin": "Admin user",
 				"normal": "Normal user",
-				"iqaros": "IQAROS user",
-				"power": "Power user"
+				"basicadmin": "Basic admin user",
+				"basic": "Basic user"
 			},
 			"language": "Language",
 			"languages": {

@@ -124,7 +124,7 @@ export default class UserProfileForm extends Vue {
 		username: '',
 		email: '',
 		language: UserLanguage.ENGLISH,
-		role: UserRole.IQAROS,
+		role: UserRole.BASIC,
 	}
 
 	/**

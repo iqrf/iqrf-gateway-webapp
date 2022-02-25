@@ -63,19 +63,24 @@ class User implements JsonSerializable {
 	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
 
 	/**
+	 * User role: Admin user
+	 */
+	public const ROLE_ADMIN = 'admin';
+
+	/**
 	 * User role: Normal user
 	 */
 	public const ROLE_NORMAL = 'normal';
 
 	/**
-	 * User role: Power user
+	 * User role: Basic admin user
 	 */
-	public const ROLE_POWER = 'power';
+	public const ROLE_BASICADMIN = 'basicadmin';
 
 	/**
-	 * User role: Iqaros user
+	 * User role: Basic user
 	 */
-	public const ROLE_IQAROS = 'iqaros';
+	public const ROLE_BASIC = 'basic';
 
 	/**
 	 * Default user role
@@ -86,9 +91,10 @@ class User implements JsonSerializable {
 	 * Supported user roles
 	 */
 	public const ROLES = [
+		self::ROLE_ADMIN,
 		self::ROLE_NORMAL,
-		self::ROLE_POWER,
-		self::ROLE_IQAROS,
+		self::ROLE_BASICADMIN,
+		self::ROLE_BASIC,
 	];
 
 	/**
