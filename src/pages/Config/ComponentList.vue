@@ -88,10 +88,10 @@ limitations under the License.
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.components.messages.deleteTitle') }}
+					{{ $t('config.daemon.components.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.components.messages.deletePrompt', {component: component}) }}
+			{{ $t('config.daemon.components.messages.deletePrompt', {component: component}) }}
 			<template #footer>
 				<CButton color='danger' @click='component = ""'>
 					{{ $t('forms.no') }}
@@ -107,13 +107,17 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {UserRole} from '../../services/AuthenticationService';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { MetaInfo } from 'vue-meta';
-import { IField } from '../../interfaces/coreui';
-import { AxiosError } from 'axios';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IComponent} from '../../interfaces/daemonComponent';
+import {IField} from '../../interfaces/coreui';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
@@ -147,6 +151,11 @@ export default class ComponentList extends Vue {
 	 * @var {Array<IComponent>} components Array of Daemon component objects
 	 */
 	private components: Array<IComponent> = [];
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -195,8 +204,15 @@ export default class ComponentList extends Vue {
 	 * @returns {string} Page title string
 	 */
 	get pageTitle(): string {
-		return this.$store.getters['user/getRole'] === 'power' ?
+		return this.role === UserRole.ADMIN ?
 			this.$t('config.daemon.components.title').toString() : this.$t('config.selectedComponents.title').toString();
+	}
+
+	/**
+	 * Retrieves user role
+	 */
+	created(): void {
+		this.role = this.$store.getters['user/getRole'];
 	}
 
 	/**
@@ -217,9 +233,9 @@ export default class ComponentList extends Vue {
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent('')
-			.then((response) => {
+			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				if (this.$store.getters['user/getRole'] === 'power') {
+				if (this.role === UserRole.ADMIN) {
 					this.components = response.data.components;
 				} else {
 					const whitelistedComponents = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
@@ -230,7 +246,9 @@ export default class ComponentList extends Vue {
 					});
 				}
 			})
-			.catch((error) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.components.messages.listFailed');
+			});
 	}
 
 	/**
@@ -246,14 +264,21 @@ export default class ComponentList extends Vue {
 				);
 				return;
 			}
-			component.enabled = enabled;
-			DaemonConfigurationService.updateComponent(component.name, component)
+			let conf = {
+				...component
+			};
+			conf.enabled = enabled;
+			DaemonConfigurationService.updateComponent(component.name, conf)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.daemon.components.messages.editSuccess', {component: component.name}).toString());
+						this.$toast.success(
+							this.$t('config.daemon.components.messages.changeEnabledSuccess', {component: component.name}).toString()
+						);
 					});
 				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'config.daemon.components.messages.changeEnabledFailed', {component: component.name});
+				});
 		}
 	}
 
@@ -293,10 +318,12 @@ export default class ComponentList extends Vue {
 		DaemonConfigurationService.deleteComponent(component)
 			.then(() => {
 				this.getConfig().then(() => {
-					this.$toast.success(this.$t('config.components.form.messages.deleteSuccess', {component: component}).toString());
+					this.$toast.success(this.$t('config.daemon.components.messages.deleteSuccess', {component: component}).toString());
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.components.messages.deleteFailed', {component: component});
+			});
 	}
 
 }

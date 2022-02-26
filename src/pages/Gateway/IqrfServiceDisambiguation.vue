@@ -19,7 +19,10 @@ limitations under the License.
 		<h1>{{ $t('service.iqrf.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/gateway/service/iqrf-gateway-daemon/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/gateway/service/iqrf-gateway-daemon/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('service.iqrf-gateway-daemon.title') }}
 					</header>
@@ -28,7 +31,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")'
+					v-if='$store.getters["features/isEnabled"]("iqrfGatewayController") && roleIdx <= roles.normal'
 					to='/gateway/service/iqrf-gateway-controller/'
 				>
 					<header class='list-group-item-heading'>
@@ -39,7 +42,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
+					v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator") && roleIdx <= roles.normal'
 					to='/gateway/service/iqrf-gateway-translator/'
 				>
 					<header class='list-group-item-heading'>
@@ -58,6 +61,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -73,5 +78,27 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
  * Iqrf services menu component
  */
 export default class IqrfServiceDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>

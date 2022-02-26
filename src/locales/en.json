@@ -274,11 +274,16 @@
 					"startLevel": "Start level"
 				},
 				"messages": {
+					"getFailed": "Failed to retrieve component {component} configuration: {error}.",
+					"listFailed": "Failed to retrieve components configuration: {error}.",
+					"saveFailed": "Failed to save component {component} configuration: {error}.",
+					"saveSuccess": "Component {component} configuration successfully saved.",
+					"changeEnabledFailed": "Failed to change enabled state of component {component}: {error}.",
+					"changeEnabledSuccess": "Enabled state of component {component} successully changed.",
+					"deleteFailed": "Failed to delete component {component}: {error}.",
 					"deletePrompt": "Do you really want to delete component {component}?",
 					"deleteTitle": "Delete component",
 					"deleteSuccess": "Configuration of component {component} has been successfully deleted.",
-					"addSuccess": "Configuration of component {component} has been successfully added.",
-					"editSuccess": "Configuration of component {component} has been successfully updated.",
 					"multipleInterfaces": "Only one IQRF interface can be enabled at a time."
 				},
 				"errors": {
@@ -293,9 +298,10 @@
 				"description": "Configuration of IQRF communication interfaces.",
 				"messages": {
 					"fetchFailed": "Failed to retrieve interfaces configuration.",
+					"listFailed": "Failed to retrieve list of interfaces: {error}.",
 					"noInterface": "All IQRF communication interfaces are disabled.",
 					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
-					"updateFailed": "An error occurred while updating interface settings."
+					"updateFailed": "Failed to change active interface: {error}."
 				},
 				"form": {
 					"interface": "Select active interface",
@@ -309,6 +315,7 @@
 				"iqrfCdc": {
 					"title": "IQRF CDC interface",
 					"description": "IQRF CDC interface settings.",
+					"mappings": "Available CDC mappings",
 					"form": {
 						"interface": "CDC interface name"
 					},
@@ -316,11 +323,15 @@
 						"instance": "Please enter CDC interface instance name.",
 						"iqrfInterface": "Please enter CDC interface name."
 					},
-					"mappings": "Available CDC mappings"
+					"messages": {
+						"saveFailed": "Failed to save CDC interface configuration: {error}.",
+						"saveSuccess": "CDC interface configuration successfully saved."
+					}
 				},
 				"iqrfSpi": {
 					"title": "IQRF SPI interface",
 					"description": "IQRF SPI interface settings.",
+					"mappings": "Available SPI mappings",
 					"form": {
 						"iqrfInterface": "SPI interface name",
 						"spiReset": "Enable SPI reset"
@@ -329,11 +340,15 @@
 						"instance": "Please enter SPI interface instance name.",
 						"iqrfInterface": "Please enter SPI interface name."
 					},
-					"mappings": "Available SPI mappings"
+					"messages": {
+						"saveFailed": "Failed to save SPI interface configuration: {error}.",
+						"saveSuccess": "SPI interface configuration successfully saved."
+					}
 				},
 				"iqrfUart": {
 					"title": "IQRF UART interface",
 					"description": "IQRF UART interface settings.",
+					"mappings": "Available UART mappings",
 					"form": {
 						"iqrfInterface": "UART interface name",
 						"baudRate": "UART baud rate",
@@ -344,7 +359,10 @@
 						"iqrfInterface": "Please enter UART interface name.",
 						"baudRate": "Please select UART baud rate."
 					},
-					"mappings": "Available UART mappings"
+					"messages": {
+						"saveFailed": "Failed to save UART interface configuration: {error}.",
+						"saveSuccess": "UART interface configuration successfully saved."
+					}
 				},
 				"iqrfDpa":{
 					"title": "IQRF DPA interface",
@@ -355,6 +373,10 @@
 					"errors": {
 						"instance": "Please enter name of IQRF DPA instance.",
 						"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
+					},
+					"messages": {
+						"saveFailed": "Failed to save DPA interface configuration: {error}.",
+						"saveSuccess": "DPA interface configuration successfully saved."
 					}
 				},
 				"interfaceMapping": {
@@ -394,12 +416,12 @@
 						"uartPin": "Please enter UART interface enable GPIO pin number."
 					},
 					"messages": {
-						"invalid": "Invalid mapping content.",
-						"notFound": "Mapping not found.",
+						"getFailed": "Failed to retrieve mapping {id}: {error}.",
+						"listFailed": "Failed to retrieve interface mappings: {error}.",
 						"deleteFailed": "Failed to delete mapping {mapping}: {error}",
 						"deleteSuccess": "Mapping {mapping} has been successfully deleted.",
-						"addSuccess": "Mapping {mapping} has been successfully created.",
-						"editSuccess": "Mapping {mapping} has been successfully edited."
+						"saveFailed": "Failed to save mapping {mapping}: {error}.",
+						"saveSuccess": "Mapping {mapping} has been successfully saved."
 					}
 				}
 			},
@@ -509,26 +531,33 @@
 							"prompt": "Are you sure you want to delete WebSocket interface instance {instance}?"
 						},
 						"messages": {
-							"addFailed": "Failed to create new WebSocket interface: {error}",
-							"addSuccess": "WebSocket interface instance {instance} has been added.",
 							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}",
 							"deleteSuccess": "WebSocket interface instance {instance} has been deleted.",
-							"fetchFailed": "Failed to retrieve WebSocket interface {interface}: {error}",
+							"getFailed": "Failed to retrieve WebSocket interface {interface} configuration: {error}.",
 							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
-							"editFailed": "Failed to edit WebSocket interface {interface}: {error}",
-							"editSuccess": "WebSocket interface instance {instance} has been edited."
+							"saveFailed": "Failed to save WebSocket interface {interface} configuration: {error}.",
+							"saveSuccess": "WebSocket interface {interface} configuration successfully saved.",
+							"updateFailed": "Failed to update WebSocket interface {interface} configuration: {error}.",
+							"updateSuccess": "WebSocket interface {interface} configuration successfully updated."
 						}
 					},
 					"messaging": {
 						"title": "WebSocket messagings",
 						"add": "Add WebSocket messaging",
 						"edit": "Edit WebSocket messaging",
+						"modal": {
+							"title": "WebSocket messaging instance delete confirmation",
+							"prompt": "Are you sure you want to delete WebSocket messaging instance {messaging}?"
+						},
 						"messages": {
-							"deleteTitle": "Delete WebSocket messaging",
-							"deletePrompt": "Do you really want to delete WebSocket messaging {messaging}?",
+							"deleteFailed": "Failed to delete WebSocket messaging {messaging}: {error}.",
 							"deleteSuccess": "Configuration of WebSocket messaging {messaging} has been successfully deleted.",
-							"addSuccess": "Configuration of WebSocket messaging {messaging} has been successfully added.",
-							"editSuccess": "Configuration of WebSocket messaging {messaging} has been successfully edited."
+							"getFailed": "Failed to retrieve WebSocket messaging {messaging} configuration: {error}.",
+							"listFailed": "Failed to retrieve WebSocket messaging configuration: {error}.",
+							"saveFailed": "Failed to save WebSocket messaging {messaging} configuration: {error}.",
+							"saveSuccess": "WebSocket messaging {messaging} configuration successfully saved.",
+							"updateFailed": "Failed to update WebSocket messaging {messaging} configuration: {error}.",
+							"updateSuccess": "WebSocket messaging {messaging} configuration successfully  updated."
 						}
 					},
 					"service": {
@@ -536,12 +565,19 @@
 						"legend": "WebSocket service instance",
 						"add": "Add WebSocket service",
 						"edit": "Edit WebSocket service",
+						"modal": {
+							"title": "WebSocket service instance delete confirmation",
+							"prompt": "Are you sure you want to delete WebSocket service instance {service}?"
+						},
 						"messages": {
-							"deleteTitle": "Delete WebSocket service",
-							"deletePrompt": "Do you really want to delete WebSocket service {service}?",
+							"deleteFailed": "Failed to delete WebSocket service {service} configuration: {error}.",
 							"deleteSuccess": "Configuration of WebSocket service {service} has been successfully deleted.",
-							"addSuccess": "Configuration of WebSocket service {service} has been successfully added.",
-							"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
+							"getFailed": "Failed to retrieve WebSocket service {service} configuration: {error}.",
+							"listFailed": "Failed to retrieve WebSocket service configuration: {error}.",
+							"saveFailed": "Failed to save WebSocket service {service} configuration: {error}.",
+							"saveSuccess": "WebSocket service {service} configuration successfully saved.",
+							"updateFailed": "Failed to update WebSocket service {service} configuration: {error}.",
+							"updateSuccess": "WebSocket service {service} configuration successfully  updated."
 						}
 					},
 					"errors": {
@@ -710,9 +746,9 @@
 				"jsonApi": {
 					"title": "JSON API",
 					"messages": {
-						"success": "JSON API configuration has been successfully updated.",
-						"noChanges": "No configuration changes detected.",
-						"failed": "Failed to save JSON API configuration: {error}"
+						"saveFailed": "Failed to save JSON API configuration: {error}",
+						"saveSuccess": "JSON API configuration successfully saved.",
+						"saveNoChanges": "No configuration changes detected."
 					}
 				},
 				"jsonMngMetaDataApi": {
@@ -723,6 +759,10 @@
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Metadata API instance."
+					},
+					"messages": {
+						"saveFailed": "Failed to save JSON Metadata API configuration: {error}.",
+						"saveSuccess": "JSON Metadata API configuration successfully saved."
 					}
 				},
 				"jsonRawApi": {
@@ -733,6 +773,10 @@
 					},
 					"errors": {
 						"instance": "Please enter name of JSON Raw API instance."
+					},
+					"messages": {
+						"saveFailed": "Failed to save JSON Raw API configuration: {error}.",
+						"saveSuccess": "JSON Raw API configuration successfully saved."
 					}
 				},
 				"jsonSplitter": {
@@ -745,6 +789,10 @@
 					"errors": {
 						"instance": "Please enter name of JSON Splitter instance.",
 						"insId": "Please enter ID of JSON Splitter instance."
+					},
+					"messages": {
+						"saveFailed": "Failed to save JSON Splitter configuration: {error}.",
+						"saveSuccess": "JSON Splitter configuration successfully saved."
 					}
 				},
 				"iqrfRepository": {
@@ -760,6 +808,10 @@
 						"instance": "Please enter name of IQRF Repository instance.",
 						"urlRepo": "Please enter IQRF Repository URL.",
 						"checkPeriod": "Please enter an integer greater or equal to 0."
+					},
+					"messages": {
+						"saveFailed": "Failed to save IQRF repository configuration: {error}.",
+						"saveSuccess": "IQRF repository configuration successfully saved."
 					}
 				},
 				"iqrfInfo": {
@@ -775,6 +827,10 @@
 					"errors": {
 						"instance": "Please enter name of IQRF Info instance.",
 						"enumPeriod": "Period must be greater or equal to 0."
+					},
+					"messages": {
+						"saveFailed": "Failed to save Lite DB configuration: {error}.",
+						"saveSuccess": "Lite DB configuration successfully saved."
 					}
 				},
 				"iqmesh": "IQMESH services",
@@ -786,6 +842,10 @@
 					"errors": {
 						"instance": "Please enter name of OTA upload service instance.",
 						"uploadPath": "Please enter path to a directory with files to upload."
+					},
+					"messages": {
+						"saveFailed": "Failed to save OTA upload service configuration: {error}.",
+						"saveSuccess": "OTA upload service configuration successfully saved."
 					}
 				},
 				"monitor": {
@@ -1193,7 +1253,7 @@
 				"addSuccess": "User {user} has been added successfully.",
 				"deleteFailed": "Failed to delete user {user}: {error}",
 				"deleteSuccess": "User {user} has been deleted successfully.",
-				"editFailed": "Failed to update user ID {user}: {error}",
+				"editFailed": "Failed to update user {user}: {error}",
 				"editSuccess": "User {user} has been edited successfully.",
 				"fetchFailed": "Failed to retrieve information of user ID {user}: {error}",
 				"listFetchFailed": "Failed to retrieve list of users: {error}"
@@ -2959,14 +3019,15 @@
 				"removeInterval": "Please enter package removal interval greater or equal to 0."
 			},
 			"messages": {
+				"getFailed": "Failed to retrieve automatic upgrades configuration service configuration: {error}",
 				"disabled": "Automatic upgrades are disabled.",
 				"disable": "Automatic upgrades service has been disabled.",
 				"enable": "Automatic upgrades service has been enabled.",
 				"start": "Automatic upgrades service has been started.",
 				"stop": "Automatic upgrades service has been stopped.",
 				"restart": "Automatic upgrades service has been restarted.",
-				"success": "Automatic upgrades configuration has been successfully saved.",
-				"failure": "Unable to save automatic upgrades configuration."
+				"saveSuccess": "Automatic upgrades configuration successfully saved.",
+				"saveFailed": "Failed to save automatic upgrades configuration: {error}."
 			}
 		},
 		"systemd-journald": {
@@ -3066,5 +3127,6 @@
 	"time": {
 		"second": "{count} second | {count} seconds"
 	},
-	"messageError": "Request could not be processed: {error}"
+	"messageError": "Request could not be processed: {error}",
+	"forbiddenAccess": "You do not have sufficient permission to access this page."
 }

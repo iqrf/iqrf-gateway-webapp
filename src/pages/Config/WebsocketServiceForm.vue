@@ -153,14 +153,17 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {IWsService} from '../../interfaces/messagingInterfaces';
-import {AxiosError, AxiosResponse } from 'axios';
-import {MetaInfo} from 'vue-meta';
-import {IOption} from '../../interfaces/coreui';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {mapGetters} from 'vuex';
+
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '../../interfaces/coreui';
+import {IWsService} from '../../interfaces/messagingInterfaces';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
@@ -185,7 +188,7 @@ import {mapGetters} from 'vuex';
 		return {
 			title: (this as unknown as WebsocketServiceForm).pageTitle
 		};
-	}
+	},
 })
 
 /**
@@ -296,14 +299,14 @@ export default class WebsocketServiceForm extends Vue {
 	 */
 	mounted(): void {
 		if (this.instance) {
-			this.getInstance();
+			this.getConfig();
 		}
 	}
 
 	/**
 	 * Retrieves instance of WebSocket service component
 	 */
-	private getInstance(): void {
+	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
 			.then((response: AxiosResponse) => {
@@ -311,8 +314,8 @@ export default class WebsocketServiceForm extends Vue {
 				this.parseConfiguration(response.data);
 			})
 			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.getFailed', {service: this.instance});
 				this.$router.push('/config/daemon/messagings/websocket');
-				FormErrorHandler.configError(error);
 			});
 	}
 
@@ -364,32 +367,32 @@ export default class WebsocketServiceForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/websocket/add-service') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.service.messages.addSuccess', {service: this.componentInstance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: this.instance})
-					.toString()
-			);
-		}
+	private handleSuccess(): void {
+		this.$toast.success(
+			this.$t('config.daemon.messagings.websocket.service.messages.saveSuccess', {service: this.componentInstance}).toString()
+		);
 		this.$router.push('/config/daemon/messagings/websocket');
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.messagings.websocket.service.messages.saveFailed', {service: this.componentInstance});
 	}
 }
 </script>

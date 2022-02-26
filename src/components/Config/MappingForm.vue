@@ -117,13 +117,13 @@ limitations under the License.
 				/>
 			</CForm>
 			<template #footer>
-				<CButton 
+				<CButton
 					color='success'
 					:disabled='invalid'
 					@click='saveMapping'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton 
+				</CButton> <CButton
 					color='secondary'
 					@click='hideModal'
 				>
@@ -137,13 +137,16 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
-import {IOption} from '../../interfaces/coreui';
-import {IMapping} from '../../interfaces/mappings';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import {integer, required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import MappingService from '../../services/MappingService';
+
 import {AxiosError, AxiosResponse} from 'axios';
+import {IMapping} from '../../interfaces/mappings';
+import {IOption} from '../../interfaces/coreui';
+import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -245,7 +248,7 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.mappingId === null ? 
+		return this.mappingId === null ?
 			this.$t('config.daemon.interfaces.interfaceMapping.add').toString(): this.$t('config.daemon.interfaces.interfaceMapping.edit').toString() + ' ' + this.name;
 	}
 
@@ -264,6 +267,104 @@ export default class MappingForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Retrieves mapping if mappingId is passeds
+	 */
+	private getMapping(): void {
+		if (this.mappingId === null) {
+			return;
+		}
+		MappingService.getMapping(this.mappingId)
+			.then((response: AxiosResponse) => {
+				const mapping: IMapping = response.data;
+				this.type = mapping.type;
+				this.name = mapping.name;
+				this.deviceName = mapping.IqrfInterface;
+				this.busPin = mapping.busEnableGpioPin;
+				this.pgmPin = mapping.pgmSwitchGpioPin;
+				this.powerPin = mapping.powerEnableGpioPin;
+				if (mapping.type === 'uart' && mapping.baudRate !== undefined) {
+					this.baudRate = mapping.baudRate;
+				}
+				if (mapping.i2cEnableGpioPin === undefined && mapping.spiEnableGpioPin === undefined && mapping.uartEnableGpioPin === undefined) {
+					return;
+				}
+				this.gatewayMapping = true;
+				if (mapping.i2cEnableGpioPin !== undefined) {
+					this.i2cPin = mapping.i2cEnableGpioPin;
+				}
+				if (mapping.spiEnableGpioPin !== undefined) {
+					this.spiPin = mapping.spiEnableGpioPin;
+				}
+				if (mapping.uartEnableGpioPin !== undefined) {
+					this.uartPin = mapping.uartEnableGpioPin;
+				}
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.getFailed', {id: (this.mappingId as number)});
+				this.hideModal();
+			});
+	}
+
+	/**
+	 * Creates a mapping object for REST API request
+	 * @returns {IMapping} Mapping object
+	 */
+	private buildMapping(): IMapping {
+		let mapping: IMapping = {
+			type: this.type,
+			name: this.name,
+			IqrfInterface: this.deviceName,
+			busEnableGpioPin: this.busPin,
+			pgmSwitchGpioPin: this.pgmPin,
+			powerEnableGpioPin: this.powerPin
+		};
+		if (this.type === 'uart') {
+			Object.assign(mapping, {baudRate: this.baudRate});
+		}
+		if (this.gatewayMapping) {
+			Object.assign(mapping, {i2cEnableGpioPin: this.i2cPin, spiEnableGpioPin: this.spiPin, uartEnableGpioPin: this.uartPin});
+		}
+		return mapping;
+	}
+
+	/**
+	 * Saves new or updates existing mapping
+	 */
+	private saveMapping(): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.mappingId !== null) {
+			MappingService.editMapping(this.mappingId, this.buildMapping())
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
+		} else {
+			MappingService.addMapping(this.buildMapping())
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
+		}
+	}
+
+	/**
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
+	 */
+	private handleSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(
+			this.$t('config.daemon.interfaces.interfaceMapping.messages.saveSuccess', {mapping: this.name}).toString()
+		);
+		this.hideModal();
+		this.$emit('update-mappings');
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.interfaces.interfaceMapping.messages.saveFailed', {mapping: this.name});
 	}
 
 	/**
@@ -303,107 +404,5 @@ export default class MappingForm extends Vue {
 		this.spiPin = 0;
 		this.uartPin = 0;
 	}
-
-	/**
-	 * Retrieves mapping if mappingId is passeds
-	 */
-	private getMapping(): void {
-		if (this.mappingId === null) {
-			return;
-		}
-		MappingService.getMapping(this.mappingId)
-			.then((response: AxiosResponse) => {
-				const mapping: IMapping = response.data;
-				this.type = mapping.type;
-				this.name = mapping.name;
-				this.deviceName = mapping.IqrfInterface;
-				this.busPin = mapping.busEnableGpioPin;
-				this.pgmPin = mapping.pgmSwitchGpioPin;
-				this.powerPin = mapping.powerEnableGpioPin;
-				if (mapping.type === 'uart' && mapping.baudRate !== undefined) {
-					this.baudRate = mapping.baudRate;
-				}
-				if (mapping.i2cEnableGpioPin === undefined && mapping.spiEnableGpioPin === undefined && mapping.uartEnableGpioPin === undefined) {
-					return;
-				}
-				this.gatewayMapping = true;
-				if (mapping.i2cEnableGpioPin !== undefined) {
-					this.i2cPin = mapping.i2cEnableGpioPin;
-				}
-				if (mapping.spiEnableGpioPin !== undefined) {
-					this.spiPin = mapping.spiEnableGpioPin;
-				}
-				if (mapping.uartEnableGpioPin !== undefined) {
-					this.uartPin = mapping.uartEnableGpioPin;
-				}
-			})
-			.catch((error: AxiosError) => {
-				FormErrorHandler.mappingError(error);
-				this.hideModal();
-			});
-	}
-
-	/**
-	 * Creates a mapping object for REST API request
-	 * @returns {IMapping} Mapping object
-	 */
-	private buildMapping(): IMapping {
-		let mapping: IMapping = {
-			type: this.type,
-			name: this.name,
-			IqrfInterface: this.deviceName,
-			busEnableGpioPin: this.busPin,
-			pgmSwitchGpioPin: this.pgmPin,
-			powerEnableGpioPin: this.powerPin
-		};
-		if (this.type === 'uart') {
-			Object.assign(mapping, {baudRate: this.baudRate});
-		}
-		if (this.gatewayMapping) {
-			Object.assign(mapping, {i2cEnableGpioPin: this.i2cPin, spiEnableGpioPin: this.spiPin, uartEnableGpioPin: this.uartPin});
-		}
-		return mapping;
-	}
-
-	/**
-	 * Saves new or updates existing mapping
-	 */
-	private saveMapping(): void {
-		this.$store.commit('spinner/SHOW');
-		if (this.mappingId !== null) {
-			MappingService.editMapping(this.mappingId, this.buildMapping())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => {
-					FormErrorHandler.mappingError(error);
-					this.hideModal();
-				});
-		} else {
-			MappingService.addMapping(this.buildMapping())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => {
-					FormErrorHandler.mappingError(error);
-					this.hideModal();
-				});
-		}
-	}
-
-	/**
-	 * Handles successful REST API response
-	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		if (this.mappingId === null) {
-			this.$toast.success(
-				this.$t('config.daemon.interfaces.interfaceMapping.messages.addSuccess', {mapping: this.name}).toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.interfaces.interfaceMapping.messages.editSuccess', {mapping: this.name}).toString()
-			);
-		}
-		this.hideModal();
-		this.$emit('update-mappings');
-	}
-
 }
 </script>

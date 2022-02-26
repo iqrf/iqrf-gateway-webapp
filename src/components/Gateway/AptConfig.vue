@@ -23,7 +23,7 @@ limitations under the License.
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='updateConfig'>
 					<ValidationProvider
-						v-if='powerUser'
+						v-if='role === roles.ADMIN'
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
@@ -31,7 +31,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.listUpdateInterval",
 							required: "service.unattended-upgrades.errors.listUpdateInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='listUpdateInterval'
 							type='number'
@@ -49,7 +49,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.upgradeInterval",
 							required: "service.unattended-upgrades.errors.upgradeInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='upgradeInterval'
 							type='number'
@@ -60,7 +60,7 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='powerUser'
+						v-if='role === roles.ADMIN'
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
@@ -68,7 +68,7 @@ limitations under the License.
 							min: "service.unattended-upgrades.errors.removeInterval",
 							required: "service.unattended-upgrades.errors.removeInterval",
 						}'
-					> 
+					>
 						<CInput
 							v-model='removeInterval'
 							type='number'
@@ -83,7 +83,11 @@ limitations under the License.
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
 					/>
 					<div><i>{{ $t('service.unattended-upgrades.form.intervalNote') }}</i></div><br>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
 						{{ $t('forms.save') }}
 					</CButton>
 				</CForm>
@@ -96,10 +100,13 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {UserRole} from '../../services/AuthenticationService';
+
 import AptService, {AptConfiguration} from '../../services/AptService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import ToastClear from '../../helpers/ToastClear';
+
 import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
@@ -117,7 +124,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 })
 
 /**
- * Gateway APT configuration component for service control 
+ * Gateway APT configuration component for service control
  */
 export default class AptConfig extends Vue {
 
@@ -142,9 +149,14 @@ export default class AptConfig extends Vue {
 	private rebootOnKernelUpdate = false;
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
+	 * @var {UserRole} role User role
 	 */
-	private powerUser = false;
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @var {typeof UserRole} roles User roles enum
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Vue lifecycle hook created
@@ -161,9 +173,7 @@ export default class AptConfig extends Vue {
 	 * Checks for user role and sends REST API request to get unattended upgrades configuration
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -173,7 +183,7 @@ export default class AptConfig extends Vue {
 	private getConfig(): Promise<void> {
 		return AptService.read()
 			.then((response: AxiosResponse) => this.parseConfig(response.data))
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'service.unattended-upgrades.messages.getFailed'));
 	}
 
 	/**
@@ -202,12 +212,13 @@ export default class AptConfig extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');
-					ToastClear.success('service.unattended-upgrades.messages.success');
+					this.$toast.success(
+						this.$t('service.unattended-upgrades.messages.saveSuccess').toString()
+					);
 				});
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				ToastClear.error('service.unattended-upgrdes.messages.failure');
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'service.unattended-upgrades.messages.saveFailed');
 			});
 	}
 

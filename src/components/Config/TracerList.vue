@@ -36,7 +36,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}

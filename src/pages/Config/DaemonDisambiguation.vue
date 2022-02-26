@@ -21,7 +21,7 @@ limitations under the License.
 			<CCardBody>
 				<CListGroup>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] === "power"'
+						v-if='roleIdx <= roles.admin'
 						to='/config/daemon/main/'
 					>
 						<header class='list-group-item-heading'>
@@ -32,7 +32,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] === "power"'
+						v-if='roleIdx <= roles.admin'
 						to='/config/daemon/component/'
 					>
 						<header class='list-group-item-heading'>
@@ -42,7 +42,10 @@ limitations under the License.
 							{{ $t('config.daemon.components.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/daemon/interfaces/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/daemon/interfaces/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.interfaces.title') }}
 						</header>
@@ -50,7 +53,10 @@ limitations under the License.
 							{{ $t('config.daemon.interfaces.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/daemon/messagings/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/daemon/messagings/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.messagings.title') }}
 						</header>
@@ -58,7 +64,10 @@ limitations under the License.
 							{{ $t('config.daemon.messagings.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/daemon/scheduler/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/daemon/scheduler/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.scheduler.title') }}
 						</header>
@@ -66,7 +75,10 @@ limitations under the License.
 							{{ $t('config.daemon.scheduler.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/daemon/misc/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/daemon/misc/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.misc.title') }}
 						</header>
@@ -84,6 +96,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -99,5 +113,27 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
  * Daemon configuration disambiguation menu
  */
 export default class DaemonDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>

@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('core.user.edit') }}</h1>
 		<CCard body-wrapper>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='handleSubmit'>
+				<CForm @submit.prevent='saveUser'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -56,16 +56,12 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							v-if='$store.getters["user/getRole"] === "power"'
 							:value.sync='role'
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:placeholder='$t("core.user.errors.role")'
-							:options='[
-								{value: "normal", label: $t("core.user.roles.normal")},
-								{value: "power", label: $t("core.user.roles.power")},
-							]'
+							:options='roles'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -76,52 +72,55 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							v-if='$store.getters["user/getRole"] === "power"'
 							:value.sync='language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:placeholder='$t("core.user.errors.language")'
-							:options='[
-								{value: "en", label: $t("core.user.languages.en")},
-							]'
+							:options='languages'
 						/>
 					</ValidationProvider>
-					<div v-if='$store.getters["user/getId"] === userId'>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							:rules='newPassword !== "" ? "required" : ""'
-							:custom-messages='{
-								required: "core.user.errors.oldPassword",
-							}'
-						>
-							<CInput
-								v-model='oldPassword'
-								:label='$t("core.user.oldPassword")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-								type='password'
-								autocomplete='current-password'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							:rules='oldPassword !== "" ? "required" : ""'
-							:custom-messages='{
-								required: "core.user.errors.newPassword",
-							}'
-						>
-							<CInput
-								v-model='newPassword'
-								:label='$t("core.user.newPassword")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-								type='password'
-								autocomplete='new-password'
-							/>
-						</ValidationProvider>
-					</div>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						:rules='{
+							required: newPassword.length > 0,
+						}'
+						:custom-messages='{
+							required: "core.user.errors.oldPassword",
+						}'
+					>
+						<CInput
+							v-model='oldPassword'
+							:label='$t("core.user.oldPassword")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+							type='password'
+							autocomplete='current-password'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						:rules='{
+							required: oldPassword.length > 0,
+						}'
+						:custom-messages='{
+							required: "core.user.errors.newPassword",
+						}'
+					>
+						<CInput
+							v-model='newPassword'
+							:label='$t("core.user.newPassword")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+							type='password'
+							autocomplete='new-password'
+						/>
+					</ValidationProvider>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
 						{{ $t('forms.save') }}
 					</CButton>
 				</CForm>
@@ -137,9 +136,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
+import {UserLanguage, UserRole} from '../../services/AuthenticationService';
 import UserService from '../../services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -160,6 +161,10 @@ import {AxiosError, AxiosResponse} from 'axios';
  * User manager form to edit an existing user
  */
 export default class UserEdit extends Vue {
+	/**
+	 * @var {string} username User name
+	 */
+	private username = '';
 
 	/**
 	 * @var {string|null} email User's email
@@ -167,14 +172,29 @@ export default class UserEdit extends Vue {
 	private email: string|null = null;
 
 	/**
-	 * @var {string} language User's preferred language
+	 * @var {UserRole} role User role
 	 */
-	private language = '';
+	private role: UserRole = UserRole.BASIC;
 
 	/**
-	 * @var {boolean} loaded Indicates whether user information has been successfully retrieved
+	 * @constant {Array<IOption>} roles Array of available user roles
 	 */
-	private loaded = false;
+	private roles: Array<IOption> = [];
+
+	/**
+	 * @var {UserLanguage} language User's preferred language
+	 */
+	private language: UserLanguage = UserLanguage.ENGLISH;
+
+	/**
+	 * @constant {Array<IOption>} languages Language options
+	 */
+	private languages: Array<IOption> = [
+		{
+			value: UserLanguage.ENGLISH,
+			label: this.$t('core.user.languages.en'),
+		},
+	]
 
 	/**
 	 * @var {string} newPassword New user password
@@ -187,26 +207,42 @@ export default class UserEdit extends Vue {
 	private oldPassword = '';
 
 	/**
-	 * @var {string} role User role
-	 */
-	private role = '';
-
-	/**
-	 * @var {string} username User name
-	 */
-	private username = '';
-
-	/**
 	 * @property {number} userId User id
 	 */
 	@Prop({required: true}) userId!: number;
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
 		extend('email', email);
 		extend('required', required);
+		const roleVal = this.$store.getters['user/getRole'];
+		const roleIdx = Object.values(UserRole).indexOf(roleVal);
+		let roles: Array<IOption> = [];
+		for (let item of Object.keys(UserRole)) {
+			const itemIdx = Object.keys(UserRole).indexOf(item);
+			if (itemIdx > roleIdx) {
+				roles.push({
+					value: UserRole[item],
+					label: this.$t('core.user.roles.' + UserRole[item]),
+				});
+			}
+		}
+		this.roles = roles;
+	}
+
+	/**
+	 * Retrieves component data
+	 */
+	mounted(): void {
+		this.getUser();
+	}
+
+	/**
+	 * Retrieves user configuration
+	 */
+	private getUser(): void {
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
 			.then((response: AxiosResponse) => {
@@ -225,23 +261,16 @@ export default class UserEdit extends Vue {
 	/**
 	 * Updates user's password, if the old password is valid, the rest of the settings are then updated and signout is performed
 	 */
-	private handleSubmit(): void {
+	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.$store.getters['user/getId'] === this.userId &&
-			this.oldPassword !== '' && this.newPassword !== '') {
+		if (this.oldPassword !== '' && this.newPassword !== '') {
 			UserService.changePassword(this.oldPassword, this.newPassword)
 				.then(() => {
-					this.performEdit().then(() => this.signOut());
+					this.performEdit();
 				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.userId}));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.username}));
 		} else {
-			this.performEdit().then(() => {
-				if (this.$store.getters['user/getId'] === this.userId) {
-					this.signOut();
-				} else {
-					this.$router.push('/user/');
-				}
-			});
+			this.performEdit();
 		}
 
 	}
@@ -249,37 +278,25 @@ export default class UserEdit extends Vue {
 	/**
 	 * Updates user information
 	 */
-	private performEdit(): Promise<void> {
-		return UserService.edit(this.userId, {
+	private performEdit(): void {
+		UserService.edit(this.userId, {
 			email: this.email !== '' ? this.email : null,
 			username: this.username,
 			language: this.language,
 			role: this.role
 		})
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'core.user.messages.editSuccess',
 						{username: this.username}
 					).toString()
 				);
+				this.$router.push('/user/');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.userId});
-				return Promise.reject();
-			});
-	}
-
-	/**
-	 * Performs signout
-	 */
-	private signOut(): void {
-		this.$store.dispatch('user/signOut')
-			.then(() => {
-				this.$router.push({
-					path: '/sign/in',
-					query: {redirect: this.$route.path}
-				});
+				extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.username});
 			});
 	}
 }

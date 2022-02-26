@@ -104,21 +104,21 @@ limitations under the License.
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.service.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.websocket.service.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('config.daemon.messagings.websocket.service.messages.deletePrompt', {service: deleteService}) }}
+			{{ $t('config.daemon.messagings.websocket.service.modal.prompt', {service: deleteService}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteService = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeService'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteService = null'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -128,14 +128,17 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {IField} from '../../interfaces/coreui';
-import {AxiosError, AxiosResponse} from 'axios';
-import {IWsService} from '../../interfaces/messagingInterfaces';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {mapGetters} from 'vuex';
+import {versionHigherEqual} from '../../helpers/versionChecker';
+
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IField} from '../../interfaces/coreui';
+import {IWsService} from '../../interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -153,7 +156,7 @@ import {mapGetters} from 'vuex';
 		...mapGetters({
 			daemonVersion: 'daemonVersion',
 		}),
-	}
+	},
 })
 
 /**
@@ -239,7 +242,9 @@ export default class WebsocketServiceList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.getFailed');
+			});
 	}
 
 	/**
@@ -281,12 +286,14 @@ export default class WebsocketServiceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: settings.instance})
+						this.$t('config.daemon.messagings.websocket.service.messages.updateSuccess', {service: settings.instance})
 							.toString()
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.updateFailed', {service: settings.instance});
+			});
 	}
 
 	/**
@@ -308,7 +315,9 @@ export default class WebsocketServiceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.deleteFailed', {service: service});
+			});
 	}
 }
 </script>

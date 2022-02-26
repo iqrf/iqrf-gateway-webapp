@@ -91,7 +91,7 @@ limitations under the License.
 									:checked.sync='configuration.timestampFiles'
 								/>
 							</div>
-							<div 
+							<div
 								v-if='configuration.timestampFiles'
 								class='form-group'
 							>
@@ -203,6 +203,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {mapGetters} from 'vuex';
 
@@ -212,8 +213,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {ITracerFile} from '../../interfaces/tracerFile';
 import {MetaInfo} from 'vue-meta';
-import { extendedErrorToast } from '../../helpers/errorToast';
-
 
 @Component({
 	components: {
@@ -262,11 +261,6 @@ export default class TracerForm extends Vue {
 		timestampFiles: false,
 		VerbosityLevels: [{channel: 0, level: 'INF'}]
 	};
-
-	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
 
 	/**
 	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
@@ -325,10 +319,7 @@ export default class TracerForm extends Vue {
 	/**
 	 * Vue lifecycle hook mounted
 	 */
-	mounted(): void {	
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getInstance();
 		}

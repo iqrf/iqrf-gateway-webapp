@@ -31,7 +31,7 @@ limitations under the License.
 				<CForm @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
-							v-if='powerUser'
+							v-if='role === roles.ADMIN'
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.daemon.interfaces.iqrfDpa.errors.instance"}'
@@ -76,8 +76,9 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {UserRole} from '../../services/AuthenticationService';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -121,14 +122,19 @@ export default class IqrfDpa extends Vue {
 	private instance = '';
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @var {typeof UserRole} roles User roles enum
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Vue lifecycle hook created
@@ -143,9 +149,7 @@ export default class IqrfDpa extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -166,7 +170,7 @@ export default class IqrfDpa extends Vue {
 				this.$emit('fetched', {name: 'iqrfDpa', success: false});
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of IQRF DPA component instance
 	 */
@@ -174,20 +178,33 @@ export default class IqrfDpa extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.interfaces.iqrfDpa.messages.saveSuccess').toString()
+			);
+		});
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.interfaces.iqrfDpa.messages.saveFailed');
 	}
 }
 </script>

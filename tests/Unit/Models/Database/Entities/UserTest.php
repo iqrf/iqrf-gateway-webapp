@@ -58,7 +58,7 @@ final class UserTest extends TestCase {
 	/**
 	 * User role
 	 */
-	private const ROLE = User::ROLE_POWER;
+	private const ROLE = User::ROLE_ADMIN;
 
 	/**
 	 * User language
@@ -203,7 +203,7 @@ final class UserTest extends TestCase {
 		Assert::exception(function (): void {
 			$this->entity->setRole('invalid');
 		}, InvalidUserRoleException::class);
-		Assert::same(User::ROLE_POWER, $this->entity->getRole());
+		Assert::same(User::ROLE_ADMIN, $this->entity->getRole());
 	}
 
 	/**

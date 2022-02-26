@@ -31,10 +31,12 @@ limitations under the License.
 				<CForm @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
-							v-if='powerUser'
+							v-if='role === roles.ADMIN'
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.instance"}'
+							:custom-messages='{
+								required: "config.daemon.interfaces.iqrfUart.errors.instance"
+							}'
 						>
 							<CInput
 								v-model='componentInstance'
@@ -46,7 +48,9 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.iqrfInterface"}'
+							:custom-messages='{
+								required: "config.daemon.interfaces.iqrfUart.errors.iqrfInterface"
+							}'
 						>
 							<CInput
 								v-model='IqrfInterface'
@@ -179,7 +183,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
 	CCard,
@@ -194,16 +197,21 @@ import {
 	CRow,
 	CSelect,
 } from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required} from 'vee-validate/dist/rules';
 import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {integer, required} from 'vee-validate/dist/rules';
+import {mapGetters} from 'vuex';
+import {UserRole} from '../../services/AuthenticationService';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import {IOption} from '../../interfaces/coreui';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
-import {mapGetters} from 'vuex';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -286,11 +294,6 @@ export default class IqrfUart extends Vue {
 	private powerEnableGpioPin = 18;
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {number|null} spiEnableGpioPin SPI interface enable pin
 	 */
 	private spiEnableGpioPin: number|null = null;
@@ -309,6 +312,16 @@ export default class IqrfUart extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @var {typeof UserRole} roles User roles enum
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Computes array of CoreUI select options for baudrate
@@ -331,9 +344,7 @@ export default class IqrfUart extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -350,7 +361,7 @@ export default class IqrfUart extends Vue {
 			})
 			.catch(() => {
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'iqrfUart', success: true});
+				this.$emit('fetched', {name: 'iqrfUart', success: false});
 			});
 	}
 
@@ -416,20 +427,33 @@ export default class IqrfUart extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !==  '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.interfaces.iqrfUart.messages.saveSuccess').toString()
+			);
+		});
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.interfaces.iqrfUart.messages.saveFailed');
 	}
 
 	/**

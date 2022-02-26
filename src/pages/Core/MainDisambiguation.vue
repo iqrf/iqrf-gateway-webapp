@@ -48,7 +48,10 @@ limitations under the License.
 		<CCard>
 			<CCardBody>
 				<CListGroup>
-					<CListGroupItem to='/gateway/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.basic'
+						to='/gateway/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('gateway.title') }}
 						</header>
@@ -57,7 +60,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.normal'
 						to='/config/'
 					>
 						<header class='list-group-item-heading'>
@@ -68,7 +71,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.normal'
 						to='/iqrfnet/'
 					>
 						<header class='list-group-item-heading'>
@@ -79,7 +82,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("networkManager") && $store.getters["user/getRole"] !== "iqaros"'
+						v-if='$store.getters["features/isEnabled"]("networkManager") && roleIdx <= roles.admin'
 						to='/network/'
 					>
 						<header class='list-group-item-heading'>
@@ -90,7 +93,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.normal'
 						to='/cloud/'
 					>
 						<header class='list-group-item-heading'>
@@ -101,7 +104,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.admin'
 						to='/maintenance/'
 					>
 						<header class='list-group-item-heading'>
@@ -112,7 +115,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("grafana")'
+						v-if='$store.getters["features/isEnabled"]("grafana") && roleIdx <= roles.basic'
 						:href='$store.getters["features/configuration"]("grafana").url'
 						target='_blank'
 					>
@@ -124,7 +127,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed") && $store.getters["user/getRole"] !== "iqaros"'
+						v-if='$store.getters["features/isEnabled"]("nodeRed") && roleIdx <= roles.basicadmin'
 						:href='$store.getters["features/configuration"]("nodeRed").url'
 						target='_blank'
 					>
@@ -136,7 +139,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed") && $store.getters["user/getRole"] !== "iqaros"'
+						v-if='$store.getters["features/isEnabled"]("nodeRed") && roleIdx <= roles.basic'
 						:href='$store.getters["features/configuration"]("nodeRed").url + "ui/"'
 						target='_blank'
 					>
@@ -148,7 +151,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("supervisord") && $store.getters["user/getRole"] !== "iqaros"'
+						v-if='$store.getters["features/isEnabled"]("supervisord") && roleIdx <= roles.admin'
 						:href='$store.getters["features/configuration"]("supervisord").url'
 						target='_blank'
 					>
@@ -160,7 +163,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.admin || roleIdx === roles.basicadmin'
 						to='/user/'
 					>
 						<header class='list-group-item-heading'>
@@ -171,7 +174,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["user/getRole"] !== "iqaros"'
+						v-if='roleIdx <= roles.admin'
 						to='/security/'
 					>
 						<header class='list-group-item-heading'>
@@ -200,13 +203,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
-import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-import {mapGetters} from 'vuex';
+import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
+import {getRoleIndex} from '../../helpers/user';
+import {mapGetters} from 'vuex';
+
 import UserService from '../../services/UserService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -232,6 +238,28 @@ import UserService from '../../services/UserService';
  * Main disambiguation menu component
  */
 export default class MainDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 
 	/**
 	 * Resends verification e-mail
