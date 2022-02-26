@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t("config.daemon.misc.otaUpload.title") }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -28,7 +28,7 @@ limitations under the License.
 				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveInstance'>
+				<CForm @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -36,7 +36,7 @@ limitations under the License.
 							:custom-messages='{
 								required: "config.daemon.misc.otaUpload.errors.instance"
 							}'
-						>					
+						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
@@ -48,7 +48,11 @@ limitations under the License.
 							v-model='configuration.uploadPath'
 							:label='$t("config.daemon.misc.otaUpload.form.uploadPath")'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<CButton
+							type='submit'
+							color='primary'
+							:disabled='invalid'
+						>
 							{{ $t('forms.save') }}
 						</CButton>
 					</fieldset>
@@ -63,9 +67,10 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOtaUpload} from '../../interfaces/iqmeshServices';
@@ -125,13 +130,13 @@ export default class OtaUpload extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.getInstance();
+		this.getConfig();
 	}
 
 	/**
 	 * Retrieves instance of OtaUpload daemon component
 	 */
-	private getInstance(): Promise<void> {
+	private getConfig(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				if (response.data.instances.length > 0) {
@@ -149,25 +154,37 @@ export default class OtaUpload extends Vue {
 	/**
 	 * Updates configuration of OtaUpload instance and creates one if it does not exist
 	 */
-	private saveInstance(): void {
+	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
 	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getInstance().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.misc.otaUpload.messages.saveSuccess').toString()
+			);
+		});
 	}
 
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.misc.otaUpload.messages.saveFailed');
+	}
 }
 </script>

@@ -21,21 +21,23 @@ limitations under the License.
 				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
 			</CCardHeader>
 			<CCardBody>
-				<CElementCover 
+				<CElementCover
 					v-if='loadFailed'
 					style='z-index: 1;'
 					:opacity='0.85'
 				>
 					{{ $t('config.daemon.messages.failedElement') }}
 				</CElementCover>
-				<ValidationObserver v-slot='{ invalid }'>
+				<ValidationObserver v-slot='{invalid}'>
 					<CForm @submit.prevent='saveConfig'>
 						<fieldset :disabled='loadFailed'>
 							<ValidationProvider
-								v-if='powerUser'
-								v-slot='{ errors, touched, valid }'
+								v-if='role === roles.ADMIN'
+								v-slot='{errors, touched, valid}'
 								rules='required'
-								:custom-messages='{required: "config.daemon.interfaces.iqrfCdc.errors.instance"}'
+								:custom-messages='{
+									required: "config.daemon.interfaces.iqrfCdc.errors.instance"
+								}'
 							>
 								<CInput
 									v-model='configuration.instance'
@@ -45,9 +47,11 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
+								v-slot='{errors, touched, valid}'
 								rules='required'
-								:custom-messages='{required: "config.daemon.interfaces.iqrfCdc.errors.iqrfInterface"}'
+								:custom-messages='{
+									required: "config.daemon.interfaces.iqrfCdc.errors.iqrfInterface"
+								}'
 							>
 								<CInput
 									v-model='configuration.IqrfInterface'
@@ -56,7 +60,11 @@ limitations under the License.
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CButton type='submit' color='primary' :disabled='invalid'>
+							<CButton
+								type='submit'
+								color='primary'
+								:disabled='invalid'
+							>
 								{{ $t('forms.save') }}
 							</CButton>
 						</fieldset>
@@ -73,13 +81,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {UserRole} from '../../services/AuthenticationService';
+import {required} from 'vee-validate/dist/rules';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfCdc} from '../../interfaces/iqrfInterfaces';
 
 @Component({
@@ -94,7 +106,7 @@ import {IIqrfCdc} from '../../interfaces/iqrfInterfaces';
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
 })
 
 /**
@@ -121,14 +133,19 @@ export default class IqrfCdc extends Vue {
 	private instance = '';
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @var {typeof UserRole} roles User roles enum
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Vue lifecycle hook created
@@ -141,9 +158,7 @@ export default class IqrfCdc extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -172,22 +187,35 @@ export default class IqrfCdc extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
-	
+
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.interfaces.iqrfCdc.messages.saveSuccess').toString()
+			);
+		});
 	}
-	
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.interfaces.iqrfCdc.messages.saveFailed');
+	}
+
 	/**
 	 * Updates port in configuration from mapping
 	 * @param {string} port Port

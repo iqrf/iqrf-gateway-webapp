@@ -20,8 +20,8 @@ limitations under the License.
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
-					<JsonApi 
-						v-if='!powerUser'
+					<JsonApi
+						v-if='role !== roles.ADMIN'
 						@fetched='configFetch'
 					/>
 					<div v-else>
@@ -36,7 +36,7 @@ limitations under the License.
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
 					<IqrfInfo @fetched='configFetch' />
 				</CTab>
-				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh")'>
+				<CTab v-if='role === roles.ADMIN' :title='$t("config.daemon.misc.iqmesh")'>
 					<OtaUpload @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
@@ -63,6 +63,8 @@ import MonitorList from '../../components/Config/MonitorList.vue';
 import OtaUpload from '../../components/Config/OtaUpload.vue';
 import TracerList from '../../components/Config/TracerList.vue';
 
+import {UserRole} from '../../services/AuthenticationService';
+
 import {IConfigFetch} from '../../interfaces/daemonComponent';
 
 @Component({
@@ -80,11 +82,11 @@ import {IConfigFetch} from '../../interfaces/daemonComponent';
 		JsonSplitter,
 		MonitorList,
 		OtaUpload,
-		TracerList
+		TracerList,
 	},
 	metaInfo: {
-		title: 'config.daemon.misc.title'
-	}
+		title: 'config.daemon.misc.title',
+	},
 })
 
 /**
@@ -97,6 +99,16 @@ export default class MiscConfiguration extends Vue {
 	private activeTab = 0;
 
 	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @constant {typeof UserRole} roles User roles
+	 */
+	private roles: typeof UserRole = UserRole;
+
+	/**
 	 * @var {Array<string>} endpoints Array of misc tab endpoints
 	 */
 	private endpoints: Array<string> = [
@@ -106,11 +118,6 @@ export default class MiscConfiguration extends Vue {
 		'monitor',
 		'tracer'
 	];
-
-	/**
-	 * @var {boolean} powerUser Indicates whether user profile is power user
-	 */
-	private powerUser = false;
 
 	/**
 	 * @var {Array<string>} children Children components loading configuration
@@ -131,8 +138,8 @@ export default class MiscConfiguration extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
+		this.role = this.$store.getters['user/getRole'];
+		if (this.role === UserRole.ADMIN) {
 			this.children.push('jsonMngMetaDataApi', 'jsonRawApi', 'jsonSplitter');
 		} else {
 			this.children.push('jsonApi');
@@ -143,7 +150,7 @@ export default class MiscConfiguration extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.powerUser) {
+		if (this.role === UserRole.ADMIN) {
 			this.endpoints.splice(3, 0, 'iqmesh');
 		}
 		if (this.$attrs.tabName !== undefined) {

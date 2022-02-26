@@ -19,7 +19,10 @@ limitations under the License.
 		<h1>{{ $t('cloud.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/cloud/ibm-cloud/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/cloud/ibm-cloud/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('cloud.ibmCloud.title') }}
 					</header>
@@ -27,7 +30,10 @@ limitations under the License.
 						{{ $t('cloud.ibmCloud.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/cloud/azure/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/cloud/azure/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('cloud.msAzure.title') }}
 					</header>
@@ -35,7 +41,10 @@ limitations under the License.
 						{{ $t('cloud.msAzure.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/cloud/aws/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/cloud/aws/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('cloud.amazonAws.title') }}
 					</header>
@@ -43,7 +52,10 @@ limitations under the License.
 						{{ $t('cloud.amazonAws.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/cloud/hexio/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/cloud/hexio/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('cloud.hexio.title') }}
 					</header>
@@ -51,7 +63,10 @@ limitations under the License.
 						{{ $t('cloud.hexio.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/cloud/inteli-glue/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/cloud/inteli-glue/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('cloud.intelimentsInteliGlue.title') }}
 					</header>
@@ -68,6 +83,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -82,5 +99,28 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 /**
  * Cloud disambiguation menu component
  */
-export default class CloudDisambiguation extends Vue {}
+export default class CloudDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
+}
 </script>

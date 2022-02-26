@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -30,7 +30,7 @@ limitations under the License.
 				>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
-							v-if='powerUser'
+							v-if='role === roles.ADMIN'
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
@@ -107,14 +107,16 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {mapGetters} from 'vuex';
 import {versionLowerEqual} from '../../helpers/versionChecker';
+import {UserRole} from '../../services/AuthenticationService';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfInfo} from '../../interfaces/iqrfInfo';
-import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -172,14 +174,19 @@ export default class IqrfInfo extends Vue {
 	private enumPeriodic = false;
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @var {typeof UserRole} roles User roles enum
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
@@ -205,9 +212,7 @@ export default class IqrfInfo extends Vue {
 	 */
 	mounted(): void {
 		this.updateForm();
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -250,20 +255,33 @@ export default class IqrfInfo extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.name, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.name, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.misc.iqrfInfo.messages.saveSuccess').toString()
+			);
+		});
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.misc.iqrfInfo.messages.saveFailed');
 	}
 }
 </script>

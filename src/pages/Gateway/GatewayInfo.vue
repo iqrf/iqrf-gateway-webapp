@@ -62,6 +62,7 @@ limitations under the License.
 							<td class='hostname'>
 								{{ info.hostname }}
 								<CButton
+									v-if='$store.getters["user/getRole"] === "admin"'
 									color='primary'
 									size='sm'
 									@click='showHostnameModal'

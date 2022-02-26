@@ -96,9 +96,8 @@ limitations under the License.
 								<CIcon :content='icons.resend' size='sm' />
 								{{ $t('core.user.resendVerification') }}
 							</CButton> <CButton
-								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
 								color='info'
-								:to='"/user/edit/" + item.id'
+								:to='item.id === userId ? "/profile/" : "/user/edit/" + item.id'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -163,6 +162,8 @@ import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons
 import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
+import {UserRole} from '../../services/AuthenticationService';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
@@ -217,19 +218,27 @@ export default class UserList extends Vue {
 	private users: Array<IUser> = [];
 
 	/**
+	 * @var {number} userId User ID
+	 */
+	private userId = 0;
+
+	/**
 	 * @constant {Array<string>} roles Arrray of user roles
 	 */
 	private roles = [
-		'normal',
-		'iqaros',
-		'power'
+		UserRole.ADMIN,
+		UserRole.NORMAL,
+		UserRole.BASICADMIN,
+		UserRole.BASIC,
 	];
 
 	/**
 	 * Updates table fields by user role
 	 */
 	created(): void {
-		if (this.$store.getters['user/getRole'] !== 'power') {
+		this.userId = this.$store.getters['user/getId'];
+		const role = this.$store.getters['user/getRole'];
+		if (role !== UserRole.ADMIN && role !== UserRole.BASICADMIN) {
 			this.fields = [
 				{
 					key: 'username',

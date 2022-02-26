@@ -18,8 +18,8 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.user.add') }}</h1>
 		<CCard body-wrapper>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='handleSubmit'>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='saveUser'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -31,21 +31,6 @@ limitations under the License.
 							id='username'
 							v-model='username'
 							:label='$t("forms.fields.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='email'
-						:custom-messages='{
-							email: "forms.errors.emailFormat",
-						}'
-					>
-						<CInput
-							id='email'
-							v-model='email'
-							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -64,6 +49,21 @@ limitations under the License.
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							type='password'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='email'
+						:custom-messages='{
+							email: "forms.errors.emailFormat",
+						}'
+					>
+						<CInput
+							id='email'
+							v-model='email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -98,7 +98,11 @@ limitations under the License.
 							:options='languages'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
 						{{ $t('forms.add') }}
 					</CButton>
 				</CForm>
@@ -163,7 +167,7 @@ export default class UserAdd extends Vue {
 	private language: UserLanguage = UserLanguage.ENGLISH;
 
 	/**
-	 * @constant {Array<IOption>} languages
+	 * @constant {Array<IOption>} languages Language options
 	 */
 	private languages: Array<IOption> = [
 		{
@@ -183,7 +187,7 @@ export default class UserAdd extends Vue {
 	private roles: Array<IOption> = [];
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
 		extend('email', email);
@@ -206,7 +210,7 @@ export default class UserAdd extends Vue {
 	/**
 	 * Creates a new user entry with default language and role if unspecified
 	 */
-	private handleSubmit(): void {
+	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
 		UserService.add(this.username, this.email, this.password, this.language, this.role)
 			.then(() => {

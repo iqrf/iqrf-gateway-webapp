@@ -147,11 +147,13 @@ export default class TheSidebar extends Vue {
 						to: '/gateway/',
 						route: '/gateway/',
 						icon: {content: cilStorage},
+						role: UserRole.BASIC,
 						_children: [
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.info.title'),
 								to: '/gateway/info/',
+								role: UserRole.BASIC,
 							},
 							{
 								_name: 'CSidebarNavItem',
@@ -474,6 +476,7 @@ export default class TheSidebar extends Vue {
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('maintenance.mender.title'),
 								to: '/maintenance/mender/',
+								route: '/maintenance/mender/',
 								feature: 'mender',
 								role: UserRole.ADMIN,
 								_children: [
@@ -509,28 +512,25 @@ export default class TheSidebar extends Vue {
 						target: '_blank',
 						feature: 'grafana',
 						icon: {content: cibGrafana},
-						role: UserRole.NORMAL,
+						role: UserRole.BASIC,
 					},
 					{
-						_name: 'CSidebarNavDropdown',
-						name: this.$t('core.nodeRed.title'),
+						_name: 'CSidebarNavItem',
+						name: this.$t('core.nodeRed.workflow.title'),
+						href: this.$store.getters['features/configuration']('nodeRed').url,
+						target: '_blank',
 						feature: 'nodeRed',
 						icon: {content: cibNodeRed},
-						role: UserRole.NORMAL,
-						items: [
-							{
-								name: this.$t('core.nodeRed.workflow.title'),
-								href: this.$store.getters['features/configuration']('nodeRed').url,
-								target: '_blank',
-								role: UserRole.NORMAL,
-							},
-							{
-								name: this.$t('core.nodeRed.dashboard.title'),
-								href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
-								target: '_blank',
-								role: UserRole.NORMAL,
-							},
-						],
+						role: UserRole.BASICADMIN,
+					},
+					{
+						_name: 'CSidebarNavItem',
+						name: this.$t('core.nodeRed.dashboard.title'),
+						href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
+						target: '_blank',
+						feature: 'nodeRed',
+						icon: {content: cibNodeRed},
+						role: UserRole.BASIC,
 					},
 					{
 						_name: 'CSidebarNavItem',
@@ -576,6 +576,7 @@ export default class TheSidebar extends Vue {
 						target: '_blank',
 						feature: 'docs',
 						icon: {content: cilBook},
+						role: UserRole.BASIC,
 					},
 				],
 			},
@@ -606,13 +607,13 @@ export default class TheSidebar extends Vue {
 		members.forEach((member: NavMember) => {
 			let children, items = false;
 			if (member.role !== undefined) {
-				if (roleVal === UserRole.BASICADMIN) {
-					if (!this.BAWhitelist.includes((member.to as string))) {
-						return;
-					}
-				} else {
-					const memberIdx = Object.values(UserRole).indexOf(member.role);
-					if (roleIdx > memberIdx) {
+				const memberIdx = Object.values(UserRole).indexOf(member.role);
+				if (roleIdx > memberIdx) {
+					if (roleVal === UserRole.BASICADMIN) {
+						if (!this.BAWhitelist.includes((member.to as string))) {
+							return;
+						}
+					} else {
 						return;
 					}
 				}
@@ -650,13 +651,13 @@ export default class TheSidebar extends Vue {
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
 		items.forEach((item: NavMemberItem) => {
 			if (item.role !== undefined) {
-				if (roleVal === UserRole.BASICADMIN) {
-					if (!this.BAWhitelist.includes((item.to as string))) {
-						return;
-					}
-				} else {
-					const memberIdx = Object.values(UserRole).indexOf(item.role);
-					if (roleIdx > memberIdx) {
+				const memberIdx = Object.values(UserRole).indexOf(item.role);
+				if (roleIdx > memberIdx) {
+					if (roleVal === UserRole.BASICADMIN) {
+						if (!this.BAWhitelist.includes((item.to as string))) {
+							return;
+						}
+					} else {
 						return;
 					}
 				}

@@ -24,12 +24,14 @@ limitations under the License.
 		</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveComponent'>
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.components.errors.name"}'
+							:custom-messages='{
+								required: "config.daemon.components.errors.name"
+							}'
 						>
 							<CInput
 								v-model='configuration.name'
@@ -43,9 +45,11 @@ limitations under the License.
 							:label='$t("config.daemon.components.form.libraryPath")'
 						/>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.components.errors.libraryName"}'
+							:custom-messages='{
+								required: "config.daemon.components.errors.libraryName"
+							}'
 						>
 							<CInput
 								v-model='configuration.libraryName'
@@ -59,7 +63,7 @@ limitations under the License.
 							:label='$t("states.enabled")'
 						/>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='integer|required'
 							:custom-messages='{
 								integer: "forms.errors.integer",
@@ -74,7 +78,11 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<CButton
+							type='submit'
+							color='primary'
+							:disabled='invalid'
+						>
 							{{ submitButton }}
 						</CButton>
 					</CForm>
@@ -88,11 +96,14 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { MetaInfo } from 'vue-meta/types/vue-meta';
-import { AxiosError, AxiosResponse } from 'axios';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MetaInfo} from 'vue-meta/types/vue-meta';
 
 interface ComponentFormConfig {
 	name: string
@@ -118,7 +129,7 @@ interface ComponentFormConfig {
 		return {
 			title: (this as unknown as ComponentForm).pageTitle
 		};
-	}
+	},
 })
 
 /**
@@ -135,12 +146,12 @@ export default class ComponentForm extends Vue {
 		enabled: false,
 		startlevel: 0
 	};
-	
+
 	/**
 	 * @property {string} component Daemon component name for editing
 	 */
 	@Prop({ required: false, default: '' }) component!: string;
-	
+
 	/**
 	 * Computes page title depending on the action (add, edit)
 	 * @returns {string} Page title
@@ -172,59 +183,61 @@ export default class ComponentForm extends Vue {
 	 */
 	mounted(): void {
 		if (this.component !== '') {
-			this.getComponent();
+			this.getConfig();
 		}
 	}
 
 	/**
 	 * Retrieves Daemon component configuration
 	 */
-	private getComponent(): void {
+	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent(this.component)
+		return DaemonConfigurationService.getComponent(this.component)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.configuration = response.data.configuration;
 			})
 			.catch((error: AxiosError) => {
 				this.$router.push('/config/daemon/component/');
-				FormErrorHandler.configError(error);
+				extendedErrorToast(error, 'config.daemon.components.messages.getFailed', {component: this.component});
 			});
 	}
 
 	/**
 	 * Saves new or updates existing Daemon component configuration
 	 */
-	private saveComponent(): void {
+	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.component !== '') {
 			DaemonConfigurationService.updateComponent(this.component, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createComponent(this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/component/add') {
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
 			this.$toast.success(
-				this.$t('config.daemon.components.messages.addSuccess', {component: this.configuration.name})
-					.toString()
+				this.$t('config.daemon.components.messages.saveSuccess', {component: this.configuration.name}).toString()
 			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.components.messages.editSuccess', {component: this.component})
-					.toString()
-			);
-		}
-		this.$router.push('/config/daemon/component/');
+			this.$router.push('/config/daemon/component/');
+		});
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.components.messages.saveFailed', {component: this.configuration.name});
 	}
 }
 </script>

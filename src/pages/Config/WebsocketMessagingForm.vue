@@ -115,13 +115,16 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import { ModalInstance, IWsService } from '../../interfaces/messagingInterfaces';
-import { AxiosError, AxiosResponse } from 'axios';
-import { MetaInfo } from 'vue-meta';
-import { RequiredInterface } from '../../interfaces/requiredInterfaces';
+
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MetaInfo} from 'vue-meta';
+import {ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
+import {RequiredInterface} from '../../interfaces/requiredInterfaces';
 
 interface ServiceInstance {
 	label: string
@@ -158,7 +161,7 @@ interface LocalWsMessaging {
 		return {
 			title: (this as unknown as WebsocketMessagingForm).pageTitle
 		};
-	}
+	},
 })
 
 /**
@@ -251,9 +254,9 @@ export default class WebsocketMessagingForm extends Vue {
 	/**
 	 * Retrieves configuration of WebSocket messaging component instance and service component
 	 */
-	private getConfig() {
+	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		return Promise.all([
+		Promise.all([
 			DaemonConfigurationService.getInstance(this.componentNames.messaging, this.instance),
 			DaemonConfigurationService.getComponent(this.componentNames.service),
 		])
@@ -269,6 +272,10 @@ export default class WebsocketMessagingForm extends Vue {
 				responses[1].data.instances.forEach((item: IWsService) => {
 					this.services.push({value: item.instance, label: item.instance});
 				});
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.getFailed', {messaging: this.instance});
+				this.$router.push('/config/daemon/messagings/websocket');
 			});
 	}
 
@@ -304,32 +311,32 @@ export default class WebsocketMessagingForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentNames.messaging, this.instance, instance)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentNames.messaging, instance)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/websocket/add-messaging') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: this.instance})
-					.toString()
-			);
-		}
+	private handleSuccess(): void {
+		this.$toast.success(
+			this.$t('config.daemon.messagings.websocket.messaging.messages.saveSuccess', {messaging: this.configuration.instance}).toString()
+		);
 		this.$router.push('/config/daemon/messagings/websocket');
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.messagings.websocket.messaging.messages.saveFailed', {messaging: this.configuration.instance});
 	}
 }
 </script>
