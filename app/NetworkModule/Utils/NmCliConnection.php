@@ -38,7 +38,7 @@ class NmCliConnection {
 	public static function decode(string $data, string $prefix): array {
 		$config = [];
 		$array = explode(PHP_EOL, Strings::trim($data));
-		foreach ($array as $i => $row) {
+		foreach ($array as $row) {
 			$temp = explode(':', $row, 2);
 			if (!Strings::startsWith($temp[0], $prefix . '.')) {
 				continue;
