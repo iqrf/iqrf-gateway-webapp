@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\ZipEmptyException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
+use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
 use App\GatewayModule\Models\Backup\ControllerBackup;
 use App\GatewayModule\Models\Backup\GatewayFileBackup;
 use App\GatewayModule\Models\Backup\HostBackup;
@@ -331,7 +332,23 @@ class BackupManager {
 		}
 		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
 		$restoreGwInfo = Json::decode(FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
-		if ($this->gwInfo->getProperty('gwImage') !== $restoreGwInfo['gwImage']) {
+		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc\d+))?$/';
+		$restoreMatches = Strings::match($restoreGwInfo['gwImage'], $pattern);
+		if ($restoreMatches === null) {
+			throw new InvalidBackupContentException('Invalid backup archive gateway image version.');
+		}
+		$gwImage = $this->gwInfo->getProperty('gwImage');
+		if ($gwImage === null) {
+			throw new InvalidGatewayFileContentException('Gateway file does not contain valid image version.');
+		}
+		$gwMatches = Strings::match($gwImage, $pattern);
+		if ($gwMatches === null) {
+			throw new InvalidGatewayFileContentException('Gateway file does not contain valid image version.');
+		}
+		if (($gwMatches['product'] !== $restoreMatches['product']) ||
+			($gwMatches['os'] !== $restoreMatches['os']) ||
+			($gwMatches['major'] !== $restoreMatches['major']) ||
+			($gwMatches['minor'] !== $restoreMatches['minor'])) {
 			$this->zipManager->close();
 			$this->cleanup();
 			throw new InvalidBackupContentException('Gateway image and backup archive version mismatch.');
