@@ -138,7 +138,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$addresses = [];
 		$gateway = array_key_exists('gateway', $array) ? ($array['gateway'] !== '' ? IPv6::factory($array['gateway']) : null) : null;
 		if ($array['addresses'] !== '') {
-			foreach (explode(',', $array['addresses']) as $index => $address) {
+			foreach (explode(',', $array['addresses']) as $address) {
 				$addresses[] = IPv6Address::fromPrefix($address);
 			}
 		}
@@ -153,7 +153,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 			$currentAddresses = [];
 			$currentGateway = array_key_exists('gateway', $config) ? (($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null) : null;
 			if (array_key_exists('address', $config)) {
-				foreach ($config['address'] as $i => $addr) {
+				foreach ($config['address'] as $addr) {
 					$currentAddresses[] = IPv6Address::fromPrefix($addr);
 				}
 			}

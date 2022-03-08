@@ -206,15 +206,17 @@ class InfoManager {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
 		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
+		$size = (float) $segments[0];
+		$used = (float) $segments[1];
 		return [
-			'size' => $this->convertSizes((float) $segments[0]),
-			'used' => $this->convertSizes((float) $segments[1]),
+			'size' => $this->convertSizes($size),
+			'used' => $this->convertSizes($used),
 			'free' => $this->convertSizes((float) $segments[2]),
 			'shared' => $this->convertSizes((float) $segments[3]),
 			'buffers' => $this->convertSizes((float) $segments[4]),
 			'cache' => $this->convertSizes((float) $segments[5]),
 			'available' => $this->convertSizes((float) $segments[6]),
-			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
+			'usage' => round($used / $size * 100, 2) . '%',
 		];
 	}
 
@@ -229,11 +231,13 @@ class InfoManager {
 		if ($segments[0] === '0') {
 			return null;
 		}
+		$size = (float) $segments[0];
+		$used = (float) $segments[1];
 		return [
-			'size' => $this->convertSizes((float) $segments[0]),
-			'used' => $this->convertSizes((float) $segments[1]),
+			'size' => $this->convertSizes($size),
+			'used' => $this->convertSizes($used),
 			'free' => $this->convertSizes((float) $segments[2]),
-			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
+			'usage' => round($used / $size * 100, 2) . '%',
 		];
 	}
 
