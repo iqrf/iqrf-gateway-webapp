@@ -210,7 +210,30 @@ export default class UserList extends Vue {
 	/**
 	 * @var {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = [];
+	private fields: Array<IField> = [
+		{
+			key: 'username',
+			label: this.$t('forms.fields.username'),
+		},
+		{
+			key: 'email',
+			label: this.$t('forms.fields.email'),
+		},
+		{
+			key: 'role',
+			label: this.$t('core.user.role'),
+		},
+		{
+			key: 'language',
+			label: this.$t('core.user.language'),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			sorter: false,
+			filter: false,
+		},
+	];
 
 	/**
 	 * @var {Array<User>} users Array of user objects
@@ -237,54 +260,6 @@ export default class UserList extends Vue {
 	 */
 	created(): void {
 		this.userId = this.$store.getters['user/getId'];
-		const role = this.$store.getters['user/getRole'];
-		if (role !== UserRole.ADMIN && role !== UserRole.BASICADMIN) {
-			this.fields = [
-				{
-					key: 'username',
-					label: this.$t('forms.fields.username'),
-				},
-				{
-					key: 'email',
-					label: this.$t('forms.fields.email'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			];
-		} else {
-			this.fields = [
-				{
-					key: 'id',
-					label: this.$t('core.user.id'),
-				},
-				{
-					key: 'username',
-					label: this.$t('forms.fields.username'),
-				},
-				{
-					key: 'email',
-					label: this.$t('forms.fields.email'),
-				},
-				{
-					key: 'role',
-					label: this.$t('core.user.role'),
-				},
-				{
-					key: 'language',
-					label: this.$t('core.user.language'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			];
-		}
 	}
 
 	/**
