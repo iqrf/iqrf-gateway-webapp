@@ -396,22 +396,22 @@ export default class TheSidebar extends Vue {
 						items: [
 							{
 								name: this.$t('network.ethernet.title'),
-								to: '/network/ethernet',
+								to: '/network/ethernet/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireless.title'),
-								to: '/network/wireless',
+								to: '/network/wireless/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.mobile.title'),
-								to: '/network/mobile',
+								to: '/network/mobile/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireguard.title'),
-								to: '/network/vpn',
+								to: '/network/vpn/',
 								role: UserRole.ADMIN,
 							},
 						],
