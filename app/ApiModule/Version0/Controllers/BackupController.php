@@ -70,6 +70,7 @@ class BackupController extends BaseController{
 	 *      content:
 	 *          application/json:
 	 *              schema:
+	 *                  $ref: '#/components/schemas/GatewayBackup'
 	 *  responses:
 	 *      '200':
 	 *          description: 'Success'
