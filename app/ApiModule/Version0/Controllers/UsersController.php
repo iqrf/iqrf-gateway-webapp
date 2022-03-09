@@ -104,7 +104,7 @@ class UsersController extends BaseController {
 				return $response->writeJsonBody($this->manager->list([User::ROLE_BASIC, User::ROLE_BASICADMIN]));
 			}
 			if (!$user->hasScope('users:admin')) {
-				throw new ClientErrorException('Do not have appropriate permissions.', ApiResponse::S403_FORBIDDEN);
+				throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
 			}
 		}
 		return $response->writeJsonBody($this->manager->list());
