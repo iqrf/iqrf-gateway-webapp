@@ -21,8 +21,13 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Http\ApiRequest;
+use Apitte\Core\Http\ApiResponse;
 use Apitte\Core\UI\Controller\IController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\RequestAttributes;
+use App\Models\Database\Entities\User;
 
 /**
  * Base API controller
@@ -41,6 +46,20 @@ abstract class BaseController implements IController {
 	 */
 	public function __construct(RestApiSchemaValidator $validator) {
 		$this->validator = $validator;
+	}
+
+	/**
+	 * Checks the scopes
+	 * @param ApiRequest $request API request
+	 * @param array<string> $scopes Supported scopes
+	 */
+	protected function checkScopes(ApiRequest $request, array $scopes): void {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if ($user instanceof User) {
+			if (array_intersect($scopes, $user->getScopes()) === []) {
+				throw new ClientErrorException('Do not have appropriate permissions.', ApiResponse::S403_FORBIDDEN);
+			}
+		}
 	}
 
 }

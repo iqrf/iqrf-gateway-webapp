@@ -81,6 +81,19 @@ class UserService {
 	}
 
 	/**
+	 * Edits the logged in user
+	 * @param user User settings
+	 */
+	editLoggedIn(user: any): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+			...user,
+		};
+		return axios.put('user/', body, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Returns the user
 	 * @param id User ID
 	 */
@@ -154,6 +167,17 @@ class UserService {
 			baseUrl: urlBuilder.getBaseUrl(),
 		};
 		return axios.post('users/' + id + '/resendVerification', body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Requests a verification email re-send for logged in user
+	 */
+	resendVerificationEmailLoggedIn(): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+		};
+		return axios.post('user/resendVerification', body, {headers: authorizationHeader()});
 	}
 }
 

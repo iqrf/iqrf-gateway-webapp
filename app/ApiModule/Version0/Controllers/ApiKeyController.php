@@ -84,6 +84,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$apiKeys = $this->repository->findAll();
 		return $response->writeJsonBody($apiKeys);
 	}
@@ -119,6 +120,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$this->validator->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBody(false);
 		$apiKey = new ApiKey($json->description, null);
@@ -157,6 +159,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -184,6 +187,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -221,6 +225,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {

@@ -31,15 +31,15 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\RequestAttributes;
+use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
-use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
-use App\Models\Mail\Senders\EmailVerificationMailSender;
-use Nette\Mail\FallbackMailerException;
+use Nette\Mail\SendException;
 
 /**
  * User manager API controller
@@ -59,20 +59,20 @@ class UsersController extends BaseController {
 	private $repository;
 
 	/**
-	 * @var EmailVerificationMailSender Email verification mail sender
+	 * @var UserManager User manager
 	 */
-	private $sender;
+	private $manager;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param EmailVerificationMailSender $sender Email verification sender
+	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $sender, RestApiSchemaValidator $validator) {
+	public function __construct(EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
-		$this->sender = $sender;
+		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
@@ -90,14 +90,24 @@ class UsersController extends BaseController {
 	 *                      type: array
 	 *                      items:
 	 *                          $ref: '#/components/schemas/UserDetail'
+	 *      '403':
+	 *          description: Do not have appropriate permissions
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$users = $this->repository->findAll();
-		return $response->writeJsonBody($users);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if ($user instanceof User) {
+			if ($user->hasScope('users:basic')) {
+				return $response->writeJsonBody($this->manager->list([User::ROLE_BASIC, User::ROLE_BASICADMIN]));
+			}
+			if (!$user->hasScope('users:admin')) {
+				throw new ClientErrorException('Do not have appropriate permissions.', ApiResponse::S403_FORBIDDEN);
+			}
+		}
+		return $response->writeJsonBody($this->manager->list());
 	}
 
 	/**
@@ -121,6 +131,8 @@ class UsersController extends BaseController {
 	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          description: Do not have appropriate permissions
 	 *      '409':
 	 *          description: E-mail address or username is already used
 	 * ")
@@ -129,24 +141,27 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if ($this->repository->count([]) !== 0) {
+			self::checkScopes($request, ['users:admin', 'users:basic']);
+		}
 		$this->validator->validateRequest('userCreate', $request);
 		$json = $request->getJsonBody();
+		if ($this->repository->count([]) !== 0 &&
+			!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			self::checkScopes($request, ['users:admin']);
+		}
 		try {
-			$user = $this->repository->findOneByUserName($json['username']);
-			if ($user !== null) {
+			if ($this->manager->checkUsernameUniqueness($json['username'])) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$email = $json['email'] ?? null;
 			if ($email !== null) {
-				$user = $this->repository->findOneByEmail($email);
-				if ($user !== null) {
+				if ($this->manager->checkEmailUniqueness($email)) {
 					throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
 				}
 			}
 			$user = new User($json['username'], $email, $json['password'], $json['role'], $json['language']);
-			$verification = new UserVerification($user);
 			$this->entityManager->persist($user);
-			$this->entityManager->persist($verification);
 			$this->entityManager->flush();
 		} catch (InvalidEmailAddressException $e) {
 			throw new ClientErrorException('Invalid email address: ' . $e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
@@ -158,9 +173,9 @@ class UsersController extends BaseController {
 		$responseBody = ['emailSent' => false];
 		if ($user->getEmail() !== null) {
 			try {
-				$this->sendVerificationEmail($request, $verification);
+				$this->manager->sendVerificationEmail($request, $user);
 				$responseBody['emailSent'] = true;
-			} catch (FallbackMailerException $e) {
+			} catch (SendException $e) {
 				// Ignore failure
 			}
 		}
@@ -181,6 +196,8 @@ class UsersController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UserDetail'
+	 *      '403':
+	 *          description: Do not have appropriate permissions
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -192,6 +209,7 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['users:admin', 'users:basic']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
@@ -208,6 +226,8 @@ class UsersController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          description: Do not have appropriate permissions
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -219,10 +239,14 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['users:admin', 'users:basic']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
+		}
+		if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			self::checkScopes($request, ['users:admin']);
 		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
@@ -246,6 +270,8 @@ class UsersController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          description: Do not have appropriate permissions
 	 *      '404':
 	 *          description: Not found
 	 *      '409':
@@ -259,6 +285,7 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['users:admin', 'users:basic']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		$sendVerification = false;
@@ -268,13 +295,16 @@ class UsersController extends BaseController {
 		$this->validator->validateRequest('userEdit', $request);
 		$json = $request->getJsonBody();
 		if (array_key_exists('username', $json)) {
-			$userWithName = $this->repository->findOneByUserName($json['username']);
-			if ($userWithName !== null && $userWithName->getId() !== $id) {
+			if ($this->manager->checkUsernameUniqueness($json['username'], $id)) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user->setUserName($json['username']);
 		}
 		if (array_key_exists('role', $json)) {
+			if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true) &&
+				!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+				self::checkScopes($request, ['users:admin']);
+			}
 			try {
 				$user->setRole($json['role']);
 			} catch (InvalidUserRoleException $e) {
@@ -291,8 +321,7 @@ class UsersController extends BaseController {
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
 			if ($email !== null && $email !== '') {
-				$userWithEmail = $this->repository->findOneByEmail($email);
-				if ($userWithEmail !== null && $userWithEmail->getId() !== $id) {
+				if ($this->manager->checkEmailUniqueness($email, $id)) {
 					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
 				}
 				$sendVerification = true;
@@ -305,15 +334,12 @@ class UsersController extends BaseController {
 			if ($user->getState() === User::STATE_VERIFIED) {
 				$user->setState(User::STATE_UNVERIFIED);
 			}
-			$user->clearVerifications();
 		}
 		$this->entityManager->persist($user);
 		if ($sendVerification) {
-			$verification = new UserVerification($user);
-			$this->entityManager->persist($verification);
 			try {
-				$this->sendVerificationEmail($request, $verification);
-			} catch (FallbackMailerException $e) {
+				$this->manager->sendVerificationEmail($request, $user);
+			} catch (SendException $e) {
 				// Ignore failure
 			}
 		}
@@ -330,6 +356,8 @@ class UsersController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '400':
+	 *          description: User is already verified
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -343,36 +371,22 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['users:admin', 'users:basic']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if ($user->getState() === User::STATE_VERIFIED) {
+			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
+		}
 		try {
-			foreach ($user->getVerifications() as $verification) {
-				$this->sendVerificationEmail($request, $verification);
-			}
-		} catch (FallbackMailerException $e) {
+			$this->manager->sendVerificationEmail($request, $user);
+		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->withStatus(ApiResponse::S200_OK)
 			->writeBody('Workaround');
-	}
-
-	/**
-	 * Sends user verification e-mail
-	 * @param ApiRequest $request API request
-	 * @param UserVerification $verification User verification
-	 * @throws FallbackMailerException
-	 */
-	private function sendVerificationEmail(ApiRequest $request, UserVerification $verification): void {
-		$body = $request->getJsonBody();
-		if (array_key_exists('baseUrl', $body)) {
-			$baseUrl = trim($body['baseUrl'], '/');
-		} else {
-			$baseUrl = explode('/api/v0/users/', (string) $request->getUri(), 2)[0];
-		}
-		$this->sender->send($verification, $baseUrl);
 	}
 
 }

@@ -26,7 +26,7 @@ limitations under the License.
 			<CButton
 				color='warning'
 				size='sm'
-				:to='"/user/edit/" + userId'
+				to='/profile/'
 			>
 				{{ $t('account.email.add') }}
 			</CButton>
@@ -40,7 +40,7 @@ limitations under the License.
 			<CButton
 				color='warning'
 				size='sm'
-				@click='resendVerification(userId)'
+				@click='resendVerification()'
 			>
 				{{ $t('core.user.resendVerification') }}
 			</CButton>
@@ -227,7 +227,6 @@ import {AxiosError} from 'axios';
 	},
 	computed: {
 		...mapGetters({
-			userId: 'user/getId',
 			userEmail: 'user/getEmail',
 			isUserUnverified: 'user/isUnverified',
 		}),
@@ -263,12 +262,11 @@ export default class MainDisambiguation extends Vue {
 
 	/**
 	 * Resends verification e-mail
-	 * @param userId User ID
 	 * @private
 	 */
-	private resendVerification(userId: number): void {
+	private resendVerification(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.resendVerificationEmail(userId)
+		UserService.resendVerificationEmailLoggedIn()
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

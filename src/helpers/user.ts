@@ -22,6 +22,5 @@ export function getUserRoleKey(role: UserRole): UserRole {
 }
 
 export function getRoleIndex(role: UserRole): number {
-	const index = Object.values(UserRole).indexOf(role);
-	return index;
+	return Object.values(UserRole).indexOf(role);
 }
