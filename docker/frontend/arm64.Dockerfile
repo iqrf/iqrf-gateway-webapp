@@ -21,7 +21,7 @@ WORKDIR /app
 
 COPY . /app
 RUN sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\",/" version.json
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build
 
 FROM arm64v8/nginx:stable
