@@ -152,7 +152,11 @@ export default class SignIn extends Vue {
 		this.$store.dispatch('user/signIn', credentials)
 			.then(async () => {
 				await sleep(500);
-				this.$router.push((this.$route.query.redirect as string|undefined) ?? '/');
+				let destination = (this.$route.query.redirect as string|undefined) ?? '/';
+				if (destination.startsWith('/sign/in')) {
+					destination = '/';
+				}
+				await this.$router.push(destination);
 				this.$toast.success(
 					this.$t('core.sign.in.messages.success').toString()
 				);
