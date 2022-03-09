@@ -25,11 +25,25 @@ import {User, UserInfo} from './AuthenticationService';
 class UserService {
 
 	/**
-	 * Changes password
+	 * Changes password for a user specified by ID
+	 * @param userId User ID
 	 * @param oldPassword Old password
 	 * @param newPassword New password
 	 */
-	changePassword(oldPassword: string, newPassword: string): Promise<AxiosResponse> {
+	changePassword(userId: number, oldPassword, newPassword: string): Promise<AxiosResponse> {
+		const body = {
+			old: oldPassword,
+			new: newPassword
+		};
+		return axios.put('user/' + userId + '/password', body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Changes password for the currently logged in user
+	 * @param oldPassword Old password
+	 * @param newPassword New password
+	 */
+	changePasswordLoggedIn(oldPassword: string, newPassword: string): Promise<AxiosResponse> {
 		const body = {
 			old: oldPassword,
 			new: newPassword

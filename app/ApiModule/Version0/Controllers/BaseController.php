@@ -57,7 +57,7 @@ abstract class BaseController implements IController {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if ($user instanceof User) {
 			if (array_intersect($scopes, $user->getScopes()) === []) {
-				throw new ClientErrorException('Do not have appropriate permissions.', ApiResponse::S403_FORBIDDEN);
+				throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
 			}
 		}
 	}

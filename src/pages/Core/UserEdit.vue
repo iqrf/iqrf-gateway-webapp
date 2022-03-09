@@ -264,7 +264,7 @@ export default class UserEdit extends Vue {
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.oldPassword !== '' && this.newPassword !== '') {
-			UserService.changePassword(this.oldPassword, this.newPassword)
+			UserService.changePassword(this.userId, this.oldPassword, this.newPassword)
 				.then(() => {
 					this.performEdit();
 				})
