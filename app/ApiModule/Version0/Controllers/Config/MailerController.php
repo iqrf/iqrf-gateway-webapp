@@ -76,7 +76,7 @@ class MailerController extends BaseConfigController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/MailerConfig'
+	 *                      $ref: '#/components/schemas/MailerConfiguration'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -105,7 +105,7 @@ class MailerController extends BaseConfigController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/MailerConfig'
+	 *                  $ref: '#/components/schemas/MailerConfiguration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success

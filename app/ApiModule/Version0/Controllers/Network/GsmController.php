@@ -63,7 +63,7 @@ class GsmController extends NetworkController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schema/ModemList'
+	 *                      $ref: '#/components/schemas/ModemList'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")

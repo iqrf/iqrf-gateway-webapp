@@ -71,7 +71,7 @@ class SshController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/sshKeyTypes'
+	 *                      $ref: '#/components/schemas/SshKeyTypes'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -98,7 +98,7 @@ class SshController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schema/sshKeyList'
+	 *                      $ref: '#/components/schemas/SshKeyList'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -155,7 +155,7 @@ class SshController extends GatewayController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/sshKeys'
+	 *                  $ref: '#/components/schemas/SshKeysAdd'
 	 *  responses:
 	 *      '200':
 	 *          description: 'Partial success, duplicate keys in body (ignored)'
