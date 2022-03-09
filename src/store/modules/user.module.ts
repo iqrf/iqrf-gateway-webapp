@@ -14,7 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import AuthenticationService, {AccountState, User, UserInfo, UserRole} from '../../services/AuthenticationService';
+import AuthenticationService, {
+	AccountState,
+	IUserBase,
+	User,
+	UserInfo,
+	UserRole
+} from '../../services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';
@@ -87,6 +93,17 @@ const getters: GetterTree<UserState, any> = {
 	},
 	hasEmail(state: UserState): boolean {
 		return state.user !== null && state.user.email !== null;
+	},
+	get(state: UserState): IUserBase|null {
+		if (state.user === null) {
+			return null;
+		}
+		return {
+			username: state.user.username,
+			email: state.user.email,
+			role: state.user.role,
+			language: state.user.language,
+		};
 	},
 	getId(state: UserState): number|null {
 		if (state.user === null) {

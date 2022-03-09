@@ -227,6 +227,33 @@ class User implements JsonSerializable {
 	}
 
 	/**
+	 * Returns all user scopes
+	 * @return array<string> User scopes
+	 */
+	public function getScopes(): array {
+		$scopes = [];
+		if ($this->role === self::ROLE_BASICADMIN) {
+			$scopes = array_merge($scopes, ['users:basic']);
+		}
+		if ($this->role === self::ROLE_NORMAL || $this->role === self::ROLE_ADMIN) {
+			$scopes = array_merge($scopes, []);
+		}
+		if ($this->role === self::ROLE_ADMIN) {
+			$scopes = array_merge($scopes, ['apiKeys', 'users:admin']);
+		}
+		return $scopes;
+	}
+
+	/**
+	 * Checks if the user has a scope
+	 * @param string $scope Scope
+	 * @return bool User has a scope
+	 */
+	public function hasScope(string $scope): bool {
+		return in_array($scope, $this->getScopes(), true);
+	}
+
+	/**
 	 * Sets the user name
 	 * @param string $userName User name
 	 */
@@ -254,6 +281,9 @@ class User implements JsonSerializable {
 	 * Clears all e-mail address verifications
 	 */
 	public function clearVerifications(): void {
+		if ($this->verifications === null) {
+			return;
+		}
 		$this->verifications->clear();
 	}
 

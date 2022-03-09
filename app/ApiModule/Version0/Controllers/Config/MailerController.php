@@ -33,7 +33,7 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\Senders\MailerConfigurationTestMailSender;
 use Nette\IOException;
-use Nette\Mail\FallbackMailerException;
+use Nette\Mail\SendException;
 use Nette\Utils\JsonException;
 
 /**
@@ -147,7 +147,7 @@ class MailerController extends BaseConfigController {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$this->configurationTestSender->send($user);
-		} catch (FallbackMailerException $e) {
+		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		return $response->writeBody('Workaround');

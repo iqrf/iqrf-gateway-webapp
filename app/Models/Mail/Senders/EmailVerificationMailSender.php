@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Mail\Senders;
 
 use App\Models\Database\Entities\UserVerification;
+use Nette\Mail\SendException;
 
 /**
  * E-mail address verification mail sender
@@ -31,6 +32,7 @@ class EmailVerificationMailSender extends BaseMailSender {
 	 * Sends e-mail to signed up user
 	 * @param UserVerification $verification User verification
 	 * @param string $baseUrl Base URL
+	 * @throws SendException
 	 */
 	public function send(UserVerification $verification, string $baseUrl = ''): void {
 		$user = $verification->getUser();
