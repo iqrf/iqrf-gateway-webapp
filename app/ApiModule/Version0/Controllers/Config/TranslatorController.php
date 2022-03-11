@@ -67,6 +67,8 @@ class TranslatorController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/TranslatorConfig'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -75,6 +77,7 @@ class TranslatorController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:translator']);
 		try {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
@@ -101,6 +104,8 @@ class TranslatorController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -109,6 +114,7 @@ class TranslatorController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:translator']);
 		$this->validator->validateRequest('translatorConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());

@@ -72,6 +72,8 @@ class InteliGlueController extends CloudsController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -80,6 +82,7 @@ class InteliGlueController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['clouds']);
 		$this->validator->validateRequest('cloudInteliGlue', $request);
 		try {
 			$this->inteliGlueManager->createMqttInterface($request->getJsonBody());

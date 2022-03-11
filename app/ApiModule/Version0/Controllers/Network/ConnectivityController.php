@@ -64,6 +64,8 @@ class ConnectivityController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkConnectivityState'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -72,6 +74,7 @@ class ConnectivityController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$state = $this->manager->check()->toScalar();
 			return $response->writeJsonBody(['state' => $state]);

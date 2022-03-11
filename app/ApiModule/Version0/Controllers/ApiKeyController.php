@@ -78,6 +78,8 @@ class ApiKeyController extends BaseController {
 	 *                      type: array
 	 *                      items:
 	 *                          $ref: '#/components/schemas/ApiKeyDetail'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -114,6 +116,8 @@ class ApiKeyController extends BaseController {
 	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -150,6 +154,8 @@ class ApiKeyController extends BaseController {
 	 *                      $ref: '#/components/schemas/ApiKeyDetail'
 	 *      '404':
 	 *          description: Not found
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="API key ID")
@@ -176,6 +182,8 @@ class ApiKeyController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -214,6 +222,8 @@ class ApiKeyController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: 'API key not found'
 	 * ")

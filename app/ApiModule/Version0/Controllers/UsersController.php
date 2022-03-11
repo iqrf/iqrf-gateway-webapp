@@ -34,6 +34,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -91,23 +92,20 @@ class UsersController extends BaseController {
 	 *                      items:
 	 *                          $ref: '#/components/schemas/UserDetail'
 	 *      '403':
-	 *          description: Do not have appropriate permissions
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['users:admin', 'users:basic']);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if ($user instanceof User) {
-			if ($user->hasScope('users:basic')) {
-				return $response->writeJsonBody($this->manager->list([User::ROLE_BASIC, User::ROLE_BASICADMIN]));
-			}
-			if (!$user->hasScope('users:admin')) {
-				throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
-			}
+		$roles = [];
+		if ($user instanceof User && $user->hasScope('users:basic')) {
+			$roles = [User::ROLE_BASIC, User::ROLE_BASICADMIN];
 		}
-		return $response->writeJsonBody($this->manager->list());
+		return $response->writeJsonBody($this->manager->list($roles));
 	}
 
 	/**
@@ -132,7 +130,7 @@ class UsersController extends BaseController {
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '403':
-	 *          description: Do not have appropriate permissions
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '409':
 	 *          description: E-mail address or username is already used
 	 * ")
@@ -197,7 +195,7 @@ class UsersController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UserDetail'
 	 *      '403':
-	 *          description: Do not have appropriate permissions
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -227,7 +225,7 @@ class UsersController extends BaseController {
 	 *      '200':
 	 *          description: Success
 	 *      '403':
-	 *          description: Do not have appropriate permissions
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -271,7 +269,7 @@ class UsersController extends BaseController {
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '403':
-	 *          description: Do not have appropriate permissions
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '409':
@@ -318,6 +316,13 @@ class UsersController extends BaseController {
 				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
+		if (array_key_exists('password', $json)) {
+			try {
+				$user->setPassword($json['password']);
+			} catch (InvalidPasswordException $e) {
+				throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
+			}
+		}
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
 			if ($email !== null && $email !== '') {
@@ -330,9 +335,6 @@ class UsersController extends BaseController {
 				$user->setEmail($email);
 			} catch (InvalidEmailAddressException $e) {
 				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-			}
-			if ($user->getState() === User::STATE_VERIFIED) {
-				$user->setState(User::STATE_UNVERIFIED);
 			}
 		}
 		$this->entityManager->persist($user);

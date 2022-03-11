@@ -64,6 +64,8 @@ class GsmController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/ModemList'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -72,6 +74,7 @@ class GsmController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			return $response->writeJsonBody($this->gsmManager->listModems());
 		} catch (ModemManagerException $e) {

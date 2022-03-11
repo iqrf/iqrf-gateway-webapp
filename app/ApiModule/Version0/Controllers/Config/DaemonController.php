@@ -88,6 +88,8 @@ class DaemonController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/MainConfiguration'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -96,6 +98,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			$config = $this->mainManager->load();
 			return $response->writeJsonBody($config);
@@ -122,6 +125,8 @@ class DaemonController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -130,6 +135,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('mainConfiguration', $request);
 		try {
 			$this->mainManager->save($request->getJsonBody(true));
@@ -155,12 +161,15 @@ class DaemonController extends BaseConfigController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponent', $request);
 		try {
 			$this->componentManager->add($request->getJsonBody(true));
@@ -179,6 +188,8 @@ class DaemonController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -192,6 +203,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
@@ -223,6 +235,8 @@ class DaemonController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
@@ -232,6 +246,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
@@ -258,6 +273,8 @@ class DaemonController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/DaemonComponentDetail'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -271,6 +288,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function getComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
 		try {
 			$this->manager->setComponent($component);
@@ -310,6 +328,8 @@ class DaemonController extends BaseConfigController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '409':
@@ -323,6 +343,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			$json = $request->getJsonBody(true);
 			$component = urldecode($request->getParameter('component'));
@@ -358,6 +379,8 @@ class DaemonController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -370,6 +393,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function deleteInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
 		$this->manager->setComponent($component);
 		$instance = urldecode($request->getParameter('instance'));
@@ -397,6 +421,8 @@ class DaemonController extends BaseConfigController {
 	 *          description: Succcess
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -409,6 +435,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			$json = $request->getJsonBody(true);
 			$component = urldecode($request->getParameter('component'));
@@ -443,6 +470,8 @@ class DaemonController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/DaemonConfiguration'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -457,6 +486,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function getInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
@@ -489,6 +519,8 @@ class DaemonController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -499,6 +531,7 @@ class DaemonController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function changeComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponentEnabled', $request);
 		try {
 			$reqData = $request->getJsonBody(true);

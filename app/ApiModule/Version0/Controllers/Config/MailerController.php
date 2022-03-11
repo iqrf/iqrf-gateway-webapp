@@ -77,6 +77,8 @@ class MailerController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/MailerConfiguration'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -85,6 +87,7 @@ class MailerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['mailer']);
 		try {
 			$config = $this->manager->read();
 			return $response->writeJsonBody($config);
@@ -111,6 +114,8 @@ class MailerController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -119,6 +124,7 @@ class MailerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
 		try {
 			$this->manager->write($request->getJsonBody());
@@ -136,6 +142,8 @@ class MailerController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          description: Unable to send the e-mail
 	 * ")
@@ -144,6 +152,7 @@ class MailerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['mailer']);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$this->configurationTestSender->send($user);

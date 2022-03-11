@@ -72,6 +72,8 @@ class SshController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/SshKeyTypes'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -80,6 +82,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['sshKeys']);
 		try {
 			return $response->writeJsonBody($this->manager->listKeyTypes());
 		} catch (SshUtilityException $e) {
@@ -99,6 +102,8 @@ class SshController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/SshKeyList'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -107,6 +112,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['sshKeys']);
 		return $response->writeJsonBody($this->manager->listKeys());
 	}
 
@@ -122,6 +128,8 @@ class SshController extends GatewayController {
 	 *              text/plain:
 	 *                  schema:
 	 *                      type: string
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -135,6 +143,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['sshKeys']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$key = $this->manager->getKey($id);
@@ -163,6 +172,8 @@ class SshController extends GatewayController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '409':
 	 *          description: SSH public key already exists
 	 *      '500':
@@ -173,6 +184,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['sshKeys']);
 		$this->validator->validateRequest('sshKeysAdd', $request);
 		try {
 			$failed = $this->manager->addKeys($request->getJsonBody(true));
@@ -198,6 +210,8 @@ class SshController extends GatewayController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -209,6 +223,7 @@ class SshController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['sshKeys']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->deleteKey($id);

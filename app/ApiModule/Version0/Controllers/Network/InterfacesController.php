@@ -87,12 +87,15 @@ class InterfacesController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkInterfaces'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
 		try {
 			$type = $typeParam === null ? null : InterfaceTypes::fromScalar($typeParam);
@@ -113,6 +116,8 @@ class InterfacesController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -124,6 +129,7 @@ class InterfacesController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$this->interfaceManager->connect($request->getParameter('name'));
 			return $response->writeBody('Workaround');
@@ -144,6 +150,8 @@ class InterfacesController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -155,6 +163,7 @@ class InterfacesController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$this->interfaceManager->disconnect($request->getParameter('name'));
 			return $response->writeBody('Workaround');

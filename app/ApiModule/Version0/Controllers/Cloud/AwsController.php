@@ -89,6 +89,8 @@ class AwsController extends CloudsController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -97,6 +99,7 @@ class AwsController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['clouds']);
 		try {
 			$configuration = $this->getConfiguration($request);
 			$this->manager->createMqttInterface($configuration);
