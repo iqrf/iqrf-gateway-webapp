@@ -97,7 +97,7 @@ limitations under the License.
 								{{ $t('core.user.resendVerification') }}
 							</CButton> <CButton
 								color='info'
-								:to='item.id === userId ? "/profile/" : "/user/edit/" + item.id'
+								:to='"/user/edit/" + item.id'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -241,11 +241,6 @@ export default class UserList extends Vue {
 	private users: Array<IUser> = [];
 
 	/**
-	 * @var {number} userId User ID
-	 */
-	private userId = 0;
-
-	/**
 	 * @constant {Array<string>} roles Arrray of user roles
 	 */
 	private roles = [
@@ -254,13 +249,6 @@ export default class UserList extends Vue {
 		UserRole.BASICADMIN,
 		UserRole.BASIC,
 	];
-
-	/**
-	 * Updates table fields by user role
-	 */
-	created(): void {
-		this.userId = this.$store.getters['user/getId'];
-	}
 
 	/**
 	 * Retrieves list of existing user

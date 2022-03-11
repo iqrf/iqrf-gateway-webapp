@@ -40,7 +40,7 @@
 				"en"
 			],
 			"example": "en"
-		},,
+		},
 		"password": {
 			"$id": "#/properties/password",
 			"type": "string",
