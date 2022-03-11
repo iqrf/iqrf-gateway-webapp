@@ -80,42 +80,12 @@ limitations under the License.
 							:options='languages'
 						/>
 					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						:rules='{
-							required: newPassword.length > 0,
-						}'
-						:custom-messages='{
-							required: "core.user.errors.oldPassword",
-						}'
-					>
-						<CInput
-							v-model='oldPassword'
-							:label='$t("core.user.oldPassword")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='password'
-							autocomplete='current-password'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						:rules='{
-							required: oldPassword.length > 0,
-						}'
-						:custom-messages='{
-							required: "core.user.errors.newPassword",
-						}'
-					>
-						<CInput
-							v-model='newPassword'
-							:label='$t("core.user.newPassword")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='password'
-							autocomplete='new-password'
-						/>
-					</ValidationProvider>
+					<CInput
+						v-model='password'
+						:label='$t("core.user.newPassword")'
+						type='password'
+						autocomplete='new-password'
+					/>
 					<CButton
 						color='primary'
 						type='submit'
@@ -199,12 +169,7 @@ export default class UserEdit extends Vue {
 	/**
 	 * @var {string} newPassword New user password
 	 */
-	private newPassword = '';
-
-	/**
-	 * @var {string} oldPassword Current user password
-	 */
-	private oldPassword = '';
+	private password = '';
 
 	/**
 	 * @property {number} userId User id
@@ -263,28 +228,16 @@ export default class UserEdit extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.oldPassword !== '' && this.newPassword !== '') {
-			UserService.changePassword(this.userId, this.oldPassword, this.newPassword)
-				.then(() => {
-					this.performEdit();
-				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.username}));
-		} else {
-			this.performEdit();
-		}
-
-	}
-
-	/**
-	 * Updates user information
-	 */
-	private performEdit(): void {
-		UserService.edit(this.userId, {
+		const user = {
 			email: this.email !== '' ? this.email : null,
 			username: this.username,
 			language: this.language,
 			role: this.role
-		})
+		};
+		if (this.password !== '') {
+			Object.assign(user, {password: this.password});
+		}
+		UserService.edit(this.userId, user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -299,5 +252,6 @@ export default class UserEdit extends Vue {
 				extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.username});
 			});
 	}
+
 }
 </script>
