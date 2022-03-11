@@ -72,6 +72,8 @@ class HexioController extends CloudsController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -80,6 +82,7 @@ class HexioController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['clouds']);
 		$this->validator->validateRequest('cloudHexio', $request);
 		try {
 			$this->manager->createMqttInterface($request->getJsonBody());

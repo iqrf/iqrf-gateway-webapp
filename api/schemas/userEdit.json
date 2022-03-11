@@ -40,6 +40,12 @@
 				"en"
 			],
 			"example": "en"
+		},,
+		"password": {
+			"$id": "#/properties/password",
+			"type": "string",
+			"title": "Password",
+			"example": "N3w c00l password"
 		},
 		"role": {
 			"$id": "#/properties/role",

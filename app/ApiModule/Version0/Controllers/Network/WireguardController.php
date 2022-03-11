@@ -77,12 +77,15 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$tunnels = $this->wireguardManager->listInterfaces();
 		return $response->writeJsonBody($tunnels);
 	}
@@ -99,6 +102,8 @@ class WireguardController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/WireguardTunnel'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -112,6 +117,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$tunnel = $this->wireguardManager->getInterface($id)->jsonSerialize();
@@ -141,6 +147,8 @@ class WireguardController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -149,13 +157,12 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
 			$this->wireguardManager->createInterface($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
-		} catch (InterfaceExistsException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (WireguardInvalidEndpointException $e) {
+		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -179,6 +186,8 @@ class WireguardController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -190,6 +199,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
@@ -212,6 +222,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -225,6 +237,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function remove(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$service = $this->tunnelService($this->wireguardManager->getInterface($id));
@@ -250,6 +263,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -263,6 +278,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function activate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->start($this->tunnelService($tunnel));
@@ -284,6 +300,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -297,6 +315,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function deactivate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->stop($this->tunnelService($tunnel));
@@ -318,6 +337,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -331,6 +352,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function enable(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->enable($this->tunnelService($tunnel));
@@ -352,6 +374,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -365,6 +389,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function disable(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->wireguardManager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->disable($this->tunnelService($tunnel));
@@ -386,6 +411,8 @@ class WireguardController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -394,6 +421,7 @@ class WireguardController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$result = $this->wireguardManager->generateKeys();
 			return $response->writeJsonBody($result);

@@ -82,6 +82,8 @@ class MenderController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/MenderConfig'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -90,6 +92,7 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		try {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
@@ -116,6 +119,8 @@ class MenderController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -124,11 +129,12 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		$this->validator->validateRequest('menderConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (IOException $e) {
+		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -154,6 +160,8 @@ class MenderController extends BaseController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -162,6 +170,7 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		try {
 			$file = $request->getUploadedFiles()[0];
 			$fileName = $file->getClientFilename();
@@ -195,6 +204,8 @@ class MenderController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '415':
 	 *          description: Unsupported media file
 	 *      '500':
@@ -205,6 +216,7 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$file = $request->getUploadedFiles()[0];
@@ -214,9 +226,7 @@ class MenderController extends BaseController {
 			return $response->writeBody($this->manager->installArtifact($filePath));
 		} catch (MenderInvalidArtifactException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (MenderFailedException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (MenderMissingException $e) {
+		} catch (MenderFailedException | MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
 			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -233,6 +243,8 @@ class MenderController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -241,13 +253,12 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		try {
 			return $response->writeBody($this->manager->commitUpdate());
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (MenderMissingException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (MenderFailedException $e) {
+		} catch (MenderMissingException | MenderFailedException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -262,6 +273,8 @@ class MenderController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -270,13 +283,12 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		try {
 			return $response->writeBody($this->manager->rollbackUpdate());
 		} catch (MenderNoUpdateInProgressException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (MenderMissingException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (MenderFailedException $e) {
+		} catch (MenderMissingException | MenderFailedException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -297,6 +309,8 @@ class MenderController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -305,6 +319,7 @@ class MenderController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:mender']);
 		if (!$this->featureManager->isEnabled('remount')) {
 			throw new ClientErrorException('Remount feature is not enabled.', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -321,6 +336,7 @@ class MenderController extends BaseController {
 	/**
 	 * Checks if uploaded file is a valid mender artifact file
 	 * @param string $fileName File name
+	 * @throws MenderInvalidArtifactException
 	 */
 	private function checkArtifact(string $fileName): void {
 		if (!Strings::endsWith($fileName, '.mender')) {

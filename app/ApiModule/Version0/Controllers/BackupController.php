@@ -81,12 +81,15 @@ class BackupController extends BaseController{
 	 *                     format: binary
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:backup']);
 		$this->validator->validateRequest('gatewayBackup', $request);
 		try {
 			$filePath = $this->manager->backup($request->getJsonBody(true));
@@ -119,6 +122,8 @@ class BackupController extends BaseController{
 	 *                      $ref: '#/components/schemas/PowerControl'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '415':
 	 *          description: 'Unsupported media type'
 	 * ")
@@ -127,6 +132,7 @@ class BackupController extends BaseController{
 	 * @return ApiResponse API response
 	 */
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:backup']);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
 		ContentTypeUtil::validContentType($request, $contentTypes);
 		$path = '/tmp/iqrf-gateway-backup-upload.zip';

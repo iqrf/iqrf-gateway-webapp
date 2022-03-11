@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\Database\Entities;
 
 use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -185,6 +186,15 @@ final class UserTest extends TestCase {
 		$password = 'admin';
 		$this->entity->setPassword($password);
 		Assert::true($this->entity->verifyPassword($password));
+	}
+
+	/**
+	 * Tests the function to set the user's password (empty string)
+	 */
+	public function testSetPasswordEmptyString(): void {
+		Assert::throws(function (): void {
+			$this->entity->setPassword('');
+		}, InvalidPasswordException::class);
 	}
 
 	/**

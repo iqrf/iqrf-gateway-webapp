@@ -62,12 +62,15 @@ class PowerController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/PowerControl'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:power']);
 		return $response->writeJsonBody($this->manager->powerOff());
 	}
 
@@ -83,12 +86,15 @@ class PowerController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/PowerControl'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:power']);
 		return $response->writeJsonBody($this->manager->reboot());
 	}
 

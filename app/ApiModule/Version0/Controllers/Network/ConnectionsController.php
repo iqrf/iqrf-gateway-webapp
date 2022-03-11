@@ -94,12 +94,15 @@ class ConnectionsController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkConnections'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
 		try {
 			$type = $typeParam === null ? null : ConnectionTypes::fromScalar($typeParam);
@@ -120,6 +123,8 @@ class ConnectionsController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -131,6 +136,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
@@ -159,6 +165,8 @@ class ConnectionsController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -167,6 +175,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('networkConnection', $request);
 		try {
 			$json = $request->getJsonBody(false);
@@ -194,6 +203,8 @@ class ConnectionsController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -205,6 +216,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->validator->validateRequest('networkConnection', $request);
@@ -232,6 +244,8 @@ class ConnectionsController extends NetworkController {
 	 *                      $ref: '#/components/schemas/NetworkConnection'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -243,6 +257,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			return $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
@@ -270,6 +285,8 @@ class ConnectionsController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -281,6 +298,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		$interface = $request->getQueryParam('interface', null);
 		try {
 			$uuid = $this->getUuid($request);
@@ -303,6 +321,8 @@ class ConnectionsController extends NetworkController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -314,6 +334,7 @@ class ConnectionsController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->down($uuid);

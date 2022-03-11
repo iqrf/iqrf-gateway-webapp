@@ -35,6 +35,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
@@ -165,19 +166,13 @@ class UserController extends BaseController {
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
 			if ($email !== null && $email !== '') {
-				$userWithEmail = $this->entityManager->getUserRepository()->findOneByEmail($email);
-				if ($userWithEmail !== null && $userWithEmail->getId() !== $user->getId()) {
-					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
-				}
+				$this->manager->checkEmailUniqueness($email, $user->getId());
 				$sendVerification = true;
 			}
 			try {
 				$user->setEmail($email);
 			} catch (InvalidEmailAddressException $e) {
 				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-			}
-			if ($user->getState() === User::STATE_VERIFIED) {
-				$user->setState(User::STATE_UNVERIFIED);
 			}
 		}
 		$this->entityManager->persist($user);
@@ -224,7 +219,11 @@ class UserController extends BaseController {
 		if (!$user->verifyPassword($body['old'])) {
 			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
 		}
-		$user->setPassword($body['new']);
+		try {
+			$user->setPassword($body['new']);
+		} catch (InvalidPasswordException $e) {
+			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
+		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');
@@ -331,7 +330,11 @@ class UserController extends BaseController {
 			throw new ClientErrorException('Password recovery request is expired', ApiResponse::S410_GONE);
 		}
 		$user = $recoveryRequest->getUser();
-		$user->setPassword($body['password']);
+		try {
+			$user->setPassword($body['password']);
+		} catch (InvalidPasswordException $e) {
+			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
+		}
 		$this->entityManager->persist($user);
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
