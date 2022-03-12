@@ -32,17 +32,6 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/config/daemon/component/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.components.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.components.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
 						v-if='roleIdx <= roles.normal'
 						to='/config/daemon/interfaces/'
 					>

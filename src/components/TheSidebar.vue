@@ -262,12 +262,6 @@ export default class TheSidebar extends Vue {
 									},
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.daemon.components.title'),
-										to: '/config/daemon/component/',
-										role: UserRole.ADMIN,
-									},
-									{
-										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.interfaces.title'),
 										to: '/config/daemon/interfaces/',
 										role: UserRole.NORMAL
