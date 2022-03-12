@@ -301,38 +301,6 @@ const routes: Array<RouteConfig> = [
 								},
 							},
 							{
-								path: 'component',
-								component: {
-									render(c) {
-										return c('router-view');
-									}
-								},
-								children: [
-									{
-										path: '',
-										component: ComponentList,
-										meta: {
-											role: UserRole.ADMIN,
-										},
-									},
-									{
-										component: ComponentForm,
-										path: 'add',
-										meta: {
-											role: UserRole.ADMIN,
-										},
-									},
-									{
-										component: ComponentForm,
-										path: 'edit/:component',
-										props: true,
-										meta: {
-											role: UserRole.ADMIN,
-										},
-									},
-								],
-							},
-							{
 								path: 'interfaces',
 								component: Interfaces,
 								meta: {
