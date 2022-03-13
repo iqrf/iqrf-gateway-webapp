@@ -1,10 +1,50 @@
-iqrf-gateway-webapp (2.4.3~alpha~1.gbp3416a5) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.3) stable; urgency=medium
 
-  ** SNAPSHOT build @3416a54caf98901f737737234c1c1f22643022fa **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.3-alpha
+  * Core: added user profile page, user edit component, password change component
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Gateway: refactor TLS certificate manager
+  * Database: refactor user entity
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 17 Feb 2022 13:33:24 +0100
+  [ Karel Hanák ]
+  * fixed coding style and linter errors, unused variables
+
+  [ Roman Ondráček ]
+  * Docker: fix frontend Dockerfile
+  * OpenAPI: fix specification
+
+  [ Karel Hanák ]
+  * api: added missing gateway backup specification
+
+  [ Roman Ondráček ]
+  * Core: fix redundant navigation to current location in sign in form
+
+  [ Karel Hanák ]
+  * Core: updated user roles, UserAdd form refactor, User entity roles, Sidebar filtration by role and special case
+  * updated disambiguations roles, fixed router and sidebar, refactoring of old error handling and special cases for former power user, localization update
+  * UserList: simplified datatable columns, removed user ID
+
+  [ Roman Ondráček ]
+  * Core: add support for security scopes
+  * Docker: fix API testing container
+
+  [ Karel Hanák ]
+  * frontend: password change for specific user and logged in user
+
+  [ Roman Ondráček ]
+  * Add scope guards
+  * Core: admins can change passwords of other users
+
+  [ Karel Hanák ]
+  * removed Daemon Components from sidebar, disambiguation and router
+  * db: added user role update migration
+  * fixed coding style in migration file
+  * iqrf os: added new os change plugins
+  * iqaros: disable node-red feature for sidebar
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 13 Mar 2022 11:59:50 +0100
 
 iqrf-gateway-webapp (2.4.2) stable; urgency=medium
 
