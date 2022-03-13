@@ -33,6 +33,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CoreModule\Exceptions\ZipEmptyException;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
+use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
 use App\GatewayModule\Models\BackupManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use JsonException;
@@ -145,6 +146,8 @@ class BackupController extends BaseController{
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (InvalidGatewayFileContentException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
