@@ -553,12 +553,6 @@ import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
  * Transciever configuration page component
  */
 export default class TrConfiguration extends Vue {
-
-	/**
-	 * @property {number} defaultAddr Default address
-	 */
-	@Prop({required: true}) defaultAddr!: number;
-
 	/**
 	 * @var {number} address Device address
 	 */

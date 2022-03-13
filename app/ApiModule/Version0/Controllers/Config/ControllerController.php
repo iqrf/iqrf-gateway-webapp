@@ -67,6 +67,8 @@ class ControllerController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/ControllerConfig'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -75,6 +77,7 @@ class ControllerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:controller']);
 		try {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
@@ -101,6 +104,8 @@ class ControllerController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -109,6 +114,7 @@ class ControllerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:controller']);
 		$this->validator->validateRequest('controllerConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());

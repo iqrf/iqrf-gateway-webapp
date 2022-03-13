@@ -137,7 +137,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 
-
 @Component({
 	components: {
 		CButton,

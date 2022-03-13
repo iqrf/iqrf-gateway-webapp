@@ -20,6 +20,7 @@ limitations under the License.
 		<CCard body-wrapper>
 			<CListGroup>
 				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
 					to='/config/daemon/messagings/mqtt'
 				>
 					<header class='list-group-item-heading'>
@@ -30,6 +31,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
 					to='/config/daemon/messagings/websocket'
 				>
 					<header class='list-group-item-heading'>
@@ -40,6 +42,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
 					to='/config/daemon/messagings/mq'
 				>
 					<header class='list-group-item-heading'>
@@ -50,6 +53,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
 					to='/config/daemon/messagings/udp'
 				>
 					<header class='list-group-item-heading'>
@@ -72,6 +76,8 @@ import WebsocketList from '../../pages/Config/WebsocketList.vue';
 import MqMessagingTable from '../../pages/Config/MqMessagingTable.vue';
 import UdpMessagingTable from '../../pages/Config/UdpMessagingTable.vue';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -90,6 +96,27 @@ import UdpMessagingTable from '../../pages/Config/UdpMessagingTable.vue';
  * Messagings menu disambiguation component
  */
 export default class Messagings extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
 
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>

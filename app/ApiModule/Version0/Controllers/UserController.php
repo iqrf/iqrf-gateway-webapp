@@ -33,13 +33,17 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\CoreModule\Models\UserManager;
+use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
+use App\Exceptions\InvalidUserLanguageException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
-use Nette\Mail\FallbackMailerException;
+use Nette\Mail\SendException;
 use Throwable;
 use function gethostname;
 
@@ -61,6 +65,11 @@ class UserController extends BaseController {
 	private $entityManager;
 
 	/**
+	 * @var UserManager User manager
+	 */
+	private $manager;
+
+	/**
 	 * @var PasswordRecoveryMailSender Forgotten password recovery e-mail sender
 	 */
 	private $passwordRecoverySender;
@@ -69,13 +78,15 @@ class UserController extends BaseController {
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
+	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 * @param PasswordRecoveryMailSender $sender Forgotten password recovery e-mail sender
+	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $sender) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
 		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
-		$this->passwordRecoverySender = $sender;
+		$this->manager = $manager;
+		$this->passwordRecoverySender = $passwordRecoverySender;
 		parent::__construct($validator);
 	}
 
@@ -104,6 +115,77 @@ class UserController extends BaseController {
 			return $response->writeJsonObject($user);
 		}
 		throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Edits user
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UserEdit'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          description: Forbidden - API key is used
+	 *      '409':
+	 *          description: Username or e-mail address is already used
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if (!($user instanceof User)) {
+			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+		}
+		$sendVerification = false;
+		$this->validator->validateRequest('userEdit', $request);
+		$json = $request->getJsonBody();
+		if (array_key_exists('username', $json)) {
+			if ($this->manager->checkUsernameUniqueness($json['username'], $user->getId())) {
+				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
+			}
+			$user->setUserName($json['username']);
+		}
+		if (array_key_exists('language', $json)) {
+			try {
+				$user->setLanguage($json['language']);
+			} catch (InvalidUserLanguageException $e) {
+				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
+			}
+		}
+		if (array_key_exists('email', $json)) {
+			$email = $json['email'];
+			if ($email !== null && $email !== '') {
+				$this->manager->checkEmailUniqueness($email, $user->getId());
+				$sendVerification = true;
+			}
+			try {
+				$user->setEmail($email);
+			} catch (InvalidEmailAddressException $e) {
+				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			}
+		}
+		$this->entityManager->persist($user);
+		if ($sendVerification) {
+			try {
+				$this->manager->sendVerificationEmail($request, $user);
+			} catch (SendException $e) {
+				// Ignore failure
+			}
+		}
+		$this->entityManager->flush();
+		return $response->withStatus(ApiResponse::S200_OK)
+			->writeBody('Workaround');
 	}
 
 	/**
@@ -137,7 +219,11 @@ class UserController extends BaseController {
 		if (!$user->verifyPassword($body['old'])) {
 			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
 		}
-		$user->setPassword($body['new']);
+		try {
+			$user->setPassword($body['new']);
+		} catch (InvalidPasswordException $e) {
+			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
+		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');
@@ -194,7 +280,7 @@ class UserController extends BaseController {
 		}
 		try {
 			$this->passwordRecoverySender->send($recovery, $baseUrl);
-		} catch (FallbackMailerException $e) {
+		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$this->entityManager->flush();
@@ -244,13 +330,51 @@ class UserController extends BaseController {
 			throw new ClientErrorException('Password recovery request is expired', ApiResponse::S410_GONE);
 		}
 		$user = $recoveryRequest->getUser();
-		$user->setPassword($body['password']);
+		try {
+			$user->setPassword($body['password']);
+		} catch (InvalidPasswordException $e) {
+			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
+		}
 		$this->entityManager->persist($user);
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->createToken($user);
 		return $response->writeJsonBody($json);
+	}
+
+	/**
+	 * @Path("/resendVerification")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Resends the verification e-mail
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          description: User is already verified
+	 *      '500':
+	 *          description: Unable to send the e-mail
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if (!($user instanceof User)) {
+			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+		}
+		if ($user->getState() === User::STATE_VERIFIED) {
+			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
+		}
+		try {
+			$this->manager->sendVerificationEmail($request, $user);
+		} catch (SendException $e) {
+			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+		return $response->withStatus(ApiResponse::S200_OK)
+			->writeBody('Workaround');
 	}
 
 	/**

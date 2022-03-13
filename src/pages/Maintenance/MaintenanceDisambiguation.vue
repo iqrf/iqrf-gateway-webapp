@@ -19,7 +19,10 @@ limitations under the License.
 		<h1>{{ $t('maintenance.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/maintenance/backup-restore/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.admin'
+					to='/maintenance/backup-restore/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('maintenance.backup.title') }}
 					</header>
@@ -28,7 +31,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("pixla")'
+					v-if='$store.getters["features/isEnabled"]("pixla") && roleIdx <= roles.admin'
 					to='/maintenance/pixla/'
 				>
 					<header class='list-group-item-heading'>
@@ -39,7 +42,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("mender")'
+					v-if='$store.getters["features/isEnabled"]("mender") && roleIdx <= roles.admin'
 					to='/maintenance/mender/'
 				>
 					<header class='list-group-item-heading'>
@@ -50,7 +53,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("monit")'
+					v-if='$store.getters["features/isEnabled"]("monit") && roleIdx <= roles.admin'
 					to='/maintenance/monit/'
 				>
 					<header class='list-group-item-heading'>
@@ -69,6 +72,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -84,5 +89,27 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
  * Maintenance disambiguation component
  */
 export default class MaintenanceDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>

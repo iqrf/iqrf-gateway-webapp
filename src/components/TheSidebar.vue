@@ -53,19 +53,19 @@ import {
 	cilStorage,
 	cilSettings,
 	cilSync,
-	cilToggleOff,
 	cilUser,
 	cilWifiSignal4,
 } from '@coreui/icons';
 import ThemeManager from '../helpers/themeManager';
 import VueI18n from 'vue-i18n';
+import {UserRole} from '../services/AuthenticationService';
 
 interface NavMemberItem {
 	component?: string
 	feature?: string
 	href?: string
 	name: VueI18n.TranslateResult
-	roles: Array<string>
+	role?: UserRole
 	target?: string
 	to?: string
 	items?: Array<NavMemberItem>
@@ -83,7 +83,7 @@ interface NavMember {
 	icon?: NavMemberIcon
 	items?: Array<NavMemberItem>
 	name: VueI18n.TranslateResult
-	roles?: Array<string>
+	role?: UserRole
 	target?: string
 	to?: string
 }
@@ -126,6 +126,13 @@ export default class TheSidebar extends Vue {
 	}
 
 	/**
+	 * Whitelist of routes for basic admin user
+	 */
+	private BAWhitelist = [
+		'/user/',
+	];
+
+	/**
 	 * Computes sidebar items by filtering predefined items
 	 * @returns {Array<NavData>} Filtered sidebar items
 	 */
@@ -140,58 +147,58 @@ export default class TheSidebar extends Vue {
 						to: '/gateway/',
 						route: '/gateway/',
 						icon: {content: cilStorage},
-						roles: ['power', 'normal', 'iqaros'],
+						role: UserRole.BASIC,
 						_children: [
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.info.title'),
 								to: '/gateway/info/',
-								roles: ['power', 'normal', 'iqaros'],
+								role: UserRole.BASIC,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.datetime.title'),
 								to: '/gateway/date-time/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.log.title'),
 								to: '/gateway/log/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.mode.title'),
 								to: '/gateway/change-mode/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL
 							},
 							{
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('service.iqrf.title'),
 								to: '/gateway/iqrf-services/',
 								route: '/gateway/iqrf-services/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-daemon.title'),
 										to: '/gateway/service/iqrf-gateway-daemon/',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 									},
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-controller.title'),
 										to: '/gateway/service/iqrf-gateway-controller/',
 										feature: 'iqrfGatewayController',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 									},
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('service.iqrf-gateway-translator.title'),
 										to: '/gateway/service/iqrf-gateway-translator/',
 										feature: 'iqrfGatewayTranslator',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 									},
 								],
 							},
@@ -200,34 +207,34 @@ export default class TheSidebar extends Vue {
 								name: this.$t('service.ssh.title'),
 								to: '/gateway/service/ssh/',
 								feature: 'ssh',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('service.tempgw.title'),
 								to: '/gateway/service/tempgw/',
 								feature: 'iTemp',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('service.unattended-upgrades.title'),
 								to: '/gateway/service/unattended-upgrades/',
 								feature: 'unattendedUpgrades',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('service.systemd-journald.title'),
 								to: '/gateway/service/systemd-journald/',
 								feature: 'systemdJournal',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.power.title'),
 								to: '/gateway/power/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 						],
 					},
@@ -237,60 +244,54 @@ export default class TheSidebar extends Vue {
 						to: '/config/',
 						route: '/config/',
 						icon: {content: cilSettings},
-						roles: ['power', 'normal'],
+						role: UserRole.NORMAL,
 						_children: [
 							{
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('config.daemon.title'),
 								to: '/config/daemon/',
 								route: '/config/daemon/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.main.title'),
 										to: '/config/daemon/main/',
-										roles: ['power'],
+										role: UserRole.ADMIN,
 										_attrs: {class: 'menu-level-2'},
-									},
-									{
-										_name: 'CSidebarNavItem',
-										name: this.$t('config.daemon.components.title'),
-										to: '/config/daemon/component/',
-										roles: ['power'],
 									},
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.interfaces.title'),
 										to: '/config/daemon/interfaces/',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL
 									},
 									{
 										_name: 'CSidebarNavDropdown',
 										name: this.$t('config.daemon.messagings.title'),
 										to: '/config/daemon/messagings/',
 										route: '/config/daemon/messagings/',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 										items: [
 											{
 												name: 'MQTT',
 												to: '/config/daemon/messagings/mqtt/',
-												roles: ['power', 'normal'],
+												role: UserRole.NORMAL,
 											},
 											{
 												name: 'WebSocket',
 												to: '/config/daemon/messagings/websocket/',
-												roles: ['power', 'normal'],
+												role: UserRole.NORMAL,
 											},
 											{
 												name: 'MQ',
 												to: '/config/daemon/messagings/mq/',
-												roles: ['power', 'normal'],
+												role: UserRole.NORMAL,
 											},
 											{
 												name: 'UDP',
 												to: '/config/daemon/messagings/udp/',
-												roles: ['power', 'normal'],
+												role: UserRole.NORMAL,
 											}
 										]
 									},
@@ -298,13 +299,13 @@ export default class TheSidebar extends Vue {
 										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.scheduler.title'),
 										to: '/config/daemon/scheduler/',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 									},
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.misc.title'),
 										to: '/config/daemon/misc/',
-										roles: ['power', 'normal'],
+										role: UserRole.NORMAL,
 									}
 								]
 							},
@@ -313,27 +314,27 @@ export default class TheSidebar extends Vue {
 								name: this.$t('config.controller.title'),
 								to: '/config/controller/',
 								feature: 'iqrfGatewayController',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.translator.title'),
 								to: '/config/translator/',
 								feature: 'iqrfGatewayTranslator',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.repository.title'),
 								to: '/config/repository/',
 								feature: 'iqrfRepository',
-								role: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('config.smtp.title'),
 								to: '/config/smtp/',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 						],
 					},
@@ -343,38 +344,38 @@ export default class TheSidebar extends Vue {
 						to: '/iqrfnet/',
 						route: '/iqrfnet/',
 						icon: {content: cilWifiSignal4},
-						roles: ['power', 'normal'],
+						role: UserRole.NORMAL,
 						items: [
 							{
 								name: this.$t('iqrfnet.sendPacket.title'),
 								to: '/iqrfnet/send-raw/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('iqrfnet.sendJson.title'),
 								to: '/iqrfnet/send-json/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('iqrfnet.trUpload.title'),
 								to: '/iqrfnet/tr-upload/',
 								feature: 'trUpload',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('iqrfnet.trConfiguration.title'),
 								to: '/iqrfnet/tr-config/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('iqrfnet.networkManager.title'),
 								to: '/iqrfnet/network/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('iqrfnet.standard.title'),
 								to: '/iqrfnet/standard/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 						],
 					},
@@ -385,27 +386,27 @@ export default class TheSidebar extends Vue {
 						route: '/network/',
 						feature: 'networkManager',
 						icon: {content: cilLan},
-						roles: ['power', 'normal'],
+						role: UserRole.ADMIN,
 						items: [
 							{
 								name: this.$t('network.ethernet.title'),
-								to: '/network/ethernet',
-								roles: ['power', 'normal'],
+								to: '/network/ethernet/',
+								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireless.title'),
-								to: '/network/wireless',
-								roles: ['power', 'normal'],
+								to: '/network/wireless/',
+								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.mobile.title'),
-								to: '/network/mobile',
-								roles: ['power', 'normal'],
+								to: '/network/mobile/',
+								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireguard.title'),
-								to: '/network/vpn',
-								roles: ['power', 'normal'],
+								to: '/network/vpn/',
+								role: UserRole.ADMIN,
 							},
 						],
 					},
@@ -415,32 +416,32 @@ export default class TheSidebar extends Vue {
 						to: '/cloud/',
 						route: '/cloud/',
 						icon: {content: cilCloud},
-						roles: ['power', 'normal'],
+						role: UserRole.NORMAL,
 						items: [
 							{
 								name: this.$t('cloud.ibmCloud.title'),
 								to: '/cloud/ibm-cloud/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('cloud.msAzure.title'),
 								to: '/cloud/azure/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('cloud.amazonAws.title'),
 								to: '/cloud/aws/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('cloud.hexio.title'),
 								to: '/cloud/hexio/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 							{
 								name: this.$t('cloud.intelimentsInteliGlue.title'),
 								to: '/cloud/inteli-glue/',
-								roles: ['power', 'normal'],
+								role: UserRole.NORMAL,
 							},
 						],
 					},
@@ -450,41 +451,42 @@ export default class TheSidebar extends Vue {
 						to: '/maintenance/',
 						route: '/maintenance/',
 						icon: {content: cilSync},
-						roles: ['power', 'normal'],
+						role: UserRole.ADMIN,
 						_children: [
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.backup.title'),
 								to: '/maintenance/backup-restore/',
-								roles: ['power', 'normal', 'iqaros'],
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('maintenance.pixla.title'),
 								to: '/maintenance/pixla/',
 								feature: 'pixla',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('maintenance.mender.title'),
 								to: '/maintenance/mender/',
+								route: '/maintenance/mender/',
 								feature: 'mender',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('maintenance.mender.service.title'),
 										to: '/maintenance/mender/service/',
 										feature: 'mender',
-										roles: ['power', 'normal'],
+										role: UserRole.ADMIN,
 									},
 									{
 										_name: 'CSidebarNavItem',
 										name: this.$t('maintenance.mender.update.title'),
 										to: '/maintenance/mender/update/',
 										feature: 'mender',
-										roles: ['power', 'normal'],
+										role: UserRole.ADMIN,
 									},
 								],
 							},
@@ -493,7 +495,7 @@ export default class TheSidebar extends Vue {
 								name: this.$t('maintenance.monit.title'),
 								to: '/maintenance/monit/',
 								feature: 'monit',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 						]
 					},
@@ -504,27 +506,25 @@ export default class TheSidebar extends Vue {
 						target: '_blank',
 						feature: 'grafana',
 						icon: {content: cibGrafana},
+						role: UserRole.BASIC,
 					},
 					{
-						_name: 'CSidebarNavDropdown',
-						name: this.$t('core.nodeRed.title'),
+						_name: 'CSidebarNavItem',
+						name: this.$t('core.nodeRed.workflow.title'),
+						href: this.$store.getters['features/configuration']('nodeRed').url,
+						target: '_blank',
 						feature: 'nodeRed',
 						icon: {content: cibNodeRed},
-						roles: ['power', 'normal'],
-						items: [
-							{
-								name: this.$t('core.nodeRed.workflow.title'),
-								href: this.$store.getters['features/configuration']('nodeRed').url,
-								target: '_blank',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('core.nodeRed.dashboard.title'),
-								href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
-								target: '_blank',
-								roles: ['power', 'normal'],
-							},
-						],
+						role: UserRole.BASICADMIN,
+					},
+					{
+						_name: 'CSidebarNavItem',
+						name: this.$t('core.nodeRed.dashboard.title'),
+						href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
+						target: '_blank',
+						feature: 'nodeRed',
+						icon: {content: cibNodeRed},
+						role: UserRole.BASIC,
 					},
 					{
 						_name: 'CSidebarNavItem',
@@ -532,34 +532,34 @@ export default class TheSidebar extends Vue {
 						href: this.$store.getters['features/configuration']('supervisord').url,
 						target: '_blank',
 						feature: 'supervisord',
-						icon: {content: cilToggleOff},
+						role: UserRole.ADMIN,
 					},
 					{
 						_name: 'CSidebarNavItem',
 						name: this.$t('core.user.title'),
 						to: '/user/',
 						icon: {content: cilUser},
-						roles: ['power', 'normal'],
+						role: UserRole.ADMIN,
 					},
 					{
 						_name: 'CSidebarNavDropdown',
 						name: this.$t('core.security.title'),
 						to: '/security/',
 						icon: {content: cilLockLocked},
-						roles: ['power', 'normal'],
+						role: UserRole.ADMIN,
 						items: [
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('core.security.apiKey.title'),
 								to: '/security/api-key/',
-								roles: ['power', 'normal']
+								role: UserRole.ADMIN,
 							},
 							{
 								_name: 'CSidebarNavItem',
 								name: this.$t('core.security.ssh.title'),
 								to: '/security/ssh-key/',
 								feature: 'ssh',
-								roles: ['power', 'normal'],
+								role: UserRole.ADMIN,
 							},
 						]
 					},
@@ -570,6 +570,7 @@ export default class TheSidebar extends Vue {
 						target: '_blank',
 						feature: 'docs',
 						icon: {content: cilBook},
+						role: UserRole.BASIC,
 					},
 				],
 			},
@@ -594,11 +595,22 @@ export default class TheSidebar extends Vue {
 	 * @returns {Array<NavMember>} Member children filtered by user role and enabled features
 	 */
 	private filterNavMembers(members: Array<NavMember>): Array<NavMember> {
+		const roleVal = this.$store.getters['user/getRole'];
+		const roleIdx = Object.values(UserRole).indexOf(roleVal);
 		let filteredMembers: Array<NavMember> = [];
 		members.forEach((member: NavMember) => {
 			let children, items = false;
-			if (member.roles !== undefined && !member.roles.includes(this.$store.getters['user/getRole'])) {
-				return;
+			if (member.role !== undefined) {
+				const memberIdx = Object.values(UserRole).indexOf(member.role);
+				if (roleIdx > memberIdx) {
+					if (roleVal === UserRole.BASICADMIN) {
+						if (!this.BAWhitelist.includes((member.to as string))) {
+							return;
+						}
+					} else {
+						return;
+					}
+				}
 			}
 			if (member.feature !== undefined && !this.$store.getters['features/isEnabled'](member.feature)) {
 				return;
@@ -629,10 +641,20 @@ export default class TheSidebar extends Vue {
 	 */
 	private filterNavMemberItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
 		let filteredItems: Array<NavMemberItem> = [];
+		const roleVal = this.$store.getters['user/getRole'];
+		const roleIdx = Object.values(UserRole).indexOf(roleVal);
 		items.forEach((item: NavMemberItem) => {
-			if (item.roles !== undefined &&
-				!item.roles.includes(this.$store.getters['user/getRole'])) {
-				return;
+			if (item.role !== undefined) {
+				const memberIdx = Object.values(UserRole).indexOf(item.role);
+				if (roleIdx > memberIdx) {
+					if (roleVal === UserRole.BASICADMIN) {
+						if (!this.BAWhitelist.includes((item.to as string))) {
+							return;
+						}
+					} else {
+						return;
+					}
+				}
 			}
 			if (item.feature !== undefined &&
 				!this.$store.getters['features/isEnabled'](item.feature)) {

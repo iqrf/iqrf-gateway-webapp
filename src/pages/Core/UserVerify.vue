@@ -113,7 +113,7 @@ export default class UserVerify extends Vue {
 		if (this.user === null) {
 			return;
 		}
-		if (this.user.role === UserRole.IQAROS) {
+		if (this.user.role === UserRole.BASIC) {
 			location.pathname = '/';
 		}
 		this.$store.dispatch('user/setJwt', this.user);

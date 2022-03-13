@@ -19,7 +19,10 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.title') }}</h1>
 		<CCard body-wrapper>
 			<CListGroup>
-				<CListGroupItem to='/iqrfnet/send-raw/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/iqrfnet/send-raw/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.sendPacket.title') }}
 					</header>
@@ -27,7 +30,10 @@ limitations under the License.
 						{{ $t('iqrfnet.sendPacket.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/iqrfnet/send-json/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/iqrfnet/send-json/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.sendJson.title') }}
 					</header>
@@ -36,7 +42,7 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("trUpload")'
+					v-if='$store.getters["features/isEnabled"]("trUpload") && roleIdx <= roles.admin'
 					to='/iqrfnet/tr-upload/'
 				>
 					<header class='list-group-item-heading'>
@@ -46,7 +52,10 @@ limitations under the License.
 						{{ $t('iqrfnet.trUpload.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/iqrfnet/tr-config/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/iqrfnet/tr-config/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.trConfiguration.title') }}
 					</header>
@@ -54,7 +63,10 @@ limitations under the License.
 						{{ $t('iqrfnet.trConfiguration.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/iqrfnet/network/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/iqrfnet/network/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.networkManager.title') }}
 					</header>
@@ -62,7 +74,10 @@ limitations under the License.
 						{{ $t('iqrfnet.networkManager.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/iqrfnet/standard/'>
+				<CListGroupItem
+					v-if='roleIdx <= roles.normal'
+					to='/iqrfnet/standard/'
+				>
 					<header class='list-group-item-heading'>
 						{{ $t('iqrfnet.standard.title') }}
 					</header>
@@ -79,6 +94,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
+import {getRoleIndex} from '../../helpers/user';
+
 @Component({
 	components: {
 		CCard,
@@ -94,5 +111,27 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
  * IqrfNet disambiguation menu component
  */
 export default class IqrfNetDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>

@@ -28,6 +28,7 @@ use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -85,6 +86,7 @@ class MenderManager {
 	/**
 	 * Returns mender configuration
 	 * @return array<string, int|string> current mender configuration
+	 * @throws JsonException
 	 */
 	public function getConfig(): array {
 		$clientConfig = $this->getClientConfig();
@@ -96,6 +98,7 @@ class MenderManager {
 	/**
 	 * Reads mender-client config file
 	 * @return array<string, int|string> current mender-client configuration
+	 * @throws JsonException
 	 */
 	public function getClientConfig(): array {
 		return $this->fileManager->read(self::CLIENT_CONF, true, '.conf');
@@ -104,6 +107,7 @@ class MenderManager {
 	/**
 	 * Reads mender-connect config file
 	 * @return array<string, string|array<string, int|bool>> current mender-connect configuration
+	 * @throws JsonException
 	 */
 	public function getConnectConfig(): array {
 		return $this->fileManager->read(self::CONNECT_CONF, true, '.conf');
@@ -112,6 +116,7 @@ class MenderManager {
 	/**
 	 * Saves updated mender-client configuration file
 	 * @param array<string, int|string> $newConfig Mender configuration
+	 * @throws JsonException
 	 */
 	public function saveConfig(array $newConfig): void {
 		$clientConfig = $this->getClientConfig();
@@ -138,6 +143,7 @@ class MenderManager {
 	/**
 	 * Remounts root filesystem with specified mode
 	 * @param string $mode Mount mode
+	 * @throws MountErrorException
 	 */
 	public function remount(string $mode): void {
 		$output = $this->commandManager->run('mount -o remount,' . $mode . ' /', true);
@@ -169,6 +175,9 @@ class MenderManager {
 	 * Installs update from artifact and returns output
 	 * @param string $filePath Path to mender artifact file
 	 * @return string Output log
+	 * @throws MenderFailedException
+	 * @throws MenderNoUpdateInProgressException
+	 * @throws MenderMissingException
 	 */
 	public function installArtifact(string $filePath): string {
 		$this->checkMender();
@@ -179,6 +188,9 @@ class MenderManager {
 	/**
 	 * Commits installed mender artifact
 	 * @return string Output log
+	 * @throws MenderFailedException
+	 * @throws MenderNoUpdateInProgressException
+	 * @throws MenderMissingException
 	 */
 	public function commitUpdate(): string {
 		$this->checkMender();
@@ -189,6 +201,9 @@ class MenderManager {
 	/**
 	 * Rolls installed mender artifact back
 	 * @return string Output log
+	 * @throws MenderFailedException
+	 * @throws MenderNoUpdateInProgressException
+	 * @throws MenderMissingException
 	 */
 	public function rollbackUpdate(): string {
 		$this->checkMender();
@@ -200,8 +215,10 @@ class MenderManager {
 	 * Checks execution status and processes output log accordingly
 	 * @param int $code Mender execution code
 	 * @param string $output Output log before processing
-	 * @param string $filePath Path to file to remove
+	 * @param string|null $filePath Path to file to remove
 	 * @return string Processed output log
+	 * @throws MenderFailedException
+	 * @throws MenderNoUpdateInProgressException
 	 */
 	private function handleCommandResult(int $code, string $output, ?string $filePath = null): string {
 		if ($filePath !== null) {
@@ -235,6 +252,7 @@ class MenderManager {
 
 	/**
 	 * Checks if Mender utility is installed, stops mender-client if active
+	 * @throws MenderMissingException
 	 */
 	private function checkMender(): void {
 		if (!$this->commandManager->commandExist('mender')) {

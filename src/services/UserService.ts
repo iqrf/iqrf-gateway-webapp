@@ -25,11 +25,25 @@ import {User, UserInfo} from './AuthenticationService';
 class UserService {
 
 	/**
-	 * Changes password
+	 * Changes password for a user specified by ID
+	 * @param userId User ID
 	 * @param oldPassword Old password
 	 * @param newPassword New password
 	 */
-	changePassword(oldPassword: string, newPassword: string): Promise<AxiosResponse> {
+	changePassword(userId: number, oldPassword, newPassword: string): Promise<AxiosResponse> {
+		const body = {
+			old: oldPassword,
+			new: newPassword
+		};
+		return axios.put('user/' + userId + '/password', body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Changes password for the currently logged in user
+	 * @param oldPassword Old password
+	 * @param newPassword New password
+	 */
+	changePasswordLoggedIn(oldPassword: string, newPassword: string): Promise<AxiosResponse> {
 		const body = {
 			old: oldPassword,
 			new: newPassword
@@ -78,6 +92,19 @@ class UserService {
 			...user,
 		};
 		return axios.put('users/' + id, body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Edits the logged in user
+	 * @param user User settings
+	 */
+	editLoggedIn(user: any): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+			...user,
+		};
+		return axios.put('user/', body, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -154,6 +181,17 @@ class UserService {
 			baseUrl: urlBuilder.getBaseUrl(),
 		};
 		return axios.post('users/' + id + '/resendVerification', body, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Requests a verification email re-send for logged in user
+	 */
+	resendVerificationEmailLoggedIn(): Promise<AxiosResponse> {
+		const urlBuilder = new UrlBuilder();
+		const body = {
+			baseUrl: urlBuilder.getBaseUrl(),
+		};
+		return axios.post('user/resendVerification', body, {headers: authorizationHeader()});
 	}
 }
 

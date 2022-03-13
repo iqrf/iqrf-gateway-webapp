@@ -67,18 +67,19 @@ class MonitController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/MonitConfig'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:monit']);
 		try {
 			$config = $this->manager->getConfig();
 			return $response->writeJsonBody($config);
-		} catch (MonitConfigErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
@@ -99,6 +100,8 @@ class MonitController extends BaseConfigController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -107,13 +110,12 @@ class MonitController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:monit']);
 		$this->validator->validateRequest('monitConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (MonitConfigErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}

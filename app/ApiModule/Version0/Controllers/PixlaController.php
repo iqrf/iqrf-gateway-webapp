@@ -65,12 +65,15 @@ class PixlaController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/PixlaToken'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:pixla']);
 		$status = [
 			'token' => $this->manager->getToken(),
 		];
@@ -93,6 +96,8 @@ class PixlaController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -101,6 +106,7 @@ class PixlaController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function setToken(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:pixla']);
 		$this->validator->validateRequest('pixlaToken', $request);
 		try {
 			$this->manager->setToken($request->getJsonBody()['token']);

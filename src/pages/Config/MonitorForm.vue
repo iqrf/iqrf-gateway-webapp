@@ -165,14 +165,17 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
 import {between, integer, required, min_value} from 'vee-validate/dist/rules';
-import {MetaInfo} from 'vue-meta';
-import {RequiredInterface} from '../../interfaces/requiredInterfaces';
+import {extendedErrorToast} from '../../helpers/errorToast';
+import {mapGetters} from 'vuex';
+
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import {mapGetters} from 'vuex';
-import { extendedErrorToast } from '../../helpers/errorToast';
+import {MetaInfo} from 'vue-meta';
+import {RequiredInterface} from '../../interfaces/requiredInterfaces';
 
 interface MonitorComponents {
 	monitor: string
@@ -251,11 +254,6 @@ export default class MonitorForm extends Vue {
 	};
 
 	/**
-	 * @var {boolean} powerUser Indicates that the user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
 	 */
 	private webSocket: MonitorWebSocket = {
@@ -325,9 +323,6 @@ export default class MonitorForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
 		if (this.instance !== '') {
 			this.getConfig();
 		}

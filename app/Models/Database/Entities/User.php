@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
@@ -63,19 +64,24 @@ class User implements JsonSerializable {
 	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
 
 	/**
+	 * User role: Admin user
+	 */
+	public const ROLE_ADMIN = 'admin';
+
+	/**
 	 * User role: Normal user
 	 */
 	public const ROLE_NORMAL = 'normal';
 
 	/**
-	 * User role: Power user
+	 * User role: Basic admin user
 	 */
-	public const ROLE_POWER = 'power';
+	public const ROLE_BASICADMIN = 'basicadmin';
 
 	/**
-	 * User role: Iqaros user
+	 * User role: Basic user
 	 */
-	public const ROLE_IQAROS = 'iqaros';
+	public const ROLE_BASIC = 'basic';
 
 	/**
 	 * Default user role
@@ -86,9 +92,10 @@ class User implements JsonSerializable {
 	 * Supported user roles
 	 */
 	public const ROLES = [
+		self::ROLE_ADMIN,
 		self::ROLE_NORMAL,
-		self::ROLE_POWER,
-		self::ROLE_IQAROS,
+		self::ROLE_BASICADMIN,
+		self::ROLE_BASIC,
 	];
 
 	/**
@@ -148,13 +155,13 @@ class User implements JsonSerializable {
 	 * @var int Account state
 	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
 	 */
-	private $state;
+	private $state = self::STATE_DEFAULT;
 
 	/**
 	 * @var string User language
 	 * @ORM\Column(type="string", length=7)
 	 */
-	private $language;
+	private $language = self::LANGUAGE_DEFAULT;
 
 	/**
 	 * @var Collection<int, UserVerification> User verifications
@@ -221,6 +228,55 @@ class User implements JsonSerializable {
 	}
 
 	/**
+	 * Returns all user scopes
+	 * @return array<string> User scopes
+	 */
+	public function getScopes(): array {
+		$scopes = [];
+		if ($this->role === self::ROLE_BASICADMIN) {
+			$scopes = array_merge($scopes, [
+				'users:basic',
+			]);
+		}
+		if ($this->role === self::ROLE_NORMAL || $this->role === self::ROLE_ADMIN) {
+			$scopes = array_merge($scopes, [
+				'clouds',
+				'config:controller',
+				'config:daemon',
+				'config:iqrfRepository',
+				'config:translator',
+				'gateway:log',
+				'gateway:power',
+				'iqrf:macros',
+			]);
+		}
+		if ($this->role === self::ROLE_ADMIN) {
+			$scopes = array_merge($scopes, [
+				'apiKeys',
+				'iqrf:upload',
+				'mailer',
+				'maintenance:backup',
+				'maintenance:mender',
+				'maintenance:monit',
+				'maintenance:pixla',
+				'network',
+				'users:admin',
+				'sshKeys',
+			]);
+		}
+		return $scopes;
+	}
+
+	/**
+	 * Checks if the user has a scope
+	 * @param string $scope Scope
+	 * @return bool User has a scope
+	 */
+	public function hasScope(string $scope): bool {
+		return in_array($scope, $this->getScopes(), true);
+	}
+
+	/**
 	 * Sets the user name
 	 * @param string $userName User name
 	 */
@@ -248,6 +304,9 @@ class User implements JsonSerializable {
 	 * Clears all e-mail address verifications
 	 */
 	public function clearVerifications(): void {
+		if ($this->verifications === null) {
+			return;
+		}
 		$this->verifications->clear();
 	}
 
@@ -257,32 +316,27 @@ class User implements JsonSerializable {
 	 * @throws InvalidEmailAddressException
 	 */
 	public function setEmail(?string $email): void {
-		if ($email === null || $email === '') {
-			$this->email = null;
-			return;
+		if ($email === '') {
+			$email = null;
 		}
-		$validator = new EmailValidator();
-		$validationRules = [
-			new RFCValidation(),
-		];
-		if (function_exists('dns_get_record')) {
-			$validationRules[] = new DNSCheckValidation();
+		if ($email !== null) {
+			$this->validateEmail($email);
 		}
-		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
-			$error = $validator->getError();
-			if ($error === null) {
-				throw new InvalidEmailAddressException();
+		if ($this->email !== $email) {
+			if ($this->getState() === self::STATE_VERIFIED) {
+				$this->setState(self::STATE_UNVERIFIED);
 			}
-			throw new InvalidEmailAddressException($error->description(), $error->code());
 		}
 		$this->email = $email;
 	}
-
 	/**
 	 * Sets the user's password
 	 * @param string $password User's password
 	 */
 	public function setPassword(string $password): void {
+		if ($password === '') {
+			throw new InvalidPasswordException();
+		}
 		$this->password = password_hash($password, PASSWORD_DEFAULT);
 	}
 
@@ -318,6 +372,27 @@ class User implements JsonSerializable {
 			throw new InvalidUserLanguageException();
 		}
 		$this->language = $language;
+	}
+
+	/**
+	 * Validates e-mail address
+	 * @param string $email E-mail address to validate
+	 */
+	private function validateEmail(string $email): void {
+		$validator = new EmailValidator();
+		$validationRules = [
+			new RFCValidation(),
+		];
+		if (function_exists('dns_get_record')) {
+			$validationRules[] = new DNSCheckValidation();
+		}
+		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
+			$error = $validator->getError();
+			if ($error === null) {
+				throw new InvalidEmailAddressException();
+			}
+			throw new InvalidEmailAddressException($error->description(), $error->code());
+		}
 	}
 
 	/**

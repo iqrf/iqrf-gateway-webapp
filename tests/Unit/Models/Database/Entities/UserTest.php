@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\Database\Entities;
 
 use App\Exceptions\InvalidEmailAddressException;
+use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -58,7 +59,7 @@ final class UserTest extends TestCase {
 	/**
 	 * User role
 	 */
-	private const ROLE = User::ROLE_POWER;
+	private const ROLE = User::ROLE_ADMIN;
 
 	/**
 	 * User language
@@ -188,6 +189,15 @@ final class UserTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to set the user's password (empty string)
+	 */
+	public function testSetPasswordEmptyString(): void {
+		Assert::throws(function (): void {
+			$this->entity->setPassword('');
+		}, InvalidPasswordException::class);
+	}
+
+	/**
 	 * Tests the function to set the user's role
 	 */
 	public function testSetRole(): void {
@@ -203,7 +213,7 @@ final class UserTest extends TestCase {
 		Assert::exception(function (): void {
 			$this->entity->setRole('invalid');
 		}, InvalidUserRoleException::class);
-		Assert::same(User::ROLE_POWER, $this->entity->getRole());
+		Assert::same(User::ROLE_ADMIN, $this->entity->getRole());
 	}
 
 	/**

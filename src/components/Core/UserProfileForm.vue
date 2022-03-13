@@ -58,7 +58,7 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							:value.sync='user.role'
+							:value.sync='user.language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -112,10 +112,6 @@ import {IOption} from '../../interfaces/coreui';
  * User profile edit form component
  */
 export default class UserProfileForm extends Vue {
-	/**
-	 * @var {number} id User ID
-	 */
-	private id = 0;
 
 	/**
 	 * @var {IUserBase} user User
@@ -124,8 +120,8 @@ export default class UserProfileForm extends Vue {
 		username: '',
 		email: '',
 		language: UserLanguage.ENGLISH,
-		role: UserRole.IQAROS,
-	}
+		role: UserRole.BASIC,
+	};
 
 	/**
 	 * @constant {Array<IOption>} languageOptions Language options for CoreUI select
@@ -135,7 +131,7 @@ export default class UserProfileForm extends Vue {
 			value: UserLanguage.ENGLISH,
 			label: this.$t('core.user.languages.en'),
 		},
-	]
+	];
 
 	/**
 	 * Initializes validation rules
@@ -150,11 +146,7 @@ export default class UserProfileForm extends Vue {
 	 * Retrieves information about user from store
 	 */
 	private getUser(): void {
-		this.id = this.$store.getters['user/getId'];
-		this.user.username = this.$store.getters['user/getName'];
-		this.user.email = this.$store.getters['user/getEmail'] ?? '';
-		this.user.language = this.$store.getters['user/getLanguage'];
-		this.user.role = this.$store.getters['user/getRole'];
+		this.user = this.$store.getters['user/get'];
 	}
 
 	/**
@@ -162,7 +154,7 @@ export default class UserProfileForm extends Vue {
 	 */
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.edit(this.id, this.user)
+		UserService.editLoggedIn(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

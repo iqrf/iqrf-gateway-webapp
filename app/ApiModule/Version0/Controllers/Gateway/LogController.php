@@ -73,12 +73,15 @@ class LogController extends GatewayController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/LogServices'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:log']);
 		return $response->writeJsonBody($this->logManager->getAvailableServices());
 	}
 
@@ -94,6 +97,8 @@ class LogController extends GatewayController {
 	 *              text/plain:
 	 *                  schema:
 	 *                      type: string
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: 'Service not found or log not found'
 	 *      '500':
@@ -107,6 +112,7 @@ class LogController extends GatewayController {
 	 * @return ApiResponse API response
 	 */
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:log']);
 		$service = $request->getParameter('service');
 		try {
 			return $response->writeBody($this->logManager->getServiceLog($service));
@@ -125,19 +131,22 @@ class LogController extends GatewayController {
 	 * @OpenApi("
 	 *   summary: Returns archive with IQRF Gateway logs
 	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *       '200':
+	 *           description: 'Success'
+	 *           content:
+	 *               application/zip:
+	 *                   schema:
+	 *                       type: string
+	 *                       format: binary
+	 *       '403':
+	 *           $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:log']);
 		$path = $this->logManager->createArchive();
 		try {
 			$now = new DateTime();

@@ -18,10 +18,10 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.user.add') }}</h1>
 		<CCard body-wrapper>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='handleSubmit'>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='saveUser'>
 					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "forms.errors.username",
@@ -36,22 +36,7 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
-						rules='email'
-						:custom-messages='{
-							email: "forms.errors.emailFormat",
-						}'
-					>
-						<CInput
-							id='email'
-							v-model='email'
-							:label='$t("forms.fields.email")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "forms.errors.password",
@@ -67,8 +52,22 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='$store.getters["user/getRole"] === "power"'
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
+						rules='email'
+						:custom-messages='{
+							email: "forms.errors.emailFormat",
+						}'
+					>
+						<CInput
+							id='email'
+							v-model='email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "core.user.errors.role",
@@ -80,15 +79,11 @@ limitations under the License.
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:placeholder='$t("core.user.errors.role")'
-							:options='[
-								{value: "normal", label: $t("core.user.roles.normal")},
-								{value: "power", label: $t("core.user.roles.power")},
-							]'
+							:options='roles'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='$store.getters["user/getRole"] === "power"'
-						v-slot='{ valid, touched, errors }'
+						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
 							required: "core.user.errors.language",
@@ -100,12 +95,14 @@ limitations under the License.
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:placeholder='$t("core.user.errors.language")'
-							:options='[
-								{value: "en", label: $t("core.user.languages.en")},
-							]'
+							:options='languages'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
 						{{ $t('forms.add') }}
 					</CButton>
 				</CForm>
@@ -121,9 +118,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
+import {UserLanguage, UserRole} from '../../services/AuthenticationService';
+
 import UserService from '../../services/UserService';
 
 import {AxiosError} from 'axios';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -148,22 +148,8 @@ export default class UserAdd extends Vue {
 	/**
 	 * @var {string} email User's email
 	 */
-	private email= '';
+	private email = '';
 
-	/**
-	 * @var {string} language User's preferred language
-	 */
-	private language = '';
-
-	/**
-	 * @var {string} password User password
-	 */
-	private password = '';
-
-	/**
-	 * @var {string} role User role
-	 */
-	private role = '';
 
 	/**
 	 * @var {string} username User name
@@ -171,21 +157,62 @@ export default class UserAdd extends Vue {
 	private username = '';
 
 	/**
-	 * Vue lifecycle hook created
+	 * @var {string} password User password
+	 */
+	private password = '';
+
+	/**
+	 * @var {UserLanguage} language User's preferred language
+	 */
+	private language: UserLanguage = UserLanguage.ENGLISH;
+
+	/**
+	 * @constant {Array<IOption>} languages Language options
+	 */
+	private languages: Array<IOption> = [
+		{
+			value: UserLanguage.ENGLISH,
+			label: this.$t('core.user.languages.en'),
+		},
+	];
+
+	/**
+	 * @var {UserRole} role User role
+	 */
+	private role: UserRole = UserRole.BASIC;
+
+	/**
+	 * @constant {Array<IOption>} roles Array of available user roles
+	 */
+	private roles: Array<IOption> = [];
+
+	/**
+	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
 		extend('email', email);
 		extend('required', required);
+		const roleVal = this.$store.getters['user/getRole'];
+		const roleIdx = Object.values(UserRole).indexOf(roleVal);
+		let roles: Array<IOption> = [];
+		for (let item of Object.keys(UserRole)) {
+			const itemIdx = Object.keys(UserRole).indexOf(item);
+			if (itemIdx > roleIdx) {
+				roles.push({
+					value: UserRole[item],
+					label: this.$t('core.user.roles.' + UserRole[item]),
+				});
+			}
+		}
+		this.roles = roles;
 	}
 
 	/**
 	 * Creates a new user entry with default language and role if unspecified
 	 */
-	private handleSubmit(): void {
-		const language = this.language === '' ? 'en' : this.language;
-		const role = this.role === '' ? 'normal' : this.role;
+	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.add(this.username, this.email, this.password, language, role)
+		UserService.add(this.username, this.email, this.password, this.language, this.role)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

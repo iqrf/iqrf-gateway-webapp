@@ -81,12 +81,15 @@ class IqrfOsController extends IqrfController {
 	 *                      type: array
 	 *                      items:
 	 *                         $ref: '#/components/schemas/IqrfOsPatchDetail'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		$patches = $this->iqrfOsManager->listOsPatches();
 		return $response->writeJsonBody($patches);
 	}
@@ -109,12 +112,15 @@ class IqrfOsController extends IqrfController {
 	 *              application:json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/IqrfOsUpgradeList'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
 		$data = $request->getJsonBody(false);
 		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->version, $data->build, $data->mcuType);
@@ -141,6 +147,8 @@ class IqrfOsController extends IqrfController {
 	 *                      $ref: '#/components/schemas/IqrfOsUpgradeFiles'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -151,6 +159,7 @@ class IqrfOsController extends IqrfController {
 	 * @return ApiResponse API response
 	 */
 	public function osUpgradeFiles(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
 			$files = $this->iqrfOsManager->getUpgradeFiles((array) $request->getJsonBody(false));
@@ -182,6 +191,8 @@ class IqrfOsController extends IqrfController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -192,6 +203,7 @@ class IqrfOsController extends IqrfController {
 	 * @return ApiResponse API response
 	 */
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('uploaderFile', $request);
 		try {
 			$data = $request->getJsonBody(false);

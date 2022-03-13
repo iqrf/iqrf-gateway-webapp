@@ -88,13 +88,15 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import {IMapping} from '../../interfaces/mappings';
-import MappingService from '../../services/MappingService';
-import { AxiosError, AxiosResponse } from 'axios';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 import MappingForm from '../../components/Config/MappingForm.vue';
-import { extendedErrorToast } from '../../helpers/errorToast';
+
+import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+
+import MappingService from '../../services/MappingService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IMapping} from '../../interfaces/mappings';
 
 @Component({
 	components: {
@@ -137,11 +139,6 @@ export default class InterfaceMappings extends Vue {
 	private modalMapping = '';
 
 	/**
-	 * @var {boolean} powerUser Indicates whether user role is power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @var {boolean} showModal
 	 */
 	private showModal = false;
@@ -155,9 +152,6 @@ export default class InterfaceMappings extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
 		this.getMappings();
 	}
 
@@ -166,8 +160,12 @@ export default class InterfaceMappings extends Vue {
 	 */
 	private getMappings(): Promise<void> {
 		return MappingService.getMappings()
-			.then((response: AxiosResponse) => this.handleMappingResponse(response.data))
-			.catch((error: AxiosError) => FormErrorHandler.mappingError(error));
+			.then((response: AxiosResponse) => {
+				this.handleMappingResponse(response.data);
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.listFailed');
+			});
 	}
 
 	/**
@@ -226,7 +224,6 @@ export default class InterfaceMappings extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.deleteMapping = null;
-				this.$store.commit('spinner/HIDE');
 				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: this.modalMapping});
 				this.modalMapping = '';
 			});

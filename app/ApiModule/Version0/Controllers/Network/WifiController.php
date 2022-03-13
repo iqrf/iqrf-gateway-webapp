@@ -64,6 +64,8 @@ class WifiController extends NetworkController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkWifiList'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -72,6 +74,7 @@ class WifiController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
 		try {
 			return $response->writeJsonBody($this->wifiManager->list());
 		} catch (NetworkManagerException $e) {

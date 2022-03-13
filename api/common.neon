@@ -41,6 +41,8 @@ components:
 				'application/json':
 					schema:
 						$ref: '#/components/schemas/Error'
+		Forbidden:
+			description: Do not have appropriate permissions
 		ServerError:
 			description: Server error
 			content:

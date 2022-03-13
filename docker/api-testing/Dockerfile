@@ -40,7 +40,7 @@ RUN chmod 777 log/ \
 RUN rm -rf app/config/database.db \
  && bin/manager database:create \
  && bin/manager migrations:migrate --no-interaction \
- && bin/manager user:add -u admin -p iqrf -r power -l en
+ && bin/manager user:add -u admin -p iqrf -r admin -l en
 
 CMD [ "php", "-S", "[::]:8080", "-t", "/app/www/" ]
 

@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('config.daemon.misc.jsonMngMetaDataApi.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -33,7 +33,9 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"}'
+							:custom-messages='{
+								required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"
+							}'
 						>
 							<CInput
 								v-model='configuration.instance'
@@ -46,7 +48,11 @@ limitations under the License.
 							:checked.sync='configuration.metaDataToMessages'
 							:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages")'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<CButton
+							type='submit'
+							color='primary'
+							:disabled='invalid'
+						>
 							{{ $t('forms.save') }}
 						</CButton>
 					</fieldset>
@@ -61,16 +67,13 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-
-interface JsonMngMetaDataApiConfig {
-	instance: string
-	metaDataToMessages: boolean
-}
+import {IJsonMetaData} from '../../interfaces/jsonApi';
 
 @Component({
 	components: {
@@ -102,9 +105,9 @@ export default class JsonMngMetaDataApi extends Vue {
 	private instance = '';
 
 	/**
-	 * @var {JsonMngMetaDataApiConfig} configuration JSON MetaData component instance configuration
+	 * @var {IJsonMetaData} configuration JSON MetaData component instance configuration
 	 */
-	private configuration: JsonMngMetaDataApiConfig = {
+	private configuration: IJsonMetaData = {
 		instance: '',
 		metaDataToMessages: false,
 	};
@@ -145,7 +148,7 @@ export default class JsonMngMetaDataApi extends Vue {
 				this.$emit('fetched', {name: 'jsonMngMetaDataApi', success: false});
 			});
 	}
-	
+
 	/**
 	 * Saves new or updates existing configuration of JSON MetaData configuration instance
 	 */
@@ -153,20 +156,33 @@ export default class JsonMngMetaDataApi extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.getConfig().then(() => this.$toast.success(this.$t('config.success').toString()));
+	private handleSuccess(): void {
+		this.getConfig().then(() => {
+			this.$toast.success(
+				this.$t('config.daemon.misc.jsonMngMetaDataApi.messages.saveSuccess').toString()
+			);
+		});
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.misc.jsonMngMetaDataApi.messages.saveFailed');
 	}
 }
 </script>

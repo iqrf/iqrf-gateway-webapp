@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<CCard body-wrapper>
-			<CElementCover 
+			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -54,8 +54,9 @@ import IqrfCdc from '../../components/Config/IqrfCdc.vue';
 import IqrfUart from '../../components/Config/IqrfUart.vue';
 import IqrfDpa from '../../components/Config/IqrfDpa.vue';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IChangeComponent, IComponent, IConfigFetch} from '../../interfaces/daemonComponent';
@@ -70,22 +71,17 @@ import {IOption} from '../../interfaces/coreui';
 		IqrfCdc,
 		IqrfDpa,
 		IqrfSpi,
-		IqrfUart
+		IqrfUart,
 	},
 	metaInfo: {
-		title: 'config.daemon.interfaces.title'
-	}
+		title: 'config.daemon.interfaces.title',
+	},
 })
 
 /**
  * Interfaces config page component
  */
 export default class Interfaces extends Vue {
-	/**
-	 * @var {boolean} powerUser Indicates whether the user account is advanced 
-	 */
-	private powerUser = false;
-
 	/**
 	 * @constant {Array<IOption>} interfaceSelect Array of CoreUI select options for interface
 	 */
@@ -145,9 +141,6 @@ export default class Interfaces extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
 		this.getConfig();
 	}
 
@@ -165,7 +158,7 @@ export default class Interfaces extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.loadFailed = true;
-				FormErrorHandler.configError(error);
+				extendedErrorToast(error, 'config.daemon.interfaces.messages.listFailed');
 			});
 	}
 
@@ -211,17 +204,14 @@ export default class Interfaces extends Vue {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.changeComponent(updateInterfaces)
 			.then(() => {
-				this.getConfig().then(() => 
+				this.getConfig().then(() =>
 					this.$toast.success(
 						this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()
 					)
 				);
 			})
-			.catch(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('config.daemon.interfaces.messages.updateFailed').toString()
-				);
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.interfaces.messages.updateFailed');
 			});
 	}
 
@@ -251,7 +241,7 @@ export default class Interfaces extends Vue {
 			this.children = this.children.filter((item: string) => item !== data.name);
 		}
 		if (!data.success) {
-			this.failed.push(this.$t('config.daemon.' + data.name + '.title').toString());
+			this.failed.push(this.$t('config.daemon.interfaces.' + data.name + '.title').toString());
 		}
 		if (this.children.length > 0) {
 			return;

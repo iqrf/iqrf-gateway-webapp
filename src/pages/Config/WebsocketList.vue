@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<div v-if='powerUser'>
+		<div v-if='role === roles.ADMIN'>
 			<WebsocketMessagingList />
 			<WebsocketServiceList />
 		</div>
@@ -31,6 +31,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import WebsocketInterfaceList from '../../components/Config/WebsocketInterfaceList.vue';
 import WebsocketMessagingList from '../../components/Config/WebsocketMessagingList.vue';
 import WebsocketServiceList from '../../components/Config/WebsocketServiceList.vue';
+
+import {UserRole} from '../../services/AuthenticationService';
 
 @Component({
 	components: {
@@ -48,17 +50,20 @@ import WebsocketServiceList from '../../components/Config/WebsocketServiceList.v
  */
 export default class WebsocketList extends Vue {
 	/**
-	 * @var {boolean} powerUser Indicates whether the user is a power user
+	 * @var {UserRole} role User role
 	 */
-	private powerUser = false;
+	private role: UserRole = UserRole.NORMAL;
+
+	/**
+	 * @constant {typeof UserRole} roles User roles
+	 */
+	private roles: typeof UserRole = UserRole;
 
 	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
+		this.role = this.$store.getters['user/getRole'];
 	}
 }
 </script>

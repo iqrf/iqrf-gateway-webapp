@@ -93,21 +93,21 @@ limitations under the License.
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.messaging.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.websocket.messaging.modal.title') }}
 				</h5>
 			</template>
-			{{ $t('config.daemon.messagings.websocket.messaging.messages.deletePrompt', {messaging: deleteInstance}) }}
+			{{ $t('config.daemon.messagings.websocket.messaging.modal.prompt', {messaging: deleteInstance}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.no') }}
-				</CButton> <CButton
-					color='success'
 					@click='removeInstance'
 				>
-					{{ $t('forms.yes') }}
+					{{ $t('forms.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deleteInstance = null'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -117,12 +117,15 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {extendedErrorToast} from '../../helpers/errorToast';
+
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {WsMessaging} from '../../interfaces/messagingInterfaces';
-import { AxiosError, AxiosResponse } from 'axios';
 
 @Component({
 	components: {
@@ -207,7 +210,9 @@ export default class WebsocketMessagingList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.listFailed');
+			});
 	}
 
 	/**
@@ -217,17 +222,22 @@ export default class WebsocketMessagingList extends Vue {
 	 */
 	private changeAccept(instance: WsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg !== setting) {
-			instance.acceptAsyncMsg = setting;
-			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
+			let conf = {
+				...instance,
+			};
+			conf.acceptAsyncMsg = setting;
+			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, conf)
 				.then(() => {
 					this.getConfig().then(() => {
 						this.$toast.success(
-							this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+							this.$t('config.daemon.messagings.websocket.messaging.messages.updateSuccess', {messaging: instance.instance})
 								.toString()
 						);
 					});
 				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.updateFailed', {messaging: instance.instance});
+				});
 		}
 	}
 
@@ -250,7 +260,9 @@ export default class WebsocketMessagingList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.deleteFailed', {messaging: instance});
+			});
 	}
 }
 </script>

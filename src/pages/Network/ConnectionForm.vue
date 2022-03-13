@@ -586,11 +586,6 @@ export default class ConnectionForm extends Vue {
 	private ifnameOptions: Array<IOption> = [];
 
 	/**
-	 * @var {boolean} powerUser Indicates that user is a power user
-	 */
-	private powerUser = false;
-
-	/**
 	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
 	 */
 	private authOneOptions: Array<IOption> = [
@@ -740,9 +735,6 @@ export default class ConnectionForm extends Vue {
 	 * Fetches connection configuration prop is set
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/getRole'] === 'power') {
-			this.powerUser = true;
-		}
 		if (this.$route.path.includes('/network/wireless/')) {
 			this.getInterfaces(InterfaceType.WIFI);
 		} else if (this.$route.path.includes('/network/ethernet/')) {
@@ -755,21 +747,18 @@ export default class ConnectionForm extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv4Methods(): Array<IOption> {
-		const methods = this.powerUser ?
-			['auto', 'link-local', 'manual', 'shared']:
-			['auto', 'manual'];
+		//const methods = ['auto', 'link-local', 'manual', 'shared'];
+		const methods = ['auto', 'manual'];
 		let methodOptions: Array<IOption> = methods.map(
 			(method: string) => ({
 				value: method,
 				label: this.$t('network.connection.ipv4.methods.' + method).toString(),
 			})
 		);
-		if (this.powerUser) {
-			methodOptions.push({
-				value: 'disabled',
-				label: this.$t('states.disabled').toString()
-			});
-		}
+		/*methodOptions.push({
+			value: 'disabled',
+			label: this.$t('states.disabled').toString()
+		})*/
 		return methodOptions;
 	}
 
@@ -778,21 +767,18 @@ export default class ConnectionForm extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv6Methods(): Array<IOption> {
-		const methods = this.powerUser ?
-			['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared']:
-			['auto', 'dhcp', 'manual'];
+		//const methods = ['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared'];
+		const methods = ['auto', 'dhcp', 'manual'];
 		let methodOptions: Array<IOption> = methods.map((method: string) =>
 			({
 				value: method,
 				label: this.$t('network.connection.ipv6.methods.' + method).toString(),
 			})
 		);
-		if (this.powerUser) {
-			methodOptions.push({
-				value: 'disabled',
-				label: this.$t('states.disabled').toString()
-			});
-		}
+		/*methodOptions.push({
+			value: 'disabled',
+			label: this.$t('states.disabled').toString()
+		})*/
 		return methodOptions;
 	}
 

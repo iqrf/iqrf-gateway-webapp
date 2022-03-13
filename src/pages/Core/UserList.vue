@@ -96,7 +96,6 @@ limitations under the License.
 								<CIcon :content='icons.resend' size='sm' />
 								{{ $t('core.user.resendVerification') }}
 							</CButton> <CButton
-								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
 								color='info'
 								:to='"/user/edit/" + item.id'
 								size='sm'
@@ -163,6 +162,8 @@ import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons
 import {extendedErrorToast} from '../../helpers/errorToast';
 import UserService from '../../services/UserService';
 
+import {UserRole} from '../../services/AuthenticationService';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {IUser} from '../../interfaces/user';
@@ -209,7 +210,30 @@ export default class UserList extends Vue {
 	/**
 	 * @var {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = [];
+	private fields: Array<IField> = [
+		{
+			key: 'username',
+			label: this.$t('forms.fields.username'),
+		},
+		{
+			key: 'email',
+			label: this.$t('forms.fields.email'),
+		},
+		{
+			key: 'role',
+			label: this.$t('core.user.role'),
+		},
+		{
+			key: 'language',
+			label: this.$t('core.user.language'),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			sorter: false,
+			filter: false,
+		},
+	];
 
 	/**
 	 * @var {Array<User>} users Array of user objects
@@ -220,63 +244,11 @@ export default class UserList extends Vue {
 	 * @constant {Array<string>} roles Arrray of user roles
 	 */
 	private roles = [
-		'normal',
-		'iqaros',
-		'power'
+		UserRole.ADMIN,
+		UserRole.NORMAL,
+		UserRole.BASICADMIN,
+		UserRole.BASIC,
 	];
-
-	/**
-	 * Updates table fields by user role
-	 */
-	created(): void {
-		if (this.$store.getters['user/getRole'] !== 'power') {
-			this.fields = [
-				{
-					key: 'username',
-					label: this.$t('forms.fields.username'),
-				},
-				{
-					key: 'email',
-					label: this.$t('forms.fields.email'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			];
-		} else {
-			this.fields = [
-				{
-					key: 'id',
-					label: this.$t('core.user.id'),
-				},
-				{
-					key: 'username',
-					label: this.$t('forms.fields.username'),
-				},
-				{
-					key: 'email',
-					label: this.$t('forms.fields.email'),
-				},
-				{
-					key: 'role',
-					label: this.$t('core.user.role'),
-				},
-				{
-					key: 'language',
-					label: this.$t('core.user.language'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			];
-		}
-	}
 
 	/**
 	 * Retrieves list of existing user

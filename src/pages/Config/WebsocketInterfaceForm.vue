@@ -317,7 +317,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					.catch((error: AxiosError) => {
 						extendedErrorToast(
 							error,
-							'config.daemon.messagings.websocket.interface.messages.fetchFailed',
+							'config.daemon.messagings.websocket.interface.messages.getFailed',
 							{interface: this.instances.service}
 						);
 						this.$router.push('/config/daemon/messagings/websocket');
@@ -326,7 +326,7 @@ export default class WebsocketInterfaceForm extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(
 					error,
-					'config.daemon.messagings.websocket.interface.messages.fetchFailed',
+					'config.daemon.messagings.websocket.interface.messages.getFailed',
 					{interface: this.instance}
 				);
 				this.$router.push('/config/daemon/messagings/websocket');
@@ -354,42 +354,36 @@ export default class WebsocketInterfaceForm extends Vue {
 				DaemonConfigurationService.createInstance(this.componentNames.service, this.service),
 				DaemonConfigurationService.createInstance(this.componentNames.messaging, this.messaging),
 			])
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'config.daemon.messagings.websocket.interface.messages.addFailed'
-				));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			Promise.all([
 				DaemonConfigurationService.updateInstance(this.componentNames.service, this.instances.service, this.service),
 				DaemonConfigurationService.updateInstance(this.componentNames.messaging, this.instances.messaging, this.messaging),
 			])
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'config.daemon.messagings.websocket.interface.messages.editFailed',
-					{interface: this.instance}
-				));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
+	 * @param {AxiosResponse} rsp Success response
 	 */
-	private successfulSave(): void {
-		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/websocket/add') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.messages.addSuccess', {instance: this.messaging.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.websocket.messages.editSuccess', {instance: this.messaging.instance})
-					.toString()
-			);
-		}
+	private handleSuccess(): void {
+		this.$store.commit('spinner/SHOW');
+		this.$toast.success(
+			this.$t('config.daemon.messagings.websocket.interface.messages.saveSuccess', {interface: this.instances.service}).toString()
+		);
 		this.$router.push('/config/daemon/messagings/websocket');
+	}
+
+	/**
+	 * Handles REST API failure
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.daemon.messagings.websocket.interface.messages.saveFailed', {interface: this.instances.service});
 	}
 }
 </script>

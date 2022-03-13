@@ -41,16 +41,23 @@
 			],
 			"example": "en"
 		},
+		"password": {
+			"$id": "#/properties/password",
+			"type": "string",
+			"title": "Password",
+			"example": "N3w c00l password"
+		},
 		"role": {
 			"$id": "#/properties/role",
 			"type": "string",
 			"title": "Role",
 			"enum": [
+				"admin",
 				"normal",
-				"iqaros",
-				"power"
+				"basicadmin",
+				"basic"
 			],
-			"example": "power"
+			"example": "normal"
 		},
 		"state": {
 			"$id": "#/properties/state",

@@ -93,6 +93,8 @@ class UploadController extends IqrfController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '415':
 	 *          description: Unsupported media file
 	 *      '500':
@@ -103,6 +105,7 @@ class UploadController extends IqrfController {
 	 * @return ApiResponse API response
 	 */
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$format = $request->getParsedBody()['format'] ?? null;
@@ -143,6 +146,8 @@ class UploadController extends IqrfController {
 	 *                              type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
@@ -153,6 +158,7 @@ class UploadController extends IqrfController {
 	 * @return ApiResponse API response
 	 */
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBody(false);

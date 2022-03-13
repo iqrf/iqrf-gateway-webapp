@@ -135,7 +135,7 @@ export default class UserProfilePassword extends Vue {
 	 */
 	private changePassword(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.changePassword(this.oldPassword, this.newPassword)
+		UserService.changePasswordLoggedIn(this.oldPassword, this.newPassword)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

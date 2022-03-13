@@ -331,14 +331,14 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: settings.instance})
+						this.$t('config.daemon.messagings.websocket.service.messages.updateSuccess', {service: settings.instance})
 							.toString()
 					);
 				});
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
-				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				'config.daemon.messagings.websocket.interface.messages.updateFailed',
 				{interface: settings.instance}
 			));
 	}
@@ -358,14 +358,14 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.interface.messages.editSuccess', {messaging: instance.instance})
+						this.$t('config.daemon.messagings.websocket.interface.messages.updateSuccess', {interface: instance.instance})
 							.toString()
 					);
 				});
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
-				'config.daemon.messagings.websocket.interface.messages.editFailed',
+				'config.daemon.messagings.websocket.interface.messages.updateFailed',
 				{interface: instance.instance}
 			));
 	}
@@ -391,11 +391,14 @@ export default class WebsocketInterfaceList extends Vue {
 				});
 				this.deleteInstance = null;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.messagings.websocket.interface.messages.deleteFailed',
-				{interface: this.deleteInstance!.messaging}
-			));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.deleteFailed',
+					{interface: this.deleteInstance!.messaging}
+				);
+				this.deleteInstance = null;
+			});
 	}
 }
 </script>

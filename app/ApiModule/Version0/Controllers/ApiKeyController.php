@@ -78,12 +78,15 @@ class ApiKeyController extends BaseController {
 	 *                      type: array
 	 *                      items:
 	 *                          $ref: '#/components/schemas/ApiKeyDetail'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$apiKeys = $this->repository->findAll();
 		return $response->writeJsonBody($apiKeys);
 	}
@@ -113,12 +116,15 @@ class ApiKeyController extends BaseController {
 	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$this->validator->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBody(false);
 		$apiKey = new ApiKey($json->description, null);
@@ -148,6 +154,8 @@ class ApiKeyController extends BaseController {
 	 *                      $ref: '#/components/schemas/ApiKeyDetail'
 	 *      '404':
 	 *          description: Not found
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="API key ID")
@@ -157,6 +165,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -173,6 +182,8 @@ class ApiKeyController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -184,6 +195,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
@@ -210,6 +222,8 @@ class ApiKeyController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: 'API key not found'
 	 * ")
@@ -221,6 +235,7 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {

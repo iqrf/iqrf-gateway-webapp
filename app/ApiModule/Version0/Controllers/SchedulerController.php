@@ -83,12 +83,15 @@ class SchedulerController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/TaskList'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		return $response->writeJsonBody($this->manager->list());
 	}
 
@@ -108,6 +111,8 @@ class SchedulerController extends BaseController {
 	 *          description: Created
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '409':
 	 *          description: 'Task already exists'
 	 * ")
@@ -116,6 +121,7 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('task', $request);
 		$task = $request->getJsonBody(false);
 		$taskId = $task->taskId;
@@ -142,12 +148,15 @@ class SchedulerController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		$this->manager->deleteAll();
 		return $response->writeBody('Workaround');
 	}
@@ -164,6 +173,8 @@ class SchedulerController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/Task'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: Not found
 	 * ")
@@ -175,6 +186,7 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		if (!is_numeric($request->getParameter('taskId'))) {
 			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -195,6 +207,8 @@ class SchedulerController extends BaseController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: 'Task not found'
 	 * ")
@@ -206,6 +220,7 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		if (!is_numeric($request->getParameter('taskId'))) {
 			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -234,6 +249,8 @@ class SchedulerController extends BaseController {
 	 *          description: Success
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '404':
 	 *          description: 'Task not found'
 	 * ")
@@ -245,6 +262,7 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		if (!is_numeric($request->getParameter('taskId'))) {
 			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -272,21 +290,24 @@ class SchedulerController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Exports scheduler configuration
 	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
-	 *     '404':
-	 *       description: 'No tasks to export'
+	 *       '200':
+	 *           description: 'Success'
+	 *           content:
+	 *               application/zip:
+	 *                   schema:
+	 *                       type: string
+	 *                       format: binary
+	 *       '403':
+	 *           $ref: '#/components/responses/Forbidden'
+	 *       '404':
+	 *           description: 'No tasks to export'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			$path = $this->migrationManager->createArchive();
 			$fileName = basename($path);
@@ -317,6 +338,8 @@ class SchedulerController extends BaseController {
 	 *          description: 'Success'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
 	 *      '415':
 	 *          description: 'Unsupported media type'
 	 * ")
@@ -325,6 +348,7 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
 		try {
 			switch (ContentTypeUtil::getContentType($request)) {
 				case 'application/zip':

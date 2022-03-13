@@ -71,13 +71,13 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import {versionLowerEqual} from '../../helpers/versionChecker';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '../../interfaces/jsonApi';
-import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
@@ -226,7 +226,7 @@ export default class JsonApi extends Vue {
 		}
 		if (requests.length === 0) {
 			this.$toast.info(
-				this.$t('config.daemon.misc.jsonApi.messages.noChanges').toString()
+				this.$t('config.daemon.misc.jsonApi.messages.saveNoChanges').toString()
 			);
 			return;
 		}
@@ -235,11 +235,11 @@ export default class JsonApi extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.daemon.misc.jsonApi.messages.success').toString()
+						this.$t('config.daemon.misc.jsonApi.messages.saveSuccess').toString()
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.misc.jsonApi.messages.failed'));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.misc.jsonApi.messages.saveFailed'));
 	}
 }
 </script>

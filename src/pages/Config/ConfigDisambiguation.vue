@@ -20,7 +20,10 @@ limitations under the License.
 		<CCard>
 			<CCardBody>
 				<CListGroup>
-					<CListGroupItem to='/config/daemon/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/daemon/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.title') }}
 						</header>
@@ -29,7 +32,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")'
+						v-if='$store.getters["features/isEnabled"]("iqrfGatewayController") && roleIdx <= roles.normal'
 						to='/config/controller/'
 					>
 						<header class='list-group-item-heading'>
@@ -40,7 +43,7 @@ limitations under the License.
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
+						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator") && roleIdx <= roles.normal'
 						to='/config/translator/'
 					>
 						<header class='list-group-item-heading'>
@@ -50,20 +53,26 @@ limitations under the License.
 							{{ $t('config.translator.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/smtp/'>
-						<header class='list-group-item-heading'>
-							{{ $t('config.smtp.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.smtp.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem to='/config/repository/'>
+					<CListGroupItem
+						v-if='roleIdx <= roles.normal'
+						to='/config/repository/'
+					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.repository.title') }}
 						</header>
 						<p class='list-group-item-text'>
 							{{ $t('config.repository.description') }}
+						</p>
+					</CListGroupItem>
+					<CListGroupItem
+						v-if='roleIdx <= roles.admin'
+						to='/config/smtp/'
+					>
+						<header class='list-group-item-heading'>
+							{{ $t('config.smtp.title') }}
+						</header>
+						<p class='list-group-item-text'>
+							{{ $t('config.smtp.description') }}
 						</p>
 					</CListGroupItem>
 				</CListGroup>
@@ -75,6 +84,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CListGroup, CListGroupItem} from '@coreui/vue/src';
+
+import {getRoleIndex} from '../../helpers/user';
 
 @Component({
 	components: {
@@ -93,5 +104,27 @@ import {CCard, CCardBody, CCardHeader, CListGroup, CListGroupItem} from '@coreui
  * Config disambiguation menu component
  */
 export default class ConfigDisambiguation extends Vue {
+	/**
+	 * @var {number} roleIdx Index of role in user role enum
+	 */
+	private roleIdx = 0;
+
+	/**
+	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 */
+	private roles: Record<string, number> = {
+		admin: 0,
+		normal: 1,
+		basicadmin: 2,
+		basic: 3,
+	};
+
+	/**
+	 * Retrieves user role and calculates the role index
+	 */
+	private created(): void {
+		const roleVal = this.$store.getters['user/getRole'];
+		this.roleIdx = getRoleIndex(roleVal);
+	}
 }
 </script>
