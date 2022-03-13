@@ -16,7 +16,7 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
-@@ -35,19 +35,19 @@ iqrfRepository:
+@@ -35,13 +35,13 @@ iqrfRepository:
  	enabled: false
  # iTemp service
  iTemp:
@@ -32,10 +32,3 @@
  # Network manager
  networkManager:
  	enabled: true
- # Node-RED
- nodeRed:
--	enabled: false
-+	enabled: true
- 	url: /node-red/
- ntp:
- 	enabled: false
