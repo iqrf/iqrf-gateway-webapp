@@ -60,7 +60,7 @@ qa: lint cs
 
 install:
 	install -d -o www-data $(CACHE_DIR)
-	install -d $(CONFIG_DIR)
+	install -d -o www-data $(CONFIG_DIR)
 	cp app/config/* $(CONFIG_DIR)
 	install -d $(CONFIG_DIR)/certs
 	install -d $(DATA_DIR)
