@@ -18,10 +18,14 @@ COMPOSER ?= composer
 CACHE_DIR=${DESTDIR}/var/cache/iqrf-gateway-webapp
 CONFIG_DIR=${DESTDIR}/etc/iqrf-gateway-webapp
 DATA_DIR=${DESTDIR}/usr/share/iqrf-gateway-webapp
+DB_DIR=${DESTDIR}/var/lib/iqrf-gateway-webapp
 LOG_DIR=${DESTDIR}/var/log/iqrf-gateway-webapp
 VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
 SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
+
+WEBAPP_USER ?= www-data
+WEBAPP_GROUP ?= www-data
 
 .PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
 
@@ -59,8 +63,8 @@ deps:
 qa: lint cs
 
 install:
-	install -d -o www-data $(CACHE_DIR)
-	install -d -o www-data $(CONFIG_DIR)
+	install -d -o $(WEBAPP_USER) $(CACHE_DIR)
+	install -d -o $(WEBAPP_USER) $(CONFIG_DIR)
 	cp app/config/* $(CONFIG_DIR)
 	install -d $(CONFIG_DIR)/certs
 	install -d $(DATA_DIR)
@@ -77,60 +81,65 @@ install:
 	install -m 0644 install/config/systemd/* $(SYSTEMD_DIR)
 	install -d $(CONFIG_DIR)/nginx
 	install -m 0644 install/config/nginx/* $(CONFIG_DIR)/nginx
-	install -d -o www-data $(LOG_DIR)
-	install -d -o www-data ${DESTDIR}/var/lib/iqrf-gateway-webapp
+	install -d -o $(WEBAPP_USER) $(LOG_DIR)
+	install -d -o $(WEBAPP_USER) $(DB_DIR)
+	# Fix ownership
+	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(CACHE_DIR)
+	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(CONFIG_DIR)
+	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(DB_DIR)
+	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(LOG_DIR)
 	# Delete documentation
-	find ${VENDOR_DIR} -type f -name "AUTHORS*" -delete
-	find ${VENDOR_DIR} -type f -name "CHANGELOG*" -delete
-	find ${VENDOR_DIR} -type f -name "CONTRIBUTING.md" -delete
-	find ${VENDOR_DIR} -type f -name "contributing.md" -delete
-	find ${VENDOR_DIR} -type f -name "COPYRIGHT*" -delete
-	find ${VENDOR_DIR} -type f -name "LICENSE*" -delete
-	find ${VENDOR_DIR} -type f -name "license.md" -delete
-	find ${VENDOR_DIR} -type f -name "README*" -delete
-	find ${VENDOR_DIR} -type f -name "readme.md" -delete
-	find ${VENDOR_DIR} -type f -name "SECURITY.md" -delete
-	find ${VENDOR_DIR} -type f -name "STABILITY.md" -delete
-	find ${VENDOR_DIR} -type f -name "UPGRADE*.md" -delete
-	find ${VENDOR_DIR} -type f -name "UPGRADING.md" -delete
-	find ${VENDOR_DIR} -type d -regextype sed -regex ".*/\(\.\)\?[Dd]oc\(s\)\?" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type f -name "AUTHORS*" -delete
+	find $(VENDOR_DIR) -type f -name "CHANGELOG*" -delete
+	find $(VENDOR_DIR) -type f -name "CONTRIBUTING.md" -delete
+	find $(VENDOR_DIR) -type f -name "contributing.md" -delete
+	find $(VENDOR_DIR) -type f -name "COPYRIGHT*" -delete
+	find $(VENDOR_DIR) -type f -name "LICENSE*" -delete
+	find $(VENDOR_DIR) -type f -name "license.md" -delete
+	find $(VENDOR_DIR) -type f -name "README*" -delete
+	find $(VENDOR_DIR) -type f -name "readme.md" -delete
+	find $(VENDOR_DIR) -type f -name "SECURITY.md" -delete
+	find $(VENDOR_DIR) -type f -name "STABILITY.md" -delete
+	find $(VENDOR_DIR) -type f -name "UPGRADE*.md" -delete
+	find $(VENDOR_DIR) -type f -name "UPGRADING.md" -delete
+	find $(VENDOR_DIR) -type d -regextype sed -regex ".*/\(\.\)\?[Dd]oc\(s\)\?" -print0 | xargs -0 rm -rf
 	# Delete composer files
-	find ${VENDOR_DIR} -type f -name "composer.json" -delete
+	find $(VENDOR_DIR) -type f -name "composer.json" -delete
 	# Delete bower files
-	find ${VENDOR_DIR} -type f -name "bower.json" -delete
+	find $(VENDOR_DIR) -type f -name "bower.json" -delete
 	# Delete NPM files
-	find ${VENDOR_DIR} -type f -name ".npmignore" -delete
-	find ${VENDOR_DIR} -type f -name "package.json" -delete
+	find $(VENDOR_DIR) -type f -name ".npmignore" -delete
+	find $(VENDOR_DIR) -type f -name "package.json" -delete
 	# Delete ESLint files
-	find ${VENDOR_DIR} -type f -name ".eslintrc.js" -delete
+	find $(VENDOR_DIR) -type f -name ".eslintrc.js" -delete
 	# Delete git files
-	find ${VENDOR_DIR} -type d -name ".git" -print0 | xargs -0 rm -rf
-	find ${VENDOR_DIR} -type f -name ".gitattributes" -delete
-	find ${VENDOR_DIR} -type f -name ".gitignore" -delete
-	find ${VENDOR_DIR} -type f -name ".gitmodules" -delete
+	find $(VENDOR_DIR) -type d -name ".git" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type f -name ".gitattributes" -delete
+	find $(VENDOR_DIR) -type f -name ".gitignore" -delete
+	find $(VENDOR_DIR) -type f -name ".gitmodules" -delete
 	# Delete CI files
-	find ${VENDOR_DIR} -type f -regex ".*/\(appveyor\|\.gitlab-ci\|\.scrutinizer\|\.travis\)\.yml" -delete
+	find $(VENDOR_DIR) -type f -regex ".*/\(appveyor\|\.gitlab-ci\|\.scrutinizer\|\.travis\)\.yml" -delete
 	# Delete PHP Coding Standards Fixer files
-	find ${VENDOR_DIR} -type f -regex ".*/\.php_cs\(\.dist\)?" -delete
+	find $(VENDOR_DIR) -type f -regex ".*/\.php_cs\(\.dist\)?" -delete
 	# Delete PHPStan files
-	find ${VENDOR_DIR} -type f -name "phpstan.neon" -delete
+	find $(VENDOR_DIR) -type f -name "phpstan.neon" -delete
 	# Delete PHP_CodeSniffer files
-	find ${VENDOR_DIR} -type f -name "ruleset.xml" -delete
+	find $(VENDOR_DIR) -type f -name "ruleset.xml" -delete
 	# Delete PHPUnit files
-	find ${VENDOR_DIR} -type f -regex ".*/phpunit\.xml\(\.dist\)?" -delete
+	find $(VENDOR_DIR) -type f -regex ".*/phpunit\.xml\(\.dist\)?" -delete
 	# Delete examples
-	find ${VENDOR_DIR} -type d -name "demo" -print0 | xargs -0 rm -rf
-	find ${VENDOR_DIR} -type d -regex ".*/[Ee]xample\(s\)?/*" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type d -name "demo" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type d -regex ".*/[Ee]xample\(s\)?/*" -print0 | xargs -0 rm -rf
 	# Delete tests
-	find ${VENDOR_DIR} -type d -regex ".*/[Tt]est\(s\)?/*" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type d -regex ".*/[Tt]est\(s\)?/*" -print0 | xargs -0 rm -rf
 	# Delete binaries
-	find ${VENDOR_DIR} -type d -name "bin" -print0 | xargs -0 rm -rf
-	find ${VENDOR_DIR} -type d -name "tools" -print0 | xargs -0 rm -rf
-	find ${VENDOR_DIR} -type f -name "*.sh" -delete
-	find ${VENDOR_DIR} -type f -name "Makefile" -delete
-	find ${VENDOR_DIR} -type f -print0 | xargs -0 chmod -x
+	find $(VENDOR_DIR) -type d -name "bin" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type d -name "tools" -print0 | xargs -0 rm -rf
+	find $(VENDOR_DIR) -type f -name "*.sh" -delete
+	find $(VENDOR_DIR) -type f -name "Makefile" -delete
+	find $(VENDOR_DIR) -type f -print0 | xargs -0 chmod -x
 	# Delete empty directories
-	find ${VENDOR_DIR} -type d -empty -delete
+	find $(VENDOR_DIR) -type d -empty -delete
 	# Patch files
 	patch $(DATA_DIR)/app/Kernel.php install/patches/kernel-fix-dir-paths.patch
 	patch $(CONFIG_DIR)/doctrine.neon install/patches/nettrine-fix-db-path.patch
