@@ -303,6 +303,12 @@ class UsersController extends BaseController {
 				!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
 				self::checkScopes($request, ['users:admin']);
 			}
+			if (($user->getRole() === User::ROLE_ADMIN) &&
+				($this->repository->userCountByRole(User::ROLE_ADMIN) === 1)) {
+				if ($json['role'] !== User::ROLE_ADMIN) {
+					throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
+				}
+			}
 			try {
 				$user->setRole($json['role']);
 			} catch (InvalidUserRoleException $e) {

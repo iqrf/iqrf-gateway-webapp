@@ -203,7 +203,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -227,6 +227,7 @@ import {AxiosError} from 'axios';
 	},
 	computed: {
 		...mapGetters({
+			userRole: 'user/getRole',
 			userEmail: 'user/getEmail',
 			isUserUnverified: 'user/isUnverified',
 		}),
@@ -238,7 +239,7 @@ import {AxiosError} from 'axios';
  */
 export default class MainDisambiguation extends Vue {
 	/**
-	 * @var {number} roleIdx Index of role in user role enum
+	 * @var {number} roleIdx Index of the current user role
 	 */
 	private roleIdx = 0;
 
@@ -253,16 +254,23 @@ export default class MainDisambiguation extends Vue {
 	};
 
 	/**
-	 * Retrieves user role and calculates the role index
+	 * Updates user role
 	 */
-	private created(): void {
+	created(): void {
+		this.updateRole();
+	}
+
+	/**
+	 * Updates user role index
+	 */
+	@Watch('userRole')
+	private updateRole(): void {
 		const roleVal = this.$store.getters['user/getRole'];
 		this.roleIdx = getRoleIndex(roleVal);
 	}
 
 	/**
 	 * Resends verification e-mail
-	 * @private
 	 */
 	private resendVerification(): void {
 		this.$store.commit('spinner/SHOW');

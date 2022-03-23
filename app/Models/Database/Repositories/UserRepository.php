@@ -48,6 +48,15 @@ class UserRepository extends EntityRepository {
 	}
 
 	/**
+	 * Returns count of users of a specific role
+	 * @param string $role User role
+	 * @return int Number of users of a specific role
+	 */
+	public function userCountByRole(string $role): int {
+		return $this->count(['role' => $role]);
+	}
+
+	/**
 	 * Lists user names
 	 * @return array<string> User names
 	 */
