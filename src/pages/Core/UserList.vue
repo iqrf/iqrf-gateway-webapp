@@ -269,7 +269,12 @@ export default class UserList extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.users = response.data;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.listFetchFailed'));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'core.user.messages.listFetchFailed');
+				if (error.response?.status === 403) {
+					this.$router.push('/');
+				}
+			});
 	}
 
 	/**
@@ -329,6 +334,9 @@ export default class UserList extends Vue {
 							{user: user.username},
 						).toString()
 					);
+					if (user.id === this.$store.getters['user/getId']) {
+						this.$store.dispatch('user/updateInfo');
+					}
 				});
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username}));
