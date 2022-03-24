@@ -166,8 +166,12 @@ class UserController extends BaseController {
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
 			if ($email !== null && $email !== '') {
-				$this->manager->checkEmailUniqueness($email, $user->getId());
-				$sendVerification = true;
+				if ($this->manager->checkEmailUniqueness($email, $user->getId())) {
+					throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
+				}
+				if ($email !== $user->getEmail()) {
+					$sendVerification = true;
+				}
 			}
 			try {
 				$user->setEmail($email);

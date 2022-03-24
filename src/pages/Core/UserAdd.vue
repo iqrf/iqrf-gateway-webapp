@@ -197,7 +197,7 @@ export default class UserAdd extends Vue {
 		let roles: Array<IOption> = [];
 		for (let item of Object.keys(UserRole)) {
 			const itemIdx = Object.keys(UserRole).indexOf(item);
-			if (itemIdx > roleIdx) {
+			if (itemIdx >= roleIdx) {
 				roles.push({
 					value: UserRole[item],
 					label: this.$t('core.user.roles.' + UserRole[item]),
