@@ -335,7 +335,9 @@ class UsersController extends BaseController {
 				if ($this->manager->checkEmailUniqueness($email, $id)) {
 					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
 				}
-				$sendVerification = true;
+				if ($email !== $user->getEmail()) {
+					$sendVerification = true;
+				}
 			}
 			try {
 				$user->setEmail($email);
