@@ -29,7 +29,11 @@ limitations under the License.
 							</tr>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.hwpid') }}</th>
-								<td>{{ peripheralData.hwpId }}</td>
+								<td>{{ peripheralData.hwpId }} ({{ peripheralData.hwpId.toString(16).padStart(4, '0') }})</td>
+							</tr>
+							<tr>
+								<th>{{ $t('iqrfnet.enumeration.hwpidVer') }}</th>
+								<td>{{ peripheralData.hwpIdVer }}</td>
 							</tr>
 							<tr v-if='response.manufacturer !== ""'>
 								<th>{{ $t('iqrfnet.enumeration.manufacturer') }}</th>

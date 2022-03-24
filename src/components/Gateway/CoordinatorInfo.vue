@@ -29,6 +29,10 @@ limitations under the License.
 			{{ osInfo.osVersion }} ({{ osInfo.osBuild }})<br>
 			<strong>{{ $t('gateway.info.tr.dpa') }}: </strong>
 			{{ enumeration.dpaVer }}<br>
+			<strong>{{ $t('gateway.info.tr.hwpid') }}: </strong>
+			{{ enumeration.hwpId }} ({{ enumeration.hwpId.toString(16).padStart(4, '0') }})<br>
+			<strong>{{ $t('gateway.info.tr.hwpidVersion') }}: </strong>
+			{{ enumeration.hwpIdVer }}<br>
 			<span v-if='enumeration.flags.rfMode'>
 				<strong>{{ $t('gateway.info.tr.rfMode') }}</strong>
 				{{ enumeration.flags.rfMode }}
@@ -73,14 +77,14 @@ export default class CoordinatorInfo extends Vue {
 	];
 
 	/**
-	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
-	 */
-	private enumeration: PeripheralEnumeration|null = null;
-
-	/**
 	 * @var {boolean} hasData Indicates whether data has been fetched successfully
 	 */
 	private hasData = false;
+
+	/**
+	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
+	 */
+	private enumeration: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -138,7 +142,7 @@ export default class CoordinatorInfo extends Vue {
 					}
 				}
 			}
-			
+
 		});
 		if (this.$store.getters.isSocketConnected) {
 			this.enumerate();

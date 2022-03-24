@@ -1330,6 +1330,8 @@
 				"moduleId": "MID",
 				"os": "OS",
 				"dpa": "DPA",
+				"hwpid": "HWPID",
+				"hwpidVersion": "HWPID ver.",
 				"rfMode": "RF mode",
 				"networkType": "Network type",
 				"voltage": "Supply voltage"
@@ -1484,6 +1486,7 @@
 			"deviceInfo": "Device info",
 			"deviceAddr": "Device address",
 			"hwpid": "HWPID",
+			"hwpidVer": "HWPID version",
 			"manufacturer": "Manufacturer",
 			"product": "Product name",
 			"picture": "Product picture",
@@ -1661,6 +1664,7 @@
 					"unbonded": "Unbonded device"
 				},
 				"messages": {
+					"clickEnumerate": "Click device icon to enumerate device.",
 					"empty": "No response from IQRF Network",
 					"getBonded": "Retrieving list of bonded devices",
 					"getDiscovered": "Retrieving list of discovered devices",
