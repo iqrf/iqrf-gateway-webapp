@@ -1,0 +1,65 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json",
+	"title": "Controller pin configuration",
+	"description": "IQRF Gateway Controller pin configuration for specific boards",
+	"type": "object",
+	"required": [
+		"name",
+		"greenLed",
+		"redLed",
+		"button"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "Config ID",
+			"description": "Pin configuration database ID",
+			"type": "integer",
+			"example": 1
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"title": "Config name",
+			"description": "Pin configuration name",
+			"type": "string",
+			"example": "IQD-GW-02"
+		},
+		"greenLed": {
+			"$id": "#/properties/greenLed",
+			"title": "LEDG pin",
+			"description": "Green LED pin number",
+			"type": "integer",
+			"example": 0
+		},
+		"redLed": {
+			"$id": "#/properties/redLed",
+			"title": "LEDR pin",
+			"description": "Red LED pin number",
+			"type": "integer",
+			"example": 1
+		},
+		"button": {
+			"$id": "#/properties/button",
+			"title": "Button pin",
+			"description": "Controller API/management button pin number",
+			"type": "integer",
+			"example": 2
+		},
+		"sck": {
+			"$id": "#/properties/sck",
+			"title": "Clock pin",
+			"description": "I2C clock pin number",
+			"type": "integer",
+			"example": 11
+		},
+		"sda": {
+			"$id": "#/properties/sda",
+			"title": "Data pin",
+			"description": "I2C data pin number",
+			"type": "integer",
+			"example": 12
+		}
+	}
+}

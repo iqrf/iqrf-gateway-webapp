@@ -20,7 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\ConfigModule\Exceptions\ControllerPinConfigNotFoundException;
 use App\CoreModule\Models\JsonFileManager;
+use App\Models\Database\Entities\ControllerPinConfiguration;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
+use stdClass;
 
 /**
  * IQRF Gateway Controller configuration manager
@@ -28,7 +33,17 @@ use App\CoreModule\Models\JsonFileManager;
 class ControllerConfigManager {
 
 	/**
-	 * @var JsonFileManager $fileManager JSON file manager
+	 * @var EntityManager Entity manager
+	 */
+	private $entityManager;
+
+	/**
+	 * @var ControllerPinConfigurationRepository Controller pins repository
+	 */
+	private $repository;
+
+	/**
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
@@ -40,9 +55,12 @@ class ControllerConfigManager {
 	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(JsonFileManager $fileManager, EntityManager $entityManager) {
 		$this->fileManager = $fileManager;
+		$this->entityManager = $entityManager;
+		$this->repository = $this->entityManager->getRepository(ControllerPinConfiguration::class);
 	}
 
 	/**
@@ -58,8 +76,82 @@ class ControllerConfigManager {
 	 * @param array<string, array<string, array<string, array<string, bool|int>|bool|int>|bool|int|string>> $newConfig Controller configuration
 	 */
 	public function saveConfig(array $newConfig): void {
-		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME);
-		$this->fileManager->write(self::FILE_NAME, array_merge($oldConfig, $newConfig));
+		$this->fileManager->write(self::FILE_NAME, $newConfig);
+	}
+
+	/**
+	 * Returns list of Controller pin configuration profiles
+	 * @return array<int, ControllerPinConfiguration> List of Controller pin configuration profiles
+	 */
+	public function listPinConfigs(): array {
+		return $this->repository->findAll();
+	}
+
+	/**
+	 * Returns a Controller pin configuration profile
+	 * @param int $id Controller pin configuration profile ID
+	 * @return ControllerPinConfiguration DB entity
+	 */
+	public function getPinConfig(int $id): ControllerPinConfiguration {
+		return $this->findPinConfig($id);
+	}
+
+	/**
+	 * Adds a new Controller pin configuration profile
+	 * @param stdClass $json Configuration json object
+	 * @return ControllerPinConfiguration New DB entity
+	 */
+	public function addPinConfig(stdClass $json): ControllerPinConfiguration {
+		$profile = new ControllerPinConfiguration($json->name, $json->greenLed, $json->redLed, $json->button);
+		if (property_exists($json, 'sck')) {
+			$profile->setSckPin($json->sck);
+		}
+		if (property_exists($json, 'sda')) {
+			$profile->setSdaPin($json->sda);
+		}
+		$this->entityManager->persist($profile);
+		$this->entityManager->flush();
+		return $profile;
+	}
+
+	/**
+	 * Edits a Controller pin configuration profile
+	 * @param int $id Controller pin configuration profile ID
+	 * @param stdClass $json Configuration json object
+	 */
+	public function editPinConfig(int $id, stdClass $json): void {
+		$profile = $this->findPinConfig($id);
+		$profile->setName($json->name);
+		$profile->setGreenLedPin($json->greenLed);
+		$profile->setRedLedPin($json->redLed);
+		$profile->setButtonPin($json->button);
+		$profile->setSckPin($json->sck ?? null);
+		$profile->setSdaPin($json->sda ?? null);
+		$this->entityManager->persist($profile);
+		$this->entityManager->flush();
+	}
+
+	/**
+	 * Removes Controller pin configuration profile
+	 * @param int $id Controller pin configuration profile ID
+	 */
+	public function removePinConfig(int $id): void {
+		$profile = $this->findPinConfig($id);
+		$this->entityManager->remove($profile);
+		$this->entityManager->flush();
+	}
+
+	/**
+	 * Finds Controller pin configuration profile in database
+	 * @param int $id Controller pin configuration profile ID
+	 * @return ControllerPinConfiguration DB entity
+	 */
+	private function findPinConfig(int $id): ControllerPinConfiguration {
+		$profile = $this->repository->find($id);
+		if ($profile === null) {
+			throw new ControllerPinConfigNotFoundException('Controller pin configuration profile not found');
+		}
+		return $profile;
 	}
 
 }

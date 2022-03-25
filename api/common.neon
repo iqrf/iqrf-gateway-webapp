@@ -78,6 +78,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
 		ControllerConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json
+		ControllerPinConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json
 		DaemonComponent:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json
 		DaemonComponentDetail:

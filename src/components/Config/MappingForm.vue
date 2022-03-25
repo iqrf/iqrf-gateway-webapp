@@ -139,6 +139,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
 
 import MappingService from '../../services/MappingService';
@@ -146,7 +147,6 @@ import MappingService from '../../services/MappingService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMapping} from '../../interfaces/mappings';
 import {IOption} from '../../interfaces/coreui';
-import { extendedErrorToast } from '../../helpers/errorToast';
 
 @Component({
 	components: {
