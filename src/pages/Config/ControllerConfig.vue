@@ -19,286 +19,432 @@ limitations under the License.
 		<h1>{{ $t('config.controller.title') }}</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
-					<CForm @submit.prevent='processSubmit'>
-						<CRow>
-							<CCol md='6'>
-								<h3>{{ $t("config.controller.form.wsServers.title") }}</h3>
-								<ValidationProvider
-									v-slot='{ errors, touched, valid }'
-									rules='required|ws_addr'
-									:custom-messages='{
-										required: "config.controller.errors.missing.ws_api",
-										ws_addr: "config.controller.errors.invalid.ws_format"
-									}'
-								>
-									<CInput
-										v-model='config.wsServers.api'
-										:label='$t("config.controller.form.wsServers.api")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm @submit.prevent='save'>
+						<div>
+							<h3>{{ $t("config.controller.form.wsServers.title") }}</h3>
+							<CRow>
+								<CCol md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|ws_addr'
+										:custom-messages='{
+											required: "config.controller.errors.missing.ws_api",
+											ws_addr: "config.controller.errors.invalid.ws_format"
+										}'
+									>
+										<CInput
+											v-model='config.wsServers.api'
+											:label='$t("config.controller.form.wsServers.api")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+								<CCol md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required|ws_addr'
+										:custom-messages='{
+											required: "config.controller.errors.missing.ws_monitor",
+											ws_addr: "config.controller.errors.invalid.ws_format"
+										}'
+									>
+										<CInput
+											v-model='config.wsServers.monitor'
+											:label='$t("config.controller.form.wsServers.monitor")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+							</CRow>
+						</div><hr>
+						<div>
+							<h3>{{ $t("config.controller.form.logger.title") }}</h3>
+							<CRow>
+								<CCol md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{required: "config.controller.errors.missing.l_file"}'
+									>
+										<CInput
+											v-model='config.logger.filePath'
+											:label='$t("config.controller.form.logger.filePath")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										/>
+									</ValidationProvider>
+								</CCol>
+								<CCol md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: "config.controller.errors.missing.l_severity",
+										}'
+									>
+										<CSelect
+											:value.sync='config.logger.severity'
+											:options='severityOptions'
+											:label='$t("config.controller.form.logger.severity")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+											:placeholder='$t("config.controller.errors.missing.l_severity")'
+										/>
+									</ValidationProvider>
+								</CCol>
+							</CRow>
+							<label>
+								<b>{{ $t('config.controller.form.logger.sink') }}</b>
+							</label>
+							<CRow>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.logger.sinks.file'
+										:label='$t("config.controller.form.logger.sinks.file")'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{ errors, touched, valid }'
-									rules='required|ws_addr'
-									:custom-messages='{
-										required: "config.controller.errors.missing.ws_monitor",
-										ws_addr: "config.controller.errors.invalid.ws_format"
-									}'
-								>
-									<CInput
-										v-model='config.wsServers.monitor'
-										:label='$t("config.controller.form.wsServers.monitor")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+								</CCol>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.logger.sinks.syslog'
+										:label='$t("config.controller.form.logger.sinks.syslog")'
 									/>
-								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
-								<h3>{{ $t("config.controller.form.logger.title") }}</h3>
+								</CCol>
+							</CRow>
+						</div><hr>
+						<div>
+							<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
+							<CRow>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.coordinator'
+										:label='$t("forms.fields.coordinator")'
+									/>
+								</CCol>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.daemon'
+										:label='$t("config.controller.form.factoryReset.daemon")'
+									/>
+								</CCol>
+								<CCol v-if='config.factoryReset.iqaros !== undefined' md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.iqaros'
+										:label='$t("config.controller.form.factoryReset.iqaros")'
+									/>
+								</CCol>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.network'
+										:label='$t("config.controller.form.factoryReset.network")'
+									/>
+								</CCol>
+								<CCol md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.webapp'
+										:label='$t("config.controller.form.factoryReset.webapp")'
+									/>
+								</CCol>
+							</CRow>
+						</div><hr>
+						<div>
+							<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
+							<CSelect
+								:value.sync='config.resetButton.api'
+								:options='apiCallOptions'
+								:label='$t("config.controller.form.resetButton.api")'
+							/>
+							<div v-if='config.resetButton.api === "discovery"'>
+								<h3>{{ $t("config.controller.form.daemonApi.discovery.title") }}</h3>
 								<CRow>
 									<CCol md='6'>
 										<ValidationProvider
-											v-slot='{ errors, touched, valid }'
-											rules='required'
-											:custom-messages='{required: "config.controller.errors.missing.l_file"}'
-										>
-											<CInput
-												v-model='config.logger.filePath'
-												:label='$t("config.controller.form.logger.filePath")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
-											/>
-										</ValidationProvider>
-										<ValidationProvider
-											v-slot='{ valid, touched, errors }'
-											rules='required'
+											v-slot='{errors, touched, valid}'
+											rules='integer|required|between:0,239'
 											:custom-messages='{
-												required: "config.controller.errors.missing.l_severity",
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.discovery.errors.maxAddr",
+												between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 											}'
 										>
-											<CSelect
-												:value.sync='config.logger.severity'
-												:options='severityOptions'
-												:label='$t("config.controller.form.logger.severity")'
+											<CInput
+												v-model.number='config.daemonApi.discovery.maxAddr'
+												type='number'
+												min='0'
+												max='239'
+												:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='$t(errors[0])'
-												:placeholder='$t("config.controller.errors.missing.l_severity")'
 											/>
 										</ValidationProvider>
 									</CCol>
 									<CCol md='6'>
-										<label>
-											<b>{{ $t('config.controller.form.logger.sink') }}</b>
-										</label>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='integer|required|between:0,7'
+											:custom-messages='{
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.discovery.errors.txPower",
+												between: "iqrfnet.networkManager.discovery.errors.txPower"
+											}'
+										>
+											<CInput
+												v-model.number='config.daemonApi.discovery.txPower'
+												type='number'
+												min='0'
+												max='7'
+												:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+									</CCol>
+								</CRow>
+								<CInputCheckbox
+									:checked.sync='config.daemonApi.discovery.returnVerbose'
+									:label='$t("forms.fields.verbose")'
+								/>
+							</div>
+							<div v-if='config.resetButton.api === "autoNetwork"'>
+								<h3>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</h3>
+								<CRow>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='required|integer|between:0,3'
+											:custom-messages='{
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
+												between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
+											}'
+										>
+											<CInput
+												v-model.number='config.daemonApi.autoNetwork.actionRetries'
+												type='number'
+												min='0'
+												max='3'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+									</CCol>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='integer|required|between:0,7'
+											:custom-messages='{
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.messages.discovery.txPower",
+												between: "iqrfnet.networkManager.messages.discovery.txPower"
+											}'
+										>
+											<CInput
+												v-model.number='config.daemonApi.autoNetwork.discoveryTxPower'
+												type='number'
+												min='0'
+												max='7'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+									</CCol>
+								</CRow>
+								<CRow>
+									<CCol md='6'>
 										<CInputCheckbox
-											:checked.sync='config.logger.sinks.file'
-											:label='$t("config.controller.form.logger.sinks.file")'
+											:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
 										/>
+									</CCol>
+									<CCol md='6'>
 										<CInputCheckbox
-											:checked.sync='config.logger.sinks.syslog'
-											:label='$t("config.controller.form.logger.sinks.syslog")'
+											:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 										/>
 									</CCol>
 								</CRow>
-							</CCol>
-						</CRow><hr>
-						<CRow>
-							<CCol md='6'>
-								<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
-								<CSelect
-									:value.sync='config.resetButton.api'
-									:options='apiCallOptions'
-									:label='$t("config.controller.form.resetButton.api")'
-								/>
-								<div v-if='config.resetButton.api === "autoNetwork"'>
-									<h3>
-										{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}
-									</h3>
+								<h4>
+									{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
+								</h4>
+								<CRow>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='integer|required|between:1,127'
+											:custom-messages='{
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
+												between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
+											}'
+										>
+											<CInput
+												v-model.number='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
+												type='number'
+												min='1'
+												max='127'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+									</CCol>
+									<CCol md='6'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='integer|required|between:1,127'
+											:custom-messages='{
+												integer: "forms.errors.integer",
+												required: "iqrfnet.networkManager.messages.autoNetwork.waves",
+												between: "iqrfnet.networkManager.messages.autoNetwork.waves"
+											}'
+										>
+											<CInput
+												v-model.number='config.daemonApi.autoNetwork.stopConditions.waves'
+												type='number'
+												min='1'
+												max='127'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
+												:is-valid='touched ? valid : null'
+												:invalid-feedback='$t(errors[0])'
+											/>
+										</ValidationProvider>
+									</CCol>
+								</CRow>
+								<CRow>
+									<CCol md='6'>
+										<CInputCheckbox
+											:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
+										/>
+									</CCol>
+									<CCol md='6'>
+										<CInputCheckbox
+											:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
+											:label='$t("forms.fields.verbose")'
+										/>
+									</CCol>
+								</CRow>
+							</div>
+						</div><hr>
+						<div>
+							<h3>{{ $t("config.controller.pins.title") }}</h3>
+							<CRow>
+								<CCol md='4'>
 									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='required|integer|between:0,3'
+										v-slot='{errors, touched, valid}'
+										rules='integer|required'
 										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
-											between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
+											integer: "config.controller.pins.errors.greenLed",
+											required: "config.controller.pins.errors.greenLed",
 										}'
 									>
 										<CInput
-											v-model.number='config.daemonApi.autoNetwork.actionRetries'
+											v-model.number='config.statusLed.greenLed'
 											type='number'
-											min='0'
-											max='3'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
+											:label='$t("config.controller.pins.form.greenLed")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
-										:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
-										:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
-									/>
+								</CCol>
+								<CCol md='4'>
 									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='integer|required|between:0,7'
+										v-slot='{errors, touched, valid}'
+										rules='integer|required'
 										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.messages.discovery.txPower",
-											between: "iqrfnet.networkManager.messages.discovery.txPower"
+											integer: "config.controller.pins.errors.redLed",
+											required: "config.controller.pins.errors.redLed",
 										}'
 									>
 										<CInput
-											v-model.number='config.daemonApi.autoNetwork.discoveryTxPower'
+											v-model.number='config.statusLed.redLed'
 											type='number'
-											min='0'
-											max='7'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
+											:label='$t("config.controller.pins.form.redLed")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
-										:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
-										:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
-									/><hr>
-									<h4>
-										{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
-									</h4>
-									<CInputCheckbox
-										:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
-										:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
-									/>
+								</CCol>
+								<CCol md='4'>
 									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='integer|required|between:1,127'
+										v-slot='{errors, touched, valid}'
+										rules='integer|required'
 										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
-											between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
+											integer: "config.controller.pins.errors.button",
+											required: "config.controller.pins.errors.button",
 										}'
 									>
 										<CInput
-											v-model.number='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
+											v-model.number='config.resetButton.button'
 											type='number'
-											min='1'
-											max='127'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+											:label='$t("config.controller.pins.form.button")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
+								</CCol>
+							</CRow>
+							<CRow v-if='showI2cPins'>
+								<CCol md='4'>
 									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='integer|required|between:1,127'
+										v-slot='{errors, touched, valid}'
+										rules='integer|required'
 										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.messages.autoNetwork.waves",
-											between: "iqrfnet.networkManager.messages.autoNetwork.waves"
+											integer: "config.controller.pins.errors.sck",
+											required: "config.controller.pins.errors.sck",
 										}'
 									>
 										<CInput
-											v-model.number='config.daemonApi.autoNetwork.stopConditions.waves'
+											v-model.number='config.powerOff.sck'
 											type='number'
-											min='1'
-											max='127'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
-										/>
-									</ValidationProvider><hr>
-									<CInputCheckbox
-										:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
-										:label='$t("forms.fields.verbose")'
-									/>
-								</div>
-								<div v-else-if='config.resetButton.api === "discovery"'>
-									<h3>
-										{{ $t("config.controller.form.daemonApi.discovery.title") }}
-									</h3>
-									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='integer|required|between:0,239'
-										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.discovery.errors.maxAddr",
-											between: "iqrfnet.networkManager.discovery.errors.maxAddr"
-										}'
-									>
-										<CInput
-											v-model.number='config.daemonApi.discovery.maxAddr'
-											type='number'
-											min='0'
-											max='239'
-											:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
+											:label='$t("config.controller.pins.form.sck")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
+								</CCol>
+								<CCol md='4'>
 									<ValidationProvider
-										v-slot='{ errors, touched, valid }'
-										rules='integer|required|between:0,7'
+										v-slot='{errors, touched, valid}'
+										rules='integer|required'
 										:custom-messages='{
-											integer: "forms.errors.integer",
-											required: "iqrfnet.networkManager.discovery.errors.txPower",
-											between: "iqrfnet.networkManager.discovery.errors.txPower"
+											integer: "config.controller.pins.errors.sda",
+											required: "config.controller.pins.errors.sda",
 										}'
 									>
 										<CInput
-											v-model.number='config.daemonApi.discovery.txPower'
+											v-model.number='config.powerOff.sda'
 											type='number'
-											min='0'
-											max='7'
-											:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
+											:label='$t("config.controller.pins.form.sda")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-									<CInputCheckbox
-										:checked.sync='config.daemonApi.discovery.returnVerbose'
-										:label='$t("forms.fields.verbose")'
-									/>
-								</div>
-							</CCol>
-							<CCol md='6'>
-								<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
-								<CInputCheckbox
-									:checked.sync='config.factoryReset.coordinator'
-									:label='$t("forms.fields.coordinator")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.factoryReset.daemon'
-									:label='$t("config.controller.form.factoryReset.daemon")'
-								/>
-								<CInputCheckbox
-									v-if='config.factoryReset.iqaros !== undefined'
-									:checked.sync='config.factoryReset.iqaros'
-									:label='$t("config.controller.form.factoryReset.iqaros")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.factoryReset.network'
-									:label='$t("config.controller.form.factoryReset.network")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.factoryReset.webapp'
-									:label='$t("config.controller.form.factoryReset.webapp")'
-								/>
-							</CCol>
-						</CRow>
+								</CCol>
+							</CRow>
+						</div>
 						<CButton color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.save') }}
 						</CButton>
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
+			<CCardFooter>
+				<ControllerPinConfigs @update-pin-config='updatePinConfig' />
+			</CCardFooter>
 		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import ControllerPinConfigs from '../../components/Config/ControllerPinConfigs.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {controllerErrorToast, extendedErrorToast} from '../../helpers/errorToast';
@@ -306,7 +452,7 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 import ServiceService from '../../services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IController} from '../../interfaces/controller';
+import {IController, IControllerPinConfig} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 
@@ -315,11 +461,13 @@ import {NavigationGuardNext, Route} from 'vue-router/types/router';
 		CButton,
 		CCard,
 		CCardBody,
+		CCardFooter,
 		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		CSelect,
+		ControllerPinConfigs,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -392,9 +540,60 @@ export default class ControllerConfig extends Vue {
 	];
 
 	/**
-	 * @var {IController|null} config IQRF Gateway Controller configuration
+	 * @var {IController} config IQRF Gateway Controller configuration
 	 */
-	private config: IController|null = null;
+	private config: IController = {
+		daemonApi: {
+			autoNetwork: {
+				actionRetries: 1,
+				discoveryTxPower: 6,
+				discoveryBeforeStart: true,
+				skipDiscoveryEachWave: false,
+				stopConditions: {
+					abortOnTooManyNodesFound: false,
+					emptyWaves: 2,
+					waves: 2
+				},
+				returnVerbose: false,
+			},
+			discovery: {
+				maxAddr: 0,
+				txPower: 6,
+				returnVerbose: false,
+			},
+		},
+		factoryReset: {
+			coordinator: false,
+			daemon: false,
+			network: false,
+			webapp: false,
+		},
+		logger: {
+			filePath: '/var/log/iqrf-gateway-controller.log',
+			severity: 'info',
+			sinks: {
+				file: true,
+				syslog: false,
+			},
+		},
+		resetButton: {
+			api: '',
+			button: 2,
+		},
+		statusLed: {
+			greenLed: 0,
+			redLed: 0,
+		},
+		wsServers: {
+			api: 'ws://localhost:1338',
+			monitor: 'ws://localhost:1438',
+		},
+	};
+
+	/**
+	 * @var {boolean} showI2cPins Controls whether I2C pin inputs are shown
+	 */
+	private showI2cPins = false;
 
 	/**
 	 * Vue lifecycle hook created
@@ -428,6 +627,9 @@ export default class ControllerConfig extends Vue {
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.config = response.data;
+				if (response.data.powerOff !== undefined) {
+					this.showI2cPins = true;
+				}
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.controller.messages.fetchFailed');
@@ -438,9 +640,13 @@ export default class ControllerConfig extends Vue {
 	/**
 	 * Updates the configuration of IQRF Gateway Controller
 	 */
-	private processSubmit(): void {
+	private save(): void {
+		let config = JSON.parse(JSON.stringify(this.config));
+		if (!this.showI2cPins) {
+			delete config.powerOff;
+		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.saveConfig(this.name, this.config)
+		FeatureConfigService.saveConfig(this.name, config)
 			.then(() => {
 				this.restartController();
 			})
@@ -459,6 +665,33 @@ export default class ControllerConfig extends Vue {
 				);
 			})
 			.catch((error: AxiosError) => controllerErrorToast(error, 'service.messages.restartFailed'));
+	}
+
+	/**
+	 * Updates Controller pin configuration
+	 * @param {IControllerPinConfig} profile Controller pin configuration profile
+	 */
+	private updatePinConfig(profile: IControllerPinConfig): void {
+		this.config.statusLed = {
+			greenLed: profile.greenLed,
+			redLed: profile.redLed,
+		};
+		this.config.resetButton.button = profile.button;
+		if (profile.sck && profile.sda) {
+			if (this.config.powerOff === undefined) {
+				this.config.powerOff = {
+					sck: profile.sck,
+					sda: profile.sda,
+				};
+			} else {
+				this.config.powerOff.sck = profile.sck;
+				this.config.powerOff.sda = profile.sda;
+			}
+			this.showI2cPins = true;
+		} else {
+			this.showI2cPins = false;
+			delete this.config.powerOff;
+		}
 	}
 
 }
