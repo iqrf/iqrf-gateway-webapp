@@ -71,6 +71,11 @@ limitations under the License.
 				<table class='table table-striped device-info card-margin-bottom'>
 					<tbody>
 						<tr>
+							<td colspan='11' class='text-center'>
+								{{ $t('iqrfnet.networkManager.devicesInfo.messages.clickEnumerate') }}
+							</td>
+						</tr>
+						<tr>
 							<th />
 							<th v-for='num of Array(10).keys()' :key='num'>
 								{{ num }}
