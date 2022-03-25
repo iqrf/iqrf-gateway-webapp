@@ -18,6 +18,7 @@ extensions:
 	nettrine.cache: Nettrine\Cache\DI\CacheExtension
 	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
 	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension
+	nettrine.fixtures: Nettrine\Fixtures\DI\FixturesExtension
 	nettrine.orm: Nettrine\ORM\DI\OrmExtension
 	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
 	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension
@@ -39,6 +40,10 @@ nettrine.dbal:
 				commented: false
 	debug:
 		panel: %debugMode%
+
+nettrine.fixtures:
+	paths:
+		- %appDir%/../db/Fixtures
 
 nettrine.orm:
 	entityManagerDecoratorClass: App\Models\Database\EntityManager
