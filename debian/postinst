@@ -60,8 +60,6 @@ nginx_virtualhost_install() {
 	fi
 }
 
-
-
 openssl_create_ca() {
 	DAEMON_CERT_DIR=/etc/iqrf-gateway-daemon/certs/core
 	WEBAPP_CERT_DIR=/etc/iqrf-gateway-webapp/certs
@@ -87,6 +85,10 @@ webapp_database_migration() {
 	fi
 	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager database:create > /dev/null'
 	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager migrations:migrate --no-interaction > /dev/null'
+}
+
+webapp_database_fixtures() {
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager doctrine:fixtures:load --append --no-interaction > /dev/null'
 }
 
 webapp_iqrf_os_patches_import() {
@@ -124,6 +126,7 @@ if [ "$1" = "configure" ]; then
 	webapp_remove_old_dirs
 	webapp_repair_premissions
 	webapp_database_migration
+	webapp_database_fixtures
 	webapp_iqrf_os_patches_import
 fi
 
