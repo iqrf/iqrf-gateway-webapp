@@ -39,14 +39,12 @@ limitations under the License.
 					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
 				</CDropdownItem>
 				<CDropdownItem
-					v-if='!mapping.name.startsWith("IQD-GW-")'
-					@click='invokeMappingForm(mapping.id)'
+					@click='invokeMappingForm(mapping)'
 				>
 					<CIcon :content='icons.edit' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
-					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='showRemoveModal(i)'
 				>
 					<CIcon :content='icons.remove' />
@@ -231,10 +229,10 @@ export default class InterfaceMappings extends Vue {
 
 	/**
 	 * Invokes mapping add or edit form
-	 * @param {number|null} mappingId Mapping ID
+	 * @param {IMapping|null} mapping Mapping
 	 */
-	private invokeMappingForm(mappingId: number|null = null): void {
-		(this.$refs.mappingModal as MappingForm).showModal(mappingId);
+	private invokeMappingForm(mapping: IMapping|null = null): void {
+		(this.$refs.mappingModal as MappingForm).activateModal(mapping);
 	}
 
 	/**

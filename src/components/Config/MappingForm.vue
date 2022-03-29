@@ -17,9 +17,11 @@ limitations under the License.
 <template>
 	<ValidationObserver v-slot='{invalid}'>
 		<CModal
-			:show.sync='modalShown'
-			:color='mappingId === null ? "success": "primary"'
+			:show.sync='show'
+			:color='modalColor'
 			size='lg'
+			:close-on-backdrop='false'
+			:fade='false'
 		>
 			<template #header>
 				<h5 class='modal-title'>
@@ -27,12 +29,6 @@ limitations under the License.
 				</h5>
 			</template>
 			<CForm>
-				<CSelect
-					:value.sync='type'
-					:label='$t("config.daemon.interfaces.interfaceMapping.form.type")'
-					:options='typeOptions'
-					:placeholder='$t("config.daemon.interfaces.interfaceMapping.errors.typeSelect")'
-				/>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
@@ -41,12 +37,18 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='name'
+						v-model='mapping.name'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.name")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
 				</ValidationProvider>
+				<CSelect
+					:value.sync='mapping.type'
+					:label='$t("config.daemon.interfaces.interfaceMapping.form.type")'
+					:options='typeOptions'
+					:placeholder='$t("config.daemon.interfaces.interfaceMapping.errors.typeSelect")'
+				/>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
@@ -55,7 +57,7 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='deviceName'
+						v-model='mapping.IqrfInterface'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.interface")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
@@ -65,12 +67,12 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.errors.integer",
-						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin"
+						integer: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
 					}'
 				>
 					<CInput
-						v-model.number='powerPin'
+						v-model.number='mapping.powerEnableGpioPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 						:is-valid='touched ? valid : null'
@@ -81,12 +83,12 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.errors.integer",
-						required: "config.daemon.interfaces.interfaceMapping.errors.busPin"
+						integer: "config.daemon.interfaces.interfaceMapping.errors.busPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
 					}'
 				>
 					<CInput
-						v-model.number='busPin'
+						v-model.number='mapping.busEnableGpioPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 						:is-valid='touched ? valid : null'
@@ -97,20 +99,84 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.errors.integer",
-						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin"
+						integer: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
 					}'
 				>
 					<CInput
-						v-model.number='pgmPin'
+						v-model.number='mapping.pgmSwitchGpioPin'
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
 				</ValidationProvider>
+				<CInputCheckbox
+					:checked.sync='useAdditionalPins'
+					:label='$t("config.daemon.interfaces.interfaceMapping.form.useAdditionalPins")'
+				/>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					:rules='{
+						integer: useAdditionalPins,
+						required: useAdditionalPins,
+					}'
+					:custom-messages='{
+						integer: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
+					}'
+				>
+					<CInput
+						v-model.number='mapping.i2cEnableGpioPin'
+						type='number'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+						:disabled='!useAdditionalPins'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					:rules='{
+						integer: useAdditionalPins,
+						required: useAdditionalPins,
+					}'
+					:custom-messages='{
+						integer: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
+					}'
+				>
+					<CInput
+						v-model.number='mapping.spiEnableGpioPin'
+						type='number'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+						:disabled='!useAdditionalPins'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					:rules='{
+						integer: useAdditionalPins,
+						required: useAdditionalPins,
+					}'
+					:custom-messages='{
+						integer: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
+						required: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
+					}'
+				>
+					<CInput
+						v-model.number='mapping.uartEnableGpioPin'
+						type='number'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+						:disabled='!useAdditionalPins'
+					/>
+				</ValidationProvider>
 				<CSelect
-					v-if='type === "uart"'
+					v-if='mapping.type === "uart"'
 					:value.sync='baudRate'
 					:options='baudRateOptions'
 					:label='$t("config.daemon.interfaces.interfaceMapping.form.baudRate")'
@@ -118,14 +184,14 @@ limitations under the License.
 			</CForm>
 			<template #footer>
 				<CButton
-					color='success'
+					:color='modalColor'
 					:disabled='invalid'
 					@click='saveMapping'
 				>
 					{{ $t('forms.save') }}
 				</CButton> <CButton
 					color='secondary'
-					@click='hideModal'
+					@click='deactivateModal'
 				>
 					{{ $t('forms.cancel') }}
 				</CButton>
@@ -144,7 +210,7 @@ import {integer, required} from 'vee-validate/dist/rules';
 
 import MappingService from '../../services/MappingService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {IMapping} from '../../interfaces/mappings';
 import {IOption} from '../../interfaces/coreui';
 
@@ -165,69 +231,35 @@ import {IOption} from '../../interfaces/coreui';
  */
 export default class MappingForm extends Vue {
 	/**
-	 * @var {number} baudRate Mapping UART baud rate
+	 * @var {boolean} show Controls whether modal mapping form is shown
 	 */
-	private baudRate = 57600;
+	private show = false;
 
 	/**
-	 * @var {number} busPin Mapping bus enable pin number
+	 * @var {number} id Mapping id
 	 */
-	private busPin = 0;
+	private id = -1;
 
 	/**
-	 * @var {string} deviceName Mapping device name
+	 * @var {IMapping} mapping Mapping
 	 */
-	private deviceName = '';
+	private mapping: IMapping = {
+		name: '',
+		type: 'spi',
+		IqrfInterface: '',
+		powerEnableGpioPin: 0,
+		pgmSwitchGpioPin: 0,
+		busEnableGpioPin: 0,
+		i2cEnableGpioPin: 0,
+		spiEnableGpioPin: 0,
+		uartEnableGpioPin: 0,
+		baudRate: 57600,
+	}
 
 	/**
-	 * @var {boolean} gatewayMapping Indicates that mapping is for IQRF Gateway
+	 * @var {boolean} useAdditionalPins Use additional pins
 	 */
-	private gatewayMapping = false;
-
-	/**
-	 * @var {number} i2cPin Mapping I2C interface enable pin number
-	 */
-	private i2cPin = 0;
-
-	/**
-	 * @var {number|null} mappingId Mapping ID
-	 */
-	private mappingId: number|null = null;
-
-	/**
-	 * @var {boolean} modalShown Controls whether modal mapping form is shown
-	 */
-	private modalShown = false;
-
-	/**
-	 * @var {string} name Mapping name
-	 */
-	private name = '';
-
-	/**
-	 * @var {number} pgmPin Mapping programming mode switch pin number
-	 */
-	private pgmPin = 0;
-
-	/**
-	 * @var {number} powerPin Mapping power enable pin number
-	 */
-	private powerPin = 0;
-
-	/**
-	 * @var {number} spiPin Mapping SPI interface enable pin number
-	 */
-	private spiPin = 0;
-
-	/**
-	 * @var {string} type Mapping type
-	 */
-	private type = 'spi';
-
-	/**
-	 * @var {number} uartPin Mapping UART interface enable pin number
-	 */
-	private uartPin = 0;
+	private useAdditionalPins = false;
 
 	/**
 	 * @constant {Array<IOption>} typeOptions Array of CoreUI select options for mapping type
@@ -248,8 +280,15 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.mappingId === null ?
-			this.$t('config.daemon.interfaces.interfaceMapping.add').toString(): this.$t('config.daemon.interfaces.interfaceMapping.edit').toString() + ' ' + this.name;
+		return this.$t('config.daemon.interfaces.interfaceMapping.' + (this.mapping.id === -1 ? 'add' : 'edit')).toString();
+	}
+
+	/**
+	 * Computes modal color
+	 * @returns {string} Modal color
+	 */
+	get modalColor(): string {
+		return (this.mapping.id === -1 ? 'success' : 'primary');
 	}
 
 	/**
@@ -270,77 +309,26 @@ export default class MappingForm extends Vue {
 	}
 
 	/**
-	 * Retrieves mapping if mappingId is passeds
-	 */
-	private getMapping(): void {
-		if (this.mappingId === null) {
-			return;
-		}
-		MappingService.getMapping(this.mappingId)
-			.then((response: AxiosResponse) => {
-				const mapping: IMapping = response.data;
-				this.type = mapping.type;
-				this.name = mapping.name;
-				this.deviceName = mapping.IqrfInterface;
-				this.busPin = mapping.busEnableGpioPin;
-				this.pgmPin = mapping.pgmSwitchGpioPin;
-				this.powerPin = mapping.powerEnableGpioPin;
-				if (mapping.type === 'uart' && mapping.baudRate !== undefined) {
-					this.baudRate = mapping.baudRate;
-				}
-				if (mapping.i2cEnableGpioPin === undefined && mapping.spiEnableGpioPin === undefined && mapping.uartEnableGpioPin === undefined) {
-					return;
-				}
-				this.gatewayMapping = true;
-				if (mapping.i2cEnableGpioPin !== undefined) {
-					this.i2cPin = mapping.i2cEnableGpioPin;
-				}
-				if (mapping.spiEnableGpioPin !== undefined) {
-					this.spiPin = mapping.spiEnableGpioPin;
-				}
-				if (mapping.uartEnableGpioPin !== undefined) {
-					this.uartPin = mapping.uartEnableGpioPin;
-				}
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.getFailed', {id: (this.mappingId as number)});
-				this.hideModal();
-			});
-	}
-
-	/**
-	 * Creates a mapping object for REST API request
-	 * @returns {IMapping} Mapping object
-	 */
-	private buildMapping(): IMapping {
-		let mapping: IMapping = {
-			type: this.type,
-			name: this.name,
-			IqrfInterface: this.deviceName,
-			busEnableGpioPin: this.busPin,
-			pgmSwitchGpioPin: this.pgmPin,
-			powerEnableGpioPin: this.powerPin
-		};
-		if (this.type === 'uart') {
-			Object.assign(mapping, {baudRate: this.baudRate});
-		}
-		if (this.gatewayMapping) {
-			Object.assign(mapping, {i2cEnableGpioPin: this.i2cPin, spiEnableGpioPin: this.spiPin, uartEnableGpioPin: this.uartPin});
-		}
-		return mapping;
-	}
-
-	/**
 	 * Saves new or updates existing mapping
 	 */
 	private saveMapping(): void {
+		let mapping: IMapping = JSON.parse(JSON.stringify(this.mapping));
+		delete mapping.id;
+		if (!this.useAdditionalPins) {
+			delete mapping.i2cEnableGpioPin;
+			delete mapping.spiEnableGpioPin;
+			delete mapping.uartEnableGpioPin;
+		}
+		if (mapping.type !== 'uart') {
+			delete mapping.baudRate;
+		}
 		this.$store.commit('spinner/SHOW');
-		if (this.mappingId !== null) {
-			MappingService.editMapping(this.mappingId, this.buildMapping())
+		if (this.id !== -1) {
+			MappingService.editMapping(this.id, mapping)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			MappingService.addMapping(this.buildMapping())
+			MappingService.addMapping(mapping)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}
@@ -353,9 +341,9 @@ export default class MappingForm extends Vue {
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
-			this.$t('config.daemon.interfaces.interfaceMapping.messages.saveSuccess', {mapping: this.name}).toString()
+			this.$t('config.daemon.interfaces.interfaceMapping.messages.saveSuccess', {mapping: this.mapping.name}).toString()
 		);
-		this.hideModal();
+		this.deactivateModal();
 		this.$emit('update-mappings');
 	}
 
@@ -364,45 +352,43 @@ export default class MappingForm extends Vue {
 	 * @param {AxiosError} err Error response
 	 */
 	private handleFailure(err: AxiosError): void {
-		extendedErrorToast(err, 'config.daemon.interfaces.interfaceMapping.messages.saveFailed', {mapping: this.name});
+		extendedErrorToast(err, 'config.daemon.interfaces.interfaceMapping.messages.saveFailed', {mapping: this.mapping.name});
 	}
 
 	/**
-	 * Shows this modal form
-	 * @param {number|null} mappingId Mapping Id
+	 * Stores mapping and renders the modal window
 	 */
-	public showModal(mappingId: number|null): void {
-		if (mappingId !== null) {
-			this.mappingId = mappingId;
-			this.getMapping();
+	public activateModal(mapping: IMapping|null): void {
+		if (mapping !== null) {
+			this.mapping = mapping;
+			this.id = (mapping.id as number);
+			if (mapping.uartEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined && mapping.uartEnableGpioPin !== undefined) {
+				this.useAdditionalPins = true;
+			}
 		}
-		this.modalShown = true;
+		this.show = true;
 	}
 
 	/**
-	 * Hides this modal form
+	 * Clears mapping and closes the modal window
 	 */
-	private hideModal(): void {
-		this.modalShown = false;
-		this.clearFields();
+	private deactivateModal(): void {
+		this.show = false;
+		this.mapping = {
+			id: -1,
+			name: '',
+			type: '',
+			IqrfInterface: '',
+			powerEnableGpioPin: 0,
+			pgmSwitchGpioPin: 0,
+			busEnableGpioPin: 0,
+			i2cEnableGpioPin: 0,
+			spiEnableGpioPin: 0,
+			uartEnableGpioPin: 0,
+			baudRate: 57600,
+		};
+		this.useAdditionalPins = false;
 	}
 
-	/**
-	 * Resets fields to default values
-	 */
-	private clearFields(): void {
-		this.type = 'spi';
-		this.name = '';
-		this.deviceName = '';
-		this.busPin = 0;
-		this.pgmPin = 0;
-		this.powerPin = 0;
-		this.baudRate = 57600;
-		this.mappingId = null;
-		this.gatewayMapping = false;
-		this.i2cPin = 0;
-		this.spiPin = 0;
-		this.uartPin = 0;
-	}
 }
 </script>

@@ -397,23 +397,22 @@
 						"powerPin": "Power enable GPIO pin",
 						"busPin": "Bus enable GPIO pin",
 						"pgmPin": "Programming mode switch GPIO pin",
-						"gateway": "IQRF Gateway mapping",
+						"useAdditionalPins": "Use communication interface pins",
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
 						"uartPin": "UART interface enable GPIO pin *",
-						"gwOnly": "* IQRF Gateway only",
 						"baudRate": "UART baud rate"
 					},
 					"errors": {
 						"typeSelect": "Please select mapping type.",
 						"name": "Please enter mapping name.",
 						"interface": "Please enter device name.",
-						"busPin": "Please enter bus enable GPIO pin number.",
-						"pgmPin": "Please enter programming mode switch GPIO pin number.",
-						"powerPin": "Please enter power enable GPIO pin number.",
-						"i2cPin": "Please enter I2C interface enable GPIO pin number.",
-						"spiPin": "Please enter SPI interface enable GPIO pin number.",
-						"uartPin": "Please enter UART interface enable GPIO pin number."
+						"busPin": "Bus enable GPIO pin number should be an integer.",
+						"pgmPin": "Programming mode switch GPIO pin number should be an integer.",
+						"powerPin": "Power enable GPIO pin number should be an integer.",
+						"i2cPin": "IC2 interface enable GPIO pin number should be an integer.",
+						"spiPin": "SPI interface enable GPIO pin number should be an integer.",
+						"uartPin": "UART interface enable GPIO pin number should be an integer."
 					},
 					"messages": {
 						"getFailed": "Failed to retrieve mapping {id}: {error}.",
