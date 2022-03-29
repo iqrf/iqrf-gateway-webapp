@@ -237,7 +237,7 @@ export default class ControllerPinConfigForm extends Vue {
 		if (profile !== null) {
 			this.profile = profile;
 			this.id = (profile.id as number);
-			if (profile.sck && profile.sda) {
+			if (profile.sck !== undefined && profile.sda !== undefined) {
 				this.useI2c = true;
 			}
 		}

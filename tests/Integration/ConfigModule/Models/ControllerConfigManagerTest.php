@@ -30,8 +30,6 @@ use App\ConfigModule\Models\ControllerConfigManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\Models\Database\EntityManager;
-use Mockery;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -143,10 +141,8 @@ final class ControllerConfigManagerTest extends TestCase {
 		$commandManager = new CommandManager(false, $commandStack);
 		$fileManager = new JsonFileManager(self::CONF_DIR, $commandManager);
 		$fileManagerTemp = new JsonFileManager(self::TEMP_CONF_DIR, $commandManager);
-		$entityManager = Mockery::mock(EntityManager::class);
-		$entityManager->shouldReceive('getRepository');
-		$this->manager = new ControllerConfigManager($fileManager, $entityManager);
-		$this->managerTemp = new ControllerConfigManager($fileManagerTemp, $entityManager);
+		$this->manager = new ControllerConfigManager($fileManager);
+		$this->managerTemp = new ControllerConfigManager($fileManagerTemp);
 	}
 
 }
