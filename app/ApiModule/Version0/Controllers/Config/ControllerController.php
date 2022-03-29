@@ -34,6 +34,7 @@ use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Exceptions\ControllerPinConfigNotFoundException;
 use App\ConfigModule\Models\ControllerConfigManager;
+use App\ConfigModule\Models\ControllerPinConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -45,17 +46,24 @@ use Nette\Utils\JsonException;
 class ControllerController extends BaseConfigController {
 
 	/**
-	 * @var ControllerConfigManager $manager IQRF Gateway Controller configuration manager
+	 * @var ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
 	 */
-	private $manager;
+	private $configManager;
+
+	/**
+	 * @var ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
+	 */
+	private $pinManager;
 
 	/**
 	 * Constructor
-	 * @param ControllerConfigManager $manager IQRF Gateway Controller configuration manager
+	 * @param ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
+	 * @param ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ControllerConfigManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(ControllerConfigManager $configManager, ControllerPinConfigManager $pinManager, RestApiSchemaValidator $validator) {
+		$this->configManager = $configManager;
+		$this->pinManager = $pinManager;
 		parent::__construct($validator);
 	}
 
@@ -83,7 +91,7 @@ class ControllerController extends BaseConfigController {
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:controller']);
 		try {
-			$config = $this->manager->getConfig();
+			$config = $this->configManager->getConfig();
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -121,7 +129,7 @@ class ControllerController extends BaseConfigController {
 		self::checkScopes($request, ['config:controller']);
 		$this->validator->validateRequest('controllerConfig', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody());
+			$this->configManager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -148,7 +156,7 @@ class ControllerController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function listPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $response->writeJsonBody($this->manager->listPinConfigs());
+		return $response->writeJsonBody($this->pinManager->listPinConfigs());
 	}
 
 	/**
@@ -176,7 +184,7 @@ class ControllerController extends BaseConfigController {
 	public function getPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		try {
-			$entity = $this->manager->getPinConfig($id);
+			$entity = $this->pinManager->getPinConfig($id);
 			return $response->writeJsonObject($entity);
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
@@ -216,7 +224,7 @@ class ControllerController extends BaseConfigController {
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('controllerPinConfig', $request);
 		$json = $request->getJsonBody(false);
-		$entity = $this->manager->addPinConfig($json);
+		$entity = $this->pinManager->addPinConfig($json);
 		return $response->writeJsonObject($entity)
 			->withHeader('Location', '/api/v0/config/controller/pins/' . $entity->getId())
 			->withStatus(ApiResponse::S201_CREATED);
@@ -241,7 +249,7 @@ class ControllerController extends BaseConfigController {
 		$id = (int) $request->getParameter('id');
 		$json = $request->getJsonBody(false);
 		try {
-			$this->manager->editPinConfig($id, $json);
+			$this->pinManager->editPinConfig($id, $json);
 			return $response->writeBody('Workaround');
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
@@ -269,7 +277,7 @@ class ControllerController extends BaseConfigController {
 	public function removePins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		try {
-			$this->manager->removePinConfig($id);
+			$this->pinManager->removePinConfig($id);
 			return $response->writeBody('Workaround');
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);

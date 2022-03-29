@@ -677,7 +677,7 @@ export default class ControllerConfig extends Vue {
 			redLed: profile.redLed,
 		};
 		this.config.resetButton.button = profile.button;
-		if (profile.sck && profile.sda) {
+		if (profile.sck !== undefined && profile.sda !== undefined) {
 			if (this.config.powerOff === undefined) {
 				this.config.powerOff = {
 					sck: profile.sck,
