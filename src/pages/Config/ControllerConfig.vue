@@ -388,7 +388,11 @@ limitations under the License.
 									</ValidationProvider>
 								</CCol>
 							</CRow>
-							<CRow v-if='showI2cPins'>
+							<CInputCheckbox
+								:checked.sync='useI2cPins'
+								:label='$t("config.controller.pins.form.useI2c")'
+							/>
+							<CRow>
 								<CCol md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
@@ -404,6 +408,7 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.sck")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
+											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -422,6 +427,7 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.sda")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
+											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -576,6 +582,10 @@ export default class ControllerConfig extends Vue {
 				syslog: false,
 			},
 		},
+		powerOff: {
+			sck: 0,
+			sda: 0,
+		},
 		resetButton: {
 			api: '',
 			button: 2,
@@ -591,9 +601,9 @@ export default class ControllerConfig extends Vue {
 	};
 
 	/**
-	 * @var {boolean} showI2cPins Controls whether I2C pin inputs are shown
+	 * @var {boolean} useI2cPins Controls whether I2C pin inputs are disabled
 	 */
-	private showI2cPins = false;
+	private useI2cPins = false;
 
 	/**
 	 * Vue lifecycle hook created
@@ -628,7 +638,7 @@ export default class ControllerConfig extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.config = response.data;
 				if (response.data.powerOff !== undefined) {
-					this.showI2cPins = true;
+					this.useI2cPins = true;
 				}
 			})
 			.catch((error: AxiosError) => {
@@ -642,7 +652,7 @@ export default class ControllerConfig extends Vue {
 	 */
 	private save(): void {
 		let config = JSON.parse(JSON.stringify(this.config));
-		if (!this.showI2cPins) {
+		if (!this.useI2cPins) {
 			delete config.powerOff;
 		}
 		this.$store.commit('spinner/SHOW');
@@ -687,10 +697,13 @@ export default class ControllerConfig extends Vue {
 				this.config.powerOff.sck = profile.sck;
 				this.config.powerOff.sda = profile.sda;
 			}
-			this.showI2cPins = true;
+			this.useI2cPins = true;
 		} else {
-			this.showI2cPins = false;
-			delete this.config.powerOff;
+			this.config.powerOff = {
+				sck: 0,
+				sda: 0,
+			};
+			this.useI2cPins = false;
 		}
 	}
 
