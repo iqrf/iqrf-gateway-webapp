@@ -386,7 +386,7 @@
 					"edit": "Edit mapping",
 					"set": "Set mapping",
 					"delete": "Delete mapping",
-					"modal": {
+					"deleteModal": {
 						"title": "Mapping delete confirmation",
 						"prompt": "Are you sure you want to delete mapping {mapping}?"
 					},
