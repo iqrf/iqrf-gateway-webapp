@@ -21,7 +21,7 @@ limitations under the License.
 			<CButton
 				color='success'
 				size='sm'
-				@click='invokeMappingForm()'
+				@click='showFormModal()'
 			>
 				<CIcon :content='icons.add' />
 			</CButton>
@@ -39,53 +39,28 @@ limitations under the License.
 					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
 				</CDropdownItem>
 				<CDropdownItem
-					@click='invokeMappingForm(mapping)'
+					@click='showFormModal(mapping)'
 				>
 					<CIcon :content='icons.edit' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
-					@click='showRemoveModal(i)'
+					@click='showDeleteModal(i, mapping.name)'
 				>
 					<CIcon :content='icons.remove' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
-		<CModal
-			color='danger'
-			:show.sync='showModal'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.interfaces.interfaceMapping.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.interfaces.interfaceMapping.modal.prompt', {mapping: modalMapping}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeMapping'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='hideRemoveModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-		<MappingForm
-			ref='mappingModal'
-			@update-mappings='getMappings'
-		/>
+		<MappingForm ref='formModal' @update-mappings='getMappings' />
+		<MappingDeleteConfirmation ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
+import MappingDeleteConfirmation from '../../components/Config/MappingDeleteConfirmation.vue';
 import MappingForm from '../../components/Config/MappingForm.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
@@ -103,6 +78,7 @@ import {IMapping} from '../../interfaces/mappings';
 		CDropdown,
 		CDropdownItem,
 		CModal,
+		MappingDeleteConfirmation,
 		MappingForm,
 	},
 })
@@ -112,9 +88,14 @@ import {IMapping} from '../../interfaces/mappings';
  */
 export default class InterfaceMappings extends Vue {
 	/**
-	 * @var {IMapping|null} deleteMapping Mapping object to be remove
+	 * @var {Array<IMapping>} mappings Array of mappings
 	 */
-	private deleteMapping: IMapping|null = null;
+	private mappings: Array<IMapping> = [];
+
+	/**
+	 * @property {string} interfaceType Communication interface type
+	 */
+	@Prop({required: true}) interfaceType!: string;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -125,26 +106,6 @@ export default class InterfaceMappings extends Vue {
 		remove: cilTrash,
 		set: cilCopy,
 	};
-
-	/**
-	 * @var {Array<IMapping>} mappings Array of mappings
-	 */
-	private mappings: Array<IMapping> = [];
-
-	/**
-	 * @var {string} modalMapping Name of mapping used in remove modal
-	 */
-	private modalMapping = '';
-
-	/**
-	 * @var {boolean} showModal
-	 */
-	private showModal = false;
-
-	/**
-	 * @property {string} interfaceType Communication interface type
-	 */
-	@Prop({required: true}) interfaceType!: string;
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -182,48 +143,24 @@ export default class InterfaceMappings extends Vue {
 	}
 
 	/**
-	 * Renders remove mapping modal
+	 * Removes a mapping from mappings database
 	 * @param {number} index Mapping index
 	 */
-	private showRemoveModal(index: number): void {
-		this.deleteMapping = this.mappings[index];
-		this.modalMapping = this.deleteMapping.name;
-		this.showModal = true;
-	}
-
-	/**
-	 * Hides the remove modal
-	 */
-	private hideRemoveModal(): void {
-		this.showModal = false;
-		this.deleteMapping = null;
-		this.modalMapping = '';
-	}
-
-	/**
-	 * Removes a mapping from mappings database
-	 */
-	private removeMapping(): void {
-		if (this.deleteMapping === null || this.deleteMapping.id === undefined) {
-			return;
-		}
-		this.showModal = false;
+	private deleteMapping(idx: number): void {
+		const id = (this.mappings[idx].id as number);
+		const name = this.mappings[idx].name;
 		this.$store.commit('spinner/SHOW');
-		MappingService.removeMapping(this.deleteMapping.id)
+		MappingService.removeMapping(id)
 			.then(() => {
-				this.deleteMapping = null;
 				this.getMappings().then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
-						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: this.modalMapping}).toString()
+						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: name}).toString()
 					);
 				});
-				this.modalMapping = '';
 			})
 			.catch((error: AxiosError) => {
-				this.deleteMapping = null;
-				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: this.modalMapping});
-				this.modalMapping = '';
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: name});
 			});
 	}
 
@@ -231,8 +168,17 @@ export default class InterfaceMappings extends Vue {
 	 * Invokes mapping add or edit form
 	 * @param {IMapping|null} mapping Mapping
 	 */
-	private invokeMappingForm(mapping: IMapping|null = null): void {
-		(this.$refs.mappingModal as MappingForm).activateModal(mapping);
+	private showFormModal(mapping: IMapping|null = null): void {
+		(this.$refs.formModal as MappingForm).activateModal(mapping);
+	}
+
+	/**
+	 * Shows mapping delete modal
+	 * @param {number} idx Mapping index
+	 * @param {string} name Mapping name
+	 */
+	private showDeleteModal(idx: number, name: string): void {
+		(this.$refs.deleteModal as MappingDeleteConfirmation).activateModal(idx, name);
 	}
 
 	/**
