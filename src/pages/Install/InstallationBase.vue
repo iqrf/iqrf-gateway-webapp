@@ -48,6 +48,9 @@ export default class InstallationBase extends Vue {
 	private stepBlacklist: Array<string> = [
 		'/install/gateway-info',
 		'/install/restore',
+		'/install/error/missing-migration',
+		'/install/error/missing-extension',
+		'/install/error/sudo-error',
 	];
 
 	/**

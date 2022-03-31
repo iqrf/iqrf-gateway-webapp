@@ -34,6 +34,11 @@ export interface IController {
 	logger: IControllerLogger
 
 	/**
+	 * I2C pin configuration
+	 */
+	powerOff?: IControllerPowerOff
+
+	/**
 	 * Reset button configuration
 	 */
 	resetButton: IControllerResetButton
@@ -205,6 +210,21 @@ interface IControllerLoggerSinks {
 }
 
 /**
+ * Controller I2C pin configuration interface
+ */
+interface IControllerPowerOff {
+	/**
+	 * I2C clock pin number
+	 */
+	sck: number
+
+	/**
+	 * I2C data pin number
+	 */
+	sda: number
+}
+
+/**
  * Controller reset button configuration interface
  */
 interface IControllerResetButton {
@@ -212,7 +232,7 @@ interface IControllerResetButton {
 	 * Daemon API call to be executed
 	 */
 	api: string
-	
+
 	/**
 	 * Reset button GPIO pin number
 	 */
@@ -247,4 +267,44 @@ interface IControllerWsServers {
 	 * Daemon monitor WebSocket server address
 	 */
 	monitor: string
+}
+
+/**
+ * Controller pin configuration profile interface
+ */
+export interface IControllerPinConfig {
+	/**
+	 * Profile ID
+	 */
+	id?: number
+
+	/**
+	 * Profile name
+	 */
+	name: string
+
+	/**
+	 * Green LED pin number
+	 */
+	greenLed: number
+
+	/**
+	 * Red LED pin number
+	 */
+	redLed: number
+
+	/**
+	 * API button pin number
+	 */
+	button: number
+
+	/**
+	 * I2C clock pin number
+	 */
+	sck?: number
+
+	/**
+	 * I2C data pin number
+	 */
+	sda?: number
 }

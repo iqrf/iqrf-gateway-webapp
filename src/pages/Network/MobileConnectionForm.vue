@@ -276,7 +276,7 @@ export default class MobileConnectionForm extends Vue {
 					this.$toast.error(
 						this.$t('network.mobile.messages.noInterfaces').toString()
 					);
-					this.$router.push('/network/mobile');
+					this.$router.push('/ip-network/mobile');
 					return;
 				}
 				if (this.uuid !== null) {
@@ -285,7 +285,7 @@ export default class MobileConnectionForm extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
-				this.$router.push('/network/mobile');
+				this.$router.push('/ip-network/mobile');
 			});
 	}
 
@@ -305,7 +305,7 @@ export default class MobileConnectionForm extends Vue {
 					'network.connection.messages.fetchFailed',
 					{connection: this.uuid}
 				);
-				this.$router.push('/network/mobile');
+				this.$router.push('/ip-network/mobile');
 			});
 	}
 
@@ -344,7 +344,7 @@ export default class MobileConnectionForm extends Vue {
 				(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
 				{connection: name}).toString()
 		);
-		this.$router.push('/network/mobile');
+		this.$router.push('/ip-network/mobile');
 	}
 
 	/**

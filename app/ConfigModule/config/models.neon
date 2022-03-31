@@ -19,13 +19,14 @@ services:
 		autowired: false
 	- App\ConfigModule\Models\AptManager(@apt.fileManager)
 	- App\ConfigModule\Models\ComponentManager
+	componentSchemaManager:
+		factory: App\ConfigModule\Models\ComponentSchemaManager(%daemon.schemaDir%)
+		autowired: self
 	controller.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-controller')
 		autowired: false
 	controller.manager: App\ConfigModule\Models\ControllerConfigManager(@controller.fileManager)
-	componentSchemaManager:
-		factory: App\ConfigModule\Models\ComponentSchemaManager(%daemon.schemaDir%)
-		autowired: self
+	- App\ConfigModule\Models\ControllerPinConfigManager
 	- App\ConfigModule\Models\GenericManager
 	- App\ConfigModule\Models\IqrfManager
 	- App\ConfigModule\Models\IqrfRepositoryManager(%confDir%/iqrf-repository.neon)

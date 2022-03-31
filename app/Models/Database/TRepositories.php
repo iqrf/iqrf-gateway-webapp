@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database;
 
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ControllerPinConfiguration;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Entities\PasswordRecovery;
@@ -33,6 +34,7 @@ use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\Repositories\ApiKeyRepository;
+use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\PasswordRecoveryRepository;
@@ -56,6 +58,14 @@ trait TRepositories {
 	 */
 	public function getApiKeyRepository(): ApiKeyRepository {
 		return $this->getRepository(ApiKey::class);
+	}
+
+	/**
+	 * Returns the controller pin configuration repository
+	 * @return ControllerPinConfigurationRepository Controller pin configuration repository
+	 */
+	public function getControllerPinConfigurationRepository(): ControllerPinConfigurationRepository {
+		return $this->getRepository(ControllerPinConfiguration::class);
 	}
 
 	/**

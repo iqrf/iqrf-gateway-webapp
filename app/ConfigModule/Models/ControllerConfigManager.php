@@ -28,7 +28,7 @@ use App\CoreModule\Models\JsonFileManager;
 class ControllerConfigManager {
 
 	/**
-	 * @var JsonFileManager $fileManager JSON file manager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
@@ -58,8 +58,7 @@ class ControllerConfigManager {
 	 * @param array<string, array<string, array<string, array<string, bool|int>|bool|int>|bool|int|string>> $newConfig Controller configuration
 	 */
 	public function saveConfig(array $newConfig): void {
-		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME);
-		$this->fileManager->write(self::FILE_NAME, array_merge($oldConfig, $newConfig));
+		$this->fileManager->write(self::FILE_NAME, $newConfig);
 	}
 
 }

@@ -386,7 +386,7 @@
 					"edit": "Edit mapping",
 					"set": "Set mapping",
 					"delete": "Delete mapping",
-					"modal": {
+					"deleteModal": {
 						"title": "Mapping delete confirmation",
 						"prompt": "Are you sure you want to delete mapping {mapping}?"
 					},
@@ -397,23 +397,22 @@
 						"powerPin": "Power enable GPIO pin",
 						"busPin": "Bus enable GPIO pin",
 						"pgmPin": "Programming mode switch GPIO pin",
-						"gateway": "IQRF Gateway mapping",
+						"useAdditionalPins": "Use communication interface pins",
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
 						"uartPin": "UART interface enable GPIO pin *",
-						"gwOnly": "* IQRF Gateway only",
 						"baudRate": "UART baud rate"
 					},
 					"errors": {
 						"typeSelect": "Please select mapping type.",
 						"name": "Please enter mapping name.",
 						"interface": "Please enter device name.",
-						"busPin": "Please enter bus enable GPIO pin number.",
-						"pgmPin": "Please enter programming mode switch GPIO pin number.",
-						"powerPin": "Please enter power enable GPIO pin number.",
-						"i2cPin": "Please enter I2C interface enable GPIO pin number.",
-						"spiPin": "Please enter SPI interface enable GPIO pin number.",
-						"uartPin": "Please enter UART interface enable GPIO pin number."
+						"busPin": "Bus enable GPIO pin number should be an integer.",
+						"pgmPin": "Programming mode switch GPIO pin number should be an integer.",
+						"powerPin": "Power enable GPIO pin number should be an integer.",
+						"i2cPin": "IC2 interface enable GPIO pin number should be an integer.",
+						"spiPin": "SPI interface enable GPIO pin number should be an integer.",
+						"uartPin": "UART interface enable GPIO pin number should be an integer."
 					},
 					"messages": {
 						"getFailed": "Failed to retrieve mapping {id}: {error}.",
@@ -996,7 +995,7 @@
 					"daemon": "Daemon",
 					"iqaros": "IQAROS",
 					"network": "IP network",
-					"webapp": "Web application"
+					"webapp": "Webapp"
 				},
 				"resetButton": {
 					"title": "Button",
@@ -1018,6 +1017,47 @@
 					"api": "Daemon API server",
 					"monitor": "Monitor server"
 				}
+			},
+			"pins": {
+				"title": "Pin configuration",
+				"profiles": "Pin configuration profiles",
+				"add": "Add controller pin configuration profile",
+				"edit": "Edit controller pin configuration profile",
+				"actions": {
+					"set": "Set pin profile",
+					"edit": "Edit pin profile",
+					"delete": "Delete pin profile"
+				},
+				"form": {
+					"name": "Profile name",
+					"greenLed": "Green LED pin",
+					"redLed": "Red LED pin",
+					"button": "Button pin",
+					"useI2c": "Use I2C pins",
+					"sck": "I2C clock pin",
+					"sda": "I2C data pin"
+				},
+				"errors": {
+					"name": "Please enter controller pin configuration profile name.",
+					"greenLed": "Green LED pin should be an integer.",
+					"redLed": "Red LED pin should be an integer.",
+					"button": "Button pin should be an integer.",
+					"sck": "I2C clock pin should be an integer.",
+					"sda": "I2C data pin should be an integer."
+				},
+				"messages": {
+					"listFailed": "Failed to retrieve list of available pin configuration profiles: {error}",
+					"deleteFailed": "Failed to delete controller pin configuration profile {profile}: {error}",
+					"deleteSuccess": "Controller pin configuration profile {profile} successfully deleted.",
+					"addFailed": "Failed to create new controller pin configuration profile {profile}: {error}",
+					"addSuccess": "Controller pin configuration profile {profile} successfully created.",
+					"editFailed": "Failed to edit controller pin configuration profile {profile}: {error}",
+					"editSuccess": "Controller pin configuration profile {profile} successfully edited."
+				}
+			},
+			"deleteModal": {
+				"title": "Controller pin configuration profile delete confirmation",
+				"prompt": "Are you sure you want to delete controller pin configuration profile {profile}?"
 			},
 			"errors": {
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",

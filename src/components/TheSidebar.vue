@@ -255,13 +255,6 @@ export default class TheSidebar extends Vue {
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.daemon.main.title'),
-										to: '/config/daemon/main/',
-										role: UserRole.ADMIN,
-										_attrs: {class: 'menu-level-2'},
-									},
-									{
-										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.interfaces.title'),
 										to: '/config/daemon/interfaces/',
 										role: UserRole.NORMAL
@@ -382,30 +375,30 @@ export default class TheSidebar extends Vue {
 					{
 						_name: 'CSidebarNavDropdown',
 						name: this.$t('network.title'),
-						to: '/network/',
-						route: '/network/',
+						to: '/ip-network/',
+						route: '/ip-network/',
 						feature: 'networkManager',
 						icon: {content: cilLan},
 						role: UserRole.ADMIN,
 						items: [
 							{
 								name: this.$t('network.ethernet.title'),
-								to: '/network/ethernet/',
+								to: '/ip-network/ethernet/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireless.title'),
-								to: '/network/wireless/',
+								to: '/ip-network/wireless/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.mobile.title'),
-								to: '/network/mobile/',
+								to: '/ip-network/mobile/',
 								role: UserRole.ADMIN,
 							},
 							{
 								name: this.$t('network.wireguard.title'),
-								to: '/network/vpn/',
+								to: '/ip-network/vpn/',
 								role: UserRole.ADMIN,
 							},
 						],

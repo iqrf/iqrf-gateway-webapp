@@ -21,7 +21,7 @@ limitations under the License.
 			<CListGroup>
 				<CListGroupItem
 					v-if='roleIdx <= roles.admin'
-					to='/network/ethernet'
+					to='/ip-network/ethernet'
 				>
 					<header class='list-group-item-heading'>
 						{{ $t('network.ethernet.title') }}
@@ -32,7 +32,7 @@ limitations under the License.
 				</CListGroupItem>
 				<CListGroupItem
 					v-if='roleIdx <= roles.admin'
-					to='/network/wireless'
+					to='/ip-network/wireless'
 				>
 					<header class='list-group-item-heading'>
 						{{ $t('network.wireless.title') }}
@@ -43,7 +43,7 @@ limitations under the License.
 				</CListGroupItem>
 				<CListGroupItem
 					v-if='roleIdx <= roles.admin'
-					to='/network/mobile'
+					to='/ip-network/mobile'
 				>
 					<header class='list-group-item-heading'>
 						{{ $t('network.mobile.title') }}
@@ -54,7 +54,7 @@ limitations under the License.
 				</CListGroupItem>
 				<CListGroupItem
 					v-if='roleIdx <= roles.admin'
-					to='/network/vpn'
+					to='/ip-network/vpn'
 				>
 					<header class='list-group-item-heading'>
 						{{ $t('network.wireguard.title') }}

@@ -62,7 +62,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 							<div
-								v-if='tunnel.publicKey !== ""' 
+								v-if='tunnel.publicKey !== ""'
 								class='form-group'
 							>
 								<label>
@@ -285,8 +285,8 @@ limitations under the License.
 									:label='$t("network.wireguard.tunnels.form.stack")'
 								/>
 								<CRow>
-									<CCol 
-										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"' 
+									<CCol
+										v-if='peerStacks[index] === "ipv4" || peerStacks[index] === "both"'
 										:md='peerStacks[index] === "ipv4" ? 12 : 6'
 									>
 										<div
@@ -589,7 +589,7 @@ export default class WireguardTunnel extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/network/vpn/add' ?
+		return this.$route.path === '/ip-network/vpn/add' ?
 			this.$t('network.wireguard.tunnels.add').toString() : this.$t('network.wireguard.tunnels.edit').toString();
 	}
 
@@ -651,7 +651,7 @@ export default class WireguardTunnel extends Vue {
 					'network.wireguard.tunnels.messages.fetchFailed',
 					{tunnel: this.id}
 				);
-				this.$router.push('/network/vpn/');
+				this.$router.push('/ip-network/vpn/');
 			});
 	}
 
@@ -763,7 +763,7 @@ export default class WireguardTunnel extends Vue {
 			delete tunnel.port;
 		}
 		delete tunnel.publicKey;
-		if (this.$route.path === '/network/vpn/add') {
+		if (this.$route.path === '/ip-network/vpn/add') {
 			WireguardService.createTunnel(tunnel)
 				.then(this.handleSuccess)
 				.catch(this.handleError);
@@ -781,11 +781,11 @@ export default class WireguardTunnel extends Vue {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
 			this.$t(
-				'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Success',
+				'network.wireguard.tunnels.messages.' + (this.$route.path === '/ip-network/vpn/add' ? 'add' : 'edit') + 'Success',
 				{tunnel: this.tunnel.name}
 			).toString()
 		);
-		this.$router.push('/network/vpn/');
+		this.$router.push('/ip-network/vpn/');
 	}
 
 	/**
@@ -795,7 +795,7 @@ export default class WireguardTunnel extends Vue {
 	private handleError(error: AxiosError): void {
 		extendedErrorToast(
 			error,
-			'network.wireguard.tunnels.messages.' + (this.$route.path === '/network/vpn/add' ? 'add' : 'edit') + 'Failed',
+			'network.wireguard.tunnels.messages.' + (this.$route.path === '/ip-network/vpn/add' ? 'add' : 'edit') + 'Failed',
 			{tunnel: this.tunnel.name},
 		);
 	}

@@ -91,8 +91,6 @@ const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
 const MainConfiguration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MainConfiguration.vue');
-const ComponentList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentList.vue');
-const ComponentForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentForm.vue');
 const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
 const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketMessagingForm.vue');
@@ -291,13 +289,6 @@ const routes: Array<RouteConfig> = [
 								component: DaemonDisambiguation,
 								meta: {
 									role: UserRole.NORMAL,
-								},
-							},
-							{
-								component: MainConfiguration,
-								path: 'main',
-								meta: {
-									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -782,6 +773,58 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/network',
+				redirect: '/ip-network',
+			},
+			{
+				path: '/network/ethernet',
+				redirect: '/ip-network/ethernet'
+			},
+			{
+				path: '/network/ethernet/add',
+				redirect: '/ip-network/ethernet/add'
+			},
+			{
+				path: '/network/ethernet/edit/:uuid',
+				redirect: '/ip-network/ethernet/edit/:uuid'
+			},
+			{
+				path: '/network/wireless',
+				redirect: '/ip-network/wireless',
+			},
+			{
+				path: '/network/wireless/add',
+				redirect: '/ip-network/wireless/add',
+			},
+			{
+				path: '/network/wireless/edit/:uuid',
+				redirect: '/ip-network/wireless/edit/:uuid',
+			},
+			{
+				path: '/network/mobile',
+				redirect: '/ip-network/mobile',
+			},
+			{
+				path: '/network/mobile/add',
+				redirect: '/ip-network/mobile/add',
+			},
+			{
+				path: '/network/mobile/edit/:uuid',
+				redirect: '/ip-network/mobile/edit/:uuid',
+			},
+			{
+				path: '/network/vpn',
+				redirect: '/ip-network/vpn',
+			},
+			{
+				path: '/network/vpn/add',
+				redirect: '/ip-network/vpn/add',
+			},
+			{
+				path: '/network/vpn/edit/:id',
+				redirect: '/ip-network/vpn/edit/:id',
+			},
+			{
+				path: '/ip-network',
 				component: {
 					render(c) {
 						return c('router-view');

@@ -53,7 +53,7 @@ class Mapping implements JsonSerializable {
 	/**
 	 * Default mapping UART baud rate
 	 */
-	public const BAUD_RATE_DEFAULT = '57600';
+	public const BAUD_RATE_DEFAULT = 57600;
 
 	/**
 	 * Supported mapping UART baud rates
