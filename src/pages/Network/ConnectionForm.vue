@@ -735,9 +735,9 @@ export default class ConnectionForm extends Vue {
 	 * Fetches connection configuration prop is set
 	 */
 	mounted(): void {
-		if (this.$route.path.includes('/network/wireless/')) {
+		if (this.$route.path.includes('/ip-network/wireless/')) {
 			this.getInterfaces(InterfaceType.WIFI);
-		} else if (this.$route.path.includes('/network/ethernet/')) {
+		} else if (this.$route.path.includes('/ip-network/ethernet/')) {
 			this.getInterfaces(InterfaceType.ETHERNET);
 		}
 	}
@@ -886,9 +886,9 @@ export default class ConnectionForm extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
 				if (iftype === InterfaceType.ETHERNET) {
-					this.$router.push('/network/ethernet');
+					this.$router.push('/ip-network/ethernet');
 				} else if (iftype === InterfaceType.WIFI) {
-					this.$router.push('/network/wireless');
+					this.$router.push('/ip-network/wireless');
 				}
 			});
 	}
@@ -910,9 +910,9 @@ export default class ConnectionForm extends Vue {
 					{connection: this.uuid}
 				);
 				if (this.connection.type === ConnectionType.ETHERNET) {
-					this.$router.push('/network/ethernet');
+					this.$router.push('/ip-network/ethernet');
 				} else if (this.connection.type === ConnectionType.WIFI) {
-					this.$router.push('/network/wireless');
+					this.$router.push('/ip-network/wireless');
 				}
 			});
 	}
@@ -1046,9 +1046,9 @@ export default class ConnectionForm extends Vue {
 						{connection: name}).toString()
 				);
 				if (this.connection.type === ConnectionType.ETHERNET) {
-					this.$router.push('/network/ethernet');
+					this.$router.push('/ip-network/ethernet');
 				} else if (this.connection.type === ConnectionType.WIFI) {
-					this.$router.push('/network/wireless');
+					this.$router.push('/ip-network/wireless');
 				}
 
 			})

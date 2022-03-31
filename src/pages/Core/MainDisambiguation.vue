@@ -83,7 +83,7 @@ limitations under the License.
 					</CListGroupItem>
 					<CListGroupItem
 						v-if='$store.getters["features/isEnabled"]("networkManager") && roleIdx <= roles.admin'
-						to='/network/'
+						to='/ip-network/'
 					>
 						<header class='list-group-item-heading'>
 							{{ $t('network.title') }}
