@@ -76,7 +76,7 @@ limitations under the License.
 									{{ $t('network.table.disconnect') }}
 								</CButton> <CButton
 									color='primary'
-									:to='"/network/ethernet/edit/" + item.uuid'
+									:to='"/ip-network/ethernet/edit/" + item.uuid'
 									size='sm'
 								>
 									<CIcon :content='icons.edit' size='sm' />

@@ -24,7 +24,7 @@ limitations under the License.
 					style='float: right;'
 					color='success'
 					size='sm'
-					to='/network/vpn/add'
+					to='/ip-network/vpn/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('forms.add') }}
@@ -76,7 +76,7 @@ limitations under the License.
 							</CButton> <CButton
 								size='sm'
 								color='primary'
-								:to='"/network/vpn/edit/" + item.id'
+								:to='"/ip-network/vpn/edit/" + item.id'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}

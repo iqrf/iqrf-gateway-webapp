@@ -104,7 +104,7 @@ limitations under the License.
 									v-if='item.aps[0].uuid'
 									size='sm'
 									color='primary'
-									:to='"/network/wireless/edit/" + item.aps[0].uuid'
+									:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
 								>
 									<CIcon :content='icons.edit' size='sm' />
 									{{ $t('table.actions.edit') }}

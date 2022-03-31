@@ -98,16 +98,16 @@ class InstallationController extends BaseController {
 		$availableMigrations = $doctrine->getNumberOfAvailableMigrations();
 		$executedMigrations = $doctrine->getNumberOfExecutedMigrations();
 		$status['allMigrationsExecuted'] = $availableMigrations === $executedMigrations;
-		if (!$status['allMigrationsExecuted']) {
-			return $response->writeJsonBody($status);
-		}
-		$users = $this->entityManager->getUserRepository()->count([]);
-		$status['hasUsers'] = $users !== 0;
 		$status['phpModules'] = $this->phpModuleManager::checkModules();
 		$sudo = $this->sudoManager->checkSudo();
 		if ($sudo !== []) {
 			$status['sudo'] = $sudo;
 		}
+		if (!$status['allMigrationsExecuted']) {
+			return $response->writeJsonBody($status);
+		}
+		$users = $this->entityManager->getUserRepository()->count([]);
+		$status['hasUsers'] = $users !== 0;
 		return $response->writeJsonBody($status);
 	}
 

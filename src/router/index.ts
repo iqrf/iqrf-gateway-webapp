@@ -773,6 +773,58 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/network',
+				redirect: '/ip-network',
+			},
+			{
+				path: '/network/ethernet',
+				redirect: '/ip-network/ethernet'
+			},
+			{
+				path: '/network/ethernet/add',
+				redirect: '/ip-network/ethernet/add'
+			},
+			{
+				path: '/network/ethernet/edit/:uuid',
+				redirect: '/ip-network/ethernet/edit/:uuid'
+			},
+			{
+				path: '/network/wireless',
+				redirect: '/ip-network/wireless',
+			},
+			{
+				path: '/network/wireless/add',
+				redirect: '/ip-network/wireless/add',
+			},
+			{
+				path: '/network/wireless/edit/:uuid',
+				redirect: '/ip-network/wireless/edit/:uuid',
+			},
+			{
+				path: '/network/mobile',
+				redirect: '/ip-network/mobile',
+			},
+			{
+				path: '/network/mobile/add',
+				redirect: '/ip-network/mobile/add',
+			},
+			{
+				path: '/network/mobile/edit/:uuid',
+				redirect: '/ip-network/mobile/edit/:uuid',
+			},
+			{
+				path: '/network/vpn',
+				redirect: '/ip-network/vpn',
+			},
+			{
+				path: '/network/vpn/add',
+				redirect: '/ip-network/vpn/add',
+			},
+			{
+				path: '/network/vpn/edit/:id',
+				redirect: '/ip-network/vpn/edit/:id',
+			},
+			{
+				path: '/ip-network',
 				component: {
 					render(c) {
 						return c('router-view');

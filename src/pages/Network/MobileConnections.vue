@@ -29,7 +29,7 @@ limitations under the License.
 					<CButton
 						color='success'
 						size='sm'
-						to='/network/mobile/add'
+						to='/ip-network/mobile/add'
 					>
 						<CIcon :content='icons.add' size='sm' />
 						Add connection
@@ -73,7 +73,7 @@ limitations under the License.
 								</CButton> <CButton
 									size='sm'
 									color='primary'
-									:to='"/network/mobile/edit/" + item.uuid'
+									:to='"/ip-network/mobile/edit/" + item.uuid'
 								>
 									<CIcon :content='icons.edit' size='sm' />
 									{{ $t('table.actions.edit') }}
