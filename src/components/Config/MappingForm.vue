@@ -280,7 +280,7 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.$t('config.daemon.interfaces.interfaceMapping.' + (this.mapping.id === -1 ? 'add' : 'edit')).toString();
+		return this.$t('config.daemon.interfaces.interfaceMapping.' + (this.id === -1 ? 'add' : 'edit')).toString();
 	}
 
 	/**
@@ -288,7 +288,7 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Modal color
 	 */
 	get modalColor(): string {
-		return (this.mapping.id === -1 ? 'success' : 'primary');
+		return (this.id === -1 ? 'success' : 'primary');
 	}
 
 	/**
@@ -374,8 +374,8 @@ export default class MappingForm extends Vue {
 	 */
 	private deactivateModal(): void {
 		this.show = false;
+		this.id = -1;
 		this.mapping = {
-			id: -1,
 			name: '',
 			type: '',
 			IqrfInterface: '',
