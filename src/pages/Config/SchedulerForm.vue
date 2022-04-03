@@ -642,7 +642,7 @@ export default class SchedulerForm extends Vue {
 					this.$router.push('/config/daemon/scheduler/');
 				});
 		} else {
-			SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000, null, () => this.$router.push('/config/scheduler/')))
+			SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000, null, () => this.$router.push('/config/daemon/scheduler/')))
 				.then((msgId: string) => this.storeId(msgId));
 		}
 	}
