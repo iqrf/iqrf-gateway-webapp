@@ -454,11 +454,14 @@ class UserController extends BaseController {
 			throw new ClientErrorException('User verification not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$user = $verification->getUser();
+		$state = $user->getState();
+		if ($state === User::STATE_VERIFIED) {
+			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
+		}
 		if ($user->getState() === User::STATE_UNVERIFIED) {
 			$user->setState(User::STATE_VERIFIED);
 			$this->entityManager->persist($user);
 		}
-		$this->entityManager->remove($verification);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->createToken($user);
