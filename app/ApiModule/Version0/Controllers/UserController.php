@@ -458,7 +458,10 @@ class UserController extends BaseController {
 		if ($state === User::STATE_VERIFIED) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
-		if ($user->getState() === User::STATE_UNVERIFIED) {
+		if ($state === User::STATE_UNVERIFIED) {
+			if ($verification->isExpired()) {
+				throw new ClientErrorException('Verification link expired', ApiResponse::S410_GONE);
+			}
 			$user->setState(User::STATE_VERIFIED);
 			$this->entityManager->persist($user);
 		}
