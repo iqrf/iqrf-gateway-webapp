@@ -68,7 +68,7 @@ class UserVerification {
 		if ($this->createdAt === null) {
 			return false;
 		}
-		$expirationInterval = new DateInterval('P1W');
+		$expirationInterval = new DateInterval('P1D');
 		$expiration = DateTimeImmutable::createFromMutable($this->createdAt)
 			->add($expirationInterval);
 		$now = new DateTimeImmutable();
