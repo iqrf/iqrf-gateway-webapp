@@ -177,7 +177,7 @@ limitations under the License.
 				</ValidationProvider>
 				<CSelect
 					v-if='mapping.type === "uart"'
-					:value.sync='baudRate'
+					:value.sync='mapping.baudRate'
 					:options='baudRateOptions'
 					:label='$t("config.daemon.interfaces.interfaceMapping.form.baudRate")'
 				/>
