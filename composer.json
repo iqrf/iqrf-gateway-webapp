@@ -34,6 +34,7 @@
 		"contributte/monolog": "^v0.5.0",
 		"contributte/translation": "^v0.9.3",
 		"darsyn/ip": "^4.0.2",
+		"doctrine/persistence": "^2.5.0",
 		"egulias/email-validator": "^3.1.2",
 		"grifart/enum": "^0.2.1",
 		"guzzlehttp/guzzle": "^7.4.2",
