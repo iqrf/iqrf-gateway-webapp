@@ -336,8 +336,14 @@ export default class IqrfSpi extends Vue {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				if (response.data.instances.length > 0) {
-					this.configuration = response.data.instances[0];
 					this.instance = response.data.instances[0].instance;
+					let config: IIqrfSpi = response.data.instances[0];
+					if (config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined) {
+						this.useAdditionalPins = false;
+					} else {
+						this.useAdditionalPins = true;
+					}
+					this.configuration = config;
 				}
 				this.$emit('fetched', {name: 'iqrfSpi', success: true});
 			})
