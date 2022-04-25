@@ -1,10 +1,23 @@
-iqrf-gateway-webapp (2.4.6~alpha~1.gbpf62f70) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.6) stable; urgency=medium
 
-  ** SNAPSHOT build @f62f708cace0e8d5d8c4a92ed60bd31efc5bbfc5 **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.6
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * NPM: update dependencies
+  * Config: fix path to the scheduler task list in redirect
+  * Stylelint: fix coding style
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Fri, 01 Apr 2022 10:57:42 +0200
+  [ Karel Hanák ]
+  * UserController: persist email verification until user is removed
+  * UserController: check verification link expiration
+  * MappingForm: fixed baudrate binding
+  * IqrfSpi & IqrfUart: fixed interface pin checkbox on load
+  * composer: use doctrine persistence 2.5.x
+  * EntityManager: updated phpdoc type hints
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 25 Apr 2022 10:53:24 +0200
 
 iqrf-gateway-webapp (2.4.5) stable; urgency=medium
 
