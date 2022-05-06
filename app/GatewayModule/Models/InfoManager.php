@@ -90,6 +90,7 @@ class InfoManager {
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
+				'setter' => $this->versionManager->getSetter(),
 				'uploader' => $this->versionManager->getUploader(),
 				'webapp' => $this->versionManager->getWebapp($verbose),
 			],
