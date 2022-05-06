@@ -49,6 +49,10 @@ limitations under the License.
 							<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
 							<td>{{ info.versions.daemon }}</td>
 						</tr>
+						<tr v-if='info.versions.setter'>
+							<th>{{ $t('gateway.info.version.iqrfGatewaySetter') }}</th>
+							<td>{{ info.versions.setter }}</td>
+						</tr>
 						<tr v-if='info.versions.uploader'>
 							<th>{{ $t('gateway.info.version.iqrfGatewayUploader') }}</th>
 							<td>{{ info.versions.uploader }}</td>

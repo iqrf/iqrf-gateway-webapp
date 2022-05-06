@@ -102,6 +102,21 @@ final class VersionManagerTest extends WebSocketTestCase {
 	private const NEW_DAEMON_VERSION_STR = 'IQRF Gateway Daemon v2.5.0-alpha';
 
 	/**
+	 * IQRF Gateway Setter's version
+	 */
+	private const SETTER_VERSION = 'v1.0.0';
+
+	/**
+	 * IQRF Gateway Setter's version command
+	 */
+	private const SETTER_VERSION_CMD = 'iqrf-gateway-setter --version';
+
+	/**
+	 * IQRF Gateway Setter's version string
+	 */
+	private const SETTER_VERSION_STR = 'IQRF Gateway Setter v1.0.0';
+
+	/**
 	 * IQRF Gateway Uploader's version
 	 */
 	private const UPLOADER_VERSION = 'v1.0.0';
@@ -275,6 +290,29 @@ final class VersionManagerTest extends WebSocketTestCase {
 	}
 
 	/**
+	 * Tests the function to get IQRF Gateway Setter's version (not installed)
+	 */
+	public function testGetSetterNotInstalled(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-setter')
+			->andReturnFalse();
+		Assert::null($this->manager->getSetter());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway Setter's version
+	 */
+	public function testGetSetter(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-setter')
+			->andReturnTrue();
+		$this->commandManager->shouldReceive('run')
+			->with(self::SETTER_VERSION_CMD)
+			->andReturn(new Command(self::SETTER_VERSION_CMD, self::SETTER_VERSION_STR, '', 0));
+		Assert::same(self::SETTER_VERSION, $this->manager->getSetter());
+	}
+
+	/**
 	 * Tests the function to get IQRF Gateway Uploader's version (not installed)
 	 */
 	public function testGetUploaderNotInstalled(): void {
@@ -290,7 +328,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	public function testGetUploader(): void {
 		$this->commandManager->shouldReceive('commandExist')
 			->with('iqrf-gateway-uploader')
-			->andReturn(true);
+			->andReturnTrue();
 		$this->commandManager->shouldReceive('run')
 			->with(self::UPLOADER_VERSION_CMD)
 			->andReturn(new Command(self::UPLOADER_VERSION_CMD, 'v1.0.0', '', 0));

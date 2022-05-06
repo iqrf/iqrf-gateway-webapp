@@ -1353,6 +1353,7 @@
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewaySetter": "IQRF Gateway Setter",
 				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},

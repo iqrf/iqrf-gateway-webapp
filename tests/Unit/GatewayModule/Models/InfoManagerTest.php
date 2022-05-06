@@ -86,6 +86,7 @@ final class InfoManagerTest extends CommandTestCase {
 		'versions' => [
 			'controller' => 'v1.0.0',
 			'daemon' => 'v2.3.0',
+			'setter' => 'v1.0.0',
 			'uploader' => 'v1.0.0',
 			'webapp' => 'v2.0.0',
 		],
@@ -311,6 +312,8 @@ final class InfoManagerTest extends CommandTestCase {
 		$this->versionManager->shouldReceive('getDaemon')
 			->withArgs([$verbose])
 			->andReturn(self::EXPECTED['versions']['daemon']);
+		$this->versionManager->shouldReceive('getSetter')
+			->andReturn(self::EXPECTED['versions']['setter']);
 		$this->versionManager->shouldReceive('getUploader')
 			->andReturn(self::EXPECTED['versions']['uploader']);
 		$this->versionManager->shouldReceive('getWebapp')
