@@ -30,7 +30,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\InstallModule\Models\PhpModuleManager;
 use App\InstallModule\Models\SudoManager;
 use App\Models\Database\EntityManager;
-use Nettrine\Migrations\ContainerAwareConfiguration as DoctrineConfiguration;
+use Doctrine\Migrations\DependencyFactory as MigrationsDependencyFactory;
 
 /**
  * Installation controller
@@ -40,14 +40,14 @@ use Nettrine\Migrations\ContainerAwareConfiguration as DoctrineConfiguration;
 class InstallationController extends BaseController {
 
 	/**
-	 * @var DoctrineConfiguration Doctrine configuration
-	 */
-	private $doctrineConfiguration;
-
-	/**
 	 * @var EntityManager Entity manager
 	 */
 	private $entityManager;
+
+	/**
+	 * @var MigrationsDependencyFactory Doctrine migrations dependency factory
+	 */
+	private $migrationsDependencyFactory;
 
 	/**
 	 * @var PhpModuleManager PHP module manager
@@ -61,15 +61,15 @@ class InstallationController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param DoctrineConfiguration $doctrineConfiguration Doctrine configuration
 	 * @param EntityManager $entityManager Database entity manager
+	 * @param MigrationsDependencyFactory $migrationsDependencyFactory Doctrine migrations dependency factory
 	 * @param PhpModuleManager $phpModuleManager Php module manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param SudoManager $sudoManager Sudo manager
 	 */
-	public function __construct(DoctrineConfiguration $doctrineConfiguration, EntityManager $entityManager, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
-		$this->doctrineConfiguration = $doctrineConfiguration;
+	public function __construct(EntityManager $entityManager, MigrationsDependencyFactory $migrationsDependencyFactory, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
 		$this->entityManager = $entityManager;
+		$this->migrationsDependencyFactory = $migrationsDependencyFactory;
 		$this->phpModuleManager = $phpModuleManager;
 		$this->sudoManager = $sudoManager;
 		parent::__construct($validator);
@@ -94,10 +94,7 @@ class InstallationController extends BaseController {
 	 */
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$status = [];
-		$doctrine = $this->doctrineConfiguration;
-		$availableMigrations = $doctrine->getNumberOfAvailableMigrations();
-		$executedMigrations = $doctrine->getNumberOfExecutedMigrations();
-		$status['allMigrationsExecuted'] = $availableMigrations === $executedMigrations;
+		$status['allMigrationsExecuted'] = $this->migrationsDependencyFactory->getMigrationStatusCalculator()->getNewMigrations()->count() === 0;
 		$status['phpModules'] = $this->phpModuleManager::checkModules();
 		$sudo = $this->sudoManager->checkSudo();
 		if ($sudo !== []) {

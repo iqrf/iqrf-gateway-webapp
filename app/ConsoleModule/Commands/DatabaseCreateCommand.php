@@ -75,7 +75,7 @@ class DatabaseCreateCommand extends Command {
 			return 1;
 		}
 		try {
-			$tmpConnection->getSchemaManager()->createDatabase($name);
+			$tmpConnection->createSchemaManager()->createDatabase($name);
 			$output->writeln(sprintf('<info>Created database <comment>%s</comment> for connection named <comment>%s</comment></info>', $name, $connectionName));
 		} catch (Throwable $e) {
 			$output->writeln(sprintf('<error>Could not create database <comment>%s</comment> for connection named <comment>%s</comment></error>', $name, $connectionName));
