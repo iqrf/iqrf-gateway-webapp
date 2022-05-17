@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 /**
  * OS service
@@ -49,8 +49,8 @@ class OsService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -71,8 +71,8 @@ class OsService {
 				},
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -94,8 +94,8 @@ class OsService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -121,8 +121,8 @@ class OsService {
 		if (hwpid) {
 			Object.assign(request.data.req, {hwpId: hwpid});
 		}
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 }

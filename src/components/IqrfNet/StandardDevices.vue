@@ -323,7 +323,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CM
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '../../enums/IqrfNet/info';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 import StandardDevice from '../../iqrfNet/StandardDevice';
 import InfoService from '../../services/DaemonApi/InfoService';
@@ -450,7 +450,7 @@ export default class StandardDevices extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
@@ -492,7 +492,7 @@ export default class StandardDevices extends Vue {
 	 * Unsubscribes handler from websocket store
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -511,7 +511,7 @@ export default class StandardDevices extends Vue {
 	 */
 	private handleEnumerationNow(response): void {
 		if (response.status !== 0) {
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t(
@@ -523,7 +523,7 @@ export default class StandardDevices extends Vue {
 		}
 		let process = response.rsp;
 		if (process.percentage === 100) {
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('iqrfnet.standard.table.messages.enumNowSuccess').toString()
@@ -562,7 +562,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetDevices(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -599,7 +599,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetBinouts(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
@@ -633,7 +633,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetDalis(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
@@ -667,7 +667,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetLights(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
@@ -701,7 +701,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private async handleGetSensors(response): Promise<void> {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
@@ -771,7 +771,7 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
-		const options = new WebSocketOptions(null, 100000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
+		const options = new DaemonMessageOptions(null, 100000, 'iqrfnet.standard.table.messages.ping.fetchFailed');
 		IqrfNetService.pingSelective(nodes, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -781,7 +781,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handlePingDevices(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -821,7 +821,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleReset(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.$store.dispatch('spinner/hide');
 		if (response.status !== 0) {
 			this.$toast.error(
@@ -841,7 +841,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.$store.dispatch('spinner/hide');
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()

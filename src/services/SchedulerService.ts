@@ -17,8 +17,8 @@
 import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import { WebSocketOptions } from '../store/modules/webSocketClient.module';
-import { ITaskTimeSpec } from '../interfaces/scheduler';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
+import {ITaskTimeSpec} from '../interfaces/scheduler';
 
 /**
  * Scheduler service
@@ -32,7 +32,7 @@ class SchedulerService {
 	 * @param timeSpec scheduler task time settings
 	 * @param options WebSocket request options
 	 */
-	addTask(taskId: number, clientId: string, task: any, timeSpec: ITaskTimeSpec, options: WebSocketOptions): Promise<string> {
+	addTask(taskId: number, clientId: string, task: any, timeSpec: ITaskTimeSpec, options: DaemonMessageOptions): Promise<string> {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
@@ -50,7 +50,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class SchedulerService {
 	 * Retrieves scheduler tasks via the Daemon API
 	 * @param options WebSocket request options
 	 */
-	listTasks(options: WebSocketOptions): Promise<string> {
+	listTasks(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_List',
 			'data': {
@@ -110,11 +110,11 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
-	 * Retrieves scheduler tasks via the REST API 
+	 * Retrieves scheduler tasks via the REST API
 	 */
 	listTasksREST(): Promise<AxiosResponse> {
 		return axios.get('scheduler', {headers: authorizationHeader()});
@@ -124,7 +124,7 @@ class SchedulerService {
 	 * Retrieves task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	getTask(taskId: number, options: WebSocketOptions): Promise<string> {
+	getTask(taskId: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_GetTask',
 			'data': {
@@ -135,7 +135,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -144,13 +144,13 @@ class SchedulerService {
 	 */
 	getTaskREST(taskId: number): Promise<AxiosResponse> {
 		return axios.get('scheduler/' + taskId, {headers: authorizationHeader()});
-	}	
+	}
 
 	/**
 	 * Removes a task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	removeTask(taskId: number, options: WebSocketOptions): Promise<string> {
+	removeTask(taskId: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_RemoveTask',
 			'data': {
@@ -161,7 +161,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -174,9 +174,9 @@ class SchedulerService {
 
 	/**
 	 * Removes all tasks via the Daemon API
-	 * @param {WebSocketOptions} options Websocket request options
+	 * @param {DaemonMessageOptions} options Websocket request options
 	 */
-	removeAll(options: WebSocketOptions): Promise<string> {
+	removeAll(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_RemoveAll',
 			'data': {
@@ -186,7 +186,7 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -195,14 +195,14 @@ class SchedulerService {
 	removeAllRest(): Promise<AxiosResponse> {
 		return axios.delete('/scheduler', {headers: authorizationHeader()});
 	}
-	
+
 	/**
 	 * Exports scheduler configuration
 	 */
 	exportConfig(): Promise<AxiosResponse> {
 		return axios.get('scheduler/export', {headers: authorizationHeader(), responseType: 'arraybuffer'});
 	}
-	
+
 	/**
 	 * Import scheduler configuration
 	 * @param config scheduler configuration

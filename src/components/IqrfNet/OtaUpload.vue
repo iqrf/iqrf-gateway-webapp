@@ -220,7 +220,7 @@ import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -357,13 +357,13 @@ export default class OtaUpload extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_OtaUpload') {
 				this.handleOtaUploadResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'messageError') {
@@ -373,6 +373,14 @@ export default class OtaUpload extends Vue {
 				);
 			}
 		});
+	}
+
+	/**
+	 * Unregisters mutation handling
+	 */
+	beforeDestroy(): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+		this.unsubscribe();
 	}
 
 	/**
@@ -513,7 +521,7 @@ export default class OtaUpload extends Vue {
 			this.uploadEepromData,
 			this.uploadEeepromData,
 			action,
-			new WebSocketOptions(null, null, message, () => this.msgId = null)
+			new DaemonMessageOptions(null, null, message, () => this.msgId = null)
 		).then((msgId: string) => this.msgId = msgId);
 	}
 

@@ -150,7 +150,6 @@ import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdown
 
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {mapGetters} from 'vuex';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
@@ -170,11 +169,6 @@ import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfa
 		CIcon,
 		CModal,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
-	}
 })
 
 /**

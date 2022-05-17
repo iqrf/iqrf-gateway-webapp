@@ -65,9 +65,9 @@ limitations under the License.
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
 						</CButton> <CButton
-							v-if='i === commands.length' 
-							color='success' 
-							:disabled='invalid' 
+							v-if='i === commands.length'
+							color='success'
+							:disabled='invalid'
 							@click.prevent='addDaliCommand'
 						>
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
@@ -110,7 +110,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 interface DaliAnswer {
 	status: number
@@ -144,7 +144,7 @@ export default class DaliManager extends Vue {
 	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
 	 */
 	private answers: Array<DaliAnswer> = [];
-	
+
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
@@ -168,12 +168,12 @@ export default class DaliManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
@@ -189,7 +189,7 @@ export default class DaliManager extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -212,7 +212,7 @@ export default class DaliManager extends Vue {
 	 */
 	private sendDali(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardDaliService.send(this.address, this.commands, new WebSocketOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
+		StandardDaliService.send(this.address, this.commands, new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

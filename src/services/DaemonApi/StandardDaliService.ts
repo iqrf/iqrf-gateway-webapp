@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 /**
  * IQRF Standard DALI service
@@ -29,7 +29,7 @@ class StandardDaliService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	send(address: number, commands: number[], options: WebSocketOptions): Promise<string> {
+	send(address: number, commands: number[], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfDali_SendCommands',
 			'data': {
@@ -42,7 +42,7 @@ class StandardDaliService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 }

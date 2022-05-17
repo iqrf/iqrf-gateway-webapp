@@ -109,7 +109,7 @@ import Device from '../../helpers/Device';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -174,12 +174,12 @@ export default class DevicesInfo extends Vue {
 	created(): void {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
 					this.parseBondedDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
@@ -195,11 +195,11 @@ export default class DevicesInfo extends Vue {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.getBondedDevices();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
+				(state, getter) => getter['daemonClient/isConnected'],
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
 						this.getBondedDevices();
@@ -214,7 +214,7 @@ export default class DevicesInfo extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
@@ -223,10 +223,10 @@ export default class DevicesInfo extends Vue {
 	 * Creates WebSocket request options object
 	 * @param {number} timeout Request timeout in milliseconds
 	 * @param {string} message Request timeout message
-	 * @returns {WebSocketOptions} WebSocket request options
+	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
-	private buildOptions(timeout: number, message: string): WebSocketOptions {
-		return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
+	private buildOptions(timeout: number, message: string): DaemonMessageOptions {
+		return new DaemonMessageOptions(null, timeout, message, () => this.msgId = null);
 	}
 
 	/**

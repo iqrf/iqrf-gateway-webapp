@@ -168,7 +168,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required, min_value} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '../../helpers/errorToast';
-import {mapGetters} from 'vuex';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
@@ -210,11 +209,6 @@ interface MonitorWebSocket {
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
