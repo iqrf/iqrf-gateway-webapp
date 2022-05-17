@@ -1,10 +1,12 @@
-iqrf-gateway-webapp (2.4.7~alpha~1.gbp85c8ee) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.7) stable; urgency=medium
 
-  ** SNAPSHOT build @85c8ee2b7de66f7ff9eabc74397b8fc6cf9a00dd **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.7-alpha
+  * GatewayInfo: added setter version if installed; setter version tests
+  * GatewayInfo: include setter version in installation wizard
+  * webSocketClient module: fixed daemon version parsing
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 25 Apr 2022 11:01:17 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Tue, 17 May 2022 13:57:26 +0200
 
 iqrf-gateway-webapp (2.4.6) stable; urgency=medium
 
