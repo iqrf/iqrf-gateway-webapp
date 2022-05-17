@@ -55,7 +55,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import IqrfNetService from '../../services/IqrfNetService';
 import {CSpinner} from '@coreui/vue/src';
-import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {DaemonClientState} from '../../interfaces/wsClient';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '../../interfaces/dpa';
 
 @Component({
@@ -121,13 +121,13 @@ export default class CoordinatorInfo extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
 				this.requestRunning = false;
 				if (mutation.payload.data.msgId === this.msgId) {
-					this.$store.dispatch('removeMessage', this.msgId);
+					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 					try {
 						const data = mutation.payload.data.rsp;
 						this.enumeration = data.peripheralEnumeration;
@@ -144,11 +144,11 @@ export default class CoordinatorInfo extends Vue {
 			}
 
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -163,7 +163,7 @@ export default class CoordinatorInfo extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}

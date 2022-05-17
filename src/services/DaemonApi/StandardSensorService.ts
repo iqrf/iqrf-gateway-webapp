@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../../store';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 /**
  * IQRF Standard Sensor service
@@ -28,7 +28,7 @@ class StandardSensorService {
 	 * @param options WebSocket request options
 	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<string> {
+	enumerate(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfSensor_Enumerate',
 			'data': {
@@ -39,7 +39,7 @@ class StandardSensorService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -48,7 +48,7 @@ class StandardSensorService {
 	 * @param options WebSocket request option
 	 * @return Message ID
 	 */
-	readAll(address: number, options: WebSocketOptions): Promise<string> {
+	readAll(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfSensor_ReadSensorsWithTypes',
 			'data': {
@@ -61,7 +61,7 @@ class StandardSensorService {
 				'returnVerbose': true,
 			},
 		};
-		return store.dispatch('sendRequest', options);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 }

@@ -134,7 +134,7 @@ import {IIqrfInfo} from '../../interfaces/iqrfInfo';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemonClient/getVersion',
 		}),
 	},
 	methods: {

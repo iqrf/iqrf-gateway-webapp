@@ -124,9 +124,9 @@ import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
 import RfModeLp from '../../assets/lp-black.svg';
 import RfModeStd from '../../assets/std-black.svg';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { AxiosError, AxiosResponse } from 'axios';
-import { IDeviceEnumeration, OsInfo, PeripheralEnumeration } from '../../interfaces/dpa';
+import {AxiosError, AxiosResponse} from 'axios';
+import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '../../interfaces/dpa';
+import {DaemonClientState} from '../../interfaces/wsClient';
 
 interface Product {
 	companyName: string
@@ -202,12 +202,12 @@ export default class DeviceEnumeration extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE' ||
 				mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
 			this.$store.dispatch('spinner/hide');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			const response = mutation.payload;
 			if (response.data.status !== 0) {
 				this.$router.push('/iqrfnet/network/');
@@ -243,11 +243,11 @@ export default class DeviceEnumeration extends Vue {
 					});
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -262,7 +262,7 @@ export default class DeviceEnumeration extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}

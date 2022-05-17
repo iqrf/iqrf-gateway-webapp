@@ -16,7 +16,7 @@
  */
 import store from '../store';
 import {SecurityFormat} from '../iqrfNet/securityFormat';
-import { WebSocketOptions } from '../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
 
 /**
  * TR configuration security service
@@ -26,11 +26,11 @@ class SecurityService {
 	/**
 	 * Sets IQMESH security
 	 * @param nadr Network device address
-	 * @param password 
-	 * @param inputFormat 
-	 * @param type 
+	 * @param password
+	 * @param inputFormat
+	 * @param type
 	 */
-	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number, 
+	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number,
 		timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_SetSecurity',
@@ -45,8 +45,8 @@ class SecurityService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**

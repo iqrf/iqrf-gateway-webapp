@@ -108,7 +108,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {mapGetters} from 'vuex';
 import {UserRole} from '../../services/AuthenticationService';
 
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
@@ -129,11 +128,6 @@ import {IIqrfRepository} from '../../interfaces/iqrfRepository';
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
 	},
 })
 

@@ -252,7 +252,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
-import {mapGetters} from 'vuex';
 import {UserRole} from '../../services/AuthenticationService';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -281,11 +280,6 @@ import {IOption} from '../../interfaces/coreui';
 		ValidationObserver,
 		ValidationProvider,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
-	}
 })
 
 /**

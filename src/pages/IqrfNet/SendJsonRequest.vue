@@ -117,7 +117,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import {IMessagePairRequest} from '../../interfaces/iqrfnet';
 import {IOption} from '../../interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 
 @Component({
@@ -137,7 +137,7 @@ import DaemonApiValidator from '../../helpers/DaemonApiValidator';
 	},
 	computed: {
 		...mapGetters({
-			isSocketConnected: 'isSocketConnected',
+			isSocketConnected: 'daemonClient/isConnected',
 		}),
 	},
 	metaInfo: {
@@ -205,12 +205,12 @@ export default class SendJsonRequest extends Vue {
 		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONCLOSE' || mutation.type === 'SOCKET_ONERROR') {
+			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' || mutation.type === 'daemonClient/SOCKET_ONERROR') {
 				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
 				this.messages.unshift({
 					msgId: mutation.payload.data.msgId,
 					request: JSON.stringify(mutation.payload, null, 4),
@@ -219,14 +219,14 @@ export default class SendJsonRequest extends Vue {
 				});
 				this.activeMessagePair = this.messages[0];
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
 			if (mutation.payload.mType === 'messageError') {
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				this.handleMessageError(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
 				this.handleAutoNetworkResponse(mutation.payload);
@@ -235,7 +235,7 @@ export default class SendJsonRequest extends Vue {
 			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
 				this.handleEnumerationNow(mutation.payload);
 			} else {
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				this.handleResponse(mutation.payload);
 			}
 		});
@@ -245,7 +245,7 @@ export default class SendJsonRequest extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -283,7 +283,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param request Daemon API request
 	 */
 	private sendRequest(request): void {
-		let options = new WebSocketOptions(request);
+		let options = new DaemonMessageOptions(request);
 		if ({}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
@@ -335,7 +335,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		if (response.data.rsp.lastWave && response.data.rsp.progress === 100) { // autonetwork finished
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.messages.autoNetworkFinish').toString()
 			);
@@ -353,7 +353,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		if (response.data.rsp.progress === 100) {
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.messages.backupFinish').toString()
 			);
@@ -371,7 +371,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		if (response.data.rsp.percentage === 100) { // enumeration finished
 			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.messages.enumerationFinish').toString()
 			);

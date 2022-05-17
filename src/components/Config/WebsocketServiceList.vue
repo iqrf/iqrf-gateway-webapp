@@ -154,7 +154,7 @@ import {IWsService} from '../../interfaces/messagingInterfaces';
 	},
 	computed: {
 		...mapGetters({
-			daemonVersion: 'daemonVersion',
+			daemonVersion: 'daemonClient/getVersion',
 		}),
 	},
 })

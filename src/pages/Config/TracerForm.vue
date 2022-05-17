@@ -205,7 +205,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {mapGetters} from 'vuex';
 
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
@@ -224,11 +223,6 @@ import {MetaInfo} from 'vue-meta';
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonVersion',
-		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
