@@ -129,7 +129,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * IQRF Gateway Webapp's version
 	 */
-	private const WEBAPP_VERSION = 'v2.4.7';
+	private const WEBAPP_VERSION = 'v2.4.8-alpha';
 
 	/**
 	 * Sets up the test environment
