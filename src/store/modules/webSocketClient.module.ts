@@ -168,7 +168,7 @@ const actions: ActionTree<WebSocketClientState, any> = {
 			commit('spinner/HIDE');
 			state.daemonStatus.modal = true;
 			return;
-		} 
+		}
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
@@ -247,7 +247,7 @@ const mutations: MutationTree<WebSocketClientState> = {
 		} else {
 			state.socket.isConnected = true;
 		}
-		
+
 	},
 	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
@@ -259,7 +259,10 @@ const mutations: MutationTree<WebSocketClientState> = {
 	},
 	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
 		if (message.mType === 'mngDaemon_Version' && message.data.msgId === state.version.msgId) {
-			state.version.daemonVersion = message.data.rsp.version.substr(0, 6);
+			const tokens = RegExp(/v\d+\.\d+\.\d+/g).exec(message.data.rsp.version);
+			if (tokens !== null && tokens.length > 0) {
+				state.version.daemonVersion = tokens[0];
+			}
 		}
 		state.responses[message.data.msgId] = message;
 	},
