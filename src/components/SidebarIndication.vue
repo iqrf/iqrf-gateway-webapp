@@ -26,7 +26,7 @@ limitations under the License.
 				</td>
 				<td class='status'>
 					<CBadge :color='daemonModeBadgeColor'>
-						{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonStatus.mode : 'unknown')) }}
+						{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonMode : 'unknown')) }}
 					</CBadge>
 				</td>
 			</tr>
@@ -66,8 +66,8 @@ import {mapGetters} from 'vuex';
 	},
 	computed: {
 		...mapGetters({
-			daemonStatus: 'daemonStatus',
-			isSocketConnected: 'isSocketConnected',
+			daemonMode: 'monitorClient/getMode',
+			isSocketConnected: 'daemonClient/isConnected',
 		}),
 	},
 })
@@ -82,15 +82,14 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon mode badge color
 	 */
 	get daemonModeBadgeColor(): string {
-		const daemonStatus = this.$store.getters.daemonStatus;
-		const socketConnected = this.$store.getters.isSocketConnected;
+		const daemonMode = this.$store.getters['monitorClient/getMode'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
 		if (!socketConnected) {
 			return 'secondary';
 		}
-		if (daemonStatus.mode === 'unknown') {
+		if (daemonMode === 'unknown') {
 			return 'secondary';
-		} else if (daemonStatus.mode === 'operational' ||
-			daemonStatus.mode === 'forwarding') {
+		} else if (daemonMode === 'operational' || daemonMode === 'forwarding') {
 			return 'success';
 		} else {
 			return 'danger';
@@ -102,14 +101,14 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon queue length badge color
 	 */
 	get daemonQueueBadgeColor(): string {
-		const daemonStatus = this.$store.getters.daemonStatus;
-		const socketConnected = this.$store.getters.isSocketConnected;
-		if (!socketConnected || daemonStatus.queueLen === 'unknown') {
+		const queueLen = this.$store.getters['monitorClient/getQueueLen'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
+		if (!socketConnected || queueLen === 'unknown') {
 			return 'secondary';
 		}
-		if (daemonStatus.queueLen <= 16) {
+		if (queueLen <= 16) {
 			return 'success';
-		} else if (daemonStatus.queueLen <= 24) {
+		} else if (queueLen <= 24) {
 			return 'warning';
 		} else {
 			return 'danger';
@@ -121,12 +120,12 @@ export default class SidebarIndication extends Vue {
 	 * @returns {string} Daemon queue length string
 	 */
 	get queueLen(): string {
-		const daemonStatus = this.$store.getters.daemonStatus;
-		const socketConnected = this.$store.getters.isSocketConnected;
-		if (!socketConnected || daemonStatus.queueLen === 'unknown') {
+		const queueLen = this.$store.getters['monitorClient/getQueueLen'];
+		const socketConnected = this.$store.getters['daemonClient/isConnected'];
+		if (!socketConnected || queueLen === 'unknown') {
 			return this.$t('daemonStatus.modes.unknown').toString();
 		}
-		return 'Length: ' + daemonStatus.queueLen;
+		return 'Length: ' + queueLen;
 	}
 }
 </script>

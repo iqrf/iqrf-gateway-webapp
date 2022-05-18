@@ -76,7 +76,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -99,7 +99,7 @@ export default class DiscoveryManager extends Vue {
 	 * @var {number} maxAddr Maximum node address
 	 */
 	private maxAddr = 239;
-	
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -123,12 +123,12 @@ export default class DiscoveryManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.commit('spinner/HIDE');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
 					this.handleDiscoveryResponse(mutation.payload);
 				} else if (mutation.payload.mType === 'messageError') {
@@ -144,7 +144,7 @@ export default class DiscoveryManager extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -154,7 +154,7 @@ export default class DiscoveryManager extends Vue {
 	private runDiscovery(): void {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.discovery.messages.spinnerNote').toString());
-		IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null))
+		IqrfNetService.discovery(this.txPower, this.maxAddr, new DaemonMessageOptions(null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

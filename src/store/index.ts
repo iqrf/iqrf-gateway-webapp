@@ -24,7 +24,9 @@ import installation from './modules/installation.module';
 import sidebar from './modules/sidebar.module';
 import spinner from './modules/spinner.module';
 import user from './modules/user.module';
-import webSocketClient from './modules/webSocketClient.module';
+import daemonClient from './modules/daemonClient.module';
+import monitorClient from './modules/monitorClient.module';
+import webSocket from './modules/webSocket.module';
 
 Vue.use(Vuex);
 
@@ -36,7 +38,9 @@ const store: Store<any> = new Vuex.Store({
 		sidebar,
 		spinner,
 		user,
-		webSocketClient,
+		webSocket,
+		daemonClient,
+		monitorClient,
 	},
 	plugins: [createPersistentState({
 		paths: [

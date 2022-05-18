@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '../store';
-import {WebSocketOptions} from '../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../ws/DaemonMessageOptions';
 
 export enum DaemonModeEnum {
 	getMode = '',
@@ -56,8 +56,8 @@ class DaemonModeService {
 				'returnVerbose': true,
 			},
 		};
-		const options = new WebSocketOptions(request, timeout, message, callback);
-		return store.dispatch('sendRequest', options);
+		const options = new DaemonMessageOptions(request, timeout, message, callback);
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**

@@ -148,7 +148,7 @@ import {cilCheckAlt, cilX} from '@coreui/icons';
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
 
 import {MutationPayload} from 'vuex';
-import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -225,16 +225,16 @@ export default class BinaryOutputManager extends Vue {
 		extend('required', required);
 		extend('between', between);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
 				this.responseType = null;
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
@@ -253,7 +253,7 @@ export default class BinaryOutputManager extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -274,11 +274,11 @@ export default class BinaryOutputManager extends Vue {
 	}
 
 	/**
-	 * Creates WebSocketOptions object for Daemon api request
-	 * @returns {WebSocketOptions} WebSocket request options
+	 * Creates DaemonMessageOptions object for Daemon api request
+	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
-	private buildOptions(): WebSocketOptions {
-		return new WebSocketOptions(null, 30000, 'iqrfnet.standard.binaryOutput.messages.timeout', () => this.msgId = null);
+	private buildOptions(): DaemonMessageOptions {
+		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.binaryOutput.messages.timeout', () => this.msgId = null);
 	}
 
 	/**
