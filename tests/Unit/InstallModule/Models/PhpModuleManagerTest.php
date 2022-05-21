@@ -3,7 +3,7 @@
 /**
  * TEST: App\InstallModule\Models\SudoManager
  * @covers App\InstallModule\Models\SudoManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

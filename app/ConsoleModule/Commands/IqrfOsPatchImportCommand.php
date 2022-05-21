@@ -39,13 +39,14 @@ class IqrfOsPatchImportCommand extends Command {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'iqrf-os:import-patches';
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * Constructor

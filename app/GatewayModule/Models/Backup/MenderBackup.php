@@ -55,22 +55,22 @@ class MenderBackup implements IBackupManager {
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private $featureEnabled;
+	private bool $featureEnabled;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

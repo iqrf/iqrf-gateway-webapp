@@ -38,7 +38,7 @@ abstract class BaseController implements IController {
 	/**
 	 * @var RestApiSchemaValidator REST API JSON schema validator
 	 */
-	protected $validator;
+	protected RestApiSchemaValidator $validator;
 
 	/**
 	 * Constructor

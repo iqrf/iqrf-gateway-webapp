@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\WebSocketClient
  * @covers App\IqrfNetModule\Models\WebSocketClient
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,12 +44,12 @@ final class WebSocketClientTest extends TestCase {
 	/**
 	 * @var WebSocketClient IQRF App manager
 	 */
-	private $client;
+	private WebSocketClient $client;
 
 	/**
 	 * @var ApiRequest JSON API request
 	 */
-	private $request;
+	private ApiRequest $request;
 
 	/**
 	 * URL to IQRF Gateway Daemon's WebSocket server

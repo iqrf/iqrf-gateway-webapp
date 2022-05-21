@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\InfoManager
  * @covers App\GatewayModule\Models\InfoManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -50,7 +50,7 @@ final class InfoManagerTest extends CommandTestCase {
 	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
 	 */
-	private $manager;
+	private InfoManager $manager;
 
 	/**
 	 * @var MockInterface|PixlaManager Mocked PIXLA manager

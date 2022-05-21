@@ -52,7 +52,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json"
 
 cs: deps
-	vendor/bin/codesniffer --runtime-set php_version 70300 app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests
 
 deb-package:
 	debuild -b -uc -us
@@ -149,13 +149,13 @@ lint: deps
 	vendor/bin/linter app bin tests
 
 phpstan: deps
-	NETTE_TESTER_RUNNER=1 vendor/bin/phpstan analyse -c phpstan.neon
+	NETTE_TESTER_RUNNER=1 php7.4 vendor/bin/phpstan analyse -c phpstan.neon
 
 rector: deps
 	NETTE_TESTER_RUNNER=1 vendor/bin/rector process --dry-run
 
 run:
-	php -S [::]:8080 -t www/
+	php7.4 -S [::]:8080 -t www/
 
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction

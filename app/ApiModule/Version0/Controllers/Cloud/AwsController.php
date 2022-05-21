@@ -47,7 +47,7 @@ class AwsController extends CloudsController {
 	/**
 	 * @var AwsManager Amazon AWS IoT connection manager
 	 */
-	private $manager;
+	private AwsManager $manager;
 
 	/**
 	 * Constructor

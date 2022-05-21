@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\TaskTimeManager
  * @covers App\ConfigModule\Models\TaskTimeManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,7 +40,7 @@ final class TaskTimeManagerTest extends TestCase {
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
-	private $manager;
+	private TaskTimeManager $manager;
 
 	/**
 	 * Sets up the test environment

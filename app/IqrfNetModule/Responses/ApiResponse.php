@@ -33,7 +33,7 @@ class ApiResponse {
 	/**
 	 * @var stdClass JSON API response
 	 */
-	protected $response;
+	protected stdClass $response;
 
 	/**
 	 * Checks a status from the IQRF JSON API response

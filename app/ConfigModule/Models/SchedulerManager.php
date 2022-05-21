@@ -39,17 +39,17 @@ class SchedulerManager {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var SchedulerSchemaManager Scheduler JSON schema manager
 	 */
-	private $schemaManager;
+	private SchedulerSchemaManager $schemaManager;
 
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
-	private $timeManager;
+	private TaskTimeManager $timeManager;
 
 	/**
 	 * Constructor

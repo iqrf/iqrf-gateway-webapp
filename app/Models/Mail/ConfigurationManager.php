@@ -36,7 +36,7 @@ class ConfigurationManager {
 	/**
 	 * @var string Path to the configuration file
 	 */
-	private $path;
+	private string $path;
 
 	/**
 	 * Returns the configuration schema

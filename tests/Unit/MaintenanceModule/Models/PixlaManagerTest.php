@@ -3,7 +3,7 @@
 /**
  * TEST: App\MaintenanceModule\Models\PixlaManager
  * @covers App\MaintenanceModule\Models\PixlaManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -64,7 +64,7 @@ final class PixlaManagerTest extends CommandTestCase {
 	/**
 	 * @var PixlaManager PIXLA management system manager
 	 */
-	private $manager;
+	private PixlaManager $manager;
 
 	/**
 	 * Sets up the test environment

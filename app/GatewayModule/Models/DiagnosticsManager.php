@@ -39,32 +39,32 @@ class DiagnosticsManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
 	 */
-	private $daemonDirectories;
+	private DaemonDirectories $daemonDirectories;
 
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
-	private $enumerationManager;
+	private EnumerationManager $enumerationManager;
 
 	/**
 	 * @var GatewayInfoUtil Gateway info manager
 	 */
-	private $gwInfo;
+	private GatewayInfoUtil $gwInfo;
 
 	/**
 	 * @var InfoManager Gateway info manager
 	 */
-	private $infoManager;
+	private InfoManager $infoManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
-	private $zipManager;
+	private ZipArchiveManager $zipManager;
 
 	/**
 	 * Constructor

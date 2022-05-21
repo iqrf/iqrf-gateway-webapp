@@ -49,22 +49,22 @@ class NtpManager {
 	/**
 	 * @var string $fullPath Path to configuration file
 	 */
-	private $fullPath;
+	private string $fullPath;
 
 	/**
 	 * @var string $confFile Configuration file name
 	 */
-	private $confFile;
+	private string $confFile;
 
 	/**
 	 * @var CommandManager $commandManager Commang manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor

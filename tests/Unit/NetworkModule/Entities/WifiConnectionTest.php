@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\WifiConnection
  * @covers App\NetworkModule\Entities\WifiConnection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -52,7 +52,7 @@ final class WifiConnectionTest extends TestCase {
 	/**
 	 * @var WifiConnection WiFi connection entity
 	 */
-	private $entity;
+	private WifiConnection $entity;
 
 	/**
 	 * Sets up the testing environment

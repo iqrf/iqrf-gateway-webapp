@@ -39,32 +39,32 @@ class Eap implements INetworkManagerEntity {
 	/**
 	 * @var EapPhaseOneMethod|null EAP phase one authentication method
 	 */
-	private $phaseOne;
+	private ?EapPhaseOneMethod $phaseOne;
 
 	/**
 	 * @var EapPhaseTwoMethod|null EAP phase two authentication method
 	 */
-	private $phaseTwo;
+	private ?EapPhaseTwoMethod $phaseTwo;
 
 	/**
 	 * @var string EAP anonymous identity string
 	 */
-	private $anonymousIdentity;
+	private string $anonymousIdentity;
 
 	/**
 	 * @var string EAP CA certificate
 	 */
-	private $cert;
+	private string $cert;
 
 	/**
 	 * @var string EAP identity string
 	 */
-	private $identity;
+	private string $identity;
 
 	/**
 	 * @var string EAP password
 	 */
-	private $password;
+	private string $password;
 
 	/**
 	 * Constructor

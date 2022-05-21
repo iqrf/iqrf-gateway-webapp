@@ -46,12 +46,12 @@ class MailerController extends BaseConfigController {
 	/**
 	 * @var ConfigurationManager Mailer configuration manager
 	 */
-	private $manager;
+	private ConfigurationManager $manager;
 
 	/**
 	 * @var MailerConfigurationTestMailSender Mailer configuration test mail sender
 	 */
-	private $configurationTestSender;
+	private MailerConfigurationTestMailSender $configurationTestSender;
 
 	/**
 	 * Constructor

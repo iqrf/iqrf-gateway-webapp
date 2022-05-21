@@ -55,42 +55,42 @@ class WireguardManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * @var WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
-	private $wireguardInterfaceIpv4Repository;
+	private WireguardInterfaceIpv4Repository $wireguardInterfaceIpv4Repository;
 
 	/**
 	 * @var WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
-	private $wireguardInterfaceIpv6Repository;
+	private WireguardInterfaceIpv6Repository $wireguardInterfaceIpv6Repository;
 
 	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
-	private $wireguardInterfaceRepository;
+	private WireguardInterfaceRepository $wireguardInterfaceRepository;
 
 	/**
 	 * @var WireguardPeerAddressRepository WireGuard peer address repository
 	 */
-	private $wireguardPeerAddressRepository;
+	private WireguardPeerAddressRepository $wireguardPeerAddressRepository;
 
 	/**
 	 * @var WireguardPeerRepository WireGuard peer repository
 	 */
-	private $wireguardPeerRepository;
+	private WireguardPeerRepository $wireguardPeerRepository;
 
 	/**
 	 * Constructor

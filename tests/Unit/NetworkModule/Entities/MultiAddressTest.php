@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\MultiAddress
  * @covers App\NetworkModule\Entities\MultiAddress
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,12 +41,12 @@ final class MultiAddressTest extends TestCase {
 	/**
 	 * @var Multi IPv4 address
 	 */
-	private $ipv4;
+	private Multi $ipv4;
 
 	/**
 	 * @var Multi IPv6 address
 	 */
-	private $ipv6;
+	private Multi $ipv6;
 
 	/**
 	 * IPv4 address
@@ -71,12 +71,12 @@ final class MultiAddressTest extends TestCase {
 	/**
 	 * @var MultiAddress IPv4 address entity
 	 */
-	private $ipv4Entity;
+	private MultiAddress $ipv4Entity;
 
 	/**
 	 * @var MultiAddress IPv6 address entity
 	 */
-	private $ipv6Entity;
+	private MultiAddress $ipv6Entity;
 
 	/**
 	 * Sets up the test environment

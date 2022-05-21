@@ -61,12 +61,12 @@ class AuthenticationMiddleware implements IMiddleware {
 	/**
 	 * @var IAuthenticator Authenticator
 	 */
-	private $authenticator;
+	private IAuthenticator $authenticator;
 
 	/**
 	 * @var EntityManager Database entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * Constructor

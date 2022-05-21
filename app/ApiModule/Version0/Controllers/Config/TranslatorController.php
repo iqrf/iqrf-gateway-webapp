@@ -43,7 +43,7 @@ class TranslatorController extends BaseConfigController {
 	/**
 	 * @var TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
 	 */
-	private $manager;
+	private TranslatorConfigManager $manager;
 
 	/**
 	 * Constructor

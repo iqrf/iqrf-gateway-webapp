@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\VersionManager
  * @covers App\GatewayModule\Models\VersionManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,7 +51,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * @var VersionManager Version manager
 	 */
-	private $manager;
+	private VersionManager $manager;
 
 	/**
 	 * IQRF Gateway Daemon's API request

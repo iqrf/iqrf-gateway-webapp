@@ -46,7 +46,7 @@ class InterfacesController extends NetworkController {
 	/**
 	 * @var InterfaceManager Network interface manager
 	 */
-	private $interfaceManager;
+	private InterfaceManager $interfaceManager;
 
 	/**
 	 * Constructor

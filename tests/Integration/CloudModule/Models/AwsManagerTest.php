@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AwsManager
  * @covers App\CloudModule\Models\AwsManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -47,17 +47,17 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * @var CertificateManager Certificate manager
 	 */
-	private $certManager;
+	private CertificateManager $certManager;
 
 	/**
 	 * @var string Path to a directory with certificates and private keys
 	 */
-	protected $certPathReal;
+	protected string $certPathReal;
 
 	/**
 	 * @var array<string> Values from Amazon AWS IoT form
 	 */
-	private $formValues = [
+	private array $formValues = [
 		'endpoint' => 'localhost',
 	];
 

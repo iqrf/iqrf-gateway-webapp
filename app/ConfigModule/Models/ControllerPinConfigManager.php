@@ -34,12 +34,12 @@ class ControllerPinConfigManager {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var ControllerPinConfigurationRepository Controller pins repository
 	 */
-	private $repository;
+	private ControllerPinConfigurationRepository $repository;
 
 	/**
 	 * Constructor

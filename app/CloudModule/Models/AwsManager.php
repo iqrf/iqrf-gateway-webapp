@@ -44,22 +44,22 @@ class AwsManager implements IManager {
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
+	private GenericManager $configManager;
 
 	/**
 	 * @var CertificateManager manager for certificates
 	 */
-	private $certManager;
+	private CertificateManager $certManager;
 
 	/**
 	 * @var string Path to the certificates
 	 */
-	private $certPath;
+	private string $certPath;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * Constructor

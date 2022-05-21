@@ -37,17 +37,17 @@ abstract class JsonConfigTestCase extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	protected $fileManager;
+	protected JsonFileManager $fileManager;
 
 	/**
 	 * @var JsonFileManager JSON temporary file manager
 	 */
-	protected $fileManagerTemp;
+	protected JsonFileManager $fileManagerTemp;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
 	 */
-	protected $schemaManager;
+	protected ComponentSchemaManager $schemaManager;
 
 	/**
 	 * Copies the JSON file to a temporary directory

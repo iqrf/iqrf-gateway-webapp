@@ -31,17 +31,17 @@ class IqrfOs {
 	/**
 	 * @var string IQRF OS build
 	 */
-	private $build;
+	private string $build;
 
 	/**
 	 * @var TrSeries|null IQRF TR series
 	 */
-	private $trSeries;
+	private ?TrSeries $trSeries;
 
 	/**
 	 * @var string IQRF OS version
 	 */
-	private $version;
+	private string $version;
 
 	/**
 	 * Constructor

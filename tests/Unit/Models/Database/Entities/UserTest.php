@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\User
  * @covers App\Models\Database\Entities\User
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -74,7 +74,7 @@ final class UserTest extends TestCase {
 	/**
 	 * @var User User entity
 	 */
-	private $entity;
+	private User $entity;
 
 	/**
 	 * Sets up the test environment

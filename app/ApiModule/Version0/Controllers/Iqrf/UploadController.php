@@ -50,12 +50,12 @@ class UploadController extends IqrfController {
 	/**
 	 * @var UploadManager Upload manager
 	 */
-	private $uploadManager;
+	private UploadManager $uploadManager;
 
 	/**
 	 * @var DpaManager DPA manager
 	 */
-	private $dpaManager;
+	private DpaManager $dpaManager;
 
 	/**
 	 * Constructor

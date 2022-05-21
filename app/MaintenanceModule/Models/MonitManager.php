@@ -32,7 +32,7 @@ class MonitManager {
 	/**
 	 * @var IFileManager $fileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
 	 * Monit configuration file

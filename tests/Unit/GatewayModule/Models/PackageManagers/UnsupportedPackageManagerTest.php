@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -46,7 +46,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	/**
 	 * @var UnsupportedPackageManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private UnsupportedPackageManager $manager;
 
 	/**
 	 * Sets up the test environment

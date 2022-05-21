@@ -46,31 +46,31 @@ class ApiKey implements JsonSerializable {
 	/**
 	 * @var string|null API key
 	 */
-	private $key;
+	private ?string $key;
 
 	/**
 	 * @var string API key hash
 	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
-	private $hash;
+	private string $hash;
 
 	/**
 	 * @var string API key hash salt
 	 * @ORM\Column(type="string", length=22, unique=true)
 	 */
-	private $salt;
+	private string $salt;
 
 	/**
 	 * @var string API key description
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $description;
+	private string $description;
 
 	/**
 	 * @var DateTime|null API key expiration
 	 * @ORM\Column(type="datetime", nullable=true)
 	 */
-	private $expiration;
+	private ?DateTime $expiration;
 
 	/**
 	 * Constructor

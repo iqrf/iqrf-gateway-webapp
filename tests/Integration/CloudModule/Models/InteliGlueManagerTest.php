@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\InteliGlueManager
  * @covers App\CloudModule\Models\InteliGlueManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

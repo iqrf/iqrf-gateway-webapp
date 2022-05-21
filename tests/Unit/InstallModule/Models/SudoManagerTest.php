@@ -3,7 +3,7 @@
 /**
  * TEST: App\InstallModule\Models\SudoManager
  * @covers App\InstallModule\Models\SudoManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,7 +44,7 @@ final class SudoManagerTest extends CommandTestCase {
 	/**
 	 * @var SudoManager Sudo manager
 	 */
-	private $manager;
+	private SudoManager $manager;
 
 	/**
 	 * Sets up the test environment

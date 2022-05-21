@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\JsonFileManager
  * @covers App\CoreModule\Models\JsonFileManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -59,12 +59,12 @@ final class JsonFileManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $manager;
+	private JsonFileManager $manager;
 
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $managerTest;
+	private JsonFileManager $managerTest;
 
 	/**
 	 * Tests the function to get a directory with files

@@ -44,7 +44,7 @@ class AptController extends BaseConfigController {
 	/**
 	 * @var AptManager APT manager
 	 */
-	private $manager;
+	private AptManager $manager;
 
 	/**
 	 * Constructor

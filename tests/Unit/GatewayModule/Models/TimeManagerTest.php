@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\TimeManager
  * @covers App\GatewayModule\Models\TimeManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -55,7 +55,7 @@ final class TimeManagerTest extends CommandTestCase {
 	/**
 	 * @var TimeManager Time manager
 	 */
-	private $manager;
+	private TimeManager $manager;
 
 	/**
 	 * Sets up test environment

@@ -45,27 +45,27 @@ class SshManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var string|null Path to SSH directory
 	 */
-	private $directory;
+	private ?string $directory;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var PrivilegedFileManager|null Privileged file manager
 	 */
-	private $fileManager;
+	private ?PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var SshKeyRepository SSH key repository
 	 */
-	private $sshKeyRepository;
+	private SshKeyRepository $sshKeyRepository;
 
 	/**
 	 * Constructor

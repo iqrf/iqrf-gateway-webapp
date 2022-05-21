@@ -46,12 +46,12 @@ class AptManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var IFileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
 	 * Constructor

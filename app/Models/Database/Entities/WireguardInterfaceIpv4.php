@@ -40,20 +40,20 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 	 * @var IP Interface address
 	 * @ORM\Column(type="ip", nullable=false)
 	 */
-	private $address;
+	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
 	 * @ORM\Column(type="integer", nullable=false)
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
-	 * @var WireguardInterface
+	 * @var WireguardInterface WireGuard interface
 	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv4")
 	 * @ORM\JoinColumn(name="interface_id", referencedColumnName="id")
 	 */
-	private $interface;
+	private WireguardInterface $interface;
 
 	/**
 	 * Constructor

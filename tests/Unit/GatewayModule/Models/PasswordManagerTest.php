@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PasswordManager
  * @covers App\GatewayModule\Models\PasswordManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -54,7 +54,7 @@ final class PasswordManagerTest extends CommandTestCase {
 	/**
 	 * @var PasswordManager Root manager
 	 */
-	private $manager;
+	private PasswordManager $manager;
 
 	/**
 	 * Sets up the test environment

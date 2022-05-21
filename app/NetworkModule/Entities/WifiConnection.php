@@ -38,22 +38,22 @@ final class WifiConnection implements INetworkManagerEntity {
 	/**
 	 * @var string SSID
 	 */
-	private $ssid;
+	private string $ssid;
 
 	/**
 	 * @var WifiMode WiFi network mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
 	 * @var array<int, string> Seen BSSIDs
 	 */
-	private $bssids;
+	private array $bssids;
 
 	/**
 	 * @var WifiConnectionSecurity|null Wifi connection security entity
 	 */
-	private $security;
+	private ?WifiConnectionSecurity $security;
 
 	/**
 	 * Constructor

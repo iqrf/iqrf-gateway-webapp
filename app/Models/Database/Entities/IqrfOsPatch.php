@@ -37,49 +37,49 @@ class IqrfOsPatch {
 	 * @var string IQRF TR module type
 	 * @ORM\Column(type="string", length=15)
 	 */
-	private $moduleType;
+	private string $moduleType;
 
 	/**
 	 * @var int Current IQRF OS version
 	 * @ORM\Column(type="integer")
 	 */
-	private $fromVersion;
+	private int $fromVersion;
 
 	/**
 	 * @var int Current IQRF OS build
 	 * @ORM\Column(type="integer")
 	 */
-	private $fromBuild;
+	private int $fromBuild;
 
 	/**
 	 * @var int Next IQRF OS version
 	 * @ORM\Column(type="integer")
 	 */
-	private $toVersion;
+	private int $toVersion;
 
 	/**
 	 * @var int Next IQRF OS build
 	 * @ORM\Column(type="integer")
 	 */
-	private $toBuild;
+	private int $toBuild;
 
 	/**
 	 * @var int Part number
 	 * @ORM\Column(type="integer")
 	 */
-	private $part;
+	private int $part;
 
 	/**
 	 * @var int Total parts
 	 * @ORM\Column(type="integer")
 	 */
-	private $parts;
+	private int $parts;
 
 	/**
 	 * @var string File name
 	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
-	private $fileName;
+	private string $fileName;
 
 	/**
 	 * Constructor

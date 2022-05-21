@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\TranslatorConfigManager
  * @covers App\ConfigModule\Models\TranslatorConfigManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -55,12 +55,12 @@ final class TranslatorConfigManagerTest extends TestCase {
 	/**
 	 * @var TranslatorConfigManager Translator configuration manager
 	 */
-	private $manager;
+	private TranslatorConfigManager $manager;
 
 	/**
 	 * @var TranslatorConfigManager Translator configuration temporary manager
 	 */
-	private $managerTemp;
+	private TranslatorConfigManager $managerTemp;
 
 	/**
 	 * Tests the function to read Translator configuration file

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\GSMConnection
  * @covers App\NetworkModule\Entities\GSMConnection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -67,12 +67,12 @@ final class GSMConnectionTest extends TestCase {
 	/**
 	 * @var GSMConnection GSM connection entity
 	 */
-	private $entity;
+	private GSMConnection $entity;
 
 	/**
 	 * @var GSMConnection GSM connection entity with null optional parameters
 	 */
-	private $nullEntity;
+	private GSMConnection $nullEntity;
 
 	/**
 	 * Sets up the testing environment

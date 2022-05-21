@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Enums\WifiSecurityType
  * @covers App\NetworkModule\Enums\WifiSecurityType
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

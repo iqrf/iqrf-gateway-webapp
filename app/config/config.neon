@@ -54,6 +54,23 @@ extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+	sentry: Contributte\Sentry\DI\SentryExtension
+
+sentry:
+	enable: true
+	integrations: true
+	client:
+		dsn: %sentry.dsn%
+		release: %sentry.release%
+	logger:
+		captureMessages: true
+		captureLevels:
+			- debug
+			- info
+			- warning
+			- error
+			- exception
+			- critical
 
 iqrfMacros:
 	# path to IQRF IDE macros
@@ -71,7 +88,6 @@ middleware:
 tracy:
 	bar:
 		- App\CoreModule\Tracy\CommandPanel(@commandStack)
-	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
 	maxDepth: 10
 

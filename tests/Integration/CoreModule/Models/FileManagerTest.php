@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\FileManager
  * @covers App\CoreModule\Models\FileManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -58,12 +58,12 @@ final class FileManagerTest extends TestCase {
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $manager;
+	private FileManager $manager;
 
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $managerTest;
+	private FileManager $managerTest;
 
 	/**
 	 * Tests the function to get a directory with files

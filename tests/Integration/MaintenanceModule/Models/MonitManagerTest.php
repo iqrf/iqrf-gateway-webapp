@@ -3,7 +3,7 @@
 /**
  * TEST: App\MaintenanceModule\Models\MonitManager
  * @covers App\MaintenanceModule\Models\MonitManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,22 +51,22 @@ final class MonitManagerTest extends TestCase {
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var FileManager Text file manager temp
 	 */
-	private $fileManagerTemp;
+	private FileManager $fileManagerTemp;
 
 	/**
 	 * @var MonitManager Monit manager
 	 */
-	private $manager;
+	private MonitManager $manager;
 
 	/**
 	 * @var MonitManager Monit manager
 	 */
-	private $managerTemp;
+	private MonitManager $managerTemp;
 
 	/**
 	 * Sets up the test environment

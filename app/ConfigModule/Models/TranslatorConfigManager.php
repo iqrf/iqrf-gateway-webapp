@@ -30,7 +30,7 @@ class TranslatorConfigManager {
 	/**
 	 * @var JsonFileManager $fileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * JSON file containing translator configuration

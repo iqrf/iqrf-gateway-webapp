@@ -64,61 +64,61 @@ class Mapping implements JsonSerializable {
 	 * @var string Mapping type
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $type;
+	private string $type;
 
 	/**
 	 * @var string Mapping name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string Device name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $iqrfInterface;
+	private string $iqrfInterface;
 
 	/**
 	 * @var int Bus enable pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $busEnableGpioPin;
+	private int $busEnableGpioPin;
 
 	/**
 	 * @var int Programming mode switch pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $pgmSwitchGpioPin;
+	private int $pgmSwitchGpioPin;
 
 	/**
 	 * @var int Power enable pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $powerEnableGpioPin;
+	private int $powerEnableGpioPin;
 
 	/**
 	 * @var int|null UART baud rate
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $baudRate;
+	private ?int $baudRate;
 
 	/**
 	 * @var int|null I2C interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $i2cEnableGpioPin;
+	private ?int $i2cEnableGpioPin;
 
 	/**
 	 * @var int|null SPI interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $spiEnableGpioPin;
+	private ?int $spiEnableGpioPin;
 
 	/**
 	 * @var int|null UART interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $uartEnableGpioPin;
+	private ?int $uartEnableGpioPin;
 
 	/**
 	 * Constructor

@@ -34,6 +34,7 @@ class MappingAddCommand extends MappingCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'mapping:add';
 

@@ -49,7 +49,7 @@ class ConnectionsController extends NetworkController {
 	/**
 	 * @var ConnectionManager Network connection manager
 	 */
-	private $manager;
+	private ConnectionManager $manager;
 
 	/**
 	 * Constructor

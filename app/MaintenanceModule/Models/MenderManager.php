@@ -60,17 +60,17 @@ class MenderManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var JsonFileManager $fileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var ServiceManager $serviceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * Constructior

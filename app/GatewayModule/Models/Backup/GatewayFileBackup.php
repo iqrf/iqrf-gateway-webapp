@@ -71,17 +71,17 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var string Gateway ID
 	 */
-	private $gwId;
+	private string $gwId;
 
 	/**
 	 * @var string Gateway token
 	 */
-	private $gwToken;
+	private ?string $gwToken;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

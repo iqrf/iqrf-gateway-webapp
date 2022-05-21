@@ -33,42 +33,42 @@ final class WifiNetwork implements JsonSerializable {
 	/**
 	 * @var bool Is in use?
 	 */
-	private $inUse;
+	private bool $inUse;
 
 	/**
 	 * @var string BSSID (MAC address)
 	 */
-	private $bssid;
+	private string $bssid;
 
 	/**
 	 * @var string SSID
 	 */
-	private $ssid;
+	private string $ssid;
 
 	/**
 	 * @var WifiMode Mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
 	 * @var int Channel
 	 */
-	private $channel;
+	private int $channel;
 
 	/**
 	 * @var string Speed rate
 	 */
-	private $rate;
+	private string $rate;
 
 	/**
 	 * @var int Signal strength
 	 */
-	private $signal;
+	private int $signal;
 
 	/**
 	 * @var WifiSecurity Security
 	 */
-	private $security;
+	private WifiSecurity $security;
 
 	/**
 	 * Constructor

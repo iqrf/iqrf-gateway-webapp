@@ -43,7 +43,7 @@ class NtpController extends GatewayController {
 	/**
 	 * @var NtpManager NTP manager
 	 */
-	private $manager;
+	private NtpManager $manager;
 
 	/**
 	 * Constructor

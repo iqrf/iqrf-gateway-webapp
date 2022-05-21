@@ -38,17 +38,17 @@ class IqrfOsManager {
 	/**
 	 * @var DpaManager DPA manager
 	 */
-	private $dpaManager;
+	private DpaManager $dpaManager;
 
 	/**
 	 * @var OsAndDpaManager IQRF OS and DPA manager
 	 */
-	private $osDpaManager;
+	private OsAndDpaManager $osDpaManager;
 
 	/**
 	 * @var IqrfOsPatchRepository IQRF OS patch database repository
 	 */
-	private $repository;
+	private IqrfOsPatchRepository $repository;
 
 	/**
 	 * Constructor

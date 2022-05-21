@@ -72,37 +72,37 @@ class BackupManager {
 	/**
 	 * @var array<IBackupManager> Backup managers
 	 */
-	private $backupManagers;
+	private array $backupManagers;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var GatewayInfoUtil Gateway info manager
 	 */
-	private $gwInfo;
+	private GatewayInfoUtil $gwInfo;
 
 	/**
 	 * @var PowerManager Power manager
 	 */
-	private $powerManager;
+	private PowerManager $powerManager;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
 	 */
-	private $schemaManager;
+	private ComponentSchemaManager $schemaManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
-	private $zipManager;
+	private ZipArchiveManager $zipManager;
 
 	/**
 	 * Constructor

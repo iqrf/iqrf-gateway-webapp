@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\ApiKey
  * @covers App\Models\Database\Entities\ApiKey
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,7 +44,7 @@ class ApiKeyTest extends TestCase {
 	/**
 	 * @var ApiKey API key entity
 	 */
-	private $entity;
+	private ApiKey $entity;
 
 	/**
 	 * API key description
@@ -64,12 +64,12 @@ class ApiKeyTest extends TestCase {
 	/**
 	 * @var string API key
 	 */
-	private $key;
+	private string $key;
 
 	/**
 	 * @var DateTime API key expiration
 	 */
-	private $expiration;
+	private DateTime $expiration;
 
 	/**
 	 * Sets up the test environment

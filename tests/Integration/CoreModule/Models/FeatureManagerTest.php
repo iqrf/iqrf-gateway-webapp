@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\FeatureManager
  * @covers App\CoreModule\Models\FeatureManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -53,12 +53,12 @@ final class FeatureManagerTest extends TestCase {
 	/**
 	 * @var FeatureManager Optional feature manager
 	 */
-	private $manager;
+	private FeatureManager $manager;
 
 	/**
 	 * @var FeatureManager Optional feature manager
 	 */
-	private $managerTemp;
+	private FeatureManager $managerTemp;
 
 	/**
 	 * Copies the original file

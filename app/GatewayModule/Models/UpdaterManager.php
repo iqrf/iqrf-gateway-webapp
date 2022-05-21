@@ -34,12 +34,12 @@ class UpdaterManager {
 	/**
 	 * @var IPackageManager Adapter for package manager
 	 */
-	private $packageManager;
+	private IPackageManager $packageManager;
 
 	/**
 	 * @var array<string> Adapters for package managers
 	 */
-	private $packageManagers = [
+	private array $packageManagers = [
 		AptGetPackageManager::class,
 	];
 

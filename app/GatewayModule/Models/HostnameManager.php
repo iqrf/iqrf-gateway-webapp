@@ -44,17 +44,17 @@ class HostnameManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var IFileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
 	 * @var NetworkManager Network manager
 	 */
-	private $networkManager;
+	private NetworkManager $networkManager;
 
 	/**
 	 * Constructor

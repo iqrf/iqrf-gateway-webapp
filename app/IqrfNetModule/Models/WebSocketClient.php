@@ -32,6 +32,7 @@ use Ratchet\Client\WebSocket as WsClient;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use React\Socket as ReactSocket;
 use Tracy\Debugger;
@@ -42,14 +43,14 @@ use Tracy\Debugger;
 class WebSocketClient {
 
 	/**
-	 * @var EventLoop\LoopInterface Event loop
+	 * @var LoopInterface Event loop
 	 */
-	private $loop;
+	private LoopInterface $loop;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private $serverUrl;
+	private string $serverUrl;
 
 	/**
 	 * Constructor

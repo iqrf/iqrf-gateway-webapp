@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\EnumerationManager
  * @covers App\IqrfNetModule\Models\EnumerationManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,7 +44,7 @@ final class EnumerationManagerTest extends WebSocketTestCase {
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
-	private $manager;
+	private EnumerationManager $manager;
 
 	/**
 	 * Sets up the test environment

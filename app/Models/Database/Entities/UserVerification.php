@@ -42,7 +42,7 @@ class UserVerification {
 	 * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
 	 * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="CASCADE")
 	 */
-	private $user;
+	private User $user;
 
 	/**
 	 * Constructor
@@ -65,9 +65,6 @@ class UserVerification {
 	 * @return bool Is the password recovery request expired?
 	 */
 	public function isExpired(): bool {
-		if ($this->createdAt === null) {
-			return false;
-		}
 		$expirationInterval = new DateInterval('P1D');
 		$expiration = DateTimeImmutable::createFromMutable($this->createdAt)
 			->add($expirationInterval);

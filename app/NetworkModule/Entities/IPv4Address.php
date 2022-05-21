@@ -30,12 +30,12 @@ class IPv4Address {
 	/**
 	 * @var IPv4 IPv4 address
 	 */
-	private $address;
+	private IPv4 $address;
 
 	/**
 	 * @var int IPv4 address prefix
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
 	 * IPv4 address entity constructor

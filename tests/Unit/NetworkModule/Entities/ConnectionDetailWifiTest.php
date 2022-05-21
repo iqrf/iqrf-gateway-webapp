@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -83,32 +83,32 @@ final class ConnectionDetailWifiTest extends TestCase {
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
 	 */
-	private $ipv4;
+	private IPv4Connection $ipv4;
 
 	/**
 	 * @var IPv6Connection IPv6 network connection entity
 	 */
-	private $ipv6;
+	private IPv6Connection $ipv6;
 
 	/**
 	 * @var WifiConnection WiFi network connection entity
 	 */
-	private $wifi;
+	private WifiConnection $wifi;
 
 	/**
 	 * @var ConnectionDetail Network connection entity
 	 */
-	private $entity;
+	private ConnectionDetail $entity;
 
 	/**
 	 * Sets up the test environment

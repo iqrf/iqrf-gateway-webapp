@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -58,7 +58,7 @@ final class LeapTest extends TestCase {
 	/**
 	 * @var Leap Cisco LEAP entity
 	 */
-	private $entity;
+	private Leap $entity;
 
 	/**
 	 * Sets up the test environment

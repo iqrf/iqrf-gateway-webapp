@@ -32,7 +32,7 @@ class AptGetPackageManager implements IPackageManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * Constructor

@@ -33,7 +33,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	/**
 	 * @var MappingRepository Mapping database repository
 	 */
-	protected $repository;
+	protected MappingRepository $repository;
 
 	/**
 	 * Constructor

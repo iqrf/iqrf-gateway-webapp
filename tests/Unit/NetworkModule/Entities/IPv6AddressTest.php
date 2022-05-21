@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv6Address
  * @covers App\NetworkModule\Entities\IPv6Address
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,12 +51,12 @@ final class IPv6AddressTest extends TestCase {
 	/**
 	 * @var IPv6 IPv6 address
 	 */
-	private $address;
+	private IPv6 $address;
 
 	/**
 	 * @var IPv6Address IPv6 address entity
 	 */
-	private $entity;
+	private IPv6Address $entity;
 
 	/**
 	 * Sets up the test environment

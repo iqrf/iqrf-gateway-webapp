@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\SchedulerMigrationManager
  * @covers App\ConfigModule\Models\SchedulerMigrationManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -71,12 +71,12 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var SchedulerMigrationManager Configuration migration manager
 	 */
-	private $manager;
+	private SchedulerMigrationManager $manager;
 
 	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\IbmCloudManager
  * @covers App\CloudModule\Models\IbmCloudManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

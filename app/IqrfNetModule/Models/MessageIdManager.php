@@ -32,7 +32,7 @@ class MessageIdManager {
 	/**
 	 * @var DateTime Representation of date and time
 	 */
-	private $dateTime;
+	private DateTime $dateTime;
 
 	/**
 	 * Constructor

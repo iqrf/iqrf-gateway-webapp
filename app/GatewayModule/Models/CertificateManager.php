@@ -39,7 +39,7 @@ class CertificateManager {
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor

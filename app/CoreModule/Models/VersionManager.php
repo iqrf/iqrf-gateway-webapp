@@ -35,22 +35,22 @@ class VersionManager {
 	/**
 	 * @var Cache Cache
 	 */
-	private $cache;
+	private Cache $cache;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $jsonFileManager;
+	private JsonFileManager $jsonFileManager;
 
 	/**
 	 * Constructor

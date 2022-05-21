@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\AptGetPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\AptGetPackageManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -48,7 +48,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	/**
 	 * @var AptGetPackageManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private AptGetPackageManager $manager;
 
 	/**
 	 * Sets up the test environment

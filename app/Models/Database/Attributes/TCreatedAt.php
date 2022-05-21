@@ -32,7 +32,7 @@ trait TCreatedAt {
 	 * @var DateTime Created at time
 	 * @ORM\Column(type="datetime", nullable=false)
 	 */
-	private $createdAt;
+	private DateTime $createdAt;
 
 	/**
 	 * Generate created at time

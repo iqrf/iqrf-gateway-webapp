@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\GenericManager
  * @covers App\ConfigModule\Models\GenericManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,12 +51,12 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $manager;
+	private GenericManager $manager;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $managerTemp;
+	private GenericManager $managerTemp;
 
 	/**
 	 * Tests the function to delete the instance of component

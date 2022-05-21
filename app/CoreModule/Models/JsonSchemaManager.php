@@ -35,7 +35,7 @@ class JsonSchemaManager extends JsonFileManager {
 	/**
 	 * @var string JSON schema file name
 	 */
-	private $schema;
+	private string $schema;
 
 	/**
 	 * Sets the JSON schema file name

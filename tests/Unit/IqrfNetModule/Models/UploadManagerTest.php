@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\UploadManager
  * @covers App\IqrfNetModule\Models\UploadManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -61,7 +61,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 	/**
 	 * @var UploadManager IQRF TR upload manager
 	 */
-	private $manager;
+	private UploadManager $manager;
 
 	/**
 	 * Tests the function to upload the file into IQRF TR module (HEX file format)

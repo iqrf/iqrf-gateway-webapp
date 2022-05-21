@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\Mapping
  * @covers App\Models\Database\Entities\Mapping
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,12 +40,12 @@ class MappingTest extends TestCase {
 	/**
 	 * @var Mapping Mapping entity
 	 */
-	private $mapping;
+	private Mapping $mapping;
 
 	/**
 	 * @var Mapping Mapping entity for Gateway
 	 */
-	private $mappingGw;
+	private Mapping $mappingGw;
 
 	/**
 	 * Mapping type

@@ -33,12 +33,12 @@ class ServiceManager {
 	/**
 	 * @var IServiceManager Init daemon service manager
 	 */
-	private $initDaemon;
+	private IServiceManager $initDaemon;
 
 	/**
 	 * @var array<string> Init daemon service managers
 	 */
-	private $initDaemons = [
+	private array $initDaemons = [
 		'docker-supervisor' => SupervisordManager::class,
 		'systemd' => SystemDManager::class,
 	];

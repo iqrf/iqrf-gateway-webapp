@@ -45,7 +45,7 @@ class FeatureController extends BaseController {
 	/**
 	 * @var FeatureManager Optional feature manager
 	 */
-	private $manager;
+	private FeatureManager $manager;
 
 	/**
 	 * Constructor

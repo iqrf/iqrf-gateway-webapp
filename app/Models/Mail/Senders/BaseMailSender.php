@@ -22,27 +22,27 @@ abstract class BaseMailSender {
 	/**
 	 * @var ConfigurationManager SMTP configuration manager
 	 */
-	protected $configuration;
+	protected ConfigurationManager $configuration;
 
 	/**
 	 * @var InfoManager Gateway information manager
 	 */
-	protected $gatewayInfo;
+	protected InfoManager $gatewayInfo;
 
 	/**
 	 * @var MailerFactory Mailer factory
 	 */
-	private $mailerFactory;
+	private MailerFactory $mailerFactory;
 
 	/**
 	 * @var TemplateFactory Template factory
 	 */
-	protected $templateFactory;
+	protected TemplateFactory $templateFactory;
 
 	/**
 	 * @var Translator Translator
 	 */
-	protected $translator;
+	protected Translator $translator;
 
 	/**
 	 * Constructor

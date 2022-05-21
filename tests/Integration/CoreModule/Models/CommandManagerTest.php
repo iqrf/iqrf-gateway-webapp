@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\CommandManager
  * @covers App\CoreModule\Models\CommandManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -48,7 +48,7 @@ final class CommandManagerTest extends TestCase {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $manager;
+	private CommandManager $manager;
 
 	/**
 	 * Tests the function to execute a shell command

@@ -15,7 +15,6 @@
 
 upstream backend {
 	server unix:/run/php/php7.4-fpm.sock weight=4;
-	server unix:/run/php/php7.3-fpm.sock;
 }
 
 server {

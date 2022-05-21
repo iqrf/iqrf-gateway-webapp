@@ -31,17 +31,17 @@ final class IPv4Current implements JsonSerializable {
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private $addresses;
+	private array $addresses;
 
 	/**
 	 * @var IPv4|null IPv4 gateway address
 	 */
-	private $gateway;
+	private ?IPv4 $gateway;
 
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns;
 
 	/**
 	 * Current IPv4 configuration entity

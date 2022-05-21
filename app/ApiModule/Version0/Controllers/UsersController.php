@@ -52,17 +52,17 @@ class UsersController extends BaseController {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var UserRepository User database repository
 	 */
-	private $repository;
+	private UserRepository $repository;
 
 	/**
 	 * @var UserManager User manager
 	 */
-	private $manager;
+	private UserManager $manager;
 
 	/**
 	 * Constructor

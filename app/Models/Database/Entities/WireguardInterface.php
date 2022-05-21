@@ -40,37 +40,37 @@ class WireguardInterface implements JsonSerializable {
 	 * @var string Interface name
 	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string Interface private key
 	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
-	private $privateKey;
+	private string $privateKey;
 
 	/**
 	 * @var int|null Interface listen port
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $port;
+	private ?int $port;
 
 	/**
-	 * @var WireguardInterfaceIpv4 Interface IPv4 address
+	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
 	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv4", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $ipv4;
+	private ?WireguardInterfaceIpv4 $ipv4 = null;
 
 	/**
-	 * @var WireguardInterfaceIpv6 Interface IPv6 address
+	 * @var WireguardInterfaceIpv6|null Interface IPv6 address
 	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv6", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $ipv6;
+	private ?WireguardInterfaceIpv6 $ipv6 = null;
 
 	/**
 	 * @var Collection<int, WireguardPeer> Interface peer IDs
 	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $peers;
+	private Collection $peers;
 
 	/**
 	 * Constructor

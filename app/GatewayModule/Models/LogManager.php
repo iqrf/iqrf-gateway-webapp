@@ -36,7 +36,7 @@ class LogManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * IQRF Gateway Controller log file name
@@ -51,17 +51,17 @@ class LogManager {
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $daemonLogDir;
+	private string $daemonLogDir;
 
 	/**
 	 * @var string Path to a general directory with log files
 	 */
-	private $logDir;
+	private string $logDir;
 
 	/**
 	 * @var string Path to ZIP archive
 	 */
-	private $path = '/tmp/iqrf-gateway-logs.zip';
+	private string $path = '/tmp/iqrf-gateway-logs.zip';
 
 	/**
 	 * Constructor

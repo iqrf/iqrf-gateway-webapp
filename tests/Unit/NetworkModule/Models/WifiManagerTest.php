@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\WifiManager
  * @covers App\NetworkModule\Models\WifiManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -49,7 +49,7 @@ final class WifiManagerTest extends CommandTestCase {
 	/**
 	 * @var WifiManager WiFi network manager
 	 */
-	private $manager;
+	private WifiManager $manager;
 
 	/**
 	 * Sets up the test environment

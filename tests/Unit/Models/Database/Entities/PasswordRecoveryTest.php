@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\User
  * @covers App\Models\Database\Entities\User
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -48,12 +48,12 @@ final class PasswordRecoveryTest extends TestCase {
 	/**
 	 * @var PasswordRecovery Password recovery entity
 	 */
-	private $entity;
+	private PasswordRecovery $entity;
 
 	/**
 	 * @var User User entity
 	 */
-	private $user;
+	private User $user;
 
 	/**
 	 * Sets up the test environment

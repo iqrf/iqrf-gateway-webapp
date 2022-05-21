@@ -43,7 +43,7 @@ class InteliGlueController extends CloudsController {
 	/**
 	 * @var InteliGlueManager Inteliments InteliGlue connection manager
 	 */
-	private $inteliGlueManager;
+	private InteliGlueManager $inteliGlueManager;
 
 	/**
 	 * Constructor

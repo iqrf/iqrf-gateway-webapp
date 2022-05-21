@@ -31,7 +31,7 @@ class TaskTimeManager {
 	/**
 	 * @var array<string> CRON aliases
 	 */
-	private $aliases = ['@reboot', '@yearly', '@annually', '@monthly', '@weekly', '@daily', '@hourly'];
+	private array $aliases = ['@reboot', '@yearly', '@annually', '@monthly', '@weekly', '@daily', '@hourly'];
 
 	/**
 	 * Converts a cron time from a string to an array

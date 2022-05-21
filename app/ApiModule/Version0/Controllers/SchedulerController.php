@@ -52,12 +52,12 @@ class SchedulerController extends BaseController {
 	/**
 	 * @var SchedulerManager IQRF Gateway Daemon's scheduler manager
 	 */
-	private $manager;
+	private SchedulerManager $manager;
 
 	/**
 	 * @var SchedulerMigrationManager IQRF Gateway Daemon's scheduler migration manager
 	 */
-	private $migrationManager;
+	private SchedulerMigrationManager $migrationManager;
 
 	/**
 	 * Constructor

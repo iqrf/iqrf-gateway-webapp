@@ -36,7 +36,7 @@ class UploadManager {
 	/**
 	 * @var string Path to the directory for uploaded files
 	 */
-	private $path = '/var/cache/iqrf-gateway-daemon/upload';
+	private string $path = '/var/cache/iqrf-gateway-daemon/upload';
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\WireguardPeer
  * @covers App\Models\Database\Entities\WireguardPeer
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -70,22 +70,22 @@ final class WireguardPeerTest extends TestCase {
 	/**
 	 * @var WireguardPeerAddress Wireguard peer IPv4 address entity
 	 */
-	private $peerIpv4Entity;
+	private WireguardPeerAddress $peerIpv4Entity;
 
 	/**
 	 * @var WireguardPeerAddress Wireguard peer IPv6 address entity
 	 */
-	private $peerIpv6Entity;
+	private WireguardPeerAddress $peerIpv6Entity;
 
 	/**
 	 * @var WireguardInterface Wireguard interface entity
 	 */
-	private $interfaceEntity;
+	private WireguardInterface $interfaceEntity;
 
 	/**
 	 * @var WireguardPeer Wireguard peer entity
 	 */
-	private $entity;
+	private WireguardPeer $entity;
 
 	/**
 	 * Sets the test environment

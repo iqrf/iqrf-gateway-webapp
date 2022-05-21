@@ -40,27 +40,27 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	/**
 	 * @var WifiSecurityType WiFi security type
 	 */
-	private $type;
+	private WifiSecurityType $type;
 
 	/**
 	 * @var string|null Pre-shared key
 	 */
-	private $psk;
+	private ?string $psk;
 
 	/**
 	 * @var Leap|null Cisco LEAP entity
 	 */
-	private $leap;
+	private ?Leap $leap;
 
 	/**
 	 * @var Wep|null WEP entity
 	 */
-	private $wep;
+	private ?Wep $wep;
 
 	/**
 	 * @var Eap|null EAP entity
 	 */
-	private $eap;
+	private ?Eap $eap;
 
 	/**
 	 * Constructor

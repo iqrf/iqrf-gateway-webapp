@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\Modem
  * @covers App\NetworkModule\Entities\Modem
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -56,7 +56,7 @@ final class ModemTest extends TestCase {
 	/**
 	 * @var Modem Modem entity
 	 */
-	private $entity;
+	private Modem $entity;
 
 	/**
 	 * Sets up the testing environment

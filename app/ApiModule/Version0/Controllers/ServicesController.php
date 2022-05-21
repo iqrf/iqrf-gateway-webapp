@@ -47,12 +47,12 @@ class ServicesController extends BaseController {
 	/**
 	 * @var FeatureManager Optional features manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $manager;
+	private ServiceManager $manager;
 
 	/**
 	 * Whitelisted services

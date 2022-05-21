@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\ServiceManager
  * @covers App\ServiceModule\Models\ServiceManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,12 +41,12 @@ final class ServiceManagerTest extends CommandTestCase {
 	/**
 	 * @var ServiceManager Service manager for systemD init daemon
 	 */
-	private $managerSystemD;
+	private ServiceManager $managerSystemD;
 
 	/**
 	 * @var ServiceManager Service manager for unknown init daemon
 	 */
-	private $managerUnknown;
+	private ServiceManager $managerUnknown;
 
 	/**
 	 * Name of service

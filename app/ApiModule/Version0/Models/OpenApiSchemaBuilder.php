@@ -32,7 +32,7 @@ class OpenApiSchemaBuilder {
 	/**
 	 * @var ISchemaBuilder OpenAPI schema builder
 	 */
-	private $schemaBuilder;
+	private ISchemaBuilder $schemaBuilder;
 
 	/**
 	 * Constructor

@@ -44,7 +44,7 @@ class AzureController extends CloudsController {
 	/**
 	 * @var AzureManager Microsoft Azure IoT Hub connection manager
 	 */
-	private $manager;
+	private AzureManager $manager;
 
 	/**
 	 * Constructor

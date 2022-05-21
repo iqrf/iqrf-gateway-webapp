@@ -44,12 +44,12 @@ class MappingController extends BaseController {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var MappingRepository Mapping database repository
 	 */
-	private $repository;
+	private MappingRepository $repository;
 
 	/**
 	 * Constructor

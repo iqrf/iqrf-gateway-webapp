@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Requests\ApiRequest
  * @covers App\IqrfNetModule\Requests\ApiRequest
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -55,7 +55,7 @@ final class ApiRequestTest extends TestCase {
 	/**
 	 * @var ApiRequest JSON API Request
 	 */
-	private $request;
+	private ApiRequest $request;
 
 	/**
 	 * Starts up test environment

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\WifiNetwork
  * @covers App\NetworkModule\Entities\WifiNetwork
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -57,7 +57,7 @@ final class WifiNetworkTest extends TestCase {
 	/**
 	 * @var WifiMode Mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
 	 * Channel
@@ -77,12 +77,12 @@ final class WifiNetworkTest extends TestCase {
 	/**
 	 * @var WifiSecurity Security
 	 */
-	private $security;
+	private WifiSecurity $security;
 
 	/**
 	 * @var WifiNetwork WiFI network entity
 	 */
-	private $entity;
+	private WifiNetwork $entity;
 
 	/**
 	 * Sets up the test environment

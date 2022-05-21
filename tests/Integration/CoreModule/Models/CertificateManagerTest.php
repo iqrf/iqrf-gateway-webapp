@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\CertificateManager
  * @covers App\CoreModule\Models\CertificateManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,17 +41,17 @@ final class CertificateManagerTest extends TestCase {
 	/**
 	 * @var array<string> Certificates
 	 */
-	private $certificates = [];
+	private array $certificates = [];
 
 	/**
 	 * @var array<string> Private keys
 	 */
-	private $keys = [];
+	private array $keys = [];
 
 	/**
 	 * @var CertificateManager Certificate manager
 	 */
-	private $manager;
+	private CertificateManager $manager;
 
 	/**
 	 * Path to a directory with certificates and private keys

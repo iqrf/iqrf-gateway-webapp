@@ -43,7 +43,7 @@ class IbmCloudController extends CloudsController {
 	/**
 	 * @var IbmCloudManager IBM Cloud IoT connection manager
 	 */
-	private $manager;
+	private IbmCloudManager $manager;
 
 	/**
 	 * Constructor

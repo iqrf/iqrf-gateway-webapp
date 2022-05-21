@@ -35,17 +35,17 @@ class Wep implements INetworkManagerEntity {
 	/**
 	 * @var WepKeyType WEP key type
 	 */
-	private $type;
+	private WepKeyType $type;
 
 	/**
 	 * @var array<string> WEP keys
 	 */
-	private $keys;
+	private array $keys;
 
 	/**
 	 * @var int WEP key index
 	 */
-	private $index;
+	private int $index;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentSchemaManager
  * @covers App\ConfigModule\Models\ComponentSchemaManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -60,12 +60,12 @@ final class ComponentSchemaManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var ComponentSchemaManager Component JSON schema manager
 	 */
-	private $manager;
+	private ComponentSchemaManager $manager;
 
 	/**
 	 * Tests the function to set file name of JSON schema from component name (fail)

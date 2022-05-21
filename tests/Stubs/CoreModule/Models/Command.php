@@ -30,31 +30,31 @@ final class Command implements ICommand {
 	/**
 	 * @var string Command
 	 */
-	private $command;
+	private string $command;
 
 	/**
 	 * @var string Standard output
 	 */
-	private $stdout;
+	private string $stdout;
 
 	/**
 	 * @var string Standard error output
 	 */
-	private $stderr;
+	private string $stderr;
 
 	/**
 	 * @var int|null Exit code
 	 */
-	private $exitCode;
+	private ?int $exitCode;
 
 	/**
 	 * Constructor
 	 * @param string $command Command
 	 * @param string $stdout Standard output
 	 * @param string $stderr Standard error output
-	 * @param int $exitCode Exit code
+	 * @param int|null $exitCode Exit code
 	 */
-	public function __construct(string $command, string $stdout, string $stderr, int $exitCode) {
+	public function __construct(string $command, string $stdout, string $stderr, ?int $exitCode) {
 		$this->command = $command;
 		$this->stdout = $stdout;
 		$this->stderr = $stderr;

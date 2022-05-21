@@ -34,7 +34,7 @@ class ApiRequest {
 	/**
 	 * @var MessageIdManager Message ID manager
 	 */
-	protected $msgIdManager;
+	protected MessageIdManager $msgIdManager;
 
 	/**
 	 * @var array<mixed>|stdClass IQRF JSON API request

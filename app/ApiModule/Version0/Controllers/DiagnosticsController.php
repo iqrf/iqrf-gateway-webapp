@@ -41,7 +41,7 @@ class DiagnosticsController extends BaseController {
 	/**
 	 * @var DiagnosticsManager Diagnostics manager
 	 */
-	private $manager;
+	private DiagnosticsManager $manager;
 
 	/**
 	 * Constructor

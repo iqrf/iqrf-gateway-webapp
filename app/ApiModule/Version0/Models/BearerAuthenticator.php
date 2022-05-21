@@ -38,12 +38,12 @@ class BearerAuthenticator implements IAuthenticator {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var Configuration JWT configuration
 	 */
-	private $configuration;
+	private Configuration $configuration;
 
 	/**
 	 * Constructor

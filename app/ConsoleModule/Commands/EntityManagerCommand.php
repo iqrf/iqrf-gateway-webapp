@@ -31,7 +31,7 @@ abstract class EntityManagerCommand extends Command {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	protected $entityManager;
+	protected EntityManager $entityManager;
 
 	/**
 	 * Constructor

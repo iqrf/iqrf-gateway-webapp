@@ -40,25 +40,25 @@ class SshKey implements JsonSerializable {
 	 * @var string SSH key type
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $type;
+	private string $type;
 
 	/**
 	 * @var string SSH key
 	 * @ORM\Column(type="string", length=2048, unique=true)
 	 */
-	private $key;
+	private string $key;
 
 	/**
 	 * @var string SSH key hash
 	 * @ORM\Column(type="string", length=64, unique=true)
 	 */
-	private $hash;
+	private string $hash;
 
 	/**
 	 * @var string|null SSH key description
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $description;
+	private ?string $description;
 
 	/**
 	 * Constructor

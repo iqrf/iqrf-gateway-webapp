@@ -41,17 +41,17 @@ class IbmCloudManager implements IManager {
 	/**
 	 * @var string Path to the certificates
 	 */
-	private $certPath;
+	private string $certPath;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
+	private GenericManager $configManager;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * Constructor

@@ -40,7 +40,7 @@ class HostnameController extends GatewayController {
 	/**
 	 * @var HostnameManager Hostname manager
 	 */
-	private $manager;
+	private HostnameManager $manager;
 
 	/**
 	 * Constructor

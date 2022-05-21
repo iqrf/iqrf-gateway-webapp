@@ -27,12 +27,12 @@ class MultiAddress {
 	/**
 	 * @var IP IP address
 	 */
-	private $address;
+	private IP $address;
 
 	/**
 	 * @var int IP address prefix
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
 	 * Constructor

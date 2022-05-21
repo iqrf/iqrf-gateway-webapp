@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\WifiSecurity\Eap
  * @covers App\NetworkModule\WifiSecurity\Eap
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -70,7 +70,7 @@ final class EapTest extends TestCase {
 	/**
 	 * @var Eap 802.1x entity
 	 */
-	private $entity;
+	private Eap $entity;
 
 	/**
 	 * Sets up the test environment

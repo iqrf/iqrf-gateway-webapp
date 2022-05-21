@@ -30,7 +30,7 @@ class ControllerConfigManager {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * JSON file containing Controller configuration

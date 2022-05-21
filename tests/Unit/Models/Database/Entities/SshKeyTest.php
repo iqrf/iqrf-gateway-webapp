@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\SshKey
  * @covers App\Models\Database\Entities\SshKey
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -61,7 +61,7 @@ class SshKeyTest extends TestCase {
 	/**
 	 * @var SshKey SSH key entity
 	 */
-	private $entity;
+	private SshKey $entity;
 
 	/**
 	 * Sets up the test environment

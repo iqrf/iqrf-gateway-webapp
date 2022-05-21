@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\IqrfRepositoryManager
  * @covers App\ConfigModule\Models\IqrfRepositoryManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

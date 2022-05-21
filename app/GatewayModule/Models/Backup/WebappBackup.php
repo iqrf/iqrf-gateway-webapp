@@ -54,7 +54,7 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * @var string Path to configuration directory
 	 */
-	private $path;
+	private string $path;
 
 	/**
 	 * Path to Webapp database directory
@@ -69,17 +69,17 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var SshManager SSH manager
 	 */
-	private $sshManager;
+	private SshManager $sshManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

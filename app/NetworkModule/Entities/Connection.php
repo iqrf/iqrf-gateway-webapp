@@ -33,22 +33,22 @@ final class Connection implements JsonSerializable {
 	/**
 	 * @var string Network connection name
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
 	 * @var string|null Network interface name
 	 */
-	private $interfaceName;
+	private ?string $interfaceName;
 
 	/**
 	 * Network connection entity constructor

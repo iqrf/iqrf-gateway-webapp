@@ -40,7 +40,7 @@ class GsmController extends NetworkController {
 	/**
 	 * @var GsmManager GSM manager
 	 */
-	private $gsmManager;
+	private GsmManager $gsmManager;
 
 	/**
 	 * Constructor

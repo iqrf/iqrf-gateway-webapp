@@ -55,7 +55,7 @@ class JsonSchemaValidator extends JsonFileManager {
 			$message = 'Non-existing JSON schema ' . $schema . '.';
 			throw new NonexistentJsonSchemaException($message);
 		}
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		if (!is_array($json) && !($json instanceof stdClass)) {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);

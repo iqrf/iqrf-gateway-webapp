@@ -28,7 +28,7 @@ class CommandStack {
 	/**
 	 * @var array<Command> Commands
 	 */
-	private $commands = [];
+	private array $commands = [];
 
 	/**
 	 * Adds a command in to the stack

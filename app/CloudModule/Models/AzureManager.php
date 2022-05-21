@@ -34,7 +34,7 @@ class AzureManager implements IManager {
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
+	private GenericManager $configManager;
 
 	/**
 	 * Constructor

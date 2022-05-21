@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\SupervisordManager
  * @covers App\ServiceModule\Models\SupervisordManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,7 +41,7 @@ final class SupervisordManagerTest extends CommandTestCase {
 	/**
 	 * @var SupervisordManager Service manager for supervisord init daemon in a Docker container
 	 */
-	private $manager;
+	private SupervisordManager $manager;
 
 	/**
 	 * Name of service

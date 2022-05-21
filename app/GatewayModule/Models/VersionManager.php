@@ -39,17 +39,17 @@ class VersionManager {
 	/**
 	 * @var ApiRequest IQRF Gateway Daemon's JSON API request
 	 */
-	private $apiRequest;
+	private ApiRequest $apiRequest;
 
 	/**
 	 * @var CommandManager CommandManager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var WebSocketClient WebSocket client
 	 */
-	private $wsClient;
+	private WebSocketClient $wsClient;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ControllerConfigManager
  * @covers App\ConfigModule\Models\ControllerConfigManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -102,12 +102,12 @@ final class ControllerConfigManagerTest extends TestCase {
 	/**
 	 * @var ControllerConfigManager Controller configuration manager
 	 */
-	private $manager;
+	private ControllerConfigManager $manager;
 
 	/**
 	 * @var ControllerConfigManager Controller configuration temporary manager
 	 */
-	private $managerTemp;
+	private ControllerConfigManager $managerTemp;
 
 	/**
 	 * Tests the function to retrieve Controller configuration

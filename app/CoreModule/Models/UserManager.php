@@ -36,17 +36,17 @@ class UserManager {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var UserRepository User database repository
 	 */
-	private $repository;
+	private UserRepository $repository;
 
 	/**
 	 * @var EmailVerificationMailSender Email verification mail sender
 	 */
-	private $emailVerificationSender;
+	private EmailVerificationMailSender $emailVerificationSender;
 
 	/**
 	 * Constructor
@@ -102,7 +102,7 @@ class UserManager {
 		$verification = new UserVerification($user);
 		$this->entityManager->persist($verification);
 		$this->entityManager->flush();
-		$body = $request->getJsonBody();
+		$body = $request->getJsonBodyCopy();
 		if (array_key_exists('baseUrl', $body)) {
 			$baseUrl = trim($body['baseUrl'], '/');
 		} else {

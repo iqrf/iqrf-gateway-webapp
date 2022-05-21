@@ -48,12 +48,12 @@ class ControllerController extends BaseConfigController {
 	/**
 	 * @var ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
 	 */
-	private $configManager;
+	private ControllerConfigManager $configManager;
 
 	/**
 	 * @var ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
 	 */
-	private $pinManager;
+	private ControllerPinConfigManager $pinManager;
 
 	/**
 	 * Constructor

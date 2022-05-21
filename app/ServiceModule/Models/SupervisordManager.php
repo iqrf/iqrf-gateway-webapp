@@ -31,12 +31,12 @@ class SupervisordManager implements IServiceManager {
 	/**
 	 * @var CommandManager Command Manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var string Name of service
 	 */
-	private $serviceName = 'iqrf-gateway-daemon';
+	private string $serviceName = 'iqrf-gateway-daemon';
 
 	/**
 	 * Constructor
@@ -87,7 +87,7 @@ class SupervisordManager implements IServiceManager {
 	 * @param string|null $serviceName Service name
 	 */
 	public function start(?string $serviceName = null): void {
-		$serviceName = $serviceName ?? $this->serviceName;
+		$serviceName ??= $this->serviceName;
 		$cmd = 'supervisorctl start ' . $serviceName;
 		$this->commandManager->run($cmd, true);
 	}
@@ -97,7 +97,7 @@ class SupervisordManager implements IServiceManager {
 	 * @param string|null $serviceName Service name
 	 */
 	public function stop(?string $serviceName = null): void {
-		$serviceName = $serviceName ?? $this->serviceName;
+		$serviceName ??= $this->serviceName;
 		$cmd = 'supervisorctl stop ' . $serviceName;
 		$this->commandManager->run($cmd, true);
 	}
@@ -107,7 +107,7 @@ class SupervisordManager implements IServiceManager {
 	 * @param string|null $serviceName Service name
 	 */
 	public function restart(?string $serviceName = null): void {
-		$serviceName = $serviceName ?? $this->serviceName;
+		$serviceName ??= $this->serviceName;
 		$cmd = 'supervisorctl restart ' . $serviceName;
 		$this->commandManager->run($cmd, true);
 	}
@@ -118,7 +118,7 @@ class SupervisordManager implements IServiceManager {
 	 * @return string Service status
 	 */
 	public function getStatus(?string $serviceName = null): string {
-		$serviceName = $serviceName ?? $this->serviceName;
+		$serviceName ??= $this->serviceName;
 		$cmd = 'supervisorctl status ' . $serviceName;
 		return $this->commandManager->run($cmd, true)->getStdout();
 	}

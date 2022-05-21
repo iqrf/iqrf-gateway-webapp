@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Enums\TrSeries
  * @covers App\IqrfNetModule\Enums\TrSeries
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -64,7 +64,7 @@ final class AutoConnectTest extends TestCase {
 	/**
 	 * @var AutoConnect Automatic connecting entity
 	 */
-	private $entity;
+	private AutoConnect $entity;
 
 	/**
 	 * Sets up the test environment

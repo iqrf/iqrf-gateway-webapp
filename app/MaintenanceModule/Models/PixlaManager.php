@@ -32,7 +32,7 @@ class PixlaManager {
 	/**
 	 * @var FileManager File manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * File containing PIXLA token

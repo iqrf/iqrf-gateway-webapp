@@ -20,19 +20,20 @@
 		}
 	],
 	"require": {
-		"php": ">=7.3.0",
+		"php": ">=7.4.0",
 		"ext-json": "*",
 		"ext-openssl": "*",
 		"ext-posix": "*",
 		"ext-zip": "*",
-		"acmephp/core": "^2.0.1",
 		"acmephp/ssl": "^2.0.1",
 		"contributte/apitte": "^v0.9.1",
 		"contributte/console": "^v0.9.2",
 		"contributte/console-extra": "^v0.7.1",
 		"contributte/guzzlette": "^v3.2.2",
 		"contributte/monolog": "^v0.5.0",
-		"contributte/translation": "^v0.9.3",
+		"contributte/psr7-http-message": "v0.8.0 as v0.7.1",
+		"contributte/sentry": "^0.1.0",
+		"contributte/translation": "^v1.0.2",
 		"darsyn/ip": "^4.0.2",
 		"egulias/email-validator": "^3.1.2",
 		"grifart/enum": "^0.2.1",
@@ -41,7 +42,7 @@
 		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2.12",
 		"latte/latte": "^v2.11.3",
-		"lcobucci/jwt": "^3.4.6",
+		"lcobucci/jwt": "^4.1.5",
 		"nette/application": "^v3.1.5",
 		"nette/bootstrap": "^v3.1.2",
 		"nette/caching": "^v3.1.2",
@@ -65,7 +66,6 @@
 		"ramsey/uuid": "^4.2.3",
 		"ramsey/uuid-doctrine": "^1.8.1",
 		"ratchet/pawl": "^v0.4.1",
-		"sentry/sdk": "^2.2.0",
 		"symfony/process": "^v5.4.5",
 		"tracy/tracy": "^v2.9.1"
 	},
@@ -110,7 +110,7 @@
 	"prefer-stable": true,
 	"config": {
 		"platform": {
-			"php": "7.3.0"
+			"php": "7.4.0"
 		},
 		"sort-packages": true,
 		"allow-plugins": {

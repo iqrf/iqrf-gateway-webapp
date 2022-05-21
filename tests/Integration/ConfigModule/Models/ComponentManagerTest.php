@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentManager
  * @covers App\ConfigModule\Models\ComponentManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -47,12 +47,12 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $manager;
+	private ComponentManager $manager;
 
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $managerTemp;
+	private ComponentManager $managerTemp;
 
 	/**
 	 * Tests the function to add a new component

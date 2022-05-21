@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Responses\ApiResponse
  * @covers App\IqrfNetModule\Requests\ApiResponse
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,17 +43,17 @@ final class ApiResponseTest extends TestCase {
 	/**
 	 * @var stdClass JSON API response in an object
 	 */
-	private $object;
+	private stdClass $object;
 
 	/**
 	 * @var string JSON API response in a string
 	 */
-	private $json;
+	private string $json;
 
 	/**
 	 * @var ApiResponse JSON API Response
 	 */
-	private $response;
+	private ApiResponse $response;
 
 	/**
 	 * Starts up test environment

@@ -36,7 +36,7 @@ class InfoManager {
 	/**
 	 * @var array<string> Board managers
 	 */
-	private $boardManagers = [
+	private array $boardManagers = [
 		IqrfBoardManager::class,
 		DeviceTreeBoardManager::class,
 		DmiBoardManager::class,
@@ -45,22 +45,22 @@ class InfoManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var NetworkManager Network manager
 	 */
-	private $networkManager;
+	private NetworkManager $networkManager;
 
 	/**
 	 * @var PixlaManager PIXLA manager
 	 */
-	private $pixlaManager;
+	private PixlaManager $pixlaManager;
 
 	/**
 	 * @var VersionManager Version manager
 	 */
-	private $versionManager;
+	private VersionManager $versionManager;
 
 	/**
 	 * Constructor

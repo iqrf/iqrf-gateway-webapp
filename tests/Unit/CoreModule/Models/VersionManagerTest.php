@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\VersionManager
  * @covers App\CoreModule\Models\VersionManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -57,7 +57,7 @@ final class VersionManagerTest extends CommandTestCase {
 	/**
 	 * @var DevNullStorage Cache storage for testing
 	 */
-	private $cacheStorage;
+	private DevNullStorage $cacheStorage;
 
 	/**
 	 * @var Mock|VersionManager Version manager

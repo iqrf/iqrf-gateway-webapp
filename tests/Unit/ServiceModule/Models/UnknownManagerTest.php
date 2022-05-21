@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\UnknownManager
  * @covers App\ServiceModule\Models\UnknownManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,7 +41,7 @@ final class UnknownManagerTest extends TestCase {
 	/**
 	 * @var UnknownManager Service manager for unknown init daemon
 	 */
-	private $manager;
+	private UnknownManager $manager;
 
 	/**
 	 * Tests the function to disable IQRF Gateway Daemon's service via unknown init daemon

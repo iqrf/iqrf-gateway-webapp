@@ -32,22 +32,22 @@ class Dpa {
 	/**
 	 * @var string DPA version
 	 */
-	private $version;
+	private string $version;
 
 	/**
 	 * @var DpaInterfaces DPA communication interface
 	 */
-	private $interface;
+	private DpaInterfaces $interface;
 
 	/**
 	 * @var TrSeries TR series
 	 */
-	private $trSeries;
+	private TrSeries $trSeries;
 
 	/**
 	 * @var RfModes|null RF mode
 	 */
-	private $rfMode;
+	private ?RfModes $rfMode;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\ControllerPinConfiguration
  * @covers App\Models\Database\Entities\ControllerPinConfiguration
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -70,7 +70,7 @@ class ControllerPinConfigurationTest extends TestCase {
 	/**
 	 * @var ControllerPinConfiguration Configuration profile entity
 	 */
-	private $entity;
+	private ControllerPinConfiguration $entity;
 
 	/**
 	 * Sets up testing environment

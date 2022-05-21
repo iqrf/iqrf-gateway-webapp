@@ -49,7 +49,7 @@ class IqrfRepositoryManager {
 	/**
 	 * @var string Path to configuration file
 	 */
-	private $confPath;
+	private string $confPath;
 
 	/**
 	 * Constructor

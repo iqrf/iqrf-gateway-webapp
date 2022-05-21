@@ -36,22 +36,22 @@ final class GSMConnection implements INetworkManagerEntity {
 	/**
 	 * @var string GSM APN
 	 */
-	private $apn;
+	private string $apn;
 
 	/**
 	 * @var string|null Username
 	 */
-	private $username;
+	private ?string $username;
 
 	/**
 	 * @var string|null Password
 	 */
-	private $password;
+	private ?string $password;
 
 	/**
 	 * @var string|null SIM PIN
 	 */
-	private $pin;
+	private ?string $pin;
 
 	/**
 	 * Constructor

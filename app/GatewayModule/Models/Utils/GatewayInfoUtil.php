@@ -38,7 +38,7 @@ class GatewayInfoUtil {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * Constructor

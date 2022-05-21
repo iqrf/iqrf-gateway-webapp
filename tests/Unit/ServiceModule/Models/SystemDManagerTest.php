@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\SystemDManager
  * @covers App\ServiceModule\Models\SystemDManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,7 +51,7 @@ final class SystemDManagerTest extends CommandTestCase {
 	/**
 	 * @var SystemDManager Service manager for systemD init daemon
 	 */
-	private $manager;
+	private SystemDManager $manager;
 
 	/**
 	 * Tests the function to disable the service via systemD

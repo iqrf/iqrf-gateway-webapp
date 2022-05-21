@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\LogManager
  * @covers App\GatewayModule\Models\LogManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -55,17 +55,17 @@ final class LogManagerTest extends CommandTestCase {
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var LogManager IQRF Gateway Daemon's log manager
 	 */
-	private $manager;
+	private LogManager $manager;
 
 	/**
 	 * @var LogManager Log manager with mocked command manager
 	 */
-	private $managerMockCommand;
+	private LogManager $managerMockCommand;
 
 	/**
 	 * Tests the function to get the latest IQRF Gateway Daemon's log

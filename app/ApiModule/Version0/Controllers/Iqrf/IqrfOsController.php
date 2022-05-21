@@ -48,12 +48,12 @@ class IqrfOsController extends IqrfController {
 	/**
 	 * @var IqrfOsManager IQRF OS manager
 	 */
-	private $iqrfOsManager;
+	private IqrfOsManager $iqrfOsManager;
 
 	/**
 	 * @var UploadUtilManager IQRF Upload Utility manager
 	 */
-	private $uploadUtilManager;
+	private UploadUtilManager $uploadUtilManager;
 
 	/**
 	 * Constructor

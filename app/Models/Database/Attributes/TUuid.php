@@ -36,7 +36,7 @@ trait TUuid {
 	 * @ORM\GeneratedValue(strategy="CUSTOM")
 	 * @ORM\CustomIdGenerator(class=UuidGenerator::class)
 	 */
-	protected $uuid;
+	protected ?UuidInterface $uuid = null;
 
 	/**
 	 * Returns UUID

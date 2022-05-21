@@ -50,17 +50,17 @@ class DaemonController extends BaseConfigController {
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $componentManager;
+	private ComponentManager $componentManager;
 
 	/**
 	 * @var MainManager Main configuration manager
 	 */
-	private $mainManager;
+	private MainManager $mainManager;
 
 	/**
 	 * @var GenericManager Configuration manager
 	 */
-	private $manager;
+	private GenericManager $manager;
 
 	/**
 	 * Constructor

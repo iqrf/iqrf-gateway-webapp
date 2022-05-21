@@ -30,12 +30,12 @@ class Modem {
 	/**
 	 * @var string $interface Modem network interface
 	 */
-	private $interface;
+	private string $interface;
 
 	/**
 	 * @var int $signal Signal strength
 	 */
-	private $signal;
+	private int $signal;
 
 	/**
 	 * @var float $rssi RSSI

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\ZipArchiveManager
  * @covers App\CoreModule\Models\ZipArchiveManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -54,12 +54,12 @@ final class ZipArchiveManagerTest extends TestCase {
 	/**
 	 * @var ZipArchiveManager ZIP archive manager for new archive creation
 	 */
-	private $managerNew;
+	private ZipArchiveManager $managerNew;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager for extraction
 	 */
-	private $manager;
+	private ZipArchiveManager $manager;
 
 	/**
 	 * Tests the function to add a file to the ZIP archive

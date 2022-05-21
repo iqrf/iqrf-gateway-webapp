@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MainManager
  * @covers App\ConfigModule\Models\MainManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -49,7 +49,7 @@ final class MainManagerTest extends JsonConfigTestCase {
 	/**
 	 * @var MainManager Main configuration manager
 	 */
-	private $manager;
+	private MainManager $manager;
 
 	/**
 	 * Tests the function to get cache directory (failure)

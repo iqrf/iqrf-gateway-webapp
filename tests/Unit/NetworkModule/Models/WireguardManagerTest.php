@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\WireguardManager
  * @covers App\NetworkModule\Models\WireguardManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -71,22 +71,22 @@ final class WireguardManagerTest extends CommandTestCase {
 	/**
 	 * @var WireguardInterface Wireguard interface entity
 	 */
-	private $interfaceEntity;
+	private WireguardInterface $interfaceEntity;
 
 	/**
 	 * @var WireguardPeer Wireguard peer entity
 	 */
-	private $peerEntity;
+	private WireguardPeer $peerEntity;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var WireguardManager Wireguard manager
 	 */
-	private $manager;
+	private WireguardManager $manager;
 
 	/**
 	 * @var MockInterface|ServiceManager Mocked service manager

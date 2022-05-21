@@ -39,12 +39,12 @@ class TimeBackup implements IBackupManager {
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * @var TimeManager Time manager
 	 */
-	private $timeManager;
+	private TimeManager $timeManager;
 
 	/**
 	 * Constructor

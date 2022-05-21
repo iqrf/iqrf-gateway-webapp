@@ -40,47 +40,47 @@ class ConnectionDetail implements INetworkManagerEntity {
 	/**
 	 * @var string Network connection name
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
 	 * @var string Network interface name
 	 */
-	private $interfaceName;
+	private string $interfaceName;
 
 	/**
 	 * @var AutoConnect Automatic connection entity
 	 */
-	private $autoConnect;
+	private AutoConnect $autoConnect;
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
 	 */
-	private $ipv4;
+	private IPv4Connection $ipv4;
 
 	/**
 	 * @var IPv6Connection IPv6 network connection entity
 	 */
-	private $ipv6;
+	private IPv6Connection $ipv6;
 
 	/**
 	 * @var WifiConnection|null WiFi network connection entity
 	 */
-	private $wifi;
+	private ?WifiConnection $wifi;
 
 	/**
 	 * @var GSMConnection|null GSM network connection entity
 	 */
-	private $gsm;
+	private ?GSMConnection $gsm;
 
 	/**
 	 * Network connection entity constructor
@@ -94,7 +94,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @param WifiConnection|null $wifi WiFi network connection entity
 	 * @param GSMConnection|null $gsm GSM network connection entity
 	 */
-	public function __construct(?string $name, UuidInterface $uuid, ConnectionTypes $type, string $interface, AutoConnect $autoConnect, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null, ?GSMConnection $gsm = null) {
+	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, string $interface, AutoConnect $autoConnect, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null, ?GSMConnection $gsm = null) {
 		$this->name = $name;
 		$this->uuid = $uuid;
 		$this->type = $type;

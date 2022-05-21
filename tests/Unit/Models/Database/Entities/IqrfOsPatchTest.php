@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\IqrfOsPatch
  * @covers App\Models\Database\Entities\IqrfOsPatch
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,7 +40,7 @@ class IqrfOsPatchTest extends TestCase {
 	/**
 	 * @var IqrfOsPatch IqrfOsPatch entity
 	 */
-	private $iqrfOsPatch;
+	private IqrfOsPatch $iqrfOsPatch;
 
 	/**
 	 * IqrfOsPatch module type

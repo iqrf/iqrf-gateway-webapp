@@ -30,12 +30,12 @@ class IPv6Address {
 	/**
 	 * @var IPv6 IPv6 address
 	 */
-	private $address;
+	private IPv6 $address;
 
 	/**
 	 * @var int IPv6 prefix
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
 	 * IPv6 address entity constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AzureManager
  * @covers App\CloudModule\Models\AzureManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

@@ -40,7 +40,7 @@ class WifiController extends NetworkController {
 	/**
 	 * @var WifiManager WiFi network manager
 	 */
-	private $wifiManager;
+	private WifiManager $wifiManager;
 
 	/**
 	 * Constructor

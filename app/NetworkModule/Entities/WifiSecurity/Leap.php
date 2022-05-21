@@ -33,12 +33,12 @@ class Leap implements INetworkManagerEntity {
 	/**
 	 * @var string LEAP username
 	 */
-	private $username;
+	private string $username;
 
 	/**
 	 * @var string LEAP password
 	 */
-	private $password;
+	private string $password;
 
 	/**
 	 * Constructor

@@ -49,7 +49,7 @@ class LogController extends GatewayController {
 	/**
 	 * @var LogManager Log manager
 	 */
-	private $logManager;
+	private LogManager $logManager;
 
 	/**
 	 * Constructor

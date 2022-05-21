@@ -43,7 +43,7 @@ class HexioController extends CloudsController {
 	/**
 	 * @var HexioManager Hexio IoT Platform connection manager
 	 */
-	private $manager;
+	private HexioManager $manager;
 
 	/**
 	 * Constructor

@@ -31,17 +31,17 @@ class AutoConnect implements INetworkManagerEntity {
 	/**
 	 * @var bool AutoConnect enablement
 	 */
-	private $enabled;
+	private bool $enabled;
 
 	/**
 	 * @var int Connection priority
 	 */
-	private $priority;
+	private int $priority;
 
 	/**
 	 * @var int Connection retries
 	 */
-	private $retries;
+	private int $retries;
 
 	/**
 	 * Constructor

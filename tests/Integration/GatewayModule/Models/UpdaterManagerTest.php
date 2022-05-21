@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\UpdaterManager
  * @covers App\GatewayModule\Models\UpdaterManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -38,12 +38,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for tool for updating packages of IQRF Gateways
  */
-final class UpdaterManagetTest extends CommandTestCase {
+final class UpdaterManagerTest extends CommandTestCase {
 
 	/**
 	 * @var UpdaterManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private UpdaterManager $manager;
 
 	/**
 	 * Sets up the test environment
@@ -170,5 +170,5 @@ Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
 
 }
 
-$test = new UpdaterManagetTest();
+$test = new UpdaterManagerTest();
 $test->run();

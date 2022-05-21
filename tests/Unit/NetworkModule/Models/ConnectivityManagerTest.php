@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\ConnectivityManager
  * @covers App\NetworkModule\Models\ConnectivityManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,7 +42,7 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	/**
 	 * @var ConnectivityManager Network connectivity manager
 	 */
-	private $manager;
+	private ConnectivityManager $manager;
 
 	/**
 	 * Connectivity check command

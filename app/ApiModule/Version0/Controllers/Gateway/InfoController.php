@@ -38,7 +38,7 @@ class InfoController extends GatewayController {
 	/**
 	 * @var InfoManager Gateway info manager
 	 */
-	private $infoManager;
+	private InfoManager $infoManager;
 
 	/**
 	 * Constructor

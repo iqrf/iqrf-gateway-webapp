@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\PrivilegedFileManager
  * @covers App\CoreModule\Models\PrivilegedFileManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,7 +51,7 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	/**
 	 * @var PrivilegedFileManager Text file manager
 	 */
-	private $manager;
+	private PrivilegedFileManager $manager;
 
 	/**
 	 * Tests the function to read a text file

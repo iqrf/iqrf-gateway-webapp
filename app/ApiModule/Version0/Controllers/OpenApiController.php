@@ -39,7 +39,7 @@ class OpenApiController extends BaseController {
 	/**
 	 * @var OpenApiSchemaBuilder OpenAPI schema builder
 	 */
-	private $schemaBuilder;
+	private OpenApiSchemaBuilder $schemaBuilder;
 
 	/**
 	 * Constructor

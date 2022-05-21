@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Enums\WifiMode
  * @covers App\NetworkModule\Enums\WifiMode
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

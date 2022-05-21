@@ -48,7 +48,7 @@ class SshController extends GatewayController {
 	/**
 	 * @var SshManager SSH manager
 	 */
-	private $manager;
+	private SshManager $manager;
 
 	/**
 	 * Constructor

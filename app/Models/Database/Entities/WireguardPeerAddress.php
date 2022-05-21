@@ -40,20 +40,20 @@ class WireguardPeerAddress implements JsonSerializable {
 	 * @var IP Peer address
 	 * @ORM\Column(type="ip", nullable=false)
 	 */
-	private $address;
+	private IP $address;
 
 	/**
 	 * @var int Peer address prefix
 	 * @ORM\Column(type="integer", nullable=false)
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
 	 * @var WireguardPeer Wireguard peer
 	 * @ORM\ManyToOne(targetEntity="WireguardPeer", inversedBy="addresses")
 	 * @ORM\JoinColumn(name="peer_id", referencedColumnName="id")
 	 */
-	private $peer;
+	private WireguardPeer $peer;
 
 	/**
 	 * Constructor

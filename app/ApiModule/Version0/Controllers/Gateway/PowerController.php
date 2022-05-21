@@ -38,7 +38,7 @@ class PowerController extends GatewayController {
 	/**
 	 * @var PowerManager Gateway power manager
 	 */
-	private $manager;
+	private PowerManager $manager;
 
 	/**
 	 * Constructor

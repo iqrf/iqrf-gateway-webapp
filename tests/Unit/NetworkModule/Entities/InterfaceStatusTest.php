@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\InterfaceStatus
  * @covers App\NetworkModule\Entities\InterfaceStatus
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -52,17 +52,17 @@ final class InterfaceStatusTest extends TestCase {
 	/**
 	 * @var InterfaceTypes Network interface type
 	 */
-	private $type;
+	private InterfaceTypes $type;
 
 	/**
 	 * @var InterfaceStates Network interface state
 	 */
-	private $state;
+	private InterfaceStates $state;
 
 	/**
 	 * @var InterfaceStatus Network interface entity
 	 */
-	private $entity;
+	private InterfaceStatus $entity;
 
 	/**
 	 * Sets up the test environment

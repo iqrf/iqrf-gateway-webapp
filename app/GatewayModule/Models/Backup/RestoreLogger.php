@@ -30,7 +30,7 @@ class RestoreLogger {
 	/**
 	 * @var LoggerManager $loggerManager Logger manager
 	 */
-	private $loggerManager;
+	private LoggerManager $loggerManager;
 
 	/**
 	 * @param LoggerManager $loggerManager Logger manager

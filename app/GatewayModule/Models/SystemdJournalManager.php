@@ -48,12 +48,12 @@ class SystemdJournalManager {
 	/**
 	 * @var string $confFile Journald conf file name
 	 */
-	private $confFile;
+	private string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager File manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor

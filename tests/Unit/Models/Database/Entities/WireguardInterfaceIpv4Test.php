@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\WireguardInterfaceIpv4
  * @covers App\Models\Database\Entities\WireguardInterfaceIpv4
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -53,12 +53,12 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	/**
 	 * @var WireguardInterface Wireguard interface entity
 	 */
-	private $interfaceEntity;
+	private WireguardInterface $interfaceEntity;
 
 	/**
 	 * @var WireguardInterfaceIpv4 Wireguard interface IPv4 entity
 	 */
-	private $entity;
+	private WireguardInterfaceIpv4 $entity;
 
 	/**
 	 * Sets up the test environment

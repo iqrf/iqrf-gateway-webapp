@@ -34,7 +34,7 @@ class FeatureManager {
 	/**
 	 * @var string Path to the configuration file
 	 */
-	private $path;
+	private string $path;
 
 	/**
 	 * Default configuration
