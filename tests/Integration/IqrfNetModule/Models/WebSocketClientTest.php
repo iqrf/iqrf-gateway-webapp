@@ -54,7 +54,7 @@ final class WebSocketClientTest extends TestCase {
 	/**
 	 * URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private const WS_SERVER = 'ws://ws-echo.romanondracek.cz/';
+	private const WS_SERVER = 'ws://ws-echo.iqrf.org/';
 
 	/**
 	 * Tests the function to send a JSON DPA request via WebSocket (success)
