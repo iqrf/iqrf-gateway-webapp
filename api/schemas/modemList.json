@@ -6,7 +6,8 @@
 	"examples": [
 		{
 			"interface": "cdc-wdm0",
-			"signal": "87"
+			"signal": 87,
+			"rssi": -55
 		}
 	],
 	"additionalItems": false,
@@ -17,7 +18,8 @@
 		"description": "Information about a LTE Modem.",
 		"required": [
 			"interface",
-			"signal"
+			"signal",
+			"rssi"
 		],
 		"additionalProperties": false,
 		"properties": {
@@ -36,6 +38,13 @@
 				"minimum": 0,
 				"maximum": 100,
 				"example": 87
+			},
+			"rssi": {
+				"$id": "#/items/properties/rssi",
+				"title": "RSSI",
+				"description": "RSSI dBm",
+				"type": "integer",
+				"example": -55
 			}
 		}
 	}

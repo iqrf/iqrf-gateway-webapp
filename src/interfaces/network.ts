@@ -216,8 +216,20 @@ export interface IWGAllowedIP {
  * Modem interface
  */
 export interface IModem {
+	/**
+	 * Interface name
+	 */
 	interface: string
+
+	/**
+	 * Signal strength
+	 */
 	signal: number
+
+	/**
+	 * RSSI
+	 */
+	rssi: number
 }
 
 /**

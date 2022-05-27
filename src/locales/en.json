@@ -2522,7 +2522,8 @@
 			"add": "Add GSM connection",
 			"edit": "Edit GSM connection",
 			"table": {
-				"signal": "Signal strength"
+				"signal": "Signal strength",
+				"rssi": "RSSI"
 			},
 			"form": {
 				"title": "GSM configuration",

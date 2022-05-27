@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
+use App\CoreModule\Entities\ICommand;
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Modem;
 use App\NetworkModule\Exceptions\ModemManagerException;
@@ -74,11 +75,22 @@ class GsmManager {
 	private function getModemInformation(string $path): Modem {
 		$command = sprintf('mmcli -m %s --output-json', $path);
 		$output = $this->commandManager->run($command, true);
-		if ($output->getExitCode() !== 0) {
-			throw new ModemManagerException($output->getStderr());
+		$this->checkCommand($output);
+		$modem = Json::decode($output->getStdout());
+		$command = sprintf('mmcli -m %s --signal-setup=300', $path);
+		$output = $this->commandManager->run($command, true);
+		$this->checkCommand($output);
+		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
+		$output = $this->commandManager->run($command, true);
+		$this->checkCommand($output);
+		$rssi = Json::decode($output->getStdout());
+		return Modem::fromMmcliJson($modem, $rssi);
+	}
+
+	private function checkCommand(ICommand $command): void {
+		if ($command->getExitCode() !== 0) {
+			throw new ModemManagerException($command->getStderr());
 		}
-		$json = Json::decode($output->getStdout());
-		return Modem::fromMmcliJson($json);
 	}
 
 }

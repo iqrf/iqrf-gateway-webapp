@@ -49,6 +49,11 @@ final class ModemTest extends TestCase {
 	private const SIGNAL = 75;
 
 	/**
+	 * RSSI
+	 */
+	private const RSSI = -55.0;
+
+	/**
 	 * @var Modem Modem entity
 	 */
 	private $entity;
@@ -57,14 +62,14 @@ final class ModemTest extends TestCase {
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new Modem(self::NETWORK_INTERFACE, self::SIGNAL);
+		$this->entity = new Modem(self::NETWORK_INTERFACE, self::SIGNAL, self::RSSI);
 	}
 
 	/**
 	 * Tests the function to create a new Modem entity from mmcli JSON object
 	 */
 	public function testFromMmcliJson(): void {
-		$object = ArrayHash::from([
+		$modem = ArrayHash::from([
 			'modem' => [
 				'generic' => [
 					'primary-port' => self::NETWORK_INTERFACE,
@@ -74,7 +79,16 @@ final class ModemTest extends TestCase {
 				],
 			],
 		], true);
-		Assert::equal($this->entity, Modem::fromMmcliJson($object));
+		$rssi = ArrayHash::from([
+			'modem' => [
+				'signal' => [
+					'gsm' => [
+						'rssi' => self::RSSI,
+					],
+				],
+			],
+		], true);
+		Assert::equal($this->entity, Modem::fromMmcliJson($modem, $rssi));
 	}
 
 	/**
@@ -84,6 +98,7 @@ final class ModemTest extends TestCase {
 		$expected = [
 			'interface' => self::NETWORK_INTERFACE,
 			'signal' => self::SIGNAL,
+			'rssi' => self::RSSI,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

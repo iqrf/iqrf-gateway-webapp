@@ -61,6 +61,11 @@ limitations under the License.
 								/>
 							</td>
 						</template>
+						<template #rssi='{item}'>
+							<td>
+								{{ item.rssi }} dBm
+							</td>
+						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
@@ -184,6 +189,12 @@ export default class MobileConnections extends Vue {
 			sorter: false,
 		},
 		{
+			key: 'rssi',
+			label: this.$t('network.mobile.table.rssi'),
+			filter: false,
+			sorter: false,
+		},
+		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -243,6 +254,7 @@ export default class MobileConnections extends Vue {
 					let idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
 					if (idx !== -1) {
 						connections[i]['signal'] = this.modems[idx].signal;
+						connections[i]['rssi'] = this.modems[idx].rssi;
 					}
 				}
 				this.connections = connections;
