@@ -259,8 +259,8 @@ export default class DaemonMode extends Vue {
 		return DaemonConfigurationService.getComponent(this.ideComponent)
 			.then((response: AxiosResponse) => {
 				this.ideConfiguration = response.data.instances[0];
-				if (this.ideConfiguration?.operMode === undefined) {
-					Object.assign(this.ideConfiguration, {operMode: this.modes.operational});
+				if (this.ideConfiguration !== null) {
+					this.ideConfiguration['operMode'] = this.modes.operational;
 				}
 				this.$store.commit('spinner/HIDE');
 			})

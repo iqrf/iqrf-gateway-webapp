@@ -866,7 +866,7 @@ export default class ConnectionForm extends Vue {
 								}
 							}
 						});
-						if (this.wifiSecurity === 'wpa-eap') {
+						if (this.wifiSecurity === 'wpa-eap' && this.connection.wifi !== undefined) {
 							Object.assign(this.connection.wifi?.security, {
 								eap: {
 									phaseOne: '',
