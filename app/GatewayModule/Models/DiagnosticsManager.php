@@ -88,10 +88,10 @@ class DiagnosticsManager {
 	 */
 	public function createArchive(): string {
 		try {
-			$now = new DateTime();
-			$gwId = $this->gwInfo->getProperty('gwId');
-			$gwId = $gwId === null ? '' : strtolower($gwId) . '_';
-			$path = '/tmp/iqrf-gateway-diagnostics_' . $gwId . $now->format('c') . '.zip';
+			$date = new DateTime();
+			$gwId = $this->gwInfo->getId();
+			$gwId = strtolower($gwId) . '_';
+			$path = sprintf('/tmp/iqrf-gateway-diagnostics_%s_%s.zip', strtolower($gwId), $date->format('c'));
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-diagnostics.zip';
 		}
@@ -256,7 +256,7 @@ class DiagnosticsManager {
 	}
 
 	public function addSyslog(): void {
-		$product = $this->gwInfo->getProperty('gwImage');
+		$product = $this->gwInfo->getImage();
 		if (Strings::contains($product, 'armbian')) {
 				$this->commandManager->run('mkdir -p /tmp/syslog/log.hdd/', true);
 				$this->commandManager->run('cp /var/log.hdd/syslog* /tmp/syslog/log.hdd/', true);

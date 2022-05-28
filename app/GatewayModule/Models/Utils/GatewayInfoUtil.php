@@ -20,15 +20,14 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Utils;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
+use Nette\IOException;
+use Nette\Schema\Expect;
+use Nette\Schema\Processor;
+use Nette\Schema\Schema;
+use Nette\Utils\JsonException;
 
 class GatewayInfoUtil {
-
-	/**
-	 * Path to directory containing gateway file
-	 */
-	private const DIR = '/etc/';
 
 	/**
 	 * Gateway file name
@@ -41,43 +40,102 @@ class GatewayInfoUtil {
 	private JsonFileManager $fileManager;
 
 	/**
+	 * @var Processor Schema processor
+	 */
+	private Processor $processor;
+
+	/**
+	 * Returns gateway file schema
+	 * @return Schema Gateway file schema
+	 */
+	public function getSchema(): Schema {
+		return Expect::structure([
+			'gwProduct' => Expect::string('IQD-GW-0X'),
+			'gwManufacturer' => Expect::string('MICRORISC s.r.o.'),
+			'gwId' => Expect::string('FFFFFFFFFFFFFFFF'),
+			'gwToken' => Expect::string('iqube-ffffffffffffffff'),
+			'gwHost' => Expect::string('iqube-ffffffffffffffff.local'),
+			'gwImage' => Expect::string('iqube-os-vX.Y.Z'),
+			'gwInterface' => Expect::string('uart'),
+		])->castTo('array');
+	}
+
+	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->fileManager = new JsonFileManager(self::DIR, $commandManager);
+	public function __construct(JsonFileManager $fileManager) {
+		$this->fileManager = $fileManager;
+		$this->processor = new Processor();
 	}
 
 	/**
-	 * Returns gateway ID if gateway file exists
-	 * @param string $property Gateway property name
-	 * @return string Gateway property value
+	 * Returns gateway product
+	 * @return string Gateway product
 	 */
-	public function getProperty(string $property): ?string {
-		$json = $this->readGatewayFile();
-		if (array_key_exists($property, $json)) {
-			return $json[$property];
-		}
-		return null;
+	public function getProduct(): string {
+		return $this->read()['gwProduct'];
 	}
 
 	/**
-	 * Checks if gateway file exists
-	 * @return bool true if gateway file exists, false otherwise
+	 * Returns gateway manufacturer
+	 * @return string Gateway manufacturer
 	 */
-	private function exists(): bool {
-		return $this->fileManager->exists(self::FILE_NAME);
+	public function getManufacturer(): string {
+		return $this->read()['gwManufacturer'];
+	}
+
+	/**
+	 * Returns gateway ID
+	 * @return string Gateway ID
+	 */
+	public function getId(): string {
+		return $this->read()['gwId'];
+	}
+
+	/**
+	 * Returns gateway token
+	 * @return string Gateway token
+	 */
+	public function getToken(): string {
+		return $this->read()['gwToken'];
+	}
+
+	/**
+	 * Returns gateway host
+	 * @return string Gateway host
+	 */
+	public function getHost(): string {
+		return $this->read()['gwHost'];
+	}
+
+	/**
+	 * Returns gateway image
+	 * @return string Gateway image
+	 */
+	public function getImage(): string {
+		return $this->read()['gwImage'];
+	}
+
+	/**
+	 * Returns gateway interface
+	 * @return string Gateway interface
+	 */
+	public function getInterface(): string {
+		return $this->read()['gwInterface'];
 	}
 
 	/**
 	 * Returns gateway configuration if the file exists
 	 * @return array<mixed> Gateway configuration
 	 */
-	private function readGatewayFile(): array {
-		if (!$this->exists()) {
-			return [];
+	public function read(): array {
+		try {
+			$content = $this->fileManager->read(self::FILE_NAME);
+		} catch (IOException | JsonException $e) {
+			$content = [];
 		}
-		return $this->fileManager->read(self::FILE_NAME);
+		return $this->processor->process($this->getSchema(), $content);
 	}
 
 }

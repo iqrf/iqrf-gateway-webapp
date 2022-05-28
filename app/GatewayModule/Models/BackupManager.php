@@ -169,9 +169,8 @@ class BackupManager {
 	private function getArchivePath(): string {
 		try {
 			$date = new DateTime();
-			$gwId = $this->gwInfo->getProperty('gwId');
-			$gwId = $gwId === null ? '' : strtolower($gwId);
-			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', $gwId, $date->format('c'));
+			$gwId = $this->gwInfo->getId();
+			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', strtolower($gwId), $date->format('c'));
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-backup.zip';
 		}
@@ -337,10 +336,7 @@ class BackupManager {
 		if ($restoreMatches === null) {
 			throw new InvalidBackupContentException('Invalid backup archive gateway image version.');
 		}
-		$gwImage = $this->gwInfo->getProperty('gwImage');
-		if ($gwImage === null) {
-			throw new InvalidGatewayFileContentException('Gateway file does not contain valid image version.');
-		}
+		$gwImage = $this->gwInfo->getImage();
 		$gwMatches = Strings::match($gwImage, $pattern);
 		if ($gwMatches === null) {
 			throw new InvalidGatewayFileContentException('Gateway file does not contain valid image version.');
