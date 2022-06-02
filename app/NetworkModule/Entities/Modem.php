@@ -40,7 +40,7 @@ class Modem {
 	/**
 	 * @var float $rssi RSSI
 	 */
-	private $rssi;
+	private float $rssi;
 
 	/**
 	 * Constructor

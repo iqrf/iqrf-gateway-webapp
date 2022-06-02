@@ -45,12 +45,12 @@ class OperatorController extends NetworkController {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var NetworkOperatorRepository Network operator repository
 	 */
-	private $repository;
+	private NetworkOperatorRepository $repository;
 
 	/**
 	 * Constructor

@@ -38,25 +38,25 @@ class NetworkOperator implements JsonSerializable {
 	 * @var string Operator name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string APN
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $apn;
+	private string $apn;
 
 	/**
 	 * @var string|null Username
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $username;
+	private ?string $username;
 
 	/**
 	 * @var string|null Password
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $password;
+	private ?string $password;
 
 	/**
 	 * Constructor

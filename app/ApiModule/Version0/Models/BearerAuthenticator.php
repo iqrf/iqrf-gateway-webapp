@@ -90,6 +90,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 */
 	private function authenticateUser(string $jwt): ?User {
 		$token = $this->configuration->parser()->parse($jwt);
+		assert($token instanceof Plain);
 		if (!$this->isJwtValid($token)) {
 			return null;
 		}
