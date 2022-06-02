@@ -38,34 +38,44 @@ class Modem {
 	private $signal;
 
 	/**
+	 * @var float $rssi RSSI
+	 */
+	private $rssi;
+
+	/**
 	 * Constructor
 	 * @param string $interface Modem network interface
 	 * @param int $signal Signal strength
+	 * @param float $rssi RSSI
 	 */
-	public function __construct(string $interface, int $signal) {
+	public function __construct(string $interface, int $signal, float $rssi) {
 		$this->interface = $interface;
 		$this->signal = $signal;
+		$this->rssi = $rssi;
 	}
 
 	/**
 	 * Creates a new Modem entity from mmcli json
-	 * @param stdClass $json mmcli json object
+	 * @param stdClass $modem mmcli modem json object
+	 * @param stdClass $signal mmcli modem rssi json object
 	 * @return Modem Modem entity
 	 */
-	public static function fromMmcliJson(stdClass $json): self {
-		$interface = $json->modem->generic->{'primary-port'};
-		$signal = $json->modem->generic->{'signal-quality'}->value;
-		return new self($interface, intval($signal));
+	public static function fromMmcliJson(stdClass $modem, stdClass $signal): self {
+		$interface = $modem->modem->generic->{'primary-port'};
+		$signalQuality = $modem->modem->generic->{'signal-quality'}->value;
+		$rssi = $signal->modem->signal->gsm->rssi;
+		return new self($interface, intval($signalQuality), floatval($rssi));
 	}
 
 	/**
 	 * Serializes the Modem entity to json
-	 * @return array<string, int|string> JSON serialized entity
+	 * @return array<string, int|float|string> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'interface' => $this->interface,
 			'signal' => $this->signal,
+			'rssi' => $this->rssi,
 		];
 	}
 

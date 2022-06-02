@@ -81,10 +81,6 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInput
-							v-model='connection.gsm.number'
-							:label='$t("network.mobile.form.number")'
-						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='pin'
@@ -131,6 +127,7 @@ limitations under the License.
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
+
 						<CButton
 							color='primary'
 							type='submit'
@@ -142,6 +139,9 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
+		<CCard body-wrapper>
+			<NetworkOperators @apply='updateGsm' />
+		</CCard>
 	</div>
 </template>
 
@@ -149,6 +149,7 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import NetworkOperators from '../../components/Network/NetworkOperators.vue';
 
 import {extendedErrorToast} from '../../helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
@@ -157,10 +158,11 @@ import NetworkConnectionService from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IConnection} from '../../interfaces/network';
+import {IConnection, IOperator} from '../../interfaces/network';
 import {IOption} from '../../interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 import {NetworkInterface} from '../../interfaces/gatewayInfo';
+import NetworkOperator from '../../entities/NetworkOperator';
 
 @Component({
 	components: {
@@ -171,6 +173,7 @@ import {NetworkInterface} from '../../interfaces/gatewayInfo';
 		CInput,
 		CSelect,
 		CSwitch,
+		NetworkOperators,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -212,7 +215,6 @@ export default class MobileConnectionForm extends Vue {
 		},
 		gsm: {
 			apn: '',
-			number: '',
 			username: '',
 			password: '',
 			pin: '',
@@ -357,6 +359,19 @@ export default class MobileConnectionForm extends Vue {
 			'network.connection.messages.' +
 			(this.$route.path.includes('/add') ? 'add' : 'edit') + '.failed'
 		);
+	}
+
+	/**
+	 * Updates GSM connection object
+	 * @param {NetworkOperator} operator Network operator
+	 */
+	private updateGsm(operator: NetworkOperator): void {
+		if (this.connection.gsm === undefined) {
+			return;
+		}
+		this.connection.gsm.apn = operator.getApn();
+		this.connection.gsm.username = operator.getUsername();
+		this.connection.gsm.password = operator.getPassword();
 	}
 }
 </script>

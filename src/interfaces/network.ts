@@ -106,7 +106,6 @@ export interface IConnectionWifi {
 
 export interface IConnectionGSM {
 	apn: string
-	number: string
 	username: string
 	password: string
 	pin: string
@@ -217,6 +216,48 @@ export interface IWGAllowedIP {
  * Modem interface
  */
 export interface IModem {
+	/**
+	 * Interface name
+	 */
 	interface: string
+
+	/**
+	 * Signal strength
+	 */
 	signal: number
+
+	/**
+	 * RSSI
+	 */
+	rssi: number
+}
+
+/**
+ * Network operator interface
+ */
+export interface IOperator {
+	/**
+	 * Operator ID
+	 */
+	id?: number
+
+	/**
+	 * Operator name
+	 */
+	name: string
+
+	/**
+	 * Operator APN
+	 */
+	apn: string
+
+	/**
+	 * APN access username
+	 */
+	username?: string
+
+	/**
+	 * APN access password
+	 */
+	password?: string
 }

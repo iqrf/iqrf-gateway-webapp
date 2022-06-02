@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<CCard class='card-margin-bottom'>
+		<CCard>
 			<div v-if='interfacesLoaded && noInterfaces'>
 				<CCardBody>
 					{{ $t('network.mobile.messages.noInterfaces') }}
@@ -61,6 +61,11 @@ limitations under the License.
 								/>
 							</td>
 						</template>
+						<template #rssi='{item}'>
+							<td>
+								{{ item.rssi }} dBm
+							</td>
+						</template>
 						<template #actions='{item}'>
 							<td class='col-actions'>
 								<CButton
@@ -91,12 +96,16 @@ limitations under the License.
 				</CCardBody>
 			</div>
 		</CCard>
+		<CCard body-wrapper>
+			<NetworkOperators />
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import NetworkOperators from '../../components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '../../helpers/errorToast';
@@ -116,6 +125,7 @@ import {IModem, NetworkConnection} from '../../interfaces/network';
 		CDataTable,
 		CIcon,
 		CProgress,
+		NetworkOperators,
 	},
 	metaInfo: {
 		title: 'network.mobile.title',
@@ -179,6 +189,12 @@ export default class MobileConnections extends Vue {
 			sorter: false,
 		},
 		{
+			key: 'rssi',
+			label: this.$t('network.mobile.table.rssi'),
+			filter: false,
+			sorter: false,
+		},
+		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -238,6 +254,7 @@ export default class MobileConnections extends Vue {
 					let idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
 					if (idx !== -1) {
 						connections[i]['signal'] = this.modems[idx].signal;
+						connections[i]['rssi'] = this.modems[idx].rssi;
 					}
 				}
 				this.connections = connections;
