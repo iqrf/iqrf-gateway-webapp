@@ -22,7 +22,6 @@ namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\ZipArchiveManager;
 
 /**
  * Translator backup manager
@@ -67,23 +66,6 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	 */
 	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		parent::__construct(self::SOFTWARE, self::DIR, self::FEATURE, $path, $commandManager, $featureManager, $restoreLogger);
-	}
-
-	/**
-	 * Performs Translator backup
-	 * @param array<string, array<string, bool>> $params Request parameters
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
-	 */
-	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		parent::backup($params, $zipManager);
-	}
-
-	/**
-	 * Performs Translator restore
-	 * @param ZipArchiveManager $zipManager ZIP archive manager
-	 */
-	public function restore(ZipArchiveManager $zipManager): void {
-		parent::restore($zipManager);
 	}
 
 	/**
