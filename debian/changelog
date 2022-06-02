@@ -1,10 +1,18 @@
-iqrf-gateway-webapp (2.4.8~alpha~1.gbp1cc655) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.8) stable; urgency=medium
 
-  ** SNAPSHOT build @1cc655c243c39664de315c3646c5f442fbdd3eef **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.8-alpha
+  * custom websocket module, dropped vue-native-socket
+  * WebSocketClientText: updated ws server
+  * DaemonMode and ConnectionForm: fixed not assignable errors
+  * added network operators database entity, operator options for mobile connections
+  * GSM connection: removed number entry
+  * MobileConnections: fixed nested validation observer
+  * MobileConnections: added network operator entity, fixed GSM form filling from existing operators
+  * Modem: include rssi
+  * OperatorController: fixed operator edit api endpoint annotation
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Tue, 17 May 2022 14:05:40 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 02 Jun 2022 12:57:23 +0200
 
 iqrf-gateway-webapp (2.4.7) stable; urgency=medium
 
