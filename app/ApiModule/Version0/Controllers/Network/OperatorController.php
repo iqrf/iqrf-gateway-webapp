@@ -174,7 +174,8 @@ class OperatorController extends NetworkController {
 	 *      required: true
 	 *      content:
 	 *          application/json:
-	 *              schema: '#/components/schemas/NetworkOperator'
+	 *              schema:
+	 *                  $ref: '#/components/schemas/NetworkOperator'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
