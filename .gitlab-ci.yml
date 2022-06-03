@@ -153,6 +153,15 @@ coding-style:
   script:
     - make cc
 
+doctrine_mapping:
+  stage: coding-style
+  needs: []
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.4
+    - composer install --no-progress
+  script:
+    - bin/manager orm:validate-schema --skip-sync
+
 phpstan:
   stage: coding-style
   needs: []
