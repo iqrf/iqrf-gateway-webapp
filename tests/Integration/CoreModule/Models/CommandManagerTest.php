@@ -41,7 +41,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class CommandManagerTest extends TestCase {
 
 	/**
-	 * Executed command
+	 * @var string Executed command
 	 */
 	private const COMMAND = 'echo "OK"';
 

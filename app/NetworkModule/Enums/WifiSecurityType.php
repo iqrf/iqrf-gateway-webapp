@@ -39,27 +39,27 @@ final class WifiSecurityType extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Open
+	 * @var string Open
 	 */
 	private const OPEN = 'open';
 
 	/**
-	 * WEP
+	 * @var string WEP
 	 */
 	private const WEP = 'wep';
 
 	/**
-	 * Cisco LEAP
+	 * @var string Cisco LEAP
 	 */
 	private const LEAP = 'leap';
 
 	/**
-	 * WPA-EAP
+	 * @var string WPA-EAP
 	 */
 	private const WPA_EAP = 'wpa-eap';
 
 	/**
-	 * WPA-PSK
+	 * @var string WPA-PSK
 	 */
 	private const WPA_PSK = 'wpa-psk';
 

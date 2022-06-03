@@ -32,14 +32,14 @@ use Nette\Utils\FileSystem;
 class TimesyncdBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'timesyncd.conf',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'systemd-timesyncd',

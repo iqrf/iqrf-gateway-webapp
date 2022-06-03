@@ -49,22 +49,22 @@ final class MultiAddressTest extends TestCase {
 	private Multi $ipv6;
 
 	/**
-	 * IPv4 address
+	 * @var string IPv4 address
 	 */
 	private const IPV4_ADDR = '192.168.1.2';
 
 	/**
-	 * IPv4 address prefix
+	 * @var int IPv4 address prefix
 	 */
 	private const IPV4_PREFIX = 24;
 
 	/**
-	 * IPv6 address
+	 * @var string IPv6 address
 	 */
 	private const IPV6_ADDR = '2001:db8::';
 
 	/**
-	 * IPv6 address prefix
+	 * @var int IPv6 address prefix
 	 */
 	private const IPV6_PREFIX = 32;
 

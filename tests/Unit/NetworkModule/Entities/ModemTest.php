@@ -39,17 +39,17 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ModemTest extends TestCase {
 
 	/**
-	 * Network interface
+	 * @var string Network interface
 	 */
 	private const NETWORK_INTERFACE = 'cdc-wdm0';
 
 	/**
-	 * Signal strength
+	 * @var int Signal strength
 	 */
 	private const SIGNAL = 75;
 
 	/**
-	 * RSSI
+	 * @var float RSSI
 	 */
 	private const RSSI = -55.0;
 

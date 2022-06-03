@@ -43,7 +43,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv6ConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
@@ -55,7 +55,7 @@ final class IPv6ConnectionTest extends TestCase {
 	/**
 	 * @var array<IPv6Address> IPv6 addresses
 	 */
-	private array $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv6 IPv6 gateway address
@@ -65,7 +65,7 @@ final class IPv6ConnectionTest extends TestCase {
 	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
-	private array $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv6Connection IPv6 connection entity

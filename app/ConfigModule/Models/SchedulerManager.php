@@ -177,9 +177,7 @@ class SchedulerManager {
 	 * @return string Message types used in tasks
 	 */
 	private function getTaskMessageTypes(array $tasks): string {
-		$mTypes = array_map(function (stdClass $task): string {
-			return $task->message->mType;
-		}, $tasks);
+		$mTypes = array_map(fn (stdClass $task): string => $task->message->mType, $tasks);
 		return implode(', ', $mTypes);
 	}
 

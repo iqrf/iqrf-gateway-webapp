@@ -38,32 +38,32 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class EapTest extends TestCase {
 
 	/**
-	 * EAP phase one authonetication method
+	 * @var string EAP phase one authentication method
 	 */
 	private const PHASE_ONE = 'peap';
 
 	/**
-	 * EAP phase two authentication method
+	 * @var string EAP phase two authentication method
 	 */
 	private const PHASE_TWO = 'mschapv2';
 
 	/**
-	 * EAP anonymous identity
+	 * @var string EAP anonymous identity
 	 */
 	private const ANONYMOUS_IDENTITY = 'testclient';
 
 	/**
-	 * EAP CA certificate
+	 * @var string EAP CA certificate
 	 */
 	private const CERT = '/certs/ca.cert';
 
 	/**
-	 * EAP identity string
+	 * @var string EAP identity string
 	 */
 	private const IDENTITY = 'testuser';
 
 	/**
-	 * EAP password
+	 * @var string EAP password
 	 */
 	private const PASSWORD = 'testpass';
 

@@ -34,7 +34,7 @@ use Nette\Utils\JsonException;
 class InfoManager {
 
 	/**
-	 * @var array<string> Board managers
+	 * @var array<class-string> Board managers
 	 */
 	private array $boardManagers = [
 		IqrfBoardManager::class,
@@ -118,8 +118,8 @@ class InfoManager {
 	}
 
 	/**
-	 * Reads IQRF Gateway file and returns it's contents
-	 * @return array<string, string>
+	 * Reads IQRF Gateway file and returns its contents
+	 * @return array<string, string>|null
 	 */
 	public function readGatewayFile(): ?array {
 		$command = 'cat /etc/iqrf-gateway.json';
@@ -183,10 +183,10 @@ class InfoManager {
 	}
 
 	/**
-	 * Converts bytes to human readable sizes
+	 * Converts bytes to human-readable sizes
 	 * @param float $bytes Bytes to convert
 	 * @param int $precision Conversion precision
-	 * @return string Human readable size
+	 * @return string Human-readable size
 	 */
 	public function convertSizes(float $bytes, int $precision = 2): string {
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
@@ -201,7 +201,7 @@ class InfoManager {
 
 	/**
 	 * Gets a memory usage
-	 * @return array<string> Memory usage
+	 * @return array{size: string, used: string, free: string, shared: string, buffers: string, cache: string, available: string, usage: string} Memory usage
 	 */
 	public function getMemoryUsage(): array {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
@@ -223,7 +223,7 @@ class InfoManager {
 
 	/**
 	 * Gets a swap usage
-	 * @return array<string>|null Swap usage
+	 * @return array{size: string, used: string, free: string, usage: string}|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
 		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';

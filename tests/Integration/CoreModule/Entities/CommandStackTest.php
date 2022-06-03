@@ -40,7 +40,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class CommandStackTest extends TestCase {
 
 	/**
-	 * Command
+	 * @var string Command
 	 */
 	private const COMMAND = 'ls -al';
 

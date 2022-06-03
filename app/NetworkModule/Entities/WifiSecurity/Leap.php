@@ -61,7 +61,7 @@ class Leap implements INetworkManagerEntity {
 
 	/**
 	 * Serializes Cisco LEAP entity into JSON
-	 * @return array<string, string> JSON serialized data
+	 * @return array{username: string, password: string} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

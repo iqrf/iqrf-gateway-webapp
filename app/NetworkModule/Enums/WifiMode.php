@@ -36,22 +36,22 @@ final class WifiMode extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Ad-Hoc 802.11 network
+	 * @var string Ad-Hoc 802.11 network
 	 */
 	private const ADHOC = 'adhoc';
 
 	/**
-	 * Device in access point mode
+	 * @var string Device in access point mode
 	 */
 	private const AP = 'ap';
 
 	/**
-	 * Device in infrastructure mode
+	 * @var string Device in infrastructure mode
 	 */
 	private const INFRA = 'infrastructure';
 
 	/**
-	 * 802.11s mesh point
+	 * @var string 802.11s mesh point
 	 */
 	private const MESH = 'mesh';
 

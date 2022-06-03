@@ -40,7 +40,7 @@ class Wep implements INetworkManagerEntity {
 	/**
 	 * @var array<string> WEP keys
 	 */
-	private array $keys;
+	private array $keys = [];
 
 	/**
 	 * @var int WEP key index
@@ -74,7 +74,7 @@ class Wep implements INetworkManagerEntity {
 
 	/**
 	 * Serializes WEP entity into JSON
-	 * @return array<string, array<string>|int|string> JSON serialized data
+	 * @return array{type: string, index: int, keys: array<string>} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

@@ -43,62 +43,62 @@ final class InterfaceTypes extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Bond master interface
+	 * @var string Bond master interface
 	 */
 	private const BOND = 'bond';
 
 	/**
-	 * Bridge master interface
+	 * @var string Bridge master interface
 	 */
 	private const BRIDGE = 'bridge';
 
 	/**
-	 * Dummy interface
+	 * @var string Dummy interface
 	 */
 	private const DUMMY = 'dummy';
 
 	/**
-	 * Wired Ethernet interface
+	 * @var string Wired Ethernet interface
 	 */
 	private const ETHERNET = 'ethernet';
 
 	/**
-	 * GSM interface
+	 * @var string GSM interface
 	 */
 	private const GSM = 'gsm';
 
 	/**
-	 * IP tunnel interface
+	 * @var string IP tunnel interface
 	 */
 	private const IP_TUNNEL = 'iptunnel';
 
 	/**
-	 * Loopback interface
+	 * @var string Loopback interface
 	 */
 	private const LOOPBACK = 'loopback';
 
 	/**
-	 * TUN or TAP interface
+	 * @var string TUN or TAP interface
 	 */
 	private const TUN = 'tun';
 
 	/**
-	 * 802.1Q VLAN interface
+	 * @var string 802.1Q VLAN interface
 	 */
 	private const VLAN = 'vlan';
 
 	/**
-	 * 802.11 WiFi interface
+	 * @var string 802.11 WiFi interface
 	 */
 	private const WIFI = 'wifi';
 
 	/**
-	 * WiFi P2P interface
+	 * @var string WiFi P2P interface
 	 */
 	private const WIFI_P2P = 'wifi-p2p';
 
 	/**
-	 * WireGuard
+	 * @var string WireGuard
 	 */
 	private const WIREGUARD = 'wireguard';
 

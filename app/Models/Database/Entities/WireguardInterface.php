@@ -38,13 +38,13 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * @var string Interface name
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
 	private string $name;
 
 	/**
 	 * @var string Interface private key
-	 * @ORM\Column(type="string", length=255, nullable=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
 	private string $privateKey;
 
@@ -207,9 +207,7 @@ class WireguardInterface implements JsonSerializable {
 			'name' => $this->getName(),
 			'privateKey' => $this->getPrivateKey(),
 			'port' => $this->getPort(),
-			'peers' => array_map(function (WireguardPeer $peer): array {
-				return $peer->jsonSerialize();
-			}, $this->getPeers()->toArray()),
+			'peers' => array_map(fn (WireguardPeer $peer): array => $peer->jsonSerialize(), $this->getPeers()->toArray()),
 		];
 		if ($this->getIpv4() !== null) {
 			$array['ipv4'] = $this->getIpv4()->jsonSerialize();

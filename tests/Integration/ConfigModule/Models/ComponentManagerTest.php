@@ -40,7 +40,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * File name (without .json)
+	 * @var string File name (without .json)
 	 */
 	private const FILE_NAME = 'config';
 

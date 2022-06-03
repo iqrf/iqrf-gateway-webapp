@@ -42,12 +42,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ZipArchiveManagerTest extends TestCase {
 
 	/**
-	 * Path to the directory with IQRF Gateway Daemon's configuration
+	 * @var string Path to the directory with IQRF Gateway Daemon's configuration
 	 */
 	private const CONFIG_DIR = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * File name
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'config.json';
 

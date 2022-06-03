@@ -39,12 +39,12 @@ class LogManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * IQRF Gateway Controller log file name
+	 * @var string IQRF Gateway Controller log file name
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * IQRF Gateway Uploader log file name
+	 * @var string IQRF Gateway Uploader log file name
 	 */
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 

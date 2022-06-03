@@ -49,7 +49,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	private ServiceManager $managerUnknown;
 
 	/**
-	 * Name of service
+	 * @var string Name of service
 	 */
 	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 

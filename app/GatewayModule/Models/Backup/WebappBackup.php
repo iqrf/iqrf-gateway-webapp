@@ -32,7 +32,7 @@ use Nette\Utils\Strings;
 class WebappBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted webapp files
+	 * @var array<string> List of whitelisted webapp files
 	 */
 	public const WHITELIST = [
 		'database.db',
@@ -42,7 +42,7 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * List of whitelisted nginx files
+	 * @var array<string> List of whitelisted nginx files
 	 */
 	public const NGINX_WHITELIST = [
 		'iqrf-gateway-webapp.localhost',
@@ -57,12 +57,12 @@ class WebappBackup implements IBackupManager {
 	private string $path;
 
 	/**
-	 * Path to Webapp database directory
+	 * @var string Path to Webapp database directory
 	 */
 	private const DB_PATH = '/var/lib/iqrf-gateway-webapp/';
 
 	/**
-	 * Path to Webapp nginx configuration directory
+	 * @var string Path to Webapp nginx configuration directory
 	 */
 	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
 

@@ -33,7 +33,7 @@ use Nette\Utils\Strings;
 class DaemonBackup implements IBackupManager {
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'iqrf-gateway-daemon',

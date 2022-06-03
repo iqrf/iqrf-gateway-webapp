@@ -29,7 +29,7 @@ trait TId {
 
 	/**
 	 * @var int|null ID
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 * @ORM\Id
 	 * @ORM\GeneratedValue
 	 */

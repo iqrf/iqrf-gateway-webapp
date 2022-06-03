@@ -44,17 +44,17 @@ final class IPv4AddressTest extends TestCase {
 	private IPv4 $address;
 
 	/**
-	 * IPv4 address
+	 * @var string IPv4 address
 	 */
 	private const ADDRESS = '192.168.1.2';
 
 	/**
-	 * IPv4 network prefix
+	 * @var int IPv4 network prefix
 	 */
 	private const PREFIX = 24;
 
 	/**
-	 * IPv4 network mask
+	 * @var string IPv4 network mask
 	 */
 	private const MASK = '255.255.255.0';
 

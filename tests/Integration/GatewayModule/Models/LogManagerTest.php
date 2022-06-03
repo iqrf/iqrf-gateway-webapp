@@ -46,7 +46,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class LogManagerTest extends CommandTestCase {
 
 	/**
-	 * Command manager commands
+	 * @var array<string, string> Command manager commands
 	 */
 	private const COMMANDS = [
 		'journal' => 'journalctl --utc -b --no-pager',

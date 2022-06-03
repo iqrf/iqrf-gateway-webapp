@@ -61,22 +61,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailWifiTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
 
 	/**
-	 * Network connection ID
+	 * @var string Network connection ID
 	 */
 	private const ID = 'WIFI MAGDA';
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const INTERFACE = 'wlp4s0';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '5c7010a8-88f6-48e6-8ab2-5ad713217831';
 

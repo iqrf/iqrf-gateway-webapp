@@ -40,7 +40,7 @@ class UserVerification {
 	/**
 	 * @var User User ID
 	 * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-	 * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="CASCADE")
+	 * @ORM\JoinColumn(name="user", onDelete="CASCADE")
 	 */
 	private User $user;
 

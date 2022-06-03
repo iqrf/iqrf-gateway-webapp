@@ -43,7 +43,7 @@ final class DmiBoardInfoManagerTest extends CommandTestCase {
 	private DmiBoardManager $manager;
 
 	/**
-	 * Executed commands
+	 * @var array<string, string> Executed commands
 	 */
 	private const COMMANDS = [
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',

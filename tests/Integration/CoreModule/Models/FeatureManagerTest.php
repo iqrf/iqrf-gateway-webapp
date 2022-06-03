@@ -41,12 +41,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FeatureManagerTest extends TestCase {
 
 	/**
-	 * Path to the temporary file
+	 * @var string Path to the temporary file
 	 */
 	private const PATH_TEMP = TMP_DIR . '/features.neon';
 
 	/**
-	 * Path to the original file
+	 * @var string Path to the original file
 	 */
 	private const PATH = TESTER_DIR . '/data/features.neon';
 

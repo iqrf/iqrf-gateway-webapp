@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ApiRequestTest extends TestCase {
 
 	/**
-	 * IQRF JSON API request in an array
+	 * @var array<string, array<string, bool|array<string, string>>|string> IQRF JSON API request in an array
 	 */
 	private const REQUEST = [
 		'mType' => 'mngDaemon_Mode',

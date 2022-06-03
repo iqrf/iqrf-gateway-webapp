@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GenericManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * Component name
+	 * @var string Component name
 	 */
 	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
-	 * File name (without .json)
+	 * @var string File name (without .json)
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 

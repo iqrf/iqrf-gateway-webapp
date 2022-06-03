@@ -52,7 +52,7 @@ final class WebSocketClientTest extends TestCase {
 	private ApiRequest $request;
 
 	/**
-	 * URL to IQRF Gateway Daemon's WebSocket server
+	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
 	private const WS_SERVER = 'ws://ws-echo.iqrf.org/';
 

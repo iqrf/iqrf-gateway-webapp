@@ -28,7 +28,7 @@ use Nette\Utils\Strings;
 class PhpModuleManager {
 
 	/**
-	 * Required php extensions and their modules
+	 * @var array<string, string> Required php extensions and their modules
 	 */
 	private const REQUIRED_EXTENSIONS_MODULES = [
 		'curl' => 'curl',
@@ -52,24 +52,26 @@ class PhpModuleManager {
 
 	/**
 	 * Checks installed and loaded PHP modules
-	 * @return array<string, array<string, array<int, string>>|bool> Missing extensions meta
+	 * @return array{allExtensionsLoaded: bool, missing?: array{extensions: array<string>, packages?: array<string>}} Missing extensions meta
 	 */
 	public static function checkModules(): array {
-		$version = Strings::substring($version = phpversion(), 0, 3);
+		$version = Strings::substring(phpversion(), 0, 3);
 		$debianBased = file_exists('/etc/debian_version');
 		$loaded = get_loaded_extensions();
 		$extensions = [];
 		$packages = [];
 
 		foreach (self::REQUIRED_EXTENSIONS_MODULES as $extension => $package) {
-			if (!in_array($extension, $loaded, true)) {
-				$extensions[] = $extension;
-				if ($debianBased) {
-					$packageName = ($extension === 'openssl') ? $package : sprintf('php%s-%s', $version, $package);
-					if (!in_array($packageName, $packages, true)) {
-						$packages[] = $packageName;
-					}
-				}
+			if (in_array($extension, $loaded, true)) {
+				continue;
+			}
+			$extensions[] = $extension;
+			if (!$debianBased) {
+				continue;
+			}
+			$packageName = ($extension === 'openssl') ? $package : sprintf('php%s-%s', $version, $package);
+			if (!in_array($packageName, $packages, true)) {
+				$packages[] = $packageName;
 			}
 		}
 

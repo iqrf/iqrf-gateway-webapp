@@ -140,7 +140,7 @@ class SshKey implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized ssh key entity
-	 * @return array<string, int|string|null> JSON serialized entity
+	 * @return array{id: int|null, type: string, key: string, hash: string, description: string|null, createdAt: string} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

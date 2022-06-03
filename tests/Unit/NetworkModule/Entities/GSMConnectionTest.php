@@ -40,27 +40,27 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GSMConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * GSM APN
+	 * @var string GSM APN
 	 */
 	private const APN = 'internet';
 
 	/**
-	 * Username
+	 * @var string Username
 	 */
 	private const USERNAME = 'testuser';
 
 	/**
-	 * Password
+	 * @var string Password
 	 */
 	private const PASSWORD = 'testpass';
 
 	/**
-	 * SIM PIN
+	 * @var string SIM PIN
 	 */
 	private const PIN = '1234';
 

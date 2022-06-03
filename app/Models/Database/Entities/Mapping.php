@@ -36,27 +36,27 @@ class Mapping implements JsonSerializable {
 	use TId;
 
 	/**
-	 * Mapping type: SPI
+	 * @var string Mapping type: SPI
 	 */
 	public const TYPE_SPI = 'spi';
 
 	/**
-	 * Mapping type: UART
+	 * @var string Mapping type: UART
 	 */
 	public const TYPE_UART = 'uart';
 
 	/**
-	 * Supported mapping types
+	 * @var array<string> Supported mapping types
 	 */
 	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
 
 	/**
-	 * Default mapping UART baud rate
+	 * @var int Default mapping UART baud rate
 	 */
 	public const BAUD_RATE_DEFAULT = 57600;
 
 	/**
-	 * Supported mapping UART baud rates
+	 * @var array<int> Supported mapping UART baud rates
 	 */
 	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 

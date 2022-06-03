@@ -65,7 +65,7 @@ class BearerAuthenticator implements IAuthenticator {
 		if ($token === null) {
 			return null;
 		}
-		if (Strings::match($token, '~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~') !== null) {
+		if (Strings::match($token, '#^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$#') !== null) {
 			return $this->authenticateApp($token);
 		}
 		return $this->authenticateUser($token);
@@ -97,11 +97,7 @@ class BearerAuthenticator implements IAuthenticator {
 		try {
 			$repository = $this->entityManager->getUserRepository();
 			$id = $token->claims()->get('uid');
-			$user = $repository->find($id);
-			if (!($user instanceof User)) {
-				return null;
-			}
-			return $user;
+			return $repository->find($id);
 		} catch (Throwable $e) {
 			return null;
 		}

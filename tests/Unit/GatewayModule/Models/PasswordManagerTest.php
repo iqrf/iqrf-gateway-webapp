@@ -42,12 +42,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PasswordManagerTest extends CommandTestCase {
 
 	/**
-	 * Password change command
+	 * @var string Password change command
 	 */
 	private const COMMAND = 'chpasswd';
 
 	/**
-	 * Root user and password to change
+	 * @var string Root user and password to change
 	 */
 	private const ARGUMENT = 'root:testpass';
 

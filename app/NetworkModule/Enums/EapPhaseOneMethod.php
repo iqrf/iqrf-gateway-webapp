@@ -39,37 +39,37 @@ final class EapPhaseOneMethod extends Enum implements JsonSerializable {
 	use AutoInstances;
 
 	/**
-	 * FAST method
+	 * @var string FAST method
 	 */
 	private const FAST = 'fast';
 
 	/**
-	 * LEAP method
+	 * @var string LEAP method
 	 */
 	private const LEAP = 'leap';
 
 	/**
-	 * MD5 method
+	 * @var string MD5 method
 	 */
 	private const MD5 = 'md5';
 
 	/**
-	 * PEAP method
+	 * @var string PEAP method
 	 */
 	private const PEAP = 'peap';
 
 	/**
-	 * PWD method
+	 * @var string PWD method
 	 */
 	private const PWD = 'pwd';
 
 	/**
-	 * TLS method
+	 * @var string TLS method
 	 */
 	private const TLS = 'tls';
 
 	/**
-	 * TTLS method
+	 * @var string TTLS method
 	 */
 	private const TTLS = 'ttls';
 

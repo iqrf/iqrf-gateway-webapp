@@ -37,32 +37,32 @@ final class WifiKeyManagement extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Dynamic WEP
+	 * @var string Dynamic WEP
 	 */
 	private const DYNAMIC_WEP = 'ieee8021x';
 
 	/**
-	 * OWE
+	 * @var string OWE
 	 */
 	private const OWE = 'owe';
 
 	/**
-	 * SAE
+	 * @var string SAE
 	 */
 	private const SAE = 'sae';
 
 	/**
-	 * Static WEP
+	 * @var string Static WEP
 	 */
 	private const STATIC_WEP = 'none';
 
 	/**
-	 * WPA-EAP
+	 * @var string WPA-EAP
 	 */
 	private const WPA_EAP = 'wpa-eap';
 
 	/**
-	 * WPA-PSK
+	 * @var string WPA-PSK
 	 */
 	private const WPA_PSK = 'wpa-psk';
 

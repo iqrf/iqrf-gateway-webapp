@@ -29,31 +29,31 @@ use App\CoreModule\Models\FeatureManager;
 class ControllerBackup extends IqrfSoftwareBackup {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'config.json',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'iqrf-gateway-controller',
 	];
 
 	/**
-	 * ZIP directory
+	 * @var string ZIP directory
 	 */
 	private const DIR = 'controller';
 
 	/**
-	 * Feature name
+	 * @var string Feature name
 	 */
 	private const FEATURE = 'iqrfGatewayController';
 
 	/**
-	 * Software name
+	 * @var string Software name
 	 */
 	private const SOFTWARE = 'IQRF Gateway Controller';
 

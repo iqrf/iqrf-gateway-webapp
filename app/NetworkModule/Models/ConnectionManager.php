@@ -128,7 +128,7 @@ class ConnectionManager {
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
 		}
-		$pattern = '/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/';
+		$pattern = '#[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}#';
 		$matches = Strings::match($output->getStdout(), $pattern);
 		return $matches[0];
 	}
@@ -145,7 +145,7 @@ class ConnectionManager {
 		$values->type = $currentConnection->getType()->toScalar();
 		$values->interface = $currentConnection->getInterfaceName();
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
-		$configuration = Strings::replace($newConnection->nmCliSerialize(), '/connection\.type \"[\\-\w]+\" /', '');
+		$configuration = Strings::replace($newConnection->nmCliSerialize(), '#connection\.type \"[\\-\w]+\" #', '');
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		$exitCode = $output->getExitCode();

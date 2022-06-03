@@ -31,7 +31,7 @@ final class IPv4Current implements JsonSerializable {
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private array $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv4|null IPv4 gateway address
@@ -41,7 +41,7 @@ final class IPv4Current implements JsonSerializable {
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private array $dns;
+	private array $dns = [];
 
 	/**
 	 * Current IPv4 configuration entity
@@ -57,18 +57,14 @@ final class IPv4Current implements JsonSerializable {
 
 	/**
 	 * Serializes current IPv4 configuration entity to JSON
-	 * @return array<string, array<array<string, int|string>>|string|null>
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>} IPv4 current configuration
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'method' => 'auto',
-			'addresses' => array_map(function (IPv4Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
+			'addresses' => array_map(fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(function (IPv4 $a): array {
-				return ['address' => $a->getDotAddress()];
-			}, $this->dns),
+			'dns' => array_map(fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 	}
 

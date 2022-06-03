@@ -38,32 +38,32 @@ require __DIR__ . '/../../../../bootstrap.php';
 class ControllerPinConfigurationTest extends TestCase {
 
 	/**
-	 * Profile name
+	 * @var string Profile name
 	 */
 	private const NAME = 'Test profile';
 
 	/**
-	 * Green LED pin number
+	 * @var int Green LED pin number
 	 */
 	private const GREEN_LED_PIN = 0;
 
 	/**
-	 * Red LED pin number
+	 * @var int Red LED pin number
 	 */
 	private const RED_LED_PIN = 1;
 
 	/**
-	 * Button pin number
+	 * @var int Button pin number
 	 */
 	private const BUTTON_PIN = 2;
 
 	/**
-	 * I2C clock pin number
+	 * @var int I2C clock pin number
 	 */
 	private const SCK_PIN = 3;
 
 	/**
-	 * I2C data pin number
+	 * @var int I2C data pin number
 	 */
 	private const SDA_PIN = 4;
 

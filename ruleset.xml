@@ -57,6 +57,7 @@ limitations under the License.
 		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBeforeDeclare"/>
 		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBetweenOpenTagAndDeclare"/>
 		<exclude name="SlevomatCodingStandard.TypeHints.DisallowMixedTypeHint.DisallowedMixedTypeHint"/>
+		<exclude name="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
 	</rule>
 	<rule ref="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators">
 		<exclude name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPreIncrementOperator" />

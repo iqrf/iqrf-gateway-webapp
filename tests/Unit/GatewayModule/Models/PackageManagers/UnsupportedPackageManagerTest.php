@@ -39,7 +39,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UnsupportedPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * Packages
+	 * @var array<string> Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 

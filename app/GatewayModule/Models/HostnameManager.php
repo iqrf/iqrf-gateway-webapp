@@ -32,12 +32,12 @@ use Nette\Utils\Strings;
 class HostnameManager {
 
 	/**
-	 * Hosts file name
+	 * @var string Hosts file name
 	 */
 	private const HOSTS_FILE = 'hosts';
 
 	/**
-	 * Hostname file name
+	 * @var string Hostname file name
 	 */
 	private const HOSTNAME_FILE = 'hostname';
 

@@ -33,7 +33,7 @@ class TranslatorConfigManager {
 	private JsonFileManager $fileManager;
 
 	/**
-	 * JSON file containing translator configuration
+	 * @var string JSON file containing translator configuration
 	 */
 	private const FILE_NAME = 'config';
 

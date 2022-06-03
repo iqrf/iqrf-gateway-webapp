@@ -230,10 +230,9 @@ class DiagnosticsManager {
 	 * Adds logs of IQRF Gateway Uploader
 	 */
 	public function addUploaderLog(): void {
-		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
-			if (file_exists('/var/log/iqrf-gateway-uploader.log')) {
-				$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
-			}
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader') &&
+			file_exists('/var/log/iqrf-gateway-uploader.log')) {
+			$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
 		}
 	}
 
@@ -274,7 +273,7 @@ class DiagnosticsManager {
 	public function addInstalledPackages(): void {
 		if ($this->commandManager->commandExist('apt')) {
 			$command = $this->commandManager->run('apt list --installed', true);
-			$packages = Strings::replace($command->getStdout(), '/Listing...\n/');
+			$packages = Strings::replace($command->getStdout(), '#Listing...\n#');
 			$this->zipManager->addFileFromText('installed_packages.txt', $packages);
 		}
 	}

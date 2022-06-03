@@ -43,7 +43,7 @@ final class NetworkManagerTest extends CommandTestCase {
 	private NetworkManager $manager;
 
 	/**
-	 * Executed commands
+	 * @var array<string, string> Executed commands
 	 */
 	private const COMMANDS = [
 		'hostname' => 'hostname -f',

@@ -20,35 +20,26 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Utils;
 
-use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
+use Nette\Schema\Elements\Structure;
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;
-use Nette\Schema\Schema;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 class GatewayInfoUtil {
 
 	/**
-	 * Gateway file name
+	 * @var string Gateway file path
 	 */
-	private const FILE_NAME = 'iqrf-gateway';
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private JsonFileManager $fileManager;
-
-	/**
-	 * @var Processor Schema processor
-	 */
-	private Processor $processor;
+	private string $path;
 
 	/**
 	 * Returns gateway file schema
-	 * @return Schema Gateway file schema
+	 * @return Structure Gateway file schema
 	 */
-	public function getSchema(): Schema {
+	public function getSchema(): Structure {
 		return Expect::structure([
 			'gwProduct' => Expect::string('IQD-GW-0X'),
 			'gwManufacturer' => Expect::string('MICRORISC s.r.o.'),
@@ -62,11 +53,10 @@ class GatewayInfoUtil {
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param string $path Gateway file path
 	 */
-	public function __construct(JsonFileManager $fileManager) {
-		$this->fileManager = $fileManager;
-		$this->processor = new Processor();
+	public function __construct(string $path) {
+		$this->path = $path;
 	}
 
 	/**
@@ -131,11 +121,12 @@ class GatewayInfoUtil {
 	 */
 	public function read(): array {
 		try {
-			$content = $this->fileManager->read(self::FILE_NAME);
+			$content = Json::decode(FileSystem::read($this->path));
 		} catch (IOException | JsonException $e) {
 			$content = [];
 		}
-		return $this->processor->process($this->getSchema(), $content);
+		$processor = new Processor();
+		return $processor->process($this->getSchema(), $content);
 	}
 
 }

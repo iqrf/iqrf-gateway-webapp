@@ -98,7 +98,7 @@ final class Connection implements JsonSerializable {
 
 	/**
 	 * Serializes nwteork connection entity into JSON
-	 * @return array<string, string> JSON serialized data
+	 * @return array{name: string, uuid: string, type: string, interfaceName: string|null} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

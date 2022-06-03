@@ -37,7 +37,7 @@ use Tester\TestCase;
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for wireguard peer address entity
+ * Tests for WireGuard peer address entity
  */
 final class WireguardPeerAddressTest extends TestCase {
 
@@ -52,17 +52,17 @@ final class WireguardPeerAddressTest extends TestCase {
 	private MultiAddress $ipv6Entity;
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer Wireguard peer entity
+	 * @var WireguardPeer WireGuard peer entity
 	 */
 	private WireguardPeer $peerEntity;
 
 	/**
-	 * @var WireguardPeerAddress Wireguard peer address entity
+	 * @var WireguardPeerAddress WireGuard peer address entity
 	 */
 	private WireguardPeerAddress $entity;
 
@@ -78,14 +78,14 @@ final class WireguardPeerAddressTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get wireguard peer address entity
+	 * Tests the function to get WireGuard peer address entity
 	 */
 	public function testGetAddress(): void {
 		Assert::equal($this->ipv4Entity, $this->entity->getAddress());
 	}
 
 	/**
-	 * Tests the function to set wireguard peer address entity
+	 * Tests the function to set WireGuard peer address entity
 	 */
 	public function testSetAddress(): void {
 		$this->entity->setAddress($this->ipv6Entity);
@@ -93,14 +93,14 @@ final class WireguardPeerAddressTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to return wireguard address peer entity
+	 * Tests the function to return WireGuard address peer entity
 	 */
 	public function testGetPeer(): void {
 		Assert::equal($this->peerEntity, $this->entity->getPeer());
 	}
 
 	/**
-	 * Tests the function to set wireguard address peer entity
+	 * Tests the function to set WireGuard address peer entity
 	 */
 	public function testSetPeer(): void {
 		$expected = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 30, 'vpn.test.org', 51281, $this->interfaceEntity);
@@ -109,7 +109,7 @@ final class WireguardPeerAddressTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to serialize wireguard peer ipv4 address entity into JSON
+	 * Tests the function to serialize WireGuard peer ipv4 address entity into JSON
 	 */
 	public function testJsonSerializeIpv4(): void {
 		$expected = [
@@ -121,7 +121,7 @@ final class WireguardPeerAddressTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to serialize wireguard peer ipv6 address entity
+	 * Tests the function to serialize WireGuard peer ipv6 address entity
 	 */
 	public function testJsonSerializeIpv6(): void {
 		$expected = [

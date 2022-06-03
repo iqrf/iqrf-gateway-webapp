@@ -97,7 +97,7 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array<string, string|null> JSON serialized data
+	 * @return array{name: string, type: string, state: string, connectionName: string|null} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

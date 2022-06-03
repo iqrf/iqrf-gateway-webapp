@@ -42,17 +42,17 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PrivilegedFileManagerTest extends TestCase {
 
 	/**
-	 * File name
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'config.json';
 
 	/**
-	 * Directory with configuration files
+	 * @var string Directory with configuration files
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * Directory with temporary configuration files
+	 * @var string Directory with temporary configuration files
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 

@@ -54,12 +54,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionManagerTest extends CommandTestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 

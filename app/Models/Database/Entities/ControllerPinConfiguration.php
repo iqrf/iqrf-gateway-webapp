@@ -185,7 +185,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized controller pins
-	 * @return array<string, int|string> JSON serialized controller pins
+	 * @return array{id: int|null, name: string, greenLed: int, redLed: int, button: int, sck?: int, sda?: int} JSON serialized controller pins
 	 */
 	public function jsonSerialize(): array {
 		$array = [

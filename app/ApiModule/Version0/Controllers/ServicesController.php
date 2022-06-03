@@ -55,7 +55,7 @@ class ServicesController extends BaseController {
 	private ServiceManager $manager;
 
 	/**
-	 * Whitelisted services
+	 * @var array<string, string|null> Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
 		'gwman-client' => 'pixla',

@@ -45,7 +45,7 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	private ConnectivityManager $manager;
 
 	/**
-	 * Connectivity check command
+	 * @var string Connectivity check command
 	 */
 	private const CHECK_CMD = 'nmcli -t networking connectivity check';
 

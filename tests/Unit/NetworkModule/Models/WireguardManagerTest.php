@@ -51,7 +51,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WireguardManagerTest extends CommandTestCase {
 
 	/**
-	 * Commands to be executed during testing
+	 * @var array<string, string> Commands to be executed during testing
 	 */
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
@@ -61,7 +61,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * Wireguard keypair
+	 * @var array{privateKey: string, publicKey: string} Wireguard keypair
 	 */
 	private const WG_KEYPAIR = [
 		'privateKey' => 'uImD+hh1Dp6uWvWJ+eaYdc2oRloC3TYUpPUUCwfBi0I=',

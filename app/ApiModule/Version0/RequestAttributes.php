@@ -28,12 +28,12 @@ use Apitte\Core\Http\RequestAttributes as ApitteRequestAttributes;
 interface RequestAttributes extends ApitteRequestAttributes {
 
 	/**
-	 * Logged 3rd-party app
+	 * @var string Logged 3rd-party app
 	 */
 	public const APP_LOGGED_APP = 'app.logged.app';
 
 	/**
-	 * Logged user
+	 * @var string Logged user
 	 */
 	public const APP_LOGGED_USER = 'app.logged.user';
 

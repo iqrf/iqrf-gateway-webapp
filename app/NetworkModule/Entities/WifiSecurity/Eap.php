@@ -32,7 +32,7 @@ use stdClass;
 class Eap implements INetworkManagerEntity {
 
 	/**
-	 * nmcli 802-1x prefix
+	 * @var string nmcli 802-1x prefix
 	 */
 	private const NMCLI_PREFIX = '802-1x';
 
@@ -102,7 +102,7 @@ class Eap implements INetworkManagerEntity {
 
 	/**
 	 * Serializes EAP entity into JSON
-	 * @return array<string, string|null> JSON serialized data
+	 * @return array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

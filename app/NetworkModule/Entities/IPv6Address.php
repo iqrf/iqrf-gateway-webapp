@@ -77,7 +77,7 @@ class IPv6Address {
 
 	/**
 	 * Converts the IPv6 address entity to an array
-	 * @return array<string, int|string> IPv6 address entity in the array
+	 * @return array{address: string, prefix: int} IPv6 address entity in the array
 	 */
 	public function toArray(): array {
 		return [

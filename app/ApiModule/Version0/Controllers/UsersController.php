@@ -153,10 +153,8 @@ class UsersController extends BaseController {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$email = $json['email'] ?? null;
-			if ($email !== null) {
-				if ($this->manager->checkEmailUniqueness($email)) {
-					throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
-				}
+			if ($email !== null && $this->manager->checkEmailUniqueness($email)) {
+				throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user = new User($json['username'], $email, $json['password'], $json['role'], $json['language']);
 			$this->entityManager->persist($user);
@@ -303,11 +301,10 @@ class UsersController extends BaseController {
 				!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
 				self::checkScopes($request, ['users:admin']);
 			}
-			if (($user->getRole() === User::ROLE_ADMIN) &&
-				($this->repository->userCountByRole(User::ROLE_ADMIN) === 1)) {
-				if ($json['role'] !== User::ROLE_ADMIN) {
-					throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
-				}
+			if ($user->getRole() === User::ROLE_ADMIN &&
+				$this->repository->userCountByRole(User::ROLE_ADMIN) === 1 &&
+				$json['role'] !== User::ROLE_ADMIN) {
+				throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
 			}
 			try {
 				$user->setRole($json['role']);

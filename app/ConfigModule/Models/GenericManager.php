@@ -238,7 +238,7 @@ class GenericManager {
 	 * @return string Generated file name
 	 */
 	public function generateFileName(array $array): string {
-		$prefix = Strings::replace($this->component, '~::~', '__');
+		$prefix = Strings::replace($this->component, '#::#', '__');
 		return $prefix . '__' . $array['instance'];
 	}
 

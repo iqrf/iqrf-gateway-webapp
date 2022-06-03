@@ -66,7 +66,7 @@ class AutoConnect implements INetworkManagerEntity {
 
 	/**
 	 * Serializes the automatic connecting entity into JSON
-	 * @return array<string, bool|int> JSON serialized entity
+	 * @return array{enabled: bool, priority: int, retries: int} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

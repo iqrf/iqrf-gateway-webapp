@@ -44,7 +44,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MonitManagerTest extends TestCase {
 
 	/**
-	 * Monit configuration file name
+	 * @var string Monit configuration file name
 	 */
 	private const FILE_NAME = 'monitrc';
 

@@ -34,7 +34,7 @@ use stdClass;
 class SystemdJournalManager {
 
 	/**
-	 * Journal configuration
+	 * @var array<string, string> Journal configuration
 	 */
 	private const DEFAULT_CONFIG = [
 		'ForwardToSyslog' => 'no',
@@ -69,7 +69,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Retrieves systemd journal configuration
-	 * @return array<string, bool|int|string|array<string, int|string>> Systemd journal configuration
+	 * @return array{forwardToSyslog: bool, persistence: string, maxDiskSize: int, maxFiles: int, sizeRotation: array<string, int>, timeRotation: array<int|string>} Systemd journal configuration
 	 */
 	public function getConfig(): array {
 		$conf = $this->getJournalConf();
@@ -107,9 +107,8 @@ class SystemdJournalManager {
 		if ($size === '') {
 			return 0;
 		}
-		$pattern = '/^(\d+)(\w*$)/';
-		$matches = Strings::match($size, $pattern);
-		return intval($matches[1]);
+		$matches = Strings::match($size, '#^(\d+)(\w*$)#');
+		return (int) $matches[1];
 	}
 
 	/**
@@ -119,36 +118,34 @@ class SystemdJournalManager {
 	 */
 	public function getMaxFiles(array $conf): int {
 		$files = $this->getPropertyDefault('SystemMaxFiles', $conf);
-		return $files === '' ? 0 : intval($files);
+		return $files === '' ? 0 : (int) $files;
 	}
 
 	/**
 	 * Parses maximum system log file size in megabytes
 	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return array<string, int> Maximum system log file size
+	 * @return array{maxFileSize: int} Maximum system log file size
 	 */
 	public function getSizeRotation(array $conf): array {
 		$size = $this->getPropertyDefault('SystemMaxFileSize', $conf);
 		if ($size === '') {
 			return ['maxFileSize' => 0];
 		}
-		$pattern = '/^(\d+)(\w*$)/';
-		$matches = Strings::match($size, $pattern);
-		return ['maxFileSize' => intval($matches[1])];
+		$matches = Strings::match($size, '#^(\d+)(\w*$)#');
+		return ['maxFileSize' => (int) $matches[1]];
 	}
 
 	/**
 	 * Parses log file duration before rotation
 	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return array<string, int|string> Log file duration
+	 * @return array{unit: mixed, count: int} Log file duration
 	 */
 	public function getTimeRotation(array $conf): array {
 		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
-		$pattern = '/^(\d+)(\w*$)/';
-		$matches = Strings::match($duration, $pattern);
+		$matches = Strings::match($duration, '#^(\d+)(\w*$)#');
 		return [
 			'unit' => $matches[2] === '' ? 's' : $matches[2],
-			'count' => intval($matches[1]),
+			'count' => (int) $matches[1],
 		];
 	}
 
@@ -159,16 +156,16 @@ class SystemdJournalManager {
 	 * @return string Property value
 	 */
 	private function getPropertyDefault(string $key, array $conf): string {
-		$property = self::DEFAULT_CONFIG[$key];
 		if (array_key_exists($key, $conf)) {
-			$property = $conf[$key];
+			return $conf[$key];
 		}
-		return $property;
+		return self::DEFAULT_CONFIG[$key];
 	}
 
 	/**
 	 * Stores new systemd journal configuration
 	 * @param stdClass $newConf New systemd journal configuration
+	 * @throws ConfNotFoundException
 	 */
 	public function saveConfig(stdClass $newConf): void {
 		if (!$this->fileManager->exists($this->confFile)) {
@@ -192,6 +189,8 @@ class SystemdJournalManager {
 	/**
 	 * Reads systemd journal configuration
 	 * @return array<string, array<string, mixed>> Systemd journal configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	private function getJournalConf(): array {
 		if (!$this->fileManager->exists($this->confFile)) {

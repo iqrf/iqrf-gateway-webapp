@@ -24,8 +24,10 @@ use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Mockery;
 use Mockery\MockInterface;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -73,7 +75,9 @@ abstract class WebSocketTestCase extends TestCase {
 	/**
 	 * Reads the IQRF JSON API response
 	 * @param string $mType Message type
-	 * @return array<mixed> IQRF JSON API response
+	 * @return array{response: mixed} IQRF JSON API response
+	 * @throws IOException
+	 * @throws JsonException
 	 */
 	public function readJsonResponse(string $mType): array {
 		$path = __DIR__ . '/../../data/apiResponses/';

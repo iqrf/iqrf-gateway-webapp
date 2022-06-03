@@ -42,17 +42,17 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PixlaManagerTest extends CommandTestCase {
 
 	/**
-	 * File containing PIXLA token
+	 * @var string File containing PIXLA token
 	 */
 	private const FILE_NAME = 'customer_id';
 
 	/**
-	 * PIXLA token
+	 * @var string PIXLA token
 	 */
 	private const TOKEN = 'pixla-token';
 
 	/**
-	 * PIXLA new token
+	 * @var string PIXLA new token
 	 */
 	private const NEW_TOKEN = 'pixla-new-token';
 

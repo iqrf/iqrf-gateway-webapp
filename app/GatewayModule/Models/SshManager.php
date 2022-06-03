@@ -38,7 +38,7 @@ use App\Models\Database\Repositories\SshKeyRepository;
 class SshManager {
 
 	/**
-	 * SSH authorized keys file
+	 * @var string SSH authorized keys file
 	 */
 	private const KEYS_FILE = 'authorized_keys';
 
@@ -50,7 +50,7 @@ class SshManager {
 	/**
 	 * @var string|null Path to SSH directory
 	 */
-	private ?string $directory;
+	private ?string $directory = null;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -60,7 +60,7 @@ class SshManager {
 	/**
 	 * @var PrivilegedFileManager|null Privileged file manager
 	 */
-	private ?PrivilegedFileManager $fileManager;
+	private ?PrivilegedFileManager $fileManager = null;
 
 	/**
 	 * @var SshKeyRepository SSH key repository
@@ -191,9 +191,7 @@ class SshManager {
 	public function updateKeysFile(): void {
 		$this->checkSshDirectory();
 		$keys = $this->sshKeyRepository->findAll();
-		$content = implode(PHP_EOL, array_map(function (SshKey $key): string {
-			return $key->toString();
-		}, $keys));
+		$content = implode(PHP_EOL, array_map(fn (SshKey $key): string => $key->toString(), $keys));
 		$this->fileManager->write(self::KEYS_FILE, $content);
 	}
 

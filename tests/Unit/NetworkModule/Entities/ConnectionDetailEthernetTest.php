@@ -52,22 +52,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const INTERFACE = 'eth0';
 
 	/**
-	 * Network connection name
+	 * @var string Network connection name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 

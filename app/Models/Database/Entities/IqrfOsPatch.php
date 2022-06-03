@@ -169,7 +169,7 @@ class IqrfOsPatch {
 
 	/**
 	 * Returns JSON serialized IQRF OS patch metadata
-	 * @return array<string, int|string> JSON serialized IQRF OS patch data
+	 * @return array{id: int|null, moduleType: string, fromOsVersion: int, fromOsBuild: int, toOsVersion: int, toOsBuild: int, partNumber: int, parts: int, fileName: string} JSON serialized IQRF OS patch data
 	 */
 	public function jsonSerialize(): array {
 		return [

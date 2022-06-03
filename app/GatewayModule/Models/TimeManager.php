@@ -48,30 +48,36 @@ class TimeManager {
 
 	/**
 	 * Retrieves current time and timezone
-	 * @return array<string, array<string, string>> Time and timezone
+	 * @return array{timestamp: int, ntpSynchronized: string, name: string, code: string, offset: string} Time and timezone
+	 * @throws TimeDateException
 	 */
 	public function currentTime(): array {
 		$timestamp = $this->getTimestamp();
 		$status = $this->getStatus();
 		$timezone = $this->timezoneInfo($status['Timezone']);
-		return array_merge(['timestamp' => $timestamp, 'ntpSynchronized' => $status['NTPSynchronized']], $timezone);
+		return array_merge([
+			'timestamp' => $timestamp,
+			'ntpSynchronized' => $status['NTPSynchronized'],
+			], $timezone);
 	}
 
 	/**
 	 * Returns the current timestamp
 	 * @return int Timestamp
+	 * @throws TimeDateException
 	 */
 	public function getTimestamp(): int {
 		$command = $this->commandManager->run('date +%s');
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
-		return intval($command->getStdout());
+		return (int) $command->getStdout();
 	}
 
 	/**
 	 * Returns timedatectl status
 	 * @return array<string, mixed|array<string, mixed>> Timedatectl status
+	 * @throws TimeDateException
 	 */
 	public function getStatus(): array {
 		$command = $this->commandManager->run('timedatectl show');
@@ -102,7 +108,7 @@ class TimeManager {
 	/**
 	 * Retrieves timezone information
 	 * @param string $timezone Timezone name
-	 * @return array<string, string> Timezone name, abbreviation and offset
+	 * @return array{name: string, code: string, offset: string} Timezone name, abbreviation and offset
 	 */
 	public function timezoneInfo(string $timezone): array {
 		$time = new DateTime('now', new DateTimeZone($timezone));
@@ -117,6 +123,7 @@ class TimeManager {
 	/**
 	 * Sets new gateway timezone
 	 * @param string $timezone Timezone name
+	 * @throws NonexistentTimezoneException
 	 */
 	public function setTimezone(string $timezone): void {
 		$command = $this->commandManager->run('timedatectl set-timezone ' . $timezone, true);

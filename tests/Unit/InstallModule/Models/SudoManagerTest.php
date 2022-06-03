@@ -39,6 +39,9 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class SudoManagerTest extends CommandTestCase {
 
+	/**
+	 * @var string Command
+	 */
 	private const COMMAND = 'sudo -v';
 
 	/**

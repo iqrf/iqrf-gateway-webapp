@@ -38,13 +38,6 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PhpModuleManagerTest extends TestCase {
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-	}
-
-	/**
 	 * Tests the function to check installed and loaded PHP modules
 	 */
 	public function testCheckModules(): void {

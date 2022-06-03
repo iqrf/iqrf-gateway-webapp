@@ -33,7 +33,7 @@ use stdClass;
 final class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
-	 * nmcli 802-11-wireless security configuration prefix
+	 * @var string nmcli 802-11-wireless security configuration prefix
 	 */
 	public const NMCLI_PREFIX = '802-11-wireless-security';
 
@@ -98,7 +98,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
 	 * Serializes WiFi connection security entity into JSON
-	 * @return array<string, string|array<string, array<string>|int|string>> JSON serialized entity
+	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [

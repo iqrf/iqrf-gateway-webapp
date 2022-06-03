@@ -36,27 +36,27 @@ use Tester\TestCase;
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for wireguard interface entity
+ * Tests for WireGuard interface entity
  */
 class WireguardInterfaceIpv6Test extends TestCase {
 
 	/**
-	 * IPv6 address
+	 * @var string IPv6 address
 	 */
 	private const ADDRESS = '2001:db8::';
 
 	/**
-	 * IPv6 address prefix
+	 * @var int IPv6 address prefix
 	 */
 	private const PREFIX = 32;
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardInterfaceIpv6 Wireguard interface IPv4 entity
+	 * @var WireguardInterfaceIpv6 WireGuard interface IPv4 entity
 	 */
 	private WireguardInterfaceIpv6 $entity;
 

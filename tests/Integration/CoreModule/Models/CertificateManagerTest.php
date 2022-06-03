@@ -54,7 +54,7 @@ final class CertificateManagerTest extends TestCase {
 	private CertificateManager $manager;
 
 	/**
-	 * Path to a directory with certificates and private keys
+	 * @var string Path to a directory with certificates and private keys
 	 */
 	private const PATH = TESTER_DIR . '/data/certificates/';
 

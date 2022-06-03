@@ -31,7 +31,7 @@ use Nette\Utils\FileSystem;
 class HostBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'hostname',
@@ -39,7 +39,7 @@ class HostBackup implements IBackupManager {
 	];
 
 	/**
-	 * Path to configuration directory
+	 * @var string Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 

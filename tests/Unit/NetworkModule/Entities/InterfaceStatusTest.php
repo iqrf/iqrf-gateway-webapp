@@ -40,12 +40,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InterfaceStatusTest extends TestCase {
 
 	/**
-	 * Network connection name
+	 * @var string Network connection name
 	 */
 	private const CONNECTION = 'eth0';
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const NAME = 'eth0';
 

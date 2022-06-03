@@ -29,24 +29,24 @@ use App\CoreModule\Models\FeatureManager;
 class UploaderBackup extends IqrfSoftwareBackup {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'config.json',
 	];
 
 	/**
-	 * ZIP directory
+	 * @var string ZIP directory
 	 */
 	private const DIR = 'uploader';
 
 	/**
-	 * Feature name
+	 * @var string Feature name
 	 */
 	private const FEATURE = 'trUpload';
 
 	/**
-	 * Software name
+	 * @var string Software name
 	 */
 	private const SOFTWARE = 'IQRF Gateway Uploader';
 

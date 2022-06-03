@@ -32,21 +32,21 @@ use Nette\Utils\FileSystem;
 class MonitBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'monitrc',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'monit',
 	];
 
 	/**
-	 * Path to Monit configuration directory
+	 * @var string Path to Monit configuration directory
 	 */
 	private const CONF_PATH = '/etc/monit/';
 

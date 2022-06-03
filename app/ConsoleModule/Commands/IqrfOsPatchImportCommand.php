@@ -33,7 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IqrfOsPatchImportCommand extends Command {
 
 	/**
-	 * Path to directory with IQRF OS patches
+	 * @var string Path to directory with IQRF OS patches
 	 */
 	private const DIR_PATH = __DIR__ . '/../../../iqrf/os/';
 

@@ -33,7 +33,7 @@ class ControllerConfigManager {
 	private JsonFileManager $fileManager;
 
 	/**
-	 * JSON file containing Controller configuration
+	 * @var string JSON file containing Controller configuration
 	 */
 	private const FILE_NAME = 'config';
 

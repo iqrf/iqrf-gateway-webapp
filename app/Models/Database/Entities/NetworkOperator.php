@@ -106,7 +106,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns username
-	 * @return string Username
+	 * @return string|null Username
 	 */
 	public function getUsername(): ?string {
 		return $this->username;
@@ -122,7 +122,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns password
-	 * @return string Password
+	 * @return string|null Password
 	 */
 	public function getPassword(): ?string {
 		return $this->password;
@@ -138,7 +138,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized operator data
-	 * @return array<string, int|string> JSON serialized operator data
+	 * @return array{id: int|null, name: string, apn: string, username?: string, password?: string} JSON serialized operator data
 	 */
 	public function jsonSerialize(): array {
 		$array = [

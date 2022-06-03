@@ -47,17 +47,17 @@ class ApiKeyTest extends TestCase {
 	private ApiKey $entity;
 
 	/**
-	 * API key description
+	 * @var string API key description
 	 */
 	private const DESCRIPTION = 'Example API key';
 
 	/**
-	 * API key expiration date in past
+	 * @var string API key expiration date in past
 	 */
 	private const PAST_EXPIRATION = '2020-01-01T00:00:00+02:00';
 
 	/**
-	 * API key expiration date in future
+	 * @var string API key expiration date in future
 	 */
 	private const FUTURE_EXPIRATION = '2025-01-01T00:00:00+02:00';
 

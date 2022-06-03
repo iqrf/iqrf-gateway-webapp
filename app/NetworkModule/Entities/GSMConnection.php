@@ -29,7 +29,7 @@ use stdClass;
 final class GSMConnection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'gsm';
 
@@ -78,7 +78,7 @@ final class GSMConnection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes GSM connection entity into JSON
-	 * @return array<string, string|null> JSON serialized entity
+	 * @return array{apn: string, username: string|null, password: string|null, pin: string|null} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

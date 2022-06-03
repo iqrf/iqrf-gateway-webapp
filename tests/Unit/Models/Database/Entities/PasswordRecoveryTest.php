@@ -41,7 +41,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class PasswordRecoveryTest extends TestCase {
 
 	/**
-	 * Date time format
+	 * @var string Date time format
 	 */
 	private const DATETIME_FORMAT = 'Y-m-d H:i:00';
 

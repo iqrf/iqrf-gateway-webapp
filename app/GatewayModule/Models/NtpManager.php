@@ -34,7 +34,7 @@ use App\GatewayModule\Exceptions\TimeDateException;
 class NtpManager {
 
 	/**
-	 * Default timesyncd configuration
+	 * @var array<string, array<string, string|int>> Default timesyncd configuration
 	 */
 	private const TIMESYNCD_DEFAULT = [
 		'Time' => [
@@ -57,7 +57,7 @@ class NtpManager {
 	private string $confFile;
 
 	/**
-	 * @var CommandManager $commandManager Commang manager
+	 * @var CommandManager $commandManager Command manager
 	 */
 	private CommandManager $commandManager;
 
@@ -81,6 +81,8 @@ class NtpManager {
 	/**
 	 * Returns NTP configuration
 	 * @return array<int, string> NTP configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	public function readConfig(): array {
 		$config = $this->readTimesyncd();
@@ -94,6 +96,8 @@ class NtpManager {
 	/**
 	 * Stores NTP configuration
 	 * @param array<string> $config NTP configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	public function storeConfig(array $config): void {
 		$this->storeTimesyncd($config);
@@ -102,6 +106,8 @@ class NtpManager {
 	/**
 	 * Parses and returns NTP configuration from timesyncd service
 	 * @return array<string, array<string, mixed>> NTP configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	private function readTimesyncd(): array {
 		if (!file_exists($this->fullPath)) {
@@ -117,20 +123,19 @@ class NtpManager {
 	/**
 	 * Converts and stores NTP configuration for timesyncd service
 	 * @param array<string> $pools NTP configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	private function storeTimesyncd(array $pools): void {
 		$current = $this->readTimesyncd();
 		$servers = implode(' ', $pools);
-		if (strlen($servers) === 0) {
-			$current['Time']['NTP'] = null;
-		} else {
-			$current['Time']['NTP'] = $servers;
-		}
+		$current['Time']['NTP'] = $servers === '' ? null : $servers;
 		$this->fileManager->write($this->confFile, ConfParser::toConf($current));
 	}
 
 	/**
 	 * Attempts to synchronize system clock
+	 * @throws TimeDateException
 	 */
 	public function sync(): void {
 		$command = $this->commandManager->run('timedatectl set-ntp false', true);
@@ -141,13 +146,13 @@ class NtpManager {
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
-		$timeout = 30000000;
+		$timeout = 30_000_000;
 		while ($timeout > 0) {
 			if (file_exists('/run/systemd/timesync/synchronized')) {
 				break;
 			}
-			$timeout -= 100000;
-			usleep(100000);
+			$timeout -= 100_000;
+			usleep(100_000);
 		}
 		if ($timeout === 0) {
 			throw new TimeDateException('Network time synchronization failed.');

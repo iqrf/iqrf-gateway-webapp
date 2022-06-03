@@ -29,7 +29,6 @@ namespace Tests\Integration\CloudModule\Models;
 use App\CloudModule\Models\HexioManager;
 use GuzzleHttp\Client;
 use Mockery;
-use Mockery\MockInterface;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -42,12 +41,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class HexioManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var HexioManager|MockInterface Hexio IoT platform manager
+	 * @var HexioManager Hexio IoT platform manager
 	 */
-	private $manager;
+	private HexioManager $manager;
 
 	/**
-	 * Values from the configuration form
+	 * @var array<string, string> Values from the configuration form
 	 */
 	private const VALUES = [
 		'broker' => 'connect.hexio.cloud',

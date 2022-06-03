@@ -33,7 +33,7 @@ use stdClass;
 class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'connection';
 
@@ -161,7 +161,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
 	 * Serializes network connection entity into JSON
-	 * @return array<string, string|array<string, array<string, string>|array<int, array<string, int|string>>|int|string|null>> JSON serialized data
+	 * @return array<string, array<string, array<array<array<int|string>|int|string>|string|null>|bool|int|string|null>|string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$json = [

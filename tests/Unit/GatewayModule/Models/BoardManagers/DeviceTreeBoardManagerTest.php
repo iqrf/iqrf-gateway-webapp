@@ -43,7 +43,7 @@ final class DeviceTreeBoardManagerTest extends CommandTestCase {
 	private DeviceTreeBoardManager $manager;
 
 	/**
-	 * Executed command
+	 * @var string Executed command
 	 */
 	private const COMMAND = 'cat /proc/device-tree/model';
 

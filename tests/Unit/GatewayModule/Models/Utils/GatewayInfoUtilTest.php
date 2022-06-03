@@ -26,9 +26,6 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models\Utils;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use Tester\Assert;
 use Tester\TestCase;
@@ -41,77 +38,77 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class GatewayInfoUtilTest extends TestCase {
 
 	/**
-	 * Configuration directory path
+	 * @var string Configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/gatewayInfo/';
 
 	/**
-	 * Gateway product
+	 * @var string Gateway product
 	 */
 	private const GW_PRODUCT = 'IQD-GW-02A';
 
 	/**
-	 * Default gateway product
+	 * @var string Default gateway product
 	 */
 	private const DEFAULT_GW_PRODUCT = 'IQD-GW-0X';
 
 	/**
-	 * Default gateway manufacturer
+	 * @var string Default gateway manufacturer
 	 */
 	private const DEFAULT_GW_MANUFACTURER = 'MICRORISC s.r.o.';
 
 	/**
-	 * Gateway ID
+	 * @var string Gateway ID
 	 */
 	private const GW_ID = '0123456789ABCDEF';
 
 	/**
-	 * Default Gateway ID
+	 * @var string Default Gateway ID
 	 */
 	private const DEFAULT_GW_ID = 'FFFFFFFFFFFFFFFF';
 
 	/**
-	 * Gateway token
+	 * @var string Gateway token
 	 */
 	private const GW_TOKEN = 'iqube-0123456789abcdef';
 
 	/**
-	 * Default gateway token
+	 * @var string Default gateway token
 	 */
 	private const DEFAULT_GW_TOKEN = 'iqube-ffffffffffffffff';
 
 	/**
-	 * Gateway host
+	 * @var string Gateway host
 	 */
 	private const GW_HOST = 'iqube-0123456789abcdef.local';
 
 	/**
-	 * Default gateway host
+	 * @var string Default gateway host
 	 */
 	private const DEFAULT_GW_HOST = 'iqube-ffffffffffffffff.local';
 
 	/**
-	 * Gateway image
+	 * @var string Gateway image
 	 */
 	private const GW_IMAGE = 'iqube-armbian-v1.4.0';
 
 	/**
-	 * Default gateway image
+	 * @var string Default gateway image
 	 */
 	private const DEFAULT_GW_IMAGE = 'iqube-os-vX.Y.Z';
 
 	/**
-	 * Gateway interface
+	 * @var string Gateway interface
 	 */
 	private const GW_INTERFACE = 'spi';
 
 	/**
-	 * Default gateway interface
+	 * @var string Default gateway interface
 	 */
 	private const DEFAULT_GW_INTERFACE = 'uart';
 
 	/**
-	 * Gateway information
+	 * @var array<string, string> Gateway information
 	 */
 	private const GW_INFO = [
 		'gwProduct' => self::GW_PRODUCT,
@@ -124,7 +121,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	];
 
 	/**
-	 * Incomplete and default gateway information
+	 * @var array<string, string> Incomplete and default gateway information
 	 */
 	private const INCOMPLETE_GW_INFO = [
 		'gwProduct' => self::GW_PRODUCT,
@@ -137,7 +134,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	];
 
 	/**
-	 * Default gateway information
+	 * @var array<string, string> Default gateway information
 	 */
 	private const DEFAULT_GW_INFO = [
 		'gwProduct' => self::DEFAULT_GW_PRODUCT,
@@ -241,14 +238,9 @@ final class GatewayInfoUtilTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(true, $commandStack);
-		$fileManager = new JsonFileManager(self::CONF_DIR . 'syntax_error/', $commandManager);
-		$this->defaultGwInfo = new GatewayInfoUtil($fileManager);
-		$fileManager = new JsonFileManager(self::CONF_DIR . 'missing_properties/', $commandManager);
-		$this->incompleteGwInfo = new GatewayInfoUtil($fileManager);
-		$fileManager = new JsonFileManager(self::CONF_DIR . 'correct/', $commandManager);
-		$this->gwInfo = new GatewayInfoUtil($fileManager);
+		$this->defaultGwInfo = new GatewayInfoUtil(self::CONF_DIR . 'syntax_error/iqrf-gateway.json');
+		$this->incompleteGwInfo = new GatewayInfoUtil(self::CONF_DIR . 'missing_properties/iqrf-gateway.json');
+		$this->gwInfo = new GatewayInfoUtil(self::CONF_DIR . 'correct/iqrf-gateway.json');
 	}
 
 }

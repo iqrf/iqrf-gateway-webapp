@@ -33,21 +33,21 @@ use Nette\Utils\Strings;
 class NetworkManagerBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'NetworkManager.conf',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'NetworkManager',
 	];
 
 	/**
-	 * Path to NetworkManager configuration directory
+	 * @var string Path to NetworkManager configuration directory
 	 */
 	private const CONF_PATH = '/etc/NetworkManager/';
 

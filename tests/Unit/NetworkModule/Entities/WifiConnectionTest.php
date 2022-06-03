@@ -45,7 +45,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 

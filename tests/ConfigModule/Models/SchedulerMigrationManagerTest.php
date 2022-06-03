@@ -49,22 +49,22 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
-	 * Path to a directory with scheduler's configuration
+	 * @var string Path to a directory with scheduler's configuration
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/scheduler/';
 
 	/**
-	 * Path to a temporary directory with scheduler's configuration
+	 * @var string Path to a temporary directory with scheduler's configuration
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrations/scheduler/';
 
 	/**
-	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
+	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH = TESTER_DIR . '/data/iqrf-gateway-scheduler.zip';
 
 	/**
-	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 * @var string Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-scheduler.zip';
 

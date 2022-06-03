@@ -35,7 +35,7 @@ use Nette\Utils\Strings;
 class HexioManager implements IManager {
 
 	/**
-	 * CA certificate file name
+	 * @var string CA certificate file name
 	 */
 	private const CA_FILENAME = 'hexio-ca.crt';
 
@@ -82,7 +82,7 @@ class HexioManager implements IManager {
 			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
 			'Qos' => 1,
-			'TopicRequest' => '{no-process}/' . Strings::replace($values['topicRequest'], '/^\{no\-process\}\//', ''),
+			'TopicRequest' => '{no-process}/' . Strings::replace($values['topicRequest'], '#^\{no\-process\}\/#', ''),
 			'TopicResponse' => $values['topicResponse'],
 			'User' => $values['username'],
 			'Password' => $values['password'],

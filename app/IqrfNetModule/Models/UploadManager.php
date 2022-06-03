@@ -59,7 +59,7 @@ class UploadManager {
 	 * @param string $fileName $fileName
 	 * @param string $fileContent file content
 	 * @param UploadFormats|null $format File format
-	 * @return array<string> file name and file format
+	 * @return array{fileName: string, format: string} file name and file format
 	 */
 	public function uploadFile(string $fileName, string $fileContent, ?UploadFormats $format = null): array {
 		if ($format === null) {

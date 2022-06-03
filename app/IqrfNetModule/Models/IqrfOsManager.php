@@ -108,7 +108,9 @@ class IqrfOsManager {
 	/**
 	 * Retrieves names of files to be used in IQRF OS upgrade
 	 * @param array<string, int|string> $request API request body
-	 * @return array<string, string|array<int, string>> Array containing names of files to be used in upgrade
+	 * @return array{dpa: string, os: array<string>} Array containing names of files to be used in upgrade
+	 * @throws DpaFileNotFoundException
+	 * @throws DpaRfMissingException
 	 */
 	public function getUpgradeFiles(array $request): array {
 		$dpaFile = $this->getDpaFileName($request);
@@ -120,6 +122,8 @@ class IqrfOsManager {
 	 * Retrieves DPA file name for upgrade
 	 * @param array<string, int|string> $request API request body
 	 * @return string Name of DPA file
+	 * @throws DpaFileNotFoundException
+	 * @throws DpaRfMissingException
 	 */
 	private function getDpaFileName(array $request): string {
 		$iface = DpaInterfaces::fromScalar($request['interface']);

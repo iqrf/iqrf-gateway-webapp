@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App;
 
 use App\ConfigModule\Models\IqrfRepositoryManager;
-use Nette\Configurator;
+use Nette\Bootstrap\Configurator;
 use Nette\IOException;
 use Nette\Neon\Exception;
 use Nette\Utils\FileSystem;

@@ -66,5 +66,5 @@ services:
 	etc.jsonFileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/')
 		autowired: false
-	- App\GatewayModule\Models\Utils\GatewayInfoUtil(@etc.jsonFileManager)
+	- App\GatewayModule\Models\Utils\GatewayInfoUtil('/etc/iqrf-gateway.json')
 	- App\GatewayModule\Models\VersionManager

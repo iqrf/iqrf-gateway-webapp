@@ -23,9 +23,9 @@ namespace App\Models\Mail;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
+use Nette\Schema\Elements\Structure;
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;
-use Nette\Schema\Schema;
 use Nette\Utils\FileSystem;
 
 /**
@@ -40,9 +40,9 @@ class ConfigurationManager {
 
 	/**
 	 * Returns the configuration schema
-	 * @return Schema Configuration schema
+	 * @return Structure Configuration schema
 	 */
-	public function getConfigSchema(): Schema {
+	public function getConfigSchema(): Structure {
 		return Expect::structure([
 			'enabled' => Expect::bool(false),
 			'host' => Expect::string('localhost')->dynamic(),

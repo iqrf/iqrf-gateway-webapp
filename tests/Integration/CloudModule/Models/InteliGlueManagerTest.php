@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InteliGlueManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * Values from Inteliments InteliGlue form
+	 * @var array<string, int|string> Values from Inteliments InteliGlue form
 	 */
 	private const VALUES = [
 		'assignedPort' => 1234,

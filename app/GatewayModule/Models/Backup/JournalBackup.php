@@ -32,14 +32,14 @@ use Nette\Utils\FileSystem;
 class JournalBackup implements IBackupManager {
 
 	/**
-	 * Whitelisted files
+	 * @var array<string> Whitelisted files
 	 */
 	public const WHITELIST = [
 		'journald.conf',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'systemd-timesyncd',

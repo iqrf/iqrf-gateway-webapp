@@ -38,52 +38,52 @@ use Tester\TestCase;
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for wireguard peer entity
+ * Tests for WireGuard peer entity
  */
 final class WireguardPeerTest extends TestCase {
 
 	/**
-	 * Wireguard peer public key
+	 * @var string WireGuard peer public key
 	 */
 	private const PUBLIC_KEY = 'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=';
 
 	/**
-	 * Wireguard peer pre-shared key
+	 * @var string WireGuard peer pre-shared key
 	 */
 	private const PSK = 'oC9WMZJs56UDp7NU2j8KfBn01zDLPRW2hGxivWC7Rhg=';
 
 	/**
-	 * Wireguard peer keepalive interval
+	 * @var int WireGuard peer keepalive interval
 	 */
 	private const KEEPALIVE = 25;
 
 	/**
-	 * Wireguard peer endpoint
+	 * @var string WireGuard peer endpoint
 	 */
 	private const ENDPOINT = 'vpn.example.org';
 
 	/**
-	 * Wireguard peer listen port
+	 * @var int WireGuard peer listen port
 	 */
 	private const PORT = 51820;
 
 	/**
-	 * @var WireguardPeerAddress Wireguard peer IPv4 address entity
+	 * @var WireguardPeerAddress WireGuard peer IPv4 address entity
 	 */
 	private WireguardPeerAddress $peerIpv4Entity;
 
 	/**
-	 * @var WireguardPeerAddress Wireguard peer IPv6 address entity
+	 * @var WireguardPeerAddress WireGuard peer IPv6 address entity
 	 */
 	private WireguardPeerAddress $peerIpv6Entity;
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer Wireguard peer entity
+	 * @var WireguardPeer WireGuard peer entity
 	 */
 	private WireguardPeer $entity;
 

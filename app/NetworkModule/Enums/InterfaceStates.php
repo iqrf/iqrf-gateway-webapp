@@ -46,71 +46,71 @@ final class InterfaceStates extends Enum {
 	use AutoInstances;
 
 	/**
-	 * The interface has a network connection
+	 * @var string The interface has a network connection
 	 */
 	private const CONNECTED = 'connected';
 
 	/**
-	 * The interface is connecting to the network
+	 * @var string The interface is connecting to the network
 	 */
 	private const CONNECTING = 'connecting';
 
 	/**
-	 * The interface is configuring connection to the requested network
+	 * @var string The interface is configuring connection to the requested network
 	 */
 	private const CONFIG = 'connecting (configuring)';
 
 	/**
-	 * The interface is disconnecting from the current network and the interface is cleaning up resources used for that connection
+	 * @var string The interface is disconnecting from the current network and the interface is cleaning up resources used for that connection
 	 */
 	private const DEACTIVATING = 'deactivating';
 	/**
-	 * The interface can be activated, but is currently idle and not connected to the network
+	 * @var string The interface can be activated, but is currently idle and not connected to the network
 	 */
 	private const DISCONNECTED = 'disconnected';
 
 	/**
-	 * The interface failed to connect to the requested network
+	 * @var string The interface failed to connect to the requested network
 	 */
 	private const FAILED = 'connection failed';
 
 	/**
-	 * The interface is getting IP configuration
+	 * @var string The interface is getting IP configuration
 	 */
 	private const IP_CONFIG = 'connecting (getting IP configuration)';
 
 	/**
-	 * The interface is checking whether further action is required for the requested network connection
+	 * @var string The interface is checking whether further action is required for the requested network connection
 	 */
 	private const IP_CHECK = 'connecting (checking IP connectivity)';
 
 	/**
-	 * The interface requires more information to continue connecting to the requested network
+	 * @var string The interface requires more information to continue connecting to the requested network
 	 */
 	private const NEED_AUTH = 'connecting (need authentication)';
 
 	/**
-	 * The interface is preparing the connection to the network
+	 * @var string The interface is preparing the connection to the network
 	 */
 	private const PREPARE = 'connecting (prepare)';
 
 	/**
-	 * The interface is waiting for a secondary connection (like a VPN) which must activated before the interface can be activated
+	 * @var string The interface is waiting for a secondary connection (like a VPN) which must activated before the interface can be activated
 	 */
 	private const SECONDARIES = 'connecting (starting secondary connections)';
 
 	/**
-	 * The interface is managed by NetworkManager, but is not available for use
+	 * @var string The interface is managed by NetworkManager, but is not available for use
 	 */
 	private const UNAVAILABLE = 'unavailable';
 
 	/**
-	 * The interface is recognized, but not managed by NetworkManager
+	 * @var string The interface is recognized, but not managed by NetworkManager
 	 */
 	private const UNMANAGED = 'unmanaged';
 
 	/**
-	 * The interface's state is unknown
+	 * @var string The interface's state is unknown
 	 */
 	private const UNKNOWN = 'unknown';
 
@@ -120,7 +120,7 @@ final class InterfaceStates extends Enum {
 	 * @return static Network interface state
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$state = Strings::replace($nmCli, '/ \(externally\)/', '');
+		$state = Strings::replace($nmCli, '# \(externally\)#', '');
 		return self::fromScalar($state);
 	}
 

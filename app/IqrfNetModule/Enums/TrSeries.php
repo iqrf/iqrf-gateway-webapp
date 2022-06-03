@@ -34,7 +34,7 @@ final class TrSeries extends Enum {
 	use AutoInstances;
 
 	/**
-	 * IQRF (DC)TR-7xD
+	 * @var string IQRF (DC)TR-7xD
 	 */
 	private const TR_7XD = '7xD';
 
@@ -44,7 +44,7 @@ final class TrSeries extends Enum {
 	 * @return TrSeries IQRF TR series enum
 	 */
 	public static function fromTrType(string $trType): self {
-		if (Strings::match($trType, '~(\(DC\))?TR-7\dDx~') !== null) {
+		if (Strings::match($trType, '#(\(DC\))?TR-7\dDx#') !== null) {
 			return self::TR_7XD();
 		}
 		throw new DomainException();

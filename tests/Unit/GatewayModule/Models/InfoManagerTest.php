@@ -63,7 +63,7 @@ final class InfoManagerTest extends CommandTestCase {
 	private $versionManager;
 
 	/**
-	 * Executed commands
+	 * @var array<string, string> Executed commands
 	 */
 	private const COMMANDS = [
 		'deviceTreeName' => 'cat /proc/device-tree/model',

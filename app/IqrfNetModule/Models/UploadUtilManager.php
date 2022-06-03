@@ -32,12 +32,12 @@ use App\IqrfNetModule\Exceptions\UploadUtilSpiException;
 class UploadUtilManager {
 
 	/**
-	 * Path to uploaded files
+	 * @var string Path to uploaded files
 	 */
 	private const UPLOAD_DIR = '/var/cache/iqrf-gateway-daemon/upload/';
 
 	/**
-	 * IQRF Gateway Uploader command
+	 * @var string IQRF Gateway Uploader command
 	 */
 	private const UPLOAD_UTIL = 'iqrf-gateway-uploader';
 

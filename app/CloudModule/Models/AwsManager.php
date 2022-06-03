@@ -25,6 +25,7 @@ use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\CertificateManager;
 use DateTime;
+use DateTimeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
@@ -37,7 +38,7 @@ use Nette\Utils\JsonException;
 class AwsManager implements IManager {
 
 	/**
-	 * CA certificate filename
+	 * @var string CA certificate filename
 	 */
 	private const CA_FILENAME = 'aws-ca.crt';
 
@@ -133,10 +134,10 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates paths for root CA certificate, certificate and private key
-	 * @return array<string> Paths for root CA certificate, certificate and private key
+	 * @return array{cert: string, key: string} Paths for root CA certificate, certificate and private key
 	 */
 	public function createPaths(): array {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$path = $this->certPath . $timestamp;
 		$paths = [];
 		$paths['cert'] = $path . '-aws.crt';

@@ -31,7 +31,7 @@ use Throwable;
 final class WifiConnection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = '802-11-wireless';
 
@@ -48,7 +48,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	/**
 	 * @var array<int, string> Seen BSSIDs
 	 */
-	private array $bssids;
+	private array $bssids = [];
 
 	/**
 	 * @var WifiConnectionSecurity|null Wifi connection security entity

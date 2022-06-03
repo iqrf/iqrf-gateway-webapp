@@ -114,7 +114,7 @@ class VersionManager {
 		$command = $this->commandManager->run('iqrfgd2 --version');
 		$stdout = $command->getStdout();
 		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return Strings::replace($stdout, '~^IQRF\ Gateway\ Daemon\ ~', '');
+			return Strings::replace($stdout, '#^IQRF\ Gateway\ Daemon\ #', '');
 		}
 		return 'unknown';
 	}
@@ -124,7 +124,6 @@ class VersionManager {
 	 * @return string IQRF Gateway Daemon's version
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws JsonException
 	 */
 	private function getDaemonWs(): string {
 		$request = [
@@ -144,7 +143,7 @@ class VersionManager {
 		}
 		$result = $this->commandManager->run('iqrf-gateway-setter --version')->getStdout();
 		if ($result !== '') {
-			return Strings::replace($result, '~^IQRF\ Gateway\ Setter\ ~', '');
+			return Strings::replace($result, '#^IQRF\ Gateway\ Setter\ #', '');
 		}
 		return null;
 	}
@@ -198,7 +197,7 @@ class VersionManager {
 		if ($pipeline === '') {
 			return $version . ($verbose ? ' (' . $commit . ')' : '');
 		}
-		if (Strings::match($version, '/^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$/i') !== null) {
+		if (Strings::match($version, '#^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$#i') !== null) {
 			return $version . '~' . $array['pipeline'] . ($verbose ? ' (' . $commit . ')' : '');
 		}
 		return $version . ($verbose ? ' (' . $commit . ')' : '');

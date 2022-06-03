@@ -30,9 +30,9 @@ use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;
 use App\CoreModule\Models\CertificateManager;
 use DateTime;
+use DateTimeInterface;
 use GuzzleHttp\Client;
 use Mockery;
-use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -55,22 +55,22 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	protected string $certPathReal;
 
 	/**
-	 * @var array<string> Values from Amazon AWS IoT form
+	 * @var array{endpoint: string} Values from Amazon AWS IoT form
 	 */
 	private array $formValues = [
 		'endpoint' => 'localhost',
 	];
 
 	/**
-	 * @var Mock|AwsManager Amazon AWS IoT manager
+	 * @var AwsManager Amazon AWS IoT manager
 	 */
-	private $manager;
+	private AwsManager $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingAws',
@@ -130,7 +130,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Tests the function to create paths for certificates
 	 */
 	public function testCreatePaths(): void {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$actual = $this->manager->createPaths();
 		$paths = [
 			'cert' => $this->certPath . $timestamp . '-aws.crt',
@@ -178,7 +178,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * Mocks uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
-	 * @return array<string ,string> Mocked uploaded certificate and private key
+	 * @return array{certificate: string, privateKey: string} Mocked uploaded certificate and private key
 	 */
 	private function mockUploadedFiles(string $path): array {
 		return [

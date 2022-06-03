@@ -44,7 +44,7 @@ final class SupervisordManagerTest extends CommandTestCase {
 	private SupervisordManager $manager;
 
 	/**
-	 * Name of service
+	 * @var string Name of service
 	 */
 	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 

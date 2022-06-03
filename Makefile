@@ -24,10 +24,12 @@ VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
 SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 
+CC_IGNORE=-i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "tests/iqrf-gateway-webapp.postman_collection.json" -i "tests/data/gatewayInfo/syntax_error/iqrf-gateway.json"
+
 WEBAPP_USER ?= www-data
 WEBAPP_GROUP ?= www-data
 
-.PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
+.PHONY: build clean coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
 
 build:
 	$(COMPOSER) install --no-dev
@@ -36,8 +38,8 @@ build:
 
 all: qa phpstan cc test
 
-behat:
-	vendor/bin/behat
+clean:
+	rm -rf log/*.html log/*.log temp/cache/ tests/tmp/
 
 cache-purge:
 	rm -rf temp/cache/
@@ -46,10 +48,10 @@ coverage: deps
 	vendor/bin/tester -p phpdbg -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests
 
 cc: temp/code-checker
-	php temp/code-checker/code-checker -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "tests/iqrf-gateway-webapp.postman_collection.json"
+	php temp/code-checker/code-checker -l --no-progress --strict-types $(CC_IGNORE)
 
 fix-cc: temp/code-checker
-	php temp/code-checker/code-checker -f -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json"
+	php temp/code-checker/code-checker -f -l --no-progress --strict-types $(CC_IGNORE)
 
 cs: deps
 	vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests

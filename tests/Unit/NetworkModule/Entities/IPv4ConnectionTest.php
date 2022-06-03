@@ -43,7 +43,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv4ConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
@@ -55,7 +55,7 @@ final class IPv4ConnectionTest extends TestCase {
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private array $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv4 IPv4 gateway address
@@ -65,7 +65,7 @@ final class IPv4ConnectionTest extends TestCase {
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private array $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv4Connection IPv4 connection entity

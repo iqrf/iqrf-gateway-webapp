@@ -43,10 +43,12 @@ use App\GatewayModule\Models\Backup\UploaderBackup;
 use App\GatewayModule\Models\Backup\WebappBackup;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
@@ -57,12 +59,12 @@ use ZipArchive;
 class BackupManager {
 
 	/**
-	 * Path to temporary backup directory
+	 * @var string Path to temporary backup directory
 	 */
 	private const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * Services to include in backup
+	 * @var array<string> Services to include in backup
 	 */
 	private const SERVICES = [
 		'gwman-client',
@@ -72,7 +74,7 @@ class BackupManager {
 	/**
 	 * @var array<IBackupManager> Backup managers
 	 */
-	private array $backupManagers;
+	private array $backupManagers = [];
 
 	/**
 	 * @var CommandManager Command manager
@@ -126,6 +128,9 @@ class BackupManager {
 	 * Creates a gateway backup zip archive
 	 * @param array<string, array<string, bool>> $params Backup parameters
 	 * @return string Path to backup zip archive
+	 * @throws JsonException
+	 * @throws UnsupportedInitSystemException
+	 * @throws ZipEmptyException
 	 */
 	public function backup(array $params): string {
 		$path = $this->getArchivePath();
@@ -147,7 +152,9 @@ class BackupManager {
 	/**
 	 * Restores gateway from backed up configuration
 	 * @param string $path Path to archive containing configuration
-	 * @return array<string, int> Reboot timestamp
+	 * @return array{timestamp: int} Reboot timestamp
+	 * @throws JsonException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function restore(string $path): array {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
@@ -180,6 +187,8 @@ class BackupManager {
 	/**
 	 * Checks and exports status of services
 	 * @param array<int, string> $services Array of services to backup
+	 * @throws UnsupportedInitSystemException
+	 * @throws JsonException
 	 */
 	private function backupServices(array $services): void {
 		$services = array_merge($services, self::SERVICES);
@@ -197,6 +206,8 @@ class BackupManager {
 
 	/**
 	 * Restores service status
+	 * @throws JsonException
+	 * @throws UnsupportedInitSystemException
 	 */
 	private function restoreServices(): void {
 		if (!$this->zipManager->exist('services/')) {
@@ -219,6 +230,7 @@ class BackupManager {
 
 	/**
 	 * Validates contents of backup archive
+	 * @throws JsonException
 	 */
 	private function validate(): void {
 		$whitelistDirs = [
@@ -257,7 +269,7 @@ class BackupManager {
 			if (Strings::startsWith($file, 'controller/')) {
 				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
 			} elseif (Strings::startsWith($file, 'daemon/')) {
-				$matches = Strings::match($file, '~^\w+\_\_\w+\.json$~');
+				$matches = Strings::match($file, '#^\w+\_\_\w+\.json$#');
 				if (!is_array($matches)) {
 					continue;
 				}
@@ -324,13 +336,13 @@ class BackupManager {
 
 	/**
 	 * Checks if the backup archive is intended for the current gateway image version
+	 * @throws JsonException
 	 */
 	private function checkImage(): void {
 		if (!$this->zipManager->exist('gateway/')) {
 			return;
 		}
-		$this->zipManager->extract(self::TMP_PATH, 'gateway/iqrf-gateway.json');
-		$restoreGwInfo = Json::decode(FileSystem::read(self::TMP_PATH . 'gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
+		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
 		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc\d+))?$/';
 		$restoreMatches = Strings::match($restoreGwInfo['gwImage'], $pattern);
 		if ($restoreMatches === null) {

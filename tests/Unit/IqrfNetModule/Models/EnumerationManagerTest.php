@@ -37,7 +37,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class EnumerationManagerTest extends WebSocketTestCase {
 
 	/**
-	 * Network device address
+	 * @var int Network device address
 	 */
 	private const ADDRESS = 1;
 

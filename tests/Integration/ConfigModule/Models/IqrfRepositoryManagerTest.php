@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IqrfRepositoryManagerTest extends TestCase {
 
 	/**
-	 * IQRF Repository configuration directory path
+	 * @var string IQRF Repository configuration directory path
 	 */
 	private const CONF_PATH = TESTER_DIR . '/data/iqrf-repository.neon';
 
 	/**
-	 * IQRF Repository configuration temporary directory path
+	 * @var string IQRF Repository configuration temporary directory path
 	 */
 	private const TEMP_CONF_PATH = TMP_DIR . '/iqrf-repository.neon';
 

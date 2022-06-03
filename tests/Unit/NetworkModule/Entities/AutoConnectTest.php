@@ -38,22 +38,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AutoConnectTest extends TestCase {
 
 	/**
-	 * Is automatic connecting enabled?
+	 * @var bool Is automatic connecting enabled?
 	 */
 	private const ENABLED = true;
 
 	/**
-	 * Connection priority
+	 * @var int Connection priority
 	 */
 	private const PRIORITY = 0;
 
 	/**
-	 * Connection retries
+	 * @var int Connection retries
 	 */
 	private const RETRIES = -1;
 
 	/**
-	 * JSON serialized entity
+	 * @var array<string, bool|int> JSON serialized entity
 	 */
 	private const JSON = [
 		'enabled' => self::ENABLED,

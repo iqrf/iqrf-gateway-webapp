@@ -42,7 +42,7 @@ class TaskTimeManager {
 		if (is_array($cron)) {
 			return;
 		}
-		$cron = Strings::replace(Strings::trim($cron), '~\?~', '*');
+		$cron = Strings::replace(Strings::trim($cron), '#\?#', '*');
 		if (in_array($cron, $this->aliases, true)) {
 			$cron = [$cron, '', '', '', '', '', ''];
 			return;
