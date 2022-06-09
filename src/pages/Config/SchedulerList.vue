@@ -554,7 +554,7 @@ export default class SchedulerList extends Vue {
 	private handleMessageError(response): void {
 		if (response.rsp.errorStr.includes('daemon overload')) {
 			this.$toast.error(
-				this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()
+				this.$t('iqrfnet.sendJson.messages.error.messageQueueFull').toString()
 			);
 		} else {
 			this.$toast.error(
