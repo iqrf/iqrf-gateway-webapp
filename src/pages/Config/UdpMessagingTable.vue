@@ -105,12 +105,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IUdpInstance} from '../../interfaces/messagingInterfaces';
+import {IField} from '@/interfaces/coreui';
+import {IUdpInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

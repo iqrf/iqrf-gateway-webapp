@@ -93,11 +93,11 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IUdpInstance} from '../../interfaces/messagingInterfaces';
+import {IUdpInstance} from '@/interfaces/messagingInterfaces';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

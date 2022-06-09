@@ -159,14 +159,14 @@ import {
 } from '@coreui/vue/src';
 
 import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import UserService from '../../services/UserService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import UserService from '@/services/UserService';
 
-import {UserRole} from '../../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IUser} from '../../interfaces/user';
+import {IField} from '@/interfaces/coreui';
+import {IUser} from '@/interfaces/user';
 
 import punycode from 'punycode/';
 

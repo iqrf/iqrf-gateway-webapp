@@ -130,15 +130,15 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '@/helpers/versionChecker';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IWsService} from '../../interfaces/messagingInterfaces';
+import {IField} from '@/interfaces/coreui';
+import {IWsService} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

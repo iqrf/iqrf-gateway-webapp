@@ -49,14 +49,14 @@ limitations under the License.
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '../../helpers/versionChecker';
-import Backup from '../../components/IqrfNet/Backup.vue';
-import Restore from '../../components/IqrfNet/Restore.vue';
-import BondingManager from '../../components/IqrfNet/BondingManager.vue';
-import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
-import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
-import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
-import OtaUpload from '../../components/IqrfNet/OtaUpload.vue';
+import {versionHigherEqual} from '@/helpers/versionChecker';
+import Backup from '@/components/IqrfNet/Backup.vue';
+import Restore from '@/components/IqrfNet/Restore.vue';
+import BondingManager from '@/components/IqrfNet/BondingManager.vue';
+import DevicesInfo from '@/components/IqrfNet/DevicesInfo.vue';
+import DiscoveryManager from '@/components/IqrfNet/DiscoveryManager.vue';
+import AutoNetwork from '@/components/IqrfNet/AutoNetwork.vue';
+import OtaUpload from '@/components/IqrfNet/OtaUpload.vue';
 import {ToastOptions} from 'vue-toast-notification';
 
 @Component({

@@ -28,7 +28,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
-import ThemeManager from '../helpers/themeManager';
+import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	computed: {

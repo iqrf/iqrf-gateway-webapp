@@ -65,14 +65,14 @@ import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
 import NetworkOperatorForm from './NetworkOperatorForm.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperator from '../../entities/NetworkOperator';
+import NetworkOperator from '@/entities/NetworkOperator';
 
-import NetworkOperatorService from '../../services/NetworkOperatorService';
+import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOperator} from '../../interfaces/network';
+import {IOperator} from '@/interfaces/network';
 
 
 @Component({

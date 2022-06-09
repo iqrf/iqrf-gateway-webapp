@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import store from '../store';
+import store from '@/store';
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import DaemonMessageOptions from '../ws/DaemonMessageOptions';
-import {ITaskTimeSpec} from '../interfaces/scheduler';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {ITaskTimeSpec} from '@/interfaces/scheduler';
 
 /**
  * Scheduler service

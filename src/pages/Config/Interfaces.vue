@@ -49,18 +49,18 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
-import IqrfSpi from '../../components/Config/IqrfSpi.vue';
-import IqrfCdc from '../../components/Config/IqrfCdc.vue';
-import IqrfUart from '../../components/Config/IqrfUart.vue';
-import IqrfDpa from '../../components/Config/IqrfDpa.vue';
+import IqrfSpi from '@/components/Config/IqrfSpi.vue';
+import IqrfCdc from '@/components/Config/IqrfCdc.vue';
+import IqrfUart from '@/components/Config/IqrfUart.vue';
+import IqrfDpa from '@/components/Config/IqrfDpa.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IChangeComponent, IComponent, IConfigFetch} from '../../interfaces/daemonComponent';
-import {IOption} from '../../interfaces/coreui';
+import {IChangeComponent, IComponent, IConfigFetch} from '@/interfaces/daemonComponent';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

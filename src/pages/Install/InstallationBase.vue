@@ -26,8 +26,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard} from '@coreui/vue/src';
-import InstallWizardStepProgress from '../../components/Install/InstallWizardStepProgress.vue';
-import TheWizard from '../../components/TheWizard.vue';
+import InstallWizardStepProgress from '@/components/Install/InstallWizardStepProgress.vue';
+import TheWizard from '@/components/TheWizard.vue';
 
 @Component({
 	components: {

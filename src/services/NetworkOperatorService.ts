@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {authorizationHeader} from '../helpers/authorizationHeader';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
 
 import axios, {AxiosResponse} from 'axios';
-import {IOperator} from '../interfaces/network';
+import {IOperator} from '@/interfaces/network';
 
 /**
  * Network operator service

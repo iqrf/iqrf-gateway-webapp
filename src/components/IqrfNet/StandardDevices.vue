@@ -322,19 +322,19 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
 import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
-import {EnumerateCommand} from '../../enums/IqrfNet/info';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import {EnumerateCommand} from '@/enums/IqrfNet/info';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import StandardDevice from '../../iqrfNet/StandardDevice';
-import InfoService from '../../services/DaemonApi/InfoService';
-import IqrfNetService from '../../services/IqrfNetService';
-import ProductService from '../../services/IqrfRepository/ProductService';
+import StandardDevice from '@/iqrfNet/StandardDevice';
+import InfoService from '@/services/DaemonApi/InfoService';
+import IqrfNetService from '@/services/IqrfNetService';
+import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '../../interfaces/iqrfInfo';
+import {IField} from '@/interfaces/coreui';
+import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/iqrfInfo';
 import {MutationPayload} from 'vuex';
-import DpaService, {OsDpaVersion} from '../../services/IqrfRepository/OsDpaService';
+import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 
 @Component({
 	components: {

@@ -142,18 +142,18 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
-import ResourceUsage from '../../components/Gateway/ResourceUsage.vue';
-import GatewayService from '../../services/GatewayService';
-import HostnameChange from '../../components/Gateway/HostnameChange.vue';
+import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
+import ResourceUsage from '@/components/Gateway/ResourceUsage.vue';
+import GatewayService from '@/services/GatewayService';
+import HostnameChange from '@/components/Gateway/HostnameChange.vue';
 
 import {cilPencil} from '@coreui/icons';
-import {DaemonModeEnum} from '../../services/DaemonModeService';
-import {fileDownloader} from '../../helpers/fileDownloader';
+import {DaemonModeEnum} from '@/services/DaemonModeService';
+import {fileDownloader} from '@/helpers/fileDownloader';
 
 import {AxiosResponse} from 'axios';
-import {IGatewayInfo, IpAddress, MacAddress} from '../../interfaces/gatewayInfo';
+import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/gatewayInfo';
 
 @Component({
 	components: {

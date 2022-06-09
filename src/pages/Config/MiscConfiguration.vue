@@ -53,19 +53,19 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
-import IqrfInfo from '../../components/Config/IqrfInfo.vue';
-import IqrfRepository from '../../components/Config/IqrfRepository.vue';
-import JsonApi from '../../components/Config/JsonApi.vue';
-import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
-import JsonRawApi from '../../components/Config/JsonRawApi.vue';
-import JsonSplitter from '../../components/Config/JsonSplitter.vue';
-import MonitorList from '../../components/Config/MonitorList.vue';
-import OtaUpload from '../../components/Config/OtaUpload.vue';
-import TracerList from '../../components/Config/TracerList.vue';
+import IqrfInfo from '@/components/Config/IqrfInfo.vue';
+import IqrfRepository from '@/components/Config/IqrfRepository.vue';
+import JsonApi from '@/components/Config/JsonApi.vue';
+import JsonMngMetaDataApi from '@/components/Config/JsonMngMetaDataApi.vue';
+import JsonRawApi from '@/components/Config/JsonRawApi.vue';
+import JsonSplitter from '@/components/Config/JsonSplitter.vue';
+import MonitorList from '@/components/Config/MonitorList.vue';
+import OtaUpload from '@/components/Config/OtaUpload.vue';
+import TracerList from '@/components/Config/TracerList.vue';
 
-import {UserRole} from '../../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
-import {IConfigFetch} from '../../interfaces/daemonComponent';
+import {IConfigFetch} from '@/interfaces/daemonComponent';
 
 @Component({
 	components: {

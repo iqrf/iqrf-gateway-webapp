@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import FeatureService, {Feature, Features} from '../../services/FeatureService';
+import FeatureService, {Feature, Features} from '@/services/FeatureService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 /**

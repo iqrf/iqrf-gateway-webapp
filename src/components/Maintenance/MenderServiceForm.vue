@@ -172,16 +172,16 @@ import {CBadge, CButton, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/s
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {MenderProtocols} from '../../enums/Maintenance/Mender';
+import {MenderProtocols} from '@/enums/Maintenance/Mender';
 
-import FeatureConfigService from '../../services/FeatureConfigService';
+import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMenderConfig} from '../../interfaces/maintenance';
-import {IOption} from '../../interfaces/coreui';
-import MenderService from '../../services/MenderService';
+import {IMenderConfig} from '@/interfaces/maintenance';
+import {IOption} from '@/interfaces/coreui';
+import MenderService from '@/services/MenderService';
 
 @Component({
 	components: {

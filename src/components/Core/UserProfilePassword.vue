@@ -84,9 +84,9 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {cilInfo} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 // Auxiliary functions
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 // Services
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 // Interfaces
 import {AxiosError} from 'axios';
 

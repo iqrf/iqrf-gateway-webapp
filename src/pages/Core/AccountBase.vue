@@ -22,7 +22,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import TheWizard from '../../components/TheWizard.vue';
+import TheWizard from '@/components/TheWizard.vue';
 
 @Component({
 	components: {

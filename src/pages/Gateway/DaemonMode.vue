@@ -89,14 +89,14 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+import DaemonModeService, {DaemonModeEnum} from '@/services/DaemonModeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
-import {IIdeCounterpart} from '../../interfaces/ideCounterpart';
-import {DaemonClientState} from '../../interfaces/wsClient';
+import {IIdeCounterpart} from '@/interfaces/ideCounterpart';
+import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
 	components: {

@@ -75,10 +75,10 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import CloudService from '../../services/CloudService';
-import ServiceService from '../../services/ServiceService';
+import CloudService from '@/services/CloudService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
 
@@ -118,7 +118,7 @@ export default class AzureCreator extends Vue {
 	created(): void {
 		extend('required', required);
 	}
-	
+
 	/**
 	 * Stores new Azure cloud connection configuration in the gateway filesystem
 	 * @param {boolean} restart Restart daemon on save?

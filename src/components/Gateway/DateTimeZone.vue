@@ -97,12 +97,12 @@ import vSelect from 'vue-select';
 
 import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 import {DateTime} from 'luxon';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import TimeService from '../../services/TimeService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import TimeService from '@/services/TimeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ITime, ITimezone} from '../../interfaces/gatewayTime';
-import {IOption} from '../../interfaces/coreui';
+import {ITime, ITimezone} from '@/interfaces/gatewayTime';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
-import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
 
 class ProductService {
 

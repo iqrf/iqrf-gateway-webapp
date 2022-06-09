@@ -28,7 +28,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
-import SmtpForm from '../../components/Config/SmtpForm.vue';
+import SmtpForm from '@/components/Config/SmtpForm.vue';
 
 @Component({
 	components: {

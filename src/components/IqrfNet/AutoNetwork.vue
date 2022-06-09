@@ -266,11 +266,11 @@ import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import IqrfNetService from '../../services/IqrfNetService';
+import IqrfNetService from '@/services/IqrfNetService';
 
-import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
+import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '@/interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 interface NodeMessages {
 	nodesNew: string

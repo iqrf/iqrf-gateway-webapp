@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import {ISshInput} from '../interfaces/ssh';
-
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import {ISshInput} from '@/interfaces/ssh';
 
 /**
  * SSH service

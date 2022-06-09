@@ -39,7 +39,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import {cilPowerStandby, cilReload} from '@coreui/icons';
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 import { MetaInfo } from 'vue-meta';
 import { AxiosResponse } from 'axios';
 

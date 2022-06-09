@@ -202,15 +202,15 @@ import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelec
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '@/helpers/versionChecker';
 import compareVersions from 'compare-versions';
 
-import {BondingMethod, BondingTarget, Tool} from '../../enums/IqrfNet/bonding';
-import IqrfNetService from '../../services/IqrfNetService';
+import {BondingMethod, BondingTarget, Tool} from '@/enums/IqrfNet/bonding';
+import IqrfNetService from '@/services/IqrfNetService';
 
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

@@ -206,11 +206,11 @@ limitations under the License.
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {getRoleIndex} from '../../helpers/user';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {getRoleIndex} from '@/helpers/user';
 import {mapGetters} from 'vuex';
 
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
 

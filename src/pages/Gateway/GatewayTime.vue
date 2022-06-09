@@ -24,8 +24,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import DateTimeZone from '../../components/Gateway/DateTimeZone.vue';
-import NtpConfig from '../../components/Gateway/NtpConfig.vue';
+import DateTimeZone from '@/components/Gateway/DateTimeZone.vue';
+import NtpConfig from '@/components/Gateway/NtpConfig.vue';
 
 @Component({
 	components: {
@@ -41,7 +41,7 @@ import NtpConfig from '../../components/Gateway/NtpConfig.vue';
  * Gateway time component
  */
 export default class GatewayTime extends Vue {
-	
+
 	/**
 	 * Refreshes the gateway clock
 	 */

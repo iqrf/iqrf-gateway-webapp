@@ -104,21 +104,21 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import JsonEditor from '../../components/Config/JsonEditor.vue';
-import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
-import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
+import JsonEditor from '@/components/Config/JsonEditor.vue';
+import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
+import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 import {required} from 'vee-validate/dist/rules';
-import {StatusMessages} from '../../iqrfNet/sendJson';
+import {StatusMessages} from '@/iqrfNet/sendJson';
 import {v4 as uuidv4} from 'uuid';
 
-import IqrfNetService from '../../services/IqrfNetService';
+import IqrfNetService from '@/services/IqrfNetService';
 
-import {IMessagePairRequest} from '../../interfaces/iqrfnet';
-import {IOption} from '../../interfaces/coreui';
+import {IMessagePairRequest} from '@/interfaces/iqrfnet';
+import {IOption} from '@/interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
-import DaemonApiValidator from '../../helpers/DaemonApiValidator';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 
 @Component({
 	components: {

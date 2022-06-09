@@ -49,14 +49,14 @@ import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile, CSele
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '@/helpers/versionChecker';
 
-import ini from '../../../node_modules/ini';
-import IqrfNetService from '../../services/IqrfNetService';
+import ini from 'ini';
+import IqrfNetService from '@/services/IqrfNetService';
 
-import {IRestoreData} from '../../interfaces/iqmeshServices';
+import {IRestoreData} from '@/interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

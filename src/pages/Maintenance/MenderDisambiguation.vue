@@ -34,7 +34,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {getRoleIndex} from '../../helpers/user';
+import {getRoleIndex} from '@/helpers/user';
 import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({

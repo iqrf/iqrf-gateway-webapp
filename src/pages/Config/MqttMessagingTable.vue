@@ -146,12 +146,12 @@ import {
 } from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IMqttInstance} from '../../interfaces/messagingInterfaces';
+import {IField} from '@/interfaces/coreui';
+import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

@@ -11,7 +11,7 @@ import Color from 'color';
 import {Component, Vue} from 'vue-property-decorator';
 import VueStepProgressIndicator from 'vue-step-progress-indicator';
 
-import ThemeManager from '../../helpers/themeManager';
+import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {

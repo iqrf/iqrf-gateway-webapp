@@ -73,9 +73,9 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import ApiKeyService from '../../services/ApiKeyService';
+import ApiKeyService from '@/services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
 import {AxiosError, AxiosResponse} from 'axios';

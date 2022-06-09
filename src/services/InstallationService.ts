@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import i18n from '../i18n';
-import store from '../store';
+import i18n from '@/i18n';
+import store from '@/store';
 
 /**
  * Installation check interface

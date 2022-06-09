@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {EnumerateCommand} from '../../enums/IqrfNet/info';
-import store from '../../store';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import {EnumerateCommand} from '@/enums/IqrfNet/info';
+import store from '@/store';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 /**
  * IQRF Info service

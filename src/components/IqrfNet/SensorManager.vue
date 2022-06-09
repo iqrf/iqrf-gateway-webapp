@@ -91,11 +91,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
+import StandardSensorService from '@/services/DaemonApi/StandardSensorService';
 
-import {ISensor, IStandardSensor} from '../../interfaces/standard';
+import {ISensor, IStandardSensor} from '@/interfaces/standard';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

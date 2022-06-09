@@ -166,13 +166,13 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 
 import {cilPlus, cilTrash, cilInfo, cilClipboard} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import SshService from '../../services/SshService';
+import SshService from '@/services/SshService';
 
 import {AxiosResponse, AxiosError} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {ISshKey} from '../../interfaces/ssh';
+import {IField} from '@/interfaces/coreui';
+import {ISshKey} from '@/interfaces/ssh';
 
 @Component({
 	components: {

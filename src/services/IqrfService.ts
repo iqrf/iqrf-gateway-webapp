@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import {UploadUtilFile} from '../interfaces/trUpload';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import {UploadUtilFile} from '@/interfaces/trUpload';
 
 interface IqrfInterfacePorts {
 	cdc: Array<string>;

@@ -80,14 +80,14 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import IqrfService from '../../services/IqrfService';
-import ServiceService from '../../services/ServiceService';
+import IqrfService from '@/services/IqrfService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
-import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
+import {IOption} from '@/interfaces/coreui';
+import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '@/interfaces/trUpload';
 
 @Component({
 	components: {

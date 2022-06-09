@@ -93,12 +93,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import DpaService, {RFMode} from '../../services/IqrfRepository/OsDpaService';
-import IqrfNetService from '../../services/IqrfNetService';
-import IqrfService from '../../services/IqrfService';
-import ServiceService from '../../services/ServiceService';
+import DpaService, {RFMode} from '@/services/IqrfRepository/OsDpaService';
+import IqrfNetService from '@/services/IqrfNetService';
+import IqrfService from '@/services/IqrfService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';

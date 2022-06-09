@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import DaemonMessage from '../ws/DaemonMessage';
+import DaemonMessage from '@/ws/DaemonMessage';
 
 /**
  * Generic WebSocket client state interface

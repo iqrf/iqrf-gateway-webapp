@@ -64,12 +64,12 @@ import ControllerPinConfigDeleteConfirmation from './ControllerPinConfigDeleteCo
 import ControllerPinConfigForm from './ControllerPinConfigForm.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import ControllerPinConfigService from '../../services/ControllerPinConfigService';
+import ControllerPinConfigService from '@/services/ControllerPinConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IControllerPinConfig} from '../../interfaces/controller';
+import {IControllerPinConfig} from '@/interfaces/controller';
 
 @Component({
 	components: {

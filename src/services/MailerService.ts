@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {authorizationHeader} from '../helpers/authorizationHeader';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
 import axios, {AxiosResponse} from 'axios';
-import {ISmtp} from '../interfaces/smtp';
+import {ISmtp} from '@/interfaces/smtp';
 
 /**
  * SMTP server service

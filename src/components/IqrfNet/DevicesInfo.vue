@@ -105,11 +105,11 @@ import DeviceIcon from './DeviceIcon.vue';
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {ToastOptions} from 'vue-toast-notification';
 
-import Device from '../../helpers/Device';
-import IqrfNetService from '../../services/IqrfNetService';
+import Device from '@/helpers/Device';
+import IqrfNetService from '@/services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import VueI18n from 'vue-i18n';
-import { FileFormat } from '../iqrfNet/fileFormat';
-import { SecurityFormat } from '../iqrfNet/securityFormat';
+import { FileFormat } from '@/iqrfNet/fileFormat';
+import { SecurityFormat } from '@/iqrfNet/securityFormat';
 
 /**
  * Coreui DataTable field interface

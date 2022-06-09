@@ -73,10 +73,10 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import IqrfNetService from '../../services/IqrfNetService';
+import IqrfNetService from '@/services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

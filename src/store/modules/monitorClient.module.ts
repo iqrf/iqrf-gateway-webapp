@@ -16,7 +16,7 @@
  */
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
-import {MonitorClientState} from '../../interfaces/wsClient';
+import {MonitorClientState} from '@/interfaces/wsClient';
 
 /**
  * Monitor client state

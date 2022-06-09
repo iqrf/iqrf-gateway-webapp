@@ -83,16 +83,16 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import InterfacePorts from '../../components/Config/InterfacePorts.vue';
+import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {UserRole} from '../../services/AuthenticationService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {UserRole} from '@/services/AuthenticationService';
 import {required} from 'vee-validate/dist/rules';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfCdc} from '../../interfaces/iqrfInterfaces';
+import {IIqrfCdc} from '@/interfaces/iqrfInterfaces';
 
 @Component({
 	components: {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {SmtpSecurity} from '../enums/Config/Smtp';
+import {SmtpSecurity} from '@/enums/Config/Smtp';
 
 /**
  * SMTP configuration interface

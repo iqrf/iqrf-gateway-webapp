@@ -56,9 +56,9 @@ import {
 	cilUser,
 	cilWifiSignal4,
 } from '@coreui/icons';
-import ThemeManager from '../helpers/themeManager';
+import ThemeManager from '@/helpers/themeManager';
 import VueI18n from 'vue-i18n';
-import {UserRole} from '../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
 interface NavMemberItem {
 	component?: string

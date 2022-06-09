@@ -46,9 +46,9 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperatorService from '../../services/NetworkOperatorService';
+import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError} from 'axios';
 

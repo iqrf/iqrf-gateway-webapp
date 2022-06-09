@@ -120,13 +120,13 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
-import IqrfNetService from '../../services/IqrfNetService';
-import ProductService from '../../services/IqrfRepository/ProductService';
-import RfModeLp from '../../assets/lp-black.svg';
-import RfModeStd from '../../assets/std-black.svg';
+import IqrfNetService from '@/services/IqrfNetService';
+import ProductService from '@/services/IqrfRepository/ProductService';
+import RfModeLp from '@/assets/lp-black.svg';
+import RfModeStd from '@/assets/std-black.svg';
 import {AxiosError, AxiosResponse} from 'axios';
-import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '../../interfaces/dpa';
-import {DaemonClientState} from '../../interfaces/wsClient';
+import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/dpa';
+import {DaemonClientState} from '@/interfaces/wsClient';
 
 interface Product {
 	companyName: string

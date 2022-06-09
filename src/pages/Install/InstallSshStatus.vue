@@ -57,13 +57,13 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
 
-import ServiceService from '../../services/ServiceService';
+import ServiceService from '@/services/ServiceService';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {SSHStatus} from '../../enums/Install/ssh';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {SSHStatus} from '@/enums/Install/ssh';
 
 import {AxiosError} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

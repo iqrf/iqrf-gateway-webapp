@@ -102,11 +102,11 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
-import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
-import GatewayService from '../../services/GatewayService';
-import {fileDownloader} from '../../helpers/fileDownloader';
-import { IGatewayInfo, IpAddress, MacAddress } from '../../interfaces/gatewayInfo';
+import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
+import GatewayService from '@/services/GatewayService';
+import {fileDownloader} from '@/helpers/fileDownloader';
+import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/gatewayInfo';
 import { AxiosResponse } from 'axios';
 
 @Component({
@@ -177,7 +177,7 @@ export default class InstallGatewayInfo extends Vue {
 		}
 		return addresses;
 	}
-	
+
 	/**
 	 * Vue lifecycle hook created
 	 */

@@ -118,12 +118,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
-import CloudService from '../../services/CloudService';
-import ServiceService from '../../services/ServiceService';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import CloudService from '@/services/CloudService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {IInteliGlueCloud} from '../../interfaces/clouds';
+import {IInteliGlueCloud} from '@/interfaces/clouds';
 
 @Component({
 	components: {

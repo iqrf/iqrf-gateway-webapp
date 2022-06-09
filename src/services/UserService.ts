@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import UrlBuilder from '../helpers/urlBuilder';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import UrlBuilder from '@/helpers/urlBuilder';
 import {User, UserInfo} from './AuthenticationService';
 
 /**

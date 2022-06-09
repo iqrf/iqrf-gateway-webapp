@@ -203,14 +203,14 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
-import {ITracerFile} from '../../interfaces/tracerFile';
+import {IOption} from '@/interfaces/coreui';
+import {ITracerFile} from '@/interfaces/tracerFile';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

@@ -24,8 +24,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import UserProfileForm from '../../components/Core/UserProfileForm.vue';
-import UserProfilePassword from '../../components/Core/UserProfilePassword.vue';
+import UserProfileForm from '@/components/Core/UserProfileForm.vue';
+import UserProfilePassword from '@/components/Core/UserProfilePassword.vue';
 
 @Component({
 	components: {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
-import ClientSocket from '../../ws/ClientSocket';
+import ClientSocket from '@/ws/ClientSocket';
 
 interface WebSocketState {
 	daemonSocket: ClientSocket | null;

@@ -29,8 +29,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard} from '@coreui/vue/src';
-import BackupComponent from '../../components/Maintenance/BackupComponent.vue';
-import RestoreComponent from '../../components/Maintenance/RestoreComponent.vue';
+import BackupComponent from '@/components/Maintenance/BackupComponent.vue';
+import RestoreComponent from '@/components/Maintenance/RestoreComponent.vue';
 
 @Component({
 	components: {

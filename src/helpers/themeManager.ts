@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import GenericBlueLogo from '../assets/themes/generic/logo-blue.svg';
-import GenericSmallLogo from '../assets/themes/generic/logo-small.svg';
-import GenericWhiteLogo from '../assets/themes/generic/logo-white.svg';
+import GenericBlueLogo from '@/assets/themes/generic/logo-blue.svg';
+import GenericSmallLogo from '@/assets/themes/generic/logo-small.svg';
+import GenericWhiteLogo from '@/assets/themes/generic/logo-white.svg';
 
-import IqarosRedLogo from '../assets/themes/iqaros/logo-red.svg';
-import IqarosSmallLogo from '../assets/themes/iqaros/logo-small.svg';
-import IqarosWhiteLogo from '../assets/themes/iqaros/logo-white.svg';
+import IqarosRedLogo from '@/assets/themes/iqaros/logo-red.svg';
+import IqarosSmallLogo from '@/assets/themes/iqaros/logo-small.svg';
+import IqarosWhiteLogo from '@/assets/themes/iqaros/logo-white.svg';
 
 /**
  * URL builder

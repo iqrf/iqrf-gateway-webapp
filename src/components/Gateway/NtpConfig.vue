@@ -97,9 +97,9 @@ import {CCard, CCardBody, CCardHeader, CForm, CInput, CSwitch} from '@coreui/vue
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 import ip from 'ip-regex';
 import isFQDN from 'is-fqdn';
 
@@ -138,7 +138,7 @@ export default class NtpConfig extends Vue {
 	 */
 	created(): void {
 		extend('server', (addr: string) => {
-			return ip.v4({exact: true}).test(addr) || isFQDN(addr); 
+			return ip.v4({exact: true}).test(addr) || isFQDN(addr);
 		});
 		extend('required', required);
 	}

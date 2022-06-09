@@ -514,20 +514,20 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import ProductModal from '../../components/IqrfNet/ProductModal.vue';
+import ProductModal from '@/components/IqrfNet/ProductModal.vue';
 
 import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
-import {NetworkTarget} from '../../enums/IqrfNet/network';
+import {NetworkTarget} from '@/enums/IqrfNet/network';
 
 import compareVersions, {compare} from 'compare-versions';
-import IqrfNetService from '../../services/IqrfNetService';
-import OsService from '../../services/DaemonApi/OsService';
+import IqrfNetService from '@/services/IqrfNetService';
+import OsService from '@/services/DaemonApi/OsService';
 
-import {IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
-import {IOption} from '../../interfaces/coreui';
-import {IProduct} from '../../interfaces/repository';
+import {IEmbedPersEnabled, ITrConfiguration} from '@/interfaces/dpa';
+import {IOption} from '@/interfaces/coreui';
+import {IProduct} from '@/interfaces/repository';
 import {MutationPayload} from 'vuex';
-import {DaemonClientState} from '../../interfaces/wsClient';
+import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
 	components: {

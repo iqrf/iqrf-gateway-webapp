@@ -217,14 +217,14 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
 
 import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
-import VersionService from '../../services/VersionService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
+import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
+import VersionService from '@/services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField, IOption} from '../../interfaces/coreui';
-import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} from '../../interfaces/network';
+import {IField, IOption} from '@/interfaces/coreui';
+import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} from '@/interfaces/network';
 
 @Component({
 	components: {

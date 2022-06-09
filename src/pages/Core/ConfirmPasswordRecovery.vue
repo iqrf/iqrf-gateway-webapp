@@ -76,10 +76,10 @@ import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import TheWizard from '../../components/TheWizard.vue';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {User, UserRole} from '../../services/AuthenticationService';
-import UserService from '../../services/UserService';
+import TheWizard from '@/components/TheWizard.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {User, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {

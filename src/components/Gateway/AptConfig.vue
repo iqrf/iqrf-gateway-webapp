@@ -101,11 +101,11 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {UserRole} from '../../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
-import AptService, {AptConfiguration} from '../../services/AptService';
+import AptService, {AptConfiguration} from '@/services/AptService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 
