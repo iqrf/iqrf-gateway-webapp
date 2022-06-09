@@ -62,7 +62,8 @@ if (process.env.NODE_ENV === 'production') {
 			}),
 		],
 		release: release,
-		tracesSampleRate: 1.0
+		tracesSampleRate: 1.0,
+		Vue,
 	});
 }
 
