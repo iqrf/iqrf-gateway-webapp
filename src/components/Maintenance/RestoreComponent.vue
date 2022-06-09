@@ -71,12 +71,12 @@ export default class GatewayBackup extends Vue {
 	/**
 	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
 	 */
-	private inputEmpty = true
+	private inputEmpty = true;
 
 	/**
 	 * @var {boolean} running Incidates whether restore operation is running
 	 */
-	private running = false
+	private running = false;
 
 	/**
 	 * Performs gateway restore

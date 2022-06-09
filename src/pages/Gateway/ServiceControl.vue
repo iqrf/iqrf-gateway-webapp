@@ -89,6 +89,7 @@ import SystemdJournaldConfig from '@/components/Gateway/SystemdJournalConfig.vue
 
 import AptService, {AptEnable} from '@/services/AptService';
 import ServiceService from '@/services/ServiceService';
+import {ErrorResponse} from '@/types';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
@@ -312,7 +313,7 @@ export default class ServiceControl extends Vue {
 			this.$toast.error(this.$t('service.errors.missingService').toString());
 		}
 		if (response.status === 500 &&
-				response.data.message === 'Unsupported init system') {
+			(response.data as ErrorResponse).message === 'Unsupported init system') {
 			this.unsupported = false;
 			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
 		}

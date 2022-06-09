@@ -254,7 +254,7 @@ export default class MappingForm extends Vue {
 		spiEnableGpioPin: 0,
 		uartEnableGpioPin: 0,
 		baudRate: 57600,
-	}
+	};
 
 	/**
 	 * @var {boolean} useAdditionalPins Use additional pins

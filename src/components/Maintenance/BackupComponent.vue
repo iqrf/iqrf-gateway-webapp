@@ -112,7 +112,7 @@ export default class BackupComponent extends Vue {
 			time: false,
 			journal: false,
 		},
-	}
+	};
 
 	/**
 	 * Sets all checkboxes to specified value

@@ -19,6 +19,7 @@ import store from '@/store';
 import Vue from 'vue';
 
 import {AxiosError} from 'axios';
+import {ErrorResponse} from '@/types';
 
 /**
  * Shows error toast with assignable parameters
@@ -28,7 +29,7 @@ import {AxiosError} from 'axios';
  */
 export function extendedErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
 	const translations = {
-		error: error.response ? error.response.data.message : error.message
+		error: error.response ? (error.response.data as ErrorResponse).message : error.message
 	};
 	if (params !== undefined) {
 		Object.assign(translations, params);

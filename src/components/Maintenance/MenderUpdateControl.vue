@@ -69,6 +69,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import GatewayService from '@/services/GatewayService';
 import { MountModes } from '@/enums/Maintenance/Mender';
 import { extendedErrorToast } from '@/helpers/errorToast';
+import {ErrorResponse} from '@/types';
 
 @Component({
 	components: {
@@ -127,7 +128,7 @@ export default class MenderUpdateControl extends Vue {
 			})
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.installFailed',
-				error.response ? error.response.data.message : error.message
+				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
 
@@ -143,7 +144,7 @@ export default class MenderUpdateControl extends Vue {
 			))
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.commitFailed',
-				error.response ? error.response.data.message : error.message
+				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
 
@@ -159,7 +160,7 @@ export default class MenderUpdateControl extends Vue {
 			))
 			.catch((error: AxiosError) => this.handleError(
 				'maintenance.mender.update.messages.rollbackFailed',
-				error.response ? error.response.data.message : error.message
+				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
 
