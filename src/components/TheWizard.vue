@@ -32,7 +32,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CCol, CRow} from '@coreui/vue/src';
-import ThemeManager from '../helpers/themeManager';
+import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {

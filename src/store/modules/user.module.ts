@@ -20,11 +20,11 @@ import AuthenticationService, {
 	User,
 	UserInfo,
 	UserRole
-} from '../../services/AuthenticationService';
+} from '@/services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 
 /**
  * User state

@@ -203,17 +203,17 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
 
 import {DateTime, Duration} from 'luxon';
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
-import {fileDownloader} from '../../helpers/fileDownloader';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import {fileDownloader} from '@/helpers/fileDownloader';
 
-import ServiceService from '../../services/ServiceService';
-import SchedulerService from '../../services/SchedulerService';
+import ServiceService from '@/services/ServiceService';
+import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {ITaskRest, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {IField} from '@/interfaces/coreui';
+import {ITaskRest, ITaskTimeSpec} from '@/interfaces/scheduler';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

@@ -450,16 +450,16 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import ControllerPinConfigs from '../../components/Config/ControllerPinConfigs.vue';
+import ControllerPinConfigs from '@/components/Config/ControllerPinConfigs.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {controllerErrorToast, extendedErrorToast} from '../../helpers/errorToast';
-import FeatureConfigService from '../../services/FeatureConfigService';
-import ServiceService from '../../services/ServiceService';
+import {controllerErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import FeatureConfigService from '@/services/FeatureConfigService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IController, IControllerPinConfig} from '../../interfaces/controller';
-import {IOption} from '../../interfaces/coreui';
+import {IController, IControllerPinConfig} from '@/interfaces/controller';
+import {IOption} from '@/interfaces/coreui';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 
 @Component({

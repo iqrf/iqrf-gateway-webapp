@@ -16,9 +16,9 @@
  */
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import {UserRole} from '../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
-import TheDashboard from '../components/TheDashboard.vue';
+import TheDashboard from '@/components/TheDashboard.vue';
 
 const CloudDisambiguation = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/CloudDisambiguation.vue');
 const AzureCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/AzureCreator.vue');
@@ -117,8 +117,8 @@ const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/page
 const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderUpdate.vue');
 const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
-import i18n from '../i18n';
-import store from '../store';
+import i18n from '@/i18n';
+import store from '@/store';
 
 Vue.use(VueRouter);
 

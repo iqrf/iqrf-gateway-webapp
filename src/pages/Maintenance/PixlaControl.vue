@@ -77,11 +77,11 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import PixlaForm from '../../components/Maintenance/PixlaForm.vue';
+import PixlaForm from '@/components/Maintenance/PixlaForm.vue';
 
-import {pixlaErrorToast} from '../../helpers/errorToast';
+import {pixlaErrorToast} from '@/helpers/errorToast';
 
-import ServiceService, {ServiceStatus} from '../../services/ServiceService';
+import ServiceService, {ServiceStatus} from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';

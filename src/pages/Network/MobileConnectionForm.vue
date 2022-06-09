@@ -149,20 +149,20 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import NetworkOperators from '../../components/Network/NetworkOperators.vue';
+import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
-import NetworkConnectionService from '../../services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
+import NetworkConnectionService from '@/services/NetworkConnectionService';
+import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, IOperator} from '../../interfaces/network';
-import {IOption} from '../../interfaces/coreui';
+import {IConnection} from '@/interfaces/network';
+import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {NetworkInterface} from '../../interfaces/gatewayInfo';
-import NetworkOperator from '../../entities/NetworkOperator';
+import {NetworkInterface} from '@/interfaces/gatewayInfo';
+import NetworkOperator from '@/entities/NetworkOperator';
 
 @Component({
 	components: {

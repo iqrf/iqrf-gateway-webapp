@@ -116,15 +116,15 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
-import {ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
-import {RequiredInterface} from '../../interfaces/requiredInterfaces';
+import {ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
+import {RequiredInterface} from '@/interfaces/requiredInterfaces';
 
 interface ServiceInstance {
 	label: string

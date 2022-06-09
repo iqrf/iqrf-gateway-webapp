@@ -87,11 +87,11 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 
 import {AxiosError} from 'axios';
-import {GatewayPasswordFeature} from '../../services/FeatureService';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {GatewayPasswordFeature} from '@/services/FeatureService';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

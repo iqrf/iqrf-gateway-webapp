@@ -103,13 +103,13 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 
-import ApiKeyService from '../../services/ApiKeyService';
+import ApiKeyService from '@/services/ApiKeyService';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {DateTime} from 'luxon';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
+import {IField} from '@/interfaces/coreui';
 
 
 interface ApiKey {

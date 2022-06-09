@@ -29,7 +29,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import {CIcon} from '@coreui/vue/src';
 
-import Device from '../../helpers/Device';
+import Device from '@/helpers/Device';
 
 @Component({
 	components: {

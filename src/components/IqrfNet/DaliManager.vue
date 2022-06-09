@@ -109,8 +109,8 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 interface DaliAnswer {
 	status: number

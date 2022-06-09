@@ -105,16 +105,16 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
-import NetworkOperators from '../../components/Network/NetworkOperators.vue';
+import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import NetworkInterfaceService from '../../services/NetworkInterfaceService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IModem, NetworkConnection} from '../../interfaces/network';
+import {IField} from '@/interfaces/coreui';
+import {IModem, NetworkConnection} from '@/interfaces/network';
 
 @Component({
 	components: {

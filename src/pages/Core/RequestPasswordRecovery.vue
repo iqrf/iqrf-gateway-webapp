@@ -69,11 +69,11 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import TheWizard from '../../components/TheWizard.vue';
+import TheWizard from '@/components/TheWizard.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
 

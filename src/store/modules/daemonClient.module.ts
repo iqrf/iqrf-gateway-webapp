@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import store from '..';
+import store from '@/store';
 import Vue from 'vue';
-import i18n from '../../i18n';
+import i18n from '@/i18n';
 
 import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
-import DaemonMessage from '../../ws/DaemonMessage';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessage from '@/ws/DaemonMessage';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import {DaemonClientState} from '../../interfaces/wsClient';
+import {DaemonClientState} from '@/interfaces/wsClient';
 
 /**
  * Daemon client state

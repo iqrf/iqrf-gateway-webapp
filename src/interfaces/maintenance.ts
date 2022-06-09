@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MenderProtocols, MountModes} from '../enums/Maintenance/Mender';
+import {MenderProtocols, MountModes} from '@/enums/Maintenance/Mender';
 
 /**
  * Mender configuration interface

@@ -49,8 +49,8 @@ import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-import {User, UserRole} from '../../services/AuthenticationService';
-import UserService from '../../services/UserService';
+import {User, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 import { AxiosError } from 'axios';
 
 @Component({

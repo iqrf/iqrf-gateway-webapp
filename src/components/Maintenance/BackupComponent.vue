@@ -73,13 +73,13 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCol, CForm, CInputCheckbox, CRow} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {fileDownloader} from '../../helpers/fileDownloader';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {fileDownloader} from '@/helpers/fileDownloader';
 
-import BackupService from '../../services/BackupService';
+import BackupService from '@/services/BackupService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IBackup} from '../../interfaces/backup';
+import {IBackup} from '@/interfaces/backup';
 
 @Component({
 	components: {

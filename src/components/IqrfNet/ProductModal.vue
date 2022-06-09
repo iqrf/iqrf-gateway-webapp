@@ -49,11 +49,11 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CDataTable, CModal} from '@coreui/vue/src';
 import {cilCheckAlt} from '@coreui/icons';
 
-import ProductService from '../../services/IqrfRepository/ProductService';
+import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IProduct} from '../../interfaces/repository';
+import {IField} from '@/interfaces/coreui';
+import {IProduct} from '@/interfaces/repository';
 
 @Component({
 	components: {

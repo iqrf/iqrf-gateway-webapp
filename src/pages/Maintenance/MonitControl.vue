@@ -64,14 +64,14 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import MonitForm from '../../components/Maintenance/MonitForm.vue';
+import MonitForm from '@/components/Maintenance/MonitForm.vue';
 
-import ServiceService from '../../services/ServiceService';
-import {monitErrorToast} from '../../helpers/errorToast';
+import ServiceService from '@/services/ServiceService';
+import {monitErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
-import {ServiceStatus} from '../../services/ServiceService';
+import {ServiceStatus} from '@/services/ServiceService';
 
 @Component({
 	components: {

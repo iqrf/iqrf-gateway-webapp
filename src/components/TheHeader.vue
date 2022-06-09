@@ -68,7 +68,7 @@ import {
 	CToggler,
 } from '@coreui/vue/src';
 import {cilLockLocked, cilUser} from '@coreui/icons';
-import ThemeManager from '../helpers/themeManager';
+import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {

@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import store from '../store';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import DaemonMessageOptions from '../ws/DaemonMessageOptions';
-import axios from 'axios';
-import {AxiosResponse} from 'axios';
+import store from '@/store';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import axios, {AxiosResponse} from 'axios';
 
 /**
  * Version service

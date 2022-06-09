@@ -106,14 +106,14 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {UserRole} from '../../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
-import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfRepository} from '../../interfaces/iqrfRepository';
+import {IIqrfRepository} from '@/interfaces/iqrfRepository';
 
 @Component({
 	components: {

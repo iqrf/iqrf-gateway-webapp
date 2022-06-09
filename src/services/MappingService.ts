@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
-import { IMapping } from '../interfaces/mappings';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
+import { IMapping } from '@/interfaces/mappings';
 
 /**
  * Mapping service

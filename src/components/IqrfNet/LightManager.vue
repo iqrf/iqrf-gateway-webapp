@@ -146,10 +146,10 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
+import StandardLightService, {StandardLight} from '@/services/DaemonApi/StandardLightService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

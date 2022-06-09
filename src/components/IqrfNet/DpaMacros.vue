@@ -45,7 +45,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosResponse} from 'axios';
 import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
-import IqrfService from '../../services/IqrfService';
+import IqrfService from '@/services/IqrfService';
 
 interface IDpaMacro {
 	confirmation: boolean

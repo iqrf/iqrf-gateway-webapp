@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {UserRole} from '../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
 export function getUserRoleKey(role: UserRole): UserRole {
 	const key = Object.entries(UserRole).find(([k, v]) => v === role)?.[0];

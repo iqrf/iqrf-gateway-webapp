@@ -85,9 +85,9 @@ import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} f
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {UserCredentials} from '../../services/AuthenticationService';
-import {sleep} from '../../helpers/sleep';
-import TheWizard from '../../components/TheWizard.vue';
+import {UserCredentials} from '@/services/AuthenticationService';
+import {sleep} from '@/helpers/sleep';
+import TheWizard from '@/components/TheWizard.vue';
 
 @Component({
 	components: {

@@ -86,13 +86,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 // Module properties
 import {email, required} from 'vee-validate/dist/rules';
 // Auxiliary functions
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 // Services
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 // Interfaces
 import {AxiosError} from 'axios';
-import {IUserBase, UserLanguage, UserRole} from '../../services/AuthenticationService';
-import {IOption} from '../../interfaces/coreui';
+import {IUserBase, UserLanguage, UserRole} from '@/services/AuthenticationService';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

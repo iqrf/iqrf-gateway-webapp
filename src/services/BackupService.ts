@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IBackup} from '../interfaces/backup';
+import {IBackup} from '@/interfaces/backup';
 
 class BackupService {
 

@@ -63,12 +63,12 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
 
-import MenderService from '../../services/MenderService';
+import MenderService from '@/services/MenderService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import GatewayService from '../../services/GatewayService';
-import { MountModes } from '../../enums/Maintenance/Mender';
-import { extendedErrorToast } from '../../helpers/errorToast';
+import GatewayService from '@/services/GatewayService';
+import { MountModes } from '@/enums/Maintenance/Mender';
+import { extendedErrorToast } from '@/helpers/errorToast';
 
 @Component({
 	components: {
@@ -175,7 +175,7 @@ export default class MenderUpdateControl extends Vue {
 				this.$toast.success(
 					this.$t(
 						'gateway.power.messages.rebootSuccess',
-						{time: time},						
+						{time: time},
 					).toString()
 				);
 			});

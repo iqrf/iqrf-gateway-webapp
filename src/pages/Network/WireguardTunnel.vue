@@ -438,13 +438,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, integer, between} from 'vee-validate/dist/rules';
 
 import ip from 'ip-regex';
-import WireguardService from '../../services/WireguardService';
+import WireguardService from '@/services/WireguardService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
-import {IWGTunnel} from '../../interfaces/network';
-import {IOption} from '../../interfaces/coreui';
-import { extendedErrorToast } from '../../helpers/errorToast';
+import {IWGTunnel} from '@/interfaces/network';
+import {IOption} from '@/interfaces/coreui';
+import { extendedErrorToast } from '@/helpers/errorToast';
 
 export enum StackType {
 	SINGLE_IPV4 = 'ipv4',

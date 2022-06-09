@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import i18n from '../i18n';
+import i18n from '@/i18n';
 import Vue from 'vue';
 import {ToastOptions} from 'vue-toast-notification';
 

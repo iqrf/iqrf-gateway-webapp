@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
-import {IInfoSensorDetail} from '../interfaces/iqrfInfo';
-import {IProduct} from '../interfaces/repository';
-import i18n from '../i18n';
+import {IInfoSensorDetail} from '@/interfaces/iqrfInfo';
+import {IProduct} from '@/interfaces/repository';
+import i18n from '@/i18n';
 
 /**
  * Standard device object

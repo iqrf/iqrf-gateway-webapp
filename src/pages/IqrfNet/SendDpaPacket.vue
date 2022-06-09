@@ -220,18 +220,18 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
-import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
+import DpaMacros from '@/components/IqrfNet/DpaMacros.vue';
+import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
 
 import {maska} from 'maska';
 import {between, integer, min_value, required, min, max} from 'vee-validate/dist/rules';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
-import Packet from '../../iqrfNet/sendPacket';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import Packet from '@/iqrfNet/sendPacket';
 
-import {IMessagePairPacket} from '../../interfaces/iqrfnet';
-import {IOption} from '../../interfaces/coreui';
+import {IMessagePairPacket} from '@/interfaces/iqrfnet';
+import {IOption} from '@/interfaces/coreui';
 import {mapGetters, MutationPayload} from 'vuex';
-import {RawMessage} from '../../interfaces/dpa';
+import {RawMessage} from '@/interfaces/dpa';
 
 @Component({
 	components: {

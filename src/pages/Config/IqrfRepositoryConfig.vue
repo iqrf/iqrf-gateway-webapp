@@ -101,14 +101,14 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {required} from 'vee-validate/dist/rules';
 
-import RepositoryConfigService from '../../services/IqrfRepository/IqrfRepositoryConfigService';
+import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
 
 import {AxiosError} from 'axios';
-import {IIqrfRepositoryConfig} from '../../interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
 
 
 @Component({

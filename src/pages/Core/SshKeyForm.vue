@@ -113,15 +113,15 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import SshKeyTypes from '../../components/Gateway/SshKeyTypes.vue';
+import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import SshService from '../../services/SshService';
+import SshService from '@/services/SshService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ISshInput} from '../../interfaces/ssh';
+import {ISshInput} from '@/interfaces/ssh';
 
 @Component({
 	components: {

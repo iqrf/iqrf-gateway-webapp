@@ -15,8 +15,8 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCol, CRow} from '@coreui/vue/src';
-import MenderUpdateControl from '../../components/Maintenance/MenderUpdateControl.vue';
-import MenderUpdateLog from '../../components/Maintenance/MenderUpdateLog.vue';
+import MenderUpdateControl from '@/components/Maintenance/MenderUpdateControl.vue';
+import MenderUpdateLog from '@/components/Maintenance/MenderUpdateLog.vue';
 
 import {NavigationGuardNext, Route} from 'vue-router';
 
@@ -34,7 +34,7 @@ import {NavigationGuardNext, Route} from 'vue-router';
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());
 				vm.$router.push(from.path);
-			}	
+			}
 		});
 	},
 	metaInfo: {

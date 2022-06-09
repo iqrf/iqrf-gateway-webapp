@@ -246,20 +246,20 @@ import {
 	CRow,
 	CSelect,
 } from '@coreui/vue/src';
-import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
-import InterfacePorts from '../../components/Config/InterfacePorts.vue';
+import InterfaceMappings from '@/components/Config/InterfaceMappings.vue';
+import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
-import {UserRole} from '../../services/AuthenticationService';
+import {UserRole} from '@/services/AuthenticationService';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
-import {IMapping} from '../../interfaces/mappings';
-import {IOption} from '../../interfaces/coreui';
+import {IIqrfUart} from '@/interfaces/iqrfInterfaces';
+import {IMapping} from '@/interfaces/mappings';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

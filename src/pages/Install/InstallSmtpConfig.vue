@@ -9,7 +9,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import SmtpForm from '../../components/Config/SmtpForm.vue';
+import SmtpForm from '@/components/Config/SmtpForm.vue';
 
 @Component({
 	components: {

@@ -145,10 +145,10 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {cilCheckAlt, cilX} from '@coreui/icons';
 
-import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
+import StandardBinaryOutputService, {StandardBinaryOutput} from '@/services/DaemonApi/StandardBinaryOutputService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

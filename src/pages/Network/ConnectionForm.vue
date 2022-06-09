@@ -513,21 +513,21 @@ import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {sleep} from '../../helpers/sleep';
+import {sleep} from '@/helpers/sleep';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {v4 as uuidv4} from 'uuid';
-import {WepKeyLen, WepKeyType} from '../../enums/Network/WifiSecurity';
+import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
 
 import ip from 'ip-regex';
-import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '../../services/NetworkInterfaceService';
-import VersionService from '../../services/VersionService';
+import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
+import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
+import VersionService from '@/services/VersionService';
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, IConnectionModal, NetworkInterface} from '../../interfaces/network';
-import {IOption} from '../../interfaces/coreui';
-import UrlBuilder from '../../helpers/urlBuilder';
+import {IConnection, IConnectionModal, NetworkInterface} from '@/interfaces/network';
+import {IOption} from '@/interfaces/coreui';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {

@@ -321,13 +321,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {IMqttInstance} from '../../interfaces/messagingInterfaces';
+import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

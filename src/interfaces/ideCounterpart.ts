@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {DaemonModeEnum} from '../services/DaemonModeService';
+import {DaemonModeEnum} from '@/services/DaemonModeService';
 
 import {RequiredInterface} from './requiredInterfaces';
 
@@ -43,7 +43,7 @@ export interface IIdeCounterpart {
 	gwIdentName: string
 
 	/**
-	 * Gateway identification ip stack 
+	 * Gateway identification ip stack
 	 */
 	gwIdentIpStack: string
 

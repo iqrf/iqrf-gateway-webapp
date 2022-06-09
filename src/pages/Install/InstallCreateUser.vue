@@ -92,12 +92,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import UserService from '../../services/UserService';
+import UserService from '@/services/UserService';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
-import {sleep} from '../../helpers/sleep';
-import {UserCredentials, UserRole} from '../../services/AuthenticationService';
+import {sleep} from '@/helpers/sleep';
+import {UserCredentials, UserRole} from '@/services/AuthenticationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 

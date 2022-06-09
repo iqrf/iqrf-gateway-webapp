@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import {authorizationHeader} from '../helpers/authorizationHeader';
+import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IWGTunnel} from '../interfaces/network';
+import {IWGTunnel} from '@/interfaces/network';
 
 /**
  * Wireguard VPN service

@@ -163,13 +163,13 @@ import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {SmtpSecurity} from '../../enums/Config/Smtp';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {SmtpSecurity} from '@/enums/Config/Smtp';
 
-import MailerService from '../../services/MailerService';
+import MailerService from '@/services/MailerService';
 
-import {IOption} from '../../interfaces/coreui';
-import {ISmtp} from '../../interfaces/smtp';
+import {IOption} from '@/interfaces/coreui';
+import {ISmtp} from '@/interfaces/smtp';
 
 @Component({
 	components: {

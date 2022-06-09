@@ -65,17 +65,17 @@ import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {NetworkTarget} from '../../enums/IqrfNet/network';
+import {NetworkTarget} from '@/enums/IqrfNet/network';
 import {saveAs} from 'file-saver';
-import {versionHigherEqual} from '../../helpers/versionChecker';
+import {versionHigherEqual} from '@/helpers/versionChecker';
 
-import IqrfNetService from '../../services/IqrfNetService';
-import VersionService from '../../services/VersionService';
+import IqrfNetService from '@/services/IqrfNetService';
+import VersionService from '@/services/VersionService';
 
 import {AxiosResponse} from 'axios';
-import {IBackupData} from '../../interfaces/iqmeshServices';
+import {IBackupData} from '@/interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

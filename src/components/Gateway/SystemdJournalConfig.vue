@@ -20,7 +20,7 @@ limitations under the License.
 			{{ $t('service.systemd-journald.config.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<CElementCover 
+			<CElementCover
 				v-if='failed'
 				style='z-index: 1;'
 				:opacity='0.85'
@@ -170,7 +170,7 @@ limitations under the License.
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCardBody>	
+		</CCardBody>
 	</CCard>
 </template>
 
@@ -179,15 +179,15 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {StorageMethod, TimeUnit} from '../../enums/Gateway/SystemdJournal';
+import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
-import {ISystemdJournal} from '../../interfaces/systemdJournal';
+import {IOption} from '@/interfaces/coreui';
+import {ISystemdJournal} from '@/interfaces/systemdJournal';
 
 @Component({
 	components: {

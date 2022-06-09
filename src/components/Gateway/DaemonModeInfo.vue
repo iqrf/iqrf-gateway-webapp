@@ -24,8 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import DaemonModeService, {DaemonModeEnum} from '../../services/DaemonModeService';
-import {DaemonClientState} from '../../interfaces/wsClient';
+import DaemonModeService, {DaemonModeEnum} from '@/services/DaemonModeService';
+import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({})
 

@@ -16,7 +16,7 @@
  */
 import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import validate from './validate_daemonRequest';
-import i18n from '../i18n';
+import i18n from '@/i18n';
 
 export interface DaemonApiValidatorCallback {
 	(errorMessages: Array<string>): void;

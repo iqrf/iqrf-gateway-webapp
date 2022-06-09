@@ -127,12 +127,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
 
 import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
-import WireguardService from '../../services/WireguardService';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import WireguardService from '@/services/WireguardService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '../../interfaces/coreui';
-import {IWG} from '../../interfaces/network';
+import {IField} from '@/interfaces/coreui';
+import {IWG} from '@/interfaces/network';
 
 @Component({
 	components: {

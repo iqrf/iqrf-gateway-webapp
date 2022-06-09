@@ -53,15 +53,15 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
-import LogTab from '../../components/Gateway/LogTab.vue';
+import LogTab from '@/components/Gateway/LogTab.vue';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {fileDownloader} from '../../helpers/fileDownloader';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {fileDownloader} from '@/helpers/fileDownloader';
 
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IServiceLog} from '../../interfaces/log';
+import {IServiceLog} from '@/interfaces/log';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

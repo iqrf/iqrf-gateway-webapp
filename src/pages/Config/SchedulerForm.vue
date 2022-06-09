@@ -233,24 +233,24 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
 import {Datetime} from 'vue-datetime';
 
-import DaemonApiValidator from '../../helpers/DaemonApiValidator';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import DaemonApiValidator from '@/helpers/DaemonApiValidator';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import SchedulerService from '../../services/SchedulerService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
-import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '../../interfaces/scheduler';
+import {IOption} from '@/interfaces/coreui';
+import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '@/interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
-import {WsMessaging} from '../../interfaces/messagingInterfaces';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {WsMessaging} from '@/interfaces/messagingInterfaces';
 
-import JsonEditor from '../../components/Config/JsonEditor.vue';
-import JsonSchemaErrors from '../../components/Config/JsonSchemaErrors.vue';
+import JsonEditor from '@/components/Config/JsonEditor.vue';
+import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 enum TimeSpecTypes {
 	CRON = 'cron',

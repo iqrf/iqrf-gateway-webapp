@@ -60,16 +60,16 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
-import MappingDeleteConfirmation from '../../components/Config/MappingDeleteConfirmation.vue';
-import MappingForm from '../../components/Config/MappingForm.vue';
+import MappingDeleteConfirmation from '@/components/Config/MappingDeleteConfirmation.vue';
+import MappingForm from '@/components/Config/MappingForm.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import MappingService from '../../services/MappingService';
+import MappingService from '@/services/MappingService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMapping} from '../../interfaces/mappings';
+import {IMapping} from '@/interfaces/mappings';
 
 @Component({
 	components: {

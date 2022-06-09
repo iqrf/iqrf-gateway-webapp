@@ -29,7 +29,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CAlert} from '@coreui/vue/src';
 
-import SshService from '../../services/SshService';
+import SshService from '@/services/SshService';
 
 import {AxiosResponse} from 'axios';
 

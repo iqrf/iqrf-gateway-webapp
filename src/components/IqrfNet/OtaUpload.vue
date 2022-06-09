@@ -209,18 +209,18 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {cilCheckCircle} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import IqrfNetService from '../../services/IqrfNetService';
-import NativeUploadService from '../../services/NativeUploadService';
+import IqrfNetService from '@/services/IqrfNetService';
+import NativeUploadService from '@/services/NativeUploadService';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
-import {FileFormat} from '../../iqrfNet/fileFormat';
-import {NetworkTarget} from '../../iqrfNet/networkTarget';
-import {OtaUploadAction} from '../../iqrfNet/otaUploadAction';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {FileFormat} from '@/iqrfNet/fileFormat';
+import {NetworkTarget} from '@/iqrfNet/networkTarget';
+import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {

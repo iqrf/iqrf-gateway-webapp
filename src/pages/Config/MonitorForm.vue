@@ -167,14 +167,14 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} f
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required, min_value} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {RequiredInterface} from '../../interfaces/requiredInterfaces';
+import {RequiredInterface} from '@/interfaces/requiredInterfaces';
 
 interface MonitorComponents {
 	monitor: string

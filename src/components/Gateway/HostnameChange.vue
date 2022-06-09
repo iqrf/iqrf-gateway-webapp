@@ -50,12 +50,12 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {max, required} from 'vee-validate/dist/rules';
 
-import GatewayService from '../../services/GatewayService';
+import GatewayService from '@/services/GatewayService';
 
-import {IHostname} from '../../interfaces/gatewayInfo';
+import {IHostname} from '@/interfaces/gatewayInfo';
 import {AxiosError} from 'axios';
 
 

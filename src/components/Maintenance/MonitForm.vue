@@ -82,13 +82,13 @@ import {CButton, CForm, CInput} from '@coreui/vue/src';
 import {ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extend} from 'vee-validate';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import FeatureConfigService from '../../services/FeatureConfigService';
+import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMonitConfig} from '../../interfaces/maintenance';
+import {IMonitConfig} from '@/interfaces/maintenance';
 
 @Component({
 	components: {

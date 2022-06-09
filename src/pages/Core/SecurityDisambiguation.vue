@@ -52,7 +52,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {getRoleIndex} from '../../helpers/user';
+import {getRoleIndex} from '@/helpers/user';
 
 @Component({
 	components: {

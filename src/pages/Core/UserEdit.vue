@@ -104,13 +104,13 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
-import {UserLanguage, UserRole} from '../../services/AuthenticationService';
-import UserService from '../../services/UserService';
+import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

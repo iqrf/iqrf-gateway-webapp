@@ -47,14 +47,14 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from '@coreui/vue/src';
 
-import {daemonErrorToast, extendedErrorToast} from '../../helpers/errorToast';
-import {FileFormat} from '../../iqrfNet/fileFormat';
-import IqrfService from '../../services/IqrfService';
-import NativeUploadService from '../../services/NativeUploadService';
-import ServiceService from '../../services/ServiceService';
+import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import {FileFormat} from '@/iqrfNet/fileFormat';
+import IqrfService from '@/services/IqrfService';
+import NativeUploadService from '@/services/NativeUploadService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosResponse, AxiosError} from 'axios';
-import {FileUpload} from '../../interfaces/trUpload';
+import {FileUpload} from '@/interfaces/trUpload';
 
 @Component({
 	components: {

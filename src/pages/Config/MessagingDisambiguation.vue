@@ -71,12 +71,12 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CSelect} from '@coreui/vue/src';
-import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
-import WebsocketList from '../../pages/Config/WebsocketList.vue';
-import MqMessagingTable from '../../pages/Config/MqMessagingTable.vue';
-import UdpMessagingTable from '../../pages/Config/UdpMessagingTable.vue';
+import MqttMessagingTable from '@/pages/Config/MqttMessagingTable.vue';
+import WebsocketList from '@/pages/Config/WebsocketList.vue';
+import MqMessagingTable from '@/pages/Config/MqMessagingTable.vue';
+import UdpMessagingTable from '@/pages/Config/UdpMessagingTable.vue';
 
-import {getRoleIndex} from '../../helpers/user';
+import {getRoleIndex} from '@/helpers/user';
 
 @Component({
 	components: {

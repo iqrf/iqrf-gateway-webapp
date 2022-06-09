@@ -157,14 +157,14 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, C
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '../../helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 
-import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '../../interfaces/coreui';
+import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
+import {WsMessaging, ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

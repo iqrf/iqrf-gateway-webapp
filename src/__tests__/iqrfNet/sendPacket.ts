@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Packet from '../../iqrfNet/sendPacket';
+import Packet from '@/iqrfNet/sendPacket';
 
 test('Update Network address in DPA packet', () => {
 	const expected = '01.00.02.00.ff.ff';
