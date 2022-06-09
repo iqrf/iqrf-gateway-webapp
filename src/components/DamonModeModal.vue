@@ -76,7 +76,7 @@ export default class DaemonModeModal extends Vue {
 	/**
 	 * Component unsubscribe function
 	 */
-	private unsubscribe: CallableFunction = () => {return;}
+	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
 	 * Subscribes to Monitor vuex mutations

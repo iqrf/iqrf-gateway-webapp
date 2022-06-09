@@ -67,7 +67,7 @@ export default class NetworkOperatorDeleteModal extends Vue {
 	/**
 	 * @var {boolean} show Controls whether modal is displayed
 	 */
-	private show = false
+	private show = false;
 
 	/**
 	 * @var {number} id Operator ID

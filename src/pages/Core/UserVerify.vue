@@ -51,6 +51,7 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import {User, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
+import {ErrorResponse} from '@/types';
 import { AxiosError } from 'axios';
 
 @Component({
@@ -99,7 +100,7 @@ export default class UserVerify extends Vue {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
-				this.verifyError = error.response ? error.response.data.message : error.message;
+				this.verifyError = error.response ? (error.response.data as ErrorResponse).message : error.message;
 				this.success = false;
 				this.$store.commit('spinner/HIDE');
 			});

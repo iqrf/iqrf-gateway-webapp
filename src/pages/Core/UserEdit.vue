@@ -164,7 +164,7 @@ export default class UserEdit extends Vue {
 			value: UserLanguage.ENGLISH,
 			label: this.$t('core.user.languages.en'),
 		},
-	]
+	];
 
 	/**
 	 * @var {string} newPassword New user password

@@ -105,7 +105,7 @@ export default class NetworkOperators extends Vue {
 		edit: cilPencil,
 		delete: cilTrash,
 		apply: cilCopy,
-	}
+	};
 
 	/**
 	 * Retrieves operators
