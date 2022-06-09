@@ -17,8 +17,8 @@
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import CoreuiVue from '@coreui/vue/src';
-import * as Sentry from '@sentry/browser';
-import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';
+import * as Sentry from '@sentry/vue';
+import {BrowserTracing} from '@sentry/tracing';
 import Vue from 'vue';
 import VueMeta from 'vue-meta';
 import VueToast from 'vue-toast-notification';
@@ -55,12 +55,14 @@ if (version.pipeline !== '') {
 if (process.env.NODE_ENV === 'production') {
 	Sentry.init({
 		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
-		integrations: [new VueIntegration({
-			Vue: Vue,
-			attachProps: true,
-			logErrors: true,
-		})],
+		integrations: [
+			new BrowserTracing({
+				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+				tracingOrigins: ['localhost', window.location.hostname, /^\//],
+			}),
+		],
 		release: release,
+		tracesSampleRate: 1.0
 	});
 }
 

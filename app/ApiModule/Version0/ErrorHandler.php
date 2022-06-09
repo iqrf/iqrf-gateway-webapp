@@ -35,11 +35,11 @@ class ErrorHandler extends PsrLogErrorHandler {
 		if ($request->getMethod() === 'OPTIONS') {
 			return $response->withHeader('Access-Control-Allow-Origin', '*')
 				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, OPTIONS, DELETE')
-				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization')
+				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, sentry-trace, baggage')
 				->withHeader('Access-Control-Expose-Headers', '*');
 		}
 		return $response->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization')
+			->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, sentry-trace, baggage')
 			->withHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT')
 			->withHeader('Access-Control-Expose-Headers', '*');
 	}
