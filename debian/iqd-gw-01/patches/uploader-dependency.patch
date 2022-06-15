@@ -2,11 +2,11 @@ Adds dependency on IQRF Gateway Uploader
 --- a/debian/control
 +++ b/debian/control
 @@ -13,7 +13,7 @@
-
+ 
  Package: iqrf-gateway-webapp
  Architecture: all
 -Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl,
 +Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-gateway-uploader, openssl,
   php7.4-common, php7.4-cli, php7.4-fpm, php7.4-curl, php7.4-json,
   php7.4-mbstring, php7.4-sqlite3, php7.4-xml, php7.4-zip,
-  nginx | apache2, rabbitmq-server, sudo, wireguard, wireguard-tools
+  nginx | apache2, sudo, wireguard, wireguard-tools
