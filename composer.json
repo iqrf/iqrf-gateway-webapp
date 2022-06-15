@@ -70,6 +70,7 @@
 		"tracy/tracy": "^v2.9.1"
 	},
 	"require-dev": {
+		"cweagans/composer-patches": "^1.7.2",
 		"mockery/mockery": "^1.5.0",
 		"nette/tester": "^v2.4.2",
 		"ninjify/coding-standard": "^v0.12.1",
@@ -109,6 +110,14 @@
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
+	"extra": {
+		"composer-exit-on-patch-failure": true,
+		"patches": {
+			"contributte/psr7-http-message": {
+				"Remove self type hints from traits": "patches/contributte/psr7-http-message/0001-Remove-self-type-hints-from-traits.patch"
+			}
+		}
+	},
 	"config": {
 		"platform": {
 			"php": "7.4.0"
@@ -116,7 +125,8 @@
 		"sort-packages": true,
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"composer/package-versions-deprecated": true
+			"composer/package-versions-deprecated": true,
+			"cweagans/composer-patches": true
 		}
 	}
 }
