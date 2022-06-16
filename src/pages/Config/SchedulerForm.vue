@@ -649,9 +649,9 @@ export default class SchedulerForm extends Vue {
 
 	/**
 	 * Handles GetTask response from Daemon API
-	 * @param {any} response Task retrieved from Daemon API
+	 * @param response Task retrieved from Daemon API
 	 */
-	private handleGetTask(response: any): void {
+	private handleGetTask(response): void {
 		if (response.status !== 0) {
 			this.$router.push('/config/daemon/scheduler/');
 			this.$toast.error(
@@ -828,9 +828,9 @@ export default class SchedulerForm extends Vue {
 
 	/**
 	 * Handles Remove Task response from Daemon API
-	 * @param {any} response Daemon API response
+	 * @param response Daemon API response
 	 */
-	private handleRemoveTask(response: any): void {
+	private handleRemoveTask(response): void {
 		if (response.status !== 0) {
 			this.$toast.error(
 				this.$t('config.daemon.scheduler.messages.deleteFail').toString()
@@ -866,9 +866,9 @@ export default class SchedulerForm extends Vue {
 
 	/**
 	 * Handles Add task response from Daemon API
-	 * @param {any} response Daemon API response
+	 * @param response Daemon API response
 	 */
-	private handleAddTask(response: any): void {
+	private handleAddTask(response): void {
 		if (response.status === 0) {
 			this.successfulSave();
 		} else {

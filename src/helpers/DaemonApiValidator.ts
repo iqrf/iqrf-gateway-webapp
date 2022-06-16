@@ -14,10 +14,99 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
-import validate from './validate_daemonRequest';
+
+import Ajv, {ErrorObject, JSONSchemaType} from 'ajv';
 import i18n from '@/i18n';
 
+/**
+ * Daemon API request base
+ */
+interface IDaemonApiRequestBase {
+	/**
+	 * Message type
+	 */
+	mType: string
+
+	/**
+	 * Message data
+	 */
+	data: IDaemonApiRequestData
+}
+
+/**
+ * Daemon API request data
+ */
+interface IDaemonApiRequestData {
+	/**
+	 * Message ID
+	 */
+	msgId?: string|undefined
+
+	/**
+	 * Request parameters
+	 */
+	req?: Record<string, any>
+
+	/**
+	 * Verbose response
+	 */
+	returnVerbose?: boolean
+
+	/**
+	 * Transaction repeats
+	 */
+	repeat?: number
+
+	/**
+	 * Request timeout in milliseconds
+	 */
+	timeout?: number
+}
+
+/**
+ * Daemon API request schema definition
+ */
+const schema: JSONSchemaType<IDaemonApiRequestBase> = {
+	type: 'object',
+	required: [
+		'mType',
+		'data',
+	],
+	additionalProperties: false,
+	properties: {
+		mType: {type: 'string'},
+		data: {
+			type: 'object',
+			additionalProperties: false,
+			properties: {
+				msgId: {type: 'string', nullable: true},
+				req: {
+					type: 'object',
+					nullable: true,
+					properties: {
+						deviceAddr: {
+							nullable: true,
+							type: 'integer',
+							anyOf: [
+								{minimum: 0, maximum: 239},
+								{minimum: 255, maximum: 255},
+							],
+						},
+						nAdr: {type: 'integer', minimum: 0, maximum: 239, nullable: true},
+						hwpId: {type: 'integer', minimum: 0, maximum: 65535, nullable: true},
+					}
+				},
+				returnVerbose: {type: 'boolean', nullable: true},
+				repeat: {type: 'integer', minimum: 1, nullable: true},
+				timeout: {type: 'integer', minimum: 500, nullable: true},
+			}
+		}
+	}
+};
+
+/**
+ * Daemon API validator callback type declaration
+ */
 export interface DaemonApiValidatorCallback {
 	(errorMessages: Array<string>): void;
 }
@@ -28,16 +117,27 @@ export interface DaemonApiValidatorCallback {
 export default class DaemonApiValidator {
 
 	/**
+	 * @var {ValidateFunction<IDaemonApiRequestBase>} validator Validator
+	 */
+	private validator;
+
+	/**
+	 * @constant {Array<string>} keywords Whitelist of validated keywords
+	 */
+	private readonly keywords = [
+		'additionalProperties',
+		'maximum',
+		'minimum',
+		'required',
+		'type'
+	];
+
+	/**
 	 * Constructor
 	 */
 	constructor() {
-		this.validator = validate;
+		this.validator = new Ajv({allErrors: true}).compile<IDaemonApiRequestBase>(schema);
 	}
-
-	/**
-	 * @var validator JSON schema validator function
-	 */
-	private readonly validator: any = null;
 
 	/**
 	 * Validates the JSON against Daemon JSON API schema
@@ -45,7 +145,7 @@ export default class DaemonApiValidator {
 	 * @param {DaemonApiValidatorCallback} callback Callback for retrieving JSON schema violations
 	 * @return {boolean} Is the JSON valid?
 	 */
-	public validate(json: string, callback: DaemonApiValidatorCallback): boolean {
+	validate(json: string, callback: DaemonApiValidatorCallback): boolean {
 		let errors: Array<string> = [];
 		try {
 			const jsonObject = JSON.parse(json);
@@ -71,32 +171,34 @@ export default class DaemonApiValidator {
 	private buildViolationString(errors: Array<ErrorObject>): Array<string> {
 		const messages: Array<string> = [];
 		for (const error of errors) {
+			if (!this.keywords.includes(error.keyword)) {
+				continue;
+			}
 			let message = '';
 			if (error.keyword === 'type') {
 				message = i18n.t(
 					'iqrfnet.sendJson.violations.type',
 					{
-						property: error.dataPath,
+						property: error.instancePath,
 						message: error.message,
 						path: error.schemaPath,
-						type: (typeof error.data),
 					}
 				).toString();
 			} else if (error.keyword === 'additionalProperties') {
 				message = i18n.t(
 					'iqrfnet.sendJson.violations.additional',
 					{
-						object: error.dataPath,
+						object: error.instancePath,
 						message: error.message,
 						path: error.schemaPath,
-						property: (error.params as AdditionalPropertiesParams).additionalProperty,
+						property: (error.params as Record<string, any>).additionalProperty,
 					}
 				).toString();
 			} else if (error.keyword === 'required') {
 				message = i18n.t(
 					'iqrfnet.sendJson.violations.required',
 					{
-						object: (error.dataPath.length === 0 ? 'root' : error.dataPath),
+						object: (error.instancePath.length === 0 ? 'root' : error.instancePath),
 						message: error.message,
 						path: error.schemaPath,
 					}
@@ -105,14 +207,13 @@ export default class DaemonApiValidator {
 				message = i18n.t(
 					'iqrfnet.sendJson.violations.range',
 					{
-						property: error.dataPath,
+						property: error.instancePath,
 						message: error.message,
 						path: error.schemaPath,
-						value: error.data,
 					}
 				).toString();
 			}
-			messages.push(message.trimRight());
+			messages.push(message.trimEnd());
 		}
 		return messages;
 	}
