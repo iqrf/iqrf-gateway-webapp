@@ -22,6 +22,15 @@ namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
+use Apitte\Core\Http\ApiRequest;
+use Apitte\Core\Http\ApiResponse;
+use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
+use App\CloudModule\Models\IManager;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use GuzzleHttp\Exception\GuzzleException;
+use Nette\IOException;
 
 /**
  * Cloud manager controller
@@ -29,5 +38,42 @@ use Apitte\Core\Annotation\Controller\Tag;
  * @Tag("Clouds manager")
  */
 abstract class CloudsController extends BaseController {
+
+	/**
+	 * @var IManager Cloud manager
+	 */
+	protected IManager $manager;
+
+	/**
+	 * Checks REST API request
+	 * @param string $schema JSON schema for REST API request
+	 * @param ApiRequest $request API request to validate
+	 */
+	protected function checkRequest(string $schema, ApiRequest $request): void {
+		self::checkScopes($request, ['clouds']);
+		$this->validator->validateRequest($schema, $request);
+	}
+
+	/**
+	 * Creates a new MQTT connection into a specific cloud service
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$this->manager->createMqttInterface($request->getJsonBody());
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->writeBody('Workaround');
+		} catch (NonexistentJsonSchemaException $e) {
+			throw new ClientErrorException('Missing JSON schema', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (CannotCreateCertificateDirectoryException $e) {
+			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (GuzzleException $e) {
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
 
 }

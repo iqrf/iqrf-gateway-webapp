@@ -23,27 +23,17 @@ namespace App\ApiModule\Version0\Controllers\Cloud;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\CloudsController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Models\IbmCloudManager;
-use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use GuzzleHttp\Exception\GuzzleException;
-use Nette\IOException;
 
 /**
  * IBM Cloud IoT connection controller
  * @Path("/ibmCloud")
  */
 class IbmCloudController extends CloudsController {
-
-	/**
-	 * @var IbmCloudManager IBM Cloud IoT connection manager
-	 */
-	private IbmCloudManager $manager;
 
 	/**
 	 * Constructor
@@ -82,21 +72,8 @@ class IbmCloudController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['clouds']);
-		$this->validator->validateRequest('cloudIbm', $request);
-		try {
-			$this->manager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
-		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (GuzzleException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		$this->checkRequest('cloudIbm', $request);
+		return $this->create($request, $response);
 	}
 
 }

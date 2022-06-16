@@ -45,11 +45,6 @@ use RuntimeException;
 class AwsController extends CloudsController {
 
 	/**
-	 * @var AwsManager Amazon AWS IoT connection manager
-	 */
-	private AwsManager $manager;
-
-	/**
 	 * Constructor
 	 * @param AwsManager $manager Amazon AWS IoT connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
