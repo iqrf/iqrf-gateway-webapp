@@ -92,6 +92,8 @@ class AptManager {
 	/**
 	 * Writes APT configuration
 	 * @param array<string, string> $newConfig APT configuration to write
+	 * @throws AptErrorException
+	 * @throws AptNotFoundException
 	 */
 	public function write(array $newConfig): void {
 		$config = $this->read();

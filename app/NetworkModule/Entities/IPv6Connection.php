@@ -132,32 +132,24 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];
-		$gateway = array_key_exists('gateway', $array) ? ($array['gateway'] !== '' ? IPv6::factory($array['gateway']) : null) : null;
+		$gateway = array_key_exists('gateway', $array) && ($array['gateway'] !== '') ? IPv6::factory($array['gateway']) : null;
 		if ($array['addresses'] !== '') {
-			foreach (explode(',', $array['addresses']) as $address) {
-				$addresses[] = IPv6Address::fromPrefix($address);
-			}
+			$addresses = array_map(fn(string $address) => IPv6Address::fromPrefix($address), explode(',', $array['addresses']));
 		}
 		$dns = [];
 		if ($array['dns'] !== '') {
-			foreach (explode(',', $array['dns']) as $server) {
-				$dns[] = IPv6::factory($server);
-			}
+			$dns = array_map(fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP()) {
 			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
 			$currentAddresses = [];
-			$currentGateway = array_key_exists('gateway', $config) ? (($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null) : null;
+			$currentGateway = array_key_exists('gateway', $config) && ($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null;
 			if (array_key_exists('address', $config)) {
-				foreach ($config['address'] as $addr) {
-					$currentAddresses[] = IPv6Address::fromPrefix($addr);
-				}
+				$currentAddresses = array_map(fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), array_values($config['address']));
 			}
 			$currentDns = [];
 			if (array_key_exists('dns', $config)) {
-				foreach ($config['dns'] as $addr) {
-					$currentDns[] = IPv6::factory($addr);
-				}
+				$currentDns = array_map(fn(string $address): IPv6 => IPv6::factory($address), array_values($config['dns']));
 			}
 			$current = new IPv6Current($method, $currentAddresses, $currentGateway, $currentDns);
 		}

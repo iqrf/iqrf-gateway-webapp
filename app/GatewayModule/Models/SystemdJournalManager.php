@@ -70,6 +70,8 @@ class SystemdJournalManager {
 	/**
 	 * Retrieves systemd journal configuration
 	 * @return array{forwardToSyslog: bool, persistence: string, maxDiskSize: int, maxFiles: int, sizeRotation: array<string, int>, timeRotation: array<int|string>} Systemd journal configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
 	 */
 	public function getConfig(): array {
 		$conf = $this->getJournalConf();

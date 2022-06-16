@@ -23,7 +23,6 @@ namespace App\CloudModule\Models;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use DateTimeInterface;
 use GuzzleHttp\ClientInterface;
@@ -48,11 +47,6 @@ class AwsManager implements IManager {
 	private GenericManager $configManager;
 
 	/**
-	 * @var CertificateManager manager for certificates
-	 */
-	private CertificateManager $certManager;
-
-	/**
 	 * @var string Path to the certificates
 	 */
 	private string $certPath;
@@ -65,13 +59,11 @@ class AwsManager implements IManager {
 	/**
 	 * Constructor
 	 * @param string $certPath Path to the certificates
-	 * @param CertificateManager $certManager Manager for certificates
 	 * @param GenericManager $configManager Generic config manager
 	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, ClientInterface $client) {
+	public function __construct(string $certPath, GenericManager $configManager, ClientInterface $client) {
 		$this->certPath = $certPath;
-		$this->certManager = $certManager;
 		$this->client = $client;
 		$this->configManager = $configManager;
 	}
@@ -163,7 +155,8 @@ class AwsManager implements IManager {
 	 * @throws InvalidPrivateKeyForCertificateException
 	 */
 	public function checkCertificate(string $certificate, string $privateKey): void {
-		if (!$this->certManager->checkPrivateKey($certificate, $privateKey)) {
+		$key = openssl_pkey_get_private($privateKey, '');
+		if (!openssl_x509_check_private_key($certificate, $key)) {
 			throw new InvalidPrivateKeyForCertificateException();
 		}
 	}

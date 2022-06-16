@@ -14,7 +14,6 @@
 # limitations under the License.
 
 services:
-	- App\CoreModule\Models\CertificateManager
 	commandManager: App\CoreModule\Models\CommandManager(%sudo%)
 	featureManager: App\CoreModule\Models\FeatureManager(%confDir%/features.neon)
 	- App\CoreModule\Models\FileManager(%daemon.configDir%)

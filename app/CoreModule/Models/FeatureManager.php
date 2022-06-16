@@ -196,45 +196,11 @@ class FeatureManager {
 	}
 
 	/**
-	 * Checks if the feature has URL
-	 * @param string $name Feature name
-	 * @return bool Has the feature URL?
-	 */
-	public function hasUrl(string $name): bool {
-		$feature = $this->get($name);
-		return isset($feature['url']);
-	}
-
-	/**
 	 * Lists enabled features
 	 * @return array<string> Enabled features
 	 */
 	public function listEnabled(): array {
-		$features = $this->read();
-		$enabled = [];
-		foreach ($features as $feature => $configuration) {
-			if (!($configuration['enabled'] ?? false)) {
-				continue;
-			}
-			$enabled[] = $feature;
-		}
-		return $enabled;
-	}
-
-	/**
-	 * Lists URL of enabled features
-	 * @return array<string, string> Enabled features with URL
-	 */
-	public function listUrl(): array {
-		$features = $this->read();
-		$urls = [];
-		foreach ($features as $feature => $configuration) {
-			if ((!($configuration['enabled'] ?? false)) || !isset($configuration['url'])) {
-				continue;
-			}
-			$urls[$feature] = $configuration['url'];
-		}
-		return $urls;
+		return array_keys(array_filter($this->read(), fn (array $configuration): bool => ($configuration['enabled'] ?? false)));
 	}
 
 	/**
@@ -244,7 +210,7 @@ class FeatureManager {
 	 * @throws FeatureNotFoundException
 	 * @throws IOException
 	 */
-	public function setEnabled(array $names, bool $enabled = true): void {
+	public function setEnabled(array $names, bool $enabled): void {
 		$config = $this->read();
 		foreach ($names as $name) {
 			if (!array_key_exists($name, $config)) {

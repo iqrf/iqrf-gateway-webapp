@@ -28,7 +28,6 @@ namespace Tests\Integration\CloudModule\Models;
 
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;
-use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use DateTimeInterface;
 use GuzzleHttp\Client;
@@ -43,11 +42,6 @@ require __DIR__ . '/../../../bootstrap.php';
  * Tests for Amazon AWS IoT
  */
 final class AwsManagerTest extends CloudIntegrationTestCase {
-
-	/**
-	 * @var CertificateManager Certificate manager
-	 */
-	private CertificateManager $certManager;
 
 	/**
 	 * @var string Path to a directory with certificates and private keys
@@ -96,7 +90,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$client = new Client();
-		$manager = Mockery::mock(AwsManager::class, [$this->certPath, $this->certManager, $this->configManager, $client])->makePartial();
+		$manager = Mockery::mock(AwsManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$manager->shouldReceive('checkCertificate')->andReturn(null);
 		$manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
@@ -159,7 +153,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 */
 	public function testDownloadCaCertificate(): void {
 		$expected = 'aws-ca.crt';
-		$manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $this->mockHttpClient($expected));
+		$manager = new AwsManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPath . $expected));
 	}
@@ -169,9 +163,8 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 */
 	protected function setUp(): void {
 		$this->certPathReal = realpath(TESTER_DIR . '/data/certificates/') . '/';
-		$this->certManager = new CertificateManager();
 		$client = new Client();
-		$this->manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $client);
+		$this->manager = new AwsManager($this->certPath, $this->configManager, $client);
 		$this->formValues = array_merge($this->formValues, $this->mockUploadedFiles($this->certPathReal));
 	}
 

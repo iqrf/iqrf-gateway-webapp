@@ -71,6 +71,7 @@ class HostnameManager {
 	/**
 	 * Sets new gateway hostname
 	 * @param string $hostname Hostname to set
+	 * @throws HostnameException
 	 */
 	public function setHostname(string $hostname): void {
 		$old = $this->networkManager->getHostname();

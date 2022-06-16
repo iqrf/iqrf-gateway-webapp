@@ -91,7 +91,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$method = IPv4Methods::fromScalar($json->method);
 		$addresses = [];
 		foreach ($json->addresses as $address) {
-			if (($address->address !== '')) {
+			if ($address->address !== '') {
 				if (isset($address->prefix)) {
 					$addresses[] = new IPv4Address(IPv4::factory($address->address), $address->prefix);
 				} elseif (isset($address->mask)) {
@@ -136,33 +136,23 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];
 		if ($array['addresses'] !== '') {
-			foreach (explode(',', $array['addresses']) as $address) {
-				$addresses[] = IPv4Address::fromPrefix($address);
-			}
+			$addresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), explode(',', $array['addresses']));
 		}
 		$gateway = $array['gateway'] !== '' ? IPv4::factory($array['gateway']) : null;
 		$dns = [];
 		if ($array['dns'] !== '') {
-			foreach (explode(',', $array['dns']) as $server) {
-				$dns[] = IPv4::factory($server);
-			}
+			$dns = array_map(fn (string $address): IPv4 => IPv4::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv4Methods::AUTO()) {
 			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
-			$currentAddresses = [];
 			if (array_key_exists('address', $config)) {
-				foreach ($config['address'] as $addr) {
-					$currentAddresses[] = IPv4Address::fromPrefix($addr);
-				}
+				$currentAddresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), array_values($config['address']));
 			}
 			$currentGateway = array_key_exists('gateway', $config) ? IPv4::factory($config['gateway']) : null;
-			$currentDns = [];
 			if (array_key_exists('dns', $config)) {
-				foreach ($config['dns'] as $addr) {
-					$currentDns[] = IPv4::factory($addr);
-				}
+				$currentDns = array_map(fn (string $address): IPv4 => IPv4::factory($address), array_values($config['dns']));
 			}
-			$current = new IPv4Current($currentAddresses, $currentGateway, $currentDns);
+			$current = new IPv4Current($currentAddresses ?? [], $currentGateway, $currentDns ?? []);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}
