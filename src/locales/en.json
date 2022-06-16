@@ -1880,9 +1880,9 @@
 			},
 			"violations": {
 				"additional": "Additional property violation: Object {object} {message} ({path}). Additional property: {property}.\n",
-				"range": "Value range violation: Property: {property} {message} ({path}). Current value: {value}.\n",
+				"range": "Value range violation: Property: {property} {message} ({path})\n",
 				"required": "Required property violation: Object {object} {message} ({path}).\n",
-				"type": "Type violation: Property {property} {message} ({path}). Detected type: {type}.\n"
+				"type": "Type violation: Property {property} {message} ({path}).\n"
 			}
 		},
 		"sendPacket": {
