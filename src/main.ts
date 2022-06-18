@@ -122,6 +122,9 @@ axios.interceptors.response.use(
 			store.dispatch('user/signOut')
 				.then(() => {
 					router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
+					Vue.$toast.warning(
+						i18n.t('core.sign.out.expired').toString(),
+					);
 				});
 			return;
 		}
