@@ -1479,7 +1479,9 @@
 			"powerOff": "Power off",
 			"messages": {
 				"powerOffSuccess": "Your device will be powered off at {time}.",
-				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
+				"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
+				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
+				"rebootFailed": "Failed to schedule gateway reboot: {error}."
 			}
 		},
 		"user": {

@@ -38,10 +38,14 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
+
 import {cilPowerStandby, cilReload} from '@coreui/icons';
+import {extendedErrorToast} from '@/helpers/errorToast';
+
 import GatewayService from '@/services/GatewayService';
-import { MetaInfo } from 'vue-meta';
-import { AxiosResponse } from 'axios';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
@@ -77,6 +81,8 @@ export default class PowerControl extends Vue {
 				this.$toast.info(
 					this.$t('gateway.power.messages.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
+			).catch((error: AxiosError) =>
+				extendedErrorToast(error, 'gateway.power.messages.powerOffFailed')
 			);
 	}
 
@@ -89,6 +95,8 @@ export default class PowerControl extends Vue {
 				this.$toast.info(
 					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
+			).catch((error: AxiosError) =>
+				extendedErrorToast(error, 'gateway.power.messages.rebootFailed')
 			);
 	}
 
