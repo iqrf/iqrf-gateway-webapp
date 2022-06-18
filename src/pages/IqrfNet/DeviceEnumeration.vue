@@ -158,9 +158,9 @@ interface Product {
  */
 export default class DeviceEnumeration extends Vue {
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string} msgId Daemon API message ID
 	 */
-	private msgId: string|null = null;
+	private msgId = '';
 
 	/**
 	 * @var {OsData|null} osData Device OS information
@@ -202,45 +202,16 @@ export default class DeviceEnumeration extends Vue {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE' ||
-				mutation.payload.data.msgId !== this.msgId) {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
 			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-			const response = mutation.payload;
-			if (response.data.status !== 0) {
-				this.$router.push('/iqrfnet/network/');
-				this.$toast.error(
-					this.$t('iqrfnet.enumeration.messages.failure').toString()
-				);
-				return;
-			}
-			const data = response.data.rsp;
-			if (data) {
-				this.response = data;
-				this.peripheralData = data.peripheralEnumeration;
-				this.osData = data.osRead;
-				if (this.peripheralData === null) {
-					return;
-				}
-				const hwpId = this.peripheralData.hwpId;
-				if ((hwpId & 0xf) === 0xf) {
-					return;
-				}
-				ProductService.get(hwpId)
-					.then((response: AxiosResponse) => {
-						this.product = response.data;
-					})
-					.catch((error: AxiosError) => {
-						if (error.response !== undefined && error.response.status === 404) {
-							return;
-						}
-						this.$toast.error(
-							this.$t('iqrfnet.enumeration.messages.repositoryUnavailable')
-								.toString()
-						);
-					});
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				this.handleEnumerateResponse(mutation.payload.data);
 			}
 		});
 		if (this.$store.getters['daemonClient/isConnected']) {
@@ -272,8 +243,56 @@ export default class DeviceEnumeration extends Vue {
 	 */
 	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 300000});
-		IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+		IqrfNetService.enumerateDevice(this.address, 300000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = '')
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles device enumeration request response
+	 * @param response Response
+	 */
+	private handleEnumerateResponse(response): void {
+		if (response.status !== 0) {
+			this.$router.push('/iqrfnet/network/');
+			this.$toast.error(
+				this.$t('iqrfnet.enumeration.messages.failure').toString()
+			);
+			return;
+		}
+		const data = response.rsp;
+		if (data) {
+			this.response = data;
+			this.peripheralData = data.peripheralEnumeration;
+			this.osData = data.osRead;
+			if (this.peripheralData === null) {
+				return;
+			}
+			const hwpId = this.peripheralData.hwpId;
+			if ((hwpId & 0xf) === 0xf) {
+				return;
+			}
+			this.getProductInformation(hwpId);
+		}
+	}
+
+	/**
+	 * Retrieves product information from IQRF repository
+	 * @param {number} hwpId HW profile ID
+	 */
+	private getProductInformation(hwpId: number): void {
+		ProductService.get(hwpId)
+			.then((response: AxiosResponse) => {
+				this.product = response.data;
+			})
+			.catch((error: AxiosError) => {
+				if (error.response !== undefined && error.response.status === 404) {
+					return;
+				}
+				this.$toast.error(
+					this.$t('iqrfnet.enumeration.messages.repositoryUnavailable')
+						.toString()
+				);
+			});
 	}
 }
 </script>
