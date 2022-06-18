@@ -1321,7 +1321,8 @@
 			},
 			"out": {
 				"title": "Sign out",
-				"message": "You have been signed out."
+				"message": "You have been signed out.",
+				"expired": "Your sign-in session has expired. Please sign in again."
 			}
 		},
 		"supervisor": {

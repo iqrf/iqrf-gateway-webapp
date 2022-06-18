@@ -186,7 +186,8 @@ export default class Backup extends Vue {
 
 	mounted(): void {
 		VersionService.getWebappVersionRest()
-			.then((response: AxiosResponse) => this.webappVersion = response.data.version);
+			.then((response: AxiosResponse) => this.webappVersion = response.data.version)
+			.catch(() => this.webappVersion = '');
 		this.daemon236 = versionHigherEqual('2.3.6');
 	}
 
