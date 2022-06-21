@@ -21,9 +21,15 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\MainManager;
+use App\CoreModule\Entities\ICommand;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
+use App\IqrfNetModule\Exceptions\UploaderFileException;
+use App\IqrfNetModule\Exceptions\UploaderMissingException;
+use App\IqrfNetModule\Exceptions\UploaderSpiException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -34,34 +40,54 @@ use Nette\Utils\Strings;
 class UploadManager {
 
 	/**
+	 * IQRF Gateway Uploader command
+	 */
+	private const UPLOADER = 'iqrf-gateway-uploader';
+
+	/**
 	 * @var string Path to the directory for uploaded files
 	 */
 	private string $path = '/var/cache/iqrf-gateway-daemon/upload';
 
 	/**
-	 * Constructor
-	 * @param GenericManager $configManager Generic configuration manager
+	 * @var CommandManager Command manager
 	 */
-	public function __construct(GenericManager $configManager) {
+	private CommandManager $commandManager;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 * @param MainManager $mainManager Main daemon configuration manager
+	 */
+	public function __construct(CommandManager $commandManager, GenericManager $genericManager, MainManager $mainManager) {
+		$this->commandManager = $commandManager;
 		try {
-			$configManager->setComponent('iqrf::NativeUploadService');
-			$instances = $configManager->list();
-			if (isset($instances[0]['uploadPath'])) {
-				$this->path = $instances[0]['uploadPath'];
+			$cacheDir = $mainManager->getCacheDir();
+			if (!Strings::endsWith($cacheDir, '/')) {
+				$cacheDir .= '/';
 			}
+			$genericManager->setComponent('iqrf::OtaUploadService');
+			$instances = $genericManager->list();
+			if (isset($instances[0]['uploadPathSuffix'])) {
+				$uploadDir = $instances[0]['uploadPathSuffix'];
+			}
+			if (!isset($uploadDir) || $uploadDir === '') {
+				$uploadDir = 'upload';
+			}
+			$this->path = $cacheDir . $uploadDir;
 		} catch (JsonException | NonexistentJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
 		}
 	}
 
 	/**
-	 * Uploads the file into IQRF TR module
+	 * Uploads file to daemon cache directory
 	 * @param string $fileName $fileName
 	 * @param string $fileContent file content
 	 * @param UploadFormats|null $format File format
 	 * @return array{fileName: string, format: string} file name and file format
 	 */
-	public function uploadFile(string $fileName, string $fileContent, ?UploadFormats $format = null): array {
+	public function uploadToFs(string $fileName, string $fileContent, ?UploadFormats $format = null): array {
 		if ($format === null) {
 			$format = $this->recognizeFormat($fileName);
 		}
@@ -88,6 +114,47 @@ class UploadManager {
 			return UploadFormats::TRCNFG();
 		}
 		throw new UnknownFileFormatExceptions();
+	}
+
+	/**
+	 * Uploads plugin to transceiver via IQRF Gateway Uploader
+	 * @param string $name File name
+	 * @param string $type File type
+	 * @throws UploaderFileException
+	 * @throws UploaderMissingException
+	 * @throws UploaderSpiException
+	 */
+	public function uploadToTr(string $name, string $type): void {
+		if (!$this->commandManager->commandExist(self::UPLOADER)) {
+			throw new UploaderMissingException('IQRF Gateway Uploader is not installed.');
+		}
+		if ($type === 'OS') {
+			$fileName = str_replace(['(', ')'], ['\(', '\)'], $name);
+			$result = $this->commandManager->run(self::UPLOADER . ' -I ' . $this->path . '/' . $fileName, true);
+		} elseif ($type === 'DPA') {
+			$result = $this->commandManager->run(self::UPLOADER . ' -I ' . $this->path . '/' . $name, true);
+		} else {
+			$result = $this->commandManager->run(self::UPLOADER . ' -H ' . $this->path . '/' . $name, true);
+		}
+		if ($result->getExitCode() !== 0) {
+			$this->handleError($result);
+		}
+	}
+
+	/**
+	 * Handles IQRF Gateway Uploader errors
+	 * @param ICommand $result Command result
+	 * @throws UploaderFileException
+	 * @throws UploaderSpiException
+	 */
+	private function handleError(ICommand $result): void {
+		$command = $result->getCommand();
+		$exitCode = $result->getExitCode();
+		$errorMsg = $result->getStderr();
+		if ($exitCode >= 1 && $exitCode <= 5) {
+			throw new UploaderFileException($errorMsg . ' Command executed: ' . $command);
+		}
+		throw new UploaderSpiException($errorMsg . ' Command executed: ' . $command);
 	}
 
 }

@@ -22,5 +22,4 @@ services:
 	- App\IqrfNetModule\Models\IqrfOsManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\UploadManager
-	- App\IqrfNetModule\Models\UploadUtilManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)

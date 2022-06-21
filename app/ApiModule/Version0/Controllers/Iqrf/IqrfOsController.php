@@ -31,11 +31,7 @@ use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\IqrfNetModule\Exceptions\DpaFileNotFoundException;
 use App\IqrfNetModule\Exceptions\DpaRfMissingException;
-use App\IqrfNetModule\Exceptions\UploadUtilFileException;
-use App\IqrfNetModule\Exceptions\UploadUtilMissingException;
-use App\IqrfNetModule\Exceptions\UploadUtilSpiException;
 use App\IqrfNetModule\Models\IqrfOsManager;
-use App\IqrfNetModule\Models\UploadUtilManager;
 use GuzzleHttp\Exception\ClientException;
 use Nette\IOException;
 
@@ -51,19 +47,12 @@ class IqrfOsController extends IqrfController {
 	private IqrfOsManager $iqrfOsManager;
 
 	/**
-	 * @var UploadUtilManager IQRF Upload Utility manager
-	 */
-	private UploadUtilManager $uploadUtilManager;
-
-	/**
 	 * Constructor
 	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
-	 * @param UploadUtilManager $uploadUtilManager IQRF Upload Utility manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfOsManager $iqrfOsManager, UploadUtilManager $uploadUtilManager, RestApiSchemaValidator $validator) {
+	public function __construct(IqrfOsManager $iqrfOsManager, RestApiSchemaValidator $validator) {
 		$this->iqrfOsManager = $iqrfOsManager;
-		$this->uploadUtilManager = $uploadUtilManager;
 		parent::__construct($validator);
 	}
 
@@ -172,47 +161,6 @@ class IqrfOsController extends IqrfController {
 			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (ClientException $e) {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
-	/**
-	 * @Path("/uploader")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Executes upload using the IQRF Gateway Uploader
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UploaderFile'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('uploaderFile', $request);
-		try {
-			$data = $request->getJsonBody(false);
-			$this->uploadUtilManager->executeUpload($data->name, $data->type);
-			return $response->writeBody('Workaround');
-		} catch (UploadUtilFileException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (UploadUtilMissingException | UploadUtilSpiException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 

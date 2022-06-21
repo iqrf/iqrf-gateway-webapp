@@ -86,7 +86,7 @@ class DpaManager {
 				if (Strings::startsWith($file->getName(), $filePrefix)) {
 					$fileContent = $this->filesManager->download($file->getName());
 					$filePath = $file->getName();
-					$this->uploadManager->uploadFile($filePath, $fileContent);
+					$this->uploadManager->uploadToFs($filePath, $fileContent);
 					return $filePath;
 				}
 			}

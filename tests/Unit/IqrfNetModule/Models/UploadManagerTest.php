@@ -27,6 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\MainManager;
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\IqrfNetModule\Models\UploadManager;
 use Mockery;
 use Nette\Utils\FileSystem;
@@ -54,9 +57,14 @@ final class UploadManagerTest extends WebSocketTestCase {
 	];
 
 	/**
+	 * @var string Upload directory pathUpload directory name
+	 */
+	private const UPLOAD_DIR = '/upload/';
+
+	/**
 	 * @var string Upload directory path
 	 */
-	private const UPLOAD_PATH = TMP_DIR . '/upload/';
+	private const UPLOAD_PATH = TMP_DIR . self::UPLOAD_DIR;
 
 	/**
 	 * @var UploadManager IQRF TR upload manager
@@ -69,7 +77,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 	public function testUploadFileHex(): void {
 		$expected = ['fileName' => self::FILENAMES['hex'], 'format' => 'hex'];
 		$fileContent = FileSystem::read(self::DATA_PATH . self::FILENAMES['hex']);
-		$actual = $this->manager->uploadFile(self::FILENAMES['hex'], $fileContent);
+		$actual = $this->manager->uploadToFs(self::FILENAMES['hex'], $fileContent);
 		Assert::equal($expected, $actual);
 		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES['hex']));
 	}
@@ -80,7 +88,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 	public function testUploadFileIqrf(): void {
 		$expected = ['fileName' => self::FILENAMES['iqrf'], 'format' => 'iqrf'];
 		$fileContent = FileSystem::read(self::DATA_PATH . self::FILENAMES['iqrf']);
-		$actual = $this->manager->uploadFile(self::FILENAMES['iqrf'], $fileContent);
+		$actual = $this->manager->uploadToFs(self::FILENAMES['iqrf'], $fileContent);
 		Assert::equal($expected, $actual);
 		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES['iqrf']));
 	}
@@ -89,12 +97,17 @@ final class UploadManagerTest extends WebSocketTestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(true, $commandStack);
+		$mainManager = Mockery::mock(MainManager::class);
+		$mainManager->shouldReceive('getCacheDir')
+			->andReturn(TMP_DIR);
 		$configManager = Mockery::mock(GenericManager::class);
 		$configManager->shouldReceive('setComponent')
-			->with('iqrf::NativeUploadService');
+			->with('iqrf::OtaUploadService');
 		$configManager->shouldReceive('list')
-			->andReturn([['uploadPath' => self::UPLOAD_PATH]]);
-		$this->manager = new UploadManager($configManager);
+			->andReturn([['uploadPathSuffix' => self::UPLOAD_DIR]]);
+		$this->manager = new UploadManager($commandManager, $configManager, $mainManager);
 	}
 
 }

@@ -23,8 +23,8 @@ namespace App\IqrfNetModule\Exceptions;
 use Exception;
 
 /**
- * Exception indicating that file specified by user does not exist or is invalid
+ * Exception indicating that the IQRF Gateway Uploader is not installed
  */
-class UploadUtilFileException extends Exception {
+class UploaderMissingException extends Exception {
 
 }
