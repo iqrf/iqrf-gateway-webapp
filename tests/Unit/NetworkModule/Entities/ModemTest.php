@@ -27,7 +27,8 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\Modem;
-use Nette\Utils\ArrayHash;
+use App\NetworkModule\Enums\ModemStates;
+use stdClass;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -39,9 +40,44 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ModemTest extends TestCase {
 
 	/**
+	 * Manufacturer
+	 */
+	private const MANUFACTURER = 'manufacturer';
+
+	/**
+	 * Model
+	 */
+	private const MODEL = 'model';
+
+	/**
+	 * Equipment ID
+	 */
+	private const IMEI = 000000000000000;
+
+	/**
 	 * Network interface
 	 */
-	private const NETWORK_INTERFACE = 'cdc-wdm0';
+	private const NETWORK_INTERFACE = 'ttyUSB0';
+
+	/**
+	 * Connected state
+	 */
+	private const STATE = 'connected';
+
+	/**
+	 * Failed state
+	 */
+	private const FAILED_STATE = 'failed';
+
+	/**
+	 * Failed state reason
+	 */
+	private const ERROR = 'sim-missing';
+
+	/**
+	 * Network operator
+	 */
+	private const OPERATOR = 'operator';
 
 	/**
 	 * Signal strength
@@ -49,58 +85,136 @@ final class ModemTest extends TestCase {
 	private const SIGNAL = 75;
 
 	/**
+	 * Access technology
+	 */
+	private const TECHNOLOGY = 'edge';
+
+	/**
 	 * RSSI
 	 */
 	private const RSSI = -55.0;
 
 	/**
-	 * @var Modem Modem entity
+	 * Returns list of test data for testFromMmcliJson() method
+	 * @return array<array<array<stdClass>|Modem>> List of test data for testFromMmcliJson() method
 	 */
-	private $entity;
-
-	/**
-	 * Sets up the testing environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new Modem(self::NETWORK_INTERFACE, self::SIGNAL, self::RSSI);
+	public function getJsonToModemEntityData(): array {
+		return [
+			[
+				[
+					(object) [
+						'modem' => (object) [
+							'3gpp' => (object) [
+								'operator-name' => self::OPERATOR,
+							],
+							'generic' => (object) [
+								'manufacturer' => self::MANUFACTURER,
+								'model' => self::MODEL,
+								'equipment-identifier' => self::IMEI,
+								'primary-port' => self::NETWORK_INTERFACE,
+								'state' => self::STATE,
+								'signal-quality' => (object) [
+									'value' => self::SIGNAL,
+								],
+								'access-technologies' => [
+									'edge',
+								],
+							],
+						],
+					],
+					(object) [
+						'modem' => (object) [
+							'signal' => (object) [
+								'gsm' => (object) [
+									'rssi' => self::RSSI,
+								],
+							],
+						],
+					],
+				],
+				new Modem(self::MANUFACTURER, self::MODEL, self::IMEI, self::NETWORK_INTERFACE, ModemStates::fromScalar(self::STATE), null, self::OPERATOR, self::SIGNAL, self::TECHNOLOGY, self::RSSI),
+			],
+			[
+				[
+					(object) [
+						'modem' => (object) [
+							'generic' => (object) [
+								'manufacturer' => self::MANUFACTURER,
+								'model' => self::MODEL,
+								'equipment-identifier' => self::IMEI,
+								'primary-port' => self::NETWORK_INTERFACE,
+								'state' => self::FAILED_STATE,
+								'state-failed-reason' => self::ERROR,
+							],
+						],
+					],
+					(object) [
+						'modem' => (object) [
+							'signal' => (object) [
+								'gsm' => (object) [
+									'rssi' => self::RSSI,
+								],
+							],
+						],
+					],
+				],
+				new Modem(self::MANUFACTURER, self::MODEL, self::IMEI, self::NETWORK_INTERFACE, ModemStates::fromScalar(self::FAILED_STATE), self::ERROR),
+			],
+		];
 	}
 
 	/**
-	 * Tests the function to create a new Modem entity from mmcli JSON object
+	 * Returns list of test data for testJsonSerialize() method
+	 * @return array<array<Modem|array<string, float|int|string>>> List of test data for testJsonSerialize() method
 	 */
-	public function testFromMmcliJson(): void {
-		$modem = ArrayHash::from([
-			'modem' => [
-				'generic' => [
-					'primary-port' => self::NETWORK_INTERFACE,
-					'signal-quality' => [
-						'value' => self::SIGNAL,
-					],
+	public function getModemEntityToJsonData(): array {
+		return [
+			[
+				new Modem(self::MANUFACTURER, self::MODEL, self::IMEI, self::NETWORK_INTERFACE, ModemStates::fromScalar(self::STATE), null, self::OPERATOR, self::SIGNAL, self::TECHNOLOGY, self::RSSI),
+				[
+					'manufacturer' => self::MANUFACTURER,
+					'model' => self::MODEL,
+					'imei' => self::IMEI,
+					'interface' => self::NETWORK_INTERFACE,
+					'state' => self::STATE,
+					'operator' => self::OPERATOR,
+					'signal' => self::SIGNAL,
+					'technology' => self::TECHNOLOGY,
+					'rssi' => self::RSSI,
 				],
 			],
-		], true);
-		$rssi = ArrayHash::from([
-			'modem' => [
-				'signal' => [
-					'gsm' => [
-						'rssi' => self::RSSI,
-					],
+			[
+				new Modem(self::MANUFACTURER, self::MODEL, self::IMEI, self::NETWORK_INTERFACE, ModemStates::fromScalar(self::FAILED_STATE), self::ERROR),
+				[
+					'manufacturer' => self::MANUFACTURER,
+					'model' => self::MODEL,
+					'imei' => self::IMEI,
+					'interface' => self::NETWORK_INTERFACE,
+					'state' => self::FAILED_STATE,
+					'error' => self::ERROR,
 				],
 			],
-		], true);
-		Assert::equal($this->entity, Modem::fromMmcliJson($modem, $rssi));
+		];
+	}
+
+	/**
+	 * Tests the function deserialize JSON into Modem entity
+	 * @dataProvider getJsonToModemEntityData
+	 * @param array<stdClass> $data Modem JSON data
+	 * @param Modem $expected Expected Modem entity
+	 */
+	public function testFromMmcliJson(array $data, Modem $expected): void {
+		Assert::equal($expected, Modem::fromMmcliJson($data[0], $data[1]));
 	}
 
 	/**
 	 * Tests the function to serialize Modem entity to JSON
+	 * @dataProvider getModemEntityToJsonData
+	 * @param Modem $entity Modem entity
+	 * @param array<string, float|int|string> $expected Expected modem JSON
 	 */
-	public function testJsonSerialize(): void {
-		$expected = [
-			'interface' => self::NETWORK_INTERFACE,
-			'signal' => self::SIGNAL,
-			'rssi' => self::RSSI,
-		];
-		Assert::same($expected, $this->entity->jsonSerialize());
+	public function testJsonSerialize(Modem $entity, array $expected): void {
+		Assert::same($expected, $entity->jsonSerialize());
 	}
 
 }

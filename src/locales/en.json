@@ -2528,6 +2528,15 @@
 				"signal": "Signal strength",
 				"rssi": "RSSI"
 			},
+			"modem": {
+				"title": "Modems",
+				"product": "Product",
+				"imei": "IMEI",
+				"interface": "Device interface",
+				"state": "Operation state",
+				"operator": "Network operator",
+				"technology": "Access technology"
+			},
 			"form": {
 				"title": "GSM configuration",
 				"interface": "Select GSM interface",

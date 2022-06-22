@@ -17,6 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
+		<Modems :modems='modems' />
 		<CCard>
 			<div v-if='interfacesLoaded && noInterfaces'>
 				<CCardBody>
@@ -105,6 +106,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import Modems from '@/components/Network/Modems.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
@@ -125,6 +127,7 @@ import {IModem, NetworkConnection} from '@/interfaces/network';
 		CDataTable,
 		CIcon,
 		CProgress,
+		Modems,
 		NetworkOperators,
 	},
 	metaInfo: {

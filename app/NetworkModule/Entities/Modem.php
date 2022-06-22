@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
+use App\NetworkModule\Enums\ModemStates;
 use stdClass;
 
 /**
@@ -28,29 +29,78 @@ use stdClass;
 class Modem {
 
 	/**
+	 * @var string $manufacturer Modem manufacturer
+	 */
+	private $manufacturer;
+
+	/**
+	 * @var string $model Model and revision
+	 */
+	private $model;
+
+	/**
+	 * @var int $imei Equipment ID
+	 */
+	private $imei;
+
+	/**
 	 * @var string $interface Modem network interface
 	 */
 	private $interface;
 
 	/**
-	 * @var int $signal Signal strength
+	 * @var ModemStates $state Modem state
+	 */
+	private $state;
+
+	/**
+	 * @var string|null $error Error string
+	 */
+	private $error;
+
+	/**
+	 * @var string|null $operator Operator code
+	 */
+	private $operator;
+
+	/**
+	 * @var int|null $signal Signal strength
 	 */
 	private $signal;
 
 	/**
-	 * @var float $rssi RSSI
+	 * @var string|null $technology Access technology
+	 */
+	private $technology;
+
+	/**
+	 * @var float|null $rssi RSSI
 	 */
 	private $rssi;
 
 	/**
 	 * Constructor
-	 * @param string $interface Modem network interface
-	 * @param int $signal Signal strength
-	 * @param float $rssi RSSI
+	 * @param string $manufacturer Manufacturer
+	 * @param string $model Model
+	 * @param int $imei Equipment ID
+	 * @param string $interface Device interface
+	 * @param ModemStates $state Modem state
+	 * @param string|null $error Error string in failed state
+	 * @param string|null $operator Network operator
+	 * @param int|null $signal Signal strength
+	 * @param string|null $technology Access technology
+	 * @param float|null $rssi RSSI
 	 */
-	public function __construct(string $interface, int $signal, float $rssi) {
+	public function __construct(string $manufacturer, string $model, int $imei, string $interface, ModemStates $state, ?string $error = null, ?string $operator = null, ?int $signal = null, ?string $technology = null, ?float $rssi = null) {
+		$this->manufacturer = $manufacturer;
+		$this->model = $model;
+		$this->imei = $imei;
 		$this->interface = $interface;
+		$this->state = $state;
+		$this->error = $error;
+		$this->operator = $operator;
 		$this->signal = $signal;
+		$this->technology = $technology;
 		$this->rssi = $rssi;
 	}
 
@@ -61,10 +111,20 @@ class Modem {
 	 * @return Modem Modem entity
 	 */
 	public static function fromMmcliJson(stdClass $modem, stdClass $signal): self {
+		$manufacturer = $modem->modem->generic->manufacturer;
+		$model = $modem->modem->generic->model;
+		$imei = intval($modem->modem->generic->{'equipment-identifier'});
 		$interface = $modem->modem->generic->{'primary-port'};
-		$signalQuality = $modem->modem->generic->{'signal-quality'}->value;
-		$rssi = $signal->modem->signal->gsm->rssi;
-		return new self($interface, intval($signalQuality), floatval($rssi));
+		$state = ModemStates::fromScalar($modem->modem->generic->state);
+		if ($state === ModemStates::FAILED()) {
+			$error = $modem->modem->generic->{'state-failed-reason'};
+		} else {
+			$operator = $modem->modem->{'3gpp'}->{'operator-name'};
+			$signalQuality = intval($modem->modem->generic->{'signal-quality'}->value);
+			$technology = $modem->modem->generic->{'access-technologies'}[0];
+			$rssi = floatval($signal->modem->signal->gsm->rssi);
+		}
+		return new self($manufacturer, $model, $imei, $interface, $state, $error ?? null, $operator ?? null, $signalQuality ?? null, $technology ?? null, $rssi ?? null);
 	}
 
 	/**
@@ -72,11 +132,22 @@ class Modem {
 	 * @return array<string, int|float|string> JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$array = [
+			'manufacturer' => $this->manufacturer,
+			'model' => $this->model,
+			'imei' => $this->imei,
 			'interface' => $this->interface,
-			'signal' => $this->signal,
-			'rssi' => $this->rssi,
+			'state' => $this->state->jsonSerialize(),
 		];
+		if ($this->state === ModemStates::FAILED()) {
+			$array['error'] = $this->error;
+		} else {
+			$array['operator'] = $this->operator;
+			$array['signal'] = $this->signal;
+			$array['technology'] = $this->technology;
+			$array['rssi'] = $this->rssi;
+		}
+		return $array;
 	}
 
 }

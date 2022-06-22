@@ -217,19 +217,54 @@ export interface IWGAllowedIP {
  */
 export interface IModem {
 	/**
+	 * Manufacturer
+	 */
+	manufacturer: string
+
+	/**
+	 * Model
+	 */
+	model: string
+
+	/**
+	 * Equipment ID
+	 */
+	imei: number
+
+	/**
 	 * Interface name
 	 */
 	interface: string
 
 	/**
+	 * Modem state
+	 */
+	state: string
+
+	/**
+	 * Failed state string
+	 */
+	error?: string
+
+	/**
+	 * network operator
+	 */
+	operator?: number
+
+	/**
 	 * Signal strength
 	 */
-	signal: number
+	signal?: number
+
+	/**
+	 * Access technology
+	 */
+	technology?: string
 
 	/**
 	 * RSSI
 	 */
-	rssi: number
+	rssi?: number
 }
 
 /**
