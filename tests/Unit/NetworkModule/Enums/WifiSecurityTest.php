@@ -38,75 +38,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiSecurityTest extends TestCase {
 
 	/**
-	 * Tests the function for creating WiFi security enum - OWE
+	 * Returns list of test data for testFromNmCli() method
+	 * @return array<array<WifiSecurity|string>> List of test data for testFromNmCli() method
 	 */
-	public function testFromNmCliOwe(): void {
-		$expected = WifiSecurity::OWE();
-		Assert::equal($expected, WifiSecurity::fromNmCli('OWE'));
+	public function getFromNmCliData(): array {
+		return [
+			[WifiSecurity::OPEN(), ''],
+			[WifiSecurity::OWE(), 'OWE'],
+			[WifiSecurity::WEP(), 'WEP'],
+			[WifiSecurity::WPA_ENTERPRISE(), 'WPA 802.1X'],
+			[WifiSecurity::WPA_PERSONAL(), 'WPA'],
+			[WifiSecurity::WPA2_ENTERPRISE(), 'WPA2 802.1X'],
+			[WifiSecurity::WPA2_PERSONAL(), 'WPA2'],
+			[WifiSecurity::WPA3_ENTERPRISE(), 'WPA3 802.1X'],
+			[WifiSecurity::WPA3_PERSONAL(), 'WPA3'],
+		];
 	}
 
 	/**
-	 * Tests the function for creating WiFi security enum - WEP
+	 * Tests the function for creating WiFi security enum
+	 * @dataProvider getFromNmCliData
 	 */
-	public function testFromNmCliWep(): void {
-		$expected = WifiSecurity::WEP();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WEP'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA3-Enterprise
-	 */
-	public function testFromNmCliWpa3Enterprise(): void {
-		$expected = WifiSecurity::WPA3_ENTERPRISE();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA3 802.1X'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA3-Personal
-	 */
-	public function testFromNmCliWpa3Personal(): void {
-		$expected = WifiSecurity::WPA3_PERSONAL();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA3'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA2-Enterprise
-	 */
-	public function testFromNmCliWpa2Enterprise(): void {
-		$expected = WifiSecurity::WPA2_ENTERPRISE();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA2 802.1X'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA2-Personal
-	 */
-	public function testFromNmCliWpa2Personal(): void {
-		$expected = WifiSecurity::WPA2_PERSONAL();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA2'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA-Enterprise
-	 */
-	public function testFromNmCliWpaEnterprise(): void {
-		$expected = WifiSecurity::WPA_ENTERPRISE();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA 802.1X'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - WPA-Personal
-	 */
-	public function testFromNmCliWpaPersonal(): void {
-		$expected = WifiSecurity::WPA_PERSONAL();
-		Assert::equal($expected, WifiSecurity::fromNmCli('WPA'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi security enum - Open
-	 */
-	public function testFromNmCliOpen(): void {
-		$expected = WifiSecurity::OPEN();
-		Assert::equal($expected, WifiSecurity::fromNmCli(''));
+	public function testFromNmCli(WifiSecurity $expected, string $nmCli): void {
+		Assert::equal($expected, WifiSecurity::fromNmCli($nmCli));
 	}
 
 }
