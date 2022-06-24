@@ -65,27 +65,15 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return array<int, array<string, int|string>> Upgradable packages
+	 * @return array<array{name: string, oldVersion: string, newVersion: string}> Upgradable packages
 	 */
 	public function getUpgradable(): array {
 		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
-		$lines = explode(PHP_EOL, $stdout);
-		$packages = [];
-		$id = 0;
-		foreach ($lines as $line) {
-			[$name, $oldVersion, $newVersion] = sscanf($line, ' %s (%s => %s)');
-			if ($name === null || $oldVersion === null || $newVersion === null) {
-				continue;
-			}
-			$packages[] = [
-				'id' => $id,
-				'name' => (string) $name,
-				'oldVersion' => Strings::trim($oldVersion, '() '),
-				'newVersion' => Strings::trim($newVersion, '() '),
-			];
-			$id++;
-		}
-		return $packages;
+		return array_map(fn (array $result): array  => [
+			'name' => $result['name'],
+			'oldVersion' => $result['oldVersion'],
+			'newVersion' => $result['newVersion'],
+		], Strings::matchAll($stdout, '#^\s*\K(?P<name>.*) \((?P<oldVersion>.*) => (?P<newVersion>.*)\)$#m'));
 	}
 
 	/**
