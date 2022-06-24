@@ -35,29 +35,19 @@ class SystemDManager implements IServiceManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * @var string Name of service
-	 */
-	private string $serviceName = 'iqrf-gateway-daemon';
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param string|null $serviceName Service name
 	 */
-	public function __construct(CommandManager $commandManager, ?string $serviceName = null) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		if ($serviceName !== null) {
-			$this->serviceName = $serviceName;
-		}
 	}
 
 	/**
 	 * Disables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function disable(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
+	public function disable(string $serviceName): void {
 		$cmd = 'systemctl disable ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -68,11 +58,10 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Enables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function enable(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
+	public function enable(string $serviceName): void {
 		$cmd = 'systemctl enable ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -83,11 +72,11 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is active
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @return bool Is service active?
+	 * @throws NonexistentServiceException
 	 */
-	public function isActive(?string $serviceName = null): bool {
-		$serviceName ??= $this->serviceName;
+	public function isActive(string $serviceName): bool {
 		$cmd = 'systemctl is-active ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() === 4) {
@@ -98,12 +87,11 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Checks if the service is enabled
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @return bool Is service enabled?
 	 * @throws NonexistentServiceException
 	 */
-	public function isEnabled(?string $serviceName = null): bool {
-		$serviceName ??= $this->serviceName;
+	public function isEnabled(string $serviceName): bool {
 		$cmd = 'systemctl is-enabled ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() === 1 &&
@@ -115,11 +103,10 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Starts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function start(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
+	public function start(string $serviceName): void {
 		$cmd = 'systemctl start ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -129,11 +116,10 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Stops the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function stop(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
+	public function stop(string $serviceName): void {
 		$cmd = 'systemctl stop ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -143,11 +129,10 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function restart(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
+	public function restart(string $serviceName): void {
 		$cmd = 'systemctl restart ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -157,12 +142,11 @@ class SystemDManager implements IServiceManager {
 
 	/**
 	 * Returns status of the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @return string Service status
 	 * @throws NonexistentServiceException
 	 */
-	public function getStatus(?string $serviceName = null): string {
-		$serviceName ??= $this->serviceName;
+	public function getStatus(string $serviceName): string {
 		$cmd = 'systemctl status ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() === 4) {

@@ -58,85 +58,85 @@ class ServiceManager {
 
 	/**
 	 * Disables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(?string $serviceName = null): void {
+	public function disable(string $serviceName): void {
 		$this->initDaemon->disable($serviceName);
 	}
 
 	/**
 	 * Enables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(?string $serviceName = null): void {
+	public function enable(string $serviceName): void {
 		$this->initDaemon->enable($serviceName);
 	}
 
 	/**
 	 * Checks if the service is active
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function isActive(?string $serviceName = null): bool {
+	public function isActive(string $serviceName): bool {
 		return $this->initDaemon->isActive($serviceName);
 	}
 
 	/**
 	 * Checks if the service is enabled
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function isEnabled(?string $serviceName = null): bool {
+	public function isEnabled(string $serviceName): bool {
 		return $this->initDaemon->isEnabled($serviceName);
 	}
 
 	/**
 	 * Starts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(?string $serviceName = null): void {
+	public function start(string $serviceName): void {
 		$this->initDaemon->start($serviceName);
 	}
 
 	/**
 	 * Stops the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(?string $serviceName = null): void {
+	public function stop(string $serviceName): void {
 		$this->initDaemon->stop($serviceName);
 	}
 
 	/**
 	 * Restarts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function restart(?string $serviceName = null): void {
+	public function restart(string $serviceName): void {
 		$this->initDaemon->restart($serviceName);
 	}
 
 	/**
 	 * Returns status of the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @return string Service status
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function getStatus(?string $serviceName = null): string {
+	public function getStatus(string $serviceName): string {
 		return $this->initDaemon->getStatus($serviceName);
 	}
 

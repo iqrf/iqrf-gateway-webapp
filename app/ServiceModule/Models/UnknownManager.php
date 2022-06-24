@@ -29,73 +29,73 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Disables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(?string $serviceName = null): void {
+	public function disable(string $serviceName): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Enables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(?string $serviceName = null): void {
+	public function enable(string $serviceName): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Checks if the service is active
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function isActive(?string $serviceName = null): bool {
+	public function isActive(string $serviceName): bool {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Checks if the service is enabled
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function isEnabled(?string $serviceName = null): bool {
+	public function isEnabled(string $serviceName): bool {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Starts IQRF Gateway Daemon
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(?string $serviceName = null): void {
+	public function start(string $serviceName): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Stops the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(?string $serviceName = null): void {
+	public function stop(string $serviceName): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Restarts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function restart(?string $serviceName = null): void {
+	public function restart(string $serviceName): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Returns status of the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function getStatus(?string $serviceName = null): string {
+	public function getStatus(string $serviceName): string {
 		throw new UnsupportedInitSystemException();
 	}
 

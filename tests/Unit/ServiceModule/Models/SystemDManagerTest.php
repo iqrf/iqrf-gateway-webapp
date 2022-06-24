@@ -65,7 +65,7 @@ final class SystemDManagerTest extends CommandTestCase {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
-			$this->manager->disable();
+			$this->manager->disable(self::DAEMON_SERVICE_NAME);
 		});
 	}
 
@@ -93,7 +93,7 @@ final class SystemDManagerTest extends CommandTestCase {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
-			$this->manager->enable();
+			$this->manager->enable(self::DAEMON_SERVICE_NAME);
 		});
 	}
 
@@ -115,7 +115,7 @@ final class SystemDManagerTest extends CommandTestCase {
 	public function testIsActive(): void {
 		$command = 'systemctl is-active ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, 'active');
-		Assert::true($this->manager->isActive());
+		Assert::true($this->manager->isActive(self::DAEMON_SERVICE_NAME));
 	}
 
 	/**
@@ -133,7 +133,7 @@ final class SystemDManagerTest extends CommandTestCase {
 	public function testIsEnabled(): void {
 		$command = 'systemctl is-enabled ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, 'enabled');
-		Assert::true($this->manager->isEnabled());
+		Assert::true($this->manager->isEnabled(self::DAEMON_SERVICE_NAME));
 	}
 
 	/**
@@ -155,7 +155,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$command = 'systemctl start ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
-			$this->manager->start();
+			$this->manager->start(self::DAEMON_SERVICE_NAME);
 		});
 	}
 
@@ -178,7 +178,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$command = 'systemctl stop ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
-			$this->manager->stop();
+			$this->manager->stop(self::DAEMON_SERVICE_NAME);
 		});
 	}
 
@@ -201,7 +201,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$command = 'systemctl restart ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
-			$this->manager->restart();
+			$this->manager->restart(self::DAEMON_SERVICE_NAME);
 		});
 	}
 
@@ -224,7 +224,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$expected = 'status';
 		$command = 'systemctl status ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->getStatus());
+		Assert::same($expected, $this->manager->getStatus(self::DAEMON_SERVICE_NAME));
 	}
 
 	/**
@@ -244,7 +244,7 @@ final class SystemDManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new SystemDManager($this->commandManager, 'iqrf-gateway-daemon');
+		$this->manager = new SystemDManager($this->commandManager);
 	}
 
 }
