@@ -73,7 +73,7 @@ class IbmCloudController extends CloudsController {
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudIbm', $request);
-		return $this->create($request, $response);
+		return parent::create($request, $response);
 	}
 
 }

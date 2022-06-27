@@ -76,7 +76,7 @@ class AzureController extends CloudsController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudAzure', $request);
 		try {
-			return $this->create($request, $response);
+			return parent::create($request, $response);
 		} catch (InvalidConnectionStringException $e) {
 			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST, $e);
 		}
