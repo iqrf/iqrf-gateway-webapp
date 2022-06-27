@@ -26,6 +26,7 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
@@ -185,6 +186,7 @@ class User implements JsonSerializable {
 		$this->setRole($role ?? self::ROLE_DEFAULT);
 		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
 		$this->setState($state ?? self::STATE_DEFAULT);
+		$this->verifications = new ArrayCollection();
 	}
 
 	/**
