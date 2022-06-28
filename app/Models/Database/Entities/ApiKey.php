@@ -44,9 +44,9 @@ class ApiKey implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string|null API key
+	 * @var string API key
 	 */
-	private ?string $key;
+	private string $key;
 
 	/**
 	 * @var string API key hash
@@ -88,9 +88,9 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Returns API key
-	 * @return string|null API key
+	 * @return string API key
 	 */
-	public function getKey(): ?string {
+	public function getKey(): string {
 		return $this->salt . '.' . $this->key;
 	}
 
@@ -187,7 +187,7 @@ class ApiKey implements JsonSerializable {
 			'description' => $this->getDescription(),
 			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
 		];
-		if ($this->key !== null) {
+		if (isset($this->key)) {
 			$array['key'] = $this->getKey();
 		}
 		return $array;
