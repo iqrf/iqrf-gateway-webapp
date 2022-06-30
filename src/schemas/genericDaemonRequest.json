@@ -7,65 +7,62 @@
 		"mType",
 		"data"
 	],
+	"additionalProperties": false,
 	"properties": {
 		"mType": {
 			"$id": "#/properties/mType",
-			"type": "string",
-			"title": "Request type",
-			"example": "iqrfRaw"
+			"type": "string"
 		},
 		"data": {
 			"$id": "#/properties/data",
 			"type": "object",
-			"title": "Request data",
-			"required": [
-				"req"
-			],
+			"additionalProperties": false,
 			"properties": {
 				"msgId": {
 					"$id": "#/properties/data/msgId",
-					"type": "string",
-					"title": "Request message ID",
-					"example": "testMessageId"
+					"type": "string"
 				},
 				"req": {
 					"$id": "#/properties/data/req",
 					"type": "object",
-					"title": "Request values",
 					"properties": {
+						"deviceAddr": {
+							"$id": "#/properties/data/req/deviceAddr",
+							"type": "integer",
+							"anyOf": [
+								{"minimum": 0, "maximum": 239},
+								{"const": 255}
+							]
+						},
 						"nAdr": {
 							"$id": "#/properties/data/req/nAdr",
 							"type": "integer",
-							"title": "Device address",
 							"minimum": 0,
-							"maximum": 239,
-							"example": 0
+							"maximum": 239
+						},
+						"hwpId": {
+							"$id": "#/properties/data/req/hwpId",
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 65535
 						}
 					}
 				},
 				"returnVerbose": {
 					"$id": "#/properties/data/returnVerbose",
-					"type": "boolean",
-					"title": "Verbose response",
-					"example": true
-				},
-				"timeout": {
-					"$id": "#/properties/data/timeout",
-					"type": "integer",
-					"title": "Request timeout in milliseconds",
-					"minimum": 500,
-					"example": 1000
+					"type": "boolean"
 				},
 				"repeat": {
 					"$id": "#/properties/data/repeat",
 					"type": "integer",
-					"title": "Repeat request",
-					"minimum": 1,
-					"example": 1
+					"minimum": 1
+				},
+				"timeout": {
+					"$id": "#/properties/data/timeout",
+					"type": "integer",
+					"minimum": 500
 				}
-			},
-			"additionalProperties": false
+			}
 		}
-	},
-	"additionalProperties": false
+	}
 }

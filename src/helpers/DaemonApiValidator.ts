@@ -15,94 +15,9 @@
  * limitations under the License.
  */
 
-import Ajv, {ErrorObject, JSONSchemaType} from 'ajv';
+import {ErrorObject} from 'ajv';
 import i18n from '@/i18n';
-
-/**
- * Daemon API request base
- */
-interface IDaemonApiRequestBase {
-	/**
-	 * Message type
-	 */
-	mType: string
-
-	/**
-	 * Message data
-	 */
-	data: IDaemonApiRequestData
-}
-
-/**
- * Daemon API request data
- */
-interface IDaemonApiRequestData {
-	/**
-	 * Message ID
-	 */
-	msgId?: string|undefined
-
-	/**
-	 * Request parameters
-	 */
-	req?: Record<string, any>
-
-	/**
-	 * Verbose response
-	 */
-	returnVerbose?: boolean
-
-	/**
-	 * Transaction repeats
-	 */
-	repeat?: number
-
-	/**
-	 * Request timeout in milliseconds
-	 */
-	timeout?: number
-}
-
-/**
- * Daemon API request schema definition
- */
-const schema: JSONSchemaType<IDaemonApiRequestBase> = {
-	type: 'object',
-	required: [
-		'mType',
-		'data',
-	],
-	additionalProperties: false,
-	properties: {
-		mType: {type: 'string'},
-		data: {
-			type: 'object',
-			additionalProperties: false,
-			properties: {
-				msgId: {type: 'string', nullable: true},
-				req: {
-					type: 'object',
-					nullable: true,
-					properties: {
-						deviceAddr: {
-							nullable: true,
-							type: 'integer',
-							anyOf: [
-								{minimum: 0, maximum: 239},
-								{minimum: 255, maximum: 255},
-							],
-						},
-						nAdr: {type: 'integer', minimum: 0, maximum: 239, nullable: true},
-						hwpId: {type: 'integer', minimum: 0, maximum: 65535, nullable: true},
-					}
-				},
-				returnVerbose: {type: 'boolean', nullable: true},
-				repeat: {type: 'integer', minimum: 1, nullable: true},
-				timeout: {type: 'integer', minimum: 500, nullable: true},
-			}
-		}
-	}
-};
+import validate20 from '@/schemas/functions/genericDaemonRequest.js';
 
 /**
  * Daemon API validator callback type declaration
@@ -136,7 +51,7 @@ export default class DaemonApiValidator {
 	 * Constructor
 	 */
 	constructor() {
-		this.validator = new Ajv({allErrors: true}).compile<IDaemonApiRequestBase>(schema);
+		this.validator = validate20;
 	}
 
 	/**
