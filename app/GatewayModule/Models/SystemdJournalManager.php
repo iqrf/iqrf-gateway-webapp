@@ -20,10 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
+use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use stdClass;
 
@@ -45,17 +46,25 @@ class SystemdJournalManager {
 	];
 
 	/**
-	 * @var string $confPath Path to systemd journald conf file
+	 * @var string $confFile Journald conf file name
 	 */
-	private $confPath;
+	private $confFile;
+
+	/**
+	 * @var PrivilegedFileManager $fileManager File manager
+	 */
+	private $fileManager;
 
 	/**
 	 * Constructor
+	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(FeatureManager $featureManager) {
+	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
 		$feature = $featureManager->get('systemdJournal');
-		$this->confPath = $feature['path'];
+		$path = $feature['path'];
+		$this->confFile = basename($path);
+		$this->fileManager = new PrivilegedFileManager(dirname($path), $commandManager);
 	}
 
 	/**
@@ -162,20 +171,22 @@ class SystemdJournalManager {
 	 * @param stdClass $newConf New systemd journal configuration
 	 */
 	public function saveConfig(stdClass $newConf): void {
-		if (!file_exists($this->confPath)) {
+		if (!$this->fileManager->exists($this->confFile)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
 		$conf = [
 			'Journal' => [
 				'ForwardToSyslog' => $newConf->forwardToSyslog ? 'yes' : 'no',
 				'Storage' => $newConf->persistence,
-				'MaxTimeSec' => strval($newConf->timeRotation->count) . $newConf->timeRotation->unit,
+				'MaxFileSec' => strval($newConf->timeRotation->count) . $newConf->timeRotation->unit,
 				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : strval($newConf->maxDiskSize) . 'M',
 				'SystemMaxFiles' => strval($newConf->maxFiles),
-				'SystemMaxFileSize' => $newConf->sizeRotation->maxFileSize === 0 ? '' : strval($newConf->sizeRotation->maxFileSize) . 'M',
 			],
 		];
-		FileSystem::write($this->confPath, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
+		if ($newConf->sizeRotation->maxFileSize !== 0) {
+			$conf['Journal']['SystemMaxFileSize'] = strval($newConf->sizeRotation->maxFileSize) . 'M';
+		}
+		$this->fileManager->write($this->confFile, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
 	}
 
 	/**
@@ -183,10 +194,10 @@ class SystemdJournalManager {
 	 * @return array<string, array<string, mixed>> Systemd journal configuration
 	 */
 	private function getJournalConf(): array {
-		if (!file_exists($this->confPath)) {
+		if (!$this->fileManager->exists($this->confFile)) {
 			throw new ConfNotFoundException('Configuration file not found.');
 		}
-		$conf = Strings::replace(FileSystem::read($this->confPath), [
+		$conf = Strings::replace($this->fileManager->read($this->confFile), [
 			'/^#/' => ';',
 			'/\\n#/' => PHP_EOL . ';',
 			'/\(/' => '"("',
