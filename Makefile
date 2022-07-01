@@ -146,6 +146,7 @@ install:
 	patch $(DATA_DIR)/app/Kernel.php install/patches/kernel-fix-dir-paths.patch
 	patch $(CONFIG_DIR)/doctrine.neon install/patches/nettrine-fix-db-path.patch
 	patch $(DATA_DIR)/app/GatewayModule/Models/DiagnosticsManager.php install/patches/diagnostics-fix-dir-path.patch
+	patch -d $(VENDOR_DIR)/contributte/psr7-http-message -p1 < patches/contributte/psr7-http-message/0001-Remove-self-type-hints-from-traits.patch
 
 lint: deps
 	vendor/bin/linter app bin tests
