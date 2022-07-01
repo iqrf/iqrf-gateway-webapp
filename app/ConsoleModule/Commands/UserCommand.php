@@ -36,12 +36,12 @@ abstract class UserCommand extends Command {
 	/**
 	 * @var UserRepository User database repository
 	 */
-	protected $repository;
+	protected UserRepository $repository;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	protected $entityManager;
+	protected EntityManager $entityManager;
 
 	/**
 	 * Constructor

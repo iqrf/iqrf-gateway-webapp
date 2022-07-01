@@ -33,19 +33,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IqrfOsPatchImportCommand extends Command {
 
 	/**
-	 * Path to directory with IQRF OS patches
+	 * @var string Path to directory with IQRF OS patches
 	 */
 	private const DIR_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'iqrf-os:import-patches';
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * Constructor

@@ -31,17 +31,17 @@ class AutoConnect implements INetworkManagerEntity {
 	/**
 	 * @var bool AutoConnect enablement
 	 */
-	private $enabled;
+	private bool $enabled;
 
 	/**
 	 * @var int Connection priority
 	 */
-	private $priority;
+	private int $priority;
 
 	/**
 	 * @var int Connection retries
 	 */
-	private $retries;
+	private int $retries;
 
 	/**
 	 * Constructor
@@ -66,7 +66,7 @@ class AutoConnect implements INetworkManagerEntity {
 
 	/**
 	 * Serializes the automatic connecting entity into JSON
-	 * @return array<string, bool|int> JSON serialized entity
+	 * @return array{enabled: bool, priority: int, retries: int} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

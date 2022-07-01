@@ -32,7 +32,7 @@ use Nette\Utils\FileSystem;
 class MenderBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * @var array<string> List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'mender.conf',
@@ -40,7 +40,7 @@ class MenderBackup implements IBackupManager {
 	];
 
 	/**
-	 * Service names
+	 * @var array<string> Service names
 	 */
 	public const SERVICES = [
 		'mender-client',
@@ -48,29 +48,29 @@ class MenderBackup implements IBackupManager {
 	];
 
 	/**
-	 * Path to Mender configuration directory
+	 * @var string Path to Mender configuration directory
 	 */
 	private const CONF_PATH = '/etc/mender/';
 
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private $featureEnabled;
+	private bool $featureEnabled;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -38,22 +38,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AutoConnectTest extends TestCase {
 
 	/**
-	 * Is automatic connecting enabled?
+	 * @var bool Is automatic connecting enabled?
 	 */
 	private const ENABLED = true;
 
 	/**
-	 * Connection priority
+	 * @var int Connection priority
 	 */
 	private const PRIORITY = 0;
 
 	/**
-	 * Connection retries
+	 * @var int Connection retries
 	 */
 	private const RETRIES = -1;
 
 	/**
-	 * JSON serialized entity
+	 * @var array<string, bool|int> JSON serialized entity
 	 */
 	private const JSON = [
 		'enabled' => self::ENABLED,
@@ -64,7 +64,7 @@ final class AutoConnectTest extends TestCase {
 	/**
 	 * @var AutoConnect Automatic connecting entity
 	 */
-	private $entity;
+	private AutoConnect $entity;
 
 	/**
 	 * Sets up the test environment

@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Attributes;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ID attribute
  */
@@ -27,11 +29,11 @@ trait TId {
 
 	/**
 	 * @var int|null ID
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 * @ORM\Id
 	 * @ORM\GeneratedValue
 	 */
-	private $id;
+	private ?int $id = null;
 
 	/**
 	 * Returns ID

@@ -32,29 +32,29 @@ use Nette\Utils\Strings;
 class HostnameManager {
 
 	/**
-	 * Hosts file name
+	 * @var string Hosts file name
 	 */
 	private const HOSTS_FILE = 'hosts';
 
 	/**
-	 * Hostname file name
+	 * @var string Hostname file name
 	 */
 	private const HOSTNAME_FILE = 'hostname';
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var IFileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
 	 * @var NetworkManager Network manager
 	 */
-	private $networkManager;
+	private NetworkManager $networkManager;
 
 	/**
 	 * Constructor
@@ -71,6 +71,7 @@ class HostnameManager {
 	/**
 	 * Sets new gateway hostname
 	 * @param string $hostname Hostname to set
+	 * @throws HostnameException
 	 */
 	public function setHostname(string $hostname): void {
 		$old = $this->networkManager->getHostname();

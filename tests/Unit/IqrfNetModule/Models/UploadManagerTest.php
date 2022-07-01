@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\UploadManager
  * @covers App\IqrfNetModule\Models\UploadManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,12 +41,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class UploadManagerTest extends WebSocketTestCase {
 
 	/**
-	 * Data dir path
+	 * @var string Data dir path
 	 */
 	private const DATA_PATH = TESTER_DIR . '/data/upload/';
 
 	/**
-	 * File names
+	 * @var array<string, string> File names
 	 */
 	private const FILENAMES = [
 		'hex' => 'CustomDpaHandler-Coordinator-FRCandSleep-7xD-V403-190612.hex',
@@ -54,14 +54,14 @@ final class UploadManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * Upload directory path
+	 * @var string Upload directory path
 	 */
 	private const UPLOAD_PATH = TMP_DIR . '/upload/';
 
 	/**
 	 * @var UploadManager IQRF TR upload manager
 	 */
-	private $manager;
+	private UploadManager $manager;
 
 	/**
 	 * Tests the function to upload the file into IQRF TR module (HEX file format)

@@ -32,39 +32,39 @@ use stdClass;
 class Eap implements INetworkManagerEntity {
 
 	/**
-	 * nmcli 802-1x prefix
+	 * @var string nmcli 802-1x prefix
 	 */
 	private const NMCLI_PREFIX = '802-1x';
 
 	/**
 	 * @var EapPhaseOneMethod|null EAP phase one authentication method
 	 */
-	private $phaseOne;
+	private ?EapPhaseOneMethod $phaseOne;
 
 	/**
 	 * @var EapPhaseTwoMethod|null EAP phase two authentication method
 	 */
-	private $phaseTwo;
+	private ?EapPhaseTwoMethod $phaseTwo;
 
 	/**
 	 * @var string EAP anonymous identity string
 	 */
-	private $anonymousIdentity;
+	private string $anonymousIdentity;
 
 	/**
 	 * @var string EAP CA certificate
 	 */
-	private $cert;
+	private string $cert;
 
 	/**
 	 * @var string EAP identity string
 	 */
-	private $identity;
+	private string $identity;
 
 	/**
 	 * @var string EAP password
 	 */
-	private $password;
+	private string $password;
 
 	/**
 	 * Constructor
@@ -102,7 +102,7 @@ class Eap implements INetworkManagerEntity {
 
 	/**
 	 * Serializes EAP entity into JSON
-	 * @return array<string, string|null> JSON serialized data
+	 * @return array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

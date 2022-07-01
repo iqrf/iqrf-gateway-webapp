@@ -49,7 +49,7 @@ class BackupController extends BaseController{
 	/**
 	 * @var BackupManager Backup manager
 	 */
-	private $manager;
+	private BackupManager $manager;
 
 	/**
 	 * Constructor

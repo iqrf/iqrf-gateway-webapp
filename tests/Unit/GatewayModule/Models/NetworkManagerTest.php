@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\NetworkManager
  * @covers App\GatewayModule\Models\NetworkManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,10 +40,10 @@ final class NetworkManagerTest extends CommandTestCase {
 	/**
 	 * @var NetworkManager Network manager with mocked command manager
 	 */
-	private $manager;
+	private NetworkManager $manager;
 
 	/**
-	 * Executed commands
+	 * @var array<string, string> Executed commands
 	 */
 	private const COMMANDS = [
 		'hostname' => 'hostname -f',

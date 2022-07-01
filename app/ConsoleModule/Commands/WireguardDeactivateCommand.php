@@ -33,6 +33,7 @@ class WireguardDeactivateCommand extends WireguardCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'wireguard:deactivate';
 
@@ -68,7 +69,7 @@ class WireguardDeactivateCommand extends WireguardCommand {
 			return Command::SUCCESS;
 		}
 		if (!$this->manager->deleteTunnel($tunnel)) {
-			$style->error('An error has occured while deactivating WiregGuard tunnel ' . $tunnelName);
+			$style->error('An error has occurred while deactivating WiregGuard tunnel ' . $tunnelName);
 			return Command::FAILURE;
 		}
 		$style->success('WireGuard tunnel ' . $tunnelName . ' has been deactivated.');

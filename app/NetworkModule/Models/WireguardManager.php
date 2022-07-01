@@ -48,49 +48,49 @@ use stdClass;
 class WireguardManager {
 
 	/**
-	 * WireGuard temporary directory
+	 * @var string WireGuard temporary directory
 	 */
 	private const TMP_DIR = '/tmp/wireguard/';
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * @var WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
-	private $wireguardInterfaceIpv4Repository;
+	private WireguardInterfaceIpv4Repository $wireguardInterfaceIpv4Repository;
 
 	/**
 	 * @var WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
-	private $wireguardInterfaceIpv6Repository;
+	private WireguardInterfaceIpv6Repository $wireguardInterfaceIpv6Repository;
 
 	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
-	private $wireguardInterfaceRepository;
+	private WireguardInterfaceRepository $wireguardInterfaceRepository;
 
 	/**
 	 * @var WireguardPeerAddressRepository WireGuard peer address repository
 	 */
-	private $wireguardPeerAddressRepository;
+	private WireguardPeerAddressRepository $wireguardPeerAddressRepository;
 
 	/**
 	 * @var WireguardPeerRepository WireGuard peer repository
 	 */
-	private $wireguardPeerRepository;
+	private WireguardPeerRepository $wireguardPeerRepository;
 
 	/**
 	 * Constructor
@@ -114,14 +114,12 @@ class WireguardManager {
 	 * @return array<int, array<string, bool|int|string|null>> List of WireGuard interfaces
 	 */
 	public function listInterfaces(): array {
-		return array_map(function (WireguardInterface $interface): array {
-			return [
-				'id' => $interface->getId(),
-				'name' => $interface->getName(),
-				'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
-				'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
-			];
-		}, $this->wireguardInterfaceRepository->findAll());
+		return array_map(fn (WireguardInterface $interface): array  => [
+			'id' => $interface->getId(),
+			'name' => $interface->getName(),
+			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
+			'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
+		], $this->wireguardInterfaceRepository->findAll());
 	}
 
 	/**
@@ -186,7 +184,7 @@ class WireguardManager {
 				if (!($ifPeer instanceof WireguardPeer)) {
 					throw new NonexistentWireguardTunnelException('WireGuard peer not found');
 				}
-				if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
+				if (ip2long($peer->endpoint) !== false && function_exists('dns_get_record')) {
 					$this->validateEndpoint($peer->endpoint);
 				}
 				$this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer, 4);
@@ -243,7 +241,7 @@ class WireguardManager {
 	 */
 	public function validateEndpoint(string $endpoint): void {
 		$matches = dns_get_record($endpoint, DNS_A + DNS_AAAA);
-		if ($matches === false || count($matches) === 0) {
+		if ($matches === false || $matches === []) {
 			throw new WireguardInvalidEndpointException('No DNS record found for ' . $endpoint);
 		}
 	}
@@ -320,7 +318,7 @@ class WireguardManager {
 
 	/**
 	 * Generates WireGuard keypair
-	 * @return array<string, string> New key pair
+	 * @return array{privateKey: string, publicKey: string} New key pair
 	 */
 	public function generateKeys(): array {
 		$privateKey = $this->generatePrivateKey();

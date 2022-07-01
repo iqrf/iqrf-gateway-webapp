@@ -38,37 +38,37 @@ final class IPv6Methods extends Enum {
 	use AutoInstances;
 
 	/**
-	 * IPv6 configuration should be automatically determined via a method appropriate for the hardware interface, ie router advertisements, DHCP, or PPP or some other device-specific manner
+	 * @var string IPv6 configuration should be automatically determined via a method appropriate for the hardware interface, ie router advertisements, DHCP, or PPP or some other device-specific manner
 	 */
 	private const AUTO = 'auto';
 
 	/**
-	 * IPv6 is disabled for the configuration
+	 * @var string IPv6 is disabled for the configuration
 	 */
 	private const DISABLED = 'disabled';
 
 	/**
-	 * IPv6 configuration should be automatically determined via DHCPv6 only and router advertisements should be ignored
+	 * @var string IPv6 configuration should be automatically determined via DHCPv6 only and router advertisements should be ignored
 	 */
 	private const DHCP = 'dhcp';
 
 	/**
-	 * IPv6 is not required or is handled by some other mechanism, and NetworkManager should not configure IPv6 for this connection
+	 * @var string IPv6 is not required or is handled by some other mechanism, and NetworkManager should not configure IPv6 for this connection
 	 */
 	private const IGNORE = 'ignore';
 
 	/**
-	 * IPv6 configuration should be automatically configured for link-local-only operation
+	 * @var string IPv6 configuration should be automatically configured for link-local-only operation
 	 */
 	private const LINK_LOCAL = 'link-local';
 
 	/**
-	 * All necessary IPv6 configuration is specified in the setting
+	 * @var string All necessary IPv6 configuration is specified in the setting
 	 */
 	private const MANUAL = 'manual';
 
 	/**
-	 * This connection specifies configuration that allows other computers to connect through it to the default network
+	 * @var string This connection specifies configuration that allows other computers to connect through it to the default network
 	 */
 	private const SHARED = 'shared';
 

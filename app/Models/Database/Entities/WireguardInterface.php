@@ -38,39 +38,39 @@ class WireguardInterface implements JsonSerializable {
 
 	/**
 	 * @var string Interface name
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string Interface private key
-	 * @ORM\Column(type="string", length=255, nullable=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
-	private $privateKey;
+	private string $privateKey;
 
 	/**
 	 * @var int|null Interface listen port
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $port;
+	private ?int $port;
 
 	/**
-	 * @var WireguardInterfaceIpv4 Interface IPv4 address
+	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
 	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv4", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $ipv4;
+	private ?WireguardInterfaceIpv4 $ipv4 = null;
 
 	/**
-	 * @var WireguardInterfaceIpv6 Interface IPv6 address
+	 * @var WireguardInterfaceIpv6|null Interface IPv6 address
 	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv6", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $ipv6;
+	private ?WireguardInterfaceIpv6 $ipv6 = null;
 
 	/**
 	 * @var Collection<int, WireguardPeer> Interface peer IDs
 	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $peers;
+	private Collection $peers;
 
 	/**
 	 * Constructor
@@ -207,9 +207,7 @@ class WireguardInterface implements JsonSerializable {
 			'name' => $this->getName(),
 			'privateKey' => $this->getPrivateKey(),
 			'port' => $this->getPort(),
-			'peers' => array_map(function (WireguardPeer $peer): array {
-				return $peer->jsonSerialize();
-			}, $this->getPeers()->toArray()),
+			'peers' => array_map(fn (WireguardPeer $peer): array => $peer->jsonSerialize(), $this->getPeers()->toArray()),
 		];
 		if ($this->getIpv4() !== null) {
 			$array['ipv4'] = $this->getIpv4()->jsonSerialize();

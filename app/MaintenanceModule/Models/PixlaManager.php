@@ -32,10 +32,10 @@ class PixlaManager {
 	/**
 	 * @var FileManager File manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
-	 * File containing PIXLA token
+	 * @var string File containing PIXLA token
 	 */
 	private const FILE_NAME = 'customer_id';
 

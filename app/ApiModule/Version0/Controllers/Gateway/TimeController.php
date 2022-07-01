@@ -42,7 +42,7 @@ class TimeController extends GatewayController {
 	/**
 	 * @var TimeManager Time manager
 	 */
-	private $manager;
+	private TimeManager $manager;
 
 	/**
 	 * Constructor

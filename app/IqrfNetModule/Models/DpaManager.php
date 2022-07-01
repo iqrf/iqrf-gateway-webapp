@@ -34,17 +34,17 @@ class DpaManager {
 	/**
 	 * @var FilesManager Files manager
 	 */
-	private $filesManager;
+	private FilesManager $filesManager;
 
 	/**
 	 * @var OsAndDpaManager IQRF Repository OS&DPA manager
 	 */
-	private $osDpaManager;
+	private OsAndDpaManager $osDpaManager;
 
 	/**
 	 * @var UploadManager Upload manager
 	 */
-	private $uploadManager;
+	private UploadManager $uploadManager;
 
 	/**
 	 * Constructor

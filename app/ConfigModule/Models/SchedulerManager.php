@@ -39,17 +39,17 @@ class SchedulerManager {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var SchedulerSchemaManager Scheduler JSON schema manager
 	 */
-	private $schemaManager;
+	private SchedulerSchemaManager $schemaManager;
 
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
-	private $timeManager;
+	private TaskTimeManager $timeManager;
 
 	/**
 	 * Constructor
@@ -177,9 +177,7 @@ class SchedulerManager {
 	 * @return string Message types used in tasks
 	 */
 	private function getTaskMessageTypes(array $tasks): string {
-		$mTypes = array_map(function (stdClass $task): string {
-			return $task->message->mType;
-		}, $tasks);
+		$mTypes = array_map(fn (stdClass $task): string => $task->message->mType, $tasks);
 		return implode(', ', $mTypes);
 	}
 

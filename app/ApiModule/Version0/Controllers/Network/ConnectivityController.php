@@ -40,7 +40,7 @@ class ConnectivityController extends NetworkController {
 	/**
 	 * @var ConnectivityManager Network connectivity manager
 	 */
-	private $manager;
+	private ConnectivityManager $manager;
 
 	/**
 	 * Constructor

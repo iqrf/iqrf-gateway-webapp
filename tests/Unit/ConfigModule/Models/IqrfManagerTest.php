@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\IqrfManager
  * @covers App\ConfigModule\Models\IqrfManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,7 +40,7 @@ final class IqrfManagerTest extends CommandTestCase {
 	/**
 	 * @var IqrfManager IQRF interface manager
 	 */
-	private $manager;
+	private IqrfManager $manager;
 
 	/**
 	 * Tests the function to get list of USB CDC interfaces available in the system

@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Wireguard interface address entity
+ * WireGuard interface address entity
  * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceIpv6Repository")
  * @ORM\Table(name="`wireguard_interface_ipv6s`")
  * @ORM\HasLifecycleCallbacks()
@@ -38,22 +38,22 @@ class WireguardInterfaceIpv6 implements JsonSerializable {
 
 	/**
 	 * @var IP Interface address
-	 * @ORM\Column(type="ip", nullable=false)
+	 * @ORM\Column(type="ip")
 	 */
-	private $address;
+	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
-	 * @var WireguardInterface
+	 * @var WireguardInterface WireGuard interface
 	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv6")
-	 * @ORM\JoinColumn(name="interface_id", referencedColumnName="id")
+	 * @ORM\JoinColumn(name="interface_id")
 	 */
-	private $interface;
+	private WireguardInterface $interface;
 
 	/**
 	 * Constructor
@@ -67,16 +67,16 @@ class WireguardInterfaceIpv6 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard interface IPv6 address
-	 * @return MultiAddress Wireguard interface IPv6 address
+	 * Returns WireGuard interface IPv6 address
+	 * @return MultiAddress WireGuard interface IPv6 address
 	 */
 	public function getAddress(): MultiAddress {
 		return new MultiAddress($this->address, $this->prefix);
 	}
 
 	/**
-	 * Sets new Wireguard interface IPv6 address and prefix
-	 * @param MultiAddress $address Wireguard interface IPv6 address
+	 * Sets new WireGuard interface IPv6 address and prefix
+	 * @param MultiAddress $address WireGuard interface IPv6 address
 	 */
 	public function setAddress(MultiAddress $address): void {
 		$this->address = $address->getAddress();
@@ -84,24 +84,24 @@ class WireguardInterfaceIpv6 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard interface this address belongs to
-	 * @return WireguardInterface Wireguard interface
+	 * Returns WireGuard interface this address belongs to
+	 * @return WireguardInterface WireGuard interface
 	 */
 	public function getInterface(): WireguardInterface {
 		return $this->interface;
 	}
 
 	/**
-	 * Sets Wireguard interface reference
-	 * @param WireguardInterface $interface Wireguard interface
+	 * Sets WireGuard interface reference
+	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function setInterface(WireguardInterface $interface): void {
 		$this->interface = $interface;
 	}
 
 	/**
-	 * Serializes Wireguard interface IPv6 address to JSON
-	 * @return array<string, int|string> JSON serialized Wireguard interface IPv6 address
+	 * Serializes WireGuard interface IPv6 address to JSON
+	 * @return array{id: int|null, address: string, prefix: int} JSON serialized WireGuard interface IPv6 address
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -112,8 +112,8 @@ class WireguardInterfaceIpv6 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns string representation of Wireguard interface IPv6 address
-	 * @return string Wireguard interface IPv6 string
+	 * Returns string representation of WireGuard interface IPv6 address
+	 * @return string WireGuard interface IPv6 string
 	 */
 	public function toString(): string {
 		return $this->getAddress()->toString();

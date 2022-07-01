@@ -33,7 +33,7 @@ use Nette\Utils\Strings;
 class DaemonBackup implements IBackupManager {
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'iqrf-gateway-daemon',
@@ -42,22 +42,22 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
 	 */
-	private $daemonDirectories;
+	private DaemonDirectories $daemonDirectories;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

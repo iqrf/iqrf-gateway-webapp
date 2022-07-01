@@ -35,6 +35,7 @@ class UserRemoveAllCommand extends UserCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'user:remove-all';
 
@@ -93,9 +94,7 @@ class UserRemoveAllCommand extends UserCommand {
 		if ($users === []) {
 			return null;
 		}
-		return implode(', ', array_map(function (User $user): string {
-			return $user->getUserName();
-		}, $users));
+		return implode(', ', array_map(fn (User $user): string => $user->getUserName(), $users));
 	}
 
 	/**

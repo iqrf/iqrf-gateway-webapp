@@ -31,12 +31,12 @@ class FileManager implements IFileManager {
 	/**
 	 * @var string Directory with files
 	 */
-	private $directory;
+	private string $directory;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * Constructor

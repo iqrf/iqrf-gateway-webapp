@@ -23,6 +23,9 @@ namespace App\ConfigModule\Models;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
+use Nette\Schema\Elements\Structure;
+use Nette\Schema\Expect;
+use Nette\Schema\Processor;
 use Nette\Utils\FileSystem;
 
 /**
@@ -31,25 +34,28 @@ use Nette\Utils\FileSystem;
 class IqrfRepositoryManager {
 
 	/**
-	 * Default configuration
+	 * Returns configuration file schema
+	 * @return Structure Configuration file schema
 	 */
-	private const DEFAULT_CONFIG = [
-		'apiEndpoint' => 'https://repository.iqrfalliance.org/api',
-		'credentials' => [
-			'username' => null,
-			'password' => null,
-		],
-	];
+	private function getSchema(): Structure {
+		return Expect::structure([
+			'apiEndpoint' => Expect::string('https://repository.iqrfalliance.org/api'),
+			'credentials' => Expect::structure([
+				'username' => Expect::type('string|null')->default(null),
+				'password' => Expect::type('string|null')->default(null),
+			])->castTo('array'),
+		])->castTo('array');
+	}
 
 	/**
-	 * Extension name
+	 * @var string Extension name
 	 */
 	private const EXTENSION_NAME = 'iqrfRepository';
 
 	/**
 	 * @var string Path to configuration file
 	 */
-	private $confPath;
+	private string $confPath;
 
 	/**
 	 * Constructor
@@ -75,10 +81,11 @@ class IqrfRepositoryManager {
 	public function readConfig(): array {
 		try {
 			$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
-			return array_replace_recursive(self::DEFAULT_CONFIG, $content);
 		} catch (IOException | NeonException $e) {
-			return self::DEFAULT_CONFIG;
+			$content = [];
 		}
+		$processor = new Processor();
+		return $processor->process($this->getSchema(), $content);
 	}
 
 }

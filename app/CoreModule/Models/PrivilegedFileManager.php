@@ -32,12 +32,12 @@ class PrivilegedFileManager implements IFileManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var string Directory path
 	 */
-	private $directory;
+	private string $directory;
 
 	/**
 	 * Constructor

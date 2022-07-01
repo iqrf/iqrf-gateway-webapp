@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PasswordManager
  * @covers App\GatewayModule\Models\PasswordManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,19 +42,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PasswordManagerTest extends CommandTestCase {
 
 	/**
-	 * Password change command
+	 * @var string Password change command
 	 */
 	private const COMMAND = 'chpasswd';
 
 	/**
-	 * Root user and password to change
+	 * @var string Root user and password to change
 	 */
 	private const ARGUMENT = 'root:testpass';
 
 	/**
 	 * @var PasswordManager Root manager
 	 */
-	private $manager;
+	private PasswordManager $manager;
 
 	/**
 	 * Sets up the test environment

@@ -1,0 +1,7 @@
+{
+	"gwProduct": "IQD-GW-02A",
+	"gwManufacturer": "MICRORISC s.r.o.",
+	"gwId": "0123456789ABCDEF",
+	"gwHost": "iqube-0123456789abcdef.local",
+	"gwInterface": "spi"
+}

@@ -43,7 +43,7 @@ class IqrfRepositoryController extends BaseConfigController {
 	/**
 	 * @var IqrfRepositoryManager IQRF Repository manager
 	 */
-	private $manager;
+	private IqrfRepositoryManager $manager;
 
 	/**
 	 * Constructor

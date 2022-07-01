@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\UnknownManager
  * @covers App\ServiceModule\Models\UnknownManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,14 +41,19 @@ final class UnknownManagerTest extends TestCase {
 	/**
 	 * @var UnknownManager Service manager for unknown init daemon
 	 */
-	private $manager;
+	private UnknownManager $manager;
+
+	/**
+	 * @var string Name of service
+	 */
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testDisable(): void {
 		Assert::exception(function (): void {
-			$this->manager->disable();
+			$this->manager->disable(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -57,7 +62,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testEnable(): void {
 		Assert::exception(function (): void {
-			$this->manager->enable();
+			$this->manager->enable(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -66,7 +71,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testIsActive(): void {
 		Assert::exception(function (): void {
-			$this->manager->isActive();
+			$this->manager->isActive(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -75,7 +80,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testIsEnabled(): void {
 		Assert::exception(function (): void {
-			$this->manager->isEnabled();
+			$this->manager->isEnabled(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -84,7 +89,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testStart(): void {
 		Assert::exception(function (): void {
-			$this->manager->start();
+			$this->manager->start(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -93,7 +98,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testStop(): void {
 		Assert::exception(function (): void {
-			$this->manager->stop();
+			$this->manager->stop(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -102,7 +107,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testRestart(): void {
 		Assert::exception(function (): void {
-			$this->manager->restart();
+			$this->manager->restart(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -111,7 +116,7 @@ final class UnknownManagerTest extends TestCase {
 	 */
 	public function testGetStatus(): void {
 		Assert::exception(function (): void {
-			$this->manager->getStatus();
+			$this->manager->getStatus(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 

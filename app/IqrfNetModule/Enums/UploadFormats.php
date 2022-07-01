@@ -34,17 +34,17 @@ final class UploadFormats extends Enum {
 	use AutoInstances;
 
 	/**
-	 * HEX format
+	 * @var string HEX format
 	 */
 	private const HEX = 'hex';
 
 	/**
-	 * IQRF format
+	 * @var string IQRF format
 	 */
 	private const IQRF = 'iqrf';
 
 	/**
-	 * TRCNFG format
+	 * @var string TRCNFG format
 	 */
 	private const TRCNFG = 'trcnfg';
 

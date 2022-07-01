@@ -30,17 +30,17 @@ class Modem {
 	/**
 	 * @var string $interface Modem network interface
 	 */
-	private $interface;
+	private string $interface;
 
 	/**
 	 * @var int $signal Signal strength
 	 */
-	private $signal;
+	private int $signal;
 
 	/**
 	 * @var float $rssi RSSI
 	 */
-	private $rssi;
+	private float $rssi;
 
 	/**
 	 * Constructor
@@ -62,14 +62,14 @@ class Modem {
 	 */
 	public static function fromMmcliJson(stdClass $modem, stdClass $signal): self {
 		$interface = $modem->modem->generic->{'primary-port'};
-		$signalQuality = $modem->modem->generic->{'signal-quality'}->value;
-		$rssi = $signal->modem->signal->gsm->rssi;
-		return new self($interface, intval($signalQuality), floatval($rssi));
+		$signalQuality = (int) $modem->modem->generic->{'signal-quality'}->value;
+		$rssi = (float) $signal->modem->signal->gsm->rssi;
+		return new self($interface, $signalQuality, $rssi);
 	}
 
 	/**
 	 * Serializes the Modem entity to json
-	 * @return array<string, int|float|string> JSON serialized entity
+	 * @return array{interface: string, signal: int, rssi: float} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

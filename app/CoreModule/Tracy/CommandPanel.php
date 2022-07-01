@@ -31,7 +31,7 @@ class CommandPanel implements IBarPanel {
 	/**
 	 * @var CommandStack Command stack
 	 */
-	protected $stack;
+	protected CommandStack $stack;
 
 	/**
 	 * Constructor

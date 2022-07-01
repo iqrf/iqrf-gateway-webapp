@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\VersionManager
  * @covers App\GatewayModule\Models\VersionManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,10 +51,10 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * @var VersionManager Version manager
 	 */
-	private $manager;
+	private VersionManager $manager;
 
 	/**
-	 * IQRF Gateway Daemon's API request
+	 * @var array<string, array<string, bool>|string> IQRF Gateway Daemon's API request
 	 */
 	private const DAEMON_API_REQUEST = [
 		'mType' => 'mngDaemon_Version',
@@ -62,72 +62,72 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * IQRF Gateway Controller's version
+	 * @var string IQRF Gateway Controller's version
 	 */
 	private const CONTROLLER_VERSION = '0.3.4';
 
 	/**
-	 * IQRF Gateway Controller's version command
+	 * @var string IQRF Gateway Controller's version command
 	 */
 	private const CONTROLLER_VERSION_CMD = 'iqrf-gateway-controller --version';
 
 	/**
-	 * IQRF Gateway Daemon's version
+	 * @var string IQRF Gateway Daemon's version
 	 */
 	private const OLD_DAEMON_VERSION = 'v2.1.0';
 
 	/**
-	 * IQRF Gateway Daemon's version command
+	 * @var string IQRF Gateway Daemon's version command
 	 */
 	private const OLD_DAEMON_VERSION_CMD = 'iqrfgd2 version';
 
 	/**
-	 * IQRF Gateway Daemon's version with build time
+	 * @var string IQRF Gateway Daemon's version with build time
 	 */
 	private const OLD_DAEMON_VERSION_FULL = 'v2.1.0 2019-06-12T20:44:25';
 
 	/**
-	 * IQRF Gateway Daemon's version
+	 * @var string IQRF Gateway Daemon's version
 	 */
 	private const NEW_DAEMON_VERSION = 'v2.5.0-alpha';
 
 	/**
-	 * IQRF Gateway Daemon's version command
+	 * @var string IQRF Gateway Daemon's version command
 	 */
 	private const NEW_DAEMON_VERSION_CMD = 'iqrfgd2 --version';
 
 	/**
-	 * IQRF Gateway Daemon's version string
+	 * @var string IQRF Gateway Daemon's version string
 	 */
 	private const NEW_DAEMON_VERSION_STR = 'IQRF Gateway Daemon v2.5.0-alpha';
 
 	/**
-	 * IQRF Gateway Setter's version
+	 * @var string IQRF Gateway Setter's version
 	 */
 	private const SETTER_VERSION = 'v1.0.0';
 
 	/**
-	 * IQRF Gateway Setter's version command
+	 * @var string IQRF Gateway Setter's version command
 	 */
 	private const SETTER_VERSION_CMD = 'iqrf-gateway-setter --version';
 
 	/**
-	 * IQRF Gateway Setter's version string
+	 * @var string IQRF Gateway Setter's version string
 	 */
 	private const SETTER_VERSION_STR = 'IQRF Gateway Setter v1.0.0';
 
 	/**
-	 * IQRF Gateway Uploader's version
+	 * @var string IQRF Gateway Uploader's version
 	 */
 	private const UPLOADER_VERSION = 'v1.0.0';
 
 	/**
-	 * IQRF Gateway Uploader's version command
+	 * @var string IQRF Gateway Uploader's version command
 	 */
 	private const UPLOADER_VERSION_CMD = 'iqrf-gateway-uploader --version';
 
 	/**
-	 * IQRF Gateway Webapp's version
+	 * @var string IQRF Gateway Webapp's version
 	 */
 	private const WEBAPP_VERSION = 'v2.5.0-alpha';
 

@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\WireguardInterface
  * @covers App\Models\Database\Entities\WireguardInterface
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,44 +39,44 @@ use Tester\TestCase;
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for wireguard interface entity
+ * Tests for WireGuard interface entity
  */
 class WireguardInterfaceTest extends TestCase {
 
 	/**
-	 * Wireguard interface name
+	 * @var string WireGuard interface name
 	 */
 	private const NAME = 'wg0';
 
 	/**
-	 * Wireguard interface private key
+	 * @var string WireGuard interface private key
 	 */
 	private const PRIVATE_KEY = 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=';
 
 	/**
-	 * Wireguard interface listen port
+	 * @var int WireGuard interface listen port
 	 */
 	private const PORT = 51775;
 
 	/**
 	 * @var WireguardInterfaceIpv4 IPv4 address entity
 	 */
-	private $ipv4Entity;
+	private WireguardInterfaceIpv4 $ipv4Entity;
 
 	/**
 	 * @var WireguardInterfaceIpv6 IPv6 address entity
 	 */
-	private $ipv6Entity;
+	private WireguardInterfaceIpv6 $ipv6Entity;
 
 	/**
-	 * @var WireguardPeer Wireguard peer entity
+	 * @var WireguardPeer WireGuard peer entity
 	 */
-	private $peerEntity;
+	private WireguardPeer $peerEntity;
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
-	private $entity;
+	private WireguardInterface $entity;
 
 	/**
 	 * Sets up the test environment
@@ -296,7 +296,7 @@ class WireguardInterfaceTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create command to delete Wireguard tunnel using the ip utility
+	 * Tests the function to create command to delete WireGuard tunnel using the ip utility
 	 */
 	public function testIpDelete(): void {
 		$expected = 'ip link delete dev ' . self::NAME;
@@ -304,7 +304,7 @@ class WireguardInterfaceTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create command to show Wireguard tunnel status
+	 * Tests the function to create command to show WireGuard tunnel status
 	 */
 	public function testWgStatus(): void {
 		$expected = 'wg show ' . self::NAME;

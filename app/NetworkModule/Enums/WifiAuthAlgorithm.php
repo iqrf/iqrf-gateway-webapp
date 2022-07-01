@@ -35,22 +35,22 @@ final class WifiAuthAlgorithm extends Enum {
 	use AutoInstances;
 
 	/**
-	 * None
+	 * @var string None
 	 */
 	private const NONE = '';
 
 	/**
-	 * Open system
+	 * @var string Open system
 	 */
 	private const OPEN_SYSTEM = 'open';
 
 	/**
-	 * Shared key
+	 * @var string Shared key
 	 */
 	private const SHARED_KEY = 'shared';
 
 	/**
-	 * Cisco LEAP
+	 * @var string Cisco LEAP
 	 */
 	private const LEAP = 'leap';
 

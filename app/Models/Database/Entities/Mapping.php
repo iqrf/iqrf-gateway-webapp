@@ -36,27 +36,27 @@ class Mapping implements JsonSerializable {
 	use TId;
 
 	/**
-	 * Mapping type: SPI
+	 * @var string Mapping type: SPI
 	 */
 	public const TYPE_SPI = 'spi';
 
 	/**
-	 * Mapping type: UART
+	 * @var string Mapping type: UART
 	 */
 	public const TYPE_UART = 'uart';
 
 	/**
-	 * Supported mapping types
+	 * @var array<string> Supported mapping types
 	 */
 	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
 
 	/**
-	 * Default mapping UART baud rate
+	 * @var int Default mapping UART baud rate
 	 */
 	public const BAUD_RATE_DEFAULT = 57600;
 
 	/**
-	 * Supported mapping UART baud rates
+	 * @var array<int> Supported mapping UART baud rates
 	 */
 	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
@@ -64,61 +64,61 @@ class Mapping implements JsonSerializable {
 	 * @var string Mapping type
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $type;
+	private string $type;
 
 	/**
 	 * @var string Mapping name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string Device name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $iqrfInterface;
+	private string $iqrfInterface;
 
 	/**
 	 * @var int Bus enable pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $busEnableGpioPin;
+	private int $busEnableGpioPin;
 
 	/**
 	 * @var int Programming mode switch pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $pgmSwitchGpioPin;
+	private int $pgmSwitchGpioPin;
 
 	/**
 	 * @var int Power enable pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $powerEnableGpioPin;
+	private int $powerEnableGpioPin;
 
 	/**
 	 * @var int|null UART baud rate
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $baudRate;
+	private ?int $baudRate;
 
 	/**
 	 * @var int|null I2C interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $i2cEnableGpioPin;
+	private ?int $i2cEnableGpioPin;
 
 	/**
 	 * @var int|null SPI interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $spiEnableGpioPin;
+	private ?int $spiEnableGpioPin;
 
 	/**
 	 * @var int|null UART interface enable pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $uartEnableGpioPin;
+	private ?int $uartEnableGpioPin;
 
 	/**
 	 * Constructor

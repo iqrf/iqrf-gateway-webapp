@@ -23,27 +23,17 @@ namespace App\ApiModule\Version0\Controllers\Cloud;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\CloudsController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Models\HexioManager;
-use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use GuzzleHttp\Exception\GuzzleException;
-use Nette\IOException;
 
 /**
  * Hexio IoT Platform connection controller
  * @Path("/hexio")
  */
 class HexioController extends CloudsController {
-
-	/**
-	 * @var HexioManager Hexio IoT Platform connection manager
-	 */
-	private $manager;
 
 	/**
 	 * Constructor
@@ -82,21 +72,8 @@ class HexioController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['clouds']);
-		$this->validator->validateRequest('cloudHexio', $request);
-		try {
-			$this->manager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
-		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (GuzzleException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		$this->checkRequest('cloudHexio', $request);
+		return parent::create($request, $response);
 	}
 
 }

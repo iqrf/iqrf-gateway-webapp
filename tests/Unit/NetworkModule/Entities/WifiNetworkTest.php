@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\WifiNetwork
  * @covers App\NetworkModule\Entities\WifiNetwork
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,49 +40,49 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiNetworkTest extends TestCase {
 
 	/**
-	 * Is in use?
+	 * @var bool Is in use?
 	 */
 	private const IN_USE = true;
 
 	/**
-	 * BSSID (MAC address)
+	 * @var string BSSID (MAC address)
 	 */
 	private const BSSID = '1A:E8:29:E5:CB:9A';
 
 	/**
-	 * SSID
+	 * @var string SSID
 	 */
 	private const SSID = 'WIFI MAGDA';
 
 	/**
 	 * @var WifiMode Mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
-	 * Channel
+	 * @var int Channel
 	 */
 	private const CHANNEL = 56;
 
 	/**
-	 * Speed rate
+	 * @var string Speed rate
 	 */
 	private const RATE = '405 Mbit/s';
 
 	/**
-	 * Signal strength
+	 * @var int Signal strength
 	 */
 	private const SIGNAL = 70;
 
 	/**
 	 * @var WifiSecurity Security
 	 */
-	private $security;
+	private WifiSecurity $security;
 
 	/**
-	 * @var WifiNetwork WiFI network entity
+	 * @var WifiNetwork Wi-Fi network entity
 	 */
-	private $entity;
+	private WifiNetwork $entity;
 
 	/**
 	 * Sets up the test environment

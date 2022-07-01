@@ -42,12 +42,12 @@ class PasswordController extends GatewayController {
 	/**
 	 * @var FeatureManager Feature manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * @var PasswordManager Gateway password manager
 	 */
-	private $manager;
+	private PasswordManager $manager;
 
 	/**
 	 * Constructor

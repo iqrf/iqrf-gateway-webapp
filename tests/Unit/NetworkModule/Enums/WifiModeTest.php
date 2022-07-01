@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Enums\WifiMode
  * @covers App\NetworkModule\Enums\WifiMode
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,27 +39,34 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiModeTest extends TestCase {
 
 	/**
-	 * Tests the function for creating WiFi mode enum - Ad-Hoc
+	 * Returns list of test data for testFromNetworkList() method
+	 * @return array<array<WifiMode|string>> List of test data for testFromNetworkList() method
 	 */
-	public function testFromNetworkListAdHoc(): void {
-		$expected = WifiMode::ADHOC();
-		Assert::equal($expected, WifiMode::fromNetworkList('Ad-Hoc'));
+	public function getFromNetworkListData(): array {
+		return [
+			[
+				WifiMode::ADHOC(),
+				'Ad-Hoc',
+			],
+			[
+				WifiMode::INFRA(),
+				'Infra',
+			],
+			[
+				WifiMode::MESH(),
+				'Mesh',
+			],
+		];
 	}
 
 	/**
-	 * Tests the function for creating WiFi mode enum - Infrastructure
+	 * Tests the function for creating WiFi mode enum
+	 * @dataProvider getFromNetworkListData
+	 * @param WifiMode $expected Expected WiFi mode enum
+	 * @param string $mode WiFi network mode scalar
 	 */
-	public function testFromNetworkListInfrastructure(): void {
-		$expected = WifiMode::INFRA();
-		Assert::equal($expected, WifiMode::fromNetworkList('Infra'));
-	}
-
-	/**
-	 * Tests the function for creating WiFi mode enum - Mesh
-	 */
-	public function testFromNetworkListMesh(): void {
-		$expected = WifiMode::MESH();
-		Assert::equal($expected, WifiMode::fromNetworkList('Mesh'));
+	public function testFromNetworkList(WifiMode $expected, string $mode): void {
+		Assert::equal($expected, WifiMode::fromNetworkList($mode));
 	}
 
 	/**

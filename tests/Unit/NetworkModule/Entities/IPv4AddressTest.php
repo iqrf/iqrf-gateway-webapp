@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv4Address
  * @covers App\NetworkModule\Entities\IPv4Address
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,32 +41,32 @@ final class IPv4AddressTest extends TestCase {
 	/**
 	 * @var IPv4 IPv4 address
 	 */
-	private $address;
+	private IPv4 $address;
 
 	/**
-	 * IPv4 address
+	 * @var string IPv4 address
 	 */
 	private const ADDRESS = '192.168.1.2';
 
 	/**
-	 * IPv4 network prefix
+	 * @var int IPv4 network prefix
 	 */
 	private const PREFIX = 24;
 
 	/**
-	 * IPv4 network mask
+	 * @var string IPv4 network mask
 	 */
 	private const MASK = '255.255.255.0';
 
 	/**
 	 * @var IPv4 IPv4 mask
 	 */
-	private $mask;
+	private IPv4 $mask;
 
 	/**
 	 * @var IPv4Address IPv4 address entity
 	 */
-	private $entity;
+	private IPv4Address $entity;
 
 	/**
 	 * Sets up the test environment

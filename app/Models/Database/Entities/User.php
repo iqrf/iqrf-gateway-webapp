@@ -26,6 +26,7 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
@@ -131,43 +132,43 @@ class User implements JsonSerializable {
 	 * @var string User name
 	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
-	private $username;
+	private string $username;
 
 	/**
 	 * @var string|null User's email
 	 * @ORM\Column(type="string", length=255, nullable=true, unique=true)
 	 */
-	private $email;
+	private ?string $email = null;
 
 	/**
 	 * @var string Password hash
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $password;
+	private string $password;
 
 	/**
 	 * @var string User role
 	 * @ORM\Column(type="string", length=15)
 	 */
-	private $role;
+	private string $role;
 
 	/**
 	 * @var int Account state
 	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
 	 */
-	private $state = self::STATE_DEFAULT;
+	private int $state = self::STATE_DEFAULT;
 
 	/**
 	 * @var string User language
 	 * @ORM\Column(type="string", length=7)
 	 */
-	private $language = self::LANGUAGE_DEFAULT;
+	private string $language = self::LANGUAGE_DEFAULT;
 
 	/**
 	 * @var Collection<int, UserVerification> User verifications
 	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
 	 */
-	private $verifications;
+	private Collection $verifications;
 
 	/**
 	 * Constructor
@@ -185,6 +186,7 @@ class User implements JsonSerializable {
 		$this->setRole($role ?? self::ROLE_DEFAULT);
 		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
 		$this->setState($state ?? self::STATE_DEFAULT);
+		$this->verifications = new ArrayCollection();
 	}
 
 	/**
@@ -304,9 +306,6 @@ class User implements JsonSerializable {
 	 * Clears all e-mail address verifications
 	 */
 	public function clearVerifications(): void {
-		if ($this->verifications === null) {
-			return;
-		}
 		$this->verifications->clear();
 	}
 

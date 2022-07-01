@@ -32,39 +32,39 @@ use stdClass;
 final class IPv6Connection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'ipv6';
 
 	/**
-	 * nmcli current configuration prefix
+	 * @var string nmcli current configuration prefix
 	 */
 	private const NMCLI_CURRENT_PREFIX = 'IP6';
 
 	/**
 	 * @var IPv6Methods Connection method
 	 */
-	private $method;
+	private IPv6Methods $method;
 
 	/**
 	 * @var array<IPv6Address> IPv6 addresses
 	 */
-	private $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv6|null IPv6 gateway address
 	 */
-	private $gateway;
+	private ?IPv6 $gateway;
 
 	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv6Current|null Current IPv6 configuration
 	 */
-	private $current;
+	private ?IPv6Current $current;
 
 	/**
 	 * IPv6 connection entity constructor
@@ -72,7 +72,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 	 * @param array<IPv6Address> $addresses IPv6 addresses
 	 * @param IPv6|null $gateway IPv4 gateway address
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
-	 * @param IPv6Current $current Current IPv6 configuration
+	 * @param IPv6Current|null $current Current IPv6 configuration
 	 */
 	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns, ?IPv6Current $current) {
 		$this->method = $method;
@@ -108,18 +108,14 @@ final class IPv6Connection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes IPv6 connection entity into JSON
-	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> JSON serialized entity
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv6Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
+			'addresses' => array_map(fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
-			'dns' => array_map(function (IPv6 $a): array {
-				return ['address' => $a->getCompactedAddress()];
-			}, $this->dns),
+			'dns' => array_map(fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 		if ($this->current !== null) {
 			$array['current'] = $this->current->jsonSerialize();
@@ -136,32 +132,24 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];
-		$gateway = array_key_exists('gateway', $array) ? ($array['gateway'] !== '' ? IPv6::factory($array['gateway']) : null) : null;
+		$gateway = array_key_exists('gateway', $array) && ($array['gateway'] !== '') ? IPv6::factory($array['gateway']) : null;
 		if ($array['addresses'] !== '') {
-			foreach (explode(',', $array['addresses']) as $address) {
-				$addresses[] = IPv6Address::fromPrefix($address);
-			}
+			$addresses = array_map(fn(string $address) => IPv6Address::fromPrefix($address), explode(',', $array['addresses']));
 		}
 		$dns = [];
 		if ($array['dns'] !== '') {
-			foreach (explode(',', $array['dns']) as $server) {
-				$dns[] = IPv6::factory($server);
-			}
+			$dns = array_map(fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP()) {
 			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
 			$currentAddresses = [];
-			$currentGateway = array_key_exists('gateway', $config) ? (($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null) : null;
+			$currentGateway = array_key_exists('gateway', $config) && ($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null;
 			if (array_key_exists('address', $config)) {
-				foreach ($config['address'] as $addr) {
-					$currentAddresses[] = IPv6Address::fromPrefix($addr);
-				}
+				$currentAddresses = array_map(fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), array_values($config['address']));
 			}
 			$currentDns = [];
 			if (array_key_exists('dns', $config)) {
-				foreach ($config['dns'] as $addr) {
-					$currentDns[] = IPv6::factory($addr);
-				}
+				$currentDns = array_map(fn(string $address): IPv6 => IPv6::factory($address), array_values($config['dns']));
 			}
 			$current = new IPv6Current($method, $currentAddresses, $currentGateway, $currentDns);
 		}
@@ -175,13 +163,9 @@ final class IPv6Connection implements INetworkManagerEntity {
 	public function nmCliSerialize(): string {
 		$array = [
 			'method' => $this->method->toScalar(),
-			'addresses' => implode(', ', array_map(function (IPv6Address $address): string {
-				return $address->toString();
-			}, $this->addresses)),
+			'addresses' => implode(', ', array_map(fn (IPv6Address $address): string => $address->toString(), $this->addresses)),
 			'gateway' => ($this->gateway !== null) ? $this->gateway->getCompactedAddress() : '',
-			'dns' => implode(' ', array_map(function (IPv6 $ipv6): string {
-				return $ipv6->getCompactedAddress();
-			}, $this->dns)),
+			'dns' => implode(' ', array_map(fn (IPv6 $ipv6): string => $ipv6->getCompactedAddress(), $this->dns)),
 		];
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}

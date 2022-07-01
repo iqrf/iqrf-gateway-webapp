@@ -40,25 +40,25 @@ class SshKey implements JsonSerializable {
 	 * @var string SSH key type
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $type;
+	private string $type;
 
 	/**
 	 * @var string SSH key
 	 * @ORM\Column(type="string", length=2048, unique=true)
 	 */
-	private $key;
+	private string $key;
 
 	/**
 	 * @var string SSH key hash
 	 * @ORM\Column(type="string", length=64, unique=true)
 	 */
-	private $hash;
+	private string $hash;
 
 	/**
 	 * @var string|null SSH key description
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $description;
+	private ?string $description;
 
 	/**
 	 * Constructor
@@ -140,7 +140,7 @@ class SshKey implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized ssh key entity
-	 * @return array<string, int|string|null> JSON serialized entity
+	 * @return array{id: int|null, type: string, key: string, hash: string, description: string|null, createdAt: string} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

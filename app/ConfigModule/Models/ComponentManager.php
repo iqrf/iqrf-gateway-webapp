@@ -33,12 +33,12 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var string File name (without .json)
 	 */
-	private $fileName = 'config';
+	private string $fileName = 'config';
 
 	/**
 	 * Constructor
@@ -110,32 +110,12 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function list(): array {
-		$components = [];
 		$json = $this->fileManager->read($this->fileName)['components'];
-		foreach ($json as $id => $config) {
-			/** @var array{name: string, libraryPath: string, libraryName: string, enabled: bool, startLevel: int} $config Component configuration */
-			$components[$id] = Arrays::mergeTree(['id' => $id], $config);
-		}
-		return $components;
-	}
-
-	/**
-	 * Returns disabled components
-	 * @return array<string, bool>|null Disabled components
-	 */
-	public function listDisabled(): ?array {
-		$disabled = [];
-		try {
-			$components = $this->fileManager->read($this->fileName)['components'] ?? [];
-			foreach ($components as $component) {
-				if ($component['enabled'] !== true) {
-					$disabled[$component['name']] = false;
-				}
-			}
-		} catch (IOException | JsonException $e) {
-			return null;
-		}
-		return $disabled;
+		return array_map(
+			fn (int $id, array $component): array => Arrays::mergeTree(['id' => $id], $component),
+			array_keys($json),
+			$json
+		);
 	}
 
 	/**

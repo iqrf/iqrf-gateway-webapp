@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\User
  * @covers App\Models\Database\Entities\User
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,39 +42,39 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UserTest extends TestCase {
 
 	/**
-	 * User name
+	 * @var string User name
 	 */
 	private const USERNAME = 'admin';
 
 	/**
-	 * E-mail address
+	 * @var string E-mail address
 	 */
 	private const EMAIL = 'admin@iqrf.org';
 
 	/**
-	 * Password
+	 * @var string Password
 	 */
 	private const PASSWORD = 'iqrf';
 
 	/**
-	 * User role
+	 * @var string User role
 	 */
 	private const ROLE = User::ROLE_ADMIN;
 
 	/**
-	 * User language
+	 * @var string User language
 	 */
 	private const LANGUAGE = User::LANGUAGE_ENGLISH;
 
 	/**
-	 * User account state
+	 * @var int User account state
 	 */
 	private const STATE = User::STATE_UNVERIFIED;
 
 	/**
 	 * @var User User entity
 	 */
-	private $entity;
+	private User $entity;
 
 	/**
 	 * Sets up the test environment

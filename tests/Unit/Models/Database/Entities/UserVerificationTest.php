@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\User
  * @covers App\Models\Database\Entities\User
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,19 +41,19 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UserVerificationTest extends TestCase {
 
 	/**
-	 * Date time format
+	 * @var string Date time format
 	 */
 	private const DATETIME_FORMAT = 'Y-m-d H:i:00';
 
 	/**
 	 * @var UserVerification User verification entity
 	 */
-	private $entity;
+	private UserVerification $entity;
 
 	/**
 	 * @var User User entity
 	 */
-	private $user;
+	private User $user;
 
 	/**
 	 * Sets up the test environment

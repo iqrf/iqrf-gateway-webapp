@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\AptGetPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\AptGetPackageManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -30,6 +30,8 @@ use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
 use Mockery;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -41,14 +43,14 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class AptGetPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * Packages
+	 * @var array<string> Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
 	/**
 	 * @var AptGetPackageManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private AptGetPackageManager $manager;
 
 	/**
 	 * Sets up the test environment
@@ -97,55 +99,9 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to get list of upgradable packages
 	 */
 	public function testGetUpgradable(): void {
-		$output = 'Reading package lists...
-Building dependency tree...
-Reading state information...
-Calculating upgrade...
-The following packages will be upgraded:
-   gnome-control-center (1:3.30.2-5 => 1:3.30.3-1)
-   gnome-control-center-data (1:3.30.2-5 => 1:3.30.3-1)
-   libkf5auth-data (5.54.0-1 => 5.54.0-2)
-   libkf5auth5 (5.54.0-1 => 5.54.0-2)
-   node-lru-cache (5.1.1-3 => 5.1.1-4)
-5 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-Inst gnome-control-center-data [1:3.30.2-5] (1:3.30.3-1 Debian:unstable [all])
-Inst gnome-control-center [1:3.30.2-5] (1:3.30.3-1 Debian:unstable [amd64])
-Inst libkf5auth5 [5.54.0-1] (5.54.0-2 Debian:unstable [amd64]) []
-Inst libkf5auth-data [5.54.0-1] (5.54.0-2 Debian:unstable [all])
-Inst node-lru-cache [5.1.1-3] (5.1.1-4 Debian:unstable [all])
-Conf gnome-control-center-data (1:3.30.3-1 Debian:unstable [all])
-Conf gnome-control-center (1:3.30.3-1 Debian:unstable [amd64])
-Conf libkf5auth5 (5.54.0-2 Debian:unstable [amd64])
-Conf libkf5auth-data (5.54.0-2 Debian:unstable [all])
-Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
-		$expected = [
-			[
-				'id' => 0,
-				'name' => 'gnome-control-center',
-				'oldVersion' => '1:3.30.2-5',
-				'newVersion' => '1:3.30.3-1',
-			], [
-				'id' => 1,
-				'name' => 'gnome-control-center-data',
-				'oldVersion' => '1:3.30.2-5',
-				'newVersion' => '1:3.30.3-1',
-			], [
-				'id' => 2,
-				'name' => 'libkf5auth-data',
-				'oldVersion' => '5.54.0-1',
-				'newVersion' => '5.54.0-2',
-			], [
-				'id' => 3,
-				'name' => 'libkf5auth5',
-				'oldVersion' => '5.54.0-1',
-				'newVersion' => '5.54.0-2',
-			], [
-				'id' => 4,
-				'name' => 'node-lru-cache',
-				'oldVersion' => '5.1.1-3',
-				'newVersion' => '5.1.1-4',
-			],
-		];
+		$path = TESTER_DIR . '/data/packageManagers/apt-get/';
+		$output = FileSystem::read($path . 'upgradablePackages.stdout');
+		$expected = Json::decode(FileSystem::read($path . 'upgradablePackages.json'), Json::FORCE_ARRAY);
 		$command = 'apt-get -s upgrade -V';
 		$this->receiveCommand($command, true, $output);
 		Assert::same($expected, $this->manager->getUpgradable());

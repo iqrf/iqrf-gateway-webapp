@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -61,54 +61,54 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailWifiTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
 
 	/**
-	 * Network connection ID
+	 * @var string Network connection ID
 	 */
 	private const ID = 'WIFI MAGDA';
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const INTERFACE = 'wlp4s0';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '5c7010a8-88f6-48e6-8ab2-5ad713217831';
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
 	 */
-	private $ipv4;
+	private IPv4Connection $ipv4;
 
 	/**
 	 * @var IPv6Connection IPv6 network connection entity
 	 */
-	private $ipv6;
+	private IPv6Connection $ipv6;
 
 	/**
 	 * @var WifiConnection WiFi network connection entity
 	 */
-	private $wifi;
+	private WifiConnection $wifi;
 
 	/**
 	 * @var ConnectionDetail Network connection entity
 	 */
-	private $entity;
+	private ConnectionDetail $entity;
 
 	/**
 	 * Sets up the test environment

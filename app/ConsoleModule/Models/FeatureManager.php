@@ -31,7 +31,7 @@ class FeatureManager extends CoreFeatureManager {
 	/**
 	 * @var Translator Translator
 	 */
-	private $translator;
+	private Translator $translator;
 
 	/**
 	 * Constructor

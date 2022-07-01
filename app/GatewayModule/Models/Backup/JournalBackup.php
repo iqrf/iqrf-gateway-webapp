@@ -32,14 +32,14 @@ use Nette\Utils\FileSystem;
 class JournalBackup implements IBackupManager {
 
 	/**
-	 * Whitelisted files
+	 * @var array<string> Whitelisted files
 	 */
 	public const WHITELIST = [
 		'journald.conf',
 	];
 
 	/**
-	 * Service name
+	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
 		'systemd-timesyncd',
@@ -48,32 +48,32 @@ class JournalBackup implements IBackupManager {
 	/**
 	 * @var string Path to NTP configuration directory
 	 */
-	private $path;
+	private string $path;
 
 	/**
 	 * @var string File name
 	 */
-	private $file;
+	private string $file;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private $featureEnabled;
+	private bool $featureEnabled;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

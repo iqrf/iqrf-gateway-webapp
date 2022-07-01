@@ -36,22 +36,22 @@ class GenericManager {
 	/**
 	 * @var string Component type
 	 */
-	private $component;
+	private string $component;
 
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var string|null File name (without .json)
 	 */
-	private $fileName = null;
+	private ?string $fileName = null;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
 	 */
-	private $schemaManager;
+	private ComponentSchemaManager $schemaManager;
 
 	/**
 	 * Constructor
@@ -238,7 +238,7 @@ class GenericManager {
 	 * @return string Generated file name
 	 */
 	public function generateFileName(array $array): string {
-		$prefix = Strings::replace($this->component, '~::~', '__');
+		$prefix = Strings::replace($this->component, '#::#', '__');
 		return $prefix . '__' . $array['instance'];
 	}
 

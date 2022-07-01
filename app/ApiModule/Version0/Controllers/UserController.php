@@ -57,22 +57,22 @@ class UserController extends BaseController {
 	/**
 	 * @var Configuration JWT configuration
 	 */
-	private $configuration;
+	private Configuration $configuration;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var UserManager User manager
 	 */
-	private $manager;
+	private UserManager $manager;
 
 	/**
 	 * @var PasswordRecoveryMailSender Forgotten password recovery e-mail sender
 	 */
-	private $passwordRecoverySender;
+	private PasswordRecoveryMailSender $passwordRecoverySender;
 
 	/**
 	 * Constructor

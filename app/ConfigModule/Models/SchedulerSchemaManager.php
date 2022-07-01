@@ -36,7 +36,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	/**
 	 * @var ApiSchemaManager JSON API JSON schema manager
 	 */
-	private $apiSchemaManager;
+	private ApiSchemaManager $apiSchemaManager;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Requests\ApiRequest
  * @covers App\IqrfNetModule\Requests\ApiRequest
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ApiRequestTest extends TestCase {
 
 	/**
-	 * IQRF JSON API request in an array
+	 * @var array<string, array<string, bool|array<string, string>>|string> IQRF JSON API request in an array
 	 */
 	private const REQUEST = [
 		'mType' => 'mngDaemon_Mode',
@@ -55,7 +55,7 @@ final class ApiRequestTest extends TestCase {
 	/**
 	 * @var ApiRequest JSON API Request
 	 */
-	private $request;
+	private ApiRequest $request;
 
 	/**
 	 * Starts up test environment

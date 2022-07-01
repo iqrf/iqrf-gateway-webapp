@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\CommandManager
  * @covers App\CoreModule\Models\CommandManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,14 +41,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class CommandManagerTest extends TestCase {
 
 	/**
-	 * Executed command
+	 * @var string Executed command
 	 */
 	private const COMMAND = 'echo "OK"';
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $manager;
+	private CommandManager $manager;
 
 	/**
 	 * Tests the function to execute a shell command

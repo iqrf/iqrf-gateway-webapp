@@ -32,8 +32,10 @@ use Ratchet\Client\WebSocket as WsClient;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use React\Socket as ReactSocket;
+use stdClass;
 use Tracy\Debugger;
 
 /**
@@ -42,14 +44,14 @@ use Tracy\Debugger;
 class WebSocketClient {
 
 	/**
-	 * @var EventLoop\LoopInterface Event loop
+	 * @var LoopInterface Event loop
 	 */
-	private $loop;
+	private LoopInterface $loop;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private $serverUrl;
+	private string $serverUrl;
 
 	/**
 	 * Constructor
@@ -66,7 +68,7 @@ class WebSocketClient {
 	 * @param ApiRequest $request IQRF JSON API request
 	 * @param bool $checkStatus Check response status
 	 * @param int $timeout WebSocket client timeout
-	 * @return array<mixed> IQRF JSON API response
+	 * @return array{request: array<mixed>|stdClass, response: stdClass} IQRF JSON API response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 */
@@ -169,7 +171,7 @@ class WebSocketClient {
 	 * @param ApiRequest $request JSON DPA request
 	 * @param MessageInterface|null $response IQRF JSON API response
 	 * @param bool $checkStatus Check response status
-	 * @return array<mixed> IQRF JSON API response in an array
+	 * @return array{request: array<mixed>|stdClass, response: stdClass} IQRF JSON API response in an array
 	 * @throws EmptyResponseException
 	 * @throws DpaErrorException
 	 */

@@ -30,13 +30,14 @@ class IqrfOsPatchListCommand extends EntityManagerCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'iqrf-os:list-patches';
 
 	/**
 	 * @var IqrfOsPatchRepository IQRF OS Patch database repository
 	 */
-	protected $repository;
+	protected IqrfOsPatchRepository $repository;
 
 	/**
 	 * Constructor

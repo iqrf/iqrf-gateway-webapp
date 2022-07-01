@@ -63,5 +63,8 @@ services:
 	- App\GatewayModule\Models\SystemdJournalManager
 	- App\GatewayModule\Models\TimeManager
 	- App\GatewayModule\Models\UpdaterManager
-	- App\GatewayModule\Models\Utils\GatewayInfoUtil
+	etc.jsonFileManager:
+		factory: App\CoreModule\Models\JsonFileManager('/etc/')
+		autowired: false
+	- App\GatewayModule\Models\Utils\GatewayInfoUtil('/etc/iqrf-gateway.json')
 	- App\GatewayModule\Models\VersionManager

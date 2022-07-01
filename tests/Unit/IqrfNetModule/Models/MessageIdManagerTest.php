@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\MessageIdManager
  * @covers App\IqrfNetModule\Models\MessageIdManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**

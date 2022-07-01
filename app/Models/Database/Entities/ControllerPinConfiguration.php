@@ -37,37 +37,37 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 * @var string Controller pins name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var int Green LED pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $greenLed;
+	private int $greenLed;
 
 	/**
 	 * @var int Red LED pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $redLed;
+	private int $redLed;
 
 	/**
 	 * @var int Button pin
 	 * @ORM\Column(type="integer")
 	 */
-	private $button;
+	private int $button;
 
 	/**
 	 * @var int|null SCK pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $sck;
+	private ?int $sck;
 
 	/**
 	 * @var int|null SDA pin
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $sda;
+	private ?int $sda;
 
 	/**
 	 * Constructor
@@ -185,7 +185,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized controller pins
-	 * @return array<string, int|string> JSON serialized controller pins
+	 * @return array{id: int|null, name: string, greenLed: int, redLed: int, button: int, sck?: int, sda?: int} JSON serialized controller pins
 	 */
 	public function jsonSerialize(): array {
 		$array = [

@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\TranslatorConfigManager
  * @covers App\ConfigModule\Models\TranslatorConfigManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,24 +43,24 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TranslatorConfigManagerTest extends TestCase {
 
 	/**
-	 * Translator configuration directory path
+	 * @var string Translator configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/translator/';
 
 	/**
-	 * Translator configuration temporary directory path
+	 * @var string Translator configuration temporary directory path
 	 */
 	private const TEMP_CONF_DIR = TMP_DIR . '/translator/';
 
 	/**
 	 * @var TranslatorConfigManager Translator configuration manager
 	 */
-	private $manager;
+	private TranslatorConfigManager $manager;
 
 	/**
 	 * @var TranslatorConfigManager Translator configuration temporary manager
 	 */
-	private $managerTemp;
+	private TranslatorConfigManager $managerTemp;
 
 	/**
 	 * Tests the function to read Translator configuration file

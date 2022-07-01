@@ -32,22 +32,22 @@ final class InterfaceStatus implements JsonSerializable {
 	/**
 	 * @var string Network interface name
 	 */
-	protected $name;
+	protected string $name;
 
 	/**
 	 * @var InterfaceTypes Network interface type
 	 */
-	protected $type;
+	protected InterfaceTypes $type;
 
 	/**
 	 * @var InterfaceStates Network interface status
 	 */
-	protected $state;
+	protected InterfaceStates $state;
 
 	/**
 	 * @var string|null Network connection name
 	 */
-	protected $connectionName;
+	protected ?string $connectionName;
 
 	/**
 	 * Network interface entity constructor
@@ -97,7 +97,7 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array<string, string|null> JSON serialized data
+	 * @return array{name: string, type: string, state: string, connectionName: string|null} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

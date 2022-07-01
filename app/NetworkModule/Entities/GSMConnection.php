@@ -29,29 +29,29 @@ use stdClass;
 final class GSMConnection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'gsm';
 
 	/**
 	 * @var string GSM APN
 	 */
-	private $apn;
+	private string $apn;
 
 	/**
 	 * @var string|null Username
 	 */
-	private $username;
+	private ?string $username;
 
 	/**
 	 * @var string|null Password
 	 */
-	private $password;
+	private ?string $password;
 
 	/**
 	 * @var string|null SIM PIN
 	 */
-	private $pin;
+	private ?string $pin;
 
 	/**
 	 * Constructor
@@ -78,7 +78,7 @@ final class GSMConnection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes GSM connection entity into JSON
-	 * @return array<string, string|null> JSON serialized entity
+	 * @return array{apn: string, username: string|null, password: string|null, pin: string|null} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -108,15 +108,9 @@ final class GSMConnection implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = $this->jsonSerialize();
-		if ($array['username'] === null) {
-			$array['username'] = '';
-		}
-		if ($array['password'] === null) {
-			$array['password'] = '';
-		}
-		if ($array['pin'] === null) {
-			$array['pin'] = '';
-		}
+		$array['username'] ??= '';
+		$array['password'] ??= '';
+		$array['pin'] ??= '';
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 

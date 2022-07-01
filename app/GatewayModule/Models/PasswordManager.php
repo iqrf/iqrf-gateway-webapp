@@ -32,12 +32,12 @@ class PasswordManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var FeatureManager Feature manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv4Connection
  * @covers App\NetworkModule\Entities\IPv4Connection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,34 +43,34 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv4ConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var IPv4Methods IPv4 connection method
 	 */
-	private $method;
+	private IPv4Methods $method;
 
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv4 IPv4 gateway address
 	 */
-	private $gateway;
+	private IPv4 $gateway;
 
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv4Connection IPv4 connection entity
 	 */
-	private $entity;
+	private IPv4Connection $entity;
 
 	/**
 	 * Sets up the test environment

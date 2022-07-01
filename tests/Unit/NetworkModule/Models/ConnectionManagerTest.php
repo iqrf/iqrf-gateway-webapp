@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\ConnectionManager
  * @covers App\NetworkModule\Models\ConnectionManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -54,19 +54,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionManagerTest extends CommandTestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 
 	/**
 	 * @var ConnectionManager Network connection manager
 	 */
-	private $manager;
+	private ConnectionManager $manager;
 
 	/**
 	 * Sets up the test environment

@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\DmiBoardManager
  * @covers App\GatewayModule\Models\DmiBoardManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,10 +40,10 @@ final class DmiBoardInfoManagerTest extends CommandTestCase {
 	/**
 	 * @var DmiBoardManager DMI board manager
 	 */
-	private $manager;
+	private DmiBoardManager $manager;
 
 	/**
-	 * Executed commands
+	 * @var array<string, string> Executed commands
 	 */
 	private const COMMANDS = [
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AzureManager
  * @covers App\CloudModule\Models\AzureManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -30,7 +30,7 @@ use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Models\AzureManager;
 use DateTime;
 use Mockery;
-use Mockery\Mock;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
 
@@ -42,12 +42,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AzureManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * MS Azure IoT Hub connection string for the device
+	 * @var string MS Azure IoT Hub connection string for the device
 	 */
 	private const CONNECTION_STRING = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 
 	/**
-	 * @var Mock|AzureManager Microsoft Azure IoT Hub manager
+	 * @var AzureManager|MockInterface Microsoft Azure IoT Hub manager
 	 */
 	private $manager;
 
@@ -112,7 +112,7 @@ final class AzureManagerTest extends CloudIntegrationTestCase {
 		$signingKey = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG';
 		$policyName = null;
 		$expiresInMins = intdiv((new DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
-			intdiv((new DateTime())->getTimestamp(), 60) + 5256000;
+			intdiv((new DateTime())->getTimestamp(), 60) + 5_256_000;
 		$actual = $this->manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
 		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
 		Assert::same($expected, $actual);

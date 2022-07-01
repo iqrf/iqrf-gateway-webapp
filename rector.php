@@ -19,41 +19,63 @@
 declare(strict_types = 1);
 
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
-use Rector\CodeQualityStrict\Rector\If_\MoveOutMethodCallInsideIfConditionRector;
-use Rector\CodeQualityStrict\Rector\Variable\MoveVariableDeclarationNearReferenceRector;
-use Rector\Core\Configuration\Option;
+use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
+use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
+use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Nette\Set\NetteSetList;
 use Rector\Set\ValueObject\SetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Symfony\Set\SymfonySetList;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-	$parameters = $containerConfigurator->parameters();
-
-	$parameters->set(Option::SKIP, [
-		CallableThisArrayToAnonymousFunctionRector::class,
-		MoveVariableDeclarationNearReferenceRector::class,
-		MoveOutMethodCallInsideIfConditionRector::class,
-	]);
-
-	$parameters->set(Option::PATHS, [
+return static function (RectorConfig $rectorConfig): void {
+	$rectorConfig->paths([
 		__DIR__ . '/app',
 		__DIR__ . '/bin',
 		__DIR__ . '/tests',
-		]);
-
-	$parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_73);
-
-	$parameters->set(Option::SETS, [
-		SetList::CODE_QUALITY,
-		SetList::CODE_QUALITY_STRICT,
-		SetList::DOCTRINE_CODE_QUALITY,
-		SetList::DOCTRINE_DBAL_211,
-		SetList::NETTE_30,
-		SetList::NETTE_31,
-		SetList::NETTE_UTILS_CODE_QUALITY,
-		SetList::PHP_73,
-		SetList::PHP_74,
-		SetList::SYMFONY_52,
-		SetList::TYPE_DECLARATION,
 	]);
+
+	$rectorConfig->phpVersion(PhpVersion::PHP_74);
+
+	// register a single rule
+	$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
+
+	// define sets of rules
+	$rectorConfig->sets([
+		DoctrineSetList::DOCTRINE_CODE_QUALITY,
+		DoctrineSetList::DOCTRINE_COMMON_20,
+		DoctrineSetList::DOCTRINE_DBAL_30,
+		DoctrineSetList::DOCTRINE_ORM_29,
+		NetteSetList::NETTE_31,
+		NetteSetList::NETTE_STRICT,
+		NetteSetList::NETTE_CODE_QUALITY,
+		NetteSetList::NETTE_UTILS_CODE_QUALITY,
+		NetteSetList::NETTE_REMOVE_INJECT,
+		SetList::CODE_QUALITY,
+		SetList::CODING_STYLE,
+		SetList::DEAD_CODE,
+		SetList::PHP_74,
+		SetList::TYPE_DECLARATION,
+		SetList::TYPE_DECLARATION_STRICT,
+		SymfonySetList::SYMFONY_60,
+		SymfonySetList::SYMFONY_CODE_QUALITY,
+		SymfonySetList::SYMFONY_STRICT,
+	]);
+
+	$rectorConfig->skip([
+		CallableThisArrayToAnonymousFunctionRector::class,
+		CatchExceptionNameMatchingTypeRector::class,
+		FlipTypeControlToUseExclusiveTypeRector::class,
+		NewlineAfterStatementRector::class,
+		NewlineBeforeNewAssignSetRector::class,
+		PostIncDecToPreIncDecRector::class,
+		SymplifyQuoteEscapeRector::class,
+		__DIR__ . '/tests/tmp',
+	]);
+
 };

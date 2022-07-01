@@ -34,24 +34,24 @@ use Nette\Utils\JsonException;
 class InteliGlueManager implements IManager {
 
 	/**
-	 * CA certificate filename
+	 * @var string CA certificate filename
 	 */
 	private const CA_FILENAME = 'inteliments-ca.crt';
 
 	/**
 	 * @var string Path to the certificates
 	 */
-	private $certPath;
+	private string $certPath;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
+	private GenericManager $configManager;
 
 	/**
 	 * Constructor

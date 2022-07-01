@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\InterfaceManager
  * @covers App\NetworkModule\Models\InterfaceManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,7 +44,7 @@ final class InterfaceManagerTest extends CommandTestCase {
 	/**
 	 * @var InterfaceManager Network interface manager
 	 */
-	private $manager;
+	private InterfaceManager $manager;
 
 	/**
 	 * Sets up the test environment

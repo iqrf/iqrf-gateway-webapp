@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\JsonSchemaManager
  * @covers App\CoreModule\Models\JsonSchemaManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,34 +43,34 @@ require __DIR__ . '/../../../bootstrap.php';
 final class JsonSchemaManagerTest extends TestCase {
 
 	/**
-	 * JSON file name
+	 * @var string JSON file name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 
 	/**
-	 * Directory with configuration files
+	 * @var string Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * JSON schema file name
+	 * @var string JSON schema file name
 	 */
 	private const SCHEMA_NAME = 'schema__iqrf__MqttMessaging';
 
 	/**
-	 * JSON schema directory path
+	 * @var string JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var JsonSchemaManager JSON schema manager
 	 */
-	private $manager;
+	private JsonSchemaManager $manager;
 
 	/**
 	 * Tests the function to set file name of JSON schema from component name (fail)

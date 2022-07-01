@@ -42,7 +42,7 @@ class VersionController extends BaseController {
 	/**
 	 * @var VersionManager Version manager
 	 */
-	private $versionManager;
+	private VersionManager $versionManager;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\FeatureManager
  * @covers App\CoreModule\Models\FeatureManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,24 +41,24 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FeatureManagerTest extends TestCase {
 
 	/**
-	 * Path to the temporary file
+	 * @var string Path to the temporary file
 	 */
 	private const PATH_TEMP = TMP_DIR . '/features.neon';
 
 	/**
-	 * Path to the original file
+	 * @var string Path to the original file
 	 */
 	private const PATH = TESTER_DIR . '/data/features.neon';
 
 	/**
 	 * @var FeatureManager Optional feature manager
 	 */
-	private $manager;
+	private FeatureManager $manager;
 
 	/**
 	 * @var FeatureManager Optional feature manager
 	 */
-	private $managerTemp;
+	private FeatureManager $managerTemp;
 
 	/**
 	 * Copies the original file
@@ -130,29 +130,11 @@ final class FeatureManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to check if the feature has URL
-	 */
-	public function testHasUrl(): void {
-		Assert::false($this->manager->hasUrl('networkManager'));
-		Assert::true($this->manager->hasUrl('docs'));
-	}
-
-	/**
 	 * Tests the function to list enabled features
 	 */
 	public function testListEnabled(): void {
 		$expected = ['docs'];
 		Assert::same($expected, $this->manager->listEnabled());
-	}
-
-	/**
-	 * Tests the function to list enabled features with URLs
-	 */
-	public function testListUrl(): void {
-		$expected = [
-			'docs' => 'https://docs.iqrf.org/iqrf-gateway/',
-		];
-		Assert::same($expected, $this->manager->listUrl());
 	}
 
 	/**
@@ -173,7 +155,7 @@ final class FeatureManagerTest extends TestCase {
 	 */
 	public function testSetEnabledNotFound(): void {
 		Assert::exception(function (): void {
-			$this->manager->setEnabled(['nonsense']);
+			$this->manager->setEnabled(['nonsense'], true);
 		}, FeatureNotFoundException::class);
 	}
 

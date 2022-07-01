@@ -26,6 +26,8 @@ use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
@@ -38,39 +40,39 @@ use Psr\Http\Message\UploadedFileInterface;
 class MenderManager {
 
 	/**
-	 * Path to certificate storage
+	 * @var string Path to certificate storage
 	 */
 	private const CERT_PATH = '/etc/mender/';
 
 	/**
-	 * JSON file containing mender-client configuration
+	 * @var string JSON file containing mender-client configuration
 	 */
 	private const CLIENT_CONF = 'mender';
 
 	/**
-	 * JSON file containing mender-connect configuration
+	 * @var string JSON file containing mender-connect configuration
 	 */
 	private const CONNECT_CONF = 'mender-connect';
 
 	/**
-	 * Path to upload artifact file to
+	 * @var string Path to upload artifact file to
 	 */
 	private const UPLOAD_PATH = '/tmp/';
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var JsonFileManager $fileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var ServiceManager $serviceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * Constructior
@@ -189,8 +191,10 @@ class MenderManager {
 	 * Commits installed mender artifact
 	 * @return string Output log
 	 * @throws MenderFailedException
-	 * @throws MenderNoUpdateInProgressException
 	 * @throws MenderMissingException
+	 * @throws MenderNoUpdateInProgressException
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function commitUpdate(): string {
 		$this->checkMender();
@@ -202,8 +206,10 @@ class MenderManager {
 	 * Rolls installed mender artifact back
 	 * @return string Output log
 	 * @throws MenderFailedException
-	 * @throws MenderNoUpdateInProgressException
 	 * @throws MenderMissingException
+	 * @throws MenderNoUpdateInProgressException
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function rollbackUpdate(): string {
 		$this->checkMender();
@@ -253,6 +259,8 @@ class MenderManager {
 	/**
 	 * Checks if Mender utility is installed, stops mender-client if active
 	 * @throws MenderMissingException
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
 	 */
 	private function checkMender(): void {
 		if (!$this->commandManager->commandExist('mender')) {

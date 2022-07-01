@@ -29,22 +29,22 @@ final class IPv6Current implements JsonSerializable {
 	/**
 	 * @var IPv6Methods Connection method
 	 */
-	private $method;
+	private IPv6Methods $method;
 
 	/**
 	 * @var array<IPv6Address> IPv6 addresses
 	 */
-	private $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv6|null IPv6 gateway address
 	 */
-	private $gateway;
+	private ?IPv6 $gateway;
 
 	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns = [];
 
 	/**
 	 * IPv6 current configuration constructor
@@ -62,18 +62,14 @@ final class IPv6Current implements JsonSerializable {
 
 	/**
 	 * Serializes current IPv6 configuration entity into JSON
-	 * @return array<string, array<array<string, int|string>>|int|string> JSON serialized entity
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv6Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
+			'addresses' => array_map(fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
-			'dns' => array_map(function (IPv6 $a): array {
-				return ['address' => $a->getCompactedAddress()];
-			}, $this->dns),
+			'dns' => array_map(fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 	}
 

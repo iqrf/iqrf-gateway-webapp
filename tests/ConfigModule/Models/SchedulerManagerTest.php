@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\SchedulerManager
  * @covers App\ConfigModule\Models\SchedulerManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -50,22 +50,22 @@ final class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTemp;
+	private JsonFileManager $fileManagerTemp;
 
 	/**
 	 * @var SchedulerManager Scheduler's task configuration manager
 	 */
-	private $manager;
+	private SchedulerManager $manager;
 
 	/**
 	 * @var SchedulerManager Scheduler's task configuration manager (with temporary files)
 	 */
-	private $managerTemp;
+	private SchedulerManager $managerTemp;
 
 	/**
 	 * @var stdClass Scheduler's task settings
 	 */
-	private $array;
+	private stdClass $array;
 
 	/**
 	 * Test function to delete configuration of Scheduler

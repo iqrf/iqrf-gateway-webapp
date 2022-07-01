@@ -31,7 +31,7 @@ class TaskTimeManager {
 	/**
 	 * @var array<string> CRON aliases
 	 */
-	private $aliases = ['@reboot', '@yearly', '@annually', '@monthly', '@weekly', '@daily', '@hourly'];
+	private array $aliases = ['@reboot', '@yearly', '@annually', '@monthly', '@weekly', '@daily', '@hourly'];
 
 	/**
 	 * Converts a cron time from a string to an array
@@ -42,7 +42,7 @@ class TaskTimeManager {
 		if (is_array($cron)) {
 			return;
 		}
-		$cron = Strings::replace(Strings::trim($cron), '~\?~', '*');
+		$cron = Strings::replace(Strings::trim($cron), '#\?#', '*');
 		if (in_array($cron, $this->aliases, true)) {
 			$cron = [$cron, '', '', '', '', '', ''];
 			return;

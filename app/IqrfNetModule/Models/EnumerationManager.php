@@ -33,12 +33,12 @@ class EnumerationManager {
 	/**
 	 * @var ApiRequest JSON API request
 	 */
-	private $request;
+	private ApiRequest $request;
 
 	/**
 	 * @var WebSocketClient WebSocket client
 	 */
-	private $wsClient;
+	private WebSocketClient $wsClient;
 
 	/**
 	 * Constructor

@@ -34,24 +34,24 @@ use Nette\Utils\JsonException;
 class IbmCloudManager implements IManager {
 
 	/**
-	 * CA certificate filename
+	 * @var string CA certificate filename
 	 */
 	private const CA_FILENAME = 'ibm-cloud-ca.crt';
 
 	/**
 	 * @var string Path to the certificates
 	 */
-	private $certPath;
+	private string $certPath;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
+	private GenericManager $configManager;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * Constructor

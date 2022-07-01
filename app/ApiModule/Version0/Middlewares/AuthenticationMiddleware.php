@@ -39,7 +39,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthenticationMiddleware implements IMiddleware {
 
 	/**
-	 * Whitelisted installer paths
+	 * @var array<string> Whitelisted installer paths
 	 */
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
@@ -48,7 +48,7 @@ class AuthenticationMiddleware implements IMiddleware {
 	];
 
 	/**
-	 * Whitelisted paths
+	 * @var array<string> Whitelisted paths
 	 */
 	private const WHITELISTED_PATHS = [
 		'/api/v0/installation',
@@ -61,12 +61,12 @@ class AuthenticationMiddleware implements IMiddleware {
 	/**
 	 * @var IAuthenticator Authenticator
 	 */
-	private $authenticator;
+	private IAuthenticator $authenticator;
 
 	/**
 	 * @var EntityManager Database entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * Constructor
@@ -127,10 +127,10 @@ class AuthenticationMiddleware implements IMiddleware {
 		if (in_array($requestUrl, self::WHITELISTED_PATHS, true)) {
 			return true;
 		}
-		if (Strings::match($requestUrl, '~^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$~') !== null) {
+		if (Strings::match($requestUrl, '#^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
 			return true;
 		}
-		if (Strings::match($requestUrl, '~^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$~') !== null) {
+		if (Strings::match($requestUrl, '#^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
 			return true;
 		}
 		return ($this->entityManager->getUserRepository()->count([]) === 0) &&

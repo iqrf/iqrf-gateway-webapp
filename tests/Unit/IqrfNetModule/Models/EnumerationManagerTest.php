@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\EnumerationManager
  * @covers App\IqrfNetModule\Models\EnumerationManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -37,14 +37,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class EnumerationManagerTest extends WebSocketTestCase {
 
 	/**
-	 * Network device address
+	 * @var int Network device address
 	 */
 	private const ADDRESS = 1;
 
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
-	private $manager;
+	private EnumerationManager $manager;
 
 	/**
 	 * Sets up the test environment

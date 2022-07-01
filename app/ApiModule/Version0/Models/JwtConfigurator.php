@@ -23,7 +23,7 @@ namespace App\ApiModule\Version0\Models;
 use App\GatewayModule\Models\CertificateManager;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha256;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
 use Throwable;
 use const OPENSSL_KEYTYPE_EC;
@@ -37,7 +37,7 @@ class JwtConfigurator {
 	/**
 	 * @var CertificateManager TLS certificate manager
 	 */
-	private $certificateManager;
+	private CertificateManager $certificateManager;
 
 	/**
 	 * Constructor
@@ -61,12 +61,12 @@ class JwtConfigurator {
 					$signer = new RsaSha256();
 					break;
 				case OPENSSL_KEYTYPE_EC:
-					$signer = new EcdsaSha256();
+					$signer = EcdsaSha256::create();
 					break;
 				default:
 					return Configuration::forUnsecuredSigner();
 			}
-			return Configuration::forAsymmetricSigner($signer, new Key($privateKey), new Key($publicKey));
+			return Configuration::forAsymmetricSigner($signer, InMemory::plainText($privateKey), InMemory::plainText($publicKey));
 		} catch (Throwable $e) {
 			return Configuration::forUnsecuredSigner();
 		}

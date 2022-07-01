@@ -3,7 +3,7 @@
 /**
  * TEST: App\InstallModule\Models\SudoManager
  * @covers App\InstallModule\Models\SudoManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,12 +39,15 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class SudoManagerTest extends CommandTestCase {
 
+	/**
+	 * @var string Command
+	 */
 	private const COMMAND = 'sudo -v';
 
 	/**
 	 * @var SudoManager Sudo manager
 	 */
-	private $manager;
+	private SudoManager $manager;
 
 	/**
 	 * Sets up the test environment

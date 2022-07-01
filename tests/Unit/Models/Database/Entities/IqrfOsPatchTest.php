@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\IqrfOsPatch
  * @covers App\Models\Database\Entities\IqrfOsPatch
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,45 +40,45 @@ class IqrfOsPatchTest extends TestCase {
 	/**
 	 * @var IqrfOsPatch IqrfOsPatch entity
 	 */
-	private $iqrfOsPatch;
+	private IqrfOsPatch $iqrfOsPatch;
 
 	/**
-	 * IqrfOsPatch module type
+	 * @var string IQRF module type
 	 */
 	private const MODULE_TYPE = 'TR7x';
 
 	/**
-	 * IqrfOsPatch from OS version
+	 * @var int From IQRF OS version
 	 */
 	private const FROM_OS_VERSION = 307;
 
 	/**
-	 * IqrfOsPatch from OS build
+	 * @var int From IQRF OS build
 	 */
 	private const FROM_OS_BUILD = 2160;
 
 	/**
-	 * IqrfOsPatch to OS version
+	 * @var int To IQRF OS version
 	 */
 	private const TO_OS_VERSION = 400;
 
 	/**
-	 * IqrfOsPatch to OS build
+	 * @var int To IQRF OS build
 	 */
 	private const TO_OS_BUILD = 2225;
 
 	/**
-	 * IqrfOsPatch part number
+	 * @var int Patch part number
 	 */
 	private const PART_NUMBER = 1;
 
 	/**
-	 * IqrfOsPatch parts
+	 * @var int Patch parts
 	 */
 	private const PARTS = 1;
 
 	/**
-	 * IqrfOsPatch file name
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'OS-TR7x-307(2160)-400(2225).iqrf';
 

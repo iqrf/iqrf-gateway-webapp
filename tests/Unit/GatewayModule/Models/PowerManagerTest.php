@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PowerManager
  * @covers App\GatewayModule\Models\PowerManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,7 +40,7 @@ final class PowerManagerTest extends CommandTestCase {
 	/**
 	 * @var PowerManager Tool for powering off and rebooting IQRF Gateway
 	 */
-	private $manager;
+	private PowerManager $manager;
 
 	/**
 	 * Sets up the test environment

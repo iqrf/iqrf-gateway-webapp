@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Entities\CommandStack
  * @covers App\CoreModule\Entities\CommandStack
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,19 +40,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class CommandStackTest extends TestCase {
 
 	/**
-	 * Command
+	 * @var string Command
 	 */
 	private const COMMAND = 'ls -al';
 
 	/**
 	 * @var Command Command entity
 	 */
-	private $entity;
+	private Command $entity;
 
 	/**
 	 * @var CommandStack Command stack
 	 */
-	private $stack;
+	private CommandStack $stack;
 
 	/**
 	 * Tests the function to return commands in stack (empty stack)

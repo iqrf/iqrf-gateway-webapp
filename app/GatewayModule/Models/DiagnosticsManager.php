@@ -39,32 +39,32 @@ class DiagnosticsManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
 	 */
-	private $daemonDirectories;
+	private DaemonDirectories $daemonDirectories;
 
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
-	private $enumerationManager;
+	private EnumerationManager $enumerationManager;
 
 	/**
 	 * @var GatewayInfoUtil Gateway info manager
 	 */
-	private $gwInfo;
+	private GatewayInfoUtil $gwInfo;
 
 	/**
 	 * @var InfoManager Gateway info manager
 	 */
-	private $infoManager;
+	private InfoManager $infoManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
-	private $zipManager;
+	private ZipArchiveManager $zipManager;
 
 	/**
 	 * Constructor
@@ -88,10 +88,10 @@ class DiagnosticsManager {
 	 */
 	public function createArchive(): string {
 		try {
-			$now = new DateTime();
-			$gwId = $this->gwInfo->getProperty('gwId');
-			$gwId = $gwId === null ? '' : strtolower($gwId) . '_';
-			$path = '/tmp/iqrf-gateway-diagnostics_' . $gwId . $now->format('c') . '.zip';
+			$date = new DateTime();
+			$gwId = $this->gwInfo->getId();
+			$gwId = strtolower($gwId) . '_';
+			$path = sprintf('/tmp/iqrf-gateway-diagnostics_%s_%s.zip', strtolower($gwId), $date->format('c'));
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-diagnostics.zip';
 		}
@@ -230,10 +230,9 @@ class DiagnosticsManager {
 	 * Adds logs of IQRF Gateway Uploader
 	 */
 	public function addUploaderLog(): void {
-		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
-			if (file_exists('/var/log/iqrf-gateway-uploader.log')) {
-				$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
-			}
+		if ($this->commandManager->commandExist('iqrf-gateway-uploader') &&
+			file_exists('/var/log/iqrf-gateway-uploader.log')) {
+			$this->zipManager->addFile('/var/log/iqrf-gateway-uploader.log', 'logs/iqrf-gateway-uploader.log');
 		}
 	}
 
@@ -256,7 +255,7 @@ class DiagnosticsManager {
 	}
 
 	public function addSyslog(): void {
-		$product = $this->gwInfo->getProperty('gwImage');
+		$product = $this->gwInfo->getImage();
 		if (Strings::contains($product, 'armbian')) {
 				$this->commandManager->run('mkdir -p /tmp/syslog/log.hdd/', true);
 				$this->commandManager->run('cp /var/log.hdd/syslog* /tmp/syslog/log.hdd/', true);
@@ -274,7 +273,7 @@ class DiagnosticsManager {
 	public function addInstalledPackages(): void {
 		if ($this->commandManager->commandExist('apt')) {
 			$command = $this->commandManager->run('apt list --installed', true);
-			$packages = Strings::replace($command->getStdout(), '/Listing...\n/');
+			$packages = Strings::replace($command->getStdout(), '#Listing...\n#');
 			$this->zipManager->addFileFromText('installed_packages.txt', $packages);
 		}
 	}

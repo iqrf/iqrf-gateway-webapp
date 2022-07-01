@@ -34,10 +34,11 @@ class OpenApiSpecificationCommand extends Command {
 	/**
 	 * @var OpenApiSchemaBuilder OpenAPI schema builder
 	 */
-	private $schemaBuilder;
+	private OpenApiSchemaBuilder $schemaBuilder;
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'open-api:specification';
 

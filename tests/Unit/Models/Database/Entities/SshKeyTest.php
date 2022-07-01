@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\SshKey
  * @covers App\Models\Database\Entities\SshKey
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,29 +39,29 @@ require __DIR__ . '/../../../../bootstrap.php';
 class SshKeyTest extends TestCase {
 
 	/**
-	 * SSH key description
+	 * @var string SSH key description
 	 */
 	private const DESCRIPTION = 'test-key';
 
 	/**
-	 * SSH key type
+	 * @var string SSH key type
 	 */
 	private const KEY_TYPE = 'ssh-rsa';
 
 	/**
-	 * SSH key hash
+	 * @var string SSH key hash
 	 */
 	private const KEY_HASH = 'SHA256:JNjbaNWv2Nau8+R75Eq4f9j2JDdxS8fpFPp9cZVAcV0';
 
 	/**
-	 * SSH public key
+	 * @var string SSH public key
 	 */
 	private const PUBLIC_KEY = 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCqql6MzstZYh1TmWWv11q5O3pISj2ZFl9HgH1JLknLLx44+tXfJ7mIrKNxOOwxIxvcBF8PXSYvobFYEZjGIVCEAjrUzLiIxbyCoxVyle7Q+bqgZ8SeeM8wzytsY+dVGcBxF6N4JS+zVk5eMcV385gG3Y6ON3EG112n6d+SMXY0OEBIcO6x+PnUSGHrSgpBgX7Ks1r7xqFa7heJLLt2wWwkARptX7udSq05paBhcpB0pHtA1Rfz3K2B+ZVIpSDfki9UVKzT8JUmwW6NNzSgxUfQHGwnW7kj4jp4AT0VZk3ADw497M2G/12N0PPB5CnhHf7ovgy6nL1ikrygTKRFmNZISvAcywB9GVqNAVE+ZHDSCuURNsAInVzgYo9xgJDW8wUw2o8U77+xiFxgI5QSZX3Iq7YLMgeksaO4rBJEa54k8m5wEiEE1nUhLuJ0X/vh2xPff6SQ1BL/zkOhvJCACK6Vb15mDOeCSq54Cr7kvS46itMosi/uS66+PujOO+xt/2FWYepz6ZlN70bRly57Q06J+ZJoc9FfBCbCyYH7U/ASsmY095ywPsBo1XQ9PqhnN1/YOorJ068foQDNVpm146mUpILVxmq41Cj55YKHEazXGsdBIbXWhcrRf4G2fJLRcGUr9q8/lERo9oxRm5JFX6TCmj6kmiFqv+Ow9gI0x8GvaQ==';
 
 	/**
 	 * @var SshKey SSH key entity
 	 */
-	private $entity;
+	private SshKey $entity;
 
 	/**
 	 * Sets up the test environment

@@ -38,46 +38,46 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * @var string Peer public key
-	 * @ORM\Column(type="string", length=255, nullable=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
-	private $publicKey;
+	private string $publicKey;
 
 	/**
 	 * @var string|null Peer pre-shared key
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $psk;
+	private ?string $psk;
 
 	/**
 	 * @var int Peer keepalive interval
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
-	private $keepalive;
+	private int $keepalive;
 
 	/**
 	 * @var string Peer endpoint
-	 * @ORM\Column(type="string", length=255, nullable=false)
+	 * @ORM\Column(type="string", length=255)
 	 */
-	private $endpoint;
+	private string $endpoint;
 
 	/**
 	 * @var int Peer listen port
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
-	private $port;
+	private int $port;
 
 	/**
 	 * @var WireguardInterface Interface
 	 * @ORM\ManyToOne(targetEntity="WireguardInterface", inversedBy="peers")
-	 * @ORM\JoinColumn(name="interface_id", referencedColumnName="id")
+	 * @ORM\JoinColumn(name="interface_id")
 	 */
-	private $interface;
+	private WireguardInterface $interface;
 
 	/**
 	 * @var Collection<int, WireguardPeerAddress> Peer allowed IPs
 	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist"}, orphanRemoval=true)
 	 */
-	private $addresses;
+	private Collection $addresses;
 
 	/**
 	 * Constructor
@@ -268,9 +268,7 @@ class WireguardPeer implements JsonSerializable {
 			' allowed-ips %s',
 			implode(
 				',',
-				array_map(function (WireguardPeerAddress $addr): string {
-					return $addr->getAddress()->toString();
-				}, $this->getAddresses()->toArray())
+				array_map(fn (WireguardPeerAddress $addr): string => $addr->getAddress()->toString(), $this->getAddresses()->toArray())
 			)
 		);
 		return $command;

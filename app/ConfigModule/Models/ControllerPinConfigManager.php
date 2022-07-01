@@ -34,12 +34,12 @@ class ControllerPinConfigManager {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var ControllerPinConfigurationRepository Controller pins repository
 	 */
-	private $repository;
+	private ControllerPinConfigurationRepository $repository;
 
 	/**
 	 * Constructor
@@ -62,6 +62,7 @@ class ControllerPinConfigManager {
 	 * Returns a Controller pin configuration profile
 	 * @param int $id Controller pin configuration profile ID
 	 * @return ControllerPinConfiguration DB entity
+	 * @throws ControllerPinConfigNotFoundException
 	 */
 	public function getPinConfig(int $id): ControllerPinConfiguration {
 		return $this->findPinConfig($id);
@@ -89,6 +90,7 @@ class ControllerPinConfigManager {
 	 * Edits a Controller pin configuration profile
 	 * @param int $id Controller pin configuration profile ID
 	 * @param stdClass $json Configuration json object
+	 * @throws ControllerPinConfigNotFoundException
 	 */
 	public function editPinConfig(int $id, stdClass $json): void {
 		$profile = $this->findPinConfig($id);
@@ -105,6 +107,7 @@ class ControllerPinConfigManager {
 	/**
 	 * Removes Controller pin configuration profile
 	 * @param int $id Controller pin configuration profile ID
+	 * @throws ControllerPinConfigNotFoundException
 	 */
 	public function removePinConfig(int $id): void {
 		$profile = $this->findPinConfig($id);
@@ -116,6 +119,7 @@ class ControllerPinConfigManager {
 	 * Finds Controller pin configuration profile in database
 	 * @param int $id Controller pin configuration profile ID
 	 * @return ControllerPinConfiguration DB entity
+	 * @throws ControllerPinConfigNotFoundException
 	 */
 	private function findPinConfig(int $id): ControllerPinConfiguration {
 		$profile = $this->repository->find($id);

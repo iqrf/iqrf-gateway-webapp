@@ -33,42 +33,42 @@ final class WifiNetwork implements JsonSerializable {
 	/**
 	 * @var bool Is in use?
 	 */
-	private $inUse;
+	private bool $inUse;
 
 	/**
 	 * @var string BSSID (MAC address)
 	 */
-	private $bssid;
+	private string $bssid;
 
 	/**
 	 * @var string SSID
 	 */
-	private $ssid;
+	private string $ssid;
 
 	/**
 	 * @var WifiMode Mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
 	 * @var int Channel
 	 */
-	private $channel;
+	private int $channel;
 
 	/**
 	 * @var string Speed rate
 	 */
-	private $rate;
+	private string $rate;
 
 	/**
 	 * @var int Signal strength
 	 */
-	private $signal;
+	private int $signal;
 
 	/**
 	 * @var WifiSecurity Security
 	 */
-	private $security;
+	private WifiSecurity $security;
 
 	/**
 	 * Constructor
@@ -162,11 +162,11 @@ final class WifiNetwork implements JsonSerializable {
 	 * @return WifiNetwork WiFi network
 	 */
 	public static function nmCliDeserialize(string $nmCli): self {
-		$pattern = '/^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'bars\'[^:]*):(?\'security\'[^:]*)$/';
+		$pattern = '#^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'bars\'[^:]*):(?\'security\'[^:]*)$#';
 		$matches = Strings::match($nmCli, $pattern);
 		$inUse = $matches['inUse'] === '*';
-		$bssid = Strings::replace($matches['bssid'], '/\\\\:/', ':');
-		$ssid = Strings::replace($matches['ssid'], '/\\\\:/', ':');
+		$bssid = Strings::replace($matches['bssid'], '#\\\\:#', ':');
+		$ssid = Strings::replace($matches['ssid'], '#\\\\:#', ':');
 		$mode = WifiMode::fromNetworkList($matches['mode']);
 		$channel = (int) $matches['channel'];
 		$signal = (int) $matches['signal'];
@@ -176,7 +176,7 @@ final class WifiNetwork implements JsonSerializable {
 
 	/**
 	 * Serializes WiFi network entity into JSON
-	 * @return array<string, bool|int|string> JSON serialized entity
+	 * @return array{inUse: bool, bssid: string, ssid: string, mode: string, channel: int, rate: string, signal: int, security: string} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

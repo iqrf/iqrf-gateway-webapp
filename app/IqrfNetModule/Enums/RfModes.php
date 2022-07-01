@@ -33,12 +33,12 @@ final class RfModes extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Low power RF mode
+	 * @var string Low power RF mode
 	 */
 	private const LP = 'LP';
 
 	/**
-	 * Standard RF mode
+	 * @var string Standard RF mode
 	 */
 	private const STD = 'STD';
 

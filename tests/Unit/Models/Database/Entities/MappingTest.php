@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\Mapping
  * @covers App\Models\Database\Entities\Mapping
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,60 +40,60 @@ class MappingTest extends TestCase {
 	/**
 	 * @var Mapping Mapping entity
 	 */
-	private $mapping;
+	private Mapping $mapping;
 
 	/**
 	 * @var Mapping Mapping entity for Gateway
 	 */
-	private $mappingGw;
+	private Mapping $mappingGw;
 
 	/**
-	 * Mapping type
+	 * @var string Mapping type
 	 */
 	private const TYPE = 'uart';
 
 	/**
-	 * Mapping name
+	 * @var string Mapping name
 	 */
 	private const NAME = 'Test mapping 1';
 
 	/**
-	 * Mapping device name
+	 * @var string Mapping device name
 	 */
 	private const INTERFACE = '/dev/ttyS0';
 
 	/**
-	 * Mapping bus enable pin number
+	 * @var int Mapping bus enable pin number
 	 */
 	private const BUS_PIN = 19;
 
 	/**
-	 * Mapping programming mode switch pin number
+	 * @var int Mapping programming mode switch pin number
 	 */
 	private const PGM_PIN = -1;
 
 	/**
-	 * Mapping power enable pin number
+	 * @var int Mapping power enable pin number
 	 */
 	private const POWER_PIN = 3;
 
 	/**
-	 * Mapping UART baud rate
+	 * @var int Mapping UART baud rate
 	 */
 	private const UART_BAUD_RATE = 57600;
 
 	/**
-	 * Mapping I2C interface enable pin number
+	 * @var int Mapping I2C interface enable pin number
 	 */
 	private const I2C_PIN = 7;
 
 	/**
-	 * Mapping SPI interface enable pin number
+	 * @var int Mapping SPI interface enable pin number
 	 */
 	private const SPI_PIN = 10;
 
 	/**
-	 * Mapping UART interface enable pin number
+	 * @var int Mapping UART interface enable pin number
 	 */
 	private const UART_PIN = 6;
 
@@ -206,8 +206,8 @@ class MappingTest extends TestCase {
 	 */
 	public function testSetBaudRateValid(): void {
 		$expected = 19200;
-		$this->mapping->setBaudRate($expected = 19200);
-		Assert::same($expected = 19200, $this->mapping->getBaudRate());
+		$this->mapping->setBaudRate($expected);
+		Assert::same($expected, $this->mapping->getBaudRate());
 	}
 
 	/**

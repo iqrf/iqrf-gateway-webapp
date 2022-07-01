@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\SchedulerMigrationManager
  * @covers App\ConfigModule\Models\SchedulerMigrationManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -49,34 +49,34 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
-	 * Path to a directory with scheduler's configuration
+	 * @var string Path to a directory with scheduler's configuration
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/scheduler/';
 
 	/**
-	 * Path to a temporary directory with scheduler's configuration
+	 * @var string Path to a temporary directory with scheduler's configuration
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrations/scheduler/';
 
 	/**
-	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
+	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH = TESTER_DIR . '/data/iqrf-gateway-scheduler.zip';
 
 	/**
-	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 * @var string Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-scheduler.zip';
 
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var SchedulerMigrationManager Configuration migration manager
 	 */
-	private $manager;
+	private SchedulerMigrationManager $manager;
 
 	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive

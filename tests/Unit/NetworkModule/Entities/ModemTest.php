@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\Modem
  * @covers App\NetworkModule\Entities\Modem
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,24 +39,24 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ModemTest extends TestCase {
 
 	/**
-	 * Network interface
+	 * @var string Network interface
 	 */
 	private const NETWORK_INTERFACE = 'cdc-wdm0';
 
 	/**
-	 * Signal strength
+	 * @var int Signal strength
 	 */
 	private const SIGNAL = 75;
 
 	/**
-	 * RSSI
+	 * @var float RSSI
 	 */
 	private const RSSI = -55.0;
 
 	/**
 	 * @var Modem Modem entity
 	 */
-	private $entity;
+	private Modem $entity;
 
 	/**
 	 * Sets up the testing environment

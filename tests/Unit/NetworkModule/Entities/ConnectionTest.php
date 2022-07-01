@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\Connection
  * @covers App\NetworkModule\Entities\Connection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -41,29 +41,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionTest extends TestCase {
 
 	/**
-	 * Network connection name
+	 * @var string Network connection name
 	 */
 	private const NAME = 'eth0';
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const INTERFACE = 'eth0';
 
 	/**
 	 * @var Connection Network connection entity
 	 */
-	private $entity;
+	private Connection $entity;
 
 	/**
 	 * Sets up the test environment

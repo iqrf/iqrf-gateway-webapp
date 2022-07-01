@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Enums\WifiSecurityType
  * @covers App\NetworkModule\Enums\WifiSecurityType
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -38,99 +38,81 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiSecurityTypeTest extends TestCase {
 
 	/**
-	 * Tests the function to deserialize WiFi security type from nmcli configuration string - Open
+	 * Returns list of test data for testNmCliDeserialize() method
+	 * @return array<array<WifiSecurityType|string>> List of test data for testNmCliDeserialize() method
 	 */
-	public function testNmCliDeserializeOpen(): void {
-		$expected = WifiSecurityType::OPEN();
-		$nmCli = '';
+	public function getNmCliDeserializeData(): array {
+		return [
+			[
+				WifiSecurityType::OPEN(),
+				'',
+			],
+			[
+				WifiSecurityType::LEAP(),
+				'802-11-wireless-security.key-mgmt:ieee8021x' . PHP_EOL . '802-11-wireless-security.auth-alg:leap',
+			],
+			[
+				WifiSecurityType::WEP(),
+				'802-11-wireless-security.key-mgmt:none' . PHP_EOL . '802-11-wireless-security.auth-alg:open',
+			],
+			[
+				WifiSecurityType::WPA_EAP(),
+				'802-11-wireless-security.key-mgmt:wpa-eap',
+			],
+			[
+				WifiSecurityType::WPA_PSK(),
+				'802-11-wireless-security.key-mgmt:wpa-psk',
+			],
+		];
+	}
+
+	/**
+	 * Tests the function to deserialize WiFi security type from nmcli configuration string
+	 * @dataProvider getNmCliDeserializeData
+	 * @param WifiSecurityType $expected Expected WiFi security entity
+	 * @param string $nmCli nmcli configuration string
+	 */
+	public function testNmCliDeserialize(WifiSecurityType $expected, string $nmCli): void {
 		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
 		Assert::same($expected, $actual);
 	}
 
 	/**
-	 * Tests the function to deserialize WiFi security type from nmcli configuration string - Cisco LEAP
+	 * Returns list of test data for testNmCliSerialize() method
+	 * @return array<array<string|WifiSecurityType>> List of test data for testNmCliSerialize() method
 	 */
-	public function testNmCliDeserializeLeap(): void {
-		$expected = WifiSecurityType::LEAP();
-		$nmCli = '802-11-wireless-security.key-mgmt:ieee8021x' .
-			PHP_EOL . '802-11-wireless-security.auth-alg:leap';
-		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
-		Assert::same($expected, $actual);
+	public function getNmCliSerializeData(): array {
+		return [
+			[
+				'',
+				WifiSecurityType::OPEN(),
+			],
+			[
+				'802-11-wireless-security.key-mgmt "ieee8021x" 802-11-wireless-security.auth-alg "leap" ',
+				WifiSecurityType::LEAP(),
+			],
+			[
+				'802-11-wireless-security.key-mgmt "none" 802-11-wireless-security.auth-alg "open" ',
+				WifiSecurityType::WEP(),
+			],
+			[
+				'802-11-wireless-security.key-mgmt "wpa-eap" ',
+				WifiSecurityType::WPA_EAP(),
+			],
+			[
+				'802-11-wireless-security.key-mgmt "wpa-psk" ',
+				WifiSecurityType::WPA_PSK(),
+			],
+		];
 	}
 
 	/**
-	 * Tests the function to deserialize WiFi security type from nmcli configuration string - WEP
+	 * Tests the function to serialize WiFi security type into nmcli configuration string
+	 * @dataProvider getNmCliSerializeData
+	 * @param string $expected Expected nmcli configuration string,
+	 * @param WifiSecurityType $type WiFi security type
 	 */
-	public function testNmCliDeserializeWep(): void {
-		$expected = WifiSecurityType::WEP();
-		$nmCli = '802-11-wireless-security.key-mgmt:none' .
-			PHP_EOL . '802-11-wireless-security.auth-alg:open';
-		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
-		Assert::same($expected, $actual);
-	}
-
-	/**
-	 * Tests the function to deserialize WiFi security type from nmcli configuration string - WPA-EAP
-	 */
-	public function testNmCliDeserializeWpaEap(): void {
-		$expected = WifiSecurityType::WPA_EAP();
-		$nmCli = '802-11-wireless-security.key-mgmt:wpa-eap';
-		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
-		Assert::same($expected, $actual);
-	}
-
-	/**
-	 * Tests the function to deserialize WiFi security type from nmcli configuration string - WPA-PSK
-	 */
-	public function testNmCliDeserializeWpaPsk(): void {
-		$expected = WifiSecurityType::WPA_PSK();
-		$nmCli = '802-11-wireless-security.key-mgmt:wpa-psk';
-		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
-		Assert::same($expected, $actual);
-	}
-
-	/**
-	 * Tests the function to serialize WiFi security type into nmcli configuration string - Open
-	 */
-	public function testNmCliSerializeOpen(): void {
-		$expected = '';
-		$type = WifiSecurityType::OPEN();
-		Assert::same($expected, $type->nmCliSerialize());
-	}
-
-	/**
-	 * Tests the function to serialize WiFi security type into nmcli configuration string - Cisco LEAP
-	 */
-	public function testNmCliSerializeLeap(): void {
-		$expected = '802-11-wireless-security.key-mgmt "ieee8021x" 802-11-wireless-security.auth-alg "leap" ';
-		$type = WifiSecurityType::LEAP();
-		Assert::same($expected, $type->nmCliSerialize());
-	}
-
-	/**
-	 * Tests the function to serialize WiFi security type into nmcli configuration string - WEP
-	 */
-	public function testNmCliSerializeWep(): void {
-		$expected = '802-11-wireless-security.key-mgmt "none" 802-11-wireless-security.auth-alg "open" ';
-		$type = WifiSecurityType::WEP();
-		Assert::same($expected, $type->nmCliSerialize());
-	}
-
-	/**
-	 * Tests the function to serialize WiFi security type into nmcli configuration string - WPA-EAP
-	 */
-	public function testNmCliSerializeWpaEap(): void {
-		$expected = '802-11-wireless-security.key-mgmt "wpa-eap" ';
-		$type = WifiSecurityType::WPA_EAP();
-		Assert::same($expected, $type->nmCliSerialize());
-	}
-
-	/**
-	 * Tests the function to serialize WiFi security type into nmcli configuration string - WPA-PSK
-	 */
-	public function testNmCliSerializeWpaPsk(): void {
-		$expected = '802-11-wireless-security.key-mgmt "wpa-psk" ';
-		$type = WifiSecurityType::WPA_PSK();
+	public function testNmCliSerialize(string $expected, WifiSecurityType $type): void {
 		Assert::same($expected, $type->nmCliSerialize());
 	}
 

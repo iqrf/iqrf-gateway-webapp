@@ -34,6 +34,7 @@ class WireguardActivateCommand extends WireguardCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'wireguard:activate';
 

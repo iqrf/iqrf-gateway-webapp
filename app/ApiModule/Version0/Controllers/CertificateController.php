@@ -42,7 +42,7 @@ class CertificateController extends BaseController {
 	/**
 	 * @var CertificateManager TLS certificate manager
 	 */
-	private $manager;
+	private CertificateManager $manager;
 
 	/**
 	 * Constructor

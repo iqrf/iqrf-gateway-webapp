@@ -30,12 +30,12 @@ class IPv4Address {
 	/**
 	 * @var IPv4 IPv4 address
 	 */
-	private $address;
+	private IPv4 $address;
 
 	/**
 	 * @var int IPv4 address prefix
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
 	 * IPv4 address entity constructor
@@ -117,7 +117,7 @@ class IPv4Address {
 
 	/**
 	 * Converts the IPv4 address entity to an array
-	 * @return array<string, int|string> IPv4 address entity in the array
+	 * @return array{address: string, prefix: int, mask: string} IPv4 address entity in the array
 	 */
 	public function toArray(): array {
 		return [

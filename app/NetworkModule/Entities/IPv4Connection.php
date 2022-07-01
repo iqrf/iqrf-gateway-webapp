@@ -32,39 +32,39 @@ use stdClass;
 final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
-	 * nmcli current configuration prefix
+	 * @var string nmcli current configuration prefix
 	 */
 	private const NMCLI_CURRENT_PREFIX = 'IP4';
 
 	/**
 	 * @var IPv4Methods Connection method
 	 */
-	private $method;
+	private IPv4Methods $method;
 
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv4|null IPv4 gateway address
 	 */
-	private $gateway;
+	private ?IPv4 $gateway;
 
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv4Current|null Current IPv4 configuration
 	 */
-	private $current;
+	private ?IPv4Current $current;
 
 	/**
 	 * IPv4 connection entity constructor
@@ -91,7 +91,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$method = IPv4Methods::fromScalar($json->method);
 		$addresses = [];
 		foreach ($json->addresses as $address) {
-			if (($address->address !== '')) {
+			if ($address->address !== '') {
 				if (isset($address->prefix)) {
 					$addresses[] = new IPv4Address(IPv4::factory($address->address), $address->prefix);
 				} elseif (isset($address->mask)) {
@@ -111,18 +111,14 @@ final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes IPv4 connection entity into JSON
-	 * @return array<string, array<string, string>|array<int, array<string, int|string>>|int|string|null> JSON serialized entity
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv4Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
+			'addresses' => array_map(fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(function (IPv4 $a): array {
-				return ['address' => $a->getDotAddress()];
-			}, $this->dns),
+			'dns' => array_map(fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 		if ($this->current !== null) {
 			$array['current'] = $this->current->jsonSerialize();
@@ -140,33 +136,23 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];
 		if ($array['addresses'] !== '') {
-			foreach (explode(',', $array['addresses']) as $address) {
-				$addresses[] = IPv4Address::fromPrefix($address);
-			}
+			$addresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), explode(',', $array['addresses']));
 		}
 		$gateway = $array['gateway'] !== '' ? IPv4::factory($array['gateway']) : null;
 		$dns = [];
 		if ($array['dns'] !== '') {
-			foreach (explode(',', $array['dns']) as $server) {
-				$dns[] = IPv4::factory($server);
-			}
+			$dns = array_map(fn (string $address): IPv4 => IPv4::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv4Methods::AUTO()) {
 			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
-			$currentAddresses = [];
 			if (array_key_exists('address', $config)) {
-				foreach ($config['address'] as $addr) {
-					$currentAddresses[] = IPv4Address::fromPrefix($addr);
-				}
+				$currentAddresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), array_values($config['address']));
 			}
 			$currentGateway = array_key_exists('gateway', $config) ? IPv4::factory($config['gateway']) : null;
-			$currentDns = [];
 			if (array_key_exists('dns', $config)) {
-				foreach ($config['dns'] as $addr) {
-					$currentDns[] = IPv4::factory($addr);
-				}
+				$currentDns = array_map(fn (string $address): IPv4 => IPv4::factory($address), array_values($config['dns']));
 			}
-			$current = new IPv4Current($currentAddresses, $currentGateway, $currentDns);
+			$current = new IPv4Current($currentAddresses ?? [], $currentGateway, $currentDns ?? []);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}
@@ -178,13 +164,9 @@ final class IPv4Connection implements INetworkManagerEntity {
 	public function nmCliSerialize(): string {
 		$array = [
 			'method' => $this->method->toScalar(),
-			'addresses' => implode(' ', array_map(function (IPv4Address $address): string {
-				return $address->toString();
-			}, $this->addresses)),
+			'addresses' => implode(' ', array_map(fn (IPv4Address $address): string => $address->toString(), $this->addresses)),
 			'gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
-			'dns' => implode(' ', array_map(function (IPv4 $ipv4): string {
-				return $ipv4->getDotAddress();
-			}, $this->dns)),
+			'dns' => implode(' ', array_map(fn (IPv4 $ipv4): string => $ipv4->getDotAddress(), $this->dns)),
 		];
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}

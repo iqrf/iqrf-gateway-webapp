@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -38,17 +38,17 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class LeapTest extends TestCase {
 
 	/**
-	 * LEAP username
+	 * @var string LEAP username
 	 */
 	private const USERNAME = 'name';
 
 	/**
-	 * LEAP password
+	 * @var string LEAP password
 	 */
 	private const PASSWORD = 'pass';
 
 	/**
-	 * JSON serialized entity
+	 * @var array{username: string, password: string} JSON serialized entity
 	 */
 	private const JSON = [
 		'username' => self::USERNAME,
@@ -58,7 +58,7 @@ final class LeapTest extends TestCase {
 	/**
 	 * @var Leap Cisco LEAP entity
 	 */
-	private $entity;
+	private Leap $entity;
 
 	/**
 	 * Sets up the test environment

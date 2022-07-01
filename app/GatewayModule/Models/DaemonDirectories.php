@@ -30,22 +30,22 @@ class DaemonDirectories {
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's cache
 	 */
-	private $cacheDir;
+	private string $cacheDir;
 
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
 	 */
-	private $configurationDir;
+	private string $configurationDir;
 
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's data
 	 */
-	private $dataDir;
+	private string $dataDir;
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $logDir;
+	private string $logDir;
 
 	/**
 	 * Constructor

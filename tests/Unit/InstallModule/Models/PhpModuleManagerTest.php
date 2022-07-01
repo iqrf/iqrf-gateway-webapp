@@ -3,7 +3,7 @@
 /**
  * TEST: App\InstallModule\Models\SudoManager
  * @covers App\InstallModule\Models\SudoManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -36,13 +36,6 @@ require __DIR__ . '/../../../bootstrap.php';
  * Tests for PHP modules manager
  */
 final class PhpModuleManagerTest extends TestCase {
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-	}
 
 	/**
 	 * Tests the function to check installed and loaded PHP modules

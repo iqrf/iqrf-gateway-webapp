@@ -31,6 +31,7 @@ class ApiKeyListCommand extends ApiKeyCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'api-key:list';
 

@@ -32,12 +32,12 @@ class MainManager {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var string File name (without .json)
 	 */
-	private $fileName = 'config';
+	private string $fileName = 'config';
 
 	/**
 	 * Constructor

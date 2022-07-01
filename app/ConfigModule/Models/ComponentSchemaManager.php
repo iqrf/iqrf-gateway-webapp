@@ -35,7 +35,7 @@ class ComponentSchemaManager extends JsonSchemaManager {
 	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchema(string $component): void {
-		$fileName = 'schema__' . Strings::replace($component, '~::~', '__');
+		$fileName = 'schema__' . Strings::replace($component, '#::#', '__');
 		parent::setSchema($fileName);
 	}
 

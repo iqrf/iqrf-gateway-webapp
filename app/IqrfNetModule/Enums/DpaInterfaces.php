@@ -33,12 +33,12 @@ final class DpaInterfaces extends Enum {
 	use AutoInstances;
 
 	/**
-	 * SPI interface
+	 * @var string SPI interface
 	 */
 	private const SPI = 'SPI';
 
 	/**
-	 * UART interface
+	 * @var string UART interface
 	 */
 	private const UART = 'UART';
 

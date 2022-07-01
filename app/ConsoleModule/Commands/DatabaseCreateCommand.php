@@ -32,13 +32,14 @@ class DatabaseCreateCommand extends Command {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'database:create';
 
 	/**
-	 * @var ManagerRegistry
+	 * @var ManagerRegistry Doctrine Persistence manager registry
 	 */
-	private $managerRegistry;
+	private ManagerRegistry $managerRegistry;
 
 	/**
 	 * Constructor

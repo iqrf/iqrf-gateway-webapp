@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\WifiConnection
  * @covers App\NetworkModule\Entities\WifiConnection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -45,14 +45,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var WifiConnection WiFi connection entity
 	 */
-	private $entity;
+	private WifiConnection $entity;
 
 	/**
 	 * Sets up the testing environment

@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentSchemaManager
  * @covers App\ConfigModule\Models\ComponentSchemaManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,29 +43,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentSchemaManagerTest extends TestCase {
 
 	/**
-	 * MQTT component name
+	 * @var string MQTT component name
 	 */
 	private const COMPONENT_NAME = 'iqrf::MqttMessaging';
 
 	/**
-	 * Directory with configuration files
+	 * @var string Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * JSON schema directory path
+	 * @var string JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $fileManager;
+	private JsonFileManager $fileManager;
 
 	/**
 	 * @var ComponentSchemaManager Component JSON schema manager
 	 */
-	private $manager;
+	private ComponentSchemaManager $manager;
 
 	/**
 	 * Tests the function to set file name of JSON schema from component name (fail)

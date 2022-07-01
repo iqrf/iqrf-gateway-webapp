@@ -36,32 +36,32 @@ class LogManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
-	 * IQRF Gateway Controller log file name
+	 * @var string IQRF Gateway Controller log file name
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * IQRF Gateway Uploader log file name
+	 * @var string IQRF Gateway Uploader log file name
 	 */
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $daemonLogDir;
+	private string $daemonLogDir;
 
 	/**
 	 * @var string Path to a general directory with log files
 	 */
-	private $logDir;
+	private string $logDir;
 
 	/**
 	 * @var string Path to ZIP archive
 	 */
-	private $path = '/tmp/iqrf-gateway-logs.zip';
+	private string $path = '/tmp/iqrf-gateway-logs.zip';
 
 	/**
 	 * Constructor

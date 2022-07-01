@@ -38,7 +38,7 @@ class InterfacesController extends IqrfController {
 	/**
 	 * @var IqrfManager IQRF interfaces manager
 	 */
-	private $manager;
+	private IqrfManager $manager;
 
 	/**
 	 * Constructor

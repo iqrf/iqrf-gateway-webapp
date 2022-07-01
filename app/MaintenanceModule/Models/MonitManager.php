@@ -32,10 +32,10 @@ class MonitManager {
 	/**
 	 * @var IFileManager $fileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
-	 * Monit configuration file
+	 * @var string Monit configuration file
 	 */
 	private const CONF_FILE = 'monitrc';
 
@@ -49,14 +49,13 @@ class MonitManager {
 
 	/**
 	 * Parses configuration file and returns configuration as array
-	 * @return array<string, string> Monit configuration array
+	 * @return array{endpoint: string, username: string, password: string} Monit configuration array
+	 * @throws MonitConfigErrorException
 	 */
 	public function getConfig(): array {
 		$configArray = explode(PHP_EOL, $this->readConfig());
-		$configArray = array_filter($configArray, function ($item): bool {
-			return !Strings::startsWith($item, '#');
-		});
-		$pattern = '/^(set\smmonit\shttps?:\/\/)(\w+)(\:)(\w+)(@)([0-9a-zA-Z\-\_\.\/]+)$/';
+		$configArray = array_filter($configArray, fn (string $item): bool => !Strings::startsWith($item, '#'));
+		$pattern = '#^(set\smmonit\shttps?:\/\/)(\w+)(\:)(\w+)(@)([0-9a-zA-Z\-\_\.\/]+)$#';
 		foreach ($configArray as $item) {
 			$matches = Strings::match($item, $pattern);
 			if ($matches !== null) {
@@ -75,7 +74,8 @@ class MonitManager {
 
 	/**
 	 * Saves new monit configuration
-	 * @param array<string, string> $newConfig New monit configuration
+	 * @param array{endpoint: mixed, username: mixed, password: mixed} $newConfig New monit configuration
+	 * @throws MonitConfigErrorException
 	 */
 	public function saveConfig(array $newConfig): void {
 		$configArray = explode(PHP_EOL, $this->readConfig());

@@ -39,12 +39,12 @@ class SchedulerMigrationManager {
 	/**
 	 * @var string Path to a directory with scheduler's configuration
 	 */
-	private $configDirectory;
+	private string $configDirectory;
 
 	/**
 	 * @var SchedulerSchemaManager Scheduler JSON schema manager
 	 */
-	private $schemaManager;
+	private SchedulerSchemaManager $schemaManager;
 
 	/**
 	 * Constructor

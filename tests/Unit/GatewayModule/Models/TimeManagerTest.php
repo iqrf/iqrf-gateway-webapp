@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\TimeManager
  * @covers App\GatewayModule\Models\TimeManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TimeManagerTest extends CommandTestCase {
 
 	/**
-	 * Commands to be executed
+	 * @var array<string, string> Commands to be executed
 	 */
 	private const COMMANDS = [
 		'timestamp' => 'date +%s',
@@ -55,7 +55,7 @@ final class TimeManagerTest extends CommandTestCase {
 	/**
 	 * @var TimeManager Time manager
 	 */
-	private $manager;
+	private TimeManager $manager;
 
 	/**
 	 * Sets up test environment
@@ -70,7 +70,7 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	public function testCurrentTime(): void {
 		$expected = [
-			'timestamp' => 1613756375,
+			'timestamp' => 1_613_756_375,
 			'ntpSynchronized' => true,
 			'name' => 'UTC',
 			'code' => 'UTC',
@@ -99,7 +99,7 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to get current timestamp
 	 */
 	public function testGetTimestamp(): void {
-		$timestamp = 1613756375;
+		$timestamp = 1_613_756_375;
 		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
 		$this->commandManager->shouldReceive('run')
 			->withArgs([self::COMMANDS['timestamp']])

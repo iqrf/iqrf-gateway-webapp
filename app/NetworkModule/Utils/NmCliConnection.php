@@ -45,7 +45,7 @@ class NmCliConnection {
 			}
 			$key = Strings::lower(Strings::replace($temp[0], '~' . $prefix . '\.~', ''));
 			if (Strings::contains($key, '[')) {
-				[$key, $idx] = Strings::split($key, '/\[(\d)\]/');
+				[$key, $idx] = Strings::split($key, '#\[(\d)\]#');
 				$config[$key][$idx] = $temp[1];
 			} else {
 				$config[$key] = $temp[1];

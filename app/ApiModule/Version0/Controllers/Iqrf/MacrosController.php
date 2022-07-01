@@ -38,7 +38,7 @@ class MacrosController extends IqrfController {
 	/**
 	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
-	private $macroParser;
+	private MacroFileParser $macroParser;
 
 	/**
 	 * Constructor

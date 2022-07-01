@@ -43,7 +43,7 @@ class MonitController extends BaseConfigController {
 	/**
 	 * @var MonitManager $manager Monit manager
 	 */
-	private $manager;
+	private MonitManager $manager;
 
 	/**
 	 * Constructor

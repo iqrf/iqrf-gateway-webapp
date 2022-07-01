@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\TaskTimeManager
  * @covers App\ConfigModule\Models\TaskTimeManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\TaskTimeManager;
+use stdClass;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -40,7 +41,7 @@ final class TaskTimeManagerTest extends TestCase {
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
-	private $manager;
+	private TaskTimeManager $manager;
 
 	/**
 	 * Sets up the test environment
@@ -50,127 +51,105 @@ final class TaskTimeManagerTest extends TestCase {
 	}
 
 	/**
+	 * Returns list of test data for getCronToArray() method
+	 * @return array<array<stdClass>> List of test data for getCronToArray() method
+	 */
+	public function getCronToArrayData(): array {
+		return [
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '@daily',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['@daily', '', '', '', '', '', ''],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '@invalid',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['', '', '', '', '', '', ''],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '0 0 * * *',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '0 0 0 * * *',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '0 0 * * * 2020',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['0', '0', '0', '*', '*', '*', '2020'],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => '0 0 12 ? * 1,2,3,4,5 *',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['0', '0', '12', '*', '*', '1,2,3,4,5', '*'],
+					],
+				],
+			],
+			[
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => 'INVALID *',
+					],
+				],
+				(object) [
+					'timeSpec' => (object) [
+						'cronTime' => ['', '', '', '', '', '', ''],
+					],
+				],
+			],
+		];
+	}
+
+	/**
 	 * Tests the function to convert CRON alias to an array
+	 * @dataProvider getCronToArrayData
+	 * @param stdClass $config Configuration to fix
+	 * @param stdClass $expected Expected configuration
 	 */
-	public function testCronToArrayAlias(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '@daily',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['@daily', '', '', '', '', '', ''],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert an invalid CRON alias to an array
-	 */
-	public function testCronToArrayAliasInvalid(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '@invalid',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['', '', '', '', '', '', ''],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert CRON without seconds and year section to an array
-	 */
-	public function testCronToArrayWithoutSecondsAndYear(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '0 0 * * *',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert CRON without year section to an array
-	 */
-	public function testCronToArrayWithoutYear(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '0 0 0 * * *',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert CRON without seconds section to an array
-	 */
-	public function testCronToArrayWithoutSeconds(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '0 0 * * * 2020',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['0', '0', '0', '*', '*', '*', '2020'],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert CRON with question mark to an array
-	 */
-	public function testCronToArrayWithQuestionMark(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => '0 0 12 ? * 1,2,3,4,5 *',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['0', '0', '12', '*', '*', '1,2,3,4,5', '*'],
-			],
-		];
-		$this->manager->cronToArray($config);
-		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to convert an invalid CRON to an array
-	 */
-	public function testCronToArrayInvalid(): void {
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => 'INVALID *',
-			],
-		];
-		$expected = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => ['', '', '', '', '', '', ''],
-			],
-		];
+	public function testCronToArray(stdClass $config, stdClass $expected): void {
 		$this->manager->cronToArray($config);
 		Assert::equal($expected, $config);
 	}

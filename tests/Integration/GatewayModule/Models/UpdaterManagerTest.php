@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\UpdaterManager
  * @covers App\GatewayModule\Models\UpdaterManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -30,6 +30,8 @@ use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
 use Mockery;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -38,12 +40,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for tool for updating packages of IQRF Gateways
  */
-final class UpdaterManagetTest extends CommandTestCase {
+final class UpdaterManagerTest extends CommandTestCase {
 
 	/**
 	 * @var UpdaterManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private UpdaterManager $manager;
 
 	/**
 	 * Sets up the test environment
@@ -78,60 +80,28 @@ final class UpdaterManagetTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to get list of upgradable packages
+	 * Returns list of test data for testGetUpgradable() method
+	 * @return array<array<string|array<array{name: string, oldVersion: string, newVersion: string}>>> List of test data for testGetUpgradable() method
 	 */
-	public function testGetUpgradable(): void {
-		$output = 'Reading package lists...
-Building dependency tree...
-Reading state information...
-Calculating upgrade...
-The following packages will be upgraded:
-   gnome-control-center (1:3.30.2-5 => 1:3.30.3-1)
-   gnome-control-center-data (1:3.30.2-5 => 1:3.30.3-1)
-   libkf5auth-data (5.54.0-1 => 5.54.0-2)
-   libkf5auth5 (5.54.0-1 => 5.54.0-2)
-   node-lru-cache (5.1.1-3 => 5.1.1-4)
-5 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-Inst gnome-control-center-data [1:3.30.2-5] (1:3.30.3-1 Debian:unstable [all])
-Inst gnome-control-center [1:3.30.2-5] (1:3.30.3-1 Debian:unstable [amd64])
-Inst libkf5auth5 [5.54.0-1] (5.54.0-2 Debian:unstable [amd64]) []
-Inst libkf5auth-data [5.54.0-1] (5.54.0-2 Debian:unstable [all])
-Inst node-lru-cache [5.1.1-3] (5.1.1-4 Debian:unstable [all])
-Conf gnome-control-center-data (1:3.30.3-1 Debian:unstable [all])
-Conf gnome-control-center (1:3.30.3-1 Debian:unstable [amd64])
-Conf libkf5auth5 (5.54.0-2 Debian:unstable [amd64])
-Conf libkf5auth-data (5.54.0-2 Debian:unstable [all])
-Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
-		$expected = [
-			[
-				'id' => 0,
-				'name' => 'gnome-control-center',
-				'oldVersion' => '1:3.30.2-5',
-				'newVersion' => '1:3.30.3-1',
-			], [
-				'id' => 1,
-				'name' => 'gnome-control-center-data',
-				'oldVersion' => '1:3.30.2-5',
-				'newVersion' => '1:3.30.3-1',
-			], [
-				'id' => 2,
-				'name' => 'libkf5auth-data',
-				'oldVersion' => '5.54.0-1',
-				'newVersion' => '5.54.0-2',
-			], [
-				'id' => 3,
-				'name' => 'libkf5auth5',
-				'oldVersion' => '5.54.0-1',
-				'newVersion' => '5.54.0-2',
-			], [
-				'id' => 4,
-				'name' => 'node-lru-cache',
-				'oldVersion' => '5.1.1-3',
-				'newVersion' => '5.1.1-4',
+	public function getUpgradablePackages(): array {
+		return array_map(
+			fn(string $fileName): array => [
+				FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.stdout'),
+				Json::decode(FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.json'), Json::FORCE_ARRAY),
 			],
-		];
-		$this->receiveCommand('apt-get -s upgrade -V', true, $output);
-		Assert::same($expected, $this->manager->getUpgradable());
+			['upgradablePackages', 'upgradablePackagesNone']
+		);
+	}
+
+	/**
+	 * Tests the function to get list of upgradable packages
+	 * @dataProvider getUpgradablePackages
+	 * @param string $stdout Standard output
+	 * @param array<array{name: string, oldVersion: string, newVersion: string}> $packages List of upgradable packages
+	 */
+	public function testGetUpgradable(string $stdout, array $packages): void {
+		$this->receiveCommand('apt-get -s upgrade -V', true, $stdout);
+		Assert::same($packages, $this->manager->getUpgradable());
 	}
 
 	/**
@@ -170,5 +140,5 @@ Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
 
 }
 
-$test = new UpdaterManagetTest();
+$test = new UpdaterManagerTest();
 $test->run();

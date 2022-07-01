@@ -23,16 +23,11 @@ namespace App\ApiModule\Version0\Controllers\Cloud;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\CloudsController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Models\InteliGlueManager;
-use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use GuzzleHttp\Exception\GuzzleException;
-use Nette\IOException;
 
 /**
  * Inteliments InteliGlue connection controller
@@ -41,17 +36,12 @@ use Nette\IOException;
 class InteliGlueController extends CloudsController {
 
 	/**
-	 * @var InteliGlueManager Inteliments InteliGlue connection manager
-	 */
-	private $inteliGlueManager;
-
-	/**
 	 * Constructor
-	 * @param InteliGlueManager $inteliGlueManager Inteliments InteliGlue connection manager
+	 * @param InteliGlueManager $manager Inteliments InteliGlue connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(InteliGlueManager $inteliGlueManager, RestApiSchemaValidator $validator) {
-		$this->inteliGlueManager = $inteliGlueManager;
+	public function __construct(InteliGlueManager $manager, RestApiSchemaValidator $validator) {
+		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
@@ -82,21 +72,8 @@ class InteliGlueController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['clouds']);
-		$this->validator->validateRequest('cloudInteliGlue', $request);
-		try {
-			$this->inteliGlueManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
-		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (GuzzleException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (CannotCreateCertificateDirectoryException $e) {
-			throw new ServerErrorException('Failed to create certificate directory', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		$this->checkRequest('cloudInteliGlue', $request);
+		return parent::create($request, $response);
 	}
 
 }

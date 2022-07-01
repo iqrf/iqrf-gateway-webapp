@@ -37,12 +37,12 @@ class CommandManager {
 	/**
 	 * @var bool Is sudo required?
 	 */
-	private $sudo;
+	private bool $sudo;
 
 	/**
 	 * @var CommandStack Command stack
 	 */
-	private $stack;
+	private CommandStack $stack;
 
 	/**
 	 * Constructor

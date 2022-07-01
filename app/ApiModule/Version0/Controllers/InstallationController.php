@@ -42,22 +42,22 @@ class InstallationController extends BaseController {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var MigrationsDependencyFactory Doctrine migrations dependency factory
 	 */
-	private $migrationsDependencyFactory;
+	private MigrationsDependencyFactory $migrationsDependencyFactory;
 
 	/**
 	 * @var PhpModuleManager PHP module manager
 	 */
-	private $phpModuleManager;
+	private PhpModuleManager $phpModuleManager;
 
 	/**
 	 * @var SudoManager Sudo manager
 	 */
-	private $sudoManager;
+	private SudoManager $sudoManager;
 
 	/**
 	 * Constructor

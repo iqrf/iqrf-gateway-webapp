@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\Mapping
  * @covers App\Models\Database\Entities\Mapping
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -38,29 +38,29 @@ require __DIR__ . '/../../../../bootstrap.php';
 class NetworkOperatorTest extends TestCase {
 
 	/**
-	 * Network operator name
+	 * @var string Network operator name
 	 */
 	private const NAME = 'T-Mobile CZ';
 
 	/**
-	 * Network operator apn
+	 * @var string Network operator APN
 	 */
 	private const APN = 'internet.t-mobile.cz';
 
 	/**
-	 * Network operator apn username
+	 * @var string Network operator username
 	 */
 	private const USERNAME = 'gprs';
 
 	/**
-	 * Network operator apn password
+	 * @var string Network operator password
 	 */
 	private const PASSWORD = 'gprs';
 
 	/**
-	 * @var NetworkOperator Netowrk operator entity
+	 * @var NetworkOperator Network operator entity
 	 */
-	private $operator;
+	private NetworkOperator $operator;
 
 	/**
 	 * Tests the function to return network operator name
@@ -79,14 +79,14 @@ class NetworkOperatorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to return network operator apn
+	 * Tests the function to return network operator APN
 	 */
 	public function testGetApn(): void {
 		Assert::same(self::APN, $this->operator->getApn());
 	}
 
 	/**
-	 * Tests the function to set network operator apn
+	 * Tests the function to set network operator APN
 	 */
 	public function testSetApn(): void {
 		$expected = 'internet';

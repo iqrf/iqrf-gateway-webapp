@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AwsManager
  * @covers App\CloudModule\Models\AwsManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -28,11 +28,10 @@ namespace Tests\Integration\CloudModule\Models;
 
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;
-use App\CoreModule\Models\CertificateManager;
 use DateTime;
+use DateTimeInterface;
 use GuzzleHttp\Client;
 use Mockery;
-use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -45,32 +44,27 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AwsManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var CertificateManager Certificate manager
-	 */
-	private $certManager;
-
-	/**
 	 * @var string Path to a directory with certificates and private keys
 	 */
-	protected $certPathReal;
+	protected string $certPathReal;
 
 	/**
-	 * @var array<string> Values from Amazon AWS IoT form
+	 * @var array{endpoint: string} Values from Amazon AWS IoT form
 	 */
-	private $formValues = [
+	private array $formValues = [
 		'endpoint' => 'localhost',
 	];
 
 	/**
-	 * @var Mock|AwsManager Amazon AWS IoT manager
+	 * @var AwsManager Amazon AWS IoT manager
 	 */
-	private $manager;
+	private AwsManager $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingAws',
@@ -96,7 +90,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$client = new Client();
-		$manager = Mockery::mock(AwsManager::class, [$this->certPath, $this->certManager, $this->configManager, $client])->makePartial();
+		$manager = Mockery::mock(AwsManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$manager->shouldReceive('checkCertificate')->andReturn(null);
 		$manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
@@ -130,7 +124,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Tests the function to create paths for certificates
 	 */
 	public function testCreatePaths(): void {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$actual = $this->manager->createPaths();
 		$paths = [
 			'cert' => $this->certPath . $timestamp . '-aws.crt',
@@ -159,7 +153,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 */
 	public function testDownloadCaCertificate(): void {
 		$expected = 'aws-ca.crt';
-		$manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $this->mockHttpClient($expected));
+		$manager = new AwsManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPath . $expected));
 	}
@@ -169,16 +163,15 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 */
 	protected function setUp(): void {
 		$this->certPathReal = realpath(TESTER_DIR . '/data/certificates/') . '/';
-		$this->certManager = new CertificateManager();
 		$client = new Client();
-		$this->manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $client);
+		$this->manager = new AwsManager($this->certPath, $this->configManager, $client);
 		$this->formValues = array_merge($this->formValues, $this->mockUploadedFiles($this->certPathReal));
 	}
 
 	/**
 	 * Mocks uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
-	 * @return array<string ,string> Mocked uploaded certificate and private key
+	 * @return array{certificate: string, privateKey: string} Mocked uploaded certificate and private key
 	 */
 	private function mockUploadedFiles(string $path): array {
 		return [

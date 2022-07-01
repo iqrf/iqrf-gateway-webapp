@@ -50,12 +50,12 @@ class WireguardController extends NetworkController {
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $serviceManager;
+	private ServiceManager $serviceManager;
 
 	/**
 	 * @var WireguardManager Wireguard VPN manager
 	 */
-	private $wireguardManager;
+	private WireguardManager $wireguardManager;
 
 	/**
 	 * Constructor

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\WifiManager
  * @covers App\NetworkModule\Models\WifiManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,14 +42,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiManagerTest extends CommandTestCase {
 
 	/**
-	 * NetworkManager WiFi list command
+	 * @var string NetworkManager WiFi list command
 	 */
 	private const LIST_COMMAND = 'nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto';
 
 	/**
 	 * @var WifiManager WiFi network manager
 	 */
-	private $manager;
+	private WifiManager $manager;
 
 	/**
 	 * Sets up the test environment

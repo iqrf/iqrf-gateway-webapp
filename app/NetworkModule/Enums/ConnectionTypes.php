@@ -45,72 +45,72 @@ final class ConnectionTypes extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Bluetooth connection
+	 * @var string Bluetooth connection
 	 */
 	private const BLUETOOTH = 'bluetooth';
 
 	/**
-	 * Bridge connection
+	 * @var string Bridge connection
 	 */
 	private const BRIDGE = 'bridge';
 
 	/**
-	 * Dummy connection
+	 * @var string Dummy connection
 	 */
 	private const DUMMY = 'dummy';
 
 	/**
-	 * Ethernet connection
+	 * @var string Ethernet connection
 	 */
 	private const ETHERNET = '802-3-ethernet';
 
 	/**
-	 * GSM connection
+	 * @var string GSM connection
 	 */
 	private const GSM = 'gsm';
 
 	/**
-	 * IP-over-InfiniBand connection
+	 * @var string IP-over-InfiniBand connection
 	 */
 	private const INFINIBAND = 'infiniband';
 
 	/**
-	 * IP tunnel connection
+	 * @var string IP tunnel connection
 	 */
 	private const IP_TUNNEL = 'ip-tunnel';
 
 	/**
-	 * TUN connection
+	 * @var string TUN connection
 	 */
 	private const TUN = 'tun';
 
 	/**
-	 * VLAN connection
+	 * @var string VLAN connection
 	 */
 	private const VLAN = 'vlan';
 
 	/**
-	 * VPN connection
+	 * @var string VPN connection
 	 */
 	private const VPN = 'vpn';
 
 	/**
-	 * WiFi connection
+	 * @var string WiFi connection
 	 */
 	private const WIFI = '802-11-wireless';
 
 	/**
-	 * WiMAX connection
+	 * @var string WiMAX connection
 	 */
 	private const WIMAX = 'wimax';
 
 	/**
-	 * WireGuard connection
+	 * @var string WireGuard connection
 	 */
 	private const WIREGUARD = 'wireguard';
 
 	/**
-	 * WPAN (IEEE 802.15.4) connection
+	 * @var string WPAN (IEEE 802.15.4) connection
 	 */
 	private const WPAN = 'wpan';
 

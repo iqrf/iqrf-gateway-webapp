@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ControllerConfigManager
  * @covers App\ConfigModule\Models\ControllerConfigManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,12 +43,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ControllerConfigManagerTest extends TestCase {
 
 	/**
-	 * Controller configuration directory path
+	 * @var string Controller configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/controller/';
 
 	/**
-	 * Controller configuration temporary directory path
+	 * @var string Controller configuration temporary directory path
 	 */
 	private const TEMP_CONF_DIR = TMP_DIR . '/controller/';
 
@@ -102,12 +102,12 @@ final class ControllerConfigManagerTest extends TestCase {
 	/**
 	 * @var ControllerConfigManager Controller configuration manager
 	 */
-	private $manager;
+	private ControllerConfigManager $manager;
 
 	/**
 	 * @var ControllerConfigManager Controller configuration temporary manager
 	 */
-	private $managerTemp;
+	private ControllerConfigManager $managerTemp;
 
 	/**
 	 * Tests the function to retrieve Controller configuration

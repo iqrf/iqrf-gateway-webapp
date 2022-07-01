@@ -31,29 +31,29 @@ use Throwable;
 final class WifiConnection implements INetworkManagerEntity {
 
 	/**
-	 * nmcli configuration prefix
+	 * @var string nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = '802-11-wireless';
 
 	/**
 	 * @var string SSID
 	 */
-	private $ssid;
+	private string $ssid;
 
 	/**
 	 * @var WifiMode WiFi network mode
 	 */
-	private $mode;
+	private WifiMode $mode;
 
 	/**
 	 * @var array<int, string> Seen BSSIDs
 	 */
-	private $bssids;
+	private array $bssids = [];
 
 	/**
 	 * @var WifiConnectionSecurity|null Wifi connection security entity
 	 */
-	private $security;
+	private ?WifiConnectionSecurity $security;
 
 	/**
 	 * Constructor

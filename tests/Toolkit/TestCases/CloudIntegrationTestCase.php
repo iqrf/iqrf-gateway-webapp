@@ -40,17 +40,17 @@ abstract class CloudIntegrationTestCase extends TestCase {
 	/**
 	 * @var string Path to a directory with certificates and private keys
 	 */
-	protected $certPath;
+	protected string $certPath;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	protected $configManager;
+	protected GenericManager $configManager;
 
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	protected $fileManager;
+	protected JsonFileManager $fileManager;
 
 	/**
 	 * Sets up the test environment

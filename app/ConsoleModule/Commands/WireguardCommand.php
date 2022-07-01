@@ -29,12 +29,12 @@ abstract class WireguardCommand extends EntityManagerCommand {
 	/**
 	 * @var WireguardManager Wireguard manager
 	 */
-	protected $manager;
+	protected WireguardManager $manager;
 
 	/**
 	 * @var WireguardInterfaceRepository Wireguard interface repository
 	 */
-	protected $repository;
+	protected WireguardInterfaceRepository $repository;
 
 	/**
 	 * Constructor

@@ -33,12 +33,12 @@ class Leap implements INetworkManagerEntity {
 	/**
 	 * @var string LEAP username
 	 */
-	private $username;
+	private string $username;
 
 	/**
 	 * @var string LEAP password
 	 */
-	private $password;
+	private string $password;
 
 	/**
 	 * Constructor
@@ -61,7 +61,7 @@ class Leap implements INetworkManagerEntity {
 
 	/**
 	 * Serializes Cisco LEAP entity into JSON
-	 * @return array<string, string> JSON serialized data
+	 * @return array{username: string, password: string} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

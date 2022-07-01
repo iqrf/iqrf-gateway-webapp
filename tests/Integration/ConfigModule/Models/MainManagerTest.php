@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MainManager
  * @covers App\ConfigModule\Models\MainManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,14 +42,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MainManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * File name (without .json)
+	 * @var string File name (without .json)
 	 */
 	private const FILE_NAME = 'config';
 
 	/**
 	 * @var MainManager Main configuration manager
 	 */
-	private $manager;
+	private MainManager $manager;
 
 	/**
 	 * Tests the function to get cache directory (failure)

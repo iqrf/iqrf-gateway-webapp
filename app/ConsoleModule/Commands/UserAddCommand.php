@@ -38,18 +38,19 @@ class UserAddCommand extends Command {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'user:add';
 
 	/**
 	 * @var UserRepository User database repository
 	 */
-	protected $repository;
+	protected UserRepository $repository;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	protected $entityManager;
+	protected EntityManager $entityManager;
 
 	/**
 	 * Constructor

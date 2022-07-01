@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\VersionManager
  * @covers App\CoreModule\Models\VersionManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -45,19 +45,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class VersionManagerTest extends CommandTestCase {
 
 	/**
-	 * Current version of the webapp
+	 * @var string Current version of the webapp
 	 */
 	private const CURRENT_VERSION = '2.5.0-alpha';
 
 	/**
-	 * Current stable version of the webapp
+	 * @var string Current stable version of the webapp
 	 */
 	private const STABLE_VERSION = '2.0.0';
 
 	/**
 	 * @var DevNullStorage Cache storage for testing
 	 */
-	private $cacheStorage;
+	private DevNullStorage $cacheStorage;
 
 	/**
 	 * @var Mock|VersionManager Version manager

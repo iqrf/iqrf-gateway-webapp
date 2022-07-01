@@ -35,7 +35,7 @@ class GsmManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * Constructor
@@ -47,20 +47,14 @@ class GsmManager {
 
 	/**
 	 * Lists available modems
-	 * @return array<int, array<string, int|string>> Available modems
+	 * @return array<array{interface: string, signal: int, rssi: float}> Available modems
 	 */
 	public function listModems(): array {
 		$output = $this->commandManager->run('mmcli --list-modems --output-json', true);
-		if ($output->getExitCode() !== 0) {
-			throw new ModemManagerException($output->getStderr());
-		}
-		$entities = [];
-		$json = [];
+		$this->checkCommand($output);
 		try {
 			$json = Json::decode($output->getStdout(), Json::FORCE_ARRAY);
-			foreach ($json['modem-list'] as $entry) {
-				$entities[] = $this->getModemInformation($entry)->jsonSerialize();
-			}
+			$entities = array_map(fn(string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
 		} catch (JsonException $e) {
 			throw new ModemManagerException($e->getMessage());
 		}

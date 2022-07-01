@@ -40,47 +40,47 @@ final class WifiSecurity extends Enum {
 	use AutoInstances;
 
 	/**
-	 * Open WiFi network
+	 * @var string Open WiFi network
 	 */
 	private const OPEN = 'Open';
 
 	/**
-	 * OWE
+	 * @var string OWE
 	 */
 	private const OWE = 'OWE';
 
 	/**
-	 * WEP
+	 * @var string WEP
 	 */
 	private const WEP = 'WEP';
 
 	/**
-	 * WPA Enterprise
+	 * @var string WPA Enterprise
 	 */
 	private const WPA_ENTERPRISE = 'WPA-Enterprise';
 
 	/**
-	 * WPA Personal
+	 * @var string WPA Personal
 	 */
 	private const WPA_PERSONAL = 'WPA-Personal';
 
 	/**
-	 * WPA2 Enterprise
+	 * @var string WPA2 Enterprise
 	 */
 	private const WPA2_ENTERPRISE = 'WPA2-Enterprise';
 
 	/**
-	 * WPA2 Personal
+	 * @var string WPA2 Personal
 	 */
 	private const WPA2_PERSONAL = 'WPA2-Personal';
 
 	/**
-	 * WPA3 Enterprise
+	 * @var string WPA3 Enterprise
 	 */
 	private const WPA3_ENTERPRISE = 'WPA3-Enterprise';
 
 	/**
-	 * WPA3 Personal
+	 * @var string WPA3 Personal
 	 */
 	private const WPA3_PERSONAL = 'WPA3-Personal';
 

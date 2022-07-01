@@ -23,8 +23,8 @@ namespace App\CloudModule\Models;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Models\CertificateManager;
 use DateTime;
+use DateTimeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
@@ -37,40 +37,33 @@ use Nette\Utils\JsonException;
 class AwsManager implements IManager {
 
 	/**
-	 * CA certificate filename
+	 * @var string CA certificate filename
 	 */
 	private const CA_FILENAME = 'aws-ca.crt';
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $configManager;
-
-	/**
-	 * @var CertificateManager manager for certificates
-	 */
-	private $certManager;
+	private GenericManager $configManager;
 
 	/**
 	 * @var string Path to the certificates
 	 */
-	private $certPath;
+	private string $certPath;
 
 	/**
 	 * @var ClientInterface HTTP(S) client
 	 */
-	private $client;
+	private ClientInterface $client;
 
 	/**
 	 * Constructor
 	 * @param string $certPath Path to the certificates
-	 * @param CertificateManager $certManager Manager for certificates
 	 * @param GenericManager $configManager Generic config manager
 	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, ClientInterface $client) {
+	public function __construct(string $certPath, GenericManager $configManager, ClientInterface $client) {
 		$this->certPath = $certPath;
-		$this->certManager = $certManager;
 		$this->client = $client;
 		$this->configManager = $configManager;
 	}
@@ -133,10 +126,10 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates paths for root CA certificate, certificate and private key
-	 * @return array<string> Paths for root CA certificate, certificate and private key
+	 * @return array{cert: string, key: string} Paths for root CA certificate, certificate and private key
 	 */
 	public function createPaths(): array {
-		$timestamp = (new DateTime())->format(DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTimeInterface::ATOM);
 		$path = $this->certPath . $timestamp;
 		$paths = [];
 		$paths['cert'] = $path . '-aws.crt';
@@ -162,7 +155,8 @@ class AwsManager implements IManager {
 	 * @throws InvalidPrivateKeyForCertificateException
 	 */
 	public function checkCertificate(string $certificate, string $privateKey): void {
-		if (!$this->certManager->checkPrivateKey($certificate, $privateKey)) {
+		$key = openssl_pkey_get_private($privateKey, '');
+		if (!openssl_x509_check_private_key($certificate, $key)) {
 			throw new InvalidPrivateKeyForCertificateException();
 		}
 	}

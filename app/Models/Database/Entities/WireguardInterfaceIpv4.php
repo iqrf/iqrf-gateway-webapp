@@ -38,22 +38,22 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	/**
 	 * @var IP Interface address
-	 * @ORM\Column(type="ip", nullable=false)
+	 * @ORM\Column(type="ip")
 	 */
-	private $address;
+	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
-	 * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(type="integer")
 	 */
-	private $prefix;
+	private int $prefix;
 
 	/**
-	 * @var WireguardInterface
+	 * @var WireguardInterface WireGuard interface
 	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv4")
-	 * @ORM\JoinColumn(name="interface_id", referencedColumnName="id")
+	 * @ORM\JoinColumn(name="interface_id")
 	 */
-	private $interface;
+	private WireguardInterface $interface;
 
 	/**
 	 * Constructor
@@ -101,7 +101,7 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	/**
 	 * Serializes Wireguard interface IPv4 address to JSON
-	 * @return array<string, int|string> JSON serialized Wireguard interface IPv4 address
+	 * @return array{id: int|null, address: string, prefix: int} JSON serialized Wireguard interface IPv4 address
 	 */
 	public function jsonSerialize(): array {
 		return [

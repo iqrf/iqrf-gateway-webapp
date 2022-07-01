@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -52,49 +52,49 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * Network interface name
+	 * @var string Network interface name
 	 */
 	private const INTERFACE = 'eth0';
 
 	/**
-	 * Network connection name
+	 * @var string Network connection name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * Connection UUID
+	 * @var string Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private $uuid;
+	private UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private $type;
+	private ConnectionTypes $type;
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
 	 */
-	private $ipv4;
+	private IPv4Connection $ipv4;
 
 	/**
 	 * @var IPv6Connection IPv6 network connection entity
 	 */
-	private $ipv6;
+	private IPv6Connection $ipv6;
 
 	/**
 	 * @var ConnectionDetail Network connection entity
 	 */
-	private $entity;
+	private ConnectionDetail $entity;
 
 	/**
 	 * Sets up the test environment

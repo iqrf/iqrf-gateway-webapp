@@ -32,7 +32,7 @@ class MailerFactory {
 	/**
 	 * @var ConfigurationManager Mailer configuration manager
 	 */
-	private $configuration;
+	private ConfigurationManager $configuration;
 
 	/**
 	 * Constructor

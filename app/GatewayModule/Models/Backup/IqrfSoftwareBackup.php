@@ -33,32 +33,32 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	/**
 	 * @var string Software name
 	 */
-	private $software;
+	private string $software;
 
 	/**
 	 * @var string ZIP archive directory
 	 */
-	private $dir;
+	private string $dir;
 
 	/**
 	 * @var string Path to configuration directory;
 	 */
-	private $path;
+	private string $path;
 
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private $featureEnabled;
+	private bool $featureEnabled;
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor

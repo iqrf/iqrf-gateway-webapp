@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\GenericManager
  * @covers App\ConfigModule\Models\GenericManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,24 +39,24 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GenericManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * Component name
+	 * @var string Component name
 	 */
 	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
-	 * File name (without .json)
+	 * @var string File name (without .json)
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $manager;
+	private GenericManager $manager;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $managerTemp;
+	private GenericManager $managerTemp;
 
 	/**
 	 * Tests the function to delete the instance of component

@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -39,14 +39,14 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UnsupportedPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * Packages
+	 * @var array<string> Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
 	/**
 	 * @var UnsupportedPackageManager Tool for updating IQRF Gateway
 	 */
-	private $manager;
+	private UnsupportedPackageManager $manager;
 
 	/**
 	 * Sets up the test environment

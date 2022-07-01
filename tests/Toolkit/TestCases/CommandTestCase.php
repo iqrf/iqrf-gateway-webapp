@@ -53,7 +53,7 @@ abstract class CommandTestCase extends TestCase {
 	/**
 	 * Receives a command
 	 * @param string $command Command
-	 * @param bool $needSudo Is sudo needed?
+	 * @param bool|null $needSudo Is sudo needed?
 	 * @param string $stdout Command's standard output
 	 * @param string $stderr Command's standard error output
 	 * @param int $exitCode Command's exit code

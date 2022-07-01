@@ -47,15 +47,15 @@ class ServicesController extends BaseController {
 	/**
 	 * @var FeatureManager Optional features manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $manager;
+	private ServiceManager $manager;
 
 	/**
-	 * Whitelisted services
+	 * @var array<string, string|null> Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
 		'gwman-client' => 'pixla',

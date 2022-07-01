@@ -38,7 +38,7 @@ abstract class BaseController implements IController {
 	/**
 	 * @var RestApiSchemaValidator REST API JSON schema validator
 	 */
-	protected $validator;
+	protected RestApiSchemaValidator $validator;
 
 	/**
 	 * Constructor
@@ -55,10 +55,8 @@ abstract class BaseController implements IController {
 	 */
 	protected function checkScopes(ApiRequest $request, array $scopes): void {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if ($user instanceof User) {
-			if (array_intersect($scopes, $user->getScopes()) === []) {
-				throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
-			}
+		if ($user instanceof User && array_intersect($scopes, $user->getScopes()) === []) {
+			throw new ClientErrorException('Insufficient permissions.', ApiResponse::S403_FORBIDDEN);
 		}
 	}
 

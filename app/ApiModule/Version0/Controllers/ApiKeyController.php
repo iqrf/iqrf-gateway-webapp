@@ -46,12 +46,12 @@ class ApiKeyController extends BaseController {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var ApiKeyRepository API key database repository
 	 */
-	private $repository;
+	private ApiKeyRepository $repository;
 
 	/**
 	 * Constructor

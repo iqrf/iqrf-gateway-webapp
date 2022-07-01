@@ -51,12 +51,12 @@ class MenderController extends BaseController {
 	/**
 	 * @var FeatureManager $featureManager Feature manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * @var MenderManager $manager Mender client configuration manager
 	 */
-	private $manager;
+	private MenderManager $manager;
 
 	/**
 	 * Constructor

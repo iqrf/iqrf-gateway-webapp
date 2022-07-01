@@ -31,7 +31,7 @@ abstract class FeatureCommand extends Command {
 	/**
 	 * @var FeatureManager Webapp's optional features manager
 	 */
-	protected $manager;
+	protected FeatureManager $manager;
 
 	/**
 	 * Constructor

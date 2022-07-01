@@ -32,7 +32,7 @@ class OpenApiSchemaBuilder {
 	/**
 	 * @var ISchemaBuilder OpenAPI schema builder
 	 */
-	private $schemaBuilder;
+	private ISchemaBuilder $schemaBuilder;
 
 	/**
 	 * Constructor
@@ -58,7 +58,7 @@ class OpenApiSchemaBuilder {
 			$server['url'] .= 'api/v0/';
 		}
 		foreach ($schema['paths'] as $uri => $path) {
-			$schema['paths'][Strings::replace($uri, '~/api/v0~', '')] = $path;
+			$schema['paths'][Strings::replace($uri, '#/api/v0#', '')] = $path;
 			unset($schema['paths'][$uri]);
 		}
 		foreach ($schema['paths'] as &$path) {

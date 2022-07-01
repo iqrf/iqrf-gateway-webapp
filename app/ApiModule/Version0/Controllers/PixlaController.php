@@ -41,7 +41,7 @@ class PixlaController extends BaseController {
 	/**
 	 * @var PixlaManager PIXLA client service manager
 	 */
-	private $manager;
+	private PixlaManager $manager;
 
 	/**
 	 * Constructor

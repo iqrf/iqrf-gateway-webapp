@@ -38,25 +38,25 @@ class NetworkOperator implements JsonSerializable {
 	 * @var string Operator name
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string APN
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $apn;
+	private string $apn;
 
 	/**
 	 * @var string|null Username
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $username;
+	private ?string $username;
 
 	/**
 	 * @var string|null Password
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $password;
+	private ?string $password;
 
 	/**
 	 * Constructor
@@ -106,7 +106,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns username
-	 * @return string Username
+	 * @return string|null Username
 	 */
 	public function getUsername(): ?string {
 		return $this->username;
@@ -122,7 +122,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns password
-	 * @return string Password
+	 * @return string|null Password
 	 */
 	public function getPassword(): ?string {
 		return $this->password;
@@ -138,7 +138,7 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized operator data
-	 * @return array<string, int|string> JSON serialized operator data
+	 * @return array{id: int|null, name: string, apn: string, username?: string, password?: string} JSON serialized operator data
 	 */
 	public function jsonSerialize(): array {
 		$array = [

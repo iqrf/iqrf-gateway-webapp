@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\JsonFileManager
  * @covers App\CoreModule\Models\JsonFileManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,29 +42,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class JsonFileManagerTest extends TestCase {
 
 	/**
-	 * Directory with configuration files
+	 * @var string Directory with configuration files
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * Directory with temporary configuration files
+	 * @var string Directory with temporary configuration files
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 
 	/**
-	 * File name
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'config';
 
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $manager;
+	private JsonFileManager $manager;
 
 	/**
 	 * @var JsonFileManager JSON File manager
 	 */
-	private $managerTest;
+	private JsonFileManager $managerTest;
 
 	/**
 	 * Tests the function to get a directory with files

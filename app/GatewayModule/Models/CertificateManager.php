@@ -39,7 +39,7 @@ class CertificateManager {
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -51,7 +51,7 @@ class CertificateManager {
 
 	/**
 	 * Returns information about the certificate
-	 * @return array<string, array<string>|bool|string> Information about the certificate
+	 * @return array{subject: string, issuer: string|null, subjectAlternativeNames: array<string>, validTo: string, expired: bool, selfSigned: bool} Information about the certificate
 	 * @throws CertificateNotFoundException
 	 */
 	public function getInfo(): array {

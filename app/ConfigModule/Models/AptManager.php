@@ -28,7 +28,7 @@ use App\CoreModule\Models\IFileManager;
 class AptManager {
 
 	/**
-	 * Default values
+	 * @var array<string, string> Default values
 	 */
 	private const DEFAULTS = [
 		'APT::Periodic::Enable' => '0',
@@ -39,19 +39,19 @@ class AptManager {
 	];
 
 	/**
-	 * Apt configuration file name
+	 * @var string Apt configuration file name
 	 */
 	private const FILE_NAME = '99iqrf-gateway-webapp';
 
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * @var IFileManager File manager
 	 */
-	private $fileManager;
+	private IFileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -92,6 +92,8 @@ class AptManager {
 	/**
 	 * Writes APT configuration
 	 * @param array<string, string> $newConfig APT configuration to write
+	 * @throws AptErrorException
+	 * @throws AptNotFoundException
 	 */
 	public function write(array $newConfig): void {
 		$config = $this->read();

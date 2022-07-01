@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\PrivilegedFileManager
  * @covers App\CoreModule\Models\PrivilegedFileManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,34 +42,34 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PrivilegedFileManagerTest extends TestCase {
 
 	/**
-	 * File name
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'config.json';
 
 	/**
-	 * Directory with configuration files
+	 * @var string Directory with configuration files
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * Directory with temporary configuration files
+	 * @var string Directory with temporary configuration files
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 
 	/**
 	 * @var CommandStack Command stack
 	 */
-	private $commandStack;
+	private CommandStack $commandStack;
 
 	/**
 	 * @var PrivilegedFileManager Privileged text file manager
 	 */
-	private $manager;
+	private PrivilegedFileManager $manager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged text file manager
 	 */
-	private $managerTest;
+	private PrivilegedFileManager $managerTest;
 
 	/**
 	 * Tests the function to read a text file

@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv6Connection
  * @covers App\NetworkModule\Entities\IPv6Connection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -43,34 +43,34 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv6ConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var IPv6Methods IPv6 connection method
 	 */
-	private $method;
+	private IPv6Methods $method;
 
 	/**
 	 * @var array<IPv6Address> IPv6 addresses
 	 */
-	private $addresses;
+	private array $addresses = [];
 
 	/**
 	 * @var IPv6 IPv6 gateway address
 	 */
-	private $gateway;
+	private IPv6 $gateway;
 
 	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
-	private $dns;
+	private array $dns = [];
 
 	/**
 	 * @var IPv6Connection IPv6 connection entity
 	 */
-	private $entity;
+	private IPv6Connection $entity;
 
 	/**
 	 * Sets up the test environment

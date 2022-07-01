@@ -32,7 +32,7 @@ class IqrfBoardManager implements IBoardManager {
 	/**
 	 * @var CommandManager Command manager
 	 */
-	private $commandManager;
+	private CommandManager $commandManager;
 
 	/**
 	 * Constructor

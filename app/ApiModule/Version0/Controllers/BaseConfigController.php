@@ -32,7 +32,7 @@ abstract class BaseConfigController extends BaseController {
 	/**
 	 * @var RestApiSchemaValidator REST API JSON schema validator
 	 */
-	protected $validator;
+	protected RestApiSchemaValidator $validator;
 
 	/**
 	 * Constructor

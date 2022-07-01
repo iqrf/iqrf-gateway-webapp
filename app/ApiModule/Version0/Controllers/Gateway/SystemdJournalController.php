@@ -43,12 +43,12 @@ class SystemdJournalController extends GatewayController {
 	/**
 	 * @var FeatureManager Feature manager
 	 */
-	private $featureManager;
+	private FeatureManager $featureManager;
 
 	/**
 	 * @var SystemdJournalManager Systemd journal manager
 	 */
-	private $manager;
+	private SystemdJournalManager $manager;
 
 	/**
 	 * Constructor

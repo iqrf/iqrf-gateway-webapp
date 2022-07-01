@@ -32,64 +32,64 @@ use Nette\Utils\Strings;
 class GatewayFileBackup implements IBackupManager {
 
 	/**
-	 * Gateway files whitelist
+	 * @var array<string> Gateway files whitelist
 	 */
 	public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
 
 	/**
-	 * Path to configuration directory
+	 * @var string Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * Path to MqttMessaging component configuration
+	 * @var string Path to MqttMessaging component configuration
 	 */
 	private const MQTT_PATH = '/etc/iqrf-gateway-daemon/iqrf__MqttMessaging.json';
 
 	/**
-	 * Client ID pattern
+	 * @var string Client ID pattern
 	 */
 	private const GWID_PATTERN = '/^[a-f0-9]{16}$/';
 
 	/**
-	 * MQTT request topic pattern
+	 * @var string MQTT request topic pattern
 	 */
 	private const REQUEST_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/requests$/';
 
 	/**
-	 * MQTT response topic pattern
+	 * @var string MQTT response topic pattern
 	 */
 	private const RESPONSE_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/responses$/';
 
 	/**
-	 * Path to JsonSplitter component configuration
+	 * @var string Path to JsonSplitter component configuration
 	 */
 	private const SPLITTER_PATH = '/etc/iqrf-gateway-daemon/iqrf__JsonSplitter.json';
 
 	/**
 	 * @var string Gateway ID
 	 */
-	private $gwId;
+	private string $gwId;
 
 	/**
 	 * @var string Gateway token
 	 */
-	private $gwToken;
+	private string $gwToken;
 
 	/**
 	 * @var RestoreLogger Restore logger
 	 */
-	private $restoreLogger;
+	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
 	 */
 	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
-		$this->gwId = Strings::lower($gwInfo->getProperty('gwId'));
-		$this->gwToken = $gwInfo->getProperty('gwToken');
+		$this->gwId = Strings::lower($gwInfo->getId());
+		$this->gwToken = $gwInfo->getToken();
 		$this->restoreLogger = $restoreLogger;
 	}
 

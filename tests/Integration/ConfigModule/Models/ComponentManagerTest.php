@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentManager
  * @covers App\ConfigModule\Models\ComponentManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,19 +40,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * File name (without .json)
+	 * @var string File name (without .json)
 	 */
 	private const FILE_NAME = 'config';
 
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $manager;
+	private ComponentManager $manager;
 
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $managerTemp;
+	private ComponentManager $managerTemp;
 
 	/**
 	 * Tests the function to add a new component
@@ -105,14 +105,6 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 			$expected[$id] = Arrays::mergeTree(['id' => $id], $config);
 		}
 		Assert::equal($expected, $this->manager->list());
-	}
-
-	/**
-	 * Tests the function to list disabled components
-	 */
-	public function testListDisabled(): void {
-		$expected = ['iqrf::IqrfCdc' => false, 'iqrf::IqrfUart' => false];
-		Assert::equal($expected, $this->manager->listDisabled());
 	}
 
 	/**

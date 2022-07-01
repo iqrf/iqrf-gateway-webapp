@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\WireguardManager
  * @covers App\NetworkModule\Models\WireguardManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -51,7 +51,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WireguardManagerTest extends CommandTestCase {
 
 	/**
-	 * Commands to be executed during testing
+	 * @var array<string, string> Commands to be executed during testing
 	 */
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
@@ -61,7 +61,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * Wireguard keypair
+	 * @var array{privateKey: string, publicKey: string} Wireguard keypair
 	 */
 	private const WG_KEYPAIR = [
 		'privateKey' => 'uImD+hh1Dp6uWvWJ+eaYdc2oRloC3TYUpPUUCwfBi0I=',
@@ -71,22 +71,22 @@ final class WireguardManagerTest extends CommandTestCase {
 	/**
 	 * @var WireguardInterface Wireguard interface entity
 	 */
-	private $interfaceEntity;
+	private WireguardInterface $interfaceEntity;
 
 	/**
 	 * @var WireguardPeer Wireguard peer entity
 	 */
-	private $peerEntity;
+	private WireguardPeer $peerEntity;
 
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 	/**
 	 * @var WireguardManager Wireguard manager
 	 */
-	private $manager;
+	private WireguardManager $manager;
 
 	/**
 	 * @var MockInterface|ServiceManager Mocked service manager

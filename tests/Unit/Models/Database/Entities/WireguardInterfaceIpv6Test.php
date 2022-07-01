@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\WireguardInterfaceIpv6
  * @covers App\Models\Database\Entities\WireguardInterfaceIpv6
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -36,29 +36,29 @@ use Tester\TestCase;
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for wireguard interface entity
+ * Tests for WireGuard interface entity
  */
 class WireguardInterfaceIpv6Test extends TestCase {
 
 	/**
-	 * IPv6 address
+	 * @var string IPv6 address
 	 */
 	private const ADDRESS = '2001:db8::';
 
 	/**
-	 * IPv6 address prefix
+	 * @var int IPv6 address prefix
 	 */
 	private const PREFIX = 32;
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
-	private $interfaceEntity;
+	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardInterfaceIpv6 Wireguard interface IPv4 entity
+	 * @var WireguardInterfaceIpv6 WireGuard interface IPv4 entity
 	 */
-	private $entity;
+	private WireguardInterfaceIpv6 $entity;
 
 	/**
 	 * Sets up the test environment

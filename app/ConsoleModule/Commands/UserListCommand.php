@@ -32,6 +32,7 @@ class UserListCommand extends UserCommand {
 
 	/**
 	 * @var string|null Command name
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
 	protected static $defaultName = 'user:list';
 
@@ -62,9 +63,7 @@ class UserListCommand extends UserCommand {
 	 * @return array<int, array<string, int|string>> Registered users
 	 */
 	private function getUsers(): array {
-		return array_map(function (User $user): array {
-			return $user->jsonSerialize();
-		}, $this->repository->findAll());
+		return array_map(fn (User $user): array => $user->jsonSerialize(), $this->repository->findAll());
 	}
 
 }

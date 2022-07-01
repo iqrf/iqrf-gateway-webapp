@@ -1,0 +1,27 @@
+[
+	{
+		"name": "gnome-control-center",
+		"oldVersion": "1:3.30.2-5",
+		"newVersion": "1:3.30.3-1"
+	},
+	{
+		"name": "gnome-control-center-data",
+		"oldVersion": "1:3.30.2-5",
+		"newVersion": "1:3.30.3-1"
+	},
+	{
+		"name": "libkf5auth-data",
+		"oldVersion": "5.54.0-1",
+		"newVersion": "5.54.0-2"
+	},
+	{
+		"name": "libkf5auth5",
+		"oldVersion": "5.54.0-1",
+		"newVersion": "5.54.0-2"
+	},
+	{
+		"name": "node-lru-cache",
+		"oldVersion": "5.1.1-3",
+		"newVersion": "5.1.1-4"
+	}
+]

@@ -3,7 +3,7 @@
 /**
  * TEST: App\MaintenanceModule\Models\MonitManager
  * @covers App\MaintenanceModule\Models\MonitManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -44,29 +44,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MonitManagerTest extends TestCase {
 
 	/**
-	 * Monit configuration file name
+	 * @var string Monit configuration file name
 	 */
 	private const FILE_NAME = 'monitrc';
 
 	/**
 	 * @var FileManager Text file manager
 	 */
-	private $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var FileManager Text file manager temp
 	 */
-	private $fileManagerTemp;
+	private FileManager $fileManagerTemp;
 
 	/**
 	 * @var MonitManager Monit manager
 	 */
-	private $manager;
+	private MonitManager $manager;
 
 	/**
 	 * @var MonitManager Monit manager
 	 */
-	private $managerTemp;
+	private MonitManager $managerTemp;
 
 	/**
 	 * Sets up the test environment

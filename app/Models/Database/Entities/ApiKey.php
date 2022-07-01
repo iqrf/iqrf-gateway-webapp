@@ -44,33 +44,33 @@ class ApiKey implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string|null API key
+	 * @var string API key
 	 */
-	private $key;
+	private string $key;
 
 	/**
 	 * @var string API key hash
 	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
-	private $hash;
+	private string $hash;
 
 	/**
 	 * @var string API key hash salt
 	 * @ORM\Column(type="string", length=22, unique=true)
 	 */
-	private $salt;
+	private string $salt;
 
 	/**
 	 * @var string API key description
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $description;
+	private string $description;
 
 	/**
 	 * @var DateTime|null API key expiration
 	 * @ORM\Column(type="datetime", nullable=true)
 	 */
-	private $expiration;
+	private ?DateTime $expiration;
 
 	/**
 	 * Constructor
@@ -88,9 +88,9 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Returns API key
-	 * @return string|null API key
+	 * @return string API key
 	 */
-	public function getKey(): ?string {
+	public function getKey(): string {
 		return $this->salt . '.' . $this->key;
 	}
 
@@ -187,7 +187,7 @@ class ApiKey implements JsonSerializable {
 			'description' => $this->getDescription(),
 			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
 		];
-		if ($this->key !== null) {
+		if (isset($this->key)) {
 			$array['key'] = $this->getKey();
 		}
 		return $array;

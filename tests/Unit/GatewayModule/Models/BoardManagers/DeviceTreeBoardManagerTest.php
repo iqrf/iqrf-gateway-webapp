@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\DeviceTreeBoardManager
  * @covers App\GatewayModule\Models\DeviceTreeBoardManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,10 +40,10 @@ final class DeviceTreeBoardManagerTest extends CommandTestCase {
 	/**
 	 * @var DeviceTreeBoardManager Device tree board manager
 	 */
-	private $manager;
+	private DeviceTreeBoardManager $manager;
 
 	/**
-	 * Executed command
+	 * @var string Executed command
 	 */
 	private const COMMAND = 'cat /proc/device-tree/model';
 

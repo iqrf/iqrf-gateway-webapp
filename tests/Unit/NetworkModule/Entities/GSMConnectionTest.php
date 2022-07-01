@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\GSMConnection
  * @covers App\NetworkModule\Entities\GSMConnection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -40,39 +40,39 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GSMConnectionTest extends TestCase {
 
 	/**
-	 * NetworkManager data directory
+	 * @var string NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * GSM APN
+	 * @var string GSM APN
 	 */
 	private const APN = 'internet';
 
 	/**
-	 * Username
+	 * @var string Username
 	 */
 	private const USERNAME = 'testuser';
 
 	/**
-	 * Password
+	 * @var string Password
 	 */
 	private const PASSWORD = 'testpass';
 
 	/**
-	 * SIM PIN
+	 * @var string SIM PIN
 	 */
 	private const PIN = '1234';
 
 	/**
 	 * @var GSMConnection GSM connection entity
 	 */
-	private $entity;
+	private GSMConnection $entity;
 
 	/**
 	 * @var GSMConnection GSM connection entity with null optional parameters
 	 */
-	private $nullEntity;
+	private GSMConnection $nullEntity;
 
 	/**
 	 * Sets up the testing environment

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\IbmCloudManager
  * @covers App\CloudModule\Models\IbmCloudManager
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.4
  * @testCase
  */
 /**
@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IbmCloudManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * Values from IBM Cloud form
+	 * @var array<string, string> Values from IBM Cloud form
 	 */
 	private const VALUES = [
 		'deviceId' => 'gw00',
