@@ -74,7 +74,7 @@ class UploadManager {
 			if (!isset($uploadDir) || $uploadDir === '') {
 				$uploadDir = 'upload';
 			}
-			$this->path = $cacheDir . $uploadDir;
+			$this->path = $cacheDir . Strings::trim($uploadDir, '/');
 		} catch (JsonException | NonexistentJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
 		}
@@ -82,8 +82,8 @@ class UploadManager {
 
 	/**
 	 * Uploads file to daemon cache directory
-	 * @param string $fileName $fileName
-	 * @param string $fileContent file content
+	 * @param string $fileName File name
+	 * @param string $fileContent File content
 	 * @param UploadFormats|null $format File format
 	 * @return array{fileName: string, format: string} file name and file format
 	 */
@@ -118,24 +118,20 @@ class UploadManager {
 
 	/**
 	 * Uploads plugin to transceiver via IQRF Gateway Uploader
-	 * @param string $name File name
-	 * @param string $type File type
+	 * @param string $fileName File name
+	 * @param UploadFormats|null $format File format
 	 * @throws UploaderFileException
 	 * @throws UploaderMissingException
 	 * @throws UploaderSpiException
 	 */
-	public function uploadToTr(string $name, string $type): void {
+	public function uploadToTr(string $fileName, ?UploadFormats $format = null): void {
 		if (!$this->commandManager->commandExist(self::UPLOADER)) {
 			throw new UploaderMissingException('IQRF Gateway Uploader is not installed.');
 		}
-		if ($type === 'OS') {
-			$fileName = str_replace(['(', ')'], ['\(', '\)'], $name);
-			$result = $this->commandManager->run(self::UPLOADER . ' -I ' . $this->path . '/' . $fileName, true);
-		} elseif ($type === 'DPA') {
-			$result = $this->commandManager->run(self::UPLOADER . ' -I ' . $this->path . '/' . $name, true);
-		} else {
-			$result = $this->commandManager->run(self::UPLOADER . ' -H ' . $this->path . '/' . $name, true);
+		if ($format === null) {
+			$format = $this->recognizeFormat($fileName);
 		}
+		$result = $this->commandManager->run(self::UPLOADER . ' ' . $format->getUploaderParameter() . ' \'' . $this->path . '/' . $fileName . '\'', true);
 		if ($result->getExitCode() !== 0) {
 			$this->handleError($result);
 		}
