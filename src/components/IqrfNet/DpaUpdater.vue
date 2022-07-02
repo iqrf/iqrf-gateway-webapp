@@ -62,6 +62,7 @@ limitations under the License.
 			</CCardBody>
 		</CCard>
 		<CModal
+			v-if='currentDpa !== null'
 			color='warning'
 			:show.sync='showModal'
 		>
