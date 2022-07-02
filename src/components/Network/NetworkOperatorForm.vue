@@ -171,8 +171,10 @@ export default class NetworkOperatorForm extends Vue {
 	 * Returns modal title depending on operator title
 	 */
 	get modalTitle(): string {
-		const title = this.id === 0 ? 'network.operators.form.add' : 'network.operators.form.edit';
-		return this.$t(title).toString();
+		if (this.id === 0) {
+			return this.$t('network.operators.form.add').toString();
+		}
+		return this.$t('network.operators.form.edit').toString();
 	}
 
 	/**

@@ -28,7 +28,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.translator.errors.restAddr"
+										required: $t("config.translator.errors.restAddr"),
 									}'
 								>
 									<CInput
@@ -42,9 +42,9 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "forms.errors.integer",
-										required: "config.translator.errors.port",
-										between: "config.translator.errors.port"
+										integer: $t("forms.errors.integer"),
+										required: $t("config.translator.errors.port"),
+										between: $t("config.translator.errors.port"),
 									}'
 								>
 									<CInput
@@ -61,8 +61,8 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|apiKey'
 									:custom-messages='{
-										required: "config.translator.errors.apiKey",
-										apiKey: "config.translator.errors.apiKeyInvalid"
+										required: $t("config.translator.errors.apiKey"),
+										apiKey: $t("config.translator.errors.apiKeyInvalid"),
 									}'
 								>
 									<CInput
@@ -79,8 +79,8 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|clientId'
 							:custom-messages='{
-								required: "config.translator.errors.clientId",
-								clientId: "config.translator.errors.clientIdInvalid"
+								required: $t("config.translator.errors.clientId"),
+								clientId: $t("config.translator.errors.clientIdInvalid"),
 							}'
 						>
 							<CInput
@@ -96,7 +96,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.translator.errors.brokerAddr"
+										required: $t("config.translator.errors.brokerAddr"),
 									}'
 								>
 									<CInput
@@ -112,9 +112,9 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "forms.errors.integer",
-										required: "config.translator.errors.port",
-										between: "config.translator.errors.port"
+										integer: $t("forms.errors.integer"),
+										required: $t("config.translator.errors.port"),
+										between: $t("config.translator.errors.port"),
 									}'
 								>
 									<CInput
@@ -133,8 +133,8 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|requestTopic'
 									:custom-messages='{
-										required: "config.translator.errors.requestTopic",
-										requestTopic: "config.translator.errors.requestTopicInvalid"
+										required: $t("config.translator.errors.requestTopic"),
+										requestTopic: $t("config.translator.errors.requestTopicInvalid"),
 									}'
 								>
 									<CInput
@@ -150,8 +150,8 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|responseTopic'
 									:custom-messages='{
-										required: "config.translator.errors.responseTopic",
-										responseTopic: "config.translator.errors.responseTopicInvalid"
+										required: $t("config.translator.errors.responseTopic"),
+										responseTopic: $t("config.translator.errors.responseTopicInvalid"),
 									}'
 								>
 									<CInput

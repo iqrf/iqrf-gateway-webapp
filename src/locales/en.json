@@ -364,7 +364,6 @@
 				},
 				"iqrfDpa":{
 					"title": "IQRF DPA interface",
-					"description": "IQRF DPA interface settings.",
 					"form": {
 						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
 					},
@@ -671,8 +670,6 @@
 							"cron": "Cron time expression - specifies when and how often a task is executed"
 						},
 						"cronTime": "Time in cron format",
-						"exactTime": "Exact time",
-						"periodic": "Periodic",
 						"period": "Period in seconds",
 						"startTime": "Start time"
 					},
@@ -929,7 +926,6 @@
 					"title": "MQTT client configuration",
 					"port": "Broker port",
 					"tls": {
-						"enable": "Enable TLS",
 						"trustStore": "CA certificate",
 						"keyStore": "Client certificate",
 						"privateKey": "Client private key",
@@ -954,9 +950,7 @@
 				"responseTopicInvalid": "Invalid MQTT response topic format. The response topic format should be: gateway/{GWID}/rest/responses/ (GWID is 16 hexadecimal characters).",
 				"clientId": "Please enter the MQTT client ID.",
 				"clientIdInvalid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits).",
-				"brokerAddr": "Please enter the MQTT broker address.",
-				"brokerUser": "Please enter the MQTT client username.",
-				"brokerPassword": "Please enter the MQTT client password."
+				"brokerAddr": "Please enter the MQTT broker address."
 			}
 		},
 		"controller": {
@@ -1221,7 +1215,6 @@
 		},
 		"profile": {
 			"title": "User profile",
-			"description": "Edit user profile.",
 			"form": {
 				"oldPassword": "Current password",
 				"newPassword": "New password",
@@ -1242,7 +1235,6 @@
 			"add": "Add a new user",
 			"edit": "Edit an existing user",
 			"resendVerification": "Re-send verification email",
-			"id": "User ID",
 			"role": "User role",
 			"roles": {
 				"admin": "Admin user",
@@ -1291,7 +1283,6 @@
 		"sign": {
 			"in": {
 				"title": "Sign in",
-				"remember": "Keep me signed in",
 				"send": "Sign in",
 				"recoverPassword": "Forgot password?",
 				"messages": {
@@ -1357,8 +1348,6 @@
 				"dpa": "DPA",
 				"hwpid": "HWPID",
 				"hwpidVersion": "HWPID ver.",
-				"rfMode": "RF mode",
-				"networkType": "Network type",
 				"voltage": "Supply voltage"
 			},
 			"usages": {
@@ -1378,8 +1367,7 @@
 			"clockFormat": "Use 12-hour clock format",
 			"ntpSync": "System clock synchronized",
 			"form": {
-				"timezone": "Change timezone",
-				"timezonePlaceholder": "Select a timezone"
+				"timezone": "Change timezone"
 			},
 			"errors": {
 				"timezone": "Please select a timezone."
@@ -1880,26 +1868,20 @@
 				"pcmd": "PCMD",
 				"hwpid": "HWPID",
 				"pdata": "PDATA",
-				"packet": "DPA packet",
 				"address": "Custom NADR",
 				"addressOverwrite": "Use custom NADR",
 				"timeout": "Custom DPA timeout (ms)",
 				"timeoutOverwrite": "Use custom DPA timeout",
-				"autoRepeat": "Auto Repeat",
-				"autoRepeatInterval": "Repeat interval",
-				"autoRepeatTime": "x 100 ms",
 				"activeMessage": "Packet history",
 				"messages": {
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
-						"packet": "Invalid DPA packet has been entered.",
 						"timeout": "Invalid custom DPA timeout has been entered.",
 						"nadr": "NADR bytes should be 2 hexadecimal characters long.",
 						"pnum": "PNUM byte should be 2 hexadecimal characters long.",
 						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
 						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
-						"pdata": "PDATA should be 0 to 57 hexadecimal bytes long, separated by a dot.",
-						"autoRepeatInterval": "Auto repeat interval should be an integer between 10 and 36000."
+						"pdata": "PDATA should be 0 to 57 hexadecimal bytes long, separated by a dot."
 					},
 					"missing": {
 						"address": "Please enter the custom NADR.",
@@ -2414,8 +2396,6 @@
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
-			"add": "Add Ethernet connection",
-			"edit": "Edit Ethernet connection",
 			"messages": {
 				"noInterfaces": "No active ethernet network interface detected.",
 				"disconnectUnavailable": "Web interface is no longer available at this address as the disconnected connection profile uses this address."
@@ -2514,19 +2494,12 @@
 				"title": "GSM configuration",
 				"interface": "Select GSM interface",
 				"apn": "Access Point Name",
-				"operator": "Operator",
-				"number": "Number to dial",
-				"pin": "PIN",
-				"operators": {
-					"O2CZ": "O2 CZ",
-					"other": "Other"
-				}
+				"pin": "PIN"
 			},
 			"errors": {
 				"interfaceMissing": "Please select a GSM interface.",
 				"apnMissing": "Please enter access point name.",
 				"apnInvalid": "Access point name can only contain lowercase letters, numbers, dashes and dots.",
-				"numberMissing": "Please enter a number to dial.",
 				"pinInvalid": "PIN can only contain 4 digits.",
 				"credentialsMissing": "Please enter both username and password, or leave both fields empty."
 			},
@@ -2550,7 +2523,6 @@
 						"active": "Active",
 						"inactive": "Inactive"
 					},
-					"autostart": "Activate on startup",
 					"action": {
 						"activate": "Activate",
 						"deactivate": "Deactivate"
@@ -2582,8 +2554,6 @@
 					"keepalive": "Persistent keepalive in seconds *",
 					"keepaliveNote": "* 0 = disabled",
 					"endpoint": "Endpoint",
-					"allowedIPv4Addrs": "Allowed peer IPv4 addresses",
-					"allowedIPv6Addrs": "Allowed peer IPv6 addresses",
 					"copyPublicKey": "Copy key to clipboard"
 				},
 				"errors": {
@@ -2661,7 +2631,6 @@
 				"mask": "Subnet mask",
 				"gateway": "IPv4 Gateway address",
 				"dns": {
-					"title": "IPv4 DNS servers",
 					"address": "DNS server IPv4 address",
 					"add": "Add DNS server",
 					"remove": "Remove DNS server"
@@ -2696,7 +2665,6 @@
 				"prefix": "Prefix length",
 				"gateway": "IPv6 Gateway address",
 				"dns": {
-					"title": "IPv6 DNS servers",
 					"address": "DNS server IPv6 address",
 					"add": "Add DNS server",
 					"remove": "Remove DNS server"
@@ -2967,9 +2935,7 @@
 			"inactive": "inactive",
 			"missing": "Missing",
 			"unsupported": "Unsupported",
-			"unknown": "Unknown",
-			"running": "Running",
-			"stopped": "Stopped"
+			"unknown": "Unknown"
 		},
 		"iqrf": {
 			"title": "IQRF services",

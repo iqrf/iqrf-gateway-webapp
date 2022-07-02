@@ -25,7 +25,12 @@ limitations under the License.
 		<CCardFooter>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<br>
-			{{ $t('install.error.missingExtension.fixDescription' + (packageString !== '' ? 'Debian': '')) }}
+			<span v-if='packageString !== ""'>
+				{{ $t('install.error.missingExtension.fixDescriptionDebian') }}
+			</span>
+			<span v-else>
+				{{ $t('install.error.missingExtension.fixDescription') }}
+			</span>
 			<prism-editor
 				v-if='packageString !== ""'
 				v-model='fixCommands'
