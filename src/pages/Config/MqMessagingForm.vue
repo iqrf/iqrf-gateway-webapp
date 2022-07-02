@@ -30,39 +30,43 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.mq.errors.instance",
-								instance: "config.daemon.messagings.instanceInvalid"
+								required: $t("config.daemon.messagings.mq.errors.instance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mq.errors.LocalMqName"}'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
+							}'
 						>
 							<CInput
 								v-model='configuration.LocalMqName'
 								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mq.errors.RemoteMqName"}'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
+							}'
 						>
 							<CInput
 								v-model='configuration.RemoteMqName'
 								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox

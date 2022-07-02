@@ -24,9 +24,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.discovery.errors.txPower",
-							between: "iqrfnet.networkManager.discovery.errors.txPower"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.discovery.errors.txPower"),
+							between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 						}'
 					>
 						<CInput
@@ -36,16 +36,16 @@ limitations under the License.
 							max='7'
 							:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,239'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.discovery.errors.maxAddr",
-							between: "iqrfnet.networkManager.discovery.errors.maxAddr"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.discovery.errors.maxAddr"),
+							between: $t("iqrfnet.networkManager.discovery.errors.maxAddr")
 						}'
 					>
 						<CInput
@@ -55,7 +55,7 @@ limitations under the License.
 							max='239'
 							:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CButton color='primary' type='submit' :disabled='invalid'>

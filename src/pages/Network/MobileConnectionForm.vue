@@ -25,21 +25,21 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "network.connection.errors.name"
+								required: $t("network.connection.errors.name"),
 							}'
 						>
 							<CInput
 								v-model='connection.name'
 								:label='$t("network.connection.name")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "network.mobile.errors.interfaceMissing"
+								required: $t("network.mobile.errors.interfaceMissing"),
 							}'
 						>
 							<CSelect
@@ -48,12 +48,12 @@ limitations under the License.
 								:placeholder='$t("network.mobile.form.interface")'
 								:options='interfaceOptions'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
 							<label for='autoconnect'>
-								<b>{{ $t("network.connection.autoconnect") }}</b>
+								<strong>{{ $t("network.connection.autoconnect") }}</strong>
 							</label><br>
 							<CSwitch
 								id='autoconnect'
@@ -70,29 +70,29 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|apn'
 							:custom-messages='{
-								required: "network.mobile.errors.apnMissing",
-								apn: "network.mobile.errors.apnInvalid"
+								required: $t("network.mobile.errors.apnMissing"),
+								apn: $t("network.mobile.errors.apnInvalid"),
 							}'
 						>
 							<CInput
 								v-model='connection.gsm.apn'
 								:label='$t("network.mobile.form.apn")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='pin'
 							:custom-messages='{
-								pin: "network.mobile.errors.pinInvalid"
+								pin: $t("network.mobile.errors.pinInvalid"),
 							}'
 						>
 							<CInput
 								v-model='connection.gsm.pin'
 								:label='$t("network.mobile.form.pin")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -101,14 +101,14 @@ limitations under the License.
 								required: connection.gsm.password.length > 0
 							}'
 							:custom-messages='{
-								required: "network.mobile.errors.credentialsMissing"
+								required: $t("network.mobile.errors.credentialsMissing"),
 							}'
 						>
 							<CInput
 								v-model='connection.gsm.username'
 								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -117,14 +117,14 @@ limitations under the License.
 								required: connection.gsm.username.length > 0
 							}'
 							:custom-messages='{
-								required: "network.mobile.errors.credentialsMissing"
+								required: $t("network.mobile.errors.credentialsMissing"),
 							}'
 						>
 							<CInput
 								v-model='connection.gsm.password'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 
@@ -236,9 +236,10 @@ export default class MobileConnectionForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$t(
-			'network.mobile.' + (this.$route.path.includes('/add') ? 'add' : 'edit')
-		).toString();
+		if (this.$route.path.includes('/add')) {
+			return this.$t('network.mobile.add').toString();
+		}
+		return this.$t('network.mobile.edit').toString();
 	}
 
 	/**
@@ -247,7 +248,7 @@ export default class MobileConnectionForm extends Vue {
 	created(): void {
 		extend('required', required);
 		extend('apn', (apn: string) => {
-			return new RegExp(/^[a-z0-9\\.\\-]+$/).test(apn);
+			return new RegExp(/^[a-z0-9.-]+$/).test(apn);
 		});
 		extend('pin', (pin: string) => {
 			return new RegExp(/^[0-9]{4}$/).test(pin);
@@ -340,12 +341,13 @@ export default class MobileConnectionForm extends Vue {
 	 */
 	private handleSuccess(name: string): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(
-			this.$t(
-				'network.connection.messages.' +
-				(this.$route.path.includes('/add') ? 'add' : 'edit') + '.success',
-				{connection: name}).toString()
-		);
+		let message: string;
+		if (this.$route.path.includes('/add')) {
+			message = this.$t('network.connection.messages.add.success', {connection: name}).toString();
+		} else {
+			message = this.$t('network.connection.messages.edit.success', {connection: name}).toString();
+		}
+		this.$toast.success(message);
 		this.$router.push('/ip-network/mobile');
 	}
 

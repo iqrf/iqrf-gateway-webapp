@@ -55,13 +55,6 @@ export default class UrlBuilder {
 	}
 
 	/**
-	 * Development environment?
-	 */
-	isDevEnv(): boolean {
-		return this.isDev;
-	}
-
-	/**
 	 * Returns hostname
 	 */
 	getHostname(): string {

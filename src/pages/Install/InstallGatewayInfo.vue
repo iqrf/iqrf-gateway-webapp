@@ -181,7 +181,7 @@ export default class InstallGatewayInfo extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	private created(): void {
+	protected created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
 			.then(

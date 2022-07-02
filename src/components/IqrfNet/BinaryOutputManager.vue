@@ -23,9 +23,9 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.form.messages.address",
-							between: "iqrfnet.standard.form.messages.address"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.form.messages.address"),
+							between: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
 						<CInput
@@ -35,16 +35,16 @@ limitations under the License.
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,31'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.binaryOutput.form.messages.index",
-							between: "iqrfnet.standard.binaryOutput.form.messages.index"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.binaryOutput.form.messages.index"),
+							between: $t("iqrfnet.standard.binaryOutput.form.messages.index"),
 						}'
 					>
 						<CInput
@@ -54,7 +54,7 @@ limitations under the License.
 							max='31'
 							:label='$t("iqrfnet.standard.binaryOutput.form.index")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<div class='form-group'>

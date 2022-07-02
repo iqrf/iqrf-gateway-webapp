@@ -629,8 +629,8 @@ export default class TheSidebar extends Vue {
 
 	/**
 	 * Filters sidebar nav items
-	 * @param {Array<NavMemberItems>} items Member items
-	 * @returns {Array<NavMemberItems>} Member items filtered by user role and enabled features
+	 * @param {Array<NavMemberItem>} items Member items
+	 * @returns {Array<NavMemberItem>} Member items filtered by user role and enabled features
 	 */
 	private filterNavMemberItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
 		const filteredItems: Array<NavMemberItem> = [];

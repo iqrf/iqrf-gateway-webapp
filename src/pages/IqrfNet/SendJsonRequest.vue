@@ -43,16 +43,16 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|json'
 							:custom-messages='{
-								required: "iqrfnet.sendJson.messages.missing",
-								json: "iqrfnet.sendJson.messages.invalid",
+								required: $t("iqrfnet.sendJson.messages.missing"),
+								json: $t("iqrfnet.sendJson.messages.invalid"),
 							}'
 							slim
 						>
 							<JsonEditor
 								v-model='json'
-								:label='$t("iqrfnet.sendJson.form.json")'
+								:label='$t("iqrfnet.sendJson.form.json").toString()'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>
@@ -69,7 +69,7 @@ limitations under the License.
 		>
 			<CSelect
 				:value.sync='activeIdx'
-				:label='$t("iqrfnet.sendJson.form.activeMessage")'
+				:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
 				:options='messageOptions'
 				@change='activeMessagePair = messages[activeIdx]'
 			/>

@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardHeader>
-			<b>{{ $t('core.profile.form.editProfile') }}</b>
+			<strong>{{ $t('core.profile.form.editProfile') }}</strong>
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
@@ -26,42 +26,42 @@ limitations under the License.
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "forms.errors.username",
+							required: $t("forms.errors.username"),
 						}'
 					>
 						<CInput
 							v-model='user.username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='email'
 						:custom-messages='{
-							email: "forms.errors.emailFormat",
+							email: $t("forms.errors.emailFormat"),
 						}'
 					>
 						<CInput
 							v-model='user.email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.language",
+							required: $t("core.user.errors.language"),
 						}'
 					>
 						<CSelect
 							:value.sync='user.language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:options='languageOptions'
 						/>
 					</ValidationProvider>

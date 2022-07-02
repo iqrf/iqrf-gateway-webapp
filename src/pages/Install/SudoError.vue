@@ -20,17 +20,17 @@ limitations under the License.
 			{{ $t('install.error.sudo.title') }}
 		</CCardHeader>
 		<CCardBody>
-			<span v-if='!(exists === "true")'>
+			<span v-if='!exists'>
 				{{ $t('install.error.sudo.missing') }}
 			</span>
 			<br>
-			<span v-if='!(userSudo === "true")'>
+			<span v-if='!userSudo'>
 				{{ $t('install.error.sudo.invalid') }}
 			</span>
 		</CCardBody>
 		<CCardFooter>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
-			<div v-if='!(exists === "true")'>
+			<div v-if='!exists'>
 				<br>
 				{{ $t('install.error.sudo.fixMissing') }}
 				<prism-editor
@@ -39,7 +39,7 @@ limitations under the License.
 					:readonly='true'
 				/>
 			</div>
-			<div v-if='!(exists === "true")'>
+			<div v-if='!exists'>
 				<br>
 				{{ $t('install.error.sudo.fixInvalid') }}
 				<prism-editor
@@ -99,7 +99,7 @@ export default class SudoError extends Vue {
 	@Prop({required: true, default: false}) exists!: boolean;
 
 	/**
-	 * @property {boolean} userSudo Can webapp executo commands with sudo?
+	 * @property {boolean} userSudo Can webapp execute commands with sudo?
 	 */
 	@Prop({required: true, default: false}) userSudo!: boolean;
 

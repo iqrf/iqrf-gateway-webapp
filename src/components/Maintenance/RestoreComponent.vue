@@ -40,7 +40,7 @@ limitations under the License.
 					{{ $t('maintenance.backup.form.restore') }}
 				</CButton>
 			</div>
-			<i>{{ $t('maintenance.backup.messages.restoreNote') }}</i>
+			<em>{{ $t('maintenance.backup.messages.restoreNote') }}</em>
 		</CForm>
 	</div>
 </template>
@@ -66,7 +66,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 /**
  * Gateway restore component
  */
-export default class GatewayBackup extends Vue {
+export default class RestoreComponent extends Vue {
 
 	/**
 	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
@@ -74,7 +74,7 @@ export default class GatewayBackup extends Vue {
 	private inputEmpty = true;
 
 	/**
-	 * @var {boolean} running Incidates whether restore operation is running
+	 * @var {boolean} running Indicates whether restore operation is running
 	 */
 	private running = false;
 

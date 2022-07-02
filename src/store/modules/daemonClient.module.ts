@@ -26,6 +26,8 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {DaemonClientState} from '@/interfaces/wsClient';
 
+import {TranslateResult} from 'vue-i18n';
+
 /**
  * Daemon client state
  */
@@ -91,7 +93,11 @@ const actions: ActionTree<DaemonClientState, any> = {
 				if (options.message === null) {
 					return;
 				}
-				Vue.$toast.error(i18n.t(options.message).toString());
+				if (typeof options.message !== 'string') {
+					Vue.$toast.error(options.message.toString());
+				} else {
+					Vue.$toast.error(i18n.t(options.message).toString());
+				}
 			}, options.timeout);
 		}
 		state.messages.push(new DaemonMessage(request.data.msgId, timeout));

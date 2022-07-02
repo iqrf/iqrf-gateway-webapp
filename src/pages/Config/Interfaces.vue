@@ -167,13 +167,7 @@ export default class Interfaces extends Vue {
 	 * @param {Array<IComponent>} components Array of all daemon components
 	 */
 	private storeInterfaces(components: Array<IComponent>): void {
-		const interfaces: Array<IComponent> = [];
-		for (const component of components) {
-			if (this.whitelist.includes(component.name)) {
-				interfaces.push(component);
-			}
-		}
-		this.iqrfInterfaces = interfaces;
+		this.iqrfInterfaces = components.filter((component: IComponent) => (this.whitelist.includes(component.name)));
 	}
 
 	/**
@@ -241,7 +235,7 @@ export default class Interfaces extends Vue {
 			this.children = this.children.filter((item: string) => item !== data.name);
 		}
 		if (!data.success) {
-			this.failed.push(this.$t('config.daemon.interfaces.' + data.name + '.title').toString());
+			this.failed.push(this.$t(`config.daemon.interfaces.${data.name}.title`).toString());
 		}
 		if (this.children.length > 0) {
 			return;

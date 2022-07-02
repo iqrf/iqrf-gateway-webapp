@@ -48,7 +48,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
 								placement='top-start'
 								size='sm'
 							>
@@ -291,5 +291,4 @@ export default class MqMessagingTable extends Vue {
 .card-header {
 	padding-bottom: 0;
 }
-
 </style>

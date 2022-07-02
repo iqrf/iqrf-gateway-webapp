@@ -378,14 +378,6 @@ export default class DevicesInfo extends Vue {
 	}
 
 	/**
-	 * Performs FRC ping requested by user
-	 */
-	private submitFrcPing(): void {
-		this.manual = true;
-		this.frcPing();
-	}
-
-	/**
 	 * Indicates coordinator
 	 */
 	private indicateCoordinator(): void {
@@ -434,5 +426,4 @@ export default class DevicesInfo extends Vue {
 .table-toprow {
 	border: none;
 }
-
 </style>

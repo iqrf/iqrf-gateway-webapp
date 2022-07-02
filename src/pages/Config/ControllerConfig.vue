@@ -29,15 +29,15 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
 										:custom-messages='{
-											required: "config.controller.errors.missing.ws_api",
-											ws_addr: "config.controller.errors.invalid.ws_format"
+											required: $t("config.controller.errors.missing.ws_api"),
+											ws_addr: $t("config.controller.errors.invalid.ws_format"),
 										}'
 									>
 										<CInput
 											v-model='config.wsServers.api'
 											:label='$t("config.controller.form.wsServers.api")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -46,15 +46,15 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
 										:custom-messages='{
-											required: "config.controller.errors.missing.ws_monitor",
-											ws_addr: "config.controller.errors.invalid.ws_format"
+											required: $t("config.controller.errors.missing.ws_monitor"),
+											ws_addr: $t("config.controller.errors.invalid.ws_format"),
 										}'
 									>
 										<CInput
 											v-model='config.wsServers.monitor'
 											:label='$t("config.controller.form.wsServers.monitor")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -67,13 +67,15 @@ limitations under the License.
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
-										:custom-messages='{required: "config.controller.errors.missing.l_file"}'
+										:custom-messages='{
+											required: $t("config.controller.errors.missing.l_file"),
+										}'
 									>
 										<CInput
 											v-model='config.logger.filePath'
 											:label='$t("config.controller.form.logger.filePath")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -82,7 +84,7 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
-											required: "config.controller.errors.missing.l_severity",
+											required: $t("config.controller.errors.missing.l_severity"),
 										}'
 									>
 										<CSelect
@@ -90,14 +92,14 @@ limitations under the License.
 											:options='severityOptions'
 											:label='$t("config.controller.form.logger.severity")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 											:placeholder='$t("config.controller.errors.missing.l_severity")'
 										/>
 									</ValidationProvider>
 								</CCol>
 							</CRow>
 							<label>
-								<b>{{ $t('config.controller.form.logger.sink') }}</b>
+								<strong>{{ $t('config.controller.form.logger.sink') }}</strong>
 							</label>
 							<CRow>
 								<CCol md='2'>
@@ -164,9 +166,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,239'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.discovery.errors.maxAddr",
-												between: "iqrfnet.networkManager.discovery.errors.maxAddr"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.discovery.errors.maxAddr"),
+												between: $t("iqrfnet.networkManager.discovery.errors.maxAddr"),
 											}'
 										>
 											<CInput
@@ -176,7 +178,7 @@ limitations under the License.
 												max='239'
 												:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -185,9 +187,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.discovery.errors.txPower",
-												between: "iqrfnet.networkManager.discovery.errors.txPower"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.discovery.errors.txPower"),
+												between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 											}'
 										>
 											<CInput
@@ -197,7 +199,7 @@ limitations under the License.
 												max='7'
 												:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -215,9 +217,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='required|integer|between:0,3'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
-												between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
+												between: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
 											}'
 										>
 											<CInput
@@ -227,7 +229,7 @@ limitations under the License.
 												max='3'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -236,9 +238,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.messages.discovery.txPower",
-												between: "iqrfnet.networkManager.messages.discovery.txPower"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.messages.discovery.txPower"),
+												between: $t("iqrfnet.networkManager.messages.discovery.txPower"),
 											}'
 										>
 											<CInput
@@ -248,7 +250,7 @@ limitations under the License.
 												max='7'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -276,9 +278,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
-												between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
+												between: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
 											}'
 										>
 											<CInput
@@ -288,7 +290,7 @@ limitations under the License.
 												max='127'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -297,9 +299,9 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
 											:custom-messages='{
-												integer: "forms.errors.integer",
-												required: "iqrfnet.networkManager.messages.autoNetwork.waves",
-												between: "iqrfnet.networkManager.messages.autoNetwork.waves"
+												integer: $t("forms.errors.integer"),
+												required: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
+												between: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
 											}'
 										>
 											<CInput
@@ -309,7 +311,7 @@ limitations under the License.
 												max='127'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 									</CCol>
@@ -338,8 +340,8 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
 										:custom-messages='{
-											integer: "config.controller.pins.errors.greenLed",
-											required: "config.controller.pins.errors.greenLed",
+											integer: $t("config.controller.pins.errors.greenLed"),
+											required: $t("config.controller.pins.errors.greenLed"),
 										}'
 									>
 										<CInput
@@ -347,7 +349,7 @@ limitations under the License.
 											type='number'
 											:label='$t("config.controller.pins.form.greenLed")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -356,8 +358,8 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
 										:custom-messages='{
-											integer: "config.controller.pins.errors.redLed",
-											required: "config.controller.pins.errors.redLed",
+											integer: $t("config.controller.pins.errors.redLed"),
+											required: $t("config.controller.pins.errors.redLed"),
 										}'
 									>
 										<CInput
@@ -365,7 +367,7 @@ limitations under the License.
 											type='number'
 											:label='$t("config.controller.pins.form.redLed")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -374,8 +376,8 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
 										:custom-messages='{
-											integer: "config.controller.pins.errors.button",
-											required: "config.controller.pins.errors.button",
+											integer: $t("config.controller.pins.errors.button"),
+											required: $t("config.controller.pins.errors.button"),
 										}'
 									>
 										<CInput
@@ -383,7 +385,7 @@ limitations under the License.
 											type='number'
 											:label='$t("config.controller.pins.form.button")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -398,8 +400,8 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
 										:custom-messages='{
-											integer: "config.controller.pins.errors.sck",
-											required: "config.controller.pins.errors.sck",
+											integer: $t("config.controller.pins.errors.sck"),
+											required: $t("config.controller.pins.errors.sck"),
 										}'
 									>
 										<CInput
@@ -407,7 +409,7 @@ limitations under the License.
 											type='number'
 											:label='$t("config.controller.pins.form.sck")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
@@ -417,8 +419,8 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
 										:custom-messages='{
-											integer: "config.controller.pins.errors.sda",
-											required: "config.controller.pins.errors.sda",
+											integer: $t("config.controller.pins.errors.sda"),
+											required: $t("config.controller.pins.errors.sda"),
 										}'
 									>
 										<CInput
@@ -426,7 +428,7 @@ limitations under the License.
 											type='number'
 											:label='$t("config.controller.pins.form.sda")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
@@ -613,7 +615,7 @@ export default class ControllerConfig extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('ws_addr', (addr: string) => {
-			const regex = RegExp('^ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$');
+			const regex = /^ws:\/\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$/;
 			return regex.test(addr);
 		});
 	}

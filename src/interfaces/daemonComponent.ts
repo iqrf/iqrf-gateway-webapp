@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * Daemon configuration component
  */
@@ -78,7 +79,7 @@ export interface IConfigFetch {
  * Main daemon configuration interface
  */
 export interface IMainConfig {
-	
+
 	/**
 	 * Application name
 	 */

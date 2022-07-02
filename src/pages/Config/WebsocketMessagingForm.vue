@@ -30,15 +30,15 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.websocket.errors.messagingInstance",
-								instance: "config.daemon.messagings.instanceInvalid"
+								required: $t("config.daemon.messagings.websocket.errors.messagingInstance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
@@ -55,7 +55,7 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.messagings.websocket.errors.interfaceName"
+									required: $t("config.daemon.messagings.websocket.errors.interfaceName"),
 								}'
 							>
 								<CSelect
@@ -66,14 +66,14 @@ limitations under the License.
 										{value: "shape::IWebsocketService", label: "shape::IWebsocketService"}
 									]'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.messagings.websocket.errors.interfaceName"
+									required: $t("config.daemon.messagings.websocket.errors.interfaceName"),
 								}'
 							>
 								<CSelect
@@ -82,7 +82,7 @@ limitations under the License.
 									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceInstance")'
 									:options='services'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CButton
@@ -322,7 +322,6 @@ export default class WebsocketMessagingForm extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.$toast.success(

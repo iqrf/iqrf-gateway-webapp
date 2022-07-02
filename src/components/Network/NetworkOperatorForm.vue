@@ -32,28 +32,28 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "network.operators.errors.nameRequired"
+						required: $t("network.operators.errors.nameRequired"),
 					}'
 				>
 					<CInput
 						v-model='operator.name'
 						:label='$t("network.operators.form.name")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "network.operators.errors.apnRequired"
+						required: $t("network.operators.errors.apnRequired"),
 					}'
 				>
 					<CInput
 						v-model='operator.apn'
 						:label='$t("network.operators.form.apn")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
@@ -62,14 +62,14 @@ limitations under the License.
 						required: operator.password.length > 0
 					}'
 					:custom-messages='{
-						required: "forms.errors.credentials"
+						required: $t("forms.errors.credentials"),
 					}'
 				>
 					<CInput
 						v-model='operator.username'
 						:label='$t("network.operators.form.username")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
@@ -78,14 +78,14 @@ limitations under the License.
 						required: operator.username.length > 0
 					}'
 					:custom-messages='{
-						required: "forms.errors.credentials"
+						required: $t("forms.errors.credentials"),
 					}'
 				>
 					<CInput
 						v-model='operator.password'
 						:label='$t("network.operators.form.password")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 			</CForm>
@@ -135,7 +135,7 @@ import {IOperator} from '@/interfaces/network';
 /**
  * Network operator form component
  */
-export default class NetworOperatorForm extends Vue {
+export default class NetworkOperatorForm extends Vue {
 
 	/**
 	 * @var {boolean} show Controls whether modal is showed

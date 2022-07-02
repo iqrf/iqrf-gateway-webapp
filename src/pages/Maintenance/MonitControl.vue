@@ -20,7 +20,7 @@ limitations under the License.
 		<CCard body-wrapper>
 			<div class='box'>
 				<div>
-					<b>{{ $t('service.status') }}</b>
+					<strong>{{ $t('service.status') }}</strong>
 				</div>
 				<div v-if='missing'>
 					{{ $t('service.states.missing') }}
@@ -29,8 +29,8 @@ limitations under the License.
 					{{ $t('service.states.unsupported') }}
 				</div>
 				<div v-if='service !== null'>
-					{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
-					{{ $t('service.states.' + (service.active ? 'running' : 'stopped')) }}
+					{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
+					{{ $t(`service.states.${service.active ? 'running' : 'stopped'}`) }}
 				</div>
 				<div v-if='service !== null'>
 					<CButton
@@ -66,12 +66,11 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import MonitForm from '@/components/Maintenance/MonitForm.vue';
 
-import ServiceService from '@/services/ServiceService';
+import ServiceService, {ServiceStatus} from '@/services/ServiceService';
 import {monitErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
-import {ServiceStatus} from '@/services/ServiceService';
 
 @Component({
 	components: {
@@ -146,7 +145,7 @@ export default class MonitControl extends Vue {
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
-			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.enable'))
+			.then(() => this.serviceSuccess('service.monit.messages.enable'))
 			.catch((error: AxiosError) => monitErrorToast(error, 'service.messages.enableFailed'));
 	}
 
@@ -156,7 +155,7 @@ export default class MonitControl extends Vue {
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
-			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.disable'))
+			.then(() => this.serviceSuccess('service.monit.messages.disable'))
 			.catch((error: AxiosError) => monitErrorToast(error, 'service.messages.disableFailed'));
 	}
 

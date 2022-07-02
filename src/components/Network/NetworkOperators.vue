@@ -60,7 +60,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
+import {
+	CButton,
+	CButtonGroup,
+	CDropdown,
+	CDropdownItem,
+	CIcon,
+	CModal
+} from '@coreui/vue/src';
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
 import NetworkOperatorForm from './NetworkOperatorForm.vue';
@@ -81,6 +88,7 @@ import {IOperator} from '@/interfaces/network';
 		CButtonGroup,
 		CDropdown,
 		CDropdownItem,
+		CIcon,
 		CModal,
 		NetworkOperatorDeleteModal,
 		NetworkOperatorForm,

@@ -30,8 +30,8 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.daemon.scheduler.errors.nums",
-								integer: "config.daemon.scheduler.errors.nums"
+								required: $t("config.daemon.scheduler.errors.nums"),
+								integer: $t("config.daemon.scheduler.errors.nums"),
 							}'
 						>
 							<CInput
@@ -39,13 +39,15 @@ limitations under the License.
 								type='number'
 								:label='$t("config.daemon.scheduler.form.task.taskId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.scheduler.errors.service"}'
+							:custom-messages='{
+								required: $t("config.daemon.scheduler.errors.service"),
+							}'
 						>
 							<CSelect
 								:value.sync='clientId'
@@ -55,7 +57,7 @@ limitations under the License.
 								]'
 								placeholder='Select service'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CSelect
@@ -71,12 +73,12 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='cron|required'
 								:custom-messages='{
-									cron: "config.daemon.scheduler.errors.cron",
-									required: "config.daemon.scheduler.errors.cron"
+									cron: $t("config.daemon.scheduler.errors.cron"),
+									required: $t("config.daemon.scheduler.errors.cron"),
 								}'
 							>
 								<label for='cronTime'>
-									<b>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</b>
+									<strong>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</strong>
 								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
 									{{ cronMessage }}
 								</CBadge>
@@ -84,7 +86,7 @@ limitations under the License.
 									id='cronTime'
 									v-model='timeSpec.cronTime'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									@input='cronMessage = null'
 								/>
 							</ValidationProvider>
@@ -94,9 +96,9 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|min:0'
 							:custom-messages='{
-								required: "config.daemon.scheduler.errors.period",
-								integer: "config.daemon.scheduler.errors.period",
-								min: "config.daemon.scheduler.errors.period"
+								required: $t("config.daemon.scheduler.errors.period"),
+								integer: $t("config.daemon.scheduler.errors.period"),
+								min: $t("config.daemon.scheduler.errors.period"),
 							}'
 						>
 							<CInput
@@ -105,7 +107,7 @@ limitations under the License.
 								min='0'
 								:label='$t("config.daemon.scheduler.form.task.period")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div
@@ -150,17 +152,17 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|json|mType'
 										:custom-messages='{
-											required: "config.daemon.scheduler.errors.message",
-											json: "iqrfnet.sendJson.messages.invalid",
-											mType: "iqrfnet.sendJson.messages.mType"
+											required: $t("config.daemon.scheduler.errors.message"),
+											json: $t("iqrfnet.sendJson.messages.invalid"),
+											mType: $t("iqrfnet.sendJson.messages.mType"),
 										}'
 										slim
 									>
 										<JsonEditor
 											v-model='tasks[i-1].message'
-											:label='$t("config.daemon.scheduler.form.messages.label")'
+											:label='$t("config.daemon.scheduler.form.messages.label").toString()'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ").toString()'
 										/>
 									</ValidationProvider>
 									<CButton
@@ -187,7 +189,7 @@ limitations under the License.
 											v-slot='{errors, touched, valid}'
 											rules='required'
 											:custom-messages='{
-												required: "config.daemon.scheduler.errors.service"
+												required: $t("config.daemon.scheduler.errors.service"),
 											}'
 										>
 											<CSelect
@@ -196,7 +198,7 @@ limitations under the License.
 												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 												:options='messagings'
 												:is-valid='touched ? valid : null'
-												:invalid-feedback='$t(errors[0])'
+												:invalid-feedback='errors.join(", ")'
 											/>
 										</ValidationProvider>
 										<CButton

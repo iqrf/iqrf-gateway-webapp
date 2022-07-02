@@ -73,6 +73,8 @@ export interface SwapInfo {
 export interface VersionsInfo {
 	controller: string
 	daemon: string
+	setter: string
+	uploader: string
 	webapp: string
 }
 
@@ -90,14 +92,16 @@ export interface NetworkInterface {
  */
 export interface IGatewayInfo {
 	board: string
-	diskUsages: Array<DiskInfo>
-	gwId: string
+	gwId: string|null
+	gwImage: string|null
+	pixla: string
+	versions: VersionsInfo
 	hostname: string
 	interfaces: Array<NetworkInterface>
+	diskUsages: Array<DiskInfo>
 	memoryUsage: MemoryInfo
-	pixla: string
 	swapUsage: SwapInfo
-	versions: VersionsInfo
+	uptime: string
 }
 
 /**

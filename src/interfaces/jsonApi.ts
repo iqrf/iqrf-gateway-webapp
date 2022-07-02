@@ -14,13 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * JSON API MetaData configuration interface
- */
-export interface IJsonMetaData {
-	instance: string
-	metaDataToMessages: boolean
-}
 
 /**
  * JSON Raw API configuration interface

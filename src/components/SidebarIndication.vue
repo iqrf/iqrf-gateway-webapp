@@ -26,7 +26,7 @@ limitations under the License.
 				</td>
 				<td class='status'>
 					<CBadge :color='daemonModeBadgeColor'>
-						{{ $t('daemonStatus.modes.' + (isSocketConnected ? daemonMode : 'unknown')) }}
+						{{ $t(`daemonStatus.modes.${isSocketConnected ? daemonMode : 'unknown'}`) }}
 					</CBadge>
 				</td>
 			</tr>
@@ -36,7 +36,7 @@ limitations under the License.
 				</td>
 				<td class='status'>
 					<CBadge :color='isSocketConnected ? "success": "danger"'>
-						{{ $t('daemonStatus.websocket.' + (isSocketConnected ? 'connected' : 'notConnected')) }}
+						{{ $t(`daemonStatus.websocket.${isSocketConnected ? 'connected' : 'notConnected'}`) }}
 					</CBadge>
 				</td>
 			</tr>

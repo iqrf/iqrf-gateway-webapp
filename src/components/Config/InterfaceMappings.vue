@@ -59,7 +59,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CModal} from '@coreui/vue/src';
+import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import MappingDeleteConfirmation from '@/components/Config/MappingDeleteConfirmation.vue';
 import MappingForm from '@/components/Config/MappingForm.vue';
 
@@ -68,8 +68,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 
 import MappingService from '@/services/MappingService';
 
-import {AxiosError, AxiosResponse} from 'axios';
-import {IMapping} from '@/interfaces/mappings';
+import {AxiosError} from 'axios';
+import {IMapping, MappingType} from '@/interfaces/mappings';
 
 @Component({
 	components: {
@@ -77,6 +77,7 @@ import {IMapping} from '@/interfaces/mappings';
 		CButtonGroup,
 		CDropdown,
 		CDropdownItem,
+		CIcon,
 		CModal,
 		MappingDeleteConfirmation,
 		MappingForm,
@@ -93,9 +94,9 @@ export default class InterfaceMappings extends Vue {
 	private mappings: Array<IMapping> = [];
 
 	/**
-	 * @property {string} interfaceType Communication interface type
+	 * @property {MappingType} interfaceType Communication interface type
 	 */
-	@Prop({required: true}) interfaceType!: string;
+	@Prop({required: true}) interfaceType!: MappingType;
 
 	/**
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
@@ -118,9 +119,9 @@ export default class InterfaceMappings extends Vue {
 	 * Retrieves list of mappings
 	 */
 	private getMappings(): Promise<void> {
-		return MappingService.getMappings()
-			.then((response: AxiosResponse) => {
-				this.handleMappingResponse(response.data);
+		return MappingService.getMappings(this.interfaceType)
+			.then((mappings: Array<IMapping>) => {
+				this.mappings = mappings;
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.listFailed');
@@ -128,27 +129,12 @@ export default class InterfaceMappings extends Vue {
 	}
 
 	/**
-	 * Handles mapping REST API response
-	 * @param {Array<IMapping>} mappings Array of mappings from REST API response
-	 */
-	private handleMappingResponse(mappings: Array<IMapping>): void {
-		const filteredMappings: Array<IMapping> = [];
-		mappings.forEach((mapping: IMapping) => {
-			if (mapping.type !== this.interfaceType) {
-				return;
-			}
-			filteredMappings.push(mapping);
-		});
-		this.mappings = filteredMappings;
-	}
-
-	/**
 	 * Removes a mapping from mappings database
 	 * @param {number} index Mapping index
 	 */
-	private deleteMapping(idx: number): void {
-		const id = (this.mappings[idx].id as number);
-		const name = this.mappings[idx].name;
+	private deleteMapping(index: number): void {
+		const id = (this.mappings[index].id as number);
+		const name = this.mappings[index].name;
 		this.$store.commit('spinner/SHOW');
 		MappingService.removeMapping(id)
 			.then(() => {

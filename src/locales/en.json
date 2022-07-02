@@ -280,7 +280,7 @@
 					"saveFailed": "Failed to save component {component} configuration: {error}.",
 					"saveSuccess": "Component {component} configuration successfully saved.",
 					"changeEnabledFailed": "Failed to change enabled state of component {component}: {error}.",
-					"changeEnabledSuccess": "Enabled state of component {component} successully changed.",
+					"changeEnabledSuccess": "Enabled state of component {component} successfully changed.",
 					"deleteFailed": "Failed to delete component {component}: {error}.",
 					"deletePrompt": "Do you really want to delete component {component}?",
 					"deleteTitle": "Delete component",
@@ -315,7 +315,6 @@
 				},
 				"iqrfCdc": {
 					"title": "IQRF CDC interface",
-					"description": "IQRF CDC interface settings.",
 					"mappings": "Available CDC mappings",
 					"form": {
 						"interface": "CDC interface name"
@@ -331,7 +330,6 @@
 				},
 				"iqrfSpi": {
 					"title": "IQRF SPI interface",
-					"description": "IQRF SPI interface settings.",
 					"mappings": "Available SPI mappings",
 					"form": {
 						"iqrfInterface": "SPI interface name",
@@ -348,7 +346,6 @@
 				},
 				"iqrfUart": {
 					"title": "IQRF UART interface",
-					"description": "IQRF UART interface settings.",
 					"mappings": "Available UART mappings",
 					"form": {
 						"iqrfInterface": "UART interface name",
@@ -893,7 +890,7 @@
 						"zeroValues": "Disabled if value is set to 0.",
 						"addFailed": "Failed to create new Logging instance: {error}",
 						"addSuccess": "Logging instance {instance} has been added.",
-						"deleteFailed": "Faled to delete Logging instance {instance}: {error}",
+						"deleteFailed": "Failed to delete Logging instance {instance}: {error}",
 						"deleteSuccess": "Logging instance {instance} has been deleted.",
 						"editFailed": "Failed to edit Logging instance {instance}: {error}",
 						"editSuccess": "Logging instance {instance} has been edited.",
@@ -1181,7 +1178,6 @@
 				"title": "SSH keys",
 				"description": "Manage SSH keys.",
 				"add": "Add SSH key(s)",
-				"edit": "Edit SSH key",
 				"table": {
 					"title": "Authorized SSH public keys",
 					"add": "Add key",
@@ -1614,7 +1610,7 @@
 					"invalidNodeAddr": "Device property of entry {entry} is Node, but address is 0.",
 					"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
 					"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
-					"invalidDataContent": "Data{device} property of entry {entry} contains nonhexadecimal characters.",
+					"invalidDataContent": "Data{device} property of entry {entry} contains non-hexadecimal characters.",
 					"coordinatorRunning": "Restoring coordinator device...",
 					"coordinatorSuccess": "Coordinator device has been successfully restored.",
 					"readFailed": "Failed to read contents of selected file.",
@@ -2540,14 +2536,14 @@
 			}
 		},
 		"wireguard": {
-			"title": "Wireguard VPN",
+			"title": "WireGuard VPN",
 			"description": "VPN management.",
 			"tunnels": {
 				"title": "Tunnels",
-				"add": "Add Wireguard tunnel",
-				"edit": "Edit Wireguard tunnel",
+				"add": "Add WireGuard tunnel",
+				"edit": "Edit WireGuard tunnel",
 				"table": {
-					"noTunnels": "No Wireguard tunnels detected.",
+					"noTunnels": "No WireGuard tunnels detected.",
 					"name": "Name",
 					"state": "State",
 					"states": {
@@ -2612,26 +2608,26 @@
 					"base64Key": "Invalid key format, the key should be 32-byte Curve25519 key."
 				},
 				"modal": {
-					"title": "Wireguard tunnel delete confirmation",
-					"prompt": "Are you sure you want to delete Wireguard tunnel {tunnel}?"
+					"title": "WireGuard tunnel delete confirmation",
+					"prompt": "Are you sure you want to delete WireGuard tunnel {tunnel}?"
 				},
 				"messages": {
-					"addSuccess": "Wireguard tunnel {tunnel} has been successfully created.",
-					"addFailed": "Failed to create new Wireguard tunnel: {error}",
-					"editSuccess": "Wireguard tunnel {tunnel} has been successfully edited.",
-					"editFailed": "Failed to edit Wireguard tunnel {tunnel}: {error}",
-					"activateSuccess": "Wireguard tunnel {tunnel} has been successfully activated.",
-					"activateFailed": "Failed to activate Wireguard tunnel {tunnel}: {error}",
-					"deactivateSuccess": "Wireguard tunnel {tunnel} has been successfully deactivated.",
-					"deactivateFailed": "Failed to deactivate Wireguard tunnel {tunnel}: {error}",
-					"disableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully disabled.",
-					"disableFailed": "Failed to disable startup activation of Wireguard tunnel {tunnel}: {error}",
-					"enableSuccess": "Wireguard tunnel {tunnel} startup activation has been successfully enabled.",
-					"enableFailed": "Failed to enable startup activation of Wireguard tunnel {tunnel}: {error}",
-					"fetchFailed": "Failed to retrieve configuration of Wireguard tunnel ID {tunnel}: {error}.",
-					"listFailed": "Failed to retrieve list of existing Wireguard tunnels: {error}",
-					"deleteSuccess": "Wireguard tunnel {tunnel} has been successfully deleted.",
-					"deleteFailed": "Failed to delete Wireguard tunnel {tunnel}: {error}",
+					"addSuccess": "WireGuard tunnel {tunnel} has been successfully created.",
+					"addFailed": "Failed to create new WireGuard tunnel: {error}",
+					"editSuccess": "WireGuard tunnel {tunnel} has been successfully edited.",
+					"editFailed": "Failed to edit WireGuard tunnel {tunnel}: {error}",
+					"activateSuccess": "WireGuard tunnel {tunnel} has been successfully activated.",
+					"activateFailed": "Failed to activate WireGuard tunnel {tunnel}: {error}",
+					"deactivateSuccess": "WireGuard tunnel {tunnel} has been successfully deactivated.",
+					"deactivateFailed": "Failed to deactivate WireGuard tunnel {tunnel}: {error}",
+					"disableSuccess": "WireGuard tunnel {tunnel} startup activation has been successfully disabled.",
+					"disableFailed": "Failed to disable startup activation of WireGuard tunnel {tunnel}: {error}",
+					"enableSuccess": "WireGuard tunnel {tunnel} startup activation has been successfully enabled.",
+					"enableFailed": "Failed to enable startup activation of WireGuard tunnel {tunnel}: {error}",
+					"fetchFailed": "Failed to retrieve configuration of WireGuard tunnel ID {tunnel}: {error}.",
+					"listFailed": "Failed to retrieve list of existing WireGuard tunnels: {error}",
+					"deleteSuccess": "WireGuard tunnel {tunnel} has been successfully deleted.",
+					"deleteFailed": "Failed to delete WireGuard tunnel {tunnel}: {error}",
 					"copyPublicKey": "Public key has been successfully copied to clipboard.",
 					"keyPairFailed": "Failed to generate key pair: {error}"
 				}
@@ -2678,8 +2674,7 @@
 					"mask": "Please enter a valid IPv4 subnet mask.",
 					"maskInvalid": "Invalid subnet mask."
 				},
-				"ipNotInSubnet": "IPv4 address and gateway address are not in the same subnet.",
-				"dnsNotInSubnet": "IPv4 dns address and gateway address are not in the same subnet."
+				"ipNotInSubnet": "IPv4 address and gateway address are not in the same subnet."
 			},
 			"ipv6": {
 				"title": "IPv6 configuration",
@@ -2888,7 +2883,6 @@
 					}
 				},
 				"messages": {
-					"disabled": "Mender service is disabled.",
 					"fetchFailed": "Failed to retrieve Mender configuration: {error}",
 					"saveFailed": "Failed to save Mender configuration: {error}",
 					"saveSuccess": "Mender configuration has been successfully saved.",

@@ -30,30 +30,30 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.udp.errors.instance",
-								instance: "config.daemon.messagings.instanceInvalid"
+								required: $t("config.daemon.messagings.udp.errors.instance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|between:1,65535'
 							:custom-messages='{
-								between: "config.daemon.messagings.udp.errors.RemotePort",
-								required: "config.daemon.messagings.udp.errors.RemotePort",
+								between: $t("config.daemon.messagings.udp.errors.RemotePort"),
+								required: $t("config.daemon.messagings.udp.errors.RemotePort"),
 							}'
 						>
 							<CInput
 								v-model.number='configuration.RemotePort'
 								:label='$t("config.daemon.messagings.udp.form.RemotePort")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								type='number'
 								min='1'
 								max='65535'
@@ -63,15 +63,15 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|between:1,65535'
 							:custom-messages='{
-								between: "config.daemon.messagings.udp.errors.LocalPort",
-								required: "config.daemon.messagings.udp.errors.LocalPort",
+								between: $t("config.daemon.messagings.udp.errors.LocalPort"),
+								required: $t("config.daemon.messagings.udp.errors.LocalPort"),
 							}'
 						>
 							<CInput
 								v-model.number='configuration.LocalPort'
 								:label='$t("config.daemon.messagings.udp.form.LocalPort")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								type='number'
 								min='1'
 								max='65535'

@@ -48,7 +48,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.EnabledSSL ? "success" : "danger"'
-								:toggler-text='$t("states." + (item.EnabledSSL ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.EnabledSSL ? "enabled" : "disabled"}`)'
 								placement='top-start'
 								size='sm'
 							>
@@ -65,7 +65,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`)'
 								placement='top-start'
 								size='sm'
 							>
@@ -270,7 +270,7 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	/**
-	 * Updates SSL configuratin of MQTT messaging component instance
+	 * Updates SSL configuration of MQTT messaging component instance
 	 * @param {IMqttInstance} instance MQTT messaging instance
 	 * @param {boolean} enabledSsl SSL setting
 	 */
@@ -342,5 +342,4 @@ export default class MqttMessagingTable extends Vue {
 .card-header {
 	padding-bottom: 0;
 }
-
 </style>

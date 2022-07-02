@@ -35,7 +35,7 @@ limitations under the License.
 										v-model='config.rest.addr'
 										:label='$t("forms.fields.address")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -54,7 +54,7 @@ limitations under the License.
 										max='49151'
 										:label='$t("config.translator.form.rest.port")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -69,7 +69,7 @@ limitations under the License.
 										v-model='config.rest.api_key'
 										:label='$t("config.translator.form.rest.apiKey")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -87,7 +87,7 @@ limitations under the License.
 								v-model='config.mqtt.cid'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CRow>
@@ -103,7 +103,7 @@ limitations under the License.
 										v-model='config.mqtt.addr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -124,7 +124,7 @@ limitations under the License.
 										max='49151'
 										:label='$t("config.translator.form.mqtt.port")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -141,7 +141,7 @@ limitations under the License.
 										v-model='config.mqtt.request_topic'
 										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -158,7 +158,7 @@ limitations under the License.
 										v-model='config.mqtt.response_topic'
 										:label='$t("forms.fields.responseTopic")'
 										:is-valid='touched ? valid: null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -170,7 +170,7 @@ limitations under the License.
 										v-model='config.mqtt.user'
 										:label='$t("forms.fields.username")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -183,7 +183,7 @@ limitations under the License.
 										:type='passwordVisible ? "text" : "password"'
 										:label='$t("forms.fields.password")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									>
 										<template #append-content>
 											<span @click='passwordVisible = !passwordVisible'>

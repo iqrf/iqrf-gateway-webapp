@@ -29,13 +29,15 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "core.security.apiKey.errors.description"}'
+							:custom-messages='{
+								required: $t("core.security.apiKey.errors.description"),
+							}'
 						>
 							<CInput
 								v-model='metadata.description'
 								:label='$t("core.security.apiKey.form.description")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>

@@ -141,7 +141,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
+import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
 import ResourceUsage from '@/components/Gateway/ResourceUsage.vue';
@@ -149,7 +149,6 @@ import GatewayService from '@/services/GatewayService';
 import HostnameChange from '@/components/Gateway/HostnameChange.vue';
 
 import {cilPencil} from '@coreui/icons';
-import {DaemonModeEnum} from '@/services/DaemonModeService';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
 import {AxiosResponse} from 'axios';
@@ -159,6 +158,7 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/gatewayInfo';
 	components: {
 		CButton,
 		CCard,
+		CIcon,
 		CoordinatorInfo,
 		DaemonModeInfo,
 		HostnameChange,
@@ -177,11 +177,6 @@ export default class GatewayInfo extends Vue {
 	 * @var {IGatewayInfo|null} info Gateway information object
 	 */
 	private info: IGatewayInfo|null = null;
-
-	/**
-	 * @var {DaemonModeEnum} mode Current Daemon mode
-	 */
-	private mode: DaemonModeEnum = DaemonModeEnum.unknown;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown

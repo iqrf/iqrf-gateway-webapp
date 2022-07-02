@@ -35,7 +35,7 @@ limitations under the License.
 							v-slot='{ valid, touched, errors }'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.username",
+								required: $t("forms.errors.username"),
 							}'
 						>
 							<CInput
@@ -43,14 +43,14 @@ limitations under the License.
 								v-model='username'
 								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='email'
 							:custom-messages='{
-								email: "forms.errors.emailFormat",
+								email: $t("forms.errors.emailFormat"),
 							}'
 						>
 							<CInput
@@ -58,14 +58,14 @@ limitations under the License.
 								v-model='email'
 								:label='$t("forms.fields.email")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{valid, touched, errors}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.password",
+								required: $t("forms.errors.password"),
 							}'
 						>
 							<CInput
@@ -73,7 +73,7 @@ limitations under the License.
 								v-model='password'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								type='password'
 							/>
 						</ValidationProvider>

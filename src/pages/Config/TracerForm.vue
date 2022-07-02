@@ -32,14 +32,14 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.misc.tracer.errors.instance"
+									required: $t("config.daemon.misc.tracer.errors.instance"),
 								}'
 							>
 								<CInput
 									v-model='configuration.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CInput
@@ -50,23 +50,23 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.misc.tracer.errors.filename"
+									required: $t("config.daemon.misc.tracer.errors.filename"),
 								}'
 							>
 								<CInput
 									v-model='configuration.filename'
 									:label='$t("config.daemon.misc.tracer.form.filename")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|required|min:1'
 								:custom-messages='{
-									required: "config.daemon.misc.tracer.errors.maxSizeMb",
-									min: "config.daemon.misc.tracer.errors.maxSizeMb",
-									integer: "forms.errors.integer"
+									required: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
+									min: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
+									integer: $t("forms.errors.integer"),
 								}'
 							>
 								<CInput
@@ -74,7 +74,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.misc.tracer.form.maxSize")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<div class='form-group'>
@@ -99,8 +99,8 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
 									:custom-messages='{
-										integer: "forms.errors.integer",
-										min: "config.daemon.misc.tracer.errors.maxAgeMinutes"
+										integer: $t("forms.errors.integer"),
+										min: $t("config.daemon.misc.tracer.errors.maxAgeMinutes"),
 									}'
 								>
 									<CInput
@@ -109,15 +109,15 @@ limitations under the License.
 										min='0'
 										:label='$t("config.daemon.misc.tracer.form.maxAgeMinutes") + " *"'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
 									:custom-messages='{
-										integer: "forms.errors.integer",
-										min: "config.daemon.misc.tracer.errors.maxNumber"
+										integer: $t("forms.errors.integer"),
+										min: $t("config.daemon.misc.tracer.errors.maxNumber"),
 									}'
 								>
 									<CInput
@@ -126,10 +126,10 @@ limitations under the License.
 										min='0'
 										:label='$t("config.daemon.misc.tracer.form.maxNumber") + " *"'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-								<i>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</i>
+								<em>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</em>
 							</div>
 						</CCol>
 						<CCol md='6'>
@@ -144,8 +144,8 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='integer|required'
 									:custom-messages='{
-										integer: "forms.errors.integer",
-										required: "config.daemon.misc.tracer.errors.verbosityLevels.channel"
+										integer: $t("forms.errors.integer"),
+										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
 									}'
 								>
 									<CInput
@@ -153,14 +153,14 @@ limitations under the License.
 										type='number'
 										:label='$t("config.daemon.misc.tracer.form.channel")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.misc.tracer.errors.verbosityLevels.level"
+										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
 									}'
 								>
 									<CSelect
@@ -169,7 +169,7 @@ limitations under the License.
 										:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
 										:options='selectOptions'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<CButton

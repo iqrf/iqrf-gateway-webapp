@@ -34,14 +34,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.jsonRawApi.errors.instance"
+								required: $t("config.daemon.misc.jsonRawApi.errors.instance"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
@@ -168,7 +168,6 @@ export default class JsonRawApi extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

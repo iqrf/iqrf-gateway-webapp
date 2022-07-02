@@ -17,13 +17,14 @@
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {TranslateResult} from 'vue-i18n';
 
 /**
  * IQRF Info service
  */
 class InfoService {
 
-	binouts(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	binouts(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_GetBinaryOutputs',
 			'data': {
@@ -36,7 +37,7 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	dalis(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	dalis(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_GetDalis',
 			'data': {
@@ -57,7 +58,7 @@ class InfoService {
 	 * @param callback Request timeout callback
 	 * @returns Request message ID
 	 */
-	enumerate(command: EnumerateCommand, period: number|null = null, timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	enumerate(command: EnumerateCommand, period: number|null = null, timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_Enumeration',
 			'data': {
@@ -74,7 +75,7 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	lights(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	lights(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_GetLights',
 			'data': {
@@ -87,7 +88,7 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	nodes(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	nodes(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_GetNodes',
 			'data': {
@@ -100,7 +101,7 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	sensors(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	sensors(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_GetSensors',
 			'data': {
@@ -113,7 +114,7 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	reset(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+	reset(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'infoDaemon_Reset',
 			'data': {

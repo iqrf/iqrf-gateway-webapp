@@ -23,11 +23,11 @@ limitations under the License.
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm>
 					<div class='form-group'>
-						<b>
+						<strong>
 							<label>
 								{{ $t('gateway.ntp.form.setServer') }}
 							</label>
-						</b><br>
+						</strong><br>
 						<CSwitch
 							:checked.sync='useCustomServers'
 							size='lg'
@@ -47,15 +47,15 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|server'
 								:custom-messages='{
-									required: "gateway.ntp.errors.serverMissing",
-									server: "gateway.ntp.errors.serverInvalid"
+									required: $t("gateway.ntp.errors.serverMissing"),
+									server: $t("gateway.ntp.errors.serverInvalid"),
 								}'
 							>
 								<CInput
 									v-model='pools[idx]'
 									:label='$t("gateway.ntp.form.server")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CButton
@@ -103,7 +103,7 @@ import GatewayService from '@/services/GatewayService';
 import ip from 'ip-regex';
 import isFQDN from 'is-fqdn';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -138,7 +138,7 @@ export default class NtpConfig extends Vue {
 	 */
 	created(): void {
 		extend('server', (addr: string) => {
-			return ip.v4({exact: true}).test(addr) || isFQDN(addr);
+			return ip.v4({exact: true}).test(addr) || ip.v6({exact: true}).test(addr) || isFQDN(addr);
 		});
 		extend('required', required);
 	}
@@ -158,8 +158,7 @@ export default class NtpConfig extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		return GatewayService.getNtp()
-			.then((response: AxiosResponse) => {
-				const pools: Array<string> = response.data;
+			.then((pools: Array<string>) => {
 				if (pools.length === 0) {
 					this.useCustomServers = false;
 				} else {

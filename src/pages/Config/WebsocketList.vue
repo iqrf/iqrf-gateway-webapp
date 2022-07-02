@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<div v-if='role === roles.ADMIN'>
+		<div v-if='isAdmin'>
 			<WebsocketMessagingList />
 			<WebsocketServiceList />
 		</div>
@@ -49,21 +49,14 @@ import {UserRole} from '@/services/AuthenticationService';
  * Daemon WebSocket messaging page component
  */
 export default class WebsocketList extends Vue {
-	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.NORMAL;
 
 	/**
-	 * @constant {typeof UserRole} roles User roles
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
 	 */
-	private roles: typeof UserRole = UserRole;
-
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		this.role = this.$store.getters['user/getRole'];
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
 	}
+
 }
 </script>

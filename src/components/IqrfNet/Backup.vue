@@ -31,9 +31,9 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.backup.form.messages.address",
-							between: "iqrfnet.networkManager.backup.form.messages.address",
-							required: "iqrfnet.networkManager.backup.form.messages.address"
+							integer: $t("iqrfnet.networkManager.backup.form.messages.address"),
+							between: $t("iqrfnet.networkManager.backup.form.messages.address"),
+							required: $t("iqrfnet.networkManager.backup.form.messages.address"),
 						}'
 					>
 						<CInput
@@ -43,7 +43,7 @@ limitations under the License.
 							max='239'
 							:label='$t("forms.fields.address")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CButton
@@ -214,7 +214,7 @@ export default class Backup extends Vue {
 	 */
 	private backupSuccessToast(): void {
 		if (this.offlineDevices.length === 0) {
-			let message = '';
+			let message: string;
 			if (this.target === NetworkTarget.COORDINATOR) {
 				message = this.$t('iqrfnet.networkManager.backup.messages.coordinatorSuccess').toString();
 			} else if (this.target === NetworkTarget.NODE) {
@@ -286,7 +286,7 @@ export default class Backup extends Vue {
 		const address = this.target === NetworkTarget.NODE ? this.address : 0;
 		const wholeNetwork = this.target === 'network';
 		const options = new DaemonMessageOptions(null);
-		let message = '';
+		let message: string;
 		if (this.target === NetworkTarget.COORDINATOR) {
 			message = this.$t('iqrfnet.networkManager.backup.messages.coordinatorRunning').toString();
 		} else if (this.target === NetworkTarget.NODE) {
@@ -309,7 +309,11 @@ export default class Backup extends Vue {
 		let message = this.$t('iqrfnet.networkManager.backup.messages.networkRunning', {progress: response.rsp.progress}).toString();
 		const deviceAddr = response.rsp.devices[0].deviceAddr;
 		if (response.status === 0) {
-			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.' + (deviceAddr === 0 ? 'coordinator' : 'node') + 'Success', {deviceAddr: deviceAddr}).toString();
+			if (deviceAddr === 0) {
+				message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.coordinatorSuccess', {deviceAddr: deviceAddr}).toString();
+			} else {
+				message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.nodeSuccess', {deviceAddr: deviceAddr}).toString();
+			}
 		} else {
 			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.nodeFailed', {deviceAddr: deviceAddr}).toString();
 		}
@@ -321,7 +325,7 @@ export default class Backup extends Vue {
 	 */
 	private generateBackupFile(): void {
 		let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString('en-GB').replace(/\//g, '.').replace(/,/g, '') + ' IQRF GW Webapp: ' + this.webappVersion + '\n\n';
-		let fileName = '';
+		let fileName: string;
 		if (this.target === NetworkTarget.COORDINATOR) {
 			fileName = 'Coordinator_';
 			fileContent += this.coordinatorBackup() + '\n';

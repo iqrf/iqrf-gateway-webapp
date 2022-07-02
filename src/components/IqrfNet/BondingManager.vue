@@ -34,9 +34,9 @@ limitations under the License.
 						/>
 						<div class='form-group'>
 							<label for='addressSwitch'>
-								<b>
+								<strong>
 									{{ $t('iqrfnet.networkManager.bondingManager.form.autoAddress') }}
-								</b>
+								</strong>
 							</label><br>
 							<CSwitch
 								id='addressSwitch'
@@ -53,9 +53,9 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "iqrfnet.networkManager.bondingManager.errors.address",
-								between: "iqrfnet.networkManager.bondingManager.errors.address"
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.networkManager.bondingManager.errors.address"),
+								between: $t("iqrfnet.networkManager.bondingManager.errors.address"),
 							}'
 						>
 							<CInput
@@ -65,7 +65,7 @@ limitations under the License.
 								max='239'
 								:label='$t("forms.fields.address")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								:disabled='autoAddress'
 							/>
 						</ValidationProvider>
@@ -74,24 +74,24 @@ limitations under the License.
 							v-slot='{errors, valid}'
 							rules='required|scCode'
 							:custom-messages='{
-								required: "iqrfnet.networkManager.bondingManager.errors.scCodeMissing",
-								scCode: "iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"
+								required: $t("iqrfnet.networkManager.bondingManager.errors.scCodeMissing"),
+								scCode: $t("iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"),
 							}'
 						>
 							<CInput
 								v-model='scCode'
 								:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
 								:is-valid='valid'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|between:0,255'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "iqrfnet.networkManager.bondingManager.errors.bondingRetries",
-								between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
+								between: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
 							}'
 						>
 							<CInput
@@ -101,7 +101,7 @@ limitations under the License.
 								max='255'
 								:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox

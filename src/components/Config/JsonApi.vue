@@ -31,14 +31,14 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.daemon.misc.jsonSplitter.errors.insId"
+						required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
 					}'
 				>
 					<CInput
 						v-model='insId'
 						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
@@ -117,11 +117,6 @@ export default class JsonApi extends Vue {
 	private splitter: IJsonSplitter|null = null;
 
 	/**
-	 * @var {boolean} metaDataToMessages Should metadata be added to messages?
-	 */
-	private metaDataToMessages = false;
-
-	/**
 	 * @var {boolean} asyncDpaMessage Asynchronous DPA messages?
 	 */
 	private asyncDpaMessage = false;
@@ -178,19 +173,15 @@ export default class JsonApi extends Vue {
 	 */
 	private saveConfig(): void {
 		const requests: Array<Promise<AxiosResponse>> = [];
-		if (this.rawApi !== null) {
-			if (this.asyncDpaMessage !== this.rawApi.asyncDpaMessage) {
-				this.rawApi.asyncDpaMessage = this.asyncDpaMessage;
-				requests.push(DaemonConfigurationService.updateInstance(this.componentNames.rawApi, this.rawApi.instance, this.rawApi));
-			}
+		if (this.rawApi !== null && this.asyncDpaMessage !== this.rawApi.asyncDpaMessage) {
+			this.rawApi.asyncDpaMessage = this.asyncDpaMessage;
+			requests.push(DaemonConfigurationService.updateInstance(this.componentNames.rawApi, this.rawApi.instance, this.rawApi));
 		}
-		if (this.splitter !== null) {
-			if (this.validateJsonResponse !== this.splitter.validateJsonResponse ||
-				this.insId !== this.splitter.insId) {
-				this.splitter.insId = this.insId;
-				this.splitter.validateJsonResponse = this.validateJsonResponse;
-				requests.push(DaemonConfigurationService.updateInstance(this.componentNames.splitter, this.splitter.instance, this.splitter));
-			}
+		if (this.splitter !== null &&
+				(this.validateJsonResponse !== this.splitter.validateJsonResponse || this.insId !== this.splitter.insId)) {
+			this.splitter.insId = this.insId;
+			this.splitter.validateJsonResponse = this.validateJsonResponse;
+			requests.push(DaemonConfigurationService.updateInstance(this.componentNames.splitter, this.splitter.instance, this.splitter));
 		}
 		if (requests.length === 0) {
 			this.$toast.info(

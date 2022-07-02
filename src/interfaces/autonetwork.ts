@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * AutoNetwork base interface
  */
@@ -24,7 +25,7 @@ export interface AutoNetworkBase {
 	actionRetries: number
 
 	/**
-	 * Run discovery before starting the autonetwork process
+	 * Run discovery before starting the AutoNetwork process
 	 */
 	discoveryBeforeStart: boolean
 
@@ -50,6 +51,27 @@ export interface AutoNetworkBase {
 }
 
 /**
+ * AutoNetwork request options
+ */
+export interface AutoNetworkOptions extends AutoNetworkBase {
+
+	/**
+	 * HWPID filtering
+	 */
+	hwpidFiltering: Array<number>
+
+	/**
+	 * Overlapping networks
+	 */
+	overlappingNetworks: AutoNetworkOverlappingNetworks
+
+	/**
+	 * Stop conditions
+	 */
+	stopConditions: AutoNetworkStopConditions
+}
+
+/**
  * AutoNetwork overlapping networks interface
  */
 export interface AutoNetworkOverlappingNetworks {
@@ -71,21 +93,21 @@ export interface AutoNetworkStopConditions {
 	/**
 	 * Abort if too many nodes are found
 	 */
-	abortOnTooManyNodesFound: boolean
+	abortOnTooManyNodesFound?: boolean
 
 	/**
 	 * Abort after number of consecutive waves where no nodes are found
 	 */
-	emptyWaves: number
+	emptyWaves?: number
 
 	/**
 	 * Abort after number of nodes is found
 	 */
-	nodeCount: number
+	nodeCount?: number
 
 	/**
 	 * Abort after number of waves
 	 */
-	waves: number
+	waves?: number
 }
 

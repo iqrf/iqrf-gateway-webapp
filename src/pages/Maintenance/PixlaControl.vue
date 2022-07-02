@@ -33,7 +33,7 @@ limitations under the License.
 		<CCard body-wrapper>
 			<div class='box'>
 				<div>
-					<b>{{ $t('service.status') }}</b>
+					<strong>{{ $t('service.status') }}</strong>
 				</div>
 				<div v-if='missing'>
 					{{ $t('service.states.missing') }}
@@ -42,8 +42,8 @@ limitations under the License.
 					{{ $t('service.states.unsupported') }}
 				</div>
 				<div v-if='service !== null'>
-					{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
-					{{ $t('service.states.' + (service.active ? 'running' : 'stopped')) }}
+					{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
+					{{ $t(`service.states.${service.active ? 'running' : 'stopped'}`) }}
 				</div>
 				<div v-if='service !== null'>
 					<CButton
@@ -145,7 +145,7 @@ export default class PixlaControl extends Vue {
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.enable')
+					this.$t('service.gwman-client.messages.enable')
 						.toString()
 				);
 			})
@@ -161,7 +161,7 @@ export default class PixlaControl extends Vue {
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.disable')
+					this.$t('service.gwman-client.messages.disable')
 						.toString()
 				);
 			})
@@ -177,7 +177,7 @@ export default class PixlaControl extends Vue {
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.restart')
+					this.$t('service.gwman-client.messages.restart')
 						.toString()
 				);
 			})

@@ -30,14 +30,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.components.errors.name"
+								required: $t("config.daemon.components.errors.name"),
 							}'
 						>
 							<CInput
 								v-model='configuration.name'
 								:label='$t("config.daemon.components.form.name")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInput
@@ -48,14 +48,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.components.errors.libraryName"
+								required: $t("config.daemon.components.errors.libraryName"),
 							}'
 						>
 							<CInput
 								v-model='configuration.libraryName'
 								:label='$t("config.daemon.components.form.libraryName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
@@ -66,8 +66,8 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "config.daemon.components.errors.startLevel"
+								integer: $t("forms.errors.integer"),
+								required: $t("config.daemon.components.errors.startLevel"),
 							}'
 						>
 							<CInput
@@ -75,7 +75,7 @@ limitations under the License.
 								type='number'
 								:label='$t("config.daemon.components.form.startLevel")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CButton
@@ -221,7 +221,6 @@ export default class ComponentForm extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

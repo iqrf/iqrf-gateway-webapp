@@ -26,7 +26,9 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
-							:custom-messages='{required: "core.sign.in.messages.username"}'
+							:custom-messages='{
+								required: $t("core.sign.in.messages.username"),
+							}'
 						>
 							<CInput
 								id='username'
@@ -35,7 +37,7 @@ limitations under the License.
 								:placeholder='$t("forms.fields.username")'
 								autocomplete='username'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							>
 								<template #prepend-content>
 									<CIcon :content='icons.user' />
@@ -45,7 +47,9 @@ limitations under the License.
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
-							:custom-messages='{required: "core.sign.in.messages.password"}'
+							:custom-messages='{
+								required: $t("core.sign.in.messages.password")
+							}'
 						>
 							<CInput
 								id='password'
@@ -55,7 +59,7 @@ limitations under the License.
 								type='password'
 								autocomplete='password'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							>
 								<template #prepend-content>
 									<CIcon :content='icons.lock' />

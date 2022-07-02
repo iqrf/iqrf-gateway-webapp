@@ -74,7 +74,7 @@ limitations under the License.
 									@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
 								>
 									<CIcon :content='item.interfaceName === null ? icons.connect : icons.disconnect' size='sm' />
-									{{ $t('network.table.' + (item.interfaceName === null ? 'connect' : 'disconnect')) }}
+									{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
 								</CButton> <CButton
 									size='sm'
 									color='primary'

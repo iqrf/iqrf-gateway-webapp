@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import {Store} from 'vuex';
-
 /**
  * Websocket options
  */

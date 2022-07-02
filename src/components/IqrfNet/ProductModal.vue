@@ -46,7 +46,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CDataTable, CModal} from '@coreui/vue/src';
+import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilCheckAlt} from '@coreui/icons';
 
 import ProductService from '@/services/IqrfRepository/ProductService';
@@ -59,6 +59,7 @@ import {IProduct} from '@/interfaces/repository';
 	components: {
 		CButton,
 		CDataTable,
+		CIcon,
 		CModal,
 	},
 })

@@ -14,16 +14,16 @@
 					v-slot='{errors, touched, valid}'
 					rules='hostnamePattern|maxLen:64|required'
 					:custom-messages='{
-						hostnamePattern: "gateway.hostname.errors.hostnameInvalid",
-						maxLen: "gateway.hostname.errors.hostnameLen",
-						required: "gateway.hostname.errors.hostnameMissing"
+						hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
+						maxLen: $t("gateway.hostname.errors.hostnameLen"),
+						required: $t("gateway.hostname.errors.hostnameMissing"),
 					}'
 				>
 					<CInput
 						v-model='config.hostname'
 						:label='$t("gateway.info.hostname")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 			</CForm>

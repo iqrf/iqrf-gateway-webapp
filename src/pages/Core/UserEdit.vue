@@ -24,42 +24,42 @@ limitations under the License.
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "forms.errors.username",
+							required: $t("forms.errors.username"),
 						}'
 					>
 						<CInput
 							v-model='username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='email'
 						:custom-messages='{
-							email: "forms.errors.emailFormat",
+							email: $t("forms.errors.emailFormat"),
 						}'
 					>
 						<CInput
 							v-model='email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.role",
+							required: $t("core.user.errors.role"),
 						}'
 					>
 						<CSelect
 							:value.sync='role'
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:placeholder='$t("core.user.errors.role")'
 							:options='roles'
 						/>
@@ -68,14 +68,14 @@ limitations under the License.
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.language",
+							required: $t("core.user.errors.language"),
 						}'
 					>
 						<CSelect
 							:value.sync='language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:placeholder='$t("core.user.errors.language")'
 							:options='languages'
 						/>
@@ -190,7 +190,7 @@ export default class UserEdit extends Vue {
 			if (itemIdx >= roleIdx) {
 				roles.push({
 					value: UserRole[item],
-					label: this.$t('core.user.roles.' + UserRole[item]),
+					label: this.$t(`core.user.roles.${UserRole[item]}`),
 				});
 			}
 		}

@@ -298,7 +298,7 @@ export default class SshKeyList extends Vue {
 	 */
 	private clipboardMessage(path: string): void {
 		this.$toast.success(
-			this.$t('core.security.ssh.messages.' + path).toString()
+			this.$t(`core.security.ssh.messages.${path}`).toString()
 		);
 	}
 

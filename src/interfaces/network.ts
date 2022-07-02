@@ -134,6 +134,41 @@ export interface IWifiSecurity {
 	psk: string
 	leap: IWifiLeap
 	wep: IWifiWep
+	eap: IWifiEap
+}
+
+/**
+ * EAP (Extensible Authentication Protocol) phase one authentication method enum
+ */
+export enum EapPhaseOneMethod {
+	FAST = 'fast',
+	LEAP = 'leap',
+	MD5 = 'md5',
+	PEAP = 'peap',
+	PWD = 'pwd',
+	TLS = 'tls',
+	TTLS = 'ttls',
+}
+
+/**
+ * EAP (Extensible Authentication Protocol) phase two authentication method enum
+ */
+export enum EapPhaseTwoMethod {
+	GTC = 'gtc',
+	MD5 = 'md5',
+	MSCHAPV2 = 'mschapv2',
+}
+
+/**
+ * EAP (Extensible Authentication Protocol) interface
+ */
+export interface IWifiEap {
+	phaseOneMethod: EapPhaseOneMethod|null
+	phaseTwoMethod: EapPhaseTwoMethod|null
+	anonymousIdentity: string
+	cert: string
+	identity: string
+	password: string
 }
 
 /**

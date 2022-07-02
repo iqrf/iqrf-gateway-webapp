@@ -21,12 +21,12 @@ limitations under the License.
 			<div class='form-group'>
 				<CRow style='margin-bottom: 1.25rem;'>
 					<CCol>
-						<b>
+						<strong>
 							{{ $t('gateway.info.gwMode') }}
-						</b>
+						</strong>
 					</CCol>
 					<CCol>
-						{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
+						{{ $t(mode !== 'unknown' ? `gateway.mode.modes.${mode}`: 'gateway.mode.messages.getFailed') }}
 					</CCol>
 				</CRow>
 				<div v-if='mode !== "unknown"'>
@@ -54,12 +54,12 @@ limitations under the License.
 			>
 				<CRow style='margin-bottom: 1.25rem;'>
 					<CCol>
-						<b>
+						<strong>
 							{{ $t('gateway.mode.startupMode') }}
-						</b>
+						</strong>
 					</CCol>
 					<CCol>
-						{{ $t("gateway.mode.modes." + ideConfiguration.operMode) }}
+						{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
 					</CCol>
 				</CRow>
 				<div v-if='ideConfiguration.operMode !== "unknown"'>
@@ -225,7 +225,7 @@ export default class DaemonMode extends Vue {
 	 * @param {DaemonModeEnum} newMode New Daemon mode to set
 	 */
 	private setMode(newMode: DaemonModeEnum): void {
-		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
+		DaemonModeService.set(newMode, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -235,13 +235,16 @@ export default class DaemonMode extends Vue {
 	private handleResponse(response): void {
 		this.mode = DaemonModeService.parse(response);
 		if (this.mode === DaemonModeEnum.unknown) {
-			this.$toast.error(
-				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'Failed')
-					.toString()
-			);
+			let errorMessage: string;
+			if (this.loaded) {
+				errorMessage = this.$t('gateway.mode.messages.setFailed').toString();
+			} else {
+				errorMessage = this.$t('gateway.mode.messages.getFailed').toString();
+			}
+			this.$toast.error(errorMessage);
 		} else if (this.loaded) {
 			this.$toast.success(
-				this.$t('gateway.mode.messages.' + this.mode).toString()
+				this.$t(`gateway.mode.messages.${this.mode}`).toString()
 			);
 			this.$store.dispatch('monitorClient/setMode', 'unknown');
 		} else {
@@ -269,7 +272,7 @@ export default class DaemonMode extends Vue {
 
 	/**
 	 * Saves updated IDE counterpart component configuration
-	 * @param {DaemonModeEnum} enum Startup mode to set
+	 * @param {DaemonModeEnum} mode Startup mode to set
 	 */
 	private setStartupMode(mode: DaemonModeEnum): void {
 		if (this.ideConfiguration === null || this.ideConfiguration.operMode === mode) {

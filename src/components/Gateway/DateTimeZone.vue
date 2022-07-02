@@ -20,9 +20,9 @@ limitations under the License.
 			<CRow v-if='gatewayTime !== null'>
 				<CCol md='6'>
 					<p>
-						<b>
+						<strong>
 							{{ $t('gateway.datetime.currentTime') }}
-						</b>
+						</strong>
 					</p>
 					<p style='font-size: 2em;'>
 						{{ timeDisplay }}
@@ -45,9 +45,9 @@ limitations under the License.
 						/>
 					</div>
 					<p>
-						<b>
+						<strong>
 							{{ $t('gateway.datetime.ntpSync') }}
-						</b>
+						</strong>
 						<CIcon
 							size='xl'
 							:class='gatewayTime.ntpSynchronized ? "text-success" : "text-danger"'
@@ -57,9 +57,9 @@ limitations under the License.
 				</CCol>
 				<CCol md='6'>
 					<p>
-						<b>
+						<strong>
 							{{ $t('gateway.datetime.currentTimezone') }}
-						</b>
+						</strong>
 					</p>
 					<p>
 						{{ currentTimezone }}
@@ -154,7 +154,7 @@ export default class DateTimeZone extends Vue {
 	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null;
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of coreui icons
+	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Record<string, Array<string>> = {
 		sync: cilCheckCircle,

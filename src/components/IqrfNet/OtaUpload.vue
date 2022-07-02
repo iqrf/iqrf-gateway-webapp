@@ -44,9 +44,9 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
-							required: "iqrfnet.networkManager.otaUpload.errors.nodeAddress",
-							integer: "forms.errors.integer",
-							between: "iqrfnet.networkManager.otaUpload.errors.nodeAddress"
+							required: $t("iqrfnet.networkManager.otaUpload.errors.nodeAddress"),
+							integer: $t("forms.errors.integer"),
+							between: $t("iqrfnet.networkManager.otaUpload.errors.nodeAddress"),
 						}'
 					>
 						<CInput
@@ -56,7 +56,7 @@ limitations under the License.
 							max='239'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							@input='resetChecks'
 						/>
 					</ValidationProvider>
@@ -65,17 +65,17 @@ limitations under the License.
 						class='form-group'
 					>
 						<p>
-							<i class='text-danger'>
+							<em class='text-danger'>
 								{{ $t('iqrfnet.networkManager.otaUpload.messages.networkNote') }}
-							</i>
+							</em>
 						</p>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:0,65535'
 							:custom-messages='{
-								required: "iqrfnet.networkManager.otaUpload.errors.hwpid",
-								integer: "forms.errors.integer",
-								between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
+								required: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
+								integer: $t("forms.errors.integer"),
+								between: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
 							}'
 						>
 							<CInput
@@ -85,23 +85,23 @@ limitations under the License.
 								max='65535'
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								@input='resetChecks'
 							/>
 						</ValidationProvider>
 						<p>
-							<i>
+							<em>
 								{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}
-							</i>
+							</em>
 						</p>
 					</div>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:768,16383'
 						:custom-messages='{
-							required: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress",
-							integer: "forms.errors.integer",
-							between: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress"
+							required: $t("iqrfnet.networkManager.otaUpload.errors.eeepromAddress"),
+							integer: $t("forms.errors.integer"),
+							between: $t("iqrfnet.networkManager.otaUpload.errors.eeepromAddress"),
 						}'
 					>
 						<CInput
@@ -111,7 +111,7 @@ limitations under the License.
 							max='16383'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							@input='resetChecks'
 						/>
 					</ValidationProvider>
@@ -127,9 +127,9 @@ limitations under the License.
 					<h4>{{ $t('iqrfnet.networkManager.otaUpload.form.manualUpload') }}</h4>
 					<div class='form-group'>
 						<div>
-							<b>
+							<strong>
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.uploadEeeprom') }}
-							</b>
+							</strong>
 						</div><br>
 						<div class='step-check'>
 							<CButton
@@ -148,9 +148,9 @@ limitations under the License.
 					</div>
 					<div class='form-group'>
 						<div>
-							<b>
+							<strong>
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.verifyEeeprom') }}
-							</b>
+							</strong>
 						</div><br>
 						<div class='step-check'>
 							<CButton
@@ -169,9 +169,9 @@ limitations under the License.
 					</div>
 					<div class='form-group'>
 						<div>
-							<b>
+							<strong>
 								{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.loadFlash') }}
-							</b>
+							</strong>
 						</div><br>
 						<div class='step-check'>
 							<CButton
@@ -204,7 +204,18 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
+import {
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CForm,
+	CIcon,
+	CInput,
+	CInputCheckbox,
+	CInputFile,
+	CSelect
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {cilCheckCircle} from '@coreui/icons';
@@ -229,6 +240,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CCardBody,
 		CCardHeader,
 		CForm,
+		CIcon,
 		CInput,
 		CInputCheckbox,
 		CInputFile,
@@ -508,21 +520,12 @@ export default class OtaUpload extends Vue {
 	}
 
 	/**
-	 * Sends Daemon API rquest to execute specified step
+	 * Sends Daemon API request to execute specified step
 	 */
 	private executeStep(action: OtaUploadAction, message: string): void {
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.otaUpload.messages.' + action.toLowerCase() + 'Running').toString());
-		IqrfNetService.otaUpload(
-			this.getAddress(),
-			this.hwpid,
-			this.fileName,
-			this.eeepromAddress,
-			this.uploadEepromData,
-			this.uploadEeepromData,
-			action,
-			new DaemonMessageOptions(null, null, message, () => this.msgId = null)
-		).then((msgId: string) => this.msgId = msgId);
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t(`iqrfnet.networkManager.otaUpload.messages.${action.toLowerCase()}Running`).toString());
+		IqrfNetService.otaUpload(this.getAddress(), this.hwpid, this.fileName, this.eeepromAddress, this.uploadEepromData, this.uploadEeepromData, action, new DaemonMessageOptions(null, null, message, () => this.msgId = null)).then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
@@ -601,9 +604,9 @@ export default class OtaUpload extends Vue {
 					this.$store.commit('spinner/HIDE');
 					this.checks.upload = true;
 					this.$toast.success(
-						this.$t(address === 0 ?
-							'iqrfnet.networkManager.otaUpload.messages.coordinator.uploadStepSuccess':
-							'iqrfnet.networkManager.otaUpload.messages.node.uploadStepSuccess', {address: address}
+						(address === 0 ?
+							this.$t('iqrfnet.networkManager.otaUpload.messages.coordinator.uploadStepSuccess') :
+							this.$t('iqrfnet.networkManager.otaUpload.messages.node.uploadStepSuccess', {address: address})
 						).toString()
 					);
 				}
@@ -614,9 +617,9 @@ export default class OtaUpload extends Vue {
 					this.$store.commit('spinner/HIDE');
 					this.checks.verify = true;
 					this.$toast.success(
-						this.$t(address === 0 ?
-							'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
-							'iqrfnet.networkManager.otaUpload.messages.node.verifyStepSuccess', {address: address}
+						(address === 0 ?
+							this.$t('iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess') :
+							this.$t('iqrfnet.networkManager.otaUpload.messages.node.verifyStepSuccess', {address: address})
 						).toString()
 					);
 				}
@@ -624,17 +627,17 @@ export default class OtaUpload extends Vue {
 				this.$store.commit('spinner/HIDE');
 				if (this.autoUpload) {
 					this.$toast.success(
-						this.$t(address === 0 ?
-							'iqrfnet.networkManager.otaUpload.messages.coordinator.runAllSuccess':
-							'iqrfnet.networkManager.otaUpload.messages.node.runAllSuccess', {address: address}
+						(address === 0 ?
+							this.$t('iqrfnet.networkManager.otaUpload.messages.coordinator.runAllSuccess') :
+							this.$t('iqrfnet.networkManager.otaUpload.messages.node.runAllSuccess', {address: address})
 						).toString()
 					);
 				} else {
 					this.checks.flash = true;
 					this.$toast.success(
-						this.$t(address === 0 ?
-							'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
-							'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address}
+						(address === 0 ?
+							this.$t('iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess') :
+							this.$t('iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address})
 						).toString()
 					);
 				}
@@ -645,9 +648,9 @@ export default class OtaUpload extends Vue {
 		const address = response.rsp.deviceAddr;
 		if (status === -1) {
 			this.$toast.error(
-				this.$t(address === 0 ?
-					'forms.messages.coordinatorOffline':
-					'forms.messages.deviceOffline', {address: address}
+				(address === 0 ?
+					this.$t('forms.messages.coordinatorOffline') :
+					this.$t('forms.messages.deviceOffline', {address: address})
 				).toString()
 			);
 		} else if (status === 8) {

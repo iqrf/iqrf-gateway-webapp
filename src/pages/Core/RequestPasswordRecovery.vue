@@ -37,7 +37,7 @@ limitations under the License.
 							v-slot='{valid, touched, errors}'
 							rules='required'
 							:custom-messages='{
-								required: "core.sign.in.messages.username"
+								required: $t("core.sign.in.messages.username"),
 							}'
 						>
 							<CInput
@@ -45,7 +45,7 @@ limitations under the License.
 								:label='$t("forms.fields.username")'
 								autocomplete='username'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CButton

@@ -33,14 +33,14 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.daemon.interfaces.interfaceMapping.errors.name"
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.name"),
 					}'
 				>
 					<CInput
 						v-model='mapping.name'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.name")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<CSelect
@@ -53,22 +53,22 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.daemon.interfaces.interfaceMapping.errors.interface"
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.interface"),
 					}'
 				>
 					<CInput
 						v-model='mapping.IqrfInterface'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.interface")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
 					}'
 				>
 					<CInput
@@ -76,15 +76,15 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.busPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
 					}'
 				>
 					<CInput
@@ -92,15 +92,15 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
 					}'
 				>
 					<CInput
@@ -108,7 +108,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
@@ -122,8 +122,8 @@ limitations under the License.
 						required: useAdditionalPins,
 					}'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
 					}'
 				>
 					<CInput
@@ -131,7 +131,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 						:disabled='!useAdditionalPins'
 					/>
 				</ValidationProvider>
@@ -142,8 +142,8 @@ limitations under the License.
 						required: useAdditionalPins,
 					}'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
 					}'
 				>
 					<CInput
@@ -151,7 +151,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 						:disabled='!useAdditionalPins'
 					/>
 				</ValidationProvider>
@@ -162,8 +162,8 @@ limitations under the License.
 						required: useAdditionalPins,
 					}'
 					:custom-messages='{
-						integer: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
-						required: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
+						integer: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
+						required: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
 					}'
 				>
 					<CInput
@@ -171,7 +171,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 						:disabled='!useAdditionalPins'
 					/>
 				</ValidationProvider>
@@ -211,7 +211,7 @@ import {integer, required} from 'vee-validate/dist/rules';
 import MappingService from '@/services/MappingService';
 
 import {AxiosError} from 'axios';
-import {IMapping} from '@/interfaces/mappings';
+import {IMapping, MappingType} from '@/interfaces/mappings';
 import {IOption} from '@/interfaces/coreui';
 
 @Component({
@@ -241,11 +241,11 @@ export default class MappingForm extends Vue {
 	private id = -1;
 
 	/**
-	 * @var {IMapping} mapping Mapping
+	 * @var {IMapping} mapping Default mapping
 	 */
-	private mapping: IMapping = {
+	private defaultMapping: IMapping = {
 		name: '',
-		type: 'spi',
+		type: null,
 		IqrfInterface: '',
 		powerEnableGpioPin: 0,
 		pgmSwitchGpioPin: 0,
@@ -255,6 +255,11 @@ export default class MappingForm extends Vue {
 		uartEnableGpioPin: 0,
 		baudRate: 57600,
 	};
+
+	/**
+	 * @var {IMapping} mapping Mapping
+	 */
+	private mapping: IMapping = this.defaultMapping;
 
 	/**
 	 * @var {boolean} useAdditionalPins Use additional pins
@@ -280,7 +285,10 @@ export default class MappingForm extends Vue {
 	 * @returns {string} Mapping modal title
 	 */
 	get modalTitle(): string {
-		return this.$t('config.daemon.interfaces.interfaceMapping.' + (this.id === -1 ? 'add' : 'edit')).toString();
+		if (this.id === -1) {
+			return this.$t('config.daemon.interfaces.interfaceMapping.add').toString();
+		}
+		return this.$t('config.daemon.interfaces.interfaceMapping.edit').toString();
 	}
 
 	/**
@@ -319,7 +327,7 @@ export default class MappingForm extends Vue {
 			delete mapping.spiEnableGpioPin;
 			delete mapping.uartEnableGpioPin;
 		}
-		if (mapping.type !== 'uart') {
+		if (mapping.type !== MappingType.UART) {
 			delete mapping.baudRate;
 		}
 		this.$store.commit('spinner/SHOW');
@@ -336,7 +344,6 @@ export default class MappingForm extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
@@ -362,7 +369,7 @@ export default class MappingForm extends Vue {
 		if (mapping !== null) {
 			this.mapping = mapping;
 			this.id = (mapping.id as number);
-			if (mapping.uartEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined && mapping.uartEnableGpioPin !== undefined) {
+			if (mapping.uartEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined) {
 				this.useAdditionalPins = true;
 			}
 		}
@@ -375,18 +382,7 @@ export default class MappingForm extends Vue {
 	private deactivateModal(): void {
 		this.show = false;
 		this.id = -1;
-		this.mapping = {
-			name: '',
-			type: '',
-			IqrfInterface: '',
-			powerEnableGpioPin: 0,
-			pgmSwitchGpioPin: 0,
-			busEnableGpioPin: 0,
-			i2cEnableGpioPin: 0,
-			spiEnableGpioPin: 0,
-			uartEnableGpioPin: 0,
-			baudRate: 57600,
-		};
+		this.mapping = this.defaultMapping;
 		this.useAdditionalPins = false;
 	}
 

@@ -33,22 +33,22 @@ limitations under the License.
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.controller.pins.errors.name"
+						required: $t("config.controller.pins.errors.name")
 					}'
 				>
 					<CInput
 						v-model='profile.name'
 						:label='$t("config.controller.pins.form.name")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.controller.pins.errors.greenLed",
-						required: "config.controller.pins.errors.greenLed",
+						integer: $t("config.controller.pins.errors.greenLed"),
+						required: $t("config.controller.pins.errors.greenLed"),
 					}'
 				>
 					<CInput
@@ -56,15 +56,15 @@ limitations under the License.
 						type='number'
 						:label='$t("config.controller.pins.form.greenLed")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.controller.pins.errors.redLed",
-						required: "config.controller.pins.errors.redLed",
+						integer: $t("config.controller.pins.errors.redLed"),
+						required: $t("config.controller.pins.errors.redLed"),
 					}'
 				>
 					<CInput
@@ -72,15 +72,15 @@ limitations under the License.
 						type='number'
 						:label='$t("config.controller.pins.form.redLed")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "config.controller.pins.errors.button",
-						required: "config.controller.pins.errors.button",
+						integer: $t("config.controller.pins.errors.button"),
+						required: $t("config.controller.pins.errors.button"),
 					}'
 				>
 					<CInput
@@ -88,7 +88,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.controller.pins.form.button")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
@@ -102,8 +102,8 @@ limitations under the License.
 						required: useI2c,
 					}'
 					:custom-messages='{
-						integer: "config.controller.pins.errors.sck",
-						required: "config.controller.pins.errors.sck",
+						integer: $t("config.controller.pins.errors.sck"),
+						required: $t("config.controller.pins.errors.sck"),
 					}'
 				>
 					<CInput
@@ -111,7 +111,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.controller.pins.form.sck")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 						:disabled='!useI2c'
 					/>
 				</ValidationProvider>
@@ -122,8 +122,8 @@ limitations under the License.
 						required: useI2c,
 					}'
 					:custom-messages='{
-						integer: "config.controller.pins.errors.sda",
-						required: "config.controller.pins.errors.sda",
+						integer: $t("config.controller.pins.errors.sda"),
+						required: $t("config.controller.pins.errors.sda"),
 					}'
 				>
 					<CInput
@@ -131,7 +131,7 @@ limitations under the License.
 						type='number'
 						:label='$t("config.controller.pins.form.sda")'
 						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
+						:invalid-feedback='errors.join(", ")'
 						:disabled='!useI2c'
 					/>
 				</ValidationProvider>

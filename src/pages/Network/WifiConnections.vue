@@ -99,7 +99,7 @@ limitations under the License.
 										addConnection(item.aps[0])'
 								>
 									<CIcon :content='item.aps[0].inUse ? icons.disconnect : icons.connect' size='sm' />
-									{{ $t('network.table.' + (item.aps[0].inUse ? 'disconnect' : 'connect')) }}
+									{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
 								</CButton> <CButton
 									v-if='item.aps[0].uuid'
 									size='sm'
@@ -350,7 +350,7 @@ export default class WifiConnections extends Vue {
 	}
 
 	/**
-	 * Retrieves wifi interfaces
+	 * Retrieves Wi-Fi interfaces
 	 */
 	private getInterfaces(): void {
 		this.$store.commit('spinner/SHOW');
@@ -403,7 +403,7 @@ export default class WifiConnections extends Vue {
 	}
 
 	/**
-	 * Retrieves list of existing wifi connections and adds UUID to matching access points
+	 * Retrieves list of existing Wi-Fi connections and adds UUID to matching access points
 	 * @param {Array<IAccessPoint>} accessPoints Array of available access points
 	 */
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
@@ -452,7 +452,7 @@ export default class WifiConnections extends Vue {
 	}
 
 	/**
-	 * Connects to wifi access point
+	 * Connects to Wi-Fi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
 	 * @param {string} ifname Network interface name
@@ -480,7 +480,7 @@ export default class WifiConnections extends Vue {
 	}
 
 	/**
-	 * Disconnects from wifi access point
+	 * Disconnects from Wi-Fi access point
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
 	 * @param {string} ifname Network interface name
@@ -576,7 +576,7 @@ export default class WifiConnections extends Vue {
 
 
 	/**
-	 * Removes wifi access point connection
+	 * Removes Wi-Fi access point connection
 	 * @param {string} uuid Network connection UUID
 	 * @param {string} name Network connection name
 	 */

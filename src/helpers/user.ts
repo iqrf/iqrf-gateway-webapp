@@ -16,11 +16,6 @@
  */
 import {UserRole} from '@/services/AuthenticationService';
 
-export function getUserRoleKey(role: UserRole): UserRole {
-	const key = Object.entries(UserRole).find(([k, v]) => v === role)?.[0];
-	return (key as UserRole);
-}
-
 export function getRoleIndex(role: UserRole): number {
 	return Object.values(UserRole).indexOf(role);
 }

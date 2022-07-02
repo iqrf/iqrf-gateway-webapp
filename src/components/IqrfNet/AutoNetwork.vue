@@ -32,9 +32,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.messages.discovery.txPower",
-							between: "iqrfnet.networkManager.messages.discovery.txPower"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.messages.discovery.txPower"),
+							between: $t("iqrfnet.networkManager.messages.discovery.txPower"),
 						}'
 					>
 						<CInput
@@ -45,7 +45,7 @@ limitations under the License.
 							max='7'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
@@ -60,9 +60,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,3'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
-							between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
+							between: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
 						}'
 					>
 						<CInput
@@ -72,7 +72,7 @@ limitations under the License.
 							max='3'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
@@ -84,9 +84,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,50'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.messages.autoNetwork.networks",
-							between: "iqrfnet.networkManager.messages.autoNetwork.networks"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
+							between: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
 						}'
 					>
 						<CInput
@@ -96,7 +96,7 @@ limitations under the License.
 							max='50'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider>
@@ -104,9 +104,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,50'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.messages.autoNetwork.network",
-							between: "iqrfnet.networkManager.messages.autoNetwork.network"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
+							between: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
 						}'
 					>
 						<CInput
@@ -116,7 +116,7 @@ limitations under the License.
 							max='50'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider><hr>
@@ -129,14 +129,14 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='hwpidFilter'
 						:custom-messages='{
-							hwpidFilter: "iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"
+							hwpidFilter: $t("iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"),
 						}'
 					>
 						<CInput
 							v-model='hwpidFiltering'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpids")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							:disabled='!useHwpidFiltering'
 						/>
 					</ValidationProvider><hr>
@@ -150,9 +150,9 @@ limitations under the License.
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,127'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "iqrfnet.networkManager.messages.autoNetwork.waves",
-								between: "iqrfnet.networkManager.messages.autoNetwork.waves"
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
+								between: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
 							}'
 						>
 							<CInput
@@ -161,7 +161,7 @@ limitations under the License.
 								min='1'
 								max='127'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								:disabled='!useWaves'
 							/>
 						</ValidationProvider>
@@ -170,9 +170,9 @@ limitations under the License.
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,127'
 						:custom-messages='{
-							integer: "forms.errors.integer",
-							required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
-							between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
+							between: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
 						}'
 					>
 						<CInput
@@ -182,7 +182,7 @@ limitations under the License.
 							max='127'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
@@ -203,9 +203,9 @@ limitations under the License.
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "iqrfnet.networkManager.messages.autoNetwork.totalNodes",
-								between: "iqrfnet.networkManager.messages.autoNetwork.totalNodes"
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.networkManager.messages.autoNetwork.totalNodes"),
+								between: $t("iqrfnet.networkManager.messages.autoNetwork.totalNodes"),
 							}'
 						>
 							<CInput
@@ -215,7 +215,7 @@ limitations under the License.
 								max='239'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								:disabled='!useNodes'
 							/>
 						</ValidationProvider>
@@ -224,9 +224,9 @@ limitations under the License.
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "iqrfnet.networkManager.messages.autoNetwork.newNodes",
-								between: "iqrfnet.networkManager.messages.autoNetwork.newNodes"
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.networkManager.messages.autoNetwork.newNodes"),
+								between: $t("iqrfnet.networkManager.messages.autoNetwork.newNodes"),
 							}'
 						>
 							<CInput
@@ -236,7 +236,7 @@ limitations under the License.
 								max='239'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 								:disabled='!useNodes'
 							/>
 						</ValidationProvider>
@@ -268,7 +268,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '@/interfaces/autonetwork';
+import {
+	AutoNetworkBase,
+	AutoNetworkOptions,
+	AutoNetworkOverlappingNetworks,
+	AutoNetworkStopConditions
+} from '@/interfaces/autonetwork';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -294,10 +299,6 @@ interface NodeMessages {
  * AutoNetwork card for IqrfNet network manager
  */
 export default class AutoNetwork extends Vue {
-	/**
-	 * @var {boolean} autoAddress Use first available address for bonding
-	 */
-	private autoAddress = false;
 
 	/**
 	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
@@ -482,8 +483,8 @@ export default class AutoNetwork extends Vue {
 	 */
 	private runAutonetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
-		const submitData: AutoNetworkBase = JSON.parse(JSON.stringify(this.autoNetwork));
-		const stopConditions = {};
+		const submitData: AutoNetworkOptions = JSON.parse(JSON.stringify(this.autoNetwork));
+		const stopConditions: AutoNetworkStopConditions = {};
 		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
 		if (this.useWaves) { // maximum number of waves is enabled
 			stopConditions['waves'] = this.stopConditions.waves;

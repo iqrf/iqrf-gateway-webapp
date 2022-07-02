@@ -47,7 +47,7 @@ limitations under the License.
 							<CBadge
 								:color='item.active ? "success" : "danger"'
 							>
-								{{ $t('network.wireguard.tunnels.table.states.' + (item.active ? 'active' : 'inactive')) }}
+								{{ $t(`network.wireguard.tunnels.table.states.${item.active ? '' : 'in'}active`) }}
 							</CBadge>
 						</td>
 					</template>
@@ -56,23 +56,23 @@ limitations under the License.
 							<CButton
 								size='sm'
 								:color='item.active ? "danger" : "success"'
-								@click='changeActiveState(item.id, item.name, (item.active ? false : true))'
+								@click='changeActiveState(item.id, item.name, !item.active)'
 							>
 								<CIcon
 									:content='item.active ? icons.deactivate : icons.activate'
 									size='sm'
 								/>
-								{{ $t('network.wireguard.tunnels.table.action.' + (item.active ? "deactivate" : "activate")) }}
+								{{ $t(`network.wireguard.tunnels.table.action.${item.active ? 'deactivate' : 'activate'}`) }}
 							</CButton> <CButton
 								size='sm'
 								:color='item.enabled ? "danger" : "success"'
-								@click='changeEnabledState(item.id, item.name, (item.enabled ? false : true))'
+								@click='changeEnabledState(item.id, item.name, !item.enabled)'
 							>
 								<CIcon
 									:content='item.enabled ? icons.disable : icons.enable'
 									size='sm'
 								/>
-								{{ $t('table.actions.' + (item.enabled ? "disable" : "enable")) }}
+								{{ $t(`table.actions.${item.enabled ? 'disable' : 'enable'}`) }}
 							</CButton> <CButton
 								size='sm'
 								color='primary'
@@ -124,7 +124,15 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CInput} from '@coreui/vue/src';
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CIcon,
+	CInput
+} from '@coreui/vue/src';
 
 import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -141,6 +149,7 @@ import {IWG} from '@/interfaces/network';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CIcon,
 		CInput,
 	},
 	metaInfo: {
@@ -149,7 +158,7 @@ import {IWG} from '@/interfaces/network';
 })
 
 /**
- * Wireguard connections component
+ * WireGuard connections component
  */
 export default class WireguardTunnels extends Vue {
 
@@ -199,14 +208,14 @@ export default class WireguardTunnels extends Vue {
 	private tunnelToDelete: IWG|null = null;
 
 	/**
-	 * Retrieves existing Wireguard tunnels
+	 * Retrieves existing WireGuard tunnels
 	 */
 	mounted(): void {
 		this.getTunnels();
 	}
 
 	/**
-	 * Retrieves existing Wireguard tunnels and stores data into table
+	 * Retrieves existing WireGuard tunnels and stores data into table
 	 */
 	private getTunnels(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
@@ -219,10 +228,10 @@ export default class WireguardTunnels extends Vue {
 	}
 
 	/**
-	 * Changes active state of Wireguard tunnel
-	 * @param {number} id Wireguard tunnel ID
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
+	 * Changes active state of WireGuard tunnel
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {string} name WireGuard tunnel name
+	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeActiveState(id: number, name: string, state: boolean): void {
 		this.$store.commit('spinner/SHOW');
@@ -247,23 +256,23 @@ export default class WireguardTunnels extends Vue {
 
 	/**
 	 * Handles tunnel activation success
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
+	 * @param {string} name WireGuard tunnel name
+	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private handleActiveSuccess(name: string, state: boolean): void {
 		this.getTunnels().then(() => this.$toast.success(
 			this.$t(
-				'network.wireguard.tunnels.messages.' + (state ? '' : 'de') + 'activateSuccess',
+				`network.wireguard.tunnels.messages.${state ? '' : 'de'}activateSuccess`,
 				{tunnel: name}
 			).toString()
 		));
 	}
 
 	/**
-	 * Changes enabled state of Wireguard tunnel
-	 * @param {number} id Wireguard tunnel ID
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
+	 * Changes enabled state of WireGuard tunnel
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {string} name WireGuard tunnel name
+	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeEnabledState(id: number, name: string, state: boolean): void {
 		this.$store.commit('spinner/SHOW');
@@ -288,21 +297,21 @@ export default class WireguardTunnels extends Vue {
 
 	/**
 	 * Handles tunnel enable success
-	 * @param {string} name Wireguard tunnel name
-	 * @param {boolean} state Wireguard tunnel state
+	 * @param {string} name WireGuard tunnel name
+	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private handleEnableSuccess(name: string, state: boolean): void {
 		this.getTunnels().then(() => this.$toast.success(
-			this.$t(
-				'network.wireguard.tunnels.messages.' + (state ? 'enableSuccess' : 'disableSuccess'),
+			this.$t(`network.wireguard.tunnels.messages.${state ? 'enable' : 'disable'}Success`,
 				{tunnel: name}
 			).toString()
 		));
 	}
 
 	/**
-	 * Removes an existing Wireguard tunnel
-	 * @param {number} id Wireguard tunnel id
+	 * Removes an existing WireGuard tunnel
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {string} name WireGuard tunnel name
 	 */
 	private removeTunnel(id: number, name: string): void {
 		this.tunnelToDelete = null;

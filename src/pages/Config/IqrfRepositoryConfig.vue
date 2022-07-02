@@ -25,22 +25,22 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.repository.errors.endpointMissing"
+								required: $t("config.repository.errors.endpointMissing"),
 							}'
 						>
 							<CInput
 								v-model='config.apiEndpoint'
 								:label='$t("config.repository.form.endpoint")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
-							<b>
+							<strong>
 								<label>
 									{{ $t('config.repository.form.credentials') }}
 								</label>
-							</b><br>
+							</strong><br>
 							<CSwitch
 								:checked.sync='credentials'
 								color='primary'
@@ -57,28 +57,28 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "forms.errors.username"
+									required: $t("forms.errors.username"),
 								}'
 							>
 								<CInput
 									v-model='config.credentials.username'
 									:label='$t("forms.fields.username")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "forms.errors.password"
+									required: $t("forms.errors.password"),
 								}'
 							>
 								<CInput
 									v-model='config.credentials.password'
 									:label='$t("forms.fields.password")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</div>
@@ -109,7 +109,6 @@ import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryCon
 
 import {AxiosError} from 'axios';
 import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
-
 
 @Component({
 	components: {
@@ -209,7 +208,6 @@ export default class IqrfRepositoryConfig extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.repository.messages.saveFailed');
 			});
-
 	}
 
 }

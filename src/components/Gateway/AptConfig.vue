@@ -23,66 +23,66 @@ limitations under the License.
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='updateConfig'>
 					<ValidationProvider
-						v-if='role === roles.ADMIN'
+						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "service.unattended-upgrades.errors.listUpdateInterval",
-							required: "service.unattended-upgrades.errors.listUpdateInterval",
+							integer: $t("forms.messages.integer"),
+							min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
+							required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 						}'
 					>
 						<CInput
-							v-model='listUpdateInterval'
+							v-model='config["APT::Periodic::Update-Package-Lists"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "service.unattended-upgrades.errors.upgradeInterval",
-							required: "service.unattended-upgrades.errors.upgradeInterval",
+							integer: $t("forms.messages.integer"),
+							min: $t("service.unattended-upgrades.errors.upgradeInterval"),
+							required: $t("service.unattended-upgrades.errors.upgradeInterval"),
 						}'
 					>
 						<CInput
-							v-model='upgradeInterval'
+							v-model='config["APT::Periodic::Unattended-Upgrade"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.upgradeInterval")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='role === roles.ADMIN'
+						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "service.unattended-upgrades.errors.removeInterval",
-							required: "service.unattended-upgrades.errors.removeInterval",
+							integer: $t("forms.messages.integer"),
+							min: $t("service.unattended-upgrades.errors.removeInterval"),
+							required: $t("service.unattended-upgrades.errors.removeInterval"),
 						}'
 					>
 						<CInput
-							v-model='removeInterval'
+							v-model='config["APT::Periodic::AutocleanInterval"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.removeInterval")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:value.sync='rebootOnKernelUpdate'
+						:value.sync='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
 					/>
-					<div><i>{{ $t('service.unattended-upgrades.form.intervalNote') }}</i></div><br>
+					<div><em>{{ $t('service.unattended-upgrades.form.intervalNote') }}</em></div><br>
 					<CButton
 						color='primary'
 						type='submit'
@@ -107,7 +107,7 @@ import {UserRole} from '@/services/AuthenticationService';
 
 import AptService, {AptConfiguration} from '@/services/AptService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -128,35 +128,20 @@ import {AxiosError, AxiosResponse} from 'axios';
  */
 export default class AptConfig extends Vue {
 
-	/**
-	 * @var {number} listUpdateInterval Package list update interval in days
-	 */
-	private listUpdateInterval = 1;
+	private config: AptConfiguration = {
+		'APT::Periodic::AutocleanInterval': 0,
+		'APT::Periodic::Update-Package-Lists': 1,
+		'APT::Periodic::Unattended-Upgrade': 1,
+		'Unattended-Upgrade::Automatic-Reboot': false,
+	};
 
 	/**
-	 * @var {number} upgradeInterval Package upgrade interval in days
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
 	 */
-	private upgradeInterval = 1;
-
-	/**
-	 * @var {number} removeInterval Unnecessary package removal interval in days
-	 */
-	private removeInterval = 0;
-
-	/**
-	 * @var {boolean} rebootOnKernelUpdate Reboot device after updating kernel
-	 */
-	private rebootOnKernelUpdate = false;
-
-	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @var {typeof UserRole} roles User roles enum
-	 */
-	private roles: typeof UserRole = UserRole;
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -173,7 +158,6 @@ export default class AptConfig extends Vue {
 	 * Checks for user role and sends REST API request to get unattended upgrades configuration
 	 */
 	mounted(): void {
-		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -182,33 +166,16 @@ export default class AptConfig extends Vue {
 	 */
 	private getConfig(): Promise<void> {
 		return AptService.read()
-			.then((response: AxiosResponse) => this.parseConfig(response.data))
+			.then((config: AptConfiguration) => {this.config = config;})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'service.unattended-upgrades.messages.getFailed'));
-	}
-
-	/**
-	 * Parses unattended upgrades configuration and stores values
-	 * @param {AptConfiguration} config Unattended upgrades configuration
-	 */
-	private parseConfig(config: AptConfiguration): void {
-		this.listUpdateInterval = parseInt(config['APT::Periodic::Update-Package-Lists']);
-		this.upgradeInterval = parseInt(config['APT::Periodic::Unattended-Upgrade']);
-		this.removeInterval = parseInt(config['APT::Periodic::AutocleanInterval']);
-		this.rebootOnKernelUpdate = (config['Unattended-Upgrade::Automatic-Reboot'] === 'true');
 	}
 
 	/**
 	 * Creates apt configuration object and saves configuration
 	 */
 	private updateConfig(): void {
-		const config: AptConfiguration = {
-			'APT::Periodic::Update-Package-Lists': this.listUpdateInterval.toString(),
-			'APT::Periodic::Unattended-Upgrade': this.upgradeInterval.toString(),
-			'APT::Periodic::AutocleanInterval': this.removeInterval.toString(),
-			'Unattended-Upgrade::Automatic-Reboot': this.rebootOnKernelUpdate ? 'true': 'false',
-		};
 		this.$store.commit('spinner/SHOW');
-		AptService.write(config)
+		AptService.write(this.config)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');

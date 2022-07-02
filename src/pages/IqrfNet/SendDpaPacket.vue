@@ -33,10 +33,10 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								rules='nadr|minLen:2|maxLen:2|required'
 								:custom-messages='{
-									nadr: "iqrfnet.sendPacket.form.messages.invalid.nadr",
-									minLen: "iqrfnet.sendPacket.form.messages.invalid.nadr",
-									maxLen: "iqrfnet.sendPacket.form.messages.invalid.nadr",
-									required: "iqrfnet.sendPacket.form.messages.invalid.nadr"
+									nadr: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+									required: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
 								}'
 							>
 								<CInput
@@ -44,7 +44,7 @@ limitations under the License.
 									maxlength='4'
 									:label='$t("iqrfnet.sendPacket.form.nadr")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='addressOverwrite'
 									class='dpa-section'
 								/>
@@ -53,17 +53,17 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								rules='pnum|minLen:2|maxLen:2|required'
 								:custom-messages='{
-									pnum: "iqrfnet.sendPacket.form.messages.invalid.pnum",
-									minLen: "iqrfnet.sendPacket.form.messages.invalid.pnum",
-									maxLen: "iqrfnet.sendPacket.form.messages.invalid.pnum",
-									required: "iqrfnet.sendPacket.form.messages.invalid.pnum",
+									pnum: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+									required: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
 								}'
 							>
 								<CInput
 									v-model='packetPnum'
 									:label='$t("iqrfnet.sendPacket.form.pnum")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									class='dpa-section'
 								/>
 							</ValidationProvider>
@@ -71,17 +71,17 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								rules='pcmd|minLen:2|maxLen:2|required'
 								:custom-messages='{
-									pcmd: "iqrfnet.sendPacket.form.messages.invalid.pcmd",
-									minLen: "iqrfnet.sendPacket.form.messages.invalid.pcmd",
-									maxLen: "iqrfnet.sendPacket.form.messages.invalid.pcmd",
-									required: "iqrfnet.sendPacket.form.messages.invalid.pcmd",
+									pcmd: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+									required: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
 								}'
 							>
 								<CInput
 									v-model='packetPcmd'
 									:label='$t("iqrfnet.sendPacket.form.pcmd")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									class='dpa-section'
 								/>
 							</ValidationProvider>
@@ -89,17 +89,17 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								rules='hwpid|minLen:4|maxLen:4|required'
 								:custom-messages='{
-									hwpid: "iqrfnet.sendPacket.form.messages.invalid.hwpid",
-									minLen: "iqrfnet.sendPacket.form.messages.invalid.hwpid",
-									maxLen: "iqrfnet.sendPacket.form.messages.invalid.hwpid",
-									required: "iqrfnet.sendPacket.form.messages.invalid.hwpid",
+									hwpid: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+									required: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
 								}'
 							>
 								<CInput
 									v-model='packetHwpid'
 									:label='$t("iqrfnet.sendPacket.form.hwpid")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									class='dpa-section'
 								/>
 							</ValidationProvider>
@@ -109,7 +109,7 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								rules='pdata'
 								:custom-messages='{
-									pdata: "iqrfnet.sendPacket.form.messages.invalid.pdata"
+									pdata: $t("iqrfnet.sendPacket.form.messages.invalid.pdata"),
 								}'
 							>
 								<CInput
@@ -117,7 +117,7 @@ limitations under the License.
 									v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
 									:label='$t("iqrfnet.sendPacket.form.pdata")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -133,9 +133,9 @@ limitations under the License.
 								:disabled='!addressOverwrite'
 								:rules='addressOverwrite ? "integer|between:0,239|required" : ""'
 								:custom-messages='{
-									between: "iqrfnet.sendPacket.form.messages.invalid.address",
-									integer: "iqrfnet.sendPacket.form.messages.invalid.address",
-									required: "iqrfnet.sendPacket.form.messages.missing.address",
+									between: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
+									integer: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
+									required: $t("iqrfnet.sendPacket.form.messages.missing.address"),
 								}'
 							>
 								<CInput
@@ -143,7 +143,7 @@ limitations under the License.
 									:disabled='!addressOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.address")'
 									:is-valid='addressOverwrite && touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									type='number'
 									min='0'
 									max='239'
@@ -159,9 +159,9 @@ limitations under the License.
 								v-slot='{valid, touched, errors}'
 								:rules='timeoutOverwrite ? "integer|min:1000|required" : ""'
 								:custom-messages='{
-									integer: "iqrfnet.sendPacket.form.messages.invalid.timeout",
-									min: "iqrfnet.sendPacket.form.messages.invalid.timeout",
-									required: "iqrfnet.sendPacket.form.messages.missing.timeout",
+									integer: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
+									min: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
+									required: $t("iqrfnet.sendPacket.form.messages.missing.timeout"),
 								}'
 							>
 								<CInput
@@ -170,7 +170,7 @@ limitations under the License.
 									:disabled='!timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.timeout")'
 									:is-valid='timeoutOverwrite && touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									type='number'
 								/>
 							</ValidationProvider>
@@ -358,7 +358,7 @@ export default class SendDpaPacket extends Vue {
 	get packet(): string {
 		let packet = this.packetNadr + '.00.';
 		packet += this.packetPnum + '.' + this.packetPcmd + '.';
-		packet += this.packetHwpid.substr(0, 2) + '.' + this.packetHwpid.substr(2, 2) + '.' + this.packetPdata;
+		packet += this.packetHwpid.substring(0, 2) + '.' + this.packetHwpid.substring(2, 4) + '.' + this.packetPdata;
 		return packet;
 	}
 
@@ -381,23 +381,23 @@ export default class SendDpaPacket extends Vue {
 		extend('maxLen', max);
 		extend('required', required);
 		extend('nadr', (nadr: string) => {
-			const re = new RegExp('^[0-9a-f]{2}$', 'i');
+			const re = /^[0-9a-f]{2}$/i;
 			return re.test(nadr);
 		});
 		extend('pnum', (pnum: string) => {
-			const re = new RegExp('^[0-9a-f]{2}$', 'i');
+			const re = /^[0-9a-f]{2}$/i;
 			return re.test(pnum);
 		});
 		extend('pcmd', (pcmd: string) => {
-			const re = new RegExp('^[0-7][0-9a-f]$', 'i');
+			const re = /^[0-7][0-9a-f]$/i;
 			return re.test(pcmd);
 		});
 		extend('hwpid', (hwpid: string) => {
-			const re = new RegExp('^[0-9a-f]{4}$', 'i');
+			const re = /^[0-9a-f]{4}$/i;
 			return re.test(hwpid);
 		});
 		extend('pdata', (pdata: string) => {
-			const re = new RegExp('^([0-9a-f]{2}\\.){0,56}[0-9a-f]{2}(\\.|)$', 'i');
+			const re = /^([0-9a-f]{2}.){0,56}[0-9a-f]{2}(.|)$/i;
 			return re.test(pdata);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
@@ -499,7 +499,7 @@ export default class SendDpaPacket extends Vue {
 		if (idx !== -1) {
 			this.messages[idx].response = JSON.stringify(response, null, 4);
 		}
-		let message = '';
+		let message: string;
 		let error = true;
 		switch (response.data.status) {
 			case 0:
@@ -555,12 +555,12 @@ export default class SendDpaPacket extends Vue {
 	 * @param {string} newPacket New DPA packet
 	 */
 	private setPacket(newPacket: string): void {
-		this.packetNadr = this.joinBytes(newPacket.substr(0, 3));
-		this.packetPnum = this.joinBytes(newPacket.substr(6, 3));
-		this.packetPcmd = this.joinBytes(newPacket.substr(9, 3));
-		this.packetHwpid = this.joinBytes(newPacket.substr(12, 5));
+		this.packetNadr = this.joinBytes(newPacket.substring(0, 3));
+		this.packetPnum = this.joinBytes(newPacket.substring(6, 9));
+		this.packetPcmd = this.joinBytes(newPacket.substring(9, 12));
+		this.packetHwpid = this.joinBytes(newPacket.substring(12, 17));
 		if (newPacket.length > 17) {
-			this.packetPdata = newPacket.substr(18, newPacket.length - 1);
+			this.packetPdata = newPacket.substring(18, newPacket.length);
 		} else {
 			this.packetPdata = '';
 		}

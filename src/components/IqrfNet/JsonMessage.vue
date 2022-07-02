@@ -18,7 +18,7 @@ limitations under the License.
 	<CCard>
 		<CCardHeader class='message-header'>
 			<span class='mr-auto'>
-				{{ $t('iqrfnet.jsonMessage.' + type) }}
+				{{ $t(`iqrfnet.jsonMessage.${type}`) }}
 			</span>
 			<CButton
 				v-clipboard='updateMessage'
@@ -26,7 +26,7 @@ limitations under the License.
 				color='primary'
 				size='sm'
 			>
-				{{ $t('iqrfnet.jsonMessage.copy.' + type) }}
+				{{ $t(`iqrfnet.jsonMessage.copy.${type}`) }}
 			</CButton>
 		</CCardHeader>
 		<CCardBody>
@@ -90,11 +90,11 @@ export default class JsonMessage extends Vue {
 	 * Shows the success message
 	 */
 	private successMessage(): void {
-		let message = '';
+		let message: string;
 		if (this.source === 'sendDpa') {
-			message = this.$t('iqrfnet.jsonMessage.copySuccess.dpa.' + this.type).toString();
+			message = this.$t(`iqrfnet.jsonMessage.copySuccess.dpa.${this.type}`).toString();
 		} else {
-			message = this.$t('iqrfnet.jsonMessage.copySuccess.json.' + this.type).toString();
+			message = this.$t(`iqrfnet.jsonMessage.copySuccess.json.${this.type}`).toString();
 		}
 		this.$toast.success(message);
 	}

@@ -31,22 +31,24 @@ limitations under the License.
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
-								:custom-messages='{required: "config.daemon.misc.monitor.errors.instance"}'
+								:custom-messages='{
+									required: $t("config.daemon.misc.monitor.errors.instance"),
+								}'
 							>
 								<CInput
 									v-model='monitor.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:1|required'
 								:custom-messages='{
-									required: "config.daemon.misc.monitor.errors.reportPeriod",
-									min: "config.daemon.misc.monitor.errors.reportPeriod",
-									integer: "forms.errors.integer"
+									required: $t("config.daemon.misc.monitor.errors.reportPeriod"),
+									min: $t("config.daemon.misc.monitor.errors.reportPeriod"),
+									integer: $t("forms.errors.integer"),
 								}'
 							>
 								<CInput
@@ -54,16 +56,16 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.misc.monitor.form.reportPeriod")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|between:1,65535|required'
 								:custom-messages='{
-									between: "config.daemon.messagings.websocket.errors.WebsocketPortRange",
-									required: "config.daemon.misc.monitor.errors.WebsocketPort",
-									integer: "forms.errors.integer"
+									between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
+									required: $t("config.daemon.misc.monitor.errors.WebsocketPort"),
+									integer: $t("forms.errors.integer"),
 								}'
 							>
 								<CInput
@@ -71,7 +73,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.misc.monitor.form.WebsocketPort")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CInputCheckbox
@@ -98,7 +100,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.websocket.errors.tlsMode",
+										required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
 									}'
 								>
 									<CSelect
@@ -108,13 +110,13 @@ limitations under the License.
 										:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 										:disabled='!webSocket.tlsEnabled'
 										:is-valid='touched && webSocket.tlsEnabled ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 									<p
 										v-if='webSocket.tlsMode !== "" && webSocket.tlsMode !== undefined'
 										:class='!webSocket.tlsEnabled ? "text-secondary" : ""'
 									>
-										{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}
+										{{ $t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${webSocket.tlsMode}`) }}
 									</p>
 								</ValidationProvider>
 								<ValidationProvider
@@ -122,7 +124,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.websocket.errors.certificate",
+										required: $t("config.daemon.messagings.websocket.errors.certificate"),
 									}'
 								>
 									<CInput
@@ -130,7 +132,7 @@ limitations under the License.
 										:label='$t("forms.fields.certificate")'
 										:disabled='!webSocket.tlsEnabled'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -138,7 +140,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.websocket.errors.privateKey",
+										required: $t("config.daemon.messagings.websocket.errors.privateKey"),
 									}'
 								>
 									<CInput
@@ -146,7 +148,7 @@ limitations under the License.
 										:label='$t("forms.fields.privateKey")'
 										:disabled='!webSocket.tlsEnabled'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</div>

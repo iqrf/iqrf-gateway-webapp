@@ -40,70 +40,70 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.errors.organizationId"
+								required: $t("cloud.ibmCloud.errors.organizationId"),
 							}'
 						>
 							<CInput
 								v-model='config.organizationId'
 								:label='$t("cloud.ibmCloud.form.organizationId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.errors.deviceType"
+								required: $t("cloud.ibmCloud.errors.deviceType"),
 							}'
 						>
 							<CInput
 								v-model='config.deviceType'
 								:label='$t("cloud.ibmCloud.form.deviceType")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.errors.deviceId"
+								required: $t("cloud.ibmCloud.errors.deviceId"),
 							}'
 						>
 							<CInput
 								v-model='config.deviceId'
 								:label='$t("cloud.ibmCloud.form.deviceId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.errors.token"
+								required: $t("cloud.ibmCloud.errors.token"),
 							}'
 						>
 							<CInput
 								v-model='config.token'
 								:label='$t("cloud.ibmCloud.form.token")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.errors.eventId"
+								required: $t("cloud.ibmCloud.errors.eventId"),
 							}'
 						>
 							<CInput
 								v-model='config.eventId'
 								:label='$t("cloud.ibmCloud.form.eventId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CButton

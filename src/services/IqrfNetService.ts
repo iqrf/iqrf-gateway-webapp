@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
+import {AutoNetworkOptions} from '@/interfaces/autonetwork';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -24,11 +25,11 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 class IqrfNetService {
 	/**
 	 * Performs AutoNetwork
-	 * @param autoNetwork Object containing AutoNetwork parameters
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {AutoNetworkBase} autoNetwork Object containing AutoNetwork parameters
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
-	autoNetwork(autoNetwork: any, options: DaemonMessageOptions): Promise<string> {
+	autoNetwork(autoNetwork: AutoNetworkOptions, options: DaemonMessageOptions): Promise<string> {
 		const json = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
@@ -58,12 +59,12 @@ class IqrfNetService {
 
 	/**
 	 * Performs IQMESH Backup
-	 * @param address Device address
-	 * @param network Backup entire network
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {number} address Device address
+	 * @param {boolean} network Backup entire network
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
-	backup(address: number, network = false, options: DaemonMessageOptions): Promise<string> {
+	backup(address: number, network: boolean, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_Backup',
 			'data': {
@@ -79,10 +80,10 @@ class IqrfNetService {
 
 	/**
 	 * Bonds a node locally
-	 * @param address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
-	 * @param testRetries Number of FRC test requests to send
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {number} address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
+	 * @param {number} testRetries Number of FRC test requests to send
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	bondLocal(address: number, testRetries: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -101,8 +102,8 @@ class IqrfNetService {
 
 	/**
 	 * Bonds NFC reader to address 240
-	 * @param options WebSocket request options
-	 * @returns Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @returns {Promise<string>} Message ID
 	 */
 	bondNfc(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -120,11 +121,11 @@ class IqrfNetService {
 
 	/**
 	 * Bonds a node via IQRF Smart Connect
-	 * @param address Address to bond the device to.  If this parameter equals to 0, then the first free address is assigned to the node.
-	 * @param scCode Device Smart Connect code
-	 * @param testRetries Maximum number of FRCs used to test whether the Node was successfully bonded
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {number} address Address to bond the device to.  If this parameter equals to 0, then the first free address is assigned to the node.
+	 * @param {string} scCode Device Smart Connect code
+	 * @param {number} testRetries Maximum number of FRCs used to test whether the Node was successfully bonded
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	bondSmartConnect(address: number, scCode: string, testRetries: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -144,9 +145,9 @@ class IqrfNetService {
 
 	/**
 	 * Clears all bonds
-	 * @param coordinatorOnly Removes bonds only in the coordinator memory
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {boolean} coordinatorOnly Removes bonds only in the coordinator memory
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	clearAllBonds(coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
 		if (coordinatorOnly) {
@@ -168,10 +169,10 @@ class IqrfNetService {
 
 	/**
 	 * Performs Coordinator discovery
-	 * @param txPower TX Power
-	 * @param maxAddr Maximum node address
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {number} txPower TX Power
+	 * @param {number} maxAddr Maximum node address
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	discovery(txPower: number, maxAddr: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -192,11 +193,11 @@ class IqrfNetService {
 
 	/**
 	 * Performs device enumeration
-	 * @param address Device address
-	 * @param timeout Timeout in milliseconds
-	 * @param message Timeout message
-	 * @param callback Timeout callback
-	 * @return Message ID
+	 * @param {number} address Device address
+	 * @param {number} timeout Timeout in milliseconds
+	 * @param {string|null} message Timeout message
+	 * @param {CallableFunction} callback Timeout callback
+	 * @return {Promise<string>} Message ID
 	 */
 	enumerateDevice(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
@@ -216,8 +217,8 @@ class IqrfNetService {
 
 	/**
 	 * Retrieves list of bonded devices
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	getBonded(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -235,8 +236,8 @@ class IqrfNetService {
 
 	/**
 	 * Retrieves list of discovered devices
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	getDiscovered(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -254,14 +255,17 @@ class IqrfNetService {
 
 	/**
 	 * Sends request to execute OTA upload action
-	 * @param deviceAddr Target device address
-	 * @param file Full name of file to upload
-	 * @param eeepromAddr External EEPROM address
-	 * @param action OTA upload action
-	 * @param options WebSocket request options
-	 * @returns Message ID
+	 * @param {number} deviceAddr Target device address
+	 * @param {number} hwpid HWPID filter
+	 * @param {string} file Full name of file to upload
+	 * @param {number} eepromAddr External EEPROM address
+	 * @param {boolean} uploadEeprom Upload to EEPROM?
+	 * @param {boolean} uploadEeeprom Upload to EEEPROM?
+	 * @param {OtaUploadAction} action OTA upload action
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
-	otaUpload(deviceAddr: number, hwpid: number, file: string, eeepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: DaemonMessageOptions): Promise<string> {
+	otaUpload(deviceAddr: number, hwpid: number, file: string, eepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_OtaUpload',
 			'data': {
@@ -270,7 +274,7 @@ class IqrfNetService {
 					'deviceAddr': deviceAddr,
 					'hwpId': hwpid,
 					'fileName': file,
-					'startMemAddr': eeepromAddr,
+					'startMemAddr': eepromAddr,
 					'loadingAction': action,
 					'uploadEepromData': uploadEeprom,
 					'uploadEeepromData': uploadEeeprom,
@@ -283,8 +287,8 @@ class IqrfNetService {
 
 	/**
 	 * Perform FRC Ping
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	ping(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -306,8 +310,8 @@ class IqrfNetService {
 	/**
 	 * Sends FRC Ping to selected nodes
 	 * @param nodes Array of selected nodes
-	 * @param options Websocket request options
-	 * @returns Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	pingSelective(nodes: Array<number>, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -328,30 +332,11 @@ class IqrfNetService {
 	}
 
 	/**
-	 * Reads TR configuration
-	 * @param {number} address Device address to read configuration from
-	 * @return {string} Message ID
-	 */
-	readTrConfiguration(address: number, options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			'mType': 'iqmeshNetwork_ReadTrConf',
-			'data': {
-				'repeat': 1,
-				'req': {
-					'deviceAddr': address,
-				},
-				'returnVerbose': true,
-			},
-		};
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
-	/**
 	 * Removes a bond
 	 * @param addr Address of a node bond to be removed
 	 * @param coordinatorOnly Removes a bond only in the coordinator memory
-	 * @param options WebSocket request options
-	 * @return Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	removeBond(addr: number, coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
 		if (coordinatorOnly) {
@@ -385,7 +370,8 @@ class IqrfNetService {
 	 * @param address Device address
 	 * @param restart Restart coordinator on restore
 	 * @param data Backup data
-	 * @param options WebSocket request options
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	restore(address: number, restart: boolean, data: string, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -404,8 +390,8 @@ class IqrfNetService {
 
 	/**
 	 * Sends JSON API request
-	 * @param options Websocket request options
-	 * @return Message ID
+	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @return {Promise<string>} Message ID
 	 */
 	sendJson(options: DaemonMessageOptions): Promise<string> {
 		return store.dispatch('daemonClient/sendRequest', options);
@@ -419,7 +405,7 @@ class IqrfNetService {
 	 * @param timeout Timeout in milliseconds
 	 * @param message Timeout message
 	 * @param callback Timeout callback
-	 * @return Message ID
+	 * @return {Promise<string>} Message ID
 	 */
 	writeTrConfiguration(address: number, hwpid: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		configuration.deviceAddr = address;

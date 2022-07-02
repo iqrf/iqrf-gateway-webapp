@@ -134,7 +134,7 @@ export default class JsonEditor extends Vue {
 		if (this.id || this.$attrs.id) {
 			return this.id || this.$attrs.id;
 		}
-		return 'uid-' + Math.random().toString(36).substr(2);
+		return 'uid-' + Math.random().toString(36).substring(2);
 	}
 
 	/**
@@ -172,7 +172,7 @@ export default class JsonEditor extends Vue {
 	}
 
 	/**
-	 * Handles the input input event
+	 * Handles the input event
 	 * @param {string} json JSON from the input
 	 */
 	onInput(json: string): void {

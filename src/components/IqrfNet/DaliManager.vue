@@ -23,9 +23,9 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							between: "iqrfnet.standard.form.messages.address",
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.form.messages.address"
+							between: $t("iqrfnet.standard.form.messages.address"),
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
 						<CInput
@@ -35,7 +35,7 @@ limitations under the License.
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<div v-for='i of commands.length' :key='i' class='form-group'>
@@ -43,9 +43,9 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|between:0,65535'
 							:custom-messages='{
-								between: "iqrfnet.standard.dali.form.messages.command",
-								integer: "forms.errors.integer",
-								required: "iqrfnet.standard.dali.form.messages.command"
+								between: $t("iqrfnet.standard.dali.form.messages.command"),
+								integer: $t("forms.errors.integer"),
+								required: $t("iqrfnet.standard.dali.form.messages.command"),
 							}'
 						>
 							<CInput
@@ -55,7 +55,7 @@ limitations under the License.
 								max='65535'
 								:label='$t("iqrfnet.standard.dali.form.command")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CButton

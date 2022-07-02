@@ -18,40 +18,33 @@ import axios, {AxiosResponse} from 'axios';
 import { authorizationHeader } from '@/helpers/authorizationHeader';
 
 /**
- * APT enable
+ * APT configuration
  */
-export interface AptEnable {
-	/**
-	 * Enable automatic upgrades
-	 */
-	'APT::Periodic::Enable': string
-}
-
 export interface AptConfiguration {
 	/**
 	 * Enable automatic upgrades
 	 */
-	'APT::Periodic::Enable'?: string
+	'APT::Periodic::Enable'?: boolean
 
 	/**
 	 * Package list update interval
 	 */
-	'APT::Periodic::Update-Package-Lists': string
+	'APT::Periodic::Update-Package-Lists': number
 
 	/**
 	 * Package upgrade interval
 	 */
-	'APT::Periodic::Unattended-Upgrade': string
+	'APT::Periodic::Unattended-Upgrade': number
 
 	/**
 	 * Unnecessary package removal interval
 	 */
-	'APT::Periodic::AutocleanInterval': string
+	'APT::Periodic::AutocleanInterval': number
 
 	/**
 	 * Reboot on kernel updates
 	 */
-	'Unattended-Upgrade::Automatic-Reboot': string
+	'Unattended-Upgrade::Automatic-Reboot': boolean
 }
 
 /**
@@ -62,16 +55,44 @@ class AptService {
 	/**
 	 * Retrieves APT configuration
 	 */
-	read(): Promise<AxiosResponse> {
-		return axios.get('/config/apt', {headers: authorizationHeader()});
+	read(): Promise<AptConfiguration> {
+		return axios.get('/config/apt', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				const data = response.data;
+				return {
+					'APT::Periodic::AutocleanInterval': parseInt(data['APT::Periodic::AutocleanInterval']),
+					'APT::Periodic::Enable': data['APT::Periodic::Enable'] === '1',
+					'APT::Periodic::Unattended-Upgrade': parseInt(data['APT::Periodic::Unattended-Upgrade']),
+					'APT::Periodic::Update-Package-Lists': parseInt(data['APT::Periodic::Update-Package-Lists']),
+					'Unattended-Upgrade::Automatic-Reboot': data['Unattended-Upgrade::Automatic-Reboot'] === 'true',
+				};
+			});
 	}
 
 	/**
 	 * Sets APT configuration
-	 * @param configuration APT configuration
+	 * @param {AptConfiguration} configuration APT configuration
 	 */
-	write(configuration: AptEnable|AptConfiguration): Promise<AxiosResponse> {
-		return axios.put('/config/apt', configuration, {headers: authorizationHeader()});
+	write(configuration: AptConfiguration): Promise<AxiosResponse> {
+		const data = {
+			'APT::Periodic::AutocleanInterval': configuration['APT::Periodic::AutocleanInterval'].toString(),
+			'APT::Periodic::Enable': configuration['APT::Periodic::Enable'] ? '1' : '0',
+			'APT::Periodic::Unattended-Upgrade': configuration['APT::Periodic::Unattended-Upgrade'].toString(),
+			'APT::Periodic::Update-Package-Lists': configuration['APT::Periodic::Update-Package-Lists'].toString(),
+			'Unattended-Upgrade::Automatic-Reboot': configuration['Unattended-Upgrade::Automatic-Reboot'] ? 'true' : 'false',
+		};
+		return axios.put('/config/apt', data, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Enables unattended upgrades
+	 * @param {boolean} enable Enable unattended upgrades
+	 */
+	setUnattendedUpgrades(enable: boolean): Promise<AxiosResponse> {
+		const data = {
+			'APT::Periodic::Enable': enable ? '1' : '0',
+		};
+		return axios.put('/config/apt', data, {headers: authorizationHeader()});
 	}
 }
 

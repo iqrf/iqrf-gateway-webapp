@@ -34,7 +34,7 @@ class IqrfService {
 	 */
 	getInterfacePorts(interfaceType: string): Promise<Array<string>> {
 		return axios.get('iqrf/interfaces/', {headers: authorizationHeader()})
-			.then((response: AxiosResponse<any>) => {
+			.then((response: AxiosResponse) => {
 				const ports: IqrfInterfacePorts = response.data;
 				return ports[interfaceType] as Array<string>;
 			});

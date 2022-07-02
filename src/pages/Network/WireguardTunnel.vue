@@ -27,7 +27,7 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "network.wireguard.tunnels.errors.name"
+									required: $t("network.wireguard.tunnels.errors.name")
 								}'
 							>
 								<CInput
@@ -35,7 +35,7 @@ limitations under the License.
 									:label='$t("network.wireguard.tunnels.form.name")'
 									placeholder='wg0'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CButton
@@ -50,15 +50,15 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|base64Key'
 								:custom-messages='{
-									required: "network.wireguard.tunnels.errors.privateKey",
-									base64Key: "network.wireguard.tunnels.errors.base64Key"
+									required: $t("network.wireguard.tunnels.errors.privateKey"),
+									base64Key: $t("network.wireguard.tunnels.errors.base64Key"),
 								}'
 							>
 								<CInput
 									v-model='tunnel.privateKey'
 									:label='$t("network.wireguard.tunnels.form.privateKey")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<div
@@ -90,9 +90,9 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|integer|between:0,65535'
 								:custom-messages='{
-									required: "network.wireguard.tunnels.errors.portIface",
-									integer: "network.wireguard.tunnels.errors.portInvalid",
-									between: "network.wireguard.tunnels.errors.portInvalid"
+									required: $t("network.wireguard.tunnels.errors.portIface"),
+									integer: $t("network.wireguard.tunnels.errors.portInvalid"),
+									between: $t("network.wireguard.tunnels.errors.portInvalid"),
 								}'
 							>
 								<CInput
@@ -102,7 +102,7 @@ limitations under the License.
 									max='65535'
 									:label='$t("network.wireguard.tunnels.form.port")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -121,24 +121,24 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|ipv4'
 										:custom-messages='{
-											required: "network.wireguard.tunnels.errors.ipv4",
-											ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
+											required: $t("network.wireguard.tunnels.errors.ipv4"),
+											ipv4: $t("network.wireguard.tunnels.errors.ipv4Invalid"),
 										}'
 									>
 										<CInput
 											v-model='tunnel.ipv4.address'
 											:label='$t("network.wireguard.tunnels.form.ipv4")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|between:1,32'
 										:custom-messages='{
-											required: "network.wireguard.tunnels.errors.ipv4Prefix",
-											integer: "network.wireguard.tunnels.errors.ipv4PrefixInvalid",
-											between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
+											required: $t("network.wireguard.tunnels.errors.ipv4Prefix"),
+											integer: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
+											between: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
 										}'
 									>
 										<CInput
@@ -148,7 +148,7 @@ limitations under the License.
 											max='32'
 											:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -160,24 +160,24 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|ipv6'
 										:custom-messages='{
-											required: "network.wireguard.tunnels.errors.ipv6",
-											ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
+											required: $t("network.wireguard.tunnels.errors.ipv6"),
+											ipv6: $t("network.wireguard.tunnels.errors.ipv6Invalid"),
 										}'
 									>
 										<CInput
 											v-model='tunnel.ipv6.address'
 											:label='$t("network.wireguard.tunnels.form.ipv6")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|integer|between:48,128'
 										:custom-messages='{
-											required: "network.wireguard.tunnels.errors.ipv6Prefix",
-											integer: "network.wireguard.tunnels.errors.ipv6PrefixInvalid",
-											between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
+											required: $t("network.wireguard.tunnels.errors.ipv6Prefix"),
+											integer: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
+											between: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
 										}'
 									>
 										<CInput
@@ -187,7 +187,7 @@ limitations under the License.
 											max='128'
 											:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</CCol>
@@ -207,15 +207,15 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|base64Key'
 									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.publicKeyPeer",
-										base64Key: "network.wireguard.tunnels.errors.base64Key"
+										required: $t("network.wireguard.tunnels.errors.publicKeyPeer"),
+										base64Key: $t("network.wireguard.tunnels.errors.base64Key"),
 									}'
 								>
 									<CInput
 										v-model='peer.publicKey'
 										:label='$t("network.wireguard.tunnels.form.publicKey")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<CInput
@@ -226,23 +226,23 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.endpoint"
+										required: $t("network.wireguard.tunnels.errors.endpoint"),
 									}'
 								>
 									<CInput
 										v-model='peer.endpoint'
 										:label='$t("network.wireguard.tunnels.form.endpoint")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:0,65535'
 									:custom-messages='{
-										required: "network.wireguard.tunnels.errors.portPeer",
-										integer: "network.wireguard.tunnels.errors.portInvalid",
-										between: "network.wireguard.tunnels.errors.portInvalid"
+										required: $t("network.wireguard.tunnels.errors.portPeer"),
+										integer: $t("network.wireguard.tunnels.errors.portInvalid"),
+										between: $t("network.wireguard.tunnels.errors.portInvalid"),
 									}'
 								>
 									<CInput
@@ -252,7 +252,7 @@ limitations under the License.
 										max='65535'
 										:label='$t("network.wireguard.tunnels.form.port")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<div class='form-group'>
@@ -260,9 +260,9 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required|integer|between:0,65535'
 										:custom-messages='{
-											required: "network.wireguard.tunnels.errors.keepalive",
-											integer: "forms.errors.integer",
-											between: "network.wireguard.tunnels.errors.keepaliveInvalid"
+											required: $t("network.wireguard.tunnels.errors.keepalive"),
+											integer: $t("forms.errors.integer"),
+											between: $t("network.wireguard.tunnels.errors.keepaliveInvalid"),
 										}'
 									>
 										<CInput
@@ -272,10 +272,10 @@ limitations under the License.
 											max='65535'
 											:label='$t("network.wireguard.tunnels.form.keepalive")'
 											:is-valid='touched ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
-									<i>{{ $t("network.wireguard.tunnels.form.keepaliveNote") }}</i>
+									<em>{{ $t("network.wireguard.tunnels.form.keepaliveNote") }}</em>
 								</div>
 							</CCol>
 							<CCol>
@@ -298,24 +298,24 @@ limitations under the License.
 												v-slot='{errors, touched, valid}'
 												rules='required|ipv4'
 												:custom-messages='{
-													required: "network.wireguard.tunnels.errors.ipv4",
-													ipv4: "network.wireguard.tunnels.errors.ipv4Invalid"
+													required: $t("network.wireguard.tunnels.errors.ipv4"),
+													ipv4: $t("network.wireguard.tunnels.errors.ipv4Invalid"),
 												}'
 											>
 												<CInput
 													v-model='ip.address'
 													:label='$t("network.wireguard.tunnels.form.ipv4")'
 													:is-valid='touched ? valid : null'
-													:invalid-feedback='$t(errors[0])'
+													:invalid-feedback='errors.join(", ")'
 												/>
 											</ValidationProvider>
 											<ValidationProvider
 												v-slot='{errors, touched, valid}'
 												rules='required|between:1,32'
 												:custom-messages='{
-													required: "network.wireguard.tunnels.errors.ipv4Prefix",
-													integer: "network.wireguard.tunnels.errors.ipv4PrefixInvalid",
-													between: "network.wireguard.tunnels.errors.ipv4PrefixInvalid"
+													required: $t("network.wireguard.tunnels.errors.ipv4Prefix"),
+													integer: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
+													between: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
 												}'
 											>
 												<CInput
@@ -325,7 +325,7 @@ limitations under the License.
 													max='32'
 													:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
 													:is-valid='touched ? valid : null'
-													:invalid-feedback='$t(errors[0])'
+													:invalid-feedback='errors.join(", ")'
 												/>
 											</ValidationProvider>
 											<CButton
@@ -356,24 +356,24 @@ limitations under the License.
 												v-slot='{errors, touched, valid}'
 												rules='required|ipv6'
 												:custom-messages='{
-													required: "network.wireguard.tunnels.errors.ipv6",
-													ipv6: "network.wireguard.tunnels.errors.ipv6Invalid"
+													required: $t("network.wireguard.tunnels.errors.ipv6"),
+													ipv6: $t("network.wireguard.tunnels.errors.ipv6Invalid"),
 												}'
 											>
 												<CInput
 													v-model='ip.address'
 													:label='$t("network.wireguard.tunnels.form.ipv6")'
 													:is-valid='touched ? valid : null'
-													:invalid-feedback='$t(errors[0])'
+													:invalid-feedback='errors.join(", ")'
 												/>
 											</ValidationProvider>
 											<ValidationProvider
 												v-slot='{errors, touched, valid}'
 												rules='required|integer|between:48,128'
 												:custom-messages='{
-													required: "network.wireguard.tunnels.errors.ipv6Prefix",
-													integer: "network.wireguard.tunnels.errors.ipv6PrefixInvalid",
-													between: "network.wireguard.tunnels.errors.ipv6PrefixInvalid"
+													required: $t("network.wireguard.tunnels.errors.ipv6Prefix"),
+													integer: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
+													between: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
 												}'
 											>
 												<CInput
@@ -383,7 +383,7 @@ limitations under the License.
 													max='128'
 													:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
 													:is-valid='touched ? valid : null'
-													:invalid-feedback='$t(errors[0])'
+													:invalid-feedback='errors.join(", ")'
 												/>
 											</ValidationProvider>
 											<CButton
@@ -472,12 +472,12 @@ export enum StackType {
 })
 
 /**
- * Wireguard tunnel form component
+ * WireGuard tunnel form component
  */
 export default class WireguardTunnel extends Vue {
 
 	/**
-	 * @var {IWGTunnel} tunnel Wireguard VPN tunnel configuration
+	 * @var {IWGTunnel} tunnel WireGuard VPN tunnel configuration
 	 */
 	private tunnel: IWGTunnel = {
 		name: '',
@@ -553,7 +553,7 @@ export default class WireguardTunnel extends Vue {
 	private optionalPort = false;
 
 	/**
-	 * @property {number|null} id Wireguard tunnel id
+	 * @property {number|null} id WireGuard tunnel id
 	 */
 	@Prop({required: false, default: null}) id!: number;
 
@@ -589,8 +589,9 @@ export default class WireguardTunnel extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/ip-network/vpn/add' ?
-			this.$t('network.wireguard.tunnels.add').toString() : this.$t('network.wireguard.tunnels.edit').toString();
+		return (this.$route.path === '/ip-network/vpn/add' ?
+			this.$t('network.wireguard.tunnels.add') :
+			this.$t('network.wireguard.tunnels.edit')).toString();
 	}
 
 	/**
@@ -614,7 +615,7 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
-	 * Retrieves Wireguard tunnel configuration
+	 * Retrieves WireGuard tunnel configuration
 	 */
 	private getTunnel(): void {
 		this.$store.commit('spinner/SHOW');
@@ -739,7 +740,7 @@ export default class WireguardTunnel extends Vue {
 	}
 
 	/**
-	 * Creates new Wireguard tunnel
+	 * Creates new WireGuard tunnel
 	 */
 	private saveTunnel(): void {
 		const tunnel: IWGTunnel = JSON.parse(JSON.stringify(this.tunnel));
@@ -779,12 +780,13 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(
-			this.$t(
-				'network.wireguard.tunnels.messages.' + (this.$route.path === '/ip-network/vpn/add' ? 'add' : 'edit') + 'Success',
-				{tunnel: this.tunnel.name}
-			).toString()
-		);
+		let message: string;
+		if (this.$route.path === '/ip-network/vpn/add') {
+			message = this.$t('network.wireguard.tunnels.messages.addSuccess', {tunnel: this.tunnel.name}).toString();
+		} else {
+			message = this.$t('network.wireguard.tunnels.messages.editSuccess', {tunnel: this.tunnel.name}).toString();
+		}
+		this.$toast.success(message);
 		this.$router.push('/ip-network/vpn/');
 	}
 

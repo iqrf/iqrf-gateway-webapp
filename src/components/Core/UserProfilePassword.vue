@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<CCard>
 		<CCardHeader>
-			<b>{{ $t('core.profile.form.changePassword') }}</b>
+			<strong>{{ $t('core.profile.form.changePassword') }}</strong>
 		</CCardHeader>
 		<CCardBody>
 			<CAlert color='info'>
@@ -32,14 +32,14 @@ limitations under the License.
 							required: newPassword.length > 0,
 						}'
 						:custom-messages='{
-							required: "core.user.errors.oldPassword",
+							required: $t("core.user.errors.oldPassword"),
 						}'
 					>
 						<CInput
 							v-model='oldPassword'
 							:label='$t("core.profile.form.oldPassword")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							type='password'
 							autocomplete='current-password'
 						/>
@@ -50,14 +50,14 @@ limitations under the License.
 							required: oldPassword.length > 0,
 						}'
 						:custom-messages='{
-							required: "core.user.errors.newPassword",
+							required: $t("core.user.errors.newPassword"),
 						}'
 					>
 						<CInput
 							v-model='newPassword'
 							:label='$t("core.profile.form.newPassword")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 							type='password'
 							autocomplete='new-password'
 						/>

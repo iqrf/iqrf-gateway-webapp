@@ -77,12 +77,16 @@ class MappingController extends BaseController {
 	 *                      items:
 	 *                          $ref: '#/components/schemas/MappingDetail'
 	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="interface", in="query", type="string", description="Interface type", required="false")
+	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$mappings = $this->repository->findAll();
+		$criteria = !$request->hasQueryParam('interface') ? [] : ['type' => $request->getQueryParam('interface')];
+		$mappings = $this->repository->findBy($criteria);
 		return $response->writeJsonBody($mappings);
 	}
 

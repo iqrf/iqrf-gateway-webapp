@@ -28,7 +28,7 @@ limitations under the License.
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
-						<i>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</i>
+						<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
 					</div>
 					<CButton
 						type='submit'

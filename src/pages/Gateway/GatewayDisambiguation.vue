@@ -173,7 +173,7 @@ export default class GatewayDisambiguation extends Vue {
 	/**
 	 * Retrieves user role and calculates the role index
 	 */
-	private created(): void {
+	protected created(): void {
 		const roleVal = this.$store.getters['user/getRole'];
 		this.roleIdx = getRoleIndex(roleVal);
 	}

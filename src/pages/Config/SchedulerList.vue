@@ -668,7 +668,7 @@ export default class SchedulerList extends Vue {
 
 	/**
 	 * Creates time string used in scheduler task data table from task time specification
-	 * @param {TaskTimeSpec} item Scheduler task time specification
+	 * @param {ITaskTimeSpec} item Scheduler task time specification
 	 * @returns {string} Human readable time message
 	 */
 	private timeString(item: ITaskTimeSpec): string|undefined {

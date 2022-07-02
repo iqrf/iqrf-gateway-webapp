@@ -34,14 +34,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.otaUpload.errors.instance"
+								required: $t("config.daemon.misc.otaUpload.errors.instance"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInput
@@ -169,7 +169,6 @@ export default class OtaUpload extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

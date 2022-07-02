@@ -72,10 +72,6 @@ import {FileUpload} from '@/interfaces/trUpload';
  * Custom DPA handler upload card for TrUpload component
  */
 export default class HexUpload extends Vue {
-	/**
-	 * @var {boolean} failed Indicates that upload request has failed
-	 */
-	private failed = false;
 
 	/**
 	 * @var {boolean} fileEmpty Indicates that the form file input is empty
@@ -89,7 +85,7 @@ export default class HexUpload extends Vue {
 
 	/**
 	 * Extracts uploaded files from form file input
-	 * @returns {Filelist} list of uploaded files
+	 * @returns {FileList} list of uploaded files
 	 */
 	private getFiles(): FileList {
 		const input = (this.$refs.fileUpload as CInputFile).$el.children[1] as HTMLInputElement;

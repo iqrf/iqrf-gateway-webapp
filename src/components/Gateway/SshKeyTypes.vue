@@ -1,10 +1,10 @@
 <template>
 	<CAlert
 		v-if='fetched !== null'
-		:color='fetched === true ? "primary" : "danger"'
+		:color='fetched ? "primary" : "danger"'
 	>
 		<span v-if='fetched'>
-			<span v-if='fetched.length === 0'>
+			<span v-if='types.length === 0'>
 				{{ $t('core.security.ssh.messages.typeListNone') }}
 			</span>
 			<span v-else>

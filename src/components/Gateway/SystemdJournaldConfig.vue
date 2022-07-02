@@ -34,11 +34,11 @@ limitations under the License.
 				<CForm @submit.prevent='saveConfig'>
 					<CInputCheckbox
 						:checked.sync='config.forwardToSyslog'
-						:label='$t("service.systemd-journald.config.form.forwardToSyslog")'
+						:label='$t("service.systemd-journald.config.form.forwardToSyslog").toString()'
 					/>
 					<CSelect
 						:value.sync='config.persistence'
-						:label='$t("service.systemd-journald.config.form.storage")'
+						:label='$t("service.systemd-journald.config.form.storage").toString()'
 						:options='storageOptions'
 					/>
 					<div class='form-group'>
@@ -46,42 +46,42 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|min:0'
 							:custom-messages='{
-								required: "service.systemd-journald.config.errors.maxDisk",
-								integer: "service.systemd-journald.config.errors.maxDiskInvalid",
-								min: "service.systemd-journald.config.errors.maxDiskInvalid"
+								required: $t("service.systemd-journald.config.errors.maxDisk"),
+								integer: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
+								min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
 							}'
 						>
 							<CInput
 								v-model.number='config.maxDiskSize'
 								type='number'
 								min='0'
-								:label='$t("service.systemd-journald.config.form.maxDisk")'
+								:label='$t("service.systemd-journald.config.form.maxDisk").toString()'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ").toString()'
 							/>
 						</ValidationProvider>
-						<i>{{ $t('service.systemd-journald.config.form.defaultNote') }}</i>
+						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
 					</div>
 					<div class='form-group'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|min:1'
 							:custom-messages='{
-								required: "service.systemd-journald.config.errors.maxFiles",
-								integer: "service.systemd-journald.config.errors.maxFilesInvalid",
-								min: "service.systemd-journald.config.errors.maxFilesInvalid"
+								required: $t("service.systemd-journald.config.errors.maxFiles"),
+								integer: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
+								min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
 							}'
 						>
 							<CInput
 								v-model.number='config.maxFiles'
 								type='number'
 								min='1'
-								:label='$t("service.systemd-journald.config.form.maxFiles")'
+								:label='$t("service.systemd-journald.config.form.maxFiles").toString()'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ").toString()'
 							/>
 						</ValidationProvider>
-						<i>{{ $t('service.systemd-journald.config.form.maxFilesNote') }}</i>
+						<em>{{ $t('service.systemd-journald.config.form.maxFilesNote') }}</em>
 					</div>
 					<div class='form-group'>
 						<label>
@@ -104,21 +104,21 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|min:0'
 							:custom-messages='{
-								required: "service.systemd-journald.config.errors.maxFileSize",
-								integer: "service.systemd-journald.config.errors.maxFileSizeInvalid",
-								min: "service.systemd-journald.config.errors.maxFileSizeInvalid"
+								required: $t("service.systemd-journald.config.errors.maxFileSize"),
+								integer: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
+								min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
 							}'
 						>
 							<CInput
 								v-model.number='config.sizeRotation.maxFileSize'
 								type='number'
 								min='0'
-								:label='$t("service.systemd-journald.config.form.maxFileSize")'
+								:label='$t("service.systemd-journald.config.form.maxFileSize").toString()'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ").toString()'
 							/>
 						</ValidationProvider>
-						<i>{{ $t('service.systemd-journald.config.form.defaultNote') }}</i>
+						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
 					</div>
 					<div class='form-group'>
 						<label>
@@ -139,25 +139,25 @@ limitations under the License.
 					>
 						<CSelect
 							:value.sync='config.timeRotation.unit'
-							:label='$t("service.systemd-journald.config.form.unit")'
+							:label='$t("service.systemd-journald.config.form.unit").toString()'
 							:options='unitOptions'
 						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|min:1'
 							:custom-messages='{
-								required: "service.systemd-journald.config.errors.count",
-								integer: "service.systemd-journald.config.errors.countInvalid",
-								min: "service.systemd-journald.config.errors.countInvalid"
+								required: $t("service.systemd-journald.config.errors.count"),
+								integer: $t("service.systemd-journald.config.errors.countInvalid"),
+								min: $t("service.systemd-journald.config.errors.countInvalid"),
 							}'
 						>
 							<CInput
 								v-model.number='config.timeRotation.count'
 								type='number'
 								min='1'
-								:label='$t("service.systemd-journald.config.form.count")'
+								:label='$t("service.systemd-journald.config.form.count").toString()'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ").toString()'
 							/>
 						</ValidationProvider>
 					</div>
@@ -227,7 +227,7 @@ export default class SystemdJournaldConfig extends Vue {
 	private timeRotation = false;
 
 	/**
-	 * @constant {Array<IOption>} storageOptions Array of coreui select storage method options
+	 * @constant {Array<IOption>} storageOptions Array of CoreUI select storage method options
 	 */
 	private storageOptions: Array<IOption> = [
 		{
@@ -241,7 +241,7 @@ export default class SystemdJournaldConfig extends Vue {
 	];
 
 	/**
-	 * @constant {Array<IOption>} unitOptions Array of coreui select unit options
+	 * @constant {Array<IOption>} unitOptions Array of CoreUI select unit options
 	 */
 	private unitOptions: Array<IOption> = [
 		{
@@ -275,7 +275,7 @@ export default class SystemdJournaldConfig extends Vue {
 	];
 
 	/**
-	 * @var {boolean} failed Indicates whether configuraiton fetch failed
+	 * @var {boolean} failed Indicates whether configuration fetch failed
 	 */
 	private failed = false;
 

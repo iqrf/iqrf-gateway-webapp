@@ -31,15 +31,15 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
 							:custom-messages='{
-								required: "config.daemon.messagings.mqtt.errors.instance",
-								instance: "config.daemon.messagings.instanceInvalid"
+								required: $t("config.daemon.messagings.mqtt.errors.instance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CRow>
@@ -48,14 +48,14 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.mqtt.errors.BrokerAddr"
+										required: $t("config.daemon.messagings.mqtt.errors.BrokerAddr"),
 									}'
 								>
 									<CInput
 										v-model='configuration.BrokerAddr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -64,14 +64,14 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "forms.errors.clientId"
+										required: $t("forms.errors.clientId"),
 									}'
 								>
 									<CInput
 										v-model='configuration.ClientId'
 										:label='$t("forms.fields.clientId")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -80,14 +80,14 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "forms.errors.requestTopic"
+										required: $t("forms.errors.requestTopic"),
 									}'
 								>
 									<CInput
 										v-model='configuration.TopicRequest'
 										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -96,14 +96,14 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "forms.errors.responseTopic"
+										required: $t("forms.errors.responseTopic"),
 									}'
 								>
 									<CInput
 										v-model='configuration.TopicResponse'
 										:label='$t("forms.fields.responseTopic")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 							</CCol>
@@ -124,18 +124,18 @@ limitations under the License.
 									v-slot='{valid, touched, errors}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.mqtt.errors.QoS",
+										required: $t("config.daemon.messagings.mqtt.errors.QoS"),
 									}'
 								>
 									<CSelect
 										:value.sync='configuration.Qos'
 										:label='$t("config.daemon.messagings.mqtt.form.QoS")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.QoS")'
 										:options='qosOptions'
 									/>
-									<p>{{ $t('config.daemon.messagings.mqtt.messages.qos.' + configuration.Qos) }}</p>
+									<p>{{ $t(`config.daemon.messagings.mqtt.messages.qos.${configuration.Qos}`) }}</p>
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
@@ -143,18 +143,18 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "config.daemon.messagings.mqtt.errors.Persistence",
+										required: $t("config.daemon.messagings.mqtt.errors.Persistence"),
 									}'
 								>
 									<CSelect
 										:value.sync='configuration.Persistence'
 										:label='$t("config.daemon.messagings.mqtt.form.Persistence")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.Persistence")'
 										:options='persistenceOptions'
 									/>
-									<p>{{ $t('config.daemon.messagings.mqtt.messages.persistence.' + configuration.Persistence) }}</p>
+									<p>{{ $t(`config.daemon.messagings.mqtt.messages.persistence.${configuration.Persistence}`) }}</p>
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
@@ -162,15 +162,15 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
 									:custom-messages='{
-										integer: "config.daemon.messagings.mqtt.errors.KeepAliveInterval",
-										min: "config.daemon.messagings.mqtt.errors.KeepAliveInterval",
+										integer: $t("config.daemon.messagings.mqtt.errors.KeepAliveInterval"),
+										min: $t("config.daemon.messagings.mqtt.errors.KeepAliveInterval"),
 									}'
 								>
 									<CInput
 										v-model.number='configuration.KeepAliveInterval'
 										:label='$t("config.daemon.messagings.mqtt.form.KeepAliveInterval")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										type='number'
 										min='0'
 									/>
@@ -181,15 +181,15 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
 									:custom-messages='{
-										integer: "config.daemon.messagings.mqtt.errors.ConnectTimeout",
-										min: "config.daemon.messagings.mqtt.errors.ConnectTimeout",
+										integer: $t("config.daemon.messagings.mqtt.errors.ConnectTimeout"),
+										min: $t("config.daemon.messagings.mqtt.errors.ConnectTimeout"),
 									}'
 								>
 									<CInput
 										v-model.number='configuration.ConnectTimeout'
 										:label='$t("config.daemon.messagings.mqtt.form.ConnectTimeout")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										type='number'
 										min='0'
 									/>
@@ -200,15 +200,15 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|between:0," + configuration.MaxReconnect'
 									:custom-messages='{
-										between: "config.daemon.messagings.mqtt.errors.MinReconnect",
-										integer: "config.daemon.messagings.mqtt.errors.MinReconnect",
+										between: $t("config.daemon.messagings.mqtt.errors.MinReconnect"),
+										integer: $t("config.daemon.messagings.mqtt.errors.MinReconnect"),
 									}'
 								>
 									<CInput
 										v-model.number='configuration.MinReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MinReconnect")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										type='number'
 										:max='configuration.MaxReconnect'
 										min='0'
@@ -220,15 +220,15 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|min:" + configuration.MinReconnect'
 									:custom-messages='{
-										integer: "config.daemon.messagings.mqtt.errors.MaxReconnect",
-										min: "config.daemon.messagings.mqtt.errors.MaxReconnect",
+										integer: $t("config.daemon.messagings.mqtt.errors.MaxReconnect"),
+										min: $t("config.daemon.messagings.mqtt.errors.MaxReconnect"),
 									}'
 								>
 									<CInput
 										v-model.number='configuration.MaxReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MaxReconnect")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										type='number'
 										:min='configuration.MinReconnect'
 									/>
@@ -416,7 +416,7 @@ export default class MqttMessagingForm extends Vue {
 		return options.map((option) => {
 			return {
 				value: option,
-				label: this.$t('config.daemon.messagings.mqtt.form.Persistences.' + option).toString()
+				label: this.$t(`config.daemon.messagings.mqtt.form.Persistences.${option}`).toString()
 			};
 		});
 	}
@@ -430,7 +430,7 @@ export default class MqttMessagingForm extends Vue {
 		return options.map((option) => {
 			return {
 				value: option,
-				label: this.$t('config.daemon.messagings.mqtt.form.QoSes.' + option).toString(),
+				label: this.$t(`config.daemon.messagings.mqtt.form.QoSes.${option.toString()}`).toString(),
 			};
 		});
 	}

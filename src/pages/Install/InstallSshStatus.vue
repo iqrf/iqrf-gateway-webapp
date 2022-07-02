@@ -35,7 +35,7 @@ limitations under the License.
 					:label='$t("install.ssh.state")'
 				/>
 				<p>
-					<i>{{ $t('install.ssh.messages.reminder') }}</i>
+					<em>{{ $t('install.ssh.messages.reminder') }}</em>
 				</p>
 				<CButton
 					color='primary'

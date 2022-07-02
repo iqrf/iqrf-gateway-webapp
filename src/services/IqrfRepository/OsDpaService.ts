@@ -62,11 +62,12 @@ export class OsDpaVersion {
 
 	/**
 	 * DPA version entity
-	 * @param osBuild IQRF OS build
-	 * @param osVersion IQRF OS version
-	 * @param dpaVersion Raw DPA version
-	 * @param notes DPA version notes
-	 * @param downloadPath DPA files download path
+	 * @param {string} osBuild IQRF OS build
+	 * @param {string} osVersion IQRF OS version
+	 * @param {string} dpaVersion Raw DPA version
+	 * @param {string} notes DPA version notes
+	 * @param {string} downloadPath DPA files download path
+	 * @param {number} dpaAttributes DPA attributes
 	 */
 	public constructor(osBuild: string, osVersion: string, dpaVersion: string, notes: string, downloadPath: string, dpaAttributes: number) {
 		this.osBuild = osBuild;

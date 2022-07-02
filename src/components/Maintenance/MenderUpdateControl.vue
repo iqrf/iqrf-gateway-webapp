@@ -70,6 +70,7 @@ import GatewayService from '@/services/GatewayService';
 import { MountModes } from '@/enums/Maintenance/Mender';
 import { extendedErrorToast } from '@/helpers/errorToast';
 import {ErrorResponse} from '@/types';
+import {TranslateResult} from 'vue-i18n';
 
 @Component({
 	components: {
@@ -123,11 +124,11 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
 		MenderService.install(formData)
 			.then((response: AxiosResponse) => {
-				this.handleResponse('maintenance.mender.update.messages.installSuccess', response.data);
+				this.handleResponse(this.$t('maintenance.mender.update.messages.installSuccess'), response.data);
 				this.installSuccess = true;
 			})
 			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.installFailed',
+				this.$t('maintenance.mender.update.messages.installFailed'),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -139,11 +140,11 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		MenderService.commit()
 			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.commitSuccess',
+				this.$t('maintenance.mender.update.messages.commitSuccess'),
 				response.data
 			))
 			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.commitFailed',
+				this.$t('maintenance.mender.update.messages.commitFailed'),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -155,11 +156,11 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		MenderService.rollback()
 			.then((response: AxiosResponse) => this.handleResponse(
-				'maintenance.mender.update.messages.rollbackSuccess',
+				this.$t('maintenance.mender.update.messages.rollbackSuccess'),
 				response.data
 			))
 			.catch((error: AxiosError) => this.handleError(
-				'maintenance.mender.update.messages.rollbackFailed',
+				this.$t('maintenance.mender.update.messages.rollbackFailed'),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -206,21 +207,23 @@ export default class MenderUpdateControl extends Vue {
 
 	/**
 	 * Handles axios response
-	 * @param {string} message Toast message to project
+	 * @param {TranslateResult} message Toast message to project
 	 * @param {string} output Output log
 	 */
-	private handleResponse(message: string, output: string): void {
+	private handleResponse(message: TranslateResult, output: string): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(this.$t(message).toString());
+		this.$toast.success(message.toString());
 		this.updateLog(output);
 	}
 
 	/**
 	 * Handles axios error
+   * @param {TranslateResult} message Toast message to project
+   * @param {string} output Output log
 	 */
-	private handleError(message: string, output: string): void {
+	private handleError(message: TranslateResult, output: string): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.error(this.$t(message).toString());
+		this.$toast.error(message.toString());
 		this.updateLog(output);
 	}
 

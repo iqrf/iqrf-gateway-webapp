@@ -22,7 +22,7 @@ limitations under the License.
 				v-slot='{errors, touched, valid}'
 				rules='required'
 				:custom-messages='{
-					required: "maintenance.mender.service.errors.server"
+					required: $t("maintenance.mender.service.errors.server"),
 				}'
 			>
 				<CInput
@@ -30,7 +30,7 @@ limitations under the License.
 					:label='$t("maintenance.mender.service.form.server")'
 					:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
 					:is-valid='touched ? valid : null'
-					:invalid-feedback='$t(errors[0])'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<CInput
@@ -69,7 +69,7 @@ limitations under the License.
 				v-slot='{errors, touched, valid}'
 				rules='required'
 				:custom-messages='{
-					required: "maintenance.mender.service.errors.tenantToken"
+					required: $t("maintenance.mender.service.errors.tenantToken"),
 				}'
 			>
 				<CInput
@@ -77,23 +77,23 @@ limitations under the License.
 					:label='$t("maintenance.mender.service.form.tenantToken")'
 					:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
 					:is-valid='touched ? valid : null'
-					:invalid-feedback='$t(errors[0])'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='min:0|required|integer'
 				:custom-messages='{
-					integer: "forms.errors.integer",
-					min: "maintenance.mender.service.errors.inventoryPollInterval",
-					required: "maintenance.mender.service.errors.inventoryPollInterval"
+					integer: $t("forms.errors.integer"),
+					min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+					required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
 				}'
 			>
-				<b>
+				<strong>
 					<label for='inventoryPoll'>
 						{{ $t('maintenance.mender.service.form.inventoryPollInterval') }}
 					</label>
-				</b> <CBadge color='info'>
+				</strong> <CBadge color='info'>
 					{{ inventoryPollTime }}
 				</CBadge>
 				<CInput
@@ -102,23 +102,23 @@ limitations under the License.
 					type='number'
 					min='0'
 					:is-valid='touched ? valid : null'
-					:invalid-feedback='$t(errors[0])'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='min:0|required|integer'
 				:custom-messages='{
-					integer: "forms.errors.integer",
-					min: "maintenance.mender.service.errors.retryPollInterval",
-					required: "maintenance.mender.service.errors.retryPollInterval"
+					integer: $t("forms.errors.integer"),
+					min: $t("maintenance.mender.service.errors.retryPollInterval"),
+					required: $t("maintenance.mender.service.errors.retryPollInterval"),
 				}'
 			>
-				<b>
+				<strong>
 					<label for='retryPoll'>
 						{{ $t('maintenance.mender.service.form.retryPollInterval') }}
 					</label>
-				</b> <CBadge color='info'>
+				</strong> <CBadge color='info'>
 					{{ retryPollTime }}
 				</CBadge>
 				<CInput
@@ -127,23 +127,23 @@ limitations under the License.
 					type='number'
 					min='0'
 					:is-valid='touched ? valid : null'
-					:invalid-feedback='$t(errors[0])'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='min:0|required|integer'
 				:custom-messages='{
-					integer: "forms.errors.integer",
-					min: "maintenance.mender.service.errors.updatePollInterval",
-					required: "maintenance.mender.service.errors.updatePollInterval"
+					integer: $t("forms.errors.integer"),
+					min: $t("maintenance.mender.service.errors.updatePollInterval"),
+					required: $t("maintenance.mender.service.errors.updatePollInterval"),
 				}'
 			>
-				<b>
+				<strong>
 					<label for='retryPoll'>
 						{{ $t('maintenance.mender.service.form.updatePollInterval') }}
 					</label>
-				</b> <CBadge color='info'>
+				</strong> <CBadge color='info'>
 					{{ updatePollTime }}
 				</CBadge>
 				<CInput
@@ -152,7 +152,7 @@ limitations under the License.
 					type='number'
 					min='0'
 					:is-valid='touched ? valid : null'
-					:invalid-feedback='$t(errors[0])'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<CButton

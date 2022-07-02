@@ -30,18 +30,18 @@ limitations under the License.
 				>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
-							v-if='role === roles.ADMIN'
+							v-if='isAdmin'
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.iqrfInfo.errors.instance"
+								required: $t("config.daemon.misc.iqrfInfo.errors.instance")
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div
@@ -64,9 +64,9 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
 								:custom-messages='{
-									required: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
-									min: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
-									integer: "forms.errors.integer"
+									required: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+									min: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+									integer: $t("forms.errors.integer"),
 								}'
 							>
 								<CInput
@@ -75,7 +75,7 @@ limitations under the License.
 									min='0'
 									:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</div>
@@ -179,14 +179,12 @@ export default class IqrfInfo extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {UserRole} role User role
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
 	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @var {typeof UserRole} roles User roles enum
-	 */
-	private roles: typeof UserRole = UserRole;
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
@@ -212,7 +210,6 @@ export default class IqrfInfo extends Vue {
 	 */
 	mounted(): void {
 		this.updateForm();
-		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -266,7 +263,6 @@ export default class IqrfInfo extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

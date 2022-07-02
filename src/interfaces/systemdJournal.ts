@@ -37,6 +37,11 @@ export interface ISystemdJournal {
 	maxDiskSize: number
 
 	/**
+	 * Maximum number of files used by journal
+	 */
+	maxFiles: number
+
+	/**
 	 * Size-based log rotation
 	 */
 	sizeRotation: ISystemdJournalSizeRotation

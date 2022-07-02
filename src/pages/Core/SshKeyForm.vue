@@ -49,29 +49,29 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "core.security.ssh.errors.descriptionMissing"
+									required: $t("core.security.ssh.errors.descriptionMissing")
 								}'
 							>
 								<CInput
 									v-model='key.description'
 									:label='$t("core.security.ssh.form.description")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|ssh'
 								:custom-messages='{
-									required: "core.security.ssh.errors.keyMissing",
-									ssh: "core.security.ssh.errors.keyInvalid"
+									required: $t("core.security.ssh.errors.keyMissing"),
+									ssh: $t("core.security.ssh.errors.keyInvalid"),
 								}'
 							>
 								<CInput
 									v-model='key.key'
 									:label='$t("core.security.ssh.form.key")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									@change='updateDescription(idx)'
 								/>
 							</ValidationProvider>
@@ -144,11 +144,6 @@ import {ISshInput} from '@/interfaces/ssh';
  *
  */
 export default class SshKeyForm extends Vue {
-
-	/**
-	 * @var {Array<string>} keyTypes
-	 */
-	private keyTypes: Array<string> = [];
 
 	/**
 	 * @var {Array<string>} keys Array of SSH keys for key-based authentication

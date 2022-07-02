@@ -59,7 +59,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								color='success'
-								:toggler-text='$t("core.user.roles." + item.role)'
+								:toggler-text='$t(`core.user.roles.${item.role}`)'
 								size='sm'
 							>
 								<CDropdownItem
@@ -67,7 +67,7 @@ limitations under the License.
 									:key='role'
 									@click='changeRole(item, role)'
 								>
-									{{ $t('core.user.roles.' + role) }}
+									{{ $t(`core.user.roles.${role}`) }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -76,7 +76,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								color='success'
-								:toggler-text='$t("core.user.languages." + item.language)'
+								:toggler-text='$t(`core.user.languages.${item.language}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeLanguage(item, "en")'>
@@ -164,7 +164,7 @@ import UserService from '@/services/UserService';
 
 import {UserRole} from '@/services/AuthenticationService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {IField} from '@/interfaces/coreui';
 import {IUser} from '@/interfaces/user';
 
@@ -241,7 +241,7 @@ export default class UserList extends Vue {
 	private users: Array<IUser> = [];
 
 	/**
-	 * @constant {Array<string>} roles Arrray of user roles
+	 * @constant {Array<string>} roles Array of user roles
 	 */
 	private roles = [
 		UserRole.ADMIN,
@@ -261,13 +261,11 @@ export default class UserList extends Vue {
 	 * Retrieves list of existing users
 	 */
 	private getUsers(): Promise<void> {
-		if (!this.$store.getters['spinner/isEnabled']) {
-			this.$store.commit('spinner/SHOW');
-		}
+		this.$store.commit('spinner/SHOW');
 		return UserService.list()
-			.then((response: AxiosResponse) => {
+			.then((response: Array<IUser>) => {
 				this.$store.commit('spinner/HIDE');
-				this.users = response.data;
+				this.users = response;
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'core.user.messages.listFetchFailed');
@@ -313,7 +311,7 @@ export default class UserList extends Vue {
 	/**
 	 * Updates settings of a user object and then stores new values
 	 * @param {IUser} user User object
-	 * @param {Record<string, string>} newSettings Settings to apply to the user obhect
+	 * @param {Record<string, string>} newSettings Settings to apply to the user object
 	 */
 	private edit(user: IUser, newSettings: Record<string, string>) {
 		if (user.id === undefined) {

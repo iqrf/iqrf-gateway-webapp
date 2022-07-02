@@ -21,7 +21,7 @@ limitations under the License.
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
 					<JsonApi
-						v-if='role !== roles.ADMIN'
+						v-if='!isAdmin'
 						@fetched='configFetch'
 					/>
 					<div v-else>
@@ -35,7 +35,7 @@ limitations under the License.
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
 					<IqrfInfo @fetched='configFetch' />
 				</CTab>
-				<CTab v-if='role === roles.ADMIN' :title='$t("config.daemon.misc.iqmesh")'>
+				<CTab v-if='isAdmin' :title='$t("config.daemon.misc.iqmesh")'>
 					<OtaUpload @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
@@ -96,16 +96,6 @@ export default class MiscConfiguration extends Vue {
 	private activeTab = 0;
 
 	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @constant {typeof UserRole} roles User roles
-	 */
-	private roles: typeof UserRole = UserRole;
-
-	/**
 	 * @var {Array<string>} endpoints Array of misc tab endpoints
 	 */
 	private endpoints: Array<string> = [
@@ -132,11 +122,18 @@ export default class MiscConfiguration extends Vue {
 	private failed: Array<string> = [];
 
 	/**
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
+	 */
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.role = this.$store.getters['user/getRole'];
-		if (this.role === UserRole.ADMIN) {
+		if (this.isAdmin) {
 			this.children.push('jsonRawApi', 'jsonSplitter');
 		} else {
 			this.children.push('jsonApi');
@@ -147,7 +144,7 @@ export default class MiscConfiguration extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.role === UserRole.ADMIN) {
+		if (this.isAdmin) {
 			this.endpoints.splice(3, 0, 'iqmesh');
 		}
 		if (this.$attrs.tabName !== undefined) {
@@ -165,7 +162,7 @@ export default class MiscConfiguration extends Vue {
 	private configFetch(data: IConfigFetch): void {
 		this.children = this.children.filter((item: string) => item !== data.name);
 		if (!data.success) {
-			this.failed.push(this.$t('config.daemon.misc.' + data.name + '.title').toString());
+			this.failed.push(this.$t(`config.daemon.misc.${data.name}.title`).toString());
 		}
 		if (this.children.length > 0) {
 			return;

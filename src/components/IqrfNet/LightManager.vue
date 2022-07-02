@@ -23,9 +23,9 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
-							between: "iqrfnet.standard.form.messages.address",
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.form.messages.address"
+							between: $t("iqrfnet.standard.form.messages.address"),
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
 						<CInput
@@ -35,16 +35,16 @@ limitations under the License.
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:0,31'
 						:custom-messages='{
-							between: "iqrfnet.standard.light.form.messages.index",
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.light.form.messages.index"
+							between: $t("iqrfnet.standard.light.form.messages.index"),
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.light.form.messages.index"),
 						}'
 					>
 						<CInput
@@ -54,16 +54,16 @@ limitations under the License.
 							max='31'
 							:label='$t("iqrfnet.standard.light.form.index")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:0,100'
 						:custom-messages='{
-							between: "iqrfnet.standard.light.form.messages.power",
-							integer: "forms.errors.integer",
-							required: "iqrfnet.standard.light.form.messages.power"
+							between: $t("iqrfnet.standard.light.form.messages.power"),
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.light.form.messages.power"),
 						}'
 					>
 						<CInput
@@ -73,7 +73,7 @@ limitations under the License.
 							max='100'
 							:label='$t("iqrfnet.standard.light.form.power")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CButton

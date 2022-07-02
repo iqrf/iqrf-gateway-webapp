@@ -36,13 +36,13 @@ limitations under the License.
 						{{ $t('install.gwUser.note') }}
 					</div>
 					<div class='form-group'>
-						<b>{{ $t('gateway.user.user') }}</b>{{ user }}
+						<strong>{{ $t('gateway.user.user') }}</strong>{{ user }}
 					</div>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "forms.errors.password"
+							required: $t("forms.errors.password"),
 						}'
 					>
 						<CInput
@@ -50,7 +50,7 @@ limitations under the License.
 							:type='visibility'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						>
 							<template #append-content>
 								<span @click='visibility = (visibility === "password" ? "text" : "password")'>

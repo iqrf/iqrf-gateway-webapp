@@ -34,14 +34,14 @@ limitations under the License.
 									v-slot='{valid, touched, errors}'
 									rules='required'
 									:custom-messages='{
-										required: "iqrfnet.trUpload.dpaUpload.errors.version",
+										required: $t("iqrfnet.trUpload.dpaUpload.errors.version"),
 									}'
 								>
 									<CSelect
 										:value.sync='version'
 										:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 										:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
 										:options='versions'
 									/>
@@ -74,7 +74,7 @@ limitations under the License.
 			<template #footer>
 				<CButton
 					color='warning'
-					@click='{{showModal = false; getDpaFile()}}'
+					@click='uploadDpa'
 				>
 					{{ $t('forms.upload') }}
 				</CButton> <CButton
@@ -155,10 +155,10 @@ export default class DpaUpdater extends Vue {
 	/**
 	 * @var {string|null} osBuild IQRF OS build
 	 */
-	private osBuild: string|null = null;
+	private osBuild = '0000';
 
 	/**
-	 * @var {number|null} trType Transciever type identifier
+	 * @var {number|null} trType Transceiver type identifier
 	 */
 	private trType: number|null = null;
 
@@ -215,27 +215,15 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
-	 * Converts DPA version from integer representation to string
-	 * @param {number} version DPA version
-	 * @returns {string} String representation of DPA version
-	 */
-	convertVersion(version: number): string {
-		return version.toString(16).padStart(4, '0').toUpperCase();
-	}
-
-	/**
 	 * Converts DPA version string to pretty version
 	 * @param {string} version DPA version string
 	 * @returns {string} DPA version pretty string
 	 */
 	prettyVersion(version: string): string {
-		if (version === null) {
-			return 'unknown';
-		}
 		if (version.startsWith('0')) {
-			return version.charAt(1) + '.' + version.substr(2, 2);
+			return version.charAt(1) + '.' + version.substring(2, 4);
 		}
-		return version.substr(0, 2) + '.' + version.substr(2, 2);
+		return version.substring(0, 2) + '.' + version.substring(2, 4);
 	}
 
 	/**
@@ -250,13 +238,10 @@ export default class DpaUpdater extends Vue {
 	 * EmbedOs info response handler
 	 */
 	public handleEnumResponse(response): void {
-		this.osBuild = response.osRead.osBuild;
+		this.osBuild = response.osRead.osBuild ?? '0000';
 		this.trType = response.osRead.trMcuType.value;
 		const dpaStr: string = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
 		this.currentDpa = dpaStr.split('.').join('').padStart(4, '0');
-		if (this.osBuild === null) {
-			this.osBuild = '0000';
-		}
 		DpaService.getVersions(this.osBuild)
 			.then((versions) => {
 				const fetchedVersions: Array<DpaVersions> = [];
@@ -283,7 +268,9 @@ export default class DpaUpdater extends Vue {
 						Object.assign(item, {label: item.label + ' (Current version)'});
 					}
 				});
-				this.versions = fetchedVersions.sort().reverse();
+				fetchedVersions.sort();
+				fetchedVersions.reverse();
+				this.versions = fetchedVersions;
 				this.getDeviceEnumeration();
 			})
 			.catch(() => {
@@ -301,7 +288,6 @@ export default class DpaUpdater extends Vue {
 			}
 			if (item.value === this.version) {
 				item.label += ' (Current version)';
-				continue;
 			}
 		}
 		this.currentDpa = this.version;
@@ -319,6 +305,14 @@ export default class DpaUpdater extends Vue {
 		} else {
 			this.getDpaFile();
 		}
+	}
+
+	/**
+	 * Uploads DPA file to device
+	 */
+	private uploadDpa(): void {
+		this.showModal = false;
+		this.getDpaFile();
 	}
 
 	/**

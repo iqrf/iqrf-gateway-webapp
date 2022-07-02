@@ -90,7 +90,6 @@ const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages
 const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
-const MainConfiguration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MainConfiguration.vue');
 const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
 const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketMessagingForm.vue');
@@ -98,7 +97,7 @@ const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pa
 const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerList.vue');
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 const IqrfRepositoryConfig = () => import(/* webpackChunkName: "config" */'@/pages/Config/IqrfRepositoryConfig.vue');
-const SmtpCOnfiguration = () => import(/* webpackCunkName: "config" */'@/pages/Config/SmtpConfiguration.vue');
+const SmtpConfiguration = () => import(/* webpackChunkName: "config" */'@/pages/Config/SmtpConfiguration.vue');
 
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
@@ -622,7 +621,7 @@ const routes: Array<RouteConfig> = [
 						},
 					},
 					{
-						component: SmtpCOnfiguration,
+						component: SmtpConfiguration,
 						path: 'smtp',
 						meta: {
 							role: UserRole.ADMIN,
@@ -1206,7 +1205,7 @@ const BAWhitelist = [
 	'userForm',
 ];
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
 	if (to.path.match('\\/user\\/verification\\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}') !== null) {
 		next();
 		return;

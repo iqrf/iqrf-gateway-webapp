@@ -45,28 +45,28 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.smtp.errors.hostMissing"
+									required: $t("config.smtp.errors.hostMissing"),
 								}'
 							>
 								<CInput
 									v-model='configuration.host'
 									:label='$t("config.smtp.form.host")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.smtp.errors.portMissing"
+									required: $t("config.smtp.errors.portMissing"),
 								}'
 							>
 								<CInput
 									v-model.number='configuration.port'
 									:label='$t("config.smtp.form.port")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CSelect
@@ -80,21 +80,21 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.smtp.errors.usernameMissing"
+									required: $t("config.smtp.errors.usernameMissing"),
 								}'
 							>
 								<CInput
 									v-model='configuration.username'
 									:label='$t("forms.fields.username")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.smtp.errors.passwordMissing"
+									required: $t("config.smtp.errors.passwordMissing"),
 								}'
 							>
 								<CInput
@@ -102,7 +102,7 @@ limitations under the License.
 									:type='passwordVisible ? "text" : "password"'
 									:label='$t("forms.fields.password")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								>
 									<template #append-content>
 										<span @click='passwordVisible = !passwordVisible'>
@@ -117,14 +117,14 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.smtp.errors.fromMissing"
+									required: $t("config.smtp.errors.fromMissing"),
 								}'
 							>
 								<CInput
 									v-model='configuration.from'
 									:label='$t("config.smtp.form.from")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>

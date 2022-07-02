@@ -48,7 +48,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAccept(item, true)'>

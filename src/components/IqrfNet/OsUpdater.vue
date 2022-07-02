@@ -33,7 +33,7 @@ limitations under the License.
 						<fieldset :disabled='loadFailed'>
 							<p>
 								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-									<b>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</b> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+									<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
 								</span>
 							</p>
 							<div v-if='selectVersions.length > 0'>
@@ -41,7 +41,7 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required'
 									:custom-messages='{
-										required: "iqrfnet.trUpload.osUpload.errors.version"
+										required: $t("iqrfnet.trUpload.osUpload.errors.version"),
 									}'
 								>
 									<CSelect
@@ -50,7 +50,7 @@ limitations under the License.
 										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
 										:options='selectVersions'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<CButton
@@ -220,7 +220,7 @@ export default class OsUpdater extends Vue {
 				if (upgrade.dpa.attributes.obsolete) {
 					label += 'Obsolete)';
 				} else {
-					label = label.substr(0, label.length - 2) + ')';
+					label = label.substring(0, label.length - 2) + ')';
 				}
 			}
 			versions.push({
@@ -228,7 +228,9 @@ export default class OsUpdater extends Vue {
 				label: label,
 			});
 		}
-		this.selectVersions = versions.sort().reverse();
+		versions.sort();
+		versions.reverse();
+		this.selectVersions = versions;
 		this.$emit('loaded', {name: 'OS', success: true});
 	}
 
@@ -289,14 +291,22 @@ export default class OsUpdater extends Vue {
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
 			for (const file of files) {
-				this.$store.commit('spinner/UPDATE_TEXT',
-					this.$t('iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUpload').toString()
-				);
+				let message: string;
+				if (file.type === 'OS') {
+					message = this.$t('iqrfnet.trUpload.osUpload.messages.trUpload').toString();
+				} else {
+					message = this.$t('iqrfnet.trUpload.dpaUpload.messages.trUpload').toString();
+				}
+				this.$store.commit('spinner/UPDATE_TEXT', message);
 				await IqrfService.uploader(file)
 					.then(() => {
-						this.$store.commit('spinner/UPDATE_TEXT',
-							this.$t('iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUploadSuccess').toString()
-						);
+						let successMessage: string;
+						if (file.type === 'OS') {
+							successMessage = this.$t('iqrfnet.trUpload.osUpload.messages.trUploadSuccess').toString();
+						} else {
+							successMessage = this.$t('iqrfnet.trUpload.dpaUpload.messages.trUploadSuccess').toString();
+						}
+						this.$store.commit('spinner/UPDATE_TEXT', successMessage);
 					})
 					.catch((error: AxiosError) => {
 						extendedErrorToast(error, 'iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUploadFailed');

@@ -45,7 +45,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t("states." + (item.acceptOnlyLocalhost ? "enabled" : "disabled"))'
+								:toggler-text='$t(`states.${item.acceptOnlyLocalhost ? "enabled" : "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
@@ -61,7 +61,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("states." + (item.tlsEnabled !== undefined ? item.tlsEnabled ? "enabled" : "disabled" : "disabled"))'
+								:toggler-text='$t(`states.${(item.tlsEnabled ?? false) ? "enabled" : "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTls(item.webSocket, true)'>

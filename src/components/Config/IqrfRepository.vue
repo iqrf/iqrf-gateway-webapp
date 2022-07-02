@@ -28,30 +28,30 @@ limitations under the License.
 				<CForm @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
-							v-if='role === roles.ADMIN'
+							v-if='isAdmin'
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.iqrfRepository.errors.instance"
+								required: $t("config.daemon.misc.iqrfRepository.errors.instance")
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.daemon.misc.iqrfRepository.errors.urlRepo"}'
+							:custom-messages='{required: $t("config.daemon.misc.iqrfRepository.errors.urlRepo")}'
 						>
 							<CInput
 								v-model='configuration.urlRepo'
 								:label='$t("config.daemon.misc.iqrfRepository.form.urlRepo")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
@@ -73,9 +73,9 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|min:0'
 							:custom-messages='{
-								integer: "forms.errors.integer",
-								required: "config.daemon.misc.iqrfRepository.errors.checkPeriod",
-								min: "config.daemon.misc.iqrfRepository.errors.checkPeriod"
+								integer: $t("forms.errors.integer"),
+								required: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
+								min: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
 							}'
 						>
 							<CInput
@@ -84,7 +84,7 @@ limitations under the License.
 								min='0'
 								:label='$t("config.daemon.misc.iqrfRepository.form.checkPeriod")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
@@ -168,14 +168,12 @@ export default class IqrfRepository extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {UserRole} role User role
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
 	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @var {typeof UserRole} roles User roles enum
-	 */
-	private roles: typeof UserRole = UserRole;
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -190,7 +188,6 @@ export default class IqrfRepository extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -244,7 +241,6 @@ export default class IqrfRepository extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

@@ -25,63 +25,63 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.clientId"
+								required: $t("forms.errors.clientId"),
 							}'
 						>
 							<CInput
 								v-model='config.clientId'
 								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.requestTopic"
+								required: $t("forms.errors.requestTopic"),
 							}'
 						>
 							<CInput
 								v-model='config.topicRequest'
 								:label='$t("forms.fields.requestTopic")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.responseTopic"
+								required: $t("forms.errors.responseTopic"),
 							}'
 						>
 							<CInput
 								v-model='config.topicResponse'
 								:label='$t("forms.fields.responseTopic")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.username"
+								required: $t("forms.errors.username"),
 							}'
 						>
 							<CInput
 								v-model='config.username'
 								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "forms.errors.password"
+								required: $t("forms.errors.password"),
 							}'
 						>
 							<CInput
@@ -89,7 +89,7 @@ limitations under the License.
 								:type='passwordVisible ? "text" : "password"'
 								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							>
 								<template #append-content>
 									<span @click='passwordVisible = !passwordVisible'>

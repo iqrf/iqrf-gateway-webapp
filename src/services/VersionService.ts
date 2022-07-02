@@ -14,36 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import store from '@/store';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import axios, {AxiosResponse} from 'axios';
 
 /**
  * Version service
  */
 class VersionService {
-
-	/**
-	 * Retrieves IQRF Gateway Daemon version
-	 * @param options WebSocket request options
-	 */
-	getDaemonVersion(options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			'mType': 'mngDaemon_Version',
-			'data': {
-				'returnVerbose': true,
-			},
-		};
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
-	/**
-	 * Retrieves IQRF Gateway Daemon version via the REST API
-	 */
-	getDaemonVersionRest(): Promise<AxiosResponse> {
-		return axios.get('/version/daemon', {headers: authorizationHeader()});
-	}
 
 	/**
 	 * Retrieves IQRF Gateway Webapp version via the REST API

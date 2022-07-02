@@ -40,14 +40,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.amazonAws.errors.endpoint"
+								required: $t("cloud.amazonAws.errors.endpoint"),
 							}'
 						>
 							<CInput
 								v-model='endpoint'
 								:label='$t("cloud.amazonAws.form.endpoint")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>

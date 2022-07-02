@@ -33,24 +33,24 @@ limitations under the License.
 									v-slot='{errors, touched, valid}'
 									rules='required|instance'
 									:custom-messages='{
-										required: "config.daemon.messagings.websocket.errors.serviceInstance",
-										instance: "config.daemon.messagings.instanceInvalid"
+										required: $t("config.daemon.messagings.websocket.errors.serviceInstance"),
+										instance: $t("config.daemon.messagings.instanceInvalid"),
 									}'
 								>
 									<CInput
 										v-model='componentInstance'
 										:label='$t("forms.fields.instanceName")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|between:1,65535|required'
 									:custom-messages='{
-										between: "config.daemon.messagings.websocket.errors.WebsocketPortRange",
-										required: "config.daemon.messagings.websocket.errors.WebsocketPort",
-										integer: "forms.errors.integer",
+										between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
+										required: $t("config.daemon.messagings.websocket.errors.WebsocketPort"),
+										integer: $t("forms.errors.integer"),
 									}'
 								>
 									<CInput
@@ -58,7 +58,7 @@ limitations under the License.
 										type='number'
 										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
 										:is-valid='touched ? valid : null'
-										:invalid-feedback='$t(errors[0])'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
 								<CInputCheckbox
@@ -85,7 +85,7 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
-											required: "config.daemon.messagings.websocket.errors.tlsMode",
+											required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
 										}'
 									>
 										<CSelect
@@ -95,13 +95,13 @@ limitations under the License.
 											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 										<p
 											v-if='tlsMode !== "" && tlsMode !== undefined'
 											:class='!tlsEnabled ? "text-secondary" : ""'
 										>
-											{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + tlsMode) }}
+											{{ $t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${tlsMode}`) }}
 										</p>
 									</ValidationProvider>
 									<ValidationProvider
@@ -109,7 +109,7 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
-											required: "config.daemon.messagings.websocket.errors.certificate",
+											required: $t("config.daemon.messagings.websocket.errors.certificate"),
 										}'
 									>
 										<CInput
@@ -117,7 +117,7 @@ limitations under the License.
 											:label='$t("forms.fields.certificate")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -125,7 +125,7 @@ limitations under the License.
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
-											required: "config.daemon.messagings.websocket.errors.privateKey",
+											required: $t("config.daemon.messagings.websocket.errors.privateKey"),
 										}'
 									>
 										<CInput
@@ -133,7 +133,7 @@ limitations under the License.
 											:label='$t("forms.fields.privateKey")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='$t(errors[0])'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 								</div>
@@ -151,7 +151,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CForm,
+	CInput,
+	CInputCheckbox,
+	CSelect,
+	CSwitch
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -314,7 +324,7 @@ export default class WebsocketServiceForm extends Vue {
 	}
 
 	/**
-	 * Parses WebsocketService component instance configration from REST API response
+	 * Parses WebsocketService component instance configuration from REST API response
 	 * @param {IWsService} response Configuration object from REST API response
 	 */
 	private parseConfiguration(response: IWsService): void {
@@ -338,10 +348,10 @@ export default class WebsocketServiceForm extends Vue {
 
 	/**
 	 * Creates WebsocketService component instance configuration object
-	 * @returns {IwsService} WebsocketService configuration
+	 * @returns {IWsService} WebsocketService configuration
 	 */
 	private buildConfiguration(): IWsService {
-		const configuration: IWsService = {
+		return {
 			component: this.component,
 			instance: this.componentInstance,
 			WebsocketPort: this.WebsocketPort,
@@ -351,7 +361,6 @@ export default class WebsocketServiceForm extends Vue {
 			certificate: this.certificate,
 			privateKey: this.privateKey
 		};
-		return configuration;
 	}
 
 	/**
@@ -372,7 +381,6 @@ export default class WebsocketServiceForm extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.$toast.success(

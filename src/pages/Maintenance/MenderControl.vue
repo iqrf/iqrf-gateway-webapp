@@ -20,7 +20,7 @@ limitations under the License.
 		<CCard body-wrapper>
 			<div class='box'>
 				<div>
-					<b>{{ $t('service.status') }}</b>
+					<strong>{{ $t('service.status') }}</strong>
 				</div>
 				<div v-if='missing'>
 					{{ $t('service.states.missing') }}
@@ -29,8 +29,8 @@ limitations under the License.
 					{{ $t('service.states.unsupported') }}
 				</div>
 				<div v-if='service !== null'>
-					{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
-					{{ $t('service.states.' + (service.active ? 'running' : 'stopped')) }}
+					{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
+					{{ $t(`service.states.${service.active ? 'running' : 'stopped'}`) }}
 				</div>
 				<div v-if='service !== null'>
 					<CButton
@@ -143,7 +143,7 @@ export default class MenderControl extends Vue {
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
-			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.enable'))
+			.then(() => this.serviceSuccess('service.mender-client.messages.enable'))
 			.catch((error: AxiosError) => menderErrorToast(error, 'service.messages.enableFailed'));
 	}
 
@@ -153,7 +153,7 @@ export default class MenderControl extends Vue {
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
-			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.disable'))
+			.then(() => this.serviceSuccess('service.mender-client.messages.disable'))
 			.catch((error: AxiosError) => menderErrorToast(error, 'service.messages.disableFailed'));
 	}
 
@@ -163,7 +163,7 @@ export default class MenderControl extends Vue {
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.restart(this.serviceName)
-			.then(() => this.serviceSuccess('service.' + this.serviceName + '.messages.restart'))
+			.then(() => this.serviceSuccess('service.mender-client.messages.restart'))
 			.catch((error: AxiosError) => menderErrorToast(error, 'service.messages.restartFailed'));
 	}
 

@@ -30,32 +30,32 @@ limitations under the License.
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
-						v-if='role === roles.ADMIN'
+						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
 						rules='required'
 						:custom-messages='{
-							required: "config.daemon.interfaces.iqrfSpi.errors.instance"
+							required: $t("config.daemon.interfaces.iqrfSpi.errors.instance"),
 						}'
 					>
 						<CInput
 							v-model='configuration.instance'
 							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required'
 						:custom-messages='{
-							required: "config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"
+							required: $t("config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"),
 						}'
 					>
 						<CInput
 							v-model='configuration.IqrfInterface'
 							:label='$t("config.daemon.interfaces.iqrfSpi.form.iqrfInterface")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
@@ -68,8 +68,8 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
 								}'
 							>
 								<CInput
@@ -77,7 +77,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -86,8 +86,8 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.busPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
 								}'
 							>
 								<CInput
@@ -95,7 +95,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -104,8 +104,8 @@ limitations under the License.
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
 								}'
 							>
 								<CInput
@@ -113,7 +113,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -131,8 +131,8 @@ limitations under the License.
 									required: useAdditionalPins,
 								}'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.i2cPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
 								}'
 							>
 								<CInput
@@ -140,7 +140,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
@@ -153,8 +153,8 @@ limitations under the License.
 									required: useAdditionalPins,
 								}'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.spiPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
 								}'
 							>
 								<CInput
@@ -162,7 +162,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
@@ -175,8 +175,8 @@ limitations under the License.
 									required: useAdditionalPins,
 								}'
 								:custom-messages='{
-									integer: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
-									required: "config.daemon.interfaces.interfaceMapping.errors.uartPin",
+									integer: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
+									required: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
 								}'
 							>
 								<CInput
@@ -184,7 +184,7 @@ limitations under the License.
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
@@ -304,16 +304,6 @@ export default class IqrfSpi extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @var {typeof UserRole} roles User roles enum
-	 */
-	private roles: typeof UserRole = UserRole;
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -325,8 +315,15 @@ export default class IqrfSpi extends Vue {
 	 * Retrieves user role and spi configuration
 	 */
 	mounted(): void {
-		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
+	}
+
+	/**
+	 * Checks if user is an administrator
+   * @returns {boolean} True if user is an administrator
+   */
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
 	}
 
 	/**
@@ -338,11 +335,7 @@ export default class IqrfSpi extends Vue {
 				if (response.data.instances.length > 0) {
 					this.instance = response.data.instances[0].instance;
 					const config: IIqrfSpi = response.data.instances[0];
-					if (config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined) {
-						this.useAdditionalPins = false;
-					} else {
-						this.useAdditionalPins = true;
-					}
+					this.useAdditionalPins = !(config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined);
 					this.configuration = config;
 				}
 				this.$emit('fetched', {name: 'iqrfSpi', success: true});
@@ -377,7 +370,6 @@ export default class IqrfSpi extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

@@ -37,4 +37,9 @@ export interface IUser {
 	 * Username
 	 */
 	username: string
+
+	/**
+	 * E-mail address
+	 */
+	email: string|null
 }

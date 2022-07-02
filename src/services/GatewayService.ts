@@ -54,8 +54,7 @@ class GatewayService {
 
 	/**
 	 * Retrieves a service log
-	 * @param service service name
-	 * @returns
+	 * @param {string} service Service name
 	 */
 	getServiceLog(service: string): Promise<AxiosResponse> {
 		return axios.get('gateway/logs/' + service, {headers: authorizationHeader(), timeout: 60000});
@@ -116,8 +115,9 @@ class GatewayService {
 	/**
 	 * Retrieves NTP configuration
 	 */
-	getNtp(): Promise<AxiosResponse> {
-		return axios.get('gateway/ntp', {headers: authorizationHeader()});
+	getNtp(): Promise<Array<string>> {
+		return axios.get('gateway/ntp', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => (response.data as Array<string>));
 	}
 
 	/**

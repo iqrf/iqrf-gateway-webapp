@@ -34,7 +34,7 @@ export default class DaemonApiValidator {
 	/**
 	 * @var {ValidateFunction<IDaemonApiRequestBase>} validator Validator
 	 */
-	private validator;
+	private readonly validator;
 
 	/**
 	 * @constant {Array<string>} keywords Whitelist of validated keywords

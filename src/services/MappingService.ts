@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import { IMapping } from '@/interfaces/mappings';
+import {IMapping, MappingType} from '@/interfaces/mappings';
 
 /**
  * Mapping service
@@ -42,16 +42,19 @@ class MappingService {
 	/**
 	 * Retrieves list of mappings
 	 */
-	getMappings(): Promise<AxiosResponse> {
-		return axios.get('mappings', {headers: authorizationHeader()});
+	getMappings(interfaceType: MappingType|null = null): Promise<Array<IMapping>> {
+		const params = interfaceType === null ? {} : {interface: interfaceType};
+		return axios.get('mappings', {headers: authorizationHeader(), params})
+			.then((response: AxiosResponse) => (response.data as Array<IMapping>));
 	}
 
 	/**
 	 * Retrieves a mapping specified by ID
 	 * @param mappingId Mapping ID
 	 */
-	getMapping(mappingId: number): Promise<AxiosResponse> {
-		return axios.get('mappings/' + mappingId, {headers: authorizationHeader()});
+	getMapping(mappingId: number): Promise<IMapping> {
+		return axios.get('mappings/' + mappingId, {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => (response.data as IMapping));
 	}
 
 	/**

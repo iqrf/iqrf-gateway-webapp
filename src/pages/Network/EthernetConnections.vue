@@ -118,7 +118,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CModal} from '@coreui/vue/src';
+import {CBadge, CCard, CCardBody, CCardHeader, CIcon, CModal} from '@coreui/vue/src';
 import EthernetConnection from '@/components/Network/EthernetConnection.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
@@ -137,6 +137,7 @@ import {NetworkConnection, NetworkInterface} from '@/interfaces/network';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CIcon,
 		CModal,
 		EthernetConnection
 	},

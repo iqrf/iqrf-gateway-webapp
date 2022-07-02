@@ -101,7 +101,7 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @return {Array<string>} List of steps
 	 */
 	get progressSteps(): Array<string> {
-		return Object.keys(this.steps).map((item: string) => this.$t('install.steps.' + item).toString());
+		return Object.keys(this.steps).map((item: string) => this.$t(`install.steps.${item}`).toString());
 	}
 
 	/**

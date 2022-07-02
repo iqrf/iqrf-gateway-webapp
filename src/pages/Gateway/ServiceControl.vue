@@ -68,8 +68,10 @@ limitations under the License.
 				{{ $t('service.states.unknown') }}
 			</span>
 			<span v-else>
-				{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
-				{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
+				<span v-if='service.enabled'>{{ $t('states.enabled') }}</span>
+				<span v-else>{{ $t('states.disabled') }}</span>,
+				<span v-if='service.active'>{{ $t('service.states.active') }}</span>
+				<span v-else>{{ $t('service.states.inactive') }}</span>
 			</span>
 			<br><br>
 			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
@@ -85,9 +87,9 @@ import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '@/components/Gateway/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/GatewayUserPassword.vue';
-import SystemdJournaldConfig from '@/components/Gateway/SystemdJournalConfig.vue';
+import SystemdJournaldConfig from '@/components/Gateway/SystemdJournaldConfig.vue';
 
-import AptService, {AptEnable} from '@/services/AptService';
+import AptService from '@/services/AptService';
 import ServiceService from '@/services/ServiceService';
 import {ErrorResponse} from '@/types';
 
@@ -128,13 +130,13 @@ interface IService {
 		GatewayUserPassword,
 		SystemdJournaldConfig,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(_to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			const feature = features[vm.$props.serviceName];
 			if (feature !== undefined &&
 					!vm.$store.getters['features/isEnabled'](feature)) {
 				vm.$toast.error(
-					vm.$t('service.' + vm.$props.serviceName + '.messages.disabled').toString()
+					vm.$t(`service.${vm.$props.serviceName}.messages.disabled`).toString()
 				);
 				vm.$router.push(from.path);
 			}
@@ -221,12 +223,9 @@ export default class ServiceControl extends Vue {
 	/**
 	 * Write APT configuration
 	 */
-	private setUnattendedUpgrades(action: string): void {
-		const config: AptEnable = {
-			'APT::Periodic::Enable': action === 'enable' ? '1' : '0',
-		};
-		AptService.write(config)
-			.then(() => this.handleSuccess(action))
+	private setUnattendedUpgrades(enable: boolean): void {
+		AptService.setUnattendedUpgrades(enable)
+			.then(() => this.handleSuccess(enable ? 'enable' : 'disable'))
 			.catch(this.handleError);
 	}
 
@@ -238,7 +237,7 @@ export default class ServiceControl extends Vue {
 		ServiceService.enable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
-					this.setUnattendedUpgrades('enable');
+					this.setUnattendedUpgrades(true);
 				} else {
 					this.handleSuccess('enable');
 				}
@@ -254,7 +253,7 @@ export default class ServiceControl extends Vue {
 		ServiceService.disable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
-					this.setUnattendedUpgrades('disable');
+					this.setUnattendedUpgrades(false);
 				} else {
 					this.handleSuccess('disable');
 				}
@@ -325,8 +324,7 @@ export default class ServiceControl extends Vue {
 	private handleSuccess(action: string): void {
 		this.getStatus();
 		this.$toast.success(
-			this.$t('service.' + this.serviceName + '.messages.' + action)
-				.toString()
+			this.$t(`service.${this.serviceName}.messages.${action}`).toString()
 		);
 	}
 

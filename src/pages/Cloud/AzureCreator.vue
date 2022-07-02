@@ -40,14 +40,14 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.msAzure.errors.connectionString"
+								required: $t("cloud.msAzure.errors.connectionString"),
 							}'
 						>
 							<CInput
 								v-model='connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CButton

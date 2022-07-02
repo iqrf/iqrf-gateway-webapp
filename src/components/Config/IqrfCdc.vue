@@ -32,32 +32,32 @@ limitations under the License.
 					<CForm @submit.prevent='saveConfig'>
 						<fieldset :disabled='loadFailed'>
 							<ValidationProvider
-								v-if='role === roles.ADMIN'
+								v-if='isAdmin'
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.interfaces.iqrfCdc.errors.instance"
+									required: $t("config.daemon.interfaces.iqrfCdc.errors.instance")
 								}'
 							>
 								<CInput
 									v-model='configuration.instance'
 									:label='$t("forms.fields.instanceName")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
 								:custom-messages='{
-									required: "config.daemon.interfaces.iqrfCdc.errors.iqrfInterface"
+									required: $t("config.daemon.interfaces.iqrfCdc.errors.iqrfInterface")
 								}'
 							>
 								<CInput
 									v-model='configuration.IqrfInterface'
 									:label='$t("config.daemon.interfaces.iqrfCdc.form.interface")'
 									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<CButton
@@ -138,14 +138,12 @@ export default class IqrfCdc extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {UserRole} role User role
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
 	 */
-	private role: UserRole = UserRole.NORMAL;
-
-	/**
-	 * @var {typeof UserRole} roles User roles enum
-	 */
-	private roles: typeof UserRole = UserRole;
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -158,7 +156,6 @@ export default class IqrfCdc extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.role = this.$store.getters['user/getRole'];
 		this.getConfig();
 	}
 
@@ -198,7 +195,6 @@ export default class IqrfCdc extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

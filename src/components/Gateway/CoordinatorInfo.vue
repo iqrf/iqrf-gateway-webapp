@@ -33,14 +33,6 @@ limitations under the License.
 			{{ enumeration.hwpId }} ({{ enumeration.hwpId.toString(16).padStart(4, '0') }})<br>
 			<strong>{{ $t('gateway.info.tr.hwpidVersion') }}: </strong>
 			{{ enumeration.hwpIdVer }}<br>
-			<span v-if='enumeration.flags.rfMode'>
-				<strong>{{ $t('gateway.info.tr.rfMode') }}</strong>
-				{{ enumeration.flags.rfMode }}
-			</span>
-			<span v-else-if='enumeration.flags.networkType'>
-				<strong>{{ $t('gateway.info.tr.networkType') }}</strong>
-				{{ enumeration.flags.networkType }}
-			</span>
 			<strong>{{ $t('gateway.info.tr.voltage') }}: </strong>
 			{{ osInfo.supplyVoltage }}<br>
 		</span>

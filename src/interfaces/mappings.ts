@@ -14,6 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Mapping interface type
+ */
+export enum MappingType {
+	SPI = 'spi',
+	UART = 'uart',
+}
+
 /**
  * Mapping interface
  */
@@ -26,7 +35,7 @@ export interface IMapping {
 	/**
 	 * Mapping type
 	 */
-	type: string
+	type: MappingType|null
 
 	/**
 	 * Mapping name
@@ -37,22 +46,22 @@ export interface IMapping {
      * Device name
      */
     IqrfInterface: string
-    
+
     /**
      * Serial port baud rate
      */
     baudRate?: number
-    
+
     /**
      * Power enable GPIO pin
      */
     powerEnableGpioPin: number
-    
+
     /**
      * Bus enable GPIO pin
      */
     busEnableGpioPin: number
-    
+
     /**
      * Programming mode switch GPIO pin
      */

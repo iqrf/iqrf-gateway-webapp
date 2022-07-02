@@ -42,7 +42,7 @@ limitations under the License.
 		</CAlert>
 		<CCard v-else-if='loaded && logs.length > 0'>
 			<CTabs variant='tabs' :active-tab.sync='tab'>
-				<CTab v-for='(item, i) in logs' :key='i' :title='$t("gateway.log.services." + item.name)'>
+				<CTab v-for='(item, i) in logs' :key='i' :title='$t(`gateway.log.services.${item.name}`)'>
 					<LogTab v-if='item.loaded' :log.sync='item.log' />
 				</CTab>
 			</CTabs>

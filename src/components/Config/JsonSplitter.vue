@@ -34,28 +34,28 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.jsonSplitter.errors.instance"
+								required: $t("config.daemon.misc.jsonSplitter.errors.instance"),
 							}'
 						>
 							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
-								required: "config.daemon.misc.jsonSplitter.errors.insId"
+								required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
 							}'
 						>
 							<CInput
 								v-model='configuration.insId'
 								:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
 								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
@@ -181,7 +181,6 @@ export default class JsonSplitter extends Vue {
 
 	/**
 	 * Handles REST API success
-	 * @param {AxiosResponse} rsp Success response
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {

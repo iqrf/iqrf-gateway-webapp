@@ -48,7 +48,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='$t("states." + (item.enabled ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.enabled ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeEnabled(item, true)'>
@@ -264,7 +264,7 @@ export default class ComponentList extends Vue {
 				);
 				return;
 			}
-			let conf = {
+			const conf = {
 				...component
 			};
 			conf.enabled = enabled;
@@ -301,10 +301,7 @@ export default class ComponentList extends Vue {
 				enabled++;
 			}
 		});
-		if (enabled > 0) {
-			return false;
-		}
-		return true;
+		return enabled <= 0;
 	}
 
 

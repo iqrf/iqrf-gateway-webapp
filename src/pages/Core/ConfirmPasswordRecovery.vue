@@ -36,7 +36,7 @@ limitations under the License.
 						v-slot='{valid, touched, errors}'
 						rules='required'
 						:custom-messages='{
-							required: "core.sign.in.messages.password"
+							required: $t("core.sign.in.messages.password"),
 						}'
 					>
 						<CInput
@@ -44,7 +44,7 @@ limitations under the License.
 							:type='passwordVisible ? "text" : "password"'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:invalid-feedback='errors.join(", ")'
 						>
 							<template #append-content>
 								<span @click='passwordVisible = !passwordVisible'>

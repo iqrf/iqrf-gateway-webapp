@@ -48,7 +48,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t("states." + (item.acceptOnlyLocalhost ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.acceptOnlyLocalhost ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAccept(item, true)'>
@@ -64,7 +64,7 @@ limitations under the License.
 						<td>
 							<CDropdown
 								:color='item.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("states." + (item.tlsEnabled ? "enabled": "disabled"))'
+								:toggler-text='$t(`states.${item.tlsEnabled ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTLS(item, true)'>
@@ -273,7 +273,7 @@ export default class WebsocketServiceList extends Vue {
 
 	/**
 	 * Saves changes in Websocket service instance configuration
-	 * @param {IWsInstance} service Websocket service instance
+	 * @param {IWsService} service Websocket service instance
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private edit(service: IWsService, newSettings: Record<string, boolean>): void {

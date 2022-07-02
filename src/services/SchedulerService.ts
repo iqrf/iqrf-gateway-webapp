@@ -26,11 +26,11 @@ import {ITaskTimeSpec} from '@/interfaces/scheduler';
 class SchedulerService {
 	/**
 	 * Adds a new task via the Daemon API
-	 * @param taskId scheduler task ID
-	 * @param clientId client ID
-	 * @param task scheduler task
-	 * @param timeSpec scheduler task time settings
-	 * @param options WebSocket request options
+	 * @param {number} taskId scheduler task ID
+	 * @param {string} clientId client ID
+	 * @param {any} task scheduler task
+	 * @param {ITaskTimeSpec} timeSpec scheduler task time settings
+	 * @param {DaemonMessageOptions} options WebSocket request options
 	 */
 	addTask(taskId: number, clientId: string, task: any, timeSpec: ITaskTimeSpec, options: DaemonMessageOptions): Promise<string> {
 		const tasks = JSON.parse(JSON.stringify(task));
@@ -55,10 +55,10 @@ class SchedulerService {
 
 	/**
 	 * Adds a new task via the REST API
-	 * @param taskId scheduler task ID
-	 * @param clientId client ID
-	 * @param task scheduler task
-	 * @param timeSpec scheduler task time settings
+	 * @param {number} taskId scheduler task ID
+	 * @param {string} clientId client ID
+	 * @param {any} task scheduler task
+	 * @param {ITaskTimeSpec} timeSpec scheduler task time settings
 	 */
 	addTaskREST(taskId: number, clientId: string, task: any, timeSpec: ITaskTimeSpec): Promise<AxiosResponse> {
 		const tasks = JSON.parse(JSON.stringify(task));
@@ -76,11 +76,11 @@ class SchedulerService {
 
 	/**
 	 * Edits an existing task via the REST API
-	 * @param oldTaskId existing task ID
-	 * @param taskId new task ID
-	 * @param clientId client ID
-	 * @param task scheduler task
-	 * @param timeSpec scheduler task time settings
+	 * @param {number} oldTaskId existing task ID
+	 * @param {number} taskId new task ID
+	 * @param {string} clientId client ID
+	 * @param {any} task scheduler task
+	 * @param {ITaskTimeSpec} timeSpec scheduler task time settings
 	 */
 	editTaskREST(oldTaskId: number, taskId: number, clientId: string, task: any, timeSpec: ITaskTimeSpec): Promise<AxiosResponse> {
 		const tasks = JSON.parse(JSON.stringify(task));
@@ -98,7 +98,7 @@ class SchedulerService {
 
 	/**
 	 * Retrieves scheduler tasks via the Daemon API
-	 * @param options WebSocket request options
+	 * @param {DaemonMessageOptions} options WebSocket request options
 	 */
 	listTasks(options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -122,7 +122,8 @@ class SchedulerService {
 
 	/**
 	 * Retrieves task specified by ID via the Daemon API
-	 * @param taskId scheduler task ID
+	 * @param {number} taskId scheduler task ID
+	 * @param {DaemonMessageOptions} options Daemon request options
 	 */
 	getTask(taskId: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -140,7 +141,7 @@ class SchedulerService {
 
 	/**
 	 * Retrieves task specified by ID via the REST API
-	 * @param taskId scheduler task ID
+	 * @param {number} taskId scheduler task ID
 	 */
 	getTaskREST(taskId: number): Promise<AxiosResponse> {
 		return axios.get('scheduler/' + taskId, {headers: authorizationHeader()});
@@ -148,7 +149,8 @@ class SchedulerService {
 
 	/**
 	 * Removes a task specified by ID via the Daemon API
-	 * @param taskId scheduler task ID
+	 * @param {number} taskId scheduler task ID
+	 * @param {DaemonMessageOptions} options Daemon request options
 	 */
 	removeTask(taskId: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -166,7 +168,7 @@ class SchedulerService {
 
 	/**
 	 * Removes a task specified by ID via the REST API
-	 * @param taskId scheduler ID
+	 * @param {number} taskId scheduler ID
 	 */
 	removeTaskREST(taskId: number): Promise<AxiosResponse> {
 		return axios.delete('/scheduler/' + taskId, {headers: authorizationHeader()});
@@ -205,7 +207,7 @@ class SchedulerService {
 
 	/**
 	 * Import scheduler configuration
-	 * @param config scheduler configuration
+	 * @param {File} config scheduler configuration
 	 */
 	importConfig(config: File): Promise<AxiosResponse> {
 		const headers = {

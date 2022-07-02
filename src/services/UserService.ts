@@ -18,6 +18,7 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import UrlBuilder from '@/helpers/urlBuilder';
 import {User, UserInfo} from './AuthenticationService';
+import {IUser} from '@/interfaces/user';
 
 /**
  * User service
@@ -120,16 +121,15 @@ class UserService {
 	 */
 	getLoggedIn(): Promise<UserInfo> {
 		return axios.get('user', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => {
-				return response.data as UserInfo;
-			});
+			.then((response: AxiosResponse) => (response.data as UserInfo));
 	}
 
 	/**
 	 * Lists all users
 	 */
-	list(): Promise<AxiosResponse> {
-		return axios.get('users', {headers: authorizationHeader()});
+	list(): Promise<Array<IUser>> {
+		return axios.get('users', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => (response.data as Array<IUser>));
 	}
 
 	/**
@@ -138,9 +138,7 @@ class UserService {
 	 */
 	verify(uuid: string): Promise<User> {
 		return axios.get('user/verify/' + uuid)
-			.then((response: AxiosResponse) => {
-				return response.data as User;
-			});
+			.then((response: AxiosResponse) => (response.data as User));
 	}
 
 	/**
@@ -166,9 +164,7 @@ class UserService {
 			password: password
 		};
 		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()})
-			.then((response: AxiosResponse<User>) => {
-				return response.data as User;
-			});
+			.then((response: AxiosResponse<User>) => (response.data as User));
 	}
 
 	/**
