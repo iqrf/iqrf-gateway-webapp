@@ -1,10 +1,26 @@
-iqrf-gateway-webapp (2.4.9~alpha~1.gbpc7242a) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.9) stable; urgency=medium
 
-  ** SNAPSHOT build @c7242a3cb4e4777db40958800855510a0c687890 **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.9-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Sentry: update frontend integration
+  * Sentry: fix frontend integration
+  * TypeScript: add alias for root source directory
+  * NPM: update dependencies
+  * Config: fix error message for full daemon queue in task list
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 02 Jun 2022 13:02:10 +0200
+  [ Karel Hanák ]
+  * use Ajv json schema to validate messages
+  * Backup: fixed unhandled error when session expired
+  * PowerControl: fixed unhandled axios errors
+  * DeviceEnumeration: updated api response handler
+  * SystemdJournalManager: fixed invalid time rotation property, use privileged file manager
+  * DaemonMode: fixed incorrect startup mode
+  * updated generic daemon request schema for json request validation
+  * updated license headers
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 02 Jul 2022 16:57:16 +0200
 
 iqrf-gateway-webapp (2.4.8) stable; urgency=medium
 
