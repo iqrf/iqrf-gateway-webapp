@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2021 IQRF Tech s.r.o.
- * Copyright 2019-2021 MICRORISC s.r.o.
+ * Copyright 2017-2022 IQRF Tech s.r.o.
+ * Copyright 2019-2022 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ interface IIqrfBase {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Instance name
 	 */
@@ -42,12 +42,12 @@ interface IIqrfComBase extends IIqrfBase {
 	 * Power enable GPIO pin
 	 */
 	powerEnableGpioPin: number
-	
+
 	/**
 	 * Programming mode switch GPIO pin
 	 */
 	pgmSwitchGpioPin?: number
-	
+
 	/**
 	 * Bus enable GPIO pin
 	 */
@@ -92,7 +92,7 @@ export interface IIqrfUart extends IIqrfComBase {
 	 * Serial port baud rate
 	 */
 	baudRate: number
-	
+
 	/**
 	 * Should UART component instance reset?
 	 */

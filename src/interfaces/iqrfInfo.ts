@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2021 IQRF Tech s.r.o.
- * Copyright 2019-2021 MICRORISC s.r.o.
+ * Copyright 2017-2022 IQRF Tech s.r.o.
+ * Copyright 2019-2022 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,22 +22,22 @@ export interface IIqrfInfo {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Component instance name
 	 */
 	instance: string
-	
+
 	/**
 	 * Enumerate network after startup?
 	 */
 	enumAtStartUp: boolean
-	
+
 	/**
 	 * Enumeration period in minutes
 	 */
 	enumPeriod: number
-	
+
 	/**
 	 * Uniform DPA version and OS build according to coordinator?
 	 */
@@ -67,7 +67,7 @@ export interface IInfoNode extends IInfoDevice {
 	 * Device module ID
 	 */
 	mid: number
-	
+
 	/**
 	 * Is device discovered?
 	 */
