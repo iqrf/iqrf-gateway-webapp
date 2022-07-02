@@ -185,7 +185,7 @@ export default class DaemonMode extends Vue {
 			this.getMode();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getMode();
@@ -232,7 +232,7 @@ export default class DaemonMode extends Vue {
 	/**
 	 * Daemon api response handler
 	 */
-	private handleResponse(response: any): void {
+	private handleResponse(response): void {
 		this.mode = DaemonModeService.parse(response);
 		if (this.mode === DaemonModeEnum.unknown) {
 			this.$toast.error(
@@ -276,7 +276,7 @@ export default class DaemonMode extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		let configuration = {...this.ideConfiguration};
+		const configuration = {...this.ideConfiguration};
 		configuration.operMode = mode;
 		DaemonConfigurationService.updateInstance(this.ideComponent, configuration.instance, configuration)
 			.then(() => {

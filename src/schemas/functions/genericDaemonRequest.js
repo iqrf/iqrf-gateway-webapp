@@ -130,7 +130,7 @@ function validate20(
 			}
 		}
 		if (data.data !== undefined) {
-			let data1 = data.data;
+			const data1 = data.data;
 			if (data1 && typeof data1 == 'object' && !Array.isArray(data1)) {
 				for (const key1 in data1) {
 					if (
@@ -175,10 +175,10 @@ function validate20(
 					}
 				}
 				if (data1.req !== undefined) {
-					let data3 = data1.req;
+					const data3 = data1.req;
 					if (data3 && typeof data3 == 'object' && !Array.isArray(data3)) {
 						if (data3.deviceAddr !== undefined) {
-							let data4 = data3.deviceAddr;
+							const data4 = data3.deviceAddr;
 							if (
 								!(
 									typeof data4 == 'number' &&
@@ -239,7 +239,7 @@ function validate20(
 									errors++;
 								}
 							}
-							var _valid0 = _errs14 === errors;
+							let _valid0 = _errs14 === errors;
 							valid3 = valid3 || _valid0;
 							if (!valid3) {
 								const _errs15 = errors;
@@ -289,7 +289,7 @@ function validate20(
 							}
 						}
 						if (data3.nAdr !== undefined) {
-							let data5 = data3.nAdr;
+							const data5 = data3.nAdr;
 							if (
 								!(
 									typeof data5 == 'number' &&
@@ -349,7 +349,7 @@ function validate20(
 							}
 						}
 						if (data3.hwpId !== undefined) {
-							let data6 = data3.hwpId;
+							const data6 = data3.hwpId;
 							if (
 								!(
 									typeof data6 == 'number' &&
@@ -442,7 +442,7 @@ function validate20(
 					}
 				}
 				if (data1.repeat !== undefined) {
-					let data8 = data1.repeat;
+					const data8 = data1.repeat;
 					if (
 						!(
 							typeof data8 == 'number' &&
@@ -484,7 +484,7 @@ function validate20(
 					}
 				}
 				if (data1.timeout !== undefined) {
-					let data9 = data1.timeout;
+					const data9 = data1.timeout;
 					if (
 						!(
 							typeof data9 == 'number' &&

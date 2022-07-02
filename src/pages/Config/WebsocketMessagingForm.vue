@@ -262,8 +262,8 @@ export default class WebsocketMessagingForm extends Vue {
 		])
 			.then((responses: Array<AxiosResponse>) => {
 				this.$store.commit('spinner/HIDE');
-				let interfaces: Array<LocalRequiredInterface> = [];
-				let configuration = responses[0].data;
+				const interfaces: Array<LocalRequiredInterface> = [];
+				const configuration = responses[0].data;
 				configuration.RequiredInterfaces.forEach((item: RequiredInterface) => {
 					interfaces.push({name: item.name, instance: item.target.instance});
 				});
@@ -297,13 +297,13 @@ export default class WebsocketMessagingForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging component instance
 	 */
 	private saveInstance(): void {
-		let instance = {
+		const instance = {
 			component: this.configuration.component,
 			instance: this.configuration.instance,
 			acceptAsyncMsg: this.configuration.acceptAsyncMsg,
 			RequiredInterfaces: []
 		};
-		let RequiredInterfaces: Array<RequiredInterface> = [];
+		const RequiredInterfaces: Array<RequiredInterface> = [];
 		this.configuration.RequiredInterfaces.forEach((item: LocalRequiredInterface) => {
 			RequiredInterfaces.push({name: item.name, target: {instance: item.instance}});
 		});

@@ -225,7 +225,7 @@ export default class EthernetConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.ETHERNET)
 			.then((response: AxiosResponse) => {
-				let interfaces: Array<IOption> = [];
+				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
 					if (item.state !== InterfaceState.UNAVAILABLE) {
 						interfaces.push({label: item.name, value: item.name});

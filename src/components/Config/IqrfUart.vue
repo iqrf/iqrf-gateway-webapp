@@ -366,7 +366,7 @@ export default class IqrfUart extends Vue {
 			.then((response: AxiosResponse) => {
 				if (response.data.instances.length > 0) {
 					this.instance = response.data.instances[0].instance;
-					let config: IIqrfUart = response.data.instances[0];
+					const config: IIqrfUart = response.data.instances[0];
 					if (config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined) {
 						this.useAdditionalPins = false;
 					} else {
@@ -386,7 +386,7 @@ export default class IqrfUart extends Vue {
 	 * Saves new or updates existing configuration of IQRF UART interface component instance
 	 */
 	private saveConfig(): void {
-		let config: IIqrfUart = JSON.parse(JSON.stringify(this.configuration));
+		const config: IIqrfUart = JSON.parse(JSON.stringify(this.configuration));
 		if (!this.useAdditionalPins) {
 			delete config.i2cEnableGpioPin;
 			delete config.spiEnableGpioPin;

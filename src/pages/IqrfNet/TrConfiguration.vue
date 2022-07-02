@@ -864,7 +864,7 @@ export default class TrConfiguration extends Vue {
 			this.readOs();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.readOs();
@@ -975,8 +975,8 @@ export default class TrConfiguration extends Vue {
 	 * Parses device enumeration response
 	 * @param response Daemon API response
 	 */
-	private parseResponse(response: any): void {
-		let rsp = response.data.rsp;
+	private parseResponse(response): void {
+		const rsp = response.data.rsp;
 		this.config = {...this.config, ...rsp.trConfiguration};
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
 		this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
@@ -993,7 +993,7 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleSubmit(address: number): void {
 		this.message = [];
-		let config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
+		const config = this.filterConfigToSend(JSON.parse(JSON.stringify(this.config)), address);
 		this.$store.dispatch('spinner/show', {timeout: 255000});
 		IqrfNetService.writeTrConfiguration(address, this.hwpid, config, 255000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
@@ -1027,7 +1027,7 @@ export default class TrConfiguration extends Vue {
 			delete config.embPers.os;
 		}
 		if (this.dpaVersion !== null) {
-			let dpa = this.dpaVersion;
+			const dpa = this.dpaVersion;
 			if (!compare(dpa, '3.03', '=') && !compare(dpa, '3.04', '=')) {
 				delete config.rfSubChannelA;
 				delete config.rfSubChannelB;
@@ -1065,7 +1065,7 @@ export default class TrConfiguration extends Vue {
 	 * Handles WriteTrConfiguration request response
 	 */
 	private handleWriteResponse(response): void {
-		let address = response.rsp.deviceAddr;
+		const address = response.rsp.deviceAddr;
 		if (response.status === 0) {
 			if (this.target === NetworkTarget.NETWORK) {
 				if (response.rsp.notRespondedNodes !== undefined) {

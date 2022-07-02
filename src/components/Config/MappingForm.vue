@@ -312,7 +312,7 @@ export default class MappingForm extends Vue {
 	 * Saves new or updates existing mapping
 	 */
 	private saveMapping(): void {
-		let mapping: IMapping = JSON.parse(JSON.stringify(this.mapping));
+		const mapping: IMapping = JSON.parse(JSON.stringify(this.mapping));
 		delete mapping.id;
 		if (!this.useAdditionalPins) {
 			delete mapping.i2cEnableGpioPin;

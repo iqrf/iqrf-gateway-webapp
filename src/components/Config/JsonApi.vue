@@ -154,7 +154,7 @@ export default class JsonApi extends Vue {
 	 * Retrieves configuration of JSON API components
 	 */
 	private getConfig(): Promise<void> {
-		let requests = [
+		const requests = [
 			DaemonConfigurationService.getComponent(this.componentNames.rawApi),
 			DaemonConfigurationService.getComponent(this.componentNames.splitter),
 		];
@@ -177,7 +177,7 @@ export default class JsonApi extends Vue {
 	 * Updates configuration of JSON API component instances
 	 */
 	private saveConfig(): void {
-		let requests: Array<Promise<AxiosResponse>> = [];
+		const requests: Array<Promise<AxiosResponse>> = [];
 		if (this.rawApi !== null) {
 			if (this.asyncDpaMessage !== this.rawApi.asyncDpaMessage) {
 				this.rawApi.asyncDpaMessage = this.asyncDpaMessage;

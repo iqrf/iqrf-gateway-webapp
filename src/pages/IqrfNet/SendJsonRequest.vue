@@ -254,7 +254,7 @@ export default class SendJsonRequest extends Vue {
 	 * @returns {Array<IOption>} Array of options
 	 */
 	get messageOptions(): Array<IOption> {
-		let options: Array<IOption> = [];
+		const options: Array<IOption> = [];
 		this.messages.forEach((item: IMessagePairRequest) => {
 			options.push({
 				label: item.label,
@@ -283,7 +283,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param request Daemon API request
 	 */
 	private sendRequest(request): void {
-		let options = new DaemonMessageOptions(request);
+		const options = new DaemonMessageOptions(request);
 		if ({}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
@@ -308,7 +308,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
@@ -329,7 +329,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleAutoNetworkResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
@@ -347,7 +347,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleBackup(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
@@ -365,7 +365,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleEnumerationNow(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
@@ -383,7 +383,7 @@ export default class SendJsonRequest extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleResponse(response): void {
-		let idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
+		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}

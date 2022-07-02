@@ -121,7 +121,7 @@ export default class LogViewer extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getAvailableLogs()
 			.then((response: AxiosResponse) => {
-				let logs: Array<IServiceLog> = [];
+				const logs: Array<IServiceLog> = [];
 				response.data.forEach((item: string) => {
 					logs.push({
 						name: item,

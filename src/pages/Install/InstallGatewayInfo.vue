@@ -144,7 +144,7 @@ export default class InstallGatewayInfo extends Vue {
 		if (this.info === null) {
 			return [];
 		}
-		let addresses: Array<IpAddress> = [];
+		const addresses: Array<IpAddress> = [];
 		for (const nInterface of this.info.interfaces) {
 			if (nInterface.ipAddresses === null) {
 				continue;
@@ -165,7 +165,7 @@ export default class InstallGatewayInfo extends Vue {
 		if (this.info === null) {
 			return [];
 		}
-		let addresses: Array<MacAddress> = [];
+		const addresses: Array<MacAddress> = [];
 		for (const nInterface of this.info.interfaces) {
 			if (nInterface.macAddress === null) {
 				continue;

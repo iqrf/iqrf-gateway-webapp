@@ -123,7 +123,7 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @return {Color} Color for the completed step
 	 */
 	private static getCompletedColor(): Color {
-		let color: Color = Color(ThemeManager.getPrimaryColor());
+		const color: Color = Color(ThemeManager.getPrimaryColor());
 		return color.lighten(0.4).desaturate(0.2);
 	}
 

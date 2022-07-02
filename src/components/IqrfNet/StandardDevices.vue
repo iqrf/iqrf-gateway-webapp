@@ -521,7 +521,7 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		let process = response.rsp;
+		const process = response.rsp;
 		if (process.percentage === 100) {
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.commit('spinner/HIDE');
@@ -570,7 +570,7 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		let devices: Array<StandardDevice> = [];
+		const devices: Array<StandardDevice> = [];
 		response.rsp.nodes.forEach((device: IInfoNode) => {
 			devices.push(new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc));
 		});
@@ -727,7 +727,7 @@ export default class StandardDevices extends Vue {
 		const hwpids = new Map();
 		const osVersions = new Map();
 		for (let i = 0; i < this.auxDevices.length; i++) {
-			let osBuild = this.auxDevices[i].getOsBuild();
+			const osBuild = this.auxDevices[i].getOsBuild();
 			if (!osVersions.has(osBuild)) {
 				await DpaService.getVersions(osBuild)
 					.then((versions: OsDpaVersion[]) => {
@@ -741,7 +741,7 @@ export default class StandardDevices extends Vue {
 					});
 			}
 			this.auxDevices[i].setOsVersion(osVersions.get(osBuild));
-			let hwpid = this.auxDevices[i].getHwpid();
+			const hwpid = this.auxDevices[i].getHwpid();
 			if (hwpids.has(hwpid)) {
 				this.auxDevices[i].setProduct(hwpids.get(hwpid));
 				continue;
@@ -765,7 +765,7 @@ export default class StandardDevices extends Vue {
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
-		let nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress()));
+		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress()));
 		this.$store.dispatch('spinner/show', {timeout: 100000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
@@ -797,7 +797,7 @@ export default class StandardDevices extends Vue {
 			}
 			const bitString = byte.toString(2).padStart(8, '0');
 			for (let i = 0; i < 8; i++) {
-				let addr = idx * 8 + i;
+				const addr = idx * 8 + i;
 				if (addrs.includes(addr)) {
 					this.devices[addrs.indexOf(addr)].setOnline((bitString[(7 - i)] === '1'));
 				}

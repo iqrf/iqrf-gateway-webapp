@@ -253,8 +253,8 @@ export default class SshKeyList extends Vue {
 		this.$store.commit('spinner/SHOW');
 		return SshService.listKeys()
 			.then((response: AxiosResponse) => {
-				let keys: Array<ISshKey> = response.data;
-				for (let i in keys) {
+				const keys: Array<ISshKey> = response.data;
+				for (const i in keys) {
 					keys[i].showDetails = false;
 				}
 				this.keys = response.data;

@@ -455,10 +455,10 @@ export default class AutoNetwork extends Vue {
 
 	/**
 	 * Creates progress message for running AutoNetwork process, used in spinner
-	 * @param {any} response Daemon api response
+	 * @param response Daemon api response
 	 * @returns {string} AutoNetwork progress message
 	 */
-	private autoNetworkProgress(response: any): string {
+	private autoNetworkProgress(response): string {
 		let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave').toString() + response.rsp.wave;
 		if (this.useWaves) { // maximum number of waves used in request
 			message += '/ ' + this.stopConditions.waves;
@@ -482,8 +482,8 @@ export default class AutoNetwork extends Vue {
 	 */
 	private runAutonetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
-		let submitData = this.autoNetwork;
-		let stopConditions = {};
+		const submitData: AutoNetworkBase = JSON.parse(JSON.stringify(this.autoNetwork));
+		const stopConditions = {};
 		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
 		if (this.useWaves) { // maximum number of waves is enabled
 			stopConditions['waves'] = this.stopConditions.waves;

@@ -157,9 +157,9 @@ export default class Restore extends Vue {
 
 	/**
 	 * Restore response message handler
-	 * @param {any} data Daemon API response
+	 * @param data Daemon API response
 	 */
-	private handleRestoreResponse(data: any): void {
+	private handleRestoreResponse(data): void {
 		this.requestRecovery();
 		if (data.status === 0) {
 			this.$toast.success(
@@ -228,7 +228,7 @@ export default class Restore extends Vue {
 	 * Checks for valid combination of data and target device
 	 */
 	private restoreDevice(): void {
-		for (let entry of this.restoreData) {
+		for (const entry of this.restoreData) {
 			if (entry.DataC) {
 				this.sendRestore(0, entry.DataC);
 				return;
@@ -328,7 +328,7 @@ export default class Restore extends Vue {
 		}
 		delete restoreData.Backup;
 		const backupKeys = Object.keys(restoreData);
-		for (let key of backupKeys) {
+		for (const key of backupKeys) {
 			if (!RegExp(/^[0-9A-F]{8}$/i).test(key)) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()

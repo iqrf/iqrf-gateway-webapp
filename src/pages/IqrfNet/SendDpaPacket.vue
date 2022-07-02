@@ -341,7 +341,7 @@ export default class SendDpaPacket extends Vue {
 	 * @returns {Array<IOption>} Array of options
 	 */
 	get messageOptions(): Array<IOption> {
-		let options: Array<IOption> = [];
+		const options: Array<IOption> = [];
 		this.messages.forEach((item: IMessagePairPacket) => {
 			options.push({
 				label: item.label,
@@ -459,7 +459,7 @@ export default class SendDpaPacket extends Vue {
 		if (this.timeoutOverwrite) {
 			json.data.timeout = this.timeout;
 		}
-		let options = new DaemonMessageOptions(json);
+		const options = new DaemonMessageOptions(json);
 		const packet = Packet.parse(this.packet);
 		if (packet.nadr === 255) {
 			options.timeout = 1000;

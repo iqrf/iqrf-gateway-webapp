@@ -260,7 +260,7 @@ export default class DateTimeZone extends Vue {
 	 * @param {Array<ITimezone>} timezones Array of timezones information from REST API
 	 */
 	private readTimezones(timezones: Array<ITimezone>): void {
-		let timezoneArray: Array<IOption> = [];
+		const timezoneArray: Array<IOption> = [];
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,

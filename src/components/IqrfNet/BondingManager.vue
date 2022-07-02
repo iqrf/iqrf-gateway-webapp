@@ -452,7 +452,7 @@ export default class BondingManager extends Vue {
 	 */
 	private handleBondResponse(response): void {
 		if (response.status === 0) {
-			let bondAddr = this.autoAddress ? response.rsp.assignedAddr : this.address;
+			const bondAddr = this.autoAddress ? response.rsp.assignedAddr : this.address;
 			this.$emit('update-devices', {
 				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
 				type: 'success',
@@ -480,7 +480,7 @@ export default class BondingManager extends Vue {
 	 */
 	private handleSmartConnectResponse(response) {
 		if (response.status === 0) {
-			let bondAddr = this.autoAddress ? response.rsp.assignedAddr: this.address;
+			const bondAddr = this.autoAddress ? response.rsp.assignedAddr: this.address;
 			this.$emit('update-devices', {
 				message: this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString(),
 				type: 'success',

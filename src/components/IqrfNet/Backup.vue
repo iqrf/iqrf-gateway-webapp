@@ -232,9 +232,9 @@ export default class Backup extends Vue {
 
 	/**
 	 * Backup response message handler
-	 * @param {any} data Daemon API response
+	 * @param data Daemon API response
 	 */
-	private handleBackupResponse(data: any): void {
+	private handleBackupResponse(data): void {
 		if (data.status === 0) { // no error detected
 			this.deviceData.push(data.rsp.devices[0]);
 			if (data.rsp.progress !== 100) { // backup process not finished
@@ -305,9 +305,9 @@ export default class Backup extends Vue {
 	 * @param response daemon api response
 	 * @returns {string} Backup progress message
 	 */
-	private backupProgress(response: any): string {
+	private backupProgress(response): string {
 		let message = this.$t('iqrfnet.networkManager.backup.messages.networkRunning', {progress: response.rsp.progress}).toString();
-		let deviceAddr = response.rsp.devices[0].deviceAddr;
+		const deviceAddr = response.rsp.devices[0].deviceAddr;
 		if (response.status === 0) {
 			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.' + (deviceAddr === 0 ? 'coordinator' : 'node') + 'Success', {deviceAddr: deviceAddr}).toString();
 		} else {

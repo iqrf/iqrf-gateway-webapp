@@ -94,7 +94,7 @@ export default class DaemonModeModal extends Vue {
 	 * @param {IMonitorMsg} message Monitor message object
 	 */
 	private handleMonitorMessage(message: IMonitorMsg): void {
-		let mode = message.data.operMode;
+		const mode = message.data.operMode;
 		if (mode !== this.$store.getters['monitorClient/getMode']) {
 			this.$store.commit('monitorClient/SET_MODE', mode);
 		}

@@ -167,7 +167,7 @@ export default class Interfaces extends Vue {
 	 * @param {Array<IComponent>} components Array of all daemon components
 	 */
 	private storeInterfaces(components: Array<IComponent>): void {
-		let interfaces: Array<IComponent> = [];
+		const interfaces: Array<IComponent> = [];
 		for (const component of components) {
 			if (this.whitelist.includes(component.name)) {
 				interfaces.push(component);
@@ -193,8 +193,8 @@ export default class Interfaces extends Vue {
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
 	private changeInterface(): void {
-		let updateInterfaces: Array<IChangeComponent> = [];
-		for (let component of this.iqrfInterfaces) {
+		const updateInterfaces: Array<IChangeComponent> = [];
+		for (const component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
 				updateInterfaces.push({name: component.name, enabled: false});
 			} else if (component.name === this.iqrfInterface && !component.enabled) {
