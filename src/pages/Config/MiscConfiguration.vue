@@ -25,7 +25,6 @@ limitations under the License.
 						@fetched='configFetch'
 					/>
 					<div v-else>
-						<JsonMngMetaDataApi @fetched='configFetch' />
 						<JsonRawApi @fetched='configFetch' />
 						<JsonSplitter @fetched='configFetch' />
 					</div>
@@ -56,7 +55,6 @@ import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import IqrfInfo from '@/components/Config/IqrfInfo.vue';
 import IqrfRepository from '@/components/Config/IqrfRepository.vue';
 import JsonApi from '@/components/Config/JsonApi.vue';
-import JsonMngMetaDataApi from '@/components/Config/JsonMngMetaDataApi.vue';
 import JsonRawApi from '@/components/Config/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/JsonSplitter.vue';
 import MonitorList from '@/components/Config/MonitorList.vue';
@@ -77,7 +75,6 @@ import {IConfigFetch} from '@/interfaces/daemonComponent';
 		IqrfInfo,
 		IqrfRepository,
 		JsonApi,
-		JsonMngMetaDataApi,
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
@@ -140,7 +137,7 @@ export default class MiscConfiguration extends Vue {
 	created(): void {
 		this.role = this.$store.getters['user/getRole'];
 		if (this.role === UserRole.ADMIN) {
-			this.children.push('jsonMngMetaDataApi', 'jsonRawApi', 'jsonSplitter');
+			this.children.push('jsonRawApi', 'jsonSplitter');
 		} else {
 			this.children.push('jsonApi');
 		}

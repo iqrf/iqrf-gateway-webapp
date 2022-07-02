@@ -751,20 +751,6 @@
 						"saveNoChanges": "No configuration changes detected."
 					}
 				},
-				"jsonMngMetaDataApi": {
-					"title": "JSON Metadata API",
-					"description": "JSON Metadata API settings.",
-					"form": {
-						"metaDataToMessages": "Include metadata in messages"
-					},
-					"errors": {
-						"instance": "Please enter name of JSON Metadata API instance."
-					},
-					"messages": {
-						"saveFailed": "Failed to save JSON Metadata API configuration: {error}.",
-						"saveSuccess": "JSON Metadata API configuration successfully saved."
-					}
-				},
 				"jsonRawApi": {
 					"title": "JSON Raw API",
 					"description": "JSON Raw API settings.",

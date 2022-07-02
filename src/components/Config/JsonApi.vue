@@ -42,11 +42,6 @@ limitations under the License.
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
-					v-if='daemonLowerEqual236'
-					:checked.sync='metaDataToMessages'
-					:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
-				/>
-				<CInputCheckbox
 					:checked.sync='asyncDpaMessage'
 					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
 				/>
@@ -73,11 +68,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import {versionLowerEqual} from '@/helpers/versionChecker';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IJsonMetaData, IJsonRaw, IJsonSplitter} from '@/interfaces/jsonApi';
+import {IJsonRaw, IJsonSplitter} from '@/interfaces/jsonApi';
+
 
 @Component({
 	components: {
@@ -102,7 +97,6 @@ export default class JsonApi extends Vue {
 	 * @constant {Record<string, string>} componentNames Array of JSON component names
 	 */
 	private componentNames: Record<string, string> = {
-		metaData: 'iqrf::JsonMngMetaDataApi',
 		rawApi: 'iqrf::JsonDpaApiRaw',
 		splitter: 'iqrf::JsonSplitter'
 	};
@@ -111,11 +105,6 @@ export default class JsonApi extends Vue {
 	 * @var {string} insId JSON splitter instance ID
 	 */
 	private insId = '';
-
-	/**
-	 * @var {IJsonMetaData|null} metaData JSON metadata configuration object
-	 */
-	private metaData: IJsonMetaData|null = null;
 
 	/**
 	 * @var {IJsonRaw|null} rawApi JSON raw api configuration object
@@ -148,18 +137,10 @@ export default class JsonApi extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {boolean} daemonLowerEqual236 Indicates whether daemon version is 2.3.6 or older
-	 */
-	private daemonLowerEqual236 = false;
-
-	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('required', required);
-		if (versionLowerEqual('2.3.6')) {
-			this.daemonLowerEqual236 = true;
-		}
 	}
 
 	/**
@@ -177,9 +158,6 @@ export default class JsonApi extends Vue {
 			DaemonConfigurationService.getComponent(this.componentNames.rawApi),
 			DaemonConfigurationService.getComponent(this.componentNames.splitter),
 		];
-		if (this.daemonLowerEqual236) {
-			requests.push(DaemonConfigurationService.getComponent(this.componentNames.metaData));
-		}
 		return Promise.all(requests)
 			.then((responses: Array<AxiosResponse>) => {
 				this.rawApi = responses[0].data.instances[0];
@@ -187,10 +165,6 @@ export default class JsonApi extends Vue {
 				this.splitter = responses[1].data.instances[0];
 				this.insId = responses[1].data.instances[0].insId;
 				this.validateJsonResponse = responses[1].data.instances[0].validateJsonResponse;
-				if (this.daemonLowerEqual236) {
-					this.metaData = responses[2].data.instances[0];
-					this.metaDataToMessages = responses[2].data.instances[0].metaDataToMessages;
-				}
 				this.$emit('fetched', {name: 'jsonApi', success: true});
 			})
 			.catch(() => {
@@ -204,12 +178,6 @@ export default class JsonApi extends Vue {
 	 */
 	private saveConfig(): void {
 		let requests: Array<Promise<AxiosResponse>> = [];
-		if (this.metaData !== null) {
-			if (this.metaDataToMessages !== this.metaData.metaDataToMessages) {
-				this.metaData.metaDataToMessages = this.metaDataToMessages;
-				requests.push(DaemonConfigurationService.updateInstance(this.componentNames.metaData, this.metaData.instance, this.metaData));
-			}
-		}
 		if (this.rawApi !== null) {
 			if (this.asyncDpaMessage !== this.rawApi.asyncDpaMessage) {
 				this.rawApi.asyncDpaMessage = this.asyncDpaMessage;
