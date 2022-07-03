@@ -813,7 +813,7 @@ export default class StandardDevices extends Vue {
 	private resetDb(): void {
 		this.showModal = false;
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		InfoService.reset(10000, this.$t('iqrfnet.standard.table.message.resetTimeout'), () => this.msgId = null)
+		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

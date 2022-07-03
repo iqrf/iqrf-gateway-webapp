@@ -173,7 +173,7 @@ export default class DiscoveryManager extends Vue {
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.discovery.mesages.genericError').toString()
+				this.$t('iqrfnet.networkManager.discovery.messages.genericError').toString()
 			);
 		}
 	}

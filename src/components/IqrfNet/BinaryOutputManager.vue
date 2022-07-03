@@ -355,7 +355,7 @@ export default class BinaryOutputManager extends Vue {
 				break;
 			case 1:
 				this.$toast.error(
-					this.$t('iqrfnet.standard.binaryOutput.messages.fail')
+					this.$t('iqrfnet.standard.binaryOutput.messages.failure')
 						.toString()
 				);
 				break;

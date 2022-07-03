@@ -27,7 +27,7 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: $t("forms.messages.integer"),
+							integer: $t("forms.errors.integer"),
 							min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 							required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 						}'
@@ -45,7 +45,7 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: $t("forms.messages.integer"),
+							integer: $t("forms.errors.integer"),
 							min: $t("service.unattended-upgrades.errors.upgradeInterval"),
 							required: $t("service.unattended-upgrades.errors.upgradeInterval"),
 						}'
@@ -64,7 +64,7 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='integer|min:0|required'
 						:custom-messages='{
-							integer: $t("forms.messages.integer"),
+							integer: $t("forms.errors.integer"),
 							min: $t("service.unattended-upgrades.errors.removeInterval"),
 							required: $t("service.unattended-upgrades.errors.removeInterval"),
 						}'

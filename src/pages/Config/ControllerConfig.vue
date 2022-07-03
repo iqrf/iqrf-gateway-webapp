@@ -239,8 +239,8 @@ limitations under the License.
 											rules='integer|required|between:0,7'
 											:custom-messages='{
 												integer: $t("forms.errors.integer"),
-												required: $t("iqrfnet.networkManager.messages.discovery.txPower"),
-												between: $t("iqrfnet.networkManager.messages.discovery.txPower"),
+												required: $t("iqrfnet.networkManager.discovery.errors.txPower"),
+												between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 											}'
 										>
 											<CInput

@@ -2636,6 +2636,7 @@
 					"remove": "Remove DNS server"
 				},
 				"errors": {
+					"method": "Please select the IPv4 connection method",
 					"address": "Please enter a valid IPv4 address.",
 					"addressInvalid": "Invalid IPv4 address.",
 					"dns": "Please enter a valid IPv4 DNS server address.",
