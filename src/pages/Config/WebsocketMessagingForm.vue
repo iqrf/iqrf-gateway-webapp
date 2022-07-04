@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.messagings.websocket.messaging.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveInstance'>
+					<form @submit.prevent='saveInstance'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -34,15 +34,15 @@ limitations under the License.
 								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.acceptAsyncMsg'
+						<v-checkbox
+							v-model='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<h4>{{ $t('config.daemon.messagings.websocket.form.requiredInterfaces') }}</h4>
@@ -58,15 +58,15 @@ limitations under the License.
 									required: $t("config.daemon.messagings.websocket.errors.interfaceName"),
 								}'
 							>
-								<CSelect
-									:value.sync='iface.name'
+								<v-select
+									v-model='iface.name'
 									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.name")'
 									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceName")'
-									:options='[
-										{value: "shape::IWebsocketService", label: "shape::IWebsocketService"}
+									:items='[
+										{value: "shape::IWebsocketService", text: "shape::IWebsocketService"}
 									]'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -76,44 +76,43 @@ limitations under the License.
 									required: $t("config.daemon.messagings.websocket.errors.interfaceName"),
 								}'
 							>
-								<CSelect
-									:value.sync='iface.instance'
+								<v-select
+									v-model='iface.instance'
 									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.instance")'
 									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceInstance")'
-									:options='services'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:items='services'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-							<CButton
+							<v-btn
 								v-if='configuration.RequiredInterfaces.length > 1'
-								color='danger'
+								color='error'
 								@click='removeInterface(i-1)'
 							>
 								{{ $t('config.daemon.messagings.websocket.form.requiredInterface.remove') }}
-							</CButton>
-							<CButton
+							</v-btn>
+							<v-btn
 								v-if='i === (configuration.RequiredInterfaces.length - 1)'
 								color='success'
 								:disabled='!iface.name || !iface.instance'
 								@click='addInterface'
 							>
 								{{ $t('config.daemon.messagings.websocket.form.requiredInterface.add') }}
-							</CButton>
+							</v-btn>
 						</div>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -127,7 +126,7 @@ import {ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
 import {RequiredInterface} from '@/interfaces/requiredInterfaces';
 
 interface ServiceInstance {
-	label: string
+	text: string
 	value: string
 }
 
@@ -145,15 +144,6 @@ interface LocalWsMessaging {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -270,7 +260,7 @@ export default class WebsocketMessagingForm extends Vue {
 				configuration.RequiredInterfaces = interfaces;
 				this.configuration = configuration;
 				responses[1].data.instances.forEach((item: IWsService) => {
-					this.services.push({value: item.instance, label: item.instance});
+					this.services.push({value: item.instance, text: item.instance});
 				});
 			})
 			.catch((error: AxiosError) => {

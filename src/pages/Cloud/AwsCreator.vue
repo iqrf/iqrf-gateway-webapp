@@ -17,25 +17,33 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.amazonAws.form.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
+		<v-card>
+			<v-card-title>
+				<v-btn
 					color='primary'
-					size='sm'
+					small
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
+					target='_blank'
 				>
+					<v-icon small>
+						mdi-file-document
+					</v-icon>
 					{{ $t('cloud.guides.pdf') }}
-				</CButton> <CButton
-					color='danger'
-					size='sm'
+				</v-btn> <v-btn
+					color='error'
+					small
 					href='https://youtu.be/Z9R2vdaw3KA'
+					target='_blank'
 				>
+					<v-icon small>
+						mdi-youtube
+					</v-icon>
 					{{ $t('cloud.guides.video') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -43,54 +51,69 @@ limitations under the License.
 								required: $t("cloud.amazonAws.errors.endpoint"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='endpoint'
 								:label='$t("cloud.amazonAws.form.endpoint")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div class='form-group'>
-							<CInputFile
-								ref='awsFormCert'
+
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("cloud.amazonAws.errors.certificate"),
+							}'
+						>
+							<v-file-input
+								v-model='certificate'
 								accept='.pem'
 								:label='$t("forms.fields.certificate")'
-								@input='certInputEmpty'
-								@click='certInputEmpty'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								prepend-icon='mdi-file-certificate'
 							/>
-						</div>
-						<div class='form-group'>
-							<CInputFile
-								ref='awsFormKey'
+						</ValidationProvider>
+
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("cloud.amazonAws.errors.key"),
+							}'
+						>
+							<v-file-input
+								v-model='privateKey'
 								accept='.pem,.key'
 								:label='$t("forms.fields.privateKey")'
-								@input='keyInputEmpty'
-								@click='keyInputEmpty'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								prepend-icon='mdi-file-key'
 							/>
-						</div>
-						<CButton
+						</ValidationProvider>
+						<v-btn
 							color='primary'
-							:disabled='invalid || certEmpty || keyEmpty'
+							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							color='secondary'
-							:disabled='invalid || certEmpty || keyEmpty'
+							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -102,13 +125,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputFile,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -121,20 +137,21 @@ import {AxiosError} from 'axios';
  * Aws cloud mqtt connection configuration creator card
  */
 export default class AwsCreator extends Vue {
+
 	/**
 	 * @var {string} endpoint Aws cloud endpoint
 	 */
 	private endpoint = '';
 
 	/**
-	 * @var {boolean} certEmpty Indicates whether the form certificate file input is empty
+	 * @var {File|null} certificate AWS cloud certificate
 	 */
-	private certEmpty = true;
+	private certificate: File|null = null;
 
 	/**
-	 * @var {boolean} keyEmpty Indicates whether the form key file input is empty
+	 * @var {File|null} privateKey AWS cloud private key
 	 */
-	private keyEmpty = true;
+	private privateKey: File|null = null;
 
 	/**
 	 * Vue lifecycle hook created
@@ -150,27 +167,9 @@ export default class AwsCreator extends Vue {
 	private buildRequest(): FormData {
 		const formData = new FormData();
 		formData.append('endpoint', this.endpoint);
-		formData.append('certificate', this.getCertFiles()[0]);
-		formData.append('privateKey', this.getKeyFiles()[0]);
+		formData.append('certificate', this.certificate as Blob);
+		formData.append('privateKey', this.privateKey as Blob);
 		return formData;
-	}
-
-	/**
-	 * Extracts uploaded files from the form certificate file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getCertFiles(): FileList {
-		const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Extracts uploaded files from the form key file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getKeyFiles(): FileList {
-		const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
 	}
 
 	/**
@@ -197,31 +196,6 @@ export default class AwsCreator extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'cloud.amazonAws.messages.saveFailed');
 			});
-	}
-
-	/**
-	 * Checks if certificate input field is empty
-	 */
-	private certInputEmpty(): void {
-		const files = this.getFileFromInput('awsFormCert');
-		this.certEmpty = files.length === 0;
-	}
-
-	/**
-	 * Checks if private key input field is empty
-	 */
-	private keyInputEmpty(): void {
-		const files = this.getFileFromInput('awsFormKey');
-		this.keyEmpty = files.length === 0;
-	}
-
-	/**
-	 * Extracts files from file input element specified by ID
-	 * @param {string} fieldId File input ID
-	 */
-	private getFileFromInput(fieldId: string): FileList {
-		const input = ((this.$refs[fieldId] as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
 	}
 
 }

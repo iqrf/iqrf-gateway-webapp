@@ -1,20 +1,19 @@
 <template>
 	<div>
 		<h1>{{ $t('maintenance.mender.update.pageTitle') }}</h1>
-		<CRow>
-			<CCol md='6'>
+		<v-row>
+			<v-col md='6'>
 				<MenderUpdateControl @update-log='updateLog' />
-			</CCol>
-			<CCol md='6'>
+			</v-col>
+			<v-col md='6'>
 				<MenderUpdateLog :log='log' />
-			</CCol>
-		</CRow>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCol, CRow} from '@coreui/vue/src';
 import MenderUpdateControl from '@/components/Maintenance/MenderUpdateControl.vue';
 import MenderUpdateLog from '@/components/Maintenance/MenderUpdateLog.vue';
 
@@ -22,14 +21,10 @@ import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCol,
-		CRow,
 		MenderUpdateControl,
 		MenderUpdateLog,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(_to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());

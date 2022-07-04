@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('core.security.apiKey.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveKey'>
+					<form @submit.prevent='saveKey'>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
@@ -33,16 +33,16 @@ limitations under the License.
 								required: $t("core.security.apiKey.errors.description"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='metadata.description'
 								:label='$t("core.security.apiKey.form.description")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<div class='form-group'>
-							<CInputCheckbox
-								:checked.sync='useExpiration'
+							<v-checkbox
+								v-model='useExpiration'
 								:label='$t("core.security.apiKey.form.expiration")'
 								@change='clear'
 							/>
@@ -56,23 +56,22 @@ limitations under the License.
 								:disabled='!useExpiration'
 							/>
 						</div>
-						<CButton
+						<v-btn
 							type='submit'
 							color='primary'
 							:disabled='invalid'
 						>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import ApiKeyService from '@/services/ApiKeyService';
@@ -85,12 +84,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		Datetime,
 		ValidationObserver,
 		ValidationProvider,

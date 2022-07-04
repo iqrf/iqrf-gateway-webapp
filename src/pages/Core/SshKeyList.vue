@@ -17,174 +17,146 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.ssh.title') }}</h1>
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				<div>
-					{{ $t('core.security.ssh.table.title') }}
-				</div>
-				<div>
-					<CButton
-						color='success'
-						to='/security/ssh-key/add/'
-						size='sm'
-					>
-						<CIcon :content='icons.add' size='sm' />
-						<span class='d-none d-lg-inline'>
-							{{ $t('core.security.ssh.table.add') }}
-						</span>
-					</CButton>
-				</div>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:items='keys'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #description='{item}'>
-						<td>
-							{{ item.description === null ? 'None' : item.description }}
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								@click='item.showDetails = !item.showDetails'
-							>
-								<CIcon :content='icons.info' size='sm' />
-								<span class='d-none d-lg-inline'>
-									{{ $t('table.actions.details') }}
-								</span>
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='keyToDelete = item'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								<span class='d-none d-lg-inline'>
-									{{ $t('table.actions.delete') }}
-								</span>
-							</CButton>
-						</td>
-					</template>
-					<template #details='{item}'>
-						<CCollapse :show='item.showDetails'>
-							<CCardBody class='datatable-collapse'>
-								<table>
-									<tbody>
-										<tr>
-											<th>{{ $t('core.security.ssh.table.type') }}</th>
-											<td>{{ item.type }}</td>
-										</tr>
-										<tr>
-											<th>
-												{{ $t('core.security.ssh.table.hash') }}
-											</th>
-											<td>{{ item.hash }}</td>
-											<td>
-												<CButton
-													v-clipboard:copy='item.hash'
-													v-clipboard:success='hashClipboardMessage'
-													color='primary'
-													size='sm'
-												>
-													<CIcon :content='icons.copy' size='sm' />
-													<span class='d-none d-lg-inline'>
-														{{ $t('forms.clipboardCopy') }}
-													</span>
-												</CButton>
-											</td>
-										</tr>
-										<tr>
-											<th>
-												{{ $t('core.security.ssh.table.key') }}
-											</th>
-											<td style='max-width: 60vw;'>
-												{{ item.key }}
-											</td>
-											<td>
-												<CButton
-													v-clipboard:copy='item.key'
-													v-clipboard:success='keyClipboardMessage'
-													color='primary'
-													size='sm'
-												>
-													<CIcon :content='icons.copy' size='sm' />
-													<span class='d-none d-lg-inline'>
-														{{ $t('forms.clipboardCopy') }}
-													</span>
-												</CButton>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</CCardBody>
-						</CCollapse>
-					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='keyToDelete !== null'
+
+		<v-data-table
+			:headers='header'
+			:items='keys'
+			:expanded='expandedKeys'
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('core.security.ssh.modal.title') }}
-				</h5>
+			<template #top>
+				<v-toolbar dense flat>
+					<v-spacer />
+					<v-btn
+						color='success'
+						small
+						to='/security/ssh-key/add'
+					>
+						<v-icon small>
+							mdi-plus
+						</v-icon>
+						{{ $t('table.actions.add') }}
+					</v-btn>
+				</v-toolbar>
 			</template>
-			<span v-if='keyToDelete !== null'>
-				{{ $t('core.security.ssh.modal.prompt', {id: keyToDelete.id}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='deleteKey(keyToDelete.id)'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='keyToDelete = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
+			<template #expanded-item='{headers, item}'>
+				<td :colspan='headers.length'>
+					<table class='table'>
+						<tbody>
+							<tr>
+								<th>{{ $t('core.security.ssh.table.type') }}</th>
+								<td>{{ item.type }}</td>
+							</tr>
+							<tr>
+								<th>
+									{{ $t('core.security.ssh.table.hash') }}
+								</th>
+								<td>{{ item.hash }}</td>
+								<td>
+									<v-btn
+										v-clipboard:copy='item.hash'
+										v-clipboard:success='hashClipboardMessage'
+										color='primary'
+										small
+									>
+										<v-icon small>
+											mdi-clipboard-outline
+										</v-icon>
+										{{ $t('forms.clipboardCopy') }}
+									</v-btn>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									{{ $t('core.security.ssh.table.key') }}
+								</th>
+								<td style='max-width: 60vw;'>
+									{{ item.key }}
+								</td>
+								<td>
+									<v-btn
+										v-clipboard:copy='item.key'
+										v-clipboard:success='keyClipboardMessage'
+										color='primary'
+										small
+									>
+										<v-icon small>
+											mdi-clipboard-outline
+										</v-icon>
+										{{ $t('forms.clipboardCopy') }}
+									</v-btn>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
 			</template>
-		</CModal>
+			<template #[`item.createdAt`]='{item}'>
+				{{ timeString(item) }}
+			</template>
+			<template #[`item.actions`]='{item}'>
+				<v-btn
+					color='info'
+					small
+					@click='expandItem(item)'
+				>
+					<v-icon small>
+						mdi-information-outline
+					</v-icon>
+					{{ $t('table.actions.details') }}
+				</v-btn>
+				<v-dialog v-model='deleteModal' width='50%'>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							color='error'
+							small
+							v-bind='attrs'
+							@click='deleteKey = item.id'
+							v-on='on'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+					<v-card>
+						<v-card-title>{{ $t('core.security.ssh.modal.title') }}}</v-card-title>
+						<v-card-text>{{ $t('core.security.ssh.modal.prompt', {id: deleteKey}) }}</v-card-text>
+						<v-card-actions>
+							<v-btn
+								color='error'
+								@click='removeKey'
+							>
+								{{ $t('forms.delete') }}
+							</v-btn>
+							<v-spacer />
+							<v-btn
+								color='secondary'
+								@click='deleteKey = -1'
+							>
+								{{ $t('forms.cancel') }}
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</template>
+		</v-data-table>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 
-import {cilPlus, cilTrash, cilInfo, cilClipboard} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import SshService from '@/services/SshService';
 
 import {AxiosResponse, AxiosError} from 'axios';
-import {IField} from '@/interfaces/coreui';
 import {ISshKey} from '@/interfaces/ssh';
+import {DateTime} from 'luxon';
+import {DataTableHeader} from 'vuetify';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CCollapse,
-		CDataTable,
-		CIcon,
-		CModal,
-	},
 	metaInfo: {
 		title: 'core.security.ssh.title',
 	},
@@ -201,41 +173,44 @@ export default class SshKeyList extends Vue {
 	private keys: Array<ISshKey> = [];
 
 	/**
-	 * @var {ISshKey|null} keyToDelete
-	 */
-	private keyToDelete: ISshKey|null = null;
+	 * @var {Array<ISshKey>} expandedKeys List of expanded SSH keys
+   */
+	private expandedKeys: Array<ISshKey> = [];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
+	 * @var {number|null} deleteKey API key id used in remove modal
 	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		copy: cilClipboard,
-		delete: cilTrash,
-		info: cilInfo,
-	};
+	private deleteKey = -1;
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @var {boolean} deleteModal Delete modal visibility
 	 */
-	private fields: Array<IField> = [
+	get deleteModal(): boolean {
+		return this.deleteKey !== -1;
+	}
+
+	/**
+	 * @var {Array<DataTableHeader>} header Data table header
+	 */
+	private header: Array<DataTableHeader> = [
 		{
-			key: 'id',
-			label: this.$t('core.security.ssh.table.id').toString(),
+			value: 'id',
+			text: this.$t('core.security.ssh.table.id').toString(),
 		},
 		{
-			key: 'description',
-			label: this.$t('core.security.ssh.form.description').toString(),
+			value: 'description',
+			text: this.$t('core.security.ssh.form.description').toString(),
 		},
 		{
-			key: 'createdAt',
-			label: this.$t('core.security.ssh.table.createdAt').toString(),
+			value: 'createdAt',
+			text: this.$t('core.security.ssh.table.createdAt').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title').toString(),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
 
@@ -265,11 +240,11 @@ export default class SshKeyList extends Vue {
 
 	/**
 	 * Removes authorized SSH public key
-	 * @param {number} id SSH public key ID
 	 */
-	private deleteKey(id: number): void {
-		this.keyToDelete = null;
+	private removeKey(): void {
 		this.$store.commit('spinner/SHOW');
+		const id = this.deleteKey;
+		this.deleteKey = -1;
 		SshService.deleteKey(id)
 			.then(() => {
 				this.listKeys().then(() => this.$toast.success(
@@ -300,6 +275,27 @@ export default class SshKeyList extends Vue {
 		this.$toast.success(
 			this.$t(`core.security.ssh.messages.${path}`).toString()
 		);
+	}
+
+	/**
+	 * Expands SSH key details
+	 * @var {ISshKey} key SSH key
+	 */
+	private expandItem(item: ISshKey): void {
+		if (this.expandedKeys.includes(item)) {
+			this.expandedKeys = this.expandedKeys.filter(key => key.id !== item.id);
+		} else {
+			this.expandedKeys.push(item);
+		}
+	}
+
+	/**
+	 * Converts expiration date and time from UTC to locale string
+   * @var {ISshKey} key SSH key
+	 * @returns {string} Expiration date and time in locale format
+	 */
+	private timeString(item: ISshKey): string {
+		return DateTime.fromISO(item.createdAt).toLocaleString(DateTime.DATETIME_FULL);
 	}
 
 }

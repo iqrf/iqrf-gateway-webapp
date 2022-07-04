@@ -17,99 +17,88 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.apiKey.title') }}</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					color='success'
-					size='sm'
-					class='float-right'
-					to='/security/api-key/add'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
-					:items='keys'
-					:striped='true'
-					:pagination='true'
-					:items-per-page='20'
-					:column-filter='true'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #expiration='{item}'>
-						<td v-if='item.expiration !== null'>
-							{{ timeString(item) }}
-						</td>
-						<td v-else>
-							never
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								:to='"/security/api-key/edit/" + item.id'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteKey = item.id'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
-					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteKey !== null'
+		<v-data-table
+			:headers='header'
+			:items='keys'
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('core.security.apiKey.modal.title') }}
-				</h5>
+			<template #top>
+				<v-toolbar dense flat>
+					<v-spacer />
+					<v-btn
+						color='success'
+						small
+						to='/security/api-key/add'
+					>
+						<v-icon small>
+							mdi-plus
+						</v-icon>
+						{{ $t('table.actions.add') }}
+					</v-btn>
+				</v-toolbar>
 			</template>
-			{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeKey'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteKey = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
+			<template #[`item.expiration`]='{item}'>
+				{{ item.expiration !== null ? timeString(item) : 'never' }}
 			</template>
-		</CModal>
+			<template #[`item.actions`]='{item}'>
+				<v-btn
+					color='info'
+					small
+					:to='"/security/api-key/edit/" + item.id'
+				>
+					<v-icon small>
+						mdi-pencil
+					</v-icon>
+					{{ $t('table.actions.edit') }}
+				</v-btn>
+				<v-dialog v-model='deleteModal' width='50%'>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							color='error'
+							small
+							v-bind='attrs'
+							@click='deleteKey = item.id'
+							v-on='on'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+					<v-card>
+						<v-card-title>{{ $t('core.security.apiKey.modal.title') }}}</v-card-title>
+						<v-card-text>{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}</v-card-text>
+						<v-card-actions>
+							<v-btn
+								color='error'
+								@click='removeKey'
+							>
+								{{ $t('forms.delete') }}
+							</v-btn>
+							<v-spacer />
+							<v-btn
+								color='secondary'
+								@click='deleteKey = -1'
+							>
+								{{ $t('forms.cancel') }}
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</template>
+		</v-data-table>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 
 import ApiKeyService from '@/services/ApiKeyService';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 
 
 interface ApiKey {
@@ -119,14 +108,6 @@ interface ApiKey {
 }
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon
-	},
 	metaInfo: {
 		title: 'core.security.apiKey.title'
 	}
@@ -136,61 +117,48 @@ interface ApiKey {
  * List of existing API keys
  */
 export default class ApiKeyList extends Vue {
-	/**
-	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
-	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
-
-	/**
-	 * @var {number|null} deletekey API key id used in remove modal
-	 */
-	private deleteKey: number|null = null;
-
-	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
-	 */
-	private fields: Array<IField> = [
-		{
-			key: 'id',
-			label: this.$t('core.security.apiKey.form.id'),
-		},
-		{
-			key: 'description',
-			label: this.$t('core.security.apiKey.form.description'),
-		},
-		{
-			key: 'expiration',
-			label: this.$t('core.security.apiKey.form.expiration'),
-		},
-		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
-		},
-	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
 
 	/**
 	 * @var {Array<ApiKey>} keys List of API key objects
 	 */
 	private keys: Array<ApiKey> = [];
+
+	/**
+	 * @var {number|null} deleteKey API key id used in remove modal
+	 */
+	private deleteKey = -1;
+
+	/**
+	 * @var {boolean} deleteModal Delete modal visibility
+	 */
+	get deleteModal(): boolean {
+		return this.deleteKey !== -1;
+	}
+
+	/**
+	 * @var {Array<DataTableHeader>} header Data table header
+	 */
+	private header: Array<DataTableHeader> = [
+		{
+			value: 'id',
+			text: this.$t('core.security.apiKey.form.id').toString(),
+		},
+		{
+			value: 'description',
+			text: this.$t('core.security.apiKey.form.description').toString(),
+		},
+		{
+			value: 'expiration',
+			text: this.$t('core.security.apiKey.form.expiration').toString(),
+		},
+		{
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
+		},
+	];
 
 	/**
 	 * Vue lifecycle hook created
@@ -243,10 +211,3 @@ export default class ApiKeyList extends Vue {
 
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-
-</style>

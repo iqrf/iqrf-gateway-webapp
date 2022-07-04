@@ -17,134 +17,127 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.info.title') }}</h1>
-		<CCard body-wrapper>
-			<div class='table-responsive'>
-				<table v-if='info !== null' class='table table-striped'>
-					<tbody>
-						<tr>
-							<th>{{ $t('gateway.info.board') }}</th>
-							<td>{{ info.board }}</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.os') }}</th>
-							<td><a :href='info.os.homePage'>{{ info.os.name }}</a></td>
-						</tr>
-						<tr v-if='info.gwId'>
-							<th>{{ $t('gateway.info.gwId') }}</th>
-							<td>{{ info.gwId }}</td>
-						</tr>
-						<tr v-if='info.gwImage'>
-							<th>{{ $t('gateway.info.gwImage') }}</th>
-							<td>{{ info.gwImage }}</td>
-						</tr>
-						<tr v-if='info.versions.controller'>
-							<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
-							<td>{{ info.versions.controller }}</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
-							<td>{{ info.versions.daemon }}</td>
-						</tr>
-						<tr v-if='info.versions.setter'>
-							<th>{{ $t('gateway.info.version.iqrfGatewaySetter') }}</th>
-							<td>{{ info.versions.setter }}</td>
-						</tr>
-						<tr v-if='info.versions.uploader'>
-							<th>{{ $t('gateway.info.version.iqrfGatewayUploader') }}</th>
-							<td>{{ info.versions.uploader }}</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
-							<td>{{ info.versions.webapp }}</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.hostname') }}</th>
-							<td class='hostname'>
-								{{ info.hostname }}
-								<CButton
-									v-if='$store.getters["user/getRole"] === "admin"'
-									color='primary'
-									size='sm'
-									@click='showHostnameModal'
-								>
-									<CIcon :content='icon' size='sm' />
-									<span class='d-none d-lg-inline'>
-										{{ $t('forms.edit') }}
+		<v-card>
+			<v-card-text>
+				<div class='table-responsive'>
+					<table v-if='info !== null' class='table table-striped'>
+						<tbody>
+							<tr>
+								<th>{{ $t('gateway.info.board') }}</th>
+								<td>{{ info.board }}</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.os') }}</th>
+								<td><a :href='info.os.homePage'>{{ info.os.name }}</a></td>
+							</tr>
+							<tr v-if='info.gwId'>
+								<th>{{ $t('gateway.info.gwId') }}</th>
+								<td>{{ info.gwId }}</td>
+							</tr>
+							<tr v-if='info.gwImage'>
+								<th>{{ $t('gateway.info.gwImage') }}</th>
+								<td>{{ info.gwImage }}</td>
+							</tr>
+							<tr v-if='info.versions.controller'>
+								<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
+								<td>{{ info.versions.controller }}</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
+								<td>{{ info.versions.daemon }}</td>
+							</tr>
+							<tr v-if='info.versions.setter'>
+								<th>{{ $t('gateway.info.version.iqrfGatewaySetter') }}</th>
+								<td>{{ info.versions.setter }}</td>
+							</tr>
+							<tr v-if='info.versions.uploader'>
+								<th>{{ $t('gateway.info.version.iqrfGatewayUploader') }}</th>
+								<td>{{ info.versions.uploader }}</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
+								<td>{{ info.versions.webapp }}</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.hostname') }}</th>
+								<td class='hostname'>
+									{{ info.hostname }}
+									<HostnameChange
+										v-if='$store.getters["user/getRole"] === "admin"'
+										ref='hostname'
+										@hostname-changed='getInformation'
+									/>
+								</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.addresses.ip') }}</th>
+								<td>
+									<span v-for='{iface, addresses} of getIpAddresses' :key='iface'>
+										<strong>{{ iface }}: </strong> {{ addresses }}<br>
 									</span>
-								</CButton>
-							</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.addresses.ip') }}</th>
-							<td>
-								<span v-for='{iface, addresses} of getIpAddresses' :key='iface'>
-									<strong>{{ iface }}: </strong> {{ addresses }}<br>
-								</span>
-							</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.addresses.mac') }}</th>
-							<td>
-								<span v-for='{iface, address} of getMacAddresses' :key='iface'>
-									<strong>{{ iface }}: </strong> {{ address }}<br>
-								</span>
-							</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.usages.disks') }}</th>
-							<td>
-								<div v-for='(usage, index) in info.diskUsages' :key='usage.fsName'>
-									<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
-									<resource-usage :usage='usage' />
-									<br v-if='index !== (info.diskUsages.length - 1)'>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.usages.memory') }}</th>
-							<td><resource-usage :usage='info.memoryUsage' /></td>
-						</tr>
-						<tr v-if='info.swapUsage'>
-							<th>{{ $t('gateway.info.usages.swap') }}</th>
-							<td><resource-usage :usage='info.swapUsage' /></td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.uptime') }}</th>
-							<td>{{ info.uptime }}</td>
-						</tr>
-						<tr v-if='showCoordinator'>
-							<th>{{ $t('gateway.info.tr.title') }}</th>
-							<td>
-								<coordinator-info />
-							</td>
-						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.gwMode') }}</th>
-							<td>
-								<DaemonModeInfo @notify-cinfo='showCoordinator = true' />
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<CButton color='primary' @click='downloadDiagnostics()'>
-				{{ $t('gateway.info.diagnostics') }}
-			</CButton>
-		</CCard>
-		<HostnameChange ref='hostname' @hostname-changed='getInformation' />
+								</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.addresses.mac') }}</th>
+								<td>
+									<span v-for='{iface, address} of getMacAddresses' :key='iface'>
+										<strong>{{ iface }}: </strong> {{ address }}<br>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.usages.disks') }}</th>
+								<td>
+									<div v-for='(usage, index) in info.diskUsages' :key='usage.fsName'>
+										<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
+										<resource-usage :usage='usage' />
+										<br v-if='index !== (info.diskUsages.length - 1)'>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.usages.memory') }}</th>
+								<td><resource-usage :usage='info.memoryUsage' /></td>
+							</tr>
+							<tr v-if='info.swapUsage'>
+								<th>{{ $t('gateway.info.usages.swap') }}</th>
+								<td><resource-usage :usage='info.swapUsage' /></td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.uptime') }}</th>
+								<td>{{ info.uptime }}</td>
+							</tr>
+							<tr v-if='showCoordinator'>
+								<th>{{ $t('gateway.info.tr.title') }}</th>
+								<td>
+									<coordinator-info />
+								</td>
+							</tr>
+							<tr>
+								<th>{{ $t('gateway.info.gwMode') }}</th>
+								<td>
+									<DaemonModeInfo @notify-cinfo='showCoordinator = true' />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<v-btn color='primary' @click='downloadDiagnostics()'>
+					{{ $t('gateway.info.diagnostics') }}
+				</v-btn>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
 import ResourceUsage from '@/components/Gateway/ResourceUsage.vue';
 import GatewayService from '@/services/GatewayService';
 import HostnameChange from '@/components/Gateway/HostnameChange.vue';
 
-import {cilPencil} from '@coreui/icons';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
 import {AxiosResponse} from 'axios';
@@ -152,9 +145,6 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/gatewayInfo';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CIcon,
 		CoordinatorInfo,
 		DaemonModeInfo,
 		HostnameChange,
@@ -178,8 +168,6 @@ export default class GatewayInfo extends Vue {
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false;
-
-	private icon: Array<string> = cilPencil;
 
 	/**
 	 * Computes array of ip address objects from network interfaces

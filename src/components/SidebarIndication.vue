@@ -25,9 +25,9 @@ limitations under the License.
 					{{ $t('daemonStatus.mode') }}
 				</td>
 				<td class='status'>
-					<CBadge :color='daemonModeBadgeColor'>
+					<v-chip :color='daemonModeBadgeColor' small>
 						{{ $t(`daemonStatus.modes.${isSocketConnected ? daemonMode : 'unknown'}`) }}
-					</CBadge>
+					</v-chip>
 				</td>
 			</tr>
 			<tr>
@@ -35,9 +35,9 @@ limitations under the License.
 					{{ $t('daemonStatus.websocket.title') }}
 				</td>
 				<td class='status'>
-					<CBadge :color='isSocketConnected ? "success": "danger"'>
+					<v-chip :color='isSocketConnected ? "success": "error"' small>
 						{{ $t(`daemonStatus.websocket.${isSocketConnected ? 'connected' : 'notConnected'}`) }}
-					</CBadge>
+					</v-chip>
 				</td>
 			</tr>
 			<tr>
@@ -45,9 +45,9 @@ limitations under the License.
 					{{ $t('daemonStatus.queue') }}
 				</td>
 				<td class='status'>
-					<CBadge :color='daemonQueueBadgeColor'>
+					<v-chip :color='daemonQueueBadgeColor' small>
 						{{ queueLen }}
-					</CBadge>
+					</v-chip>
 				</td>
 			</tr>
 		</tbody>
@@ -56,14 +56,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge} from '@coreui/vue/src';
 
 import {mapGetters} from 'vuex';
 
 @Component({
-	components: {
-		CBadge
-	},
 	computed: {
 		...mapGetters({
 			daemonMode: 'monitorClient/getMode',
@@ -92,7 +88,7 @@ export default class SidebarIndication extends Vue {
 		} else if (daemonMode === 'operational' || daemonMode === 'forwarding') {
 			return 'success';
 		} else {
-			return 'danger';
+			return 'error';
 		}
 	}
 
@@ -111,7 +107,7 @@ export default class SidebarIndication extends Vue {
 		} else if (queueLen <= 24) {
 			return 'warning';
 		} else {
-			return 'danger';
+			return 'error';
 		}
 	}
 

@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.hexio.form.title') }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -28,11 +28,11 @@ limitations under the License.
 								required: $t("forms.errors.clientId"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.clientId'
 								:label='$t("forms.fields.clientId")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -42,11 +42,11 @@ limitations under the License.
 								required: $t("forms.errors.requestTopic"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.topicRequest'
 								:label='$t("forms.fields.requestTopic")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -56,11 +56,11 @@ limitations under the License.
 								required: $t("forms.errors.responseTopic"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.topicResponse'
 								:label='$t("forms.fields.responseTopic")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -70,11 +70,11 @@ limitations under the License.
 								required: $t("forms.errors.username"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.username'
 								:label='$t("forms.fields.username")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -84,47 +84,39 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.password'
 								:type='passwordVisible ? "text" : "password"'
 								:label='$t("forms.fields.password")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							>
-								<template #append-content>
-									<span @click='passwordVisible = !passwordVisible'>
-										<FontAwesomeIcon
-											:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-										/>
-									</span>
-								</template>
-							</CInput>
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+								@click:append='passwordVisible = !passwordVisible'
+							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							color='secondary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
@@ -136,12 +128,6 @@ import {IHexioCloud} from '@/interfaces/clouds';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	},

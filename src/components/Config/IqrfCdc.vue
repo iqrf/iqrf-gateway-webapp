@@ -16,11 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>
+		<v-card>
+			<v-card-title>
 				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
-			</CCardHeader>
-			<CCardBody>
+			</v-card-title>
+			<v-card-text>
 				<CElementCover
 					v-if='loadFailed'
 					style='z-index: 1;'
@@ -29,7 +29,7 @@ limitations under the License.
 					{{ $t('config.daemon.messages.failedElement') }}
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<form @submit.prevent='saveConfig'>
 						<fieldset :disabled='loadFailed'>
 							<ValidationProvider
 								v-if='isAdmin'
@@ -39,11 +39,11 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.iqrfCdc.errors.instance")
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.instance'
 									:label='$t("forms.fields.instanceName")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -53,35 +53,35 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.iqrfCdc.errors.iqrfInterface")
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.IqrfInterface'
 									:label='$t("config.daemon.interfaces.iqrfCdc.form.interface")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-							<CButton
+							<v-btn
 								type='submit'
 								color='primary'
 								:disabled='invalid'
 							>
 								{{ $t('forms.save') }}
-							</CButton>
+							</v-btn>
 						</fieldset>
-					</CForm>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-			<CCardFooter>
+			</v-card-text>
+			<v-card-text>
 				<h4>{{ $t('config.daemon.interfaces.iqrfCdc.mappings' ) }}</h4><hr>
 				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
-			</CCardFooter>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 
@@ -96,13 +96,7 @@ import {IIqrfCdc} from '@/interfaces/iqrfInterfaces';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CInput,
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,

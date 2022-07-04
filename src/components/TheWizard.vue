@@ -17,28 +17,26 @@ limitations under the License.
 <template>
 	<div class='c-app flex-row align-items-center'>
 		<CContainer>
-			<CRow class='justify-content-center'>
-				<CCol lg='10'>
+			<v-row class='justify-content-center'>
+				<v-col lg='10'>
 					<div class='logo'>
 						<Logo :alt='title' />
 					</div>
 					<slot />
-				</CCol>
-			</CRow>
+				</v-col>
+			</v-row>
 		</CContainer>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCol, CRow} from '@coreui/vue/src';
+import {CContainer} from '@coreui/vue/src';
 import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {
 		CContainer,
-		CCol,
-		CRow,
 		Logo: ThemeManager.getWizardLogo(),
 	},
 })

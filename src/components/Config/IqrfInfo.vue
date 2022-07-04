@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -25,9 +25,7 @@ limitations under the License.
 				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm
-					@submit.prevent='saveConfig'
-				>
+				<form	@submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
 							v-if='isAdmin'
@@ -37,74 +35,64 @@ limitations under the License.
 								required: $t("config.daemon.misc.iqrfInfo.errors.instance")
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div
-							class='form-group'
+						<v-switch
+							v-model='enumPeriodic'
+							color='primary'
+							:label='$t("config.daemon.misc.iqrfInfo.form.enablePeriodic")'
+							inset
+						/>
+						<ValidationProvider
+							v-if='enumPeriodic'
+							v-slot='{errors, touched, valid}'
+							rules='integer|min:0|required'
+							:custom-messages='{
+								required: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+								min: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+								integer: $t("forms.errors.integer"),
+							}'
 						>
-							<label for='enumPeriodicEnable'>
-								{{ $t("config.daemon.misc.iqrfInfo.form.enablePeriodic") }}
-							</label><br>
-							<CSwitch
-								id='enumPeriodicEnable'
-								color='primary'
-								size='lg'
-								shape='pill'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='enumPeriodic'
+							<v-text-field
+								v-model.number='configuration.enumPeriod'
+								type='number'
+								min='0'
+								:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
-							<ValidationProvider
-								v-if='enumPeriodic'
-								v-slot='{errors, touched, valid}'
-								rules='integer|min:0|required'
-								:custom-messages='{
-									required: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
-									min: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
-									integer: $t("forms.errors.integer"),
-								}'
-							>
-								<CInput
-									v-model.number='configuration.enumPeriod'
-									type='number'
-									min='0'
-									:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-						</div>
-						<CInputCheckbox
-							:checked.sync='configuration.enumAtStartUp'
+						</ValidationProvider>
+						<v-checkbox
+							v-model='configuration.enumAtStartUp'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 						/>
-						<CInputCheckbox
-							:checked.sync='configuration.enumUniformDpaVer'
+						<v-checkbox
+							v-model='configuration.enumUniformDpaVer'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 						/>
-						<CInputCheckbox
+						<v-checkbox
 							v-if='!versionLowerEqual("2.3.6")'
-							:checked.sync='configuration.metaDataToMessages'
+							v-model='configuration.metaDataToMessages'
 							:label='$t("config.daemon.misc.iqrfInfo.form.metaDataToMessages")'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ $t('forms.save') }}
-						</CButton>
+						</v-btn>
 					</fieldset>
-				</CForm>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -120,15 +108,7 @@ import {IIqrfInfo} from '@/interfaces/iqrfInfo';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},

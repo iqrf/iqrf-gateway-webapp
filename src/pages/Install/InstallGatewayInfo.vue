@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('install.gwInfo.title') }}</CCardHeader>
-		<CCardBody>
+	<v-card>
+		<v-card-title>{{ $t('install.gwInfo.title') }}</v-card-title>
+		<v-card-text>
 			<div class='table-responsive'>
 				<table v-if='info !== null' class='table table-striped'>
 					<tbody>
@@ -84,16 +84,16 @@ limitations under the License.
 					</tbody>
 				</table>
 			</div>
-			<CButton color='primary' @click='downloadDiagnostics()'>
+			<v-btn color='primary' @click='downloadDiagnostics()'>
+				<v-icon small>mdi-file-download</v-icon>
 				{{ $t('install.gwInfo.download') }}
-			</CButton>
-		</CCardBody>
-	</CCard>
+			</v-btn>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
 import GatewayService from '@/services/GatewayService';
@@ -103,9 +103,6 @@ import { AxiosResponse } from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCardBody,
-		CCardHeader,
 		CoordinatorInfo,
 		DaemonModeInfo
 	},

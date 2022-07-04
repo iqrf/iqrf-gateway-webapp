@@ -17,65 +17,67 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ title }}</h1>
-		<CCard body-wrapper>
-			<div v-if='!missing && !unsupported && !unknown'>
-				<CButton
-					v-if='!service.enabled'
-					color='success'
-					@click='enable()'
-				>
-					{{ $t('service.actions.enable') }}
-				</CButton> <CButton
-					v-if='service.enabled'
-					color='danger'
-					@click='disable()'
-				>
-					{{ $t('service.actions.disable') }}
-				</CButton> <CButton
-					v-if='!service.active'
-					color='success'
-					@click='start()'
-				>
-					{{ $t('service.actions.start') }}
-				</CButton> <CButton
-					v-if='service.active'
-					color='danger'
-					@click='stop()'
-				>
-					{{ $t('service.actions.stop') }}
-				</CButton> <CButton
-					v-if='service.active'
-					color='info'
-					@click='restart()'
-				>
-					{{ $t('service.actions.restart') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='refreshStatus()'
-				>
-					{{ $t('service.actions.status') }}
-				</CButton>
-			</div>
-			<br>
-			<strong>{{ $t('service.status') }}: </strong>
-			<span v-if='missing'>
-				{{ $t('service.states.missing') }}
-			</span>
-			<span v-else-if='unsupported'>
-				{{ $t('service.states.unsupported') }}
-			</span>
-			<span v-else-if='unknown'>
-				{{ $t('service.states.unknown') }}
-			</span>
-			<span v-else>
-				<span v-if='service.enabled'>{{ $t('states.enabled') }}</span>
-				<span v-else>{{ $t('states.disabled') }}</span>,
-				<span v-if='service.active'>{{ $t('service.states.active') }}</span>
-				<span v-else>{{ $t('service.states.inactive') }}</span>
-			</span>
-			<br><br>
-			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<div v-if='!missing && !unsupported && !unknown'>
+					<v-btn
+						v-if='!service.enabled'
+						color='success'
+						@click='enable()'
+					>
+						{{ $t('service.actions.enable') }}
+					</v-btn> <v-btn
+						v-if='service.enabled'
+						color='error'
+						@click='disable()'
+					>
+						{{ $t('service.actions.disable') }}
+					</v-btn> <v-btn
+						v-if='!service.active'
+						color='success'
+						@click='start()'
+					>
+						{{ $t('service.actions.start') }}
+					</v-btn> <v-btn
+						v-if='service.active'
+						color='error'
+						@click='stop()'
+					>
+						{{ $t('service.actions.stop') }}
+					</v-btn> <v-btn
+						v-if='service.active'
+						color='info'
+						@click='restart()'
+					>
+						{{ $t('service.actions.restart') }}
+					</v-btn> <v-btn
+						color='secondary'
+						@click='refreshStatus()'
+					>
+						{{ $t('service.actions.status') }}
+					</v-btn>
+				</div>
+				<br>
+				<strong>{{ $t('service.status') }}: </strong>
+				<span v-if='missing'>
+					{{ $t('service.states.missing') }}
+				</span>
+				<span v-else-if='unsupported'>
+					{{ $t('service.states.unsupported') }}
+				</span>
+				<span v-else-if='unknown'>
+					{{ $t('service.states.unknown') }}
+				</span>
+				<span v-else>
+					<span v-if='service.enabled'>{{ $t('states.enabled') }}</span>
+					<span v-else>{{ $t('states.disabled') }}</span>,
+					<span v-if='service.active'>{{ $t('service.states.active') }}</span>
+					<span v-else>{{ $t('service.states.inactive') }}</span>
+				</span>
+				<br><br>
+				<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
+			</v-card-text>
+		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
 		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("systemdJournal")' />
@@ -84,7 +86,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '@/components/Gateway/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/GatewayUserPassword.vue';
 import SystemdJournaldConfig from '@/components/Gateway/SystemdJournaldConfig.vue';
@@ -125,8 +126,6 @@ interface IService {
 @Component({
 	components: {
 		AptConfig,
-		CButton,
-		CCard,
 		GatewayUserPassword,
 		SystemdJournaldConfig,
 	},

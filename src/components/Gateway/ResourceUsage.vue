@@ -19,13 +19,11 @@ limitations under the License.
 		{{ $t('gateway.info.usages.used') }}
 		{{ usage.usage.replace('%', ' %') }}
 		({{ usage.used }} / {{ usage.size }})
-		<div class='progress'>
-			<div
-				:class='className'
-				role='progressbar'
-				:style='{ width: usage.usage }'
-			/>
-		</div>
+		<v-progress-linear
+			v-model='value'
+			:color='color'
+			height='1em'
+		/>
 	</div>
 </template>
 
@@ -63,28 +61,28 @@ export default class ResourceUsage extends Vue {
 	/**
 	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
 	 */
-	@Prop({ required: true }) usage!: UsageData;
+	@Prop({required: true}) usage!: UsageData;
 
 	/**
-	 * Returns CSS classes for the progress bar
+	 * Returns progress bar value
+	 * @returns {number} Progress bar value
 	 */
-	get className(): string {
-		const usage = Number.parseFloat(this.usage.usage.replace('%', ''));
-		let className = 'progress-bar usage-progress-bar';
-		if (usage >= 90) {
-			className += ' bg-danger';
-		} else if (usage >= 80) {
-			className += ' bg-warning';
+	get value(): number {
+		return Number.parseFloat(this.usage.usage.replace('%', ''));
+	}
+
+	/**
+	 * Returns progress bar color
+	 * @return {string} Progress bar color
+	 */
+	get color(): string {
+		if (this.value >= 90) {
+			return 'error';
+		} else if (this.value >= 80) {
+			return 'warning';
 		} else {
-			className += ' bg-success';
+			return 'success';
 		}
-		return className;
 	}
 }
 </script>
-
-<style lang='scss'>
-.table-striped tbody tr:nth-of-type(2n+1) .progress {
-	background-color: white;
-}
-</style>
