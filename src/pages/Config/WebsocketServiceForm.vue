@@ -22,12 +22,12 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.messagings.websocket.service.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveInstance'>
-						<CRow>
-							<CCol md='6'>
+					<form @submit.prevent='saveInstance'>
+						<v-row>
+							<v-col md='6'>
 								<legend>{{ $t('config.daemon.messagings.websocket.service.legend') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -37,11 +37,11 @@ limitations under the License.
 										instance: $t("config.daemon.messagings.instanceInvalid"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='componentInstance'
 										:label='$t("forms.fields.instanceName")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -53,31 +53,28 @@ limitations under the License.
 										integer: $t("forms.errors.integer"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='WebsocketPort'
 										type='number'
 										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<CInputCheckbox
-									:checked.sync='acceptOnlyLocalhost'
+								<v-checkbox
+									v-model='acceptOnlyLocalhost'
 									:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 								/>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<div>
 									<label style='font-size: 1.5rem;'>
 										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
 									</label>
-									<CSwitch
+									<v-switch
 										color='primary'
-										size='lg'
-										shape='pill'
-										label-on='ON'
-										label-off='OFF'
-										:checked.sync='tlsEnabled'
+										inset
+										v-model='tlsEnabled'
 										style='float: right;'
 									/>
 									<ValidationProvider
@@ -88,14 +85,14 @@ limitations under the License.
 											required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
 										}'
 									>
-										<CSelect
-											:value.sync='tlsMode'
+										<v-select
+											v-model='tlsMode'
 											:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
-											:options='tlsModeOptions'
+											:items='tlsModeOptions'
 											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:error-messages='errors'
 										/>
 										<p
 											v-if='tlsMode !== "" && tlsMode !== undefined'
@@ -112,12 +109,12 @@ limitations under the License.
 											required: $t("config.daemon.messagings.websocket.errors.certificate"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='certificate'
 											:label='$t("forms.fields.certificate")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -128,40 +125,29 @@ limitations under the License.
 											required: $t("config.daemon.messagings.websocket.errors.privateKey"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='privateKey'
 											:label='$t("forms.fields.privateKey")'
 											:disabled='!tlsEnabled'
 											:is-valid='touched && tlsEnabled ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 								</div>
-							</CCol>
-						</CRow>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+							</v-col>
+						</v-row>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CForm,
-	CInput,
-	CInputCheckbox,
-	CSelect,
-	CSwitch
-} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -176,15 +162,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -245,15 +222,15 @@ export default class WebsocketServiceForm extends Vue {
 	private tlsModeOptions: Array<IOption> = [
 		{
 			value: 'intermediate',
-			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
+			text: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString(),
 		},
 		{
 			value: 'modern',
-			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
+			text: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString(),
 		},
 		{
 			value: 'old',
-			label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
+			text: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString(),
 		},
 	];
 

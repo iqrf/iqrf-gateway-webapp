@@ -16,106 +16,92 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader class='datatable-header'>
+		<v-card>
+			<v-card-title class='datatable-header'>
 				<div>
 					{{ $t('iqrfnet.standard.table.title') }}
 				</div>
 				<div>
-					<CButton
+					<v-btn
 						color='primary'
-						size='sm'
+						small
 						@click='enumerateNetwork'
 					>
-						<CIcon :content='icons.enumerate' size='sm' />
+						<v-icon small>
+							mdi-google-spreadsheet
+						</v-icon>
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
 						</span>
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='primary'
-						size='sm'
+						small
 						@click='getDevices'
 					>
-						<CIcon :content='icons.refresh' size='sm' />
+						<v-icon small>
+							mdi-sync
+						</v-icon>
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.refresh') }}
 						</span>
-					</CButton> <CButton
-						color='danger'
-						size='sm'
+					</v-btn> <v-btn
+						color='error'
+						small
 						@click='showModal = true'
 					>
-						<CIcon :content='icons.reset' size='sm' />
+						<v-icon small>
+							mdi-refresh
+						</v-icon>
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.reset') }}
 						</span>
-					</CButton>
+					</v-btn>
 				</div>
-			</CCardHeader>
-			<CCardBody>
+			</v-card-title>
+			<v-card-text>
 				<div class='datatable-legend'>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='icons.details'
-							size='lg'
-						/>
+						<v-icon	color='info'>
+							mdi-information-outline
+						</v-icon>
 						{{ $t('iqrfnet.standard.table.info') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='icons.coordinator'
-							size='lg'
-						/>
+						<v-icon color='info'>
+							mdi-home-outline
+						</v-icon>
 						{{ $t('forms.fields.coordinator') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='icons.bonded'
-							size='lg'
-						/>
+						<v-icon color='info'>
+							mdi-check
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='icons.discovered'
-							size='lg'
-						/>
+						<v-icon color='info'>
+							mdi-signal-cellular-outline
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='icons.bonded'
-							size='lg'
-						/>
+						<v-icon color='success'>
+							mdi-check
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='icons.discovered'
-							size='lg'
-						/>
+						<v-icon color='success'>
+							mdi-signal-cellular-outline
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='icons.supported'
-							size='lg'
-						/>
+						<v-icon color='success'>mdi-check-circle-outline</v-icon>
 						{{ $t('iqrfnet.standard.table.supported') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-danger'
-							:content='icons.unsupported'
-							size='lg'
-						/>
+						<v-icon color='error'>mdi-close-circle-outline</v-icon>
 						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
@@ -288,8 +274,8 @@ limitations under the License.
 						</CCollapse>
 					</template>
 				</CDataTable>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 		<CModal
 			color='danger'
 			:show.sync='showModal'
@@ -301,17 +287,17 @@ limitations under the License.
 			</template>
 			{{ $t('iqrfnet.standard.modal.prompt') }}
 			<template #footer>
-				<CButton
+				<v-btn
 					color='danger'
 					@click='resetDb'
 				>
 					{{ $t('iqrfnet.standard.table.actions.reset') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					color='secondary'
 					@click='showModal = false'
 				>
 					{{ $t('forms.cancel') }}
-				</CButton>
+				</v-btn>
 			</template>
 		</CModal>
 	</div>

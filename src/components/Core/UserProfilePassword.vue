@@ -15,17 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
-			<strong>{{ $t('core.profile.form.changePassword') }}</strong>
-		</CCardHeader>
-		<CCardBody>
-			<CAlert color='info'>
-				<CIcon size='xl' :content='infoIcon' />
+	<v-card>
+		<v-card-title>
+			{{ $t('core.profile.form.changePassword') }}
+		</v-card-title>
+		<v-card-text>
+			<v-alert type='info' text>
 				{{ $t('core.profile.messages.changePassword') }}
-			</CAlert>
+			</v-alert>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='changePassword'>
+				<form @submit.prevent='changePassword'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						:rules='{
@@ -35,11 +34,11 @@ limitations under the License.
 							required: $t("core.user.errors.oldPassword"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='oldPassword'
 							:label='$t("core.profile.form.oldPassword")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							type='password'
 							autocomplete='current-password'
 						/>
@@ -53,35 +52,33 @@ limitations under the License.
 							required: $t("core.user.errors.newPassword"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='newPassword'
 							:label='$t("core.profile.form.newPassword")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							type='password'
 							autocomplete='new-password'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('core.profile.form.changePassword') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 // Components
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 // Module properties
-import {cilInfo} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -92,13 +89,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -117,11 +107,6 @@ export default class UserProfilePassword extends Vue {
 	 * @var {string} newPassword New user password
 	 */
 	private newPassword = '';
-
-	/**
-	 * @constant {Array<string>} infoIcon Info icon
-	 */
-	private infoIcon: Array<string> = cilInfo;
 
 	/**
 	 * Retrieves user ID

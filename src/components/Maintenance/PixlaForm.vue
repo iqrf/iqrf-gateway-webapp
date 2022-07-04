@@ -20,7 +20,7 @@ limitations under the License.
 		v-slot='{invalid}'
 	>
 		<hr>
-		<CForm @submit.prevent='saveToken'>
+		<form @submit.prevent='saveToken'>
 			<ValidationProvider
 				v-slot='{ errors, touched, valid }'
 				rules='required'
@@ -28,27 +28,26 @@ limitations under the License.
 					required: $t("maintenance.pixla.errors.token"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='token'
 					:label='$t("maintenance.pixla.form.token")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
-			<CButton
+			<v-btn
 				color='primary'
 				type='submit'
 				:disabled='invalid'
 			>
 				{{ $t('forms.save') }}
-			</CButton>
-		</CForm>
+			</v-btn>
+		</form>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -60,10 +59,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
-		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},

@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
-			<strong>{{ $t('core.profile.form.editProfile') }}</strong>
-		</CCardHeader>
-		<CCardBody>
+	<v-card>
+		<v-card-title>
+			{{ $t('core.profile.form.editProfile') }}
+		</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='save'>
+				<form @submit.prevent='save'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -29,11 +29,11 @@ limitations under the License.
 							required: $t("forms.errors.username"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='user.username'
 							:label='$t("forms.fields.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -43,11 +43,11 @@ limitations under the License.
 							email: $t("forms.errors.emailFormat"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='user.email'
 							:label='$t("forms.fields.email")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -57,31 +57,30 @@ limitations under the License.
 							required: $t("core.user.errors.language"),
 						}'
 					>
-						<CSelect
-							:value.sync='user.language'
+						<v-select
+							v-model='user.language'
 							:label='$t("core.user.language")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							:options='languageOptions'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:items='languageOptions'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 // Components
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 // Module properties
 import {email, required} from 'vee-validate/dist/rules';
@@ -96,13 +95,6 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -129,7 +121,7 @@ export default class UserProfileForm extends Vue {
 	private languageOptions: Array<IOption> = [
 		{
 			value: UserLanguage.ENGLISH,
-			label: this.$t('core.user.languages.en'),
+			text: this.$t('core.user.languages.en').toString(),
 		},
 	];
 

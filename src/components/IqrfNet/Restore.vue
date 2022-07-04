@@ -15,37 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<h4>{{ $t('iqrfnet.networkManager.restore.title') }}</h4><br>
-			<ValidationObserver>
-				<CForm @submit.prevent='restoreDevice'>
-					<div class='form-group'>
-						<CInputFile
-							ref='backupFile'
+			<ValidationObserver v-slot='{invalid}'>
+				<form @submit.prevent='restoreDevice'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:error-messages='{required: $t("iqrfnet.networkManager.restore.form.messages.backupFile")}'
+					>
+						<v-file-input
+							v-model='file'
 							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
 							accept='.iqrfbkp'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							@input='fileInputTouched'
-							@click='isEmpty'
 						/>
-						<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
-					</div>
-					<CButton
+					</ValidationProvider>
+					<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
+					<v-btn
 						type='submit'
 						color='primary'
-						:disabled='fileEmpty'
+						:disabled='invalid'
 					>
 						{{ $t('forms.restore') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -60,14 +64,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputFile,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -77,15 +73,13 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
  * IQMESH Restore component card
  */
 export default class Restore extends Vue {
+
+	private file: File|null = null;
+
 	/**
 	 * @var {Array<IRestoreData>} restoreData Array of device backup data entries
 	 */
 	private restoreData: Array<IRestoreData> = [];
-
-	/**
-	 * @var {boolean} fileEmpty Is file input empty?
-	 */
-	private fileEmpty = true;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -240,27 +234,10 @@ export default class Restore extends Vue {
 	}
 
 	/**
-	 * Extracts files from file input element
-	 */
-	private getFiles(): FileList {
-		const input = ((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if file input element is empty
-	 */
-	private isEmpty(): void {
-		const files = this.getFiles();
-		this.fileEmpty = files === null || files.length === 0;
-	}
-
-	/**
 	 * Clears file input content
 	 */
 	private clearInput(): void {
-		((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement).value = '';
-		this.fileEmpty = true;
+		this.file = null;
 		this.$store.commit('spinner/HIDE');
 	}
 
@@ -268,8 +245,7 @@ export default class Restore extends Vue {
 	 * File input handler
 	 */
 	private fileInputTouched(): void {
-		this.isEmpty();
-		if (this.fileEmpty) {
+		if (this.file === null) {
 			return;
 		}
 		this.readContents();
@@ -284,7 +260,7 @@ export default class Restore extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.networkManager.restore.messages.parsingContent').toString()
 		);
-		this.getFiles()[0].text()
+		this.file?.text()
 			.then((fileContent: string) => {
 				this.parseContent(fileContent);
 			})
@@ -446,7 +422,7 @@ export default class Restore extends Vue {
 				);
 				return false;
 			}
-			if (entry.DataC) { // Check for extre coordinator data
+			if (entry.DataC) { // Check for extra coordinator data
 				this.$toast.error(
 					this.$t(
 						'iqrfnet.networkManager.restore.messages.invalidNodeDataC',

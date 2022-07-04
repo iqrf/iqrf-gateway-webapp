@@ -20,14 +20,11 @@ limitations under the License.
 		<CWrapper>
 			<TheHeader />
 			<div class='c-body'>
-				<main class='c-main'>
-					<CContainer fluid>
-						<div class='fade-in'>
-							<slot />
-							<router-view />
-						</div>
-					</CContainer>
-				</main>
+				<v-main class='c-main'>
+					<v-container>
+						<router-view />
+					</v-container>
+				</v-main>
 			</div>
 		</CWrapper>
 	</div>

@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('gateway.user.title', {user: user}) }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='running'
 				:opacity='0.75'
@@ -28,7 +28,7 @@ limitations under the License.
 				<CSpinner color='primary' />
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<div
 						v-if='$route.path.includes("/install")'
 						class='form-group'
@@ -45,45 +45,37 @@ limitations under the License.
 							required: $t("forms.errors.password"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='password'
-							:type='visibility'
+							:type='passwordVisible ? "text" : "password"'
 							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						>
-							<template #append-content>
-								<span @click='visibility = (visibility === "password" ? "text" : "password")'>
-									<FontAwesomeIcon
-										:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
-									/>
-								</span>
-							</template>
-						</CInput>
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+							@click:append='passwordVisible = !passwordVisible'
+						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						:disabled='invalid'
 						@click='changePassword'
 					>
 						{{ $t('forms.changePassword') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						v-if='$route.path.includes("/install")'
 						color='secondary'
 						@click='nextStep'
 					>
 						{{ $t('forms.skip') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -96,13 +88,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -124,9 +109,9 @@ export default class GatewayUserPassword extends Vue {
 	private password = '';
 
 	/**
-	 * @var {string} visibility Form password field visibility type
+	 * @var {boolean} passwordVisible Password visibility
 	 */
-	private visibility = 'password';
+	private passwordVisible = false;
 
 	/**
 	 * @var {string} user Gateway user name

@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardBody>
-			<CRow v-if='gatewayTime !== null'>
-				<CCol md='6'>
+	<v-card>
+		<v-card-text>
+			<v-row v-if='gatewayTime !== null'>
+				<v-col md='6'>
 					<p>
 						<strong>
 							{{ $t('gateway.datetime.currentTime') }}
@@ -34,28 +34,23 @@ limitations under the License.
 						<label for='clockFormatSwitch'>
 							{{ $t('gateway.datetime.clockFormat') }}
 						</label><br>
-						<CSwitch
+						<v-switch
 							id='clockFormatSwitch'
-							:checked.sync='hour12'
+							v-model='hour12'
 							color='primary'
-							shape='pill'
-							size='lg'
-							:label-on='$t("forms.on")'
-							:label-off='$t("forms.off")'
+							inset
 						/>
 					</div>
 					<p>
 						<strong>
 							{{ $t('gateway.datetime.ntpSync') }}
 						</strong>
-						<CIcon
-							size='xl'
-							:class='gatewayTime.ntpSynchronized ? "text-success" : "text-danger"'
-							:content='gatewayTime.ntpSynchronized ? icons.sync : icons.notSync'
-						/>
+						<v-icon :color='gatewayTime.ntpSynchronized ? "success" : "error"'>
+							{{ gatewayTime.ntpSynchronized ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+						</v-icon>
 					</p>
-				</CCol>
-				<CCol md='6'>
+				</v-col>
+				<v-col md='6'>
 					<p>
 						<strong>
 							{{ $t('gateway.datetime.currentTimezone') }}
@@ -64,38 +59,32 @@ limitations under the License.
 					<p>
 						{{ currentTimezone }}
 					</p>
-					<CForm @submit.prevent='setTimezone'>
+					<form @submit.prevent='setTimezone'>
 						<div class='form-group'>
 							<label>
 								<strong>
 									{{ $t('gateway.datetime.form.timezone') }}
 								</strong>
 							</label>
-							<vSelect
+							<v-autocomplete
 								v-model='timezone'
-								:options='timezoneOptions'
-								label='label'
-								:autoscroll='true'
-								:clearable='false'
-								:filterable='true'
+								:items='timezoneOptions'
+								:label='$t("gateway.datetime.form.timezone")'
 							/>
 						</div>
-						<CButton color='primary' type='submit'>
+						<v-btn color='primary' type='submit'>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</CCol>
-			</CRow>
-		</CCardBody>
-	</CCard>
+						</v-btn>
+					</form>
+				</v-col>
+			</v-row>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CIcon, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
-import vSelect from 'vue-select';
 
-import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import TimeService from '@/services/TimeService';
@@ -104,21 +93,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {ITime, ITimezone} from '@/interfaces/gatewayTime';
 import {IOption} from '@/interfaces/coreui';
 
-@Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCol,
-		CForm,
-		CIcon,
-		CInputCheckbox,
-		CRow,
-		CSelect,
-		CSwitch,
-		vSelect,
-	}
-})
+@Component({})
 
 /**
  * Date and time settings component for Gateway
@@ -139,7 +114,7 @@ export default class DateTimeZone extends Vue {
 	 * @var {IOption} timezone Currently selected timezone
 	 */
 	private timezone: IOption = {
-		label: '',
+		text: '',
 		value: '',
 	};
 
@@ -153,13 +128,6 @@ export default class DateTimeZone extends Vue {
 	 */
 	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null;
 
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		sync: cilCheckCircle,
-		notSync: cilXCircle
-	};
 
 	/**
 	 * Retrieves gateway time and available timezones
@@ -226,7 +194,7 @@ export default class DateTimeZone extends Vue {
 					return;
 				}
 				this.timezone = {
-					label: this.gatewayTime.name + ' (' + this.gatewayTime.code + ', ' + this.gatewayTime.offset + ')',
+					text: this.gatewayTime.name + ' (' + this.gatewayTime.code + ', ' + this.gatewayTime.offset + ')',
 					value: this.gatewayTime?.name,
 				};
 				this.timeRefreshInterval = setInterval(() => {
@@ -264,7 +232,7 @@ export default class DateTimeZone extends Vue {
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,
-				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
+				text: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
 			});
 		}
 		this.timezoneOptions = timezoneArray;

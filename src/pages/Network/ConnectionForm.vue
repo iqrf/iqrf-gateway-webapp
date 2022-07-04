@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.connection.edit') }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='prepareModal'>
+					<form @submit.prevent='prepareModal'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -28,11 +28,11 @@ limitations under the License.
 								required: $t("network.connection.errors.name"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.name'
 								:label='$t("network.connection.name")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -42,17 +42,17 @@ limitations under the License.
 								required: $t("network.connection.errors.interface"),
 							}'
 						>
-							<CSelect
-								:value.sync='ifname'
+							<v-select
+								v-model='ifname'
 								:label='$t("network.connection.interface")'
 								:placeholder='$t("network.connection.errors.interface")'
-								:options='ifnameOptions'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:items='ifnameOptions'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CRow v-if='connection.type === "802-11-wireless"'>
-							<CCol md='6'>
+						<v-row v-if='connection.type === "802-11-wireless"'>
+							<v-col md='6'>
 								<legend>{{ $t('network.wireless.form.title') }}</legend>
 								<div class='form-group'>
 									<strong>
@@ -63,11 +63,11 @@ limitations under the License.
 									v-if='connection.wifi.security.type === "ieee8021x"'
 									class='form-group'
 								>
-									<CInput
+									<v-text-field
 										v-model='connection.wifi.security.leap.username'
 										:label='$t("network.wireless.form.username")'
 									/>
-									<CInput
+									<v-text-field
 										v-model='connection.wifi.security.leap.password'
 										:label='$t("network.wireless.form.password")'
 									/>
@@ -84,19 +84,19 @@ limitations under the License.
 											wepKeyType: $t("network.wireless.errors.wepKeyType"),
 										}'
 									>
-										<CSelect
-											:value.sync='connection.wifi.security.wep.type'
-											:options='wepKeyOptions'
+										<v-select
+											v-model='connection.wifi.security.wep.type'
+											:items='wepKeyOptions'
 											:label='$t("network.wireless.form.wep.type")'
 											:placeholder='$t("network.wireless.errors.wepKeyType")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-									<CSelect
+									<v-select
 										v-if='connection.wifi.security.wep.type === "key"'
-										:value.sync='wepLen'
-										:options='wepLenOptions'
+										v-model='wepLen'
+										:items='wepLenOptions'
 										:label='$t("network.wireless.form.wep.length")'
 									/>
 									<ValidationProvider
@@ -109,14 +109,14 @@ limitations under the License.
 											wepIndex: $t("network.wireless.errors.wepIndexKeyMissing"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='connection.wifi.security.wep.index'
 											type='number'
 											min='0'
 											max='3'
 											:label='$t("network.wireless.form.wep.index")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -130,11 +130,11 @@ limitations under the License.
 												$t("network.wireless.errors.wepKey128Invalid")),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.wifi.security.wep.keys[index]'
 											:label='$t("network.wireless.form.wep.keyNum", {index: index})'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 								</div>
@@ -147,42 +147,36 @@ limitations under the License.
 										wpaPsk: $t("network.wireless.errors.pskInvalid"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='connection.wifi.security.psk'
 										:type='pskVisible ? "text" : "password"'
 										:label='$t("network.wireless.form.psk")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='pskVisible = !pskVisible'>
-												<FontAwesomeIcon
-													:icon='(pskVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										:append-icon='pskVisible ? "mdi-eye" : "mdi-eye-off"'
+										@click:append='pskVisible = !pskVisible'
+									/>
 								</ValidationProvider>
 								<div
 									v-if='connection.wifi.security.type === "wpa-eap"'
 									class='form-group'
 								>
-									<CSelect
-										:value.sync='connection.wifi.security.eap.phaseOneMethod'
-										:options='authOneOptions'
+									<v-select
+										v-model='connection.wifi.security.eap.phaseOneMethod'
+										:items='authOneOptions'
 										:label='$t("network.wireless.form.authPhaseOne")'
 									/>
-									<CInput
+									<v-text-field
 										v-model='connection.wifi.security.eap.anonymousIdentity'
 										:label='$t("network.wireless.form.anonymousIdentity")'
 									/>
-									<CInput
+									<v-text-field
 										v-model='connection.wifi.security.eap.cert'
 										:label='$t("network.wireless.form.caCert")'
 									/>
-									<CSelect
-										:value.sync='connection.wifi.security.eap.phaseTwoMethod'
-										:options='authTwoOptions'
+									<v-select
+										v-model='connection.wifi.security.eap.phaseTwoMethod'
+										:items='authTwoOptions'
 										:label='$t("network.wireless.form.authPhaseTwo")'
 									/>
 									<ValidationProvider
@@ -192,11 +186,11 @@ limitations under the License.
 											required: $t("forms.errors.username"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.wifi.security.eap.identity'
 											:label='$t("network.wireless.form.username")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -206,18 +200,18 @@ limitations under the License.
 											required: $t("forms.errors.password"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.wifi.security.eap.password'
 											:label='$t("network.wireless.form.password")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 								</div>
-							</CCol>
-						</CRow>
-						<CRow>
-							<CCol md='6'>
+							</v-col>
+						</v-row>
+						<v-row>
+							<v-col md='6'>
 								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -226,24 +220,24 @@ limitations under the License.
 										required: $t("network.connection.ipv4.errors.method"),
 									}'
 								>
-									<CSelect
+									<v-select
 										id='ipv4MethodSelect'
-										:value.sync='connection.ipv4.method'
-										:options='ipv4Methods'
+										v-model='connection.ipv4.method'
+										:items='ipv4Methods'
 										:label='$t("network.connection.ipv4.method")'
 										:placeholder='$t("network.connection.ipv4.methods.null")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv4.method === "manual"'>
 									<hr>
-									<CAlert
+									<v-alert
 										v-if='!ipv4InSubnet'
-										color='danger'
+										type='error'
 									>
 										{{ $t('network.connection.ipv4.ipNotInSubnet') }}
-									</CAlert>
+									</v-alert>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
@@ -252,11 +246,11 @@ limitations under the License.
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.ipv4.addresses[0].address'
 											:label='$t("network.connection.ipv4.address")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -268,11 +262,11 @@ limitations under the License.
 											netmask: $t("network.connection.ipv4.errors.maskInvalid"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.ipv4.addresses[0].mask'
 											:label='$t("network.connection.ipv4.mask")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<ValidationProvider
@@ -283,11 +277,11 @@ limitations under the License.
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.ipv4.gateway'
 											:label='$t("network.connection.ipv4.gateway")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<hr>
@@ -303,32 +297,32 @@ limitations under the License.
 												ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model='address.address'
 												:label='$t("network.connection.ipv4.dns.address")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
 										<div class='form-group'>
-											<CButton
+											<v-btn
 												v-if='connection.ipv4.dns.length > 1'
-												color='danger'
+												color='error'
 												@click='deleteIpv4Dns(index)'
 											>
 												{{ $t('network.connection.ipv4.dns.remove') }}
-											</CButton> <CButton
+											</v-btn> <v-btn
 												v-if='index === (connection.ipv4.dns.length - 1)'
 												color='success'
 												@click='addIpv4Dns'
 											>
 												{{ $t('network.connection.ipv4.dns.add') }}
-											</CButton>
+											</v-btn>
 										</div>
 									</div>
 								</div>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -337,13 +331,13 @@ limitations under the License.
 										required: $t("network.connection.ipv6.errors.method"),
 									}'
 								>
-									<CSelect
-										:value.sync='connection.ipv6.method'
+									<v-select
+										v-model='connection.ipv6.method'
 										:label='$t("network.connection.ipv6.method")'
-										:options='ipv6Methods'
+										:items='ipv6Methods'
 										:placeholder='$t("network.connection.ipv6.methods.null")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
 								<div v-if='connection.ipv6.method === "manual"'>
@@ -360,11 +354,11 @@ limitations under the License.
 												ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model='address.address'
 												:label='$t("network.connection.ipv6.address")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
 										<ValidationProvider
@@ -375,30 +369,30 @@ limitations under the License.
 												between: $t("network.connection.ipv6.errors.prefixInvalid"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='address.prefix'
 												type='number'
 												min='48'
 												max='128'
 												:label='$t("network.connection.ipv6.prefix")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
 										<div class='form-group'>
-											<CButton
+											<v-btn
 												v-if='connection.ipv6.addresses.length > 1'
-												color='danger'
+												color='error'
 												@click='deleteIpv6Address(index)'
 											>
 												{{ $t('network.connection.ipv6.addresses.remove') }}
-											</CButton> <CButton
+											</v-btn> <v-btn
 												v-if='index === (connection.ipv6.addresses.length - 1)'
 												color='success'
 												@click='addIpv6Address'
 											>
 												{{ $t('network.connection.ipv6.addresses.add') }}
-											</CButton>
+											</v-btn>
 										</div>
 									</div><hr>
 									<ValidationProvider
@@ -409,11 +403,11 @@ limitations under the License.
 											ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='connection.ipv6.gateway'
 											:label='$t("network.connection.ipv6.gateway")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider><hr>
 									<div
@@ -428,88 +422,84 @@ limitations under the License.
 												ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model='address.address'
 												:label='$t("network.connection.ipv6.dns.address")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
 										<div class='form-group'>
-											<CButton
+											<v-btn
 												v-if='connection.ipv6.dns.length > 1'
-												color='danger'
+												color='error'
 												@click='deleteIpv6Dns(index)'
 											>
 												{{ $t('network.connection.ipv6.dns.remove') }}
-											</CButton> <CButton
+											</v-btn> <v-btn
 												v-if='index === (connection.ipv6.dns.length - 1)'
 												color='success'
 												@click='addIpv6Dns'
 											>
 												{{ $t('network.connection.ipv6.dns.add') }}
-											</CButton>
+											</v-btn>
 										</div>
 									</div>
 								</div>
-							</CCol>
-						</CRow>
-						<CButton
+							</v-col>
+						</v-row>
+						<v-btn
 							type='submit'
 							color='primary'
 							:disabled='invalid || !ipv4InSubnet'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CModal
-			:show.sync='showModal'
-			color='warning'
-			size='lg'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.connection.modal.title') }}
-				</h5>
-			</template>
-			<div>
-				<span v-if='modalMessages.ipv4 !== ""'>
-					{{ modalMessages.ipv4 }}
-				</span>
-				<a
-					v-if='modalMessages.ipv4Addr !== ""'
-					style='color: blue; cursor: pointer;'
-					:href='modalMessages.ipv4Addr'
-					target='_blank'
-				>
-					{{ modalMessages.ipv4Addr }}
-				</a>
-			</div>
-			{{ $t('network.connection.modal.confirmPrompt') }}
-			<template #footer>
-				<CButton
-					color='warning'
-					@click='saveConnection'
-				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+			</v-card-text>
+		</v-card>
+		<v-dialog	v-model='showModal' width='50%'>
+			<v-card>
+				<v-card-title>{{ $t('network.connection.modal.title') }}</v-card-title>
+				<v-card-text>
+					<div>
+						<span v-if='modalMessages.ipv4 !== ""'>
+							{{ modalMessages.ipv4 }}
+						</span>
+						<a
+							v-if='modalMessages.ipv4Addr !== ""'
+							style='color: blue; cursor: pointer;'
+							:href='modalMessages.ipv4Addr'
+							target='_blank'
+						>
+							{{ modalMessages.ipv4Addr }}
+						</a>
+					</div>
+					{{ $t('network.connection.modal.confirmPrompt') }}
+				</v-card-text>
+				<v-card-actions>
+					<v-btn
+						color='success'
+						@click='saveConnection'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+					<v-spacer />
+					<v-btn
+						color='error'
+						@click='showModal = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {sleep} from '@/helpers/sleep';
@@ -530,15 +520,6 @@ import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
-		CBadge,
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CModal,
-		CSelect,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -589,7 +570,7 @@ export default class ConnectionForm extends Vue {
 	 */
 	private authOneOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.form.phaseOneAlgorithm.peap'),
+			text: this.$t('network.wireless.form.phaseOneAlgorithm.peap').toString(),
 			value: 'peap'
 		},
 	];
@@ -599,7 +580,7 @@ export default class ConnectionForm extends Vue {
 	 */
 	private authTwoOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2'),
+			text: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2').toString(),
 			value: 'mschapv2'
 		},
 	];
@@ -609,11 +590,11 @@ export default class ConnectionForm extends Vue {
 	 */
 	private wepKeyOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.form.wep.types.key'),
+			text: this.$t('network.wireless.form.wep.types.key').toString(),
 			value: WepKeyType.KEY
 		},
 		{
-			label: this.$t('network.wireless.form.wep.types.passphrase'),
+			text: this.$t('network.wireless.form.wep.types.passphrase').toString(),
 			value: WepKeyType.PASSPHRASE
 		},
 	];
@@ -628,11 +609,11 @@ export default class ConnectionForm extends Vue {
 	 */
 	private wepLenOptions: Array<IOption> = [
 		{
-			label: this.$t('network.wireless.form.wep.lengths.64bit'),
+			text: this.$t('network.wireless.form.wep.lengths.64bit').toString(),
 			value: WepKeyLen.BIT64,
 		},
 		{
-			label: this.$t('network.wireless.form.wep.lengths.128bit'),
+			text: this.$t('network.wireless.form.wep.lengths.128bit').toString(),
 			value: WepKeyLen.BIT128,
 		},
 	];
@@ -751,7 +732,7 @@ export default class ConnectionForm extends Vue {
 		const methodOptions: Array<IOption> = methods.map(
 			(method: string) => ({
 				value: method,
-				label: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
+				text: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
 			})
 		);
 		/*methodOptions.push({
@@ -771,7 +752,7 @@ export default class ConnectionForm extends Vue {
 		const methodOptions: Array<IOption> = methods.map((method: string) =>
 			({
 				value: method,
-				label: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
+				text: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
 			})
 		);
 		/*methodOptions.push({
@@ -834,7 +815,7 @@ export default class ConnectionForm extends Vue {
 			.then((response: AxiosResponse) => {
 				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
+					interfaces.push({text: item.name, value: item.name});
 				});
 				this.ifnameOptions = interfaces;
 				if (this.uuid !== null) {

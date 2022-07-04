@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<h4>{{ $t('iqrfnet.networkManager.backup.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='backupDevice'>
-					<CSelect
-						:value.sync='target'
+				<form @submit.prevent='backupDevice'>
+					<v-select
+						v-model='target'
 						:label='$t("iqrfnet.networkManager.backup.form.target")'
-						:options='selectOptions'
+						:items='selectOptions'
 						:placeholder='$t("iqrfnet.networkManager.backup.form.messages.select")'
 					/>
 					<ValidationProvider
@@ -36,32 +36,31 @@ limitations under the License.
 							required: $t("iqrfnet.networkManager.backup.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("forms.fields.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						type='submit'
 						color='primary'
 						:disabled='invalid'
 					>
 						{{ $t('forms.backup') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -76,14 +75,10 @@ import {AxiosResponse} from 'axios';
 import {IBackupData} from '@/interfaces/iqmeshServices';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -116,18 +111,18 @@ export default class Backup extends Vue {
 	/**
 	 * @var {Array<unknown>} selectOptions CoreUI form select options
 	 */
-	private selectOptions: Array<unknown> = [
+	private selectOptions: Array<IOption> = [
 		{
 			value: NetworkTarget.COORDINATOR,
-			label: this.$t('forms.fields.coordinator'),
+			text: this.$t('forms.fields.coordinator').toString(),
 		},
 		{
 			value: NetworkTarget.NODE,
-			label: this.$t('iqrfnet.networkManager.backup.form.node'),
+			text: this.$t('iqrfnet.networkManager.backup.form.node').toString(),
 		},
 		{
 			value: NetworkTarget.NETWORK,
-			label: this.$t('iqrfnet.networkManager.backup.form.network'),
+			text: this.$t('iqrfnet.networkManager.backup.form.network').toString(),
 		}
 	];
 

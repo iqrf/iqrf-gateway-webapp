@@ -17,8 +17,8 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.networkManager.title') }}</h1>
-		<CRow>
-			<CCol lg='6'>
+		<v-row>
+			<v-col lg='6'>
 				<CCard>
 					<CTabs variant='tabs' :active-tab='activeTab'>
 						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
@@ -37,11 +37,11 @@ limitations under the License.
 						</CTab>
 					</CTabs>
 				</CCard>
-			</CCol>
-			<CCol lg='6'>
+			</v-col>
+			<v-col lg='6'>
 				<DevicesInfo ref='devs' />
-			</CCol>
-		</CRow>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 

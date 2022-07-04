@@ -15,33 +15,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader class='message-header'>
+	<v-card>
+		<v-card-title>
 			<span class='mr-auto'>
 				{{ $t(`iqrfnet.jsonMessage.${type}`) }}
 			</span>
-			<CButton
+			<v-btn
 				v-clipboard='updateMessage'
 				v-clipboard:success='successMessage'
 				color='primary'
-				size='sm'
+				small
 			>
 				{{ $t(`iqrfnet.jsonMessage.copy.${type}`) }}
-			</CButton>
-		</CCardHeader>
-		<CCardBody>
+			</v-btn>
+		</v-card-title>
+		<v-card-text>
 			<prism-editor
 				v-model='message'
 				:highlight='highlighter'
 				:readonly='true'
 			/>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import Prism from 'prismjs/components/prism-core';
@@ -50,10 +49,6 @@ import 'prismjs/themes/prism.css';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		PrismEditor
 	}
 })
@@ -108,11 +103,3 @@ export default class JsonMessage extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.message-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-</style>

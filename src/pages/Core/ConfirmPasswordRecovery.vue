@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='p-4'>
+	<v-card class='p-4'>
 		<h1 class='text-center'>
 			{{ $t('account.recovery.title') }}
 		</h1>
-		<CCardBody>
+		<v-card-text>
 			<CElementCover
 				v-if='requestInProgress'
 				:opacity='0.75'
@@ -31,7 +31,7 @@ limitations under the License.
 				{{ $t('account.recovery.changePrompt') }}
 			</p>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='confirmRecovery'>
+				<form @submit.prevent='confirmRecovery'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -39,38 +39,31 @@ limitations under the License.
 							required: $t("core.sign.in.messages.password"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='password'
 							:type='passwordVisible ? "text" : "password"'
 							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						>
-							<template #append-content>
-								<span @click='passwordVisible = !passwordVisible'>
-									<FontAwesomeIcon
-										:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-									/>
-								</span>
-							</template>
-						</CInput>
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+							@click:append='passwordVisible = !passwordVisible'
+						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('account.recovery.changePassword') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {CElementCover, CSpinner} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -83,12 +76,8 @@ import UserService from '@/services/UserService';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		FontAwesomeIcon,
+		CElementCover,
+		CSpinner,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,

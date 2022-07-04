@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('install.ssh.title') }}</CCardHeader>
-		<CCardBody>
+	<v-card>
+		<v-card-title>{{ $t('install.ssh.title') }}</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='running'
 				:opacity='0.75'
@@ -25,37 +25,38 @@ limitations under the License.
 			>
 				<CSpinner color='primary' />
 			</CElementCover>
-			<CForm>
+			<form @submit.prevent='setService'>
 				<div class='form-group'>
 					{{ $t('install.ssh.messages.note') }}
 				</div>
-				<CInputRadioGroup
-					:checked.sync='status'
-					:options='options'
+				<v-radio-group
+					v-model='status'
 					:label='$t("install.ssh.state")'
-				/>
+				>
+					<v-radio v-for='option in options' :key='option.value' :value='option.value' :label='option.text'/>
+				</v-radio-group>
 				<p>
 					<em>{{ $t('install.ssh.messages.reminder') }}</em>
 				</p>
-				<CButton
+				<v-btn
 					color='primary'
-					@click='setService'
+					type='submit'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					color='secondary'
 					@click='nextStep'
 				>
 					{{ $t('forms.skip') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
-	</CCard>
+				</v-btn>
+			</form>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
+import {CElementCover, CSpinner} from '@coreui/vue/src';
 
 import ServiceService from '@/services/ServiceService';
 
@@ -67,11 +68,8 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CSelect,
+		CElementCover,
+		CSpinner,
 	},
 	metaInfo: {
 		title: 'install.ssh.title'
@@ -96,15 +94,15 @@ export default class InstallSshStatus extends Vue {
 	private options: Array<IOption> = [
 		{
 			value: SSHStatus.ENABLE,
-			label: this.$t('install.ssh.states.enable').toString(),
+			text: this.$t('install.ssh.states.enable').toString(),
 		},
 		{
 			value: SSHStatus.START,
-			label: this.$t('install.ssh.states.start').toString(),
+			text: this.$t('install.ssh.states.start').toString(),
 		},
 		{
 			value: SSHStatus.DISABLE,
-			label: this.$t('install.ssh.states.disable').toString(),
+			text: this.$t('install.ssh.states.disable').toString(),
 		}
 	];
 

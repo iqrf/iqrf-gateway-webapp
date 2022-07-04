@@ -17,210 +17,65 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.dashboard') }}</h1>
-		<CAlert
+		<v-alert
 			v-if='userEmail === null'
-			color='warning'
-			class='d-flex justify-content-between align-items-center'
+			type='warning'
+			text
 		>
-			{{ $t('account.email.messages.missing') }}
-			<CButton
-				color='warning'
-				size='sm'
-				to='/profile/'
-			>
-				{{ $t('account.email.add') }}
-			</CButton>
-		</CAlert>
-		<CAlert
+			<v-row align='center'>
+				<v-col class='grow'>
+					{{ $t('account.email.messages.missing') }}
+				</v-col>
+				<v-col class='shrink'>
+					<v-btn
+						color='warning'
+						small
+						to='/profile/'
+					>
+						{{ $t('account.email.add') }}
+					</v-btn>
+				</v-col>
+			</v-row>
+		</v-alert>
+		<v-alert
 			v-if='userEmail !== null && isUserUnverified'
 			color='warning'
-			class='d-flex justify-content-between align-items-center'
+			text
 		>
-			{{ $t('account.email.messages.unverified', {email: userEmail}) }}
-			<CButton
-				color='warning'
-				size='sm'
-				@click='resendVerification()'
-			>
-				{{ $t('core.user.resendVerification') }}
-			</CButton>
-		</CAlert>
-		<CCard>
-			<CCardBody>
-				<CListGroup>
-					<CListGroupItem
-						v-if='roleIdx <= roles.basic'
-						to='/gateway/'
+			<v-row align='center'>
+				<v-col class='grow'>
+					{{ $t('account.email.messages.unverified', {email: userEmail}) }}
+				</v-col>
+				<v-col class='shrink'>
+					<v-btn
+						color='warning'
+						small
+						@click='resendVerification()'
 					>
-						<header class='list-group-item-heading'>
-							{{ $t('gateway.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('gateway.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/iqrfnet/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('iqrfnet.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('iqrfnet.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("networkManager") && roleIdx <= roles.admin'
-						to='/ip-network/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('network.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('network.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/cloud/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('cloud.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('cloud.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/maintenance/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('maintenance.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('maintenance.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("grafana") && roleIdx <= roles.basic'
-						:href='$store.getters["features/configuration"]("grafana").url'
-						target='_blank'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.grafana.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.grafana.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed") && roleIdx <= roles.basicadmin'
-						:href='$store.getters["features/configuration"]("nodeRed").url'
-						target='_blank'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.nodeRed.workflow.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.nodeRed.workflow.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("nodeRed") && roleIdx <= roles.basic'
-						:href='$store.getters["features/configuration"]("nodeRed").url + "ui/"'
-						target='_blank'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.nodeRed.dashboard.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.nodeRed.dashboard.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("supervisord") && roleIdx <= roles.admin'
-						:href='$store.getters["features/configuration"]("supervisord").url'
-						target='_blank'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.supervisor.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.supervisor.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin || roleIdx === roles.basicadmin'
-						to='/user/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.user.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.user.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/security/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.security.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.security.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("docs")'
-						:href='$store.getters["features/configuration"]("docs").url'
-						target='_blank'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.documentation.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.documentation.description') }}
-						</p>
-					</CListGroupItem>
-				</CListGroup>
-			</CCardBody>
-		</CCard>
+						{{ $t('core.user.resendVerification') }}
+					</v-btn>
+				</v-col>
+			</v-row>
+		</v-alert>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
+import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {getRoleIndex} from '@/helpers/user';
 import {mapGetters} from 'vuex';
 
 import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link, LinkRole, LinkTarget} from '@/helpers/DisambiguationHelper';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'core.dashboard',
@@ -238,36 +93,96 @@ import {AxiosError} from 'axios';
  * Main disambiguation menu component
  */
 export default class MainDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of the current user role
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * Returns links for disambiguation menu
+	 * @returns {Link[]} Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
-
-	/**
-	 * Updates user role
-	 */
-	created(): void {
-		this.updateRole();
-	}
-
-	/**
-	 * Updates user role index
-	 */
-	@Watch('userRole')
-	private updateRole(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
+	private links: Array<Link> = [
+		{
+			title: this.$t('gateway.title').toString(),
+			description: this.$t('gateway.description').toString(),
+			to: '/gateway/',
+			role: LinkRole.basic,
+		},
+		{
+			title: this.$t('config.title').toString(),
+			description: this.$t('config.description').toString(),
+			to: '/config/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('iqrfnet.title').toString(),
+			description: this.$t('iqrfnet.description').toString(),
+			to: '/iqrfnet/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('network.title').toString(),
+			description: this.$t('network.description').toString(),
+			to: '/ip-network/',
+			role: LinkRole.admin,
+			feature: 'networkManager',
+		},
+		{
+			title: this.$t('cloud.title').toString(),
+			description: this.$t('cloud.description').toString(),
+			to: '/cloud/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('maintenance.title').toString(),
+			description: this.$t('maintenance.description').toString(),
+			to: '/maintenance/',
+			role: LinkRole.admin,
+		},
+		{
+			title: this.$t('core.grafana.title').toString(),
+			description: this.$t('core.grafana.description').toString(),
+			href: this.$store.getters['features/configuration']('grafana').url,
+			role: LinkRole.basic,
+			feature: 'grafana',
+		},
+		{
+			title: this.$t('core.nodeRed.workflow.title').toString(),
+			description: this.$t('core.nodeRed.workflow.description').toString(),
+			href: this.$store.getters['features/configuration']('nodeRed').url,
+			role: LinkRole.basicadmin,
+			feature: 'nodeRed',
+		},
+		{
+			title: this.$t('core.nodeRed.dashboard.title').toString(),
+			description: this.$t('core.nodeRed.dashboard.description').toString(),
+			href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
+			role: LinkRole.basic,
+			feature: 'nodeRed',
+		},
+		{
+			title: this.$t('core.supervisor.title').toString(),
+			description: this.$t('core.supervisor.description').toString(),
+			href: this.$store.getters['features/configuration']('supervisord').url,
+			role: LinkRole.admin,
+			feature: 'supervisord',
+		},
+		{
+			title: this.$t('core.user.title').toString(),
+			description: this.$t('core.user.description').toString(),
+			to: '/user/',
+			role: [LinkRole.admin, LinkRole.basicadmin],
+		},
+		{
+			title: this.$t('core.security.title').toString(),
+			description: this.$t('core.security.description').toString(),
+			to: '/security/',
+			role: LinkRole.admin,
+		},
+		{
+			title: this.$t('core.documentation.title').toString(),
+			description: this.$t('core.documentation.description').toString(),
+			href: this.$store.getters['features/configuration']('docs').url,
+			target: LinkTarget.blank,
+		},
+	];
 
 	/**
 	 * Resends verification e-mail
