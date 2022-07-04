@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardHeader>
+	<v-card class='border-0 card-margin-bottom'>
+		<v-card-title>
 			{{ $t("config.daemon.misc.otaUpload.title") }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -28,7 +28,7 @@ limitations under the License.
 				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveConfig'>
+				<form @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -37,34 +37,34 @@ limitations under the License.
 								required: $t("config.daemon.misc.otaUpload.errors.instance"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInput
+						<v-text-field
 							v-model='configuration.uploadPath'
 							:label='$t("config.daemon.misc.otaUpload.form.uploadPath")'
 						/>
-						<CButton
+						<v-btn
 							type='submit'
 							color='primary'
 							:disabled='invalid'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
+						</v-btn>
 					</fieldset>
-				</CForm>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -77,13 +77,7 @@ import {IOtaUpload} from '@/interfaces/iqmeshServices';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider,
 	}

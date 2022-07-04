@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -28,7 +28,7 @@ limitations under the License.
 				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveConfig'>
+				<form @submit.prevent='saveConfig'>
 					<ValidationProvider
 						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
@@ -37,7 +37,7 @@ limitations under the License.
 							required: $t("config.daemon.interfaces.iqrfUart.errors.instance"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='configuration.instance'
 							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
@@ -51,7 +51,7 @@ limitations under the License.
 							required: $t("config.daemon.interfaces.iqrfUart.errors.iqrfInterface"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='configuration.IqrfInterface'
 							:label='$t("config.daemon.interfaces.iqrfUart.form.iqrfInterface")'
 							:is-valid='touched ? valid : null'
@@ -65,8 +65,8 @@ limitations under the License.
 							required: $t("config.daemon.interfaces.iqrfUart.errors.baudRate"),
 						}'
 					>
-						<CSelect
-							:value.sync='configuration.baudRate'
+						<v-select
+							v-model='configuration.baudRate'
 							:label='$t("config.daemon.interfaces.iqrfUart.form.baudRate")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -74,12 +74,12 @@ limitations under the License.
 							:options='baudRates'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.uartReset'
+					<v-checkbox
+						v-model='configuration.uartReset'
 						:label='$t("config.daemon.interfaces.iqrfUart.form.uartReset")'
 					/>
-					<CRow>
-						<CCol md='4'>
+					<v-row>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -88,7 +88,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.powerEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
@@ -96,8 +96,8 @@ limitations under the License.
 									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -106,7 +106,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.busEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
@@ -114,8 +114,8 @@ limitations under the License.
 									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -124,7 +124,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.pgmSwitchGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
@@ -132,14 +132,14 @@ limitations under the License.
 									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CInputCheckbox
-						:checked.sync='useAdditionalPins'
+						</v-col>
+					</v-row>
+					<v-checkbox
+						v-model='useAdditionalPins'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.useAdditionalPins")'
 					/>
-					<CRow>
-						<CCol md='4'>
+					<v-row>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -151,7 +151,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.i2cEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
@@ -160,8 +160,8 @@ limitations under the License.
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -173,7 +173,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.spiEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
@@ -182,8 +182,8 @@ limitations under the License.
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -195,7 +195,7 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.uartEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
@@ -204,48 +204,35 @@ limitations under the License.
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CButton
+						</v-col>
+					</v-row>
+					<v-btn
 						type='submit'
 						color='primary'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter>
+		</v-card-text>
+		<v-card-text>
 			<h4>{{ $t('config.daemon.interfaces.iqrfUart.mappings' ) }}</h4><hr>
-			<CRow>
-				<CCol lg='6'>
+			<v-row>
+				<v-col lg='6'>
 					<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
-				</CCol>
-				<CCol lg='6'>
+				</v-col>
+				<v-col lg='6'>
 					<InterfacePorts interface-type='uart' @update-port='updatePort' />
-				</CCol>
-			</CRow>
-		</CCardFooter>
-	</CCard>
+				</v-col>
+			</v-row>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CCard,
-	CCardBody,
-	CCardFooter,
-	CCardHeader,
-	CCol,
-	CElementCover,
-	CForm,
-	CInput,
-	CInputCheckbox,
-	CRow,
-	CSelect,
-} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import InterfaceMappings from '@/components/Config/InterfaceMappings.vue';
 import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -263,18 +250,7 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CCol,
 		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CRow,
-		CSelect,
 		InterfaceMappings,
 		InterfacePorts,
 		ValidationObserver,
@@ -329,7 +305,7 @@ export default class IqrfUart extends Vue {
 	 */
 	get baudRates(): Array<IOption> {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
-		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
+		return baudRates.map((baudRate: number) => ({value: baudRate, text: baudRate + ' Bd'}));
 	}
 
 	/**

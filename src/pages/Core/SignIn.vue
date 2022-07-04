@@ -16,13 +16,13 @@ limitations under the License.
 -->
 <template>
 	<TheWizard>
-		<CCard class='p-4'>
+		<v-card class='p-4'>
 			<h1 class='text-center'>
 				{{ $t('core.sign.in.title') }}
 			</h1>
-			<CCardBody>
+			<v-card-text>
 				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='handleSubmit'>
+					<form @submit.prevent='handleSubmit'>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
@@ -30,19 +30,16 @@ limitations under the License.
 								required: $t("core.sign.in.messages.username"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='username'
 								v-model='username'
 								:label='$t("forms.fields.username")'
 								:placeholder='$t("forms.fields.username")'
 								autocomplete='username'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							>
-								<template #prepend-content>
-									<CIcon :content='icons.user' />
-								</template>
-							</CInput>
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								prepend-icon='mdi-account'
+							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
@@ -51,42 +48,35 @@ limitations under the License.
 								required: $t("core.sign.in.messages.password")
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='password'
 								v-model='password'
 								:label='$t("forms.fields.password")'
 								:placeholder='$t("forms.fields.password")'
 								type='password'
 								autocomplete='password'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							>
-								<template #prepend-content>
-									<CIcon :content='icons.lock' />
-								</template>
-							</CInput>
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								prepend-icon='mdi-lock-open-outline'
+							/>
 						</ValidationProvider>
 						<div style='display: flex; justify-content: space-between;'>
-							<CButton color='primary' type='submit' :disabled='invalid'>
+							<v-btn color='primary' type='submit' :disabled='invalid'>
 								{{ $t('core.sign.in.send') }}
-							</CButton>
-							<CLink
-								to='/account/recovery'
-							>
+							</v-btn>
+							<v-btn text to='/account/recovery'>
 								{{ $t('core.sign.in.recoverPassword') }}
-							</CLink>
+							</v-btn>
 						</div>
-					</CForm>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</TheWizard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
-import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {UserCredentials} from '@/services/AuthenticationService';
@@ -95,15 +85,6 @@ import TheWizard from '@/components/TheWizard.vue';
 
 @Component({
 	components: {
-		CContainer,
-		CCard,
-		CCardBody,
-		CCol,
-		CForm,
-		CIcon,
-		CInput,
-		CLink,
-		CRow,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,
@@ -117,13 +98,6 @@ import TheWizard from '@/components/TheWizard.vue';
  * Sign in page component
  */
 export default class SignIn extends Vue {
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		user: cilUser,
-		lock: cilLockLocked,
-	};
 
 	/**
 	 * @var {string} password User password

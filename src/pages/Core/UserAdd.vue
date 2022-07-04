@@ -17,103 +17,104 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.user.add') }}</h1>
-		<CCard body-wrapper>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveUser'>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("forms.errors.username"),
-						}'
-					>
-						<CInput
-							id='username'
-							v-model='username'
-							:label='$t("forms.fields.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("forms.errors.password"),
-						}'
-					>
-						<CInput
-							id='password'
-							v-model='password'
-							:label='$t("forms.fields.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							type='password'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='email'
-						:custom-messages='{
-							email: $t("forms.errors.emailFormat"),
-						}'
-					>
-						<CInput
-							id='email'
-							v-model='email'
-							:label='$t("forms.fields.email")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("core.user.errors.role"),
-						}'
-					>
-						<CSelect
-							:value.sync='role'
-							:label='$t("core.user.role")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.role")'
-							:options='roles'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("core.user.errors.language"),
-						}'
-					>
-						<CSelect
-							:value.sync='language'
-							:label='$t("core.user.language")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.language")'
-							:options='languages'
-						/>
-					</ValidationProvider>
-					<CButton
-						color='primary'
-						type='submit'
-						:disabled='invalid'
-					>
-						{{ $t('forms.add') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<form @submit.prevent='saveUser'>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("forms.errors.username"),
+							}'
+						>
+							<v-text-field
+								id='username'
+								v-model='username'
+								:label='$t("forms.fields.username")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("forms.errors.password"),
+							}'
+						>
+							<v-text-field
+								id='password'
+								v-model='password'
+								:label='$t("forms.fields.password")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								type='password'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='email'
+							:custom-messages='{
+								email: $t("forms.errors.emailFormat"),
+							}'
+						>
+							<v-text-field
+								id='email'
+								v-model='email'
+								:label='$t("forms.fields.email")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("core.user.errors.role"),
+							}'
+						>
+							<v-select
+								v-model='role'
+								:label='$t("core.user.role")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:placeholder='$t("core.user.errors.role")'
+								:items='roles'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("core.user.errors.language"),
+							}'
+						>
+							<v-select
+								v-model='language'
+								:label='$t("core.user.language")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:placeholder='$t("core.user.errors.language")'
+								:items='languages'
+							/>
+						</ValidationProvider>
+						<v-btn
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
+							{{ $t('forms.add') }}
+						</v-btn>
+					</form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -127,11 +128,6 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CForm,
-		CInput,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -171,7 +167,7 @@ export default class UserAdd extends Vue {
 	private languages: Array<IOption> = [
 		{
 			value: UserLanguage.ENGLISH,
-			label: this.$t('core.user.languages.en'),
+			text: this.$t('core.user.languages.en').toString(),
 		},
 	];
 
@@ -199,7 +195,7 @@ export default class UserAdd extends Vue {
 			if (itemIdx >= roleIdx) {
 				roles.push({
 					value: UserRole[item],
-					label: this.$t(`core.user.roles.${UserRole[item]}`),
+					text: this.$t(`core.user.roles.${UserRole[item]}`).toString(),
 				});
 			}
 		}

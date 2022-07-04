@@ -17,18 +17,18 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
+		<v-card>
+			<v-card-title>
+				<v-btn
 					color='primary'
-					size='sm'
+					small
 					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<JsonSchemaErrors :errors='validatorErrors' />
 				<CElementCover
 					v-if='!isSocketConnected'
@@ -38,7 +38,7 @@ limitations under the License.
 					{{ $t('iqrfnet.messages.socketError') }}
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}' slim>
-					<CForm @submit.prevent='processSubmit'>
+					<form @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|json'
@@ -56,53 +56,55 @@ limitations under the License.
 								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<v-btn color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.send') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard
+			</v-card-text>
+		</v-card>
+		<v-card
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
-			<CSelect
-				:value.sync='activeIdx'
-				:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
-				:options='messageOptions'
-				@change='activeMessagePair = messages[activeIdx]'
-			/>
-			<div v-if='activeMessagePair !== null'>
-				<CRow>
-					<CCol md='6'>
-						<JsonMessage
-							:message='activeMessagePair.request'
-							type='request'
-							source='sendJson'
-						/>
-					</CCol>
-					<CCol
-						v-if='activeMessagePair.response !== []'
-						md='6'
-					>
-						<JsonMessage
-							v-for='rsp of activeMessagePair.response'
-							:key='i = activeMessagePair.response.indexOf(rsp)'
-							:message='rsp'
-							type='response'
-							source='sendJson'
-						/>
-					</CCol>
-				</CRow>
-			</div>
-		</CCard>
+			<v-card-text>
+				<v-select
+					v-model='activeIdx'
+					:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
+					:items='messageOptions'
+					@change='activeMessagePair = messages[activeIdx]'
+				/>
+				<div v-if='activeMessagePair !== null'>
+					<v-row>
+						<v-col md='6'>
+							<JsonMessage
+								:message='activeMessagePair.request'
+								type='request'
+								source='sendJson'
+							/>
+						</v-col>
+						<v-col
+							v-if='activeMessagePair.response !== []'
+							md='6'
+						>
+							<JsonMessage
+								v-for='rsp of activeMessagePair.response'
+								:key='i = activeMessagePair.response.indexOf(rsp)'
+								:message='rsp'
+								type='response'
+								source='sendJson'
+							/>
+						</v-col>
+					</v-row>
+				</div>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
@@ -122,13 +124,7 @@ import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CTextarea,
 		JsonEditor,
 		JsonMessage,
 		JsonSchemaErrors,
@@ -257,7 +253,7 @@ export default class SendJsonRequest extends Vue {
 		const options: Array<IOption> = [];
 		this.messages.forEach((item: IMessagePairRequest) => {
 			options.push({
-				label: item.label,
+				text: item.label,
 				value: this.messages.indexOf(item),
 			});
 		});

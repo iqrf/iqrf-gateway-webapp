@@ -21,17 +21,17 @@ limitations under the License.
 				{{ $t('maintenance.pixla.title') }}
 			</h1>
 			<div v-if='!missing && !unsupported'>
-				<CButton
+				<v-btn
 					color='primary'
 					href='https://www.pixla.online/'
 					target='_blank'
 				>
 					{{ $t('maintenance.pixla.dashboard') }}
-				</CButton>
+				</v-btn>
 			</div>
 		</header>
-		<CCard body-wrapper>
-			<div class='box'>
+		<v-card>
+			<v-card-text>
 				<div>
 					<strong>{{ $t('service.status') }}</strong>
 				</div>
@@ -43,40 +43,39 @@ limitations under the License.
 				</div>
 				<div v-if='service !== null'>
 					{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
-					{{ $t(`service.states.${service.active ? 'running' : 'stopped'}`) }}
+					{{ $t(`service.states.${service.active ? 'active' : 'inactive'}`) }}
 				</div>
 				<div v-if='service !== null'>
-					<CButton
+					<v-btn
 						v-if='!service.enabled'
 						color='success'
-						size='sm'
+						small
 						@click='enable()'
 					>
 						{{ $t('service.actions.enable') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						v-if='service.enabled'
-						color='danger'
-						size='sm'
+						color='error'
+						small
 						@click='disable()'
 					>
 						{{ $t('service.actions.disable') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='primary'
-						size='sm'
+						small
 						@click='restart()'
 					>
 						{{ $t('service.actions.restart') }}
-					</CButton>
+					</v-btn>
 				</div>
-			</div>
-			<PixlaForm />
-		</CCard>
+				<PixlaForm />
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
 import PixlaForm from '@/components/Maintenance/PixlaForm.vue';
 
 import {pixlaErrorToast} from '@/helpers/errorToast';
@@ -88,8 +87,6 @@ import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
 		PixlaForm,
 	},
 	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {

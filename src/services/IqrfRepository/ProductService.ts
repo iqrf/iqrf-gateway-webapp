@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
 import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IProduct} from '@/interfaces/repository';
 
 class ProductService {
 
@@ -39,8 +40,9 @@ class ProductService {
 	/**
 	 * Retrieves all products in repository
 	 */
-	getAll(): Promise<AxiosResponse> {
-		return axios.get(this.productUrl);
+	getAll(): Promise<Array<IProduct>> {
+		return axios.get(this.productUrl)
+			.then((response: AxiosResponse) => (response.data as Array<IProduct>));
 	}
 }
 

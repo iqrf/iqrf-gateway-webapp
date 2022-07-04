@@ -1,68 +1,85 @@
 <template>
-	<CModal
-		:show.sync='render'
-		color='primary'
-		size='xl'
+	<v-dialog
+		v-model='render'
+		width='66%'
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('iqrfnet.product.title') }}
-			</h5>
-		</template>
-		<CDataTable
-			:items='products'
-			:fields='fields'
-			:column-filter='true'
-			:items-per-page='10'
-			:pagination='true'
-			:striped='true'
-			:sorter='{external: false, resetable: true}'
-		>
-			<template #no-items-view='{}'>
-				{{ $t('iqrfnet.product.noProduct') }}
-			</template>
-			<template #actions='{item}'>
-				<td class='col-actions'>
-					<CButton
-						color='success'
-						size='sm'
-						@click='selectProduct(item)'
-					>
-						<CIcon :content='icon' size='sm' />
-					</CButton>
-				</td>
-			</template>
-		</CDataTable>
-		<template #footer>
-			<CButton
-				color='secondary'
-				@click='hide'
+		<template #activator='{ on, attrs }'>
+			<v-btn
+				style='float: right;'
+				color='primary'
+				v-bind='attrs'
+				v-on='on'
 			>
-				{{ $t('forms.close') }}
-			</CButton>
+				{{ $t('iqrfnet.product.browse') }}
+			</v-btn>
 		</template>
-	</CModal>
+		<c-card>
+			<v-card-title>
+				{{ $t('iqrfnet.product.title') }}
+			</v-card-title>
+			<v-card-text>
+				<v-row>
+					<v-col md='6'>
+						<v-text-field
+							v-model='filters.companyName'
+							:label='$t("iqrfnet.enumeration.manufacturer")'
+						/>
+					</v-col>
+					<v-col md='6'>
+						<v-text-field
+							v-model='filters.name'
+							:label='$t("iqrfnet.enumeration.product")'
+						/>
+					</v-col>
+				</v-row>
+				<v-data-table
+					:headers='header'
+					:items='items'
+					:loading='loading'
+				>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='success'
+							small
+							@click='selectProduct(item)'
+						>
+							<v-icon small>
+								mdi-check
+							</v-icon>
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					color='secondary'
+					@click='render = false'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+			</v-card-actions>
+		</c-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilCheckAlt} from '@coreui/icons';
 
 import ProductService from '@/services/IqrfRepository/ProductService';
 
-import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
 import {IProduct} from '@/interfaces/repository';
+import {DataTableHeader} from 'vuetify';
 
-@Component({
-	components: {
-		CButton,
-		CDataTable,
-		CIcon,
-		CModal,
-	},
-})
+/**
+ * Product filters
+ */
+interface ProductFilters {
+	companyName: string|null;
+	name: string|null;
+}
+
+@Component({})
 
 /**
  * Product modal component
@@ -70,9 +87,22 @@ import {IProduct} from '@/interfaces/repository';
 export default class ProductModal extends Vue {
 
 	/**
-	 * @var {boolean} show Controls whether or not the product modal is rendered
+	 * @var {boolean} show Controls whether the product modal is rendered
 	 */
 	private render = false;
+
+	/**
+	 * @var {boolean} loading Indicates whether the product list is being loaded
+	 */
+	private loading = false;
+
+	/**
+	 * @var {ProductFilters} filters Product filters
+	 */
+	private filters: ProductFilters = {
+		companyName: null,
+		name: null,
+	};
 
 	/**
 	 * @var {Array<IProduct>} products Array of products from repository
@@ -80,69 +110,70 @@ export default class ProductModal extends Vue {
 	private products: Array<IProduct> = [];
 
 	/**
-	 * @constant {Array<IField>} fields Array of coreui data table fields
-	 */
-	private fields: Array<IField> = [
+	 * @var {Array<DataTableHeader>} header Data table header
+   */
+	private header: Array<DataTableHeader> = [
 		{
-			key: 'companyName',
-			label: this.$t('iqrfnet.enumeration.manufacturer').toString(),
+			value: 'companyName',
+			text: this.$t('iqrfnet.enumeration.manufacturer').toString(),
 		},
 		{
-			key: 'name',
-			label: this.$t('iqrfnet.enumeration.product').toString(),
+			value: 'name',
+			text: this.$t('iqrfnet.enumeration.product').toString(),
 		},
 		{
-			key: 'hwpid',
-			label: this.$t('iqrfnet.enumeration.hwpid').toString(),
+			value: 'hwpid',
+			text: this.$t('iqrfnet.enumeration.hwpid').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
 
 	/**
-	 * @constant {Array<string>} icon Check icon for select button
+	 * Returns filtered products
+	 * @return {Array<IProduct>} Filtered products
 	 */
-	private icon: Array<string> = cilCheckAlt;
+	get items(): Array<IProduct> {
+		return this.products.filter((product: IProduct) => {
+			return (
+				(this.filters.companyName === null || product.companyName.toLowerCase().includes(this.filters.companyName.toLowerCase())) &&
+				(this.filters.name === null || product.name.toLowerCase().includes(this.filters.name.toLowerCase()))
+			);
+		});
+	}
 
 	/**
 	 * Retrieves products from repository
 	 */
 	private getProducts(): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		ProductService.getAll()
-			.then((response: AxiosResponse) => {
-				this.products = response.data;
-				this.$store.commit('spinner/HIDE');
+			.then((products: Array<IProduct>) => {
+				this.products = products;
+				this.loading = false;
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch(() => this.loading = false);
 	}
 
 	/**
 	 * Selects product from table and emits data to the parent component
 	 */
 	private selectProduct(product: IProduct): void {
+		this.render = false;
 		this.$emit('selected-product', product);
 	}
 
 	/**
-	 * Shows modal window
+	 * Mounted lifecycle hook
 	 */
-	public show(): void {
-		this.render = true;
-		if (this.products.length === 0) {
-			this.getProducts();
-		}
+	protected mounted(): void {
+		this.getProducts();
 	}
 
-	/**
-	 * Hides modal window
-	 */
-	public hide(): void {
-		this.render = false;
-	}
 }
 </script>

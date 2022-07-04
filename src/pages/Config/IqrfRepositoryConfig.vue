@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.repository.title') }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form @submit.prevent='saveConfig'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -28,31 +28,20 @@ limitations under the License.
 								required: $t("config.repository.errors.endpointMissing"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.apiEndpoint'
 								:label='$t("config.repository.form.endpoint")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div class='form-group'>
-							<strong>
-								<label>
-									{{ $t('config.repository.form.credentials') }}
-								</label>
-							</strong><br>
-							<CSwitch
-								:checked.sync='credentials'
-								color='primary'
-								size='lg'
-								shape='pill'
-								label-on='ON'
-								label-off='OFF'
-							/>
-						</div>
-						<div
-							v-if='credentials'
-						>
+						<v-switch
+							v-model='credentials'
+							color='primary'
+							inset
+							:label='$t("config.repository.form.credentials")'
+						/>
+						<div v-if='credentials'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -60,11 +49,11 @@ limitations under the License.
 									required: $t("forms.errors.username"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='config.credentials.username'
 									:label='$t("forms.fields.username")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -74,31 +63,30 @@ limitations under the License.
 									required: $t("forms.errors.password"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='config.credentials.password'
 									:label='$t("forms.fields.password")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 						</div>
-						<CButton
+						<v-btn
 							color='primary'
+							type='submit'
 							:disabled='invalid'
-							@click='saveConfig'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -112,12 +100,6 @@ import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider
 	},

@@ -23,8 +23,6 @@ import Vue from 'vue';
 import VueMeta from 'vue-meta';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
-import {config, library} from '@fortawesome/fontawesome-svg-core';
-import {faEye, faEyeSlash} from '@fortawesome/free-regular-svg-icons';
 
 import store from './store';
 import router from './router';
@@ -38,14 +36,10 @@ import App from './App.vue';
 import './css/themes/generic.scss';
 import './css/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
-import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
-import '@fortawesome/fontawesome-svg-core/styles.css';
-
-config.autoAddCss = true;
-library.add(faEye, faEyeSlash);
 
 import * as version from '../version.json';
+import vuetify from './plugins/vuetify';
 
 let release = version.version;
 if (version.pipeline !== '') {
@@ -137,12 +131,13 @@ const app = new Vue({
 	store,
 	i18n: i18n,
 	render: h => h(App),
+	vuetify,
 	metaInfo: {
 		titleTemplate: (titleChunk: string): string => {
 			const title = i18n.t(ThemeManager.getTitleKey()).toString();
 			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') + title;
 		}
-	},
+	}
 }).$mount('#app');
 
 if (process.env.VUE_APP_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {

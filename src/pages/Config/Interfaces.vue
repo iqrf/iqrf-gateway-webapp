@@ -17,38 +17,42 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
-		<CCard body-wrapper>
-			<CElementCover
-				v-if='loadFailed'
-				style='z-index: 1;'
-				:opacity='0.85'
-			>
-				{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
-			</CElementCover>
-			<CSelect
-				v-else
-				:value.sync='iqrfInterface'
-				:label='$t("config.daemon.interfaces.form.interface")'
-				:options='interfaceSelect'
-				:placeholder='$t("config.daemon.interfaces.form.placeholder")'
-				@change='changeInterface'
-			/>
-		</CCard>
-		<CCard v-if='iqrfInterface === "noInterface"' body-wrapper>
-			{{ $t('config.daemon.interfaces.messages.noInterface') }}
-		</CCard>
+		<v-card class='mb-3'>
+			<v-card-text>
+				<CElementCover
+					v-if='loadFailed'
+					style='z-index: 1;'
+					:opacity='0.85'
+				>
+					{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
+				</CElementCover>
+				<v-select
+					v-else
+					v-model='iqrfInterface'
+					:label='$t("config.daemon.interfaces.form.interface")'
+					:items='interfaceSelect'
+					:placeholder='$t("config.daemon.interfaces.form.placeholder")'
+					@change='changeInterface'
+				/>
+			</v-card-text>
+		</v-card>
+		<v-card v-if='iqrfInterface === "noInterface"'>
+			<v-card-text>
+				{{ $t('config.daemon.interfaces.messages.noInterface') }}
+			</v-card-text>
+		</v-card>
 		<div v-if='!loadFailed'>
 			<IqrfSpi v-if='iqrfInterface === "iqrf::IqrfSpi"' @fetched='configFetched' />
 			<IqrfCdc v-if='iqrfInterface === "iqrf::IqrfCdc"' @fetched='configFetched' />
 			<IqrfUart v-if='iqrfInterface === "iqrf::IqrfUart"' @fetched='configFetched' />
-			<IqrfDpa @fetched='configFetched' />
+			<IqrfDpa class='mt-3' @fetched='configFetched' />
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import IqrfSpi from '@/components/Config/IqrfSpi.vue';
 import IqrfCdc from '@/components/Config/IqrfCdc.vue';
 import IqrfUart from '@/components/Config/IqrfUart.vue';
@@ -64,10 +68,7 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CSelect,
+		CElementCover,
 		IqrfCdc,
 		IqrfDpa,
 		IqrfSpi,
@@ -88,15 +89,15 @@ export default class Interfaces extends Vue {
 	private interfaceSelect: Array<IOption> = [
 		{
 			value: 'iqrf::IqrfCdc',
-			label: this.$t('config.daemon.interfaces.types.cdc').toString(),
+			text: this.$t('config.daemon.interfaces.types.cdc').toString(),
 		},
 		{
 			value: 'iqrf::IqrfSpi',
-			label: this.$t('config.daemon.interfaces.types.spi').toString(),
+			text: this.$t('config.daemon.interfaces.types.spi').toString(),
 		},
 		{
 			value: 'iqrf::IqrfUart',
-			label: this.$t('config.daemon.interfaces.types.uart').toString(),
+			text: this.$t('config.daemon.interfaces.types.uart').toString(),
 		},
 	];
 

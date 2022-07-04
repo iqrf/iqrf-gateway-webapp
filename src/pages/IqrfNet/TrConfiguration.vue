@@ -17,15 +17,15 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<CCard v-if='loaded !== null'>
-			<CCardBody>
+		<v-card v-if='loaded !== null'>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
-						<CRow>
-							<CCol>
-								<CSelect
-									:value.sync='target'
-									:options='targetOptions'
+					<form>
+						<v-row>
+							<v-col>
+								<v-select
+									v-model='target'
+									:items='targetOptions'
 									:label='$t("iqrfnet.trConfiguration.form.target")'
 								/>
 								<ValidationProvider
@@ -38,27 +38,18 @@ limitations under the License.
 										required: $t("iqrfnet.trConfiguration.form.messages.address"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='address'
 										type='number'
 										min='0'
 										max='239'
 										:label='$t("forms.fields.address")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<div
-									v-if='target === "network"'
-								>
-									<CButton
-										style='float: right;'
-										color='primary'
-										size='sm'
-										@click='showProductModal'
-									>
-										{{ $t('iqrfnet.product.browse') }}
-									</CButton>
+								<div v-if='target === "network"'>
+									<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|integer|between:0,65535'
@@ -68,14 +59,14 @@ limitations under the License.
 											between: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='hwpid'
 											type='number'
 											min='0'
 											max='65535'
 											:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
 									<em>
@@ -83,38 +74,38 @@ limitations under the License.
 										{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}
 									</em>
 								</div>
-								<CButton
+								<v-btn
 									v-if='target === "node"'
 									color='primary'
 									@click='enumerate'
 								>
 									{{ $t('forms.read') }}
-								</CButton>
-							</CCol>
-						</CRow><hr>
-						<CRow>
-							<CCol md='6'>
+								</v-btn>
+							</v-col>
+						</v-row><hr>
+						<v-row>
+							<v-col md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
-								<CSelect
+								<v-select
 									v-model='config.rfBand'
 									:label='$t("iqrfnet.trConfiguration.form.rfBand")'
-									:options='[
-										{value: "443", label: $t("iqrfnet.trConfiguration.form.rfBands.443")},
-										{value: "868", label: $t("iqrfnet.trConfiguration.form.rfBands.868")},
-										{value: "916", label: $t("iqrfnet.trConfiguration.form.rfBands.916")},
+									:items='[
+										{value: "443", text: $t("iqrfnet.trConfiguration.form.rfBands.443")},
+										{value: "868", text: $t("iqrfnet.trConfiguration.form.rfBands.868")},
+										{value: "916", text: $t("iqrfnet.trConfiguration.form.rfBands.916")},
 									]'
-									disabled='true'
+									:disabled='true'
 								/>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rfChannelA'
 										:label='$t("iqrfnet.trConfiguration.form.rfChannelA")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
@@ -125,11 +116,11 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rfChannelB'
 										:label='$t("iqrfnet.trConfiguration.form.rfChannelB")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
@@ -141,11 +132,11 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rfSubChannelA'
 										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelA")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
@@ -157,11 +148,11 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rfSubChannelB'
 										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelB")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
@@ -172,26 +163,26 @@ limitations under the License.
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rfAltDsmChannel'
 										:label='$t("iqrfnet.trConfiguration.form.rfAltDsmChannel")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='rfChannelRules.max'
 										:min='rfChannelRules.min'
 									/>
 								</ValidationProvider>
-								<CAlert
+								<v-alert
 									v-if='address === 0 && config.stdAndLpNetwork === false'
-									color='warning'
+									type='warning'
 								>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
-								</CAlert>
-								<CSelect
+								</v-alert>
+								<v-select
+									v-model='config.stdAndLpNetwork'
 									:label='$t("iqrfnet.trConfiguration.form.networkType")'
-									:value.sync='config.stdAndLpNetwork'
-									:options='networkTypeOptions'
+									:items='networkTypeOptions'
 									:disabled='address !== 0 || target === "network"'
 								/>
 								<ValidationProvider
@@ -203,14 +194,14 @@ limitations under the License.
 										required: $t("iqrfnet.trConfiguration.form.messages.txPower"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.txPower'
 										type='number'
 										max='7'
 										min='0'
 										:label='$t("iqrfnet.trConfiguration.form.txPower")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -222,14 +213,14 @@ limitations under the License.
 										required: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.rxFilter'
 										type='number'
 										max='64'
 										min='0'
 										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
 								<ValidationProvider
@@ -241,46 +232,46 @@ limitations under the License.
 										required: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='config.lpRxTimeout'
 										type='number'
 										min='1'
 										max='255'
 										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										:disabled='isCoordinator'
 									/>
 								</ValidationProvider>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmEnableAfterReset'
+								<v-checkbox
+									v-model='config.rfPgmEnableAfterReset'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmEnableAfterReset")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmTerminateAfter1Min'
+								<v-checkbox
+									v-model='config.rfPgmTerminateAfter1Min'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateAfter1Min")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmTerminateMcuPin'
+								<v-checkbox
+									v-model='config.rfPgmTerminateMcuPin'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateMcuPin")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmDualChannel'
+								<v-checkbox
+									v-model='config.rfPgmDualChannel'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmDualChannel")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmLpMode'
+								<v-checkbox
+									v-model='config.rfPgmLpMode'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmLpMode")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.rfPgmIncorrectUpload'
+								<v-checkbox
+									v-model='config.rfPgmIncorrectUpload'
 									:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
-									disabled='true'
+									:disabled='true'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.security.title') }}</h2>
-								<CInputCheckbox
-									:checked.sync='securityPassword'
+								<v-checkbox
+									v-model='securityPassword'
 									:label='$t("iqrfnet.trConfiguration.security.form.accessPassword")'
 								/>
 								<ValidationProvider
@@ -291,25 +282,19 @@ limitations under the License.
 										maxlen: $t("iqrfnet.trConfiguration.security.errors.passwordLen"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-if='securityPassword'
 										v-model='config.accessPassword'
 										:type='passwordVisible ? "text" : "password"'
 										:label='$t("iqrfnet.trConfiguration.security.form.value")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='passwordVisible = !passwordVisible'>
-												<FontAwesomeIcon
-													:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+										@click:append='passwordVisible = !passwordVisible'
+									/>
 								</ValidationProvider>
-								<CInputCheckbox
-									:checked.sync='securityKey'
+								<v-checkbox
+									v-model='securityKey'
 									:label='$t("iqrfnet.trConfiguration.security.form.userKey")'
 								/>
 								<ValidationProvider
@@ -320,125 +305,119 @@ limitations under the License.
 										maxlen: $t("iqrfnet.trConfiguration.security.errors.keyLen"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-if='securityKey'
 										v-model='config.securityUserKey'
 										:type='keyVisible ? "text" : "password"'
 										:label='$t("iqrfnet.trConfiguration.security.form.value")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='keyVisible = !keyVisible'>
-												<FontAwesomeIcon
-													:icon='(keyVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										:append-icon='keyVisible ? "mdi-eye" : "mdi-eye-off"'
+										@click:append='keyVisible = !keyVisible'
+									/>
 								</ValidationProvider>
 								<p>
 									<em v-if='securityPassword || securityKey'>
 										{{ $t('iqrfnet.trConfiguration.security.messages.note') }}
 									</em>
 								</p>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
-								<CInputCheckbox
-									:checked.sync='config.embPers.coordinator'
+								<v-checkbox
+									v-model='config.embPers.coordinator'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
 									:disabled='unchangeablePeripherals.includes("coordinator") || address !== 0'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.node'
+								<v-checkbox
+									v-model='config.embPers.node'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
 									:disabled='unchangeablePeripherals.includes("node") || address === 0'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.os'
+								<v-checkbox
+									v-model='config.embPers.os'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
 									:disabled='unchangeablePeripherals.includes("os")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.eeprom'
+								<v-checkbox
+									v-model='config.embPers.eeprom'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.eeeprom'
+								<v-checkbox
+									v-model='config.embPers.eeeprom'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ram'
+								<v-checkbox
+									v-model='config.embPers.ram'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ledr'
+								<v-checkbox
+									v-model='config.embPers.ledr'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.ledg'
+								<v-checkbox
+									v-model='config.embPers.ledg'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.spi'
+								<v-checkbox
+									v-model='config.embPers.spi'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
 									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.io'
+								<v-checkbox
+									v-model='config.embPers.io'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.thermometer'
+								<v-checkbox
+									v-model='config.embPers.thermometer'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.embPers.uart'
+								<v-checkbox
+									v-model='config.embPers.uart'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
 									:disabled='isCoordinator'
 								/>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
-								<CInputCheckbox
-									:checked.sync='config.customDpaHandler'
+								<v-checkbox
+									v-model='config.customDpaHandler'
 									:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
 									:disabled='!dpaHandlerDetected'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.dpaPeerToPeer'
+								<v-checkbox
+									v-model='config.dpaPeerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
 									:disabled='(isCoordinator) || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.peerToPeer'
+								<v-checkbox
+									v-model='config.peerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.localFrcReception'
+								<v-checkbox
+									v-model='config.localFrcReception'
 									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
 									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.ioSetup'
+								<v-checkbox
+									v-model='config.ioSetup'
 									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.dpaAutoexec'
+								<v-checkbox
+									v-model='config.dpaAutoexec'
 									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
 									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.routingOff'
+								<v-checkbox
+									v-model='config.routingOff'
 									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
 									:disabled='isCoordinator'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.neverSleep'
+								<v-checkbox
+									v-model='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
 									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
 								/>
-								<CInputCheckbox
-									:checked.sync='config.nodeDpaInterface'
+								<v-checkbox
+									v-model='config.nodeDpaInterface'
 									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
 									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.00", ">="))'
 								/>
@@ -449,13 +428,13 @@ limitations under the License.
 										required: $t("iqrfnet.trConfiguration.form.messages.uartBaudRate"),
 									}'
 								>
-									<CSelect
-										:value.sync='config.uartBaudrate'
+									<v-select
+										v-model='config.uartBaudrate'
 										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudRate" : "config.daemon.interfaces.iqrfUart.errors.baudRate")'
-										:options='uartBaudRates'
+										:items='uartBaudRates'
 									/>
 								</ValidationProvider><hr>
 								<div class='form-group'>
@@ -471,62 +450,46 @@ limitations under the License.
 										{{ $t('iqrfnet.trConfiguration.form.notes.readOnly') }}
 									</em>
 								</div>
-							</CCol>
-						</CRow>
-						<CButton
+							</v-col>
+						</v-row>
+						<v-btn
 							color='primary'
 							:disabled='invalid'
 							@click='target === "node" ? handleSubmit(address) : handleSubmit(255)'
 						>
 							{{ $t('forms.write') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
-		<CModal
-			:show.sync='dpaEnabledNotDetected'
-			color='warning'
-			size='lg'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.trConfiguration.messages.modalTitle') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.trConfiguration.messages.modalPrompt') }}
-			<template #footer>
-				<CButton
-					color='warning'
-					@click='disableHandler'
-				>
-					{{ $t('service.actions.disable') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='dpaEnabledNotDetected = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+			</v-card-text>
+		</v-card>
+		<v-dialog v-model='dpaEnabledNotDetected' width='50%'>
+			<v-card>
+				<v-card-title>{{ $t('iqrfnet.trConfiguration.messages.modalTitle') }}</v-card-title>
+				<v-card-text>{{ $t('iqrfnet.trConfiguration.messages.modalPrompt') }}</v-card-text>
+				<v-card-actions>
+					<v-btn
+						color='warning'
+						@click='disableHandler'
+					>
+						{{ $t('service.actions.disable') }}
+					</v-btn>
+					<v-spacer />
+					<v-btn
+						color='secondary'
+						@click='dpaEnabledNotDetected = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CAlert,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CForm,
-	CInput,
-	CModal
-} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import ProductModal from '@/components/IqrfNet/ProductModal.vue';
 
 import {
@@ -551,15 +514,6 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CModal,
-		FontAwesomeIcon,
 		ProductModal,
 		ValidationObserver,
 		ValidationProvider,
@@ -567,10 +521,13 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 	methods: {
 		compareVersions: compareVersions.compare,
 	},
+	metaInfo: {
+		title: 'iqrfnet.trConfiguration.title',
+	},
 })
 
 /**
- * Transciever configuration page component
+ * Transceiver configuration page component
  */
 export default class TrConfiguration extends Vue {
 	/**
@@ -716,11 +673,11 @@ export default class TrConfiguration extends Vue {
 	private targetOptions: Array<IOption> = [
 		{
 			value: NetworkTarget.NODE,
-			label: this.$t('iqrfnet.trConfiguration.form.targets.device').toString(),
+			text: this.$t('iqrfnet.trConfiguration.form.targets.device').toString(),
 		},
 		{
 			value: NetworkTarget.NETWORK,
-			label: this.$t('iqrfnet.trConfiguration.form.targets.network').toString(),
+			text: this.$t('iqrfnet.trConfiguration.form.targets.network').toString(),
 		},
 	];
 
@@ -730,11 +687,11 @@ export default class TrConfiguration extends Vue {
 	private networkTypeOptions: Array<IOption> = [
 		{
 			value: false,
-			label: this.$t('iqrfnet.trConfiguration.form.networkTypes.std').toString(),
+			text: this.$t('iqrfnet.trConfiguration.form.networkTypes.std').toString(),
 		},
 		{
 			value: true,
-			label: this.$t('iqrfnet.trConfiguration.form.networkTypes.stdLp').toString(),
+			text: this.$t('iqrfnet.trConfiguration.form.networkTypes.stdLp').toString(),
 		}
 	];
 
@@ -804,7 +761,7 @@ export default class TrConfiguration extends Vue {
 		return uartBaudRates.map((uartBaudRate) => {
 			return {
 				value: uartBaudRate,
-				label: this.$t(`iqrfnet.trConfiguration.form.uartBaudrates.${uartBaudRate}`).toString(),
+				text: this.$t(`iqrfnet.trConfiguration.form.uartBaudrates.${uartBaudRate}`).toString(),
 			};
 		});
 	}
@@ -1164,7 +1121,6 @@ export default class TrConfiguration extends Vue {
 	 */
 	private setSelectedProduct(product: IProduct): void {
 		this.hwpid = product.hwpid;
-		(this.$refs.productModal as ProductModal).hide();
 	}
 }
 </script>

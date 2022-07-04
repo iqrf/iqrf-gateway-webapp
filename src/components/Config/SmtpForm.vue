@@ -24,23 +24,18 @@ limitations under the License.
 			<CSpinner color='primary' />
 		</CElementCover>
 		<ValidationObserver v-slot='{invalid}'>
-			<CForm @submit.prevent='saveConfig'>
+			<form @submit.prevent='saveConfig'>
 				<div class='form-group'>
-					<label>
-						{{ $t('config.smtp.form.enabled') }}
-					</label><br>
-					<CSwitch
-						:checked.sync='configuration.enabled'
+					<v-switch
+						v-model='configuration.enabled'
+						:label='$t("config.smtp.form.enabled")'
 						color='primary'
-						size='lg'
-						shape='pill'
-						label-on='ON'
-						label-off='OFF'
+						inset
 					/>
 				</div>
 				<fieldset :disabled='!configuration.enabled'>
-					<CRow>
-						<CCol md='6'>
+					<v-row>
+						<v-col md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -48,11 +43,11 @@ limitations under the License.
 									required: $t("config.smtp.errors.hostMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.host'
 									:label='$t("config.smtp.form.host")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -62,20 +57,20 @@ limitations under the License.
 									required: $t("config.smtp.errors.portMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.port'
 									:label='$t("config.smtp.form.port")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-							<CSelect
-								:value.sync='configuration.secure'
-								:options='protocols'
+							<v-select
+								v-model='configuration.secure'
+								:items='protocols'
 								:label='$t("config.smtp.form.security")'
 							/>
-						</CCol>
-						<CCol md='6'>
+						</v-col>
+						<v-col md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -83,11 +78,11 @@ limitations under the License.
 									required: $t("config.smtp.errors.usernameMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.username'
 									:label='$t("forms.fields.username")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -97,21 +92,15 @@ limitations under the License.
 									required: $t("config.smtp.errors.passwordMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.password'
 									:type='passwordVisible ? "text" : "password"'
 									:label='$t("forms.fields.password")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								>
-									<template #append-content>
-										<span @click='passwordVisible = !passwordVisible'>
-											<FontAwesomeIcon
-												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-											/>
-										</span>
-									</template>
-								</CInput>
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+									@click:append='passwordVisible = !passwordVisible'
+								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -120,43 +109,41 @@ limitations under the License.
 									required: $t("config.smtp.errors.fromMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.from'
 									:label='$t("config.smtp.form.from")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
+						</v-col>
+					</v-row>
 				</fieldset>
-				<CButton
+				<v-btn
 					color='primary'
 					type='submit'
 					:disabled='invalid'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					v-if='hasEmail'
 					color='info'
 					@click='test'
 				>
 					{{ $t('config.smtp.test') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					v-if='$route.path.includes("/install/smtp")'
 					color='secondary'
 					@click='$emit("done")'
 				>
 					{{ $t('forms.skip') }}
-				</CButton>
-			</CForm>
+				</v-btn>
+			</form>
 		</ValidationObserver>
 	</div>
 </template>
 
 <script lang='ts'>
-import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -173,12 +160,6 @@ import {ISmtp} from '@/interfaces/smtp';
 
 @Component({
 	components: {
-		CCol,
-		CForm,
-		CInput,
-		CRow,
-		CSelect,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -217,15 +198,15 @@ export default class SmtpForm extends Vue {
 	 */
 	private protocols: Array<IOption> = [
 		{
-			label: this.$t('config.smtp.form.protocols.none').toString(),
+			text: this.$t('config.smtp.form.protocols.none').toString(),
 			value: SmtpSecurity.PLAINTEXT,
 		},
 		{
-			label: this.$t('config.smtp.form.protocols.starttls').toString(),
+			text: this.$t('config.smtp.form.protocols.starttls').toString(),
 			value: SmtpSecurity.STARTTLS,
 		},
 		{
-			label: this.$t('config.smtp.form.protocols.tls').toString(),
+			text: this.$t('config.smtp.form.protocols.tls').toString(),
 			value: SmtpSecurity.TLS,
 		},
 	];

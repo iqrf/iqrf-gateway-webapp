@@ -14,26 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const baseUrl = process.env.VUE_APP_BASE_URL;
-
-module.exports = {
-	publicPath: baseUrl,
-	runtimeCompiler: true,
-	outputDir: 'www/dist',
-	chainWebpack: config => {
-		config.module.rules.delete('svg');
-	},
-	configureWebpack: {
-		module: {
-			rules: [
-				{
-					test: /\.svg$/,
-					loader: 'vue-svg-loader',
-				},
-			],
-		}
-	},
-	transpileDependencies: [
-		'vuetify'
-	],
-};
+declare module 'vuetify/lib/framework' {
+  import Vuetify from 'vuetify';
+  export default Vuetify;
+}

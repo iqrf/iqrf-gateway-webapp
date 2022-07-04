@@ -33,5 +33,5 @@ export interface IField {
  */
 export interface IOption {
 	value: FileFormat|SecurityFormat|string|number|boolean|null
-	label: VueI18n.TranslateResult|string
+	text: string
 }

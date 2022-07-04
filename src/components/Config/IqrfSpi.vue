@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('config.daemon.interfaces.iqrfSpi.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -28,7 +28,7 @@ limitations under the License.
 				{{ $t('config.daemon.messages.failedElement') }}
 			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveConfig'>
+				<form @submit.prevent='saveConfig'>
 					<ValidationProvider
 						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
@@ -37,11 +37,11 @@ limitations under the License.
 							required: $t("config.daemon.interfaces.iqrfSpi.errors.instance"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='configuration.instance'
 							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -51,19 +51,19 @@ limitations under the License.
 							required: $t("config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='configuration.IqrfInterface'
 							:label='$t("config.daemon.interfaces.iqrfSpi.form.iqrfInterface")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.spiReset'
+					<v-checkbox
+						v-model='configuration.spiReset'
 						:label='$t("config.daemon.interfaces.iqrfSpi.form.spiReset")'
 					/>
-					<CRow>
-						<CCol md='4'>
+					<v-row>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -72,16 +72,16 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.powerPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.powerEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -90,16 +90,16 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.busPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.busEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -108,22 +108,22 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.pgmPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.pgmSwitchGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CInputCheckbox
-						:checked.sync='useAdditionalPins'
+						</v-col>
+					</v-row>
+					<v-checkbox
+						v-model='useAdditionalPins'
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.useAdditionalPins")'
 					/>
-					<CRow>
-						<CCol md='4'>
+					<v-row>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -135,17 +135,17 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.i2cPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.i2cEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -157,17 +157,17 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.spiPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.spiEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol md='4'>
+						</v-col>
+						<v-col md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -179,56 +179,44 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.interfaceMapping.errors.uartPin"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.uartEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CButton
+						</v-col>
+					</v-row>
+					<v-btn
 						type='submit'
 						color='primary'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter>
+		</v-card-text>
+		<v-card-text>
 			<h4>{{ $t('config.daemon.interfaces.iqrfSpi.mappings' ) }}</h4><hr>
-			<CRow>
-				<CCol md='6'>
+			<v-row>
+				<v-col md='6'>
 					<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
-				</CCol>
-				<CCol md='6'>
+				</v-col>
+				<v-col md='6'>
 					<InterfacePorts interface-type='spi' @update-port='updatePort' />
-				</CCol>
-			</CRow>
-		</CCardFooter>
-	</CCard>
+				</v-col>
+			</v-row>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CCard,
-	CCardBody,
-	CCardFooter,
-	CCardHeader,
-	CCol,
-	CElementCover,
-	CForm,
-	CInput,
-	CInputCheckbox,
-	CRow
-} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import InterfaceMappings from '@/components/Config/InterfaceMappings.vue';
 import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -245,17 +233,7 @@ import {IMapping} from '@/interfaces/mappings';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CCol,
 		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CRow,
 		InterfaceMappings,
 		InterfacePorts,
 		ValidationObserver,
