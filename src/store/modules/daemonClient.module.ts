@@ -26,8 +26,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {DaemonClientState} from '@/interfaces/wsClient';
 
-import {TranslateResult} from 'vue-i18n';
-
 /**
  * Daemon client state
  */

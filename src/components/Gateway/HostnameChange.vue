@@ -1,53 +1,60 @@
 <template>
 	<ValidationObserver v-slot='{invalid}'>
-		<CModal
-			:show.sync='render'
-			color='primary'
+		<v-dialog
+			v-model='render'
+			width='50%'
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('gateway.hostname.title') }}
-				</h5>
-			</template>
-			<CForm @submit.prevent='save'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='hostnamePattern|maxLen:64|required'
-					:custom-messages='{
-						hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
-						maxLen: $t("gateway.hostname.errors.hostnameLen"),
-						required: $t("gateway.hostname.errors.hostnameMissing"),
-					}'
-				>
-					<CInput
-						v-model='config.hostname'
-						:label='$t("gateway.info.hostname")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-			</CForm>
-			<template #footer>
-				<CButton
+			<template #activator='{ on, attrs }'>
+				<v-btn
 					color='primary'
-					:disabled='invalid'
-					@click='save'
+					small
+					v-bind='attrs'
+					v-on='on'
 				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='hide'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
+					<v-icon small>
+						mdi-pencil
+					</v-icon>
+					{{ $t('forms.edit') }}
+				</v-btn>
 			</template>
-		</CModal>
+			<v-card>
+				<v-card-title>{{ $t('gateway.hostname.title') }}</v-card-title>
+				<v-card-text>
+					<form @submit.prevent='save'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='hostnamePattern|maxLen:64|required'
+							:custom-messages='{
+								hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
+								maxLen: $t("gateway.hostname.errors.hostnameLen"),
+								required: $t("gateway.hostname.errors.hostnameMissing"),
+							}'
+						>
+							<v-text-field
+								v-model='config.hostname'
+								:label='$t("gateway.info.hostname")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+					</form>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn color='primary' :disabled='invalid' @click='save'>
+						{{ $t('forms.save') }}
+					</v-btn>
+					<v-btn color='error' @click='hide'>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -61,10 +68,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
-		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},

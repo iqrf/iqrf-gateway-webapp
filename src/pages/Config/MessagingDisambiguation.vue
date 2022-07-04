@@ -17,75 +17,18 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.messagings.title') }}</h1>
-		<CCard body-wrapper>
-			<CListGroup>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/config/daemon/messagings/mqtt'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('config.daemon.messagings.mqtt.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('config.daemon.messagings.mqtt.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/config/daemon/messagings/websocket'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('config.daemon.messagings.websocket.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('config.daemon.messagings.websocket.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/config/daemon/messagings/mq'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('config.daemon.messagings.mq.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('config.daemon.messagings.mq.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/config/daemon/messagings/udp'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('config.daemon.messagings.udp.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('config.daemon.messagings.udp.description') }}
-					</p>
-				</CListGroupItem>
-			</CListGroup>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CSelect} from '@coreui/vue/src';
-import MqttMessagingTable from '@/pages/Config/MqttMessagingTable.vue';
-import WebsocketList from '@/pages/Config/WebsocketList.vue';
-import MqMessagingTable from '@/pages/Config/MqMessagingTable.vue';
-import UdpMessagingTable from '@/pages/Config/UdpMessagingTable.vue';
-
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
 
 @Component({
 	components: {
-		CCard,
-		CSelect,
-		MqttMessagingTable,
-		WebsocketList,
-		MqMessagingTable,
-		UdpMessagingTable,
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'config.daemon.messagings.title'
@@ -95,28 +38,38 @@ import {getRoleIndex} from '@/helpers/user';
 /**
  * Messagings menu disambiguation component
  */
-export default class Messagings extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
+export default class MessagingDisambiguation extends Vue {
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * Returns links for disambiguation menu
+	 * @returns {Link[]} Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('config.daemon.messagings.mqtt.title').toString(),
+			description: this.$t('config.daemon.messagings.mqtt.description').toString(),
+			to: '/config/daemon/messagings/mqtt',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.messagings.websocket.title').toString(),
+			description: this.$t('config.daemon.messagings.websocket.description').toString(),
+			to: '/config/daemon/messagings/websocket',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.messagings.mq.title').toString(),
+			description: this.$t('config.daemon.messagings.mq.description').toString(),
+			to: '/config/daemon/messagings/mq',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.messagings.udp.title').toString(),
+			description: this.$t('config.daemon.messagings.udp.description').toString(),
+			to: '/config/daemon/messagings/udp',
+			role: LinkRole.normal,
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

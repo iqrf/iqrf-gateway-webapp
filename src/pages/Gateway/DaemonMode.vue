@@ -17,77 +17,78 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
-		<CCard body-wrapper>
-			<div class='form-group'>
-				<CRow style='margin-bottom: 1.25rem;'>
-					<CCol>
-						<strong>
-							{{ $t('gateway.info.gwMode') }}
-						</strong>
-					</CCol>
-					<CCol>
-						{{ $t(mode !== 'unknown' ? `gateway.mode.modes.${mode}`: 'gateway.mode.messages.getFailed') }}
-					</CCol>
-				</CRow>
-				<div v-if='mode !== "unknown"'>
-					<CButton
-						color='primary'
-						@click='setMode(modes.operational)'
-					>
-						{{ $t('gateway.mode.modes.operational') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setMode(modes.service)'
-					>
-						{{ $t('gateway.mode.modes.service') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setMode(modes.forwarding)'
-					>
-						{{ $t('gateway.mode.modes.forwarding') }}
-					</CButton>
+		<v-card>
+			<v-card-text>
+				<div class='form-group'>
+					<v-row style='margin-bottom: 1.25rem;'>
+						<v-col>
+							<strong>
+								{{ $t('gateway.info.gwMode') }}
+							</strong>
+						</v-col>
+						<v-col>
+							{{ $t(mode !== 'unknown' ? `gateway.mode.modes.${mode}`: 'gateway.mode.messages.getFailed') }}
+						</v-col>
+					</v-row>
+					<div v-if='mode !== "unknown"'>
+						<v-btn
+							color='primary'
+							@click='setMode(mode)'
+						>
+							{{ $t('gateway.mode.modes.operational') }}
+						</v-btn> <v-btn
+							color='primary'
+							@click='setMode(modes.service)'
+						>
+							{{ $t('gateway.mode.modes.service') }}
+						</v-btn> <v-btn
+							color='primary'
+							@click='setMode(modes.forwarding)'
+						>
+							{{ $t('gateway.mode.modes.forwarding') }}
+						</v-btn>
+					</div>
 				</div>
-			</div>
-			<div
-				v-if='ideConfiguration !== null'
-				class='form-group'
-			>
-				<CRow style='margin-bottom: 1.25rem;'>
-					<CCol>
-						<strong>
-							{{ $t('gateway.mode.startupMode') }}
-						</strong>
-					</CCol>
-					<CCol>
-						{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
-					</CCol>
-				</CRow>
-				<div v-if='ideConfiguration.operMode !== "unknown"'>
-					<CButton
-						color='primary'
-						@click='setStartupMode(modes.operational)'
-					>
-						{{ $t('gateway.mode.modes.operational') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setStartupMode(modes.service)'
-					>
-						{{ $t('gateway.mode.modes.service') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setStartupMode(modes.forwarding)'
-					>
-						{{ $t('gateway.mode.modes.forwarding') }}
-					</CButton>
+				<div
+					v-if='ideConfiguration !== null'
+					class='form-group'
+				>
+					<v-row style='margin-bottom: 1.25rem;'>
+						<v-col>
+							<strong>
+								{{ $t('gateway.mode.startupMode') }}
+							</strong>
+						</v-col>
+						<v-col>
+							{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
+						</v-col>
+					</v-row>
+					<div v-if='ideConfiguration.operMode !== "unknown"'>
+						<v-btn
+							color='primary'
+							@click='setStartupMode(modes.operational)'
+						>
+							{{ $t('gateway.mode.modes.operational') }}
+						</v-btn> <v-btn
+							color='primary'
+							@click='setStartupMode(modes.service)'
+						>
+							{{ $t('gateway.mode.modes.service') }}
+						</v-btn> <v-btn
+							color='primary'
+							@click='setStartupMode(modes.forwarding)'
+						>
+							{{ $t('gateway.mode.modes.forwarding') }}
+						</v-btn>
+					</div>
 				</div>
-			</div>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -99,12 +100,6 @@ import {IIdeCounterpart} from '@/interfaces/ideCounterpart';
 import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CDropdown,
-		CDropdownItem
-	},
 	metaInfo: {
 		title: 'gateway.mode.title',
 	}

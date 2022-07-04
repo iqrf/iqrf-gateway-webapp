@@ -21,25 +21,27 @@ limitations under the License.
 				{{ $t('gateway.log.title') }}
 			</h1>
 			<div>
-				<CButton
+				<v-btn
 					color='primary'
 					@click='downloadArchive'
 				>
+					<v-icon>mdi-download</v-icon>
 					{{ $t('gateway.log.download') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					color='primary'
 					@click='getAvailableLogs'
 				>
+					<v-icon>mdi-refresh</v-icon>
 					{{ $t('forms.refresh') }}
-				</CButton>
+				</v-btn>
 			</div>
 		</header>
-		<CAlert
+		<v-alert
 			v-if='loaded && logs.length === 0'
-			color='danger'
+			type='error'
 		>
 			{{ $t('gateway.log.messages.noLogs') }}
-		</CAlert>
+		</v-alert>
 		<CCard v-else-if='loaded && logs.length > 0'>
 			<CTabs variant='tabs' :active-tab.sync='tab'>
 				<CTab v-for='(item, i) in logs' :key='i' :title='$t(`gateway.log.services.${item.name}`)'>

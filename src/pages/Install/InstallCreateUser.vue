@@ -16,9 +16,9 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
-			<CCardBody>
+		<v-card>
+			<v-card-title>{{ $t('install.createUser.title') }}</v-card-title>
+			<v-card-text>
 				<CElementCover
 					v-if='running'
 					:opacity='0.75'
@@ -27,7 +27,7 @@ limitations under the License.
 					<CSpinner color='primary' />
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='handleSubmit'>
+					<form @submit.prevent='handleSubmit'>
 						<div class='form-group'>
 							{{ $t('install.createUser.note') }}
 						</div>
@@ -38,12 +38,12 @@ limitations under the License.
 								required: $t("forms.errors.username"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='username'
 								v-model='username'
 								:label='$t("forms.fields.username")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -53,12 +53,12 @@ limitations under the License.
 								email: $t("forms.errors.emailFormat"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='email'
 								v-model='email'
 								:label='$t("forms.fields.email")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -68,22 +68,24 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='password'
 								v-model='password'
 								:label='$t("forms.fields.password")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-								type='password'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:type='passwordVisible ? "text" : "password"'
+								:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+								@click:append='passwordVisible = !passwordVisible'
 							/>
 						</ValidationProvider>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<v-btn color='primary' type='submit' :disabled='invalid'>
 							{{ $t('install.createUser.createButton') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
@@ -134,6 +136,11 @@ export default class InstallCreateUser extends Vue {
 	 * User password
 	 */
 	private password = '';
+
+	/**
+	 * @var {bool} passwordVisible Controls visibility of password field
+	 */
+	private passwordVisible = false;
 
 	/**
 	 * User language

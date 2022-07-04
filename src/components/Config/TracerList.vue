@@ -15,102 +15,89 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
-		<CCard class='border-0 card-margin-bottom'>
-			<CCardHeader class='border-0'>
-				<CButton
+	<v-data-table
+		:headers='header'
+		:items='instances'
+	>
+		<template #top>
+			<v-toolbar dense flat>
+				<v-spacer />
+				<v-btn
 					color='success'
-					size='sm'
+					small
 					to='/config/daemon/misc/tracer/add'
-					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<v-icon small>
+						mdi-plus
+					</v-icon>
 					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
-					:items='instances'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								:to='"/config/daemon/misc/tracer/edit/" + item.instance'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = item.instance'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
-					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.tracer.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.misc.tracer.modal.prompt', {instance: deleteInstance}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInstance'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-	</div>
+				</v-btn>
+			</v-toolbar>
+		</template>
+		<template #[`item.actions`]='{item}'>
+			<v-btn
+				color='info'
+				small
+				:to='"/config/daemon/misc/tracer/edit/" + item.instance'
+			>
+				<v-icon small>
+					mdi-pencil
+				</v-icon>
+				{{ $t('table.actions.edit') }}
+			</v-btn>
+			<v-dialog v-model='deleteModal' width='50%'>
+				<template #activator='{ on, attrs }'>
+					<v-btn
+						color='error'
+						small
+						v-bind='attrs'
+						@click='deleteInstance = item.instance'
+						v-on='on'
+					>
+						<v-icon small>
+							mdi-delete
+						</v-icon>
+						{{ $t('table.actions.delete') }}
+					</v-btn>
+				</template>
+				<v-card>
+					<v-card-title>
+						{{ $t('config.daemon.misc.tracer.modal.title') }}
+					</v-card-title>
+					<v-card-text>
+						{{
+							$t('config.daemon.misc.tracer.modal.prompt', {instance: deleteInstance})
+						}}
+					</v-card-text>
+					<v-card-actions>
+						<v-btn
+							color='error'
+							@click='removeInstance'
+						>
+							{{ $t('forms.delete') }}
+						</v-btn>
+						<v-spacer />
+						<v-btn
+							color='secondary'
+							@click='deleteInstance = ""'
+						>
+							{{ $t('forms.cancel') }}
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</template>
+	</v-data-table>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {IField} from '@/interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
-import { extendedErrorToast } from '@/helpers/errorToast';
+import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
+import {AxiosError, AxiosResponse} from 'axios';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {DataTableHeader} from 'vuetify';
 
-@Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
-		CModal,
-	}
-})
-
+@Component({})
 /**
  * List of Daemon logging service component instances
  */
@@ -121,37 +108,29 @@ export default class TracerList extends Vue {
 	private componentName = 'shape::TraceFileService';
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @var {Array<DataTableHeader>} header Data table header
 	 */
-	private fields: Array<IField> = [
+	private header: Array<DataTableHeader> = [
 		{
-			key: 'instance',
-			label: this.$t('forms.fields.instanceName')
+			value: 'instance',
+			text: this.$t('forms.fields.instanceName').toString(),
 		},
 		{
-			key: 'path',
-			label: this.$t('config.daemon.misc.tracer.form.path')
+			value: 'path',
+			text: this.$t('config.daemon.misc.tracer.form.path').toString(),
 		},
 		{
-			key: 'filename',
-			label: this.$t('config.daemon.misc.tracer.form.filename')
+			value: 'filename',
+			text: this.$t('config.daemon.misc.tracer.form.filename').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
 
 	/**
 	 * @var {Array<unknown>} instances Array of logging service component instances
@@ -162,6 +141,13 @@ export default class TracerList extends Vue {
 	 * @var {string} deleteInstance Name of logging service component instance used in remove modal
 	 */
 	private deleteInstance = '';
+
+	/**
+	 * @var {boolean} deleteModal Delete modal visibility
+	 */
+	get deleteModal(): boolean {
+		return this.deleteInstance !== '';
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -208,9 +194,3 @@ export default class TracerList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

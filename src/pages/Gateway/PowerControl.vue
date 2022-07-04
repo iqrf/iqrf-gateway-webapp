@@ -17,29 +17,28 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.power.title') }}</h1>
-		<CCard body-wrapper>
-			<CButton
-				color='danger'
-				@click='powerOff()'
-			>
-				<CIcon :content='icons.off' />
-				{{ $t('gateway.power.powerOff') }}
-			</CButton> <CButton
-				color='primary'
-				@click='reboot()'
-			>
-				<CIcon :content='icons.reboot' />
-				{{ $t('gateway.power.reboot') }}
-			</CButton>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<v-btn
+					color='error'
+					@click='powerOff()'
+				>
+					<v-icon>mdi-power</v-icon>
+					{{ $t('gateway.power.powerOff') }}
+				</v-btn> <v-btn
+					color='primary'
+					@click='reboot()'
+				>
+					<v-icon>mdi-reload</v-icon>
+					{{ $t('gateway.power.reboot') }}
+				</v-btn>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CIcon} from '@coreui/vue/src';
-
-import {cilPowerStandby, cilReload} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import GatewayService from '@/services/GatewayService';
@@ -48,14 +47,9 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CIcon,
-	},
 	metaInfo(): MetaInfo {
 		return {
-			title: 'gateway.power.title',
+			title: this.$t('gateway.power.title').toString(),
 		};
 	}
 })
@@ -64,13 +58,6 @@ import {MetaInfo} from 'vue-meta';
  * Power control component
  */
 export default class PowerControl extends Vue {
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		off: cilPowerStandby,
-		reboot: cilReload
-	};
 
 	/**
 	 * Performs power off

@@ -17,25 +17,29 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.msAzure.form.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
+		<v-card>
+			<v-card-title>
+				<v-btn
 					color='primary'
-					size='sm'
+					small
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
+					target='_blank'
 				>
+					<v-icon small>mdi-file-document</v-icon>
 					{{ $t('cloud.guides.pdf') }}
-				</CButton> <CButton
-					color='danger'
-					size='sm'
+				</v-btn> <v-btn
+					color='error'
+					small
 					href='https://youtu.be/SIBoTrYwR2g'
+					target='_blank'
 				>
+					<v-icon small>mdi-youtube</v-icon>
 					{{ $t('cloud.guides.video') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -43,36 +47,35 @@ limitations under the License.
 								required: $t("cloud.msAzure.errors.connectionString"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							color='secondary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -84,12 +87,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},

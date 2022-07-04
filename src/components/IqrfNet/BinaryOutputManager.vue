@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
@@ -28,14 +28,14 @@ limitations under the License.
 							between: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -47,53 +47,45 @@ limitations under the License.
 							between: $t("iqrfnet.standard.binaryOutput.form.messages.index"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='index'
 							type='number'
 							min='0'
 							max='31'
 							:label='$t("iqrfnet.standard.binaryOutput.form.index")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<div class='form-group'>
-						<label for='formStateSwitch'>
-							{{ $t('iqrfnet.standard.binaryOutput.form.state') }}
-						</label><br>
-						<CSwitch
-							id='formStateSwitch'
-							:checked.sync='state'
-							color='primary'
-							size='lg'
-							shape='pill'
-							:label-on='$t("iqrfnet.standard.binaryOutput.form.enabled")'
-							:label-off='$t("iqrfnet.standard.binaryOutput.form.disabled")'
-						/>
-					</div>
-					<CButton
+					<v-switch
+						v-model='state'
+						color='primary'
+						inset
+						:label='$t("iqrfnet.standard.binaryOutput.form.state")'
+					/>
+					<v-btn
 						color='primary'
 						:disabled='invalid'
 						@click='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click='submitGetStates'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click='submitSetState'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter v-if='responseType !== null'>
+		</v-card-text>
+		<v-card-text v-if='responseType !== null'>
 			<table v-if='responseType === "enum"' class='table'>
 				<thead>
 					{{ $t('iqrfnet.standard.binaryOutput.enum') }}
@@ -133,8 +125,8 @@ limitations under the License.
 					</tr>
 				</tbody>
 			</table>
-		</CCardFooter>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>

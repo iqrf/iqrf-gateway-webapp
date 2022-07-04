@@ -17,81 +17,18 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<CListGroup>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/config/daemon/main/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.main.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.main.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/daemon/interfaces/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.interfaces.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.interfaces.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/daemon/messagings/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.messagings.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.messagings.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/daemon/scheduler/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.scheduler.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.scheduler.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/daemon/misc/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.misc.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.misc.description') }}
-						</p>
-					</CListGroupItem>
-				</CListGroup>
-			</CCardBody>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
-
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
 
 @Component({
 	components: {
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'config.daemon.title'
@@ -102,27 +39,43 @@ import {getRoleIndex} from '@/helpers/user';
  * Daemon configuration disambiguation menu
  */
 export default class DaemonDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * Returns links for disambiguation menu
+	 * @returns {Link[]} Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('config.daemon.main.title').toString(),
+			description: this.$t('config.daemon.main.description').toString(),
+			to: '/config/daemon/main/',
+			role: LinkRole.admin,
+		},
+		{
+			title: this.$t('config.daemon.interfaces.title').toString(),
+			description: this.$t('config.daemon.interfaces.description').toString(),
+			to: '/config/daemon/interfaces/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.messagings.title').toString(),
+			description: this.$t('config.daemon.messagings.description').toString(),
+			to: '/config/daemon/messagings/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.scheduler.title').toString(),
+			description: this.$t('config.daemon.scheduler.description').toString(),
+			to: '/config/daemon/scheduler/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.daemon.misc.title').toString(),
+			description: this.$t('config.daemon.misc.description').toString(),
+			to: '/config/daemon/misc/',
+			role: LinkRole.normal,
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

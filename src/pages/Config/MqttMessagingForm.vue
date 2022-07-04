@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.messagings.mqtt.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<form @submit.prevent='saveConfig'>
 						<legend>{{ $t('config.daemon.messagings.mqtt.legend') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -35,15 +35,15 @@ limitations under the License.
 								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CRow>
-							<CCol md='6'>
+						<v-row>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -51,15 +51,15 @@ limitations under the License.
 										required: $t("config.daemon.messagings.mqtt.errors.BrokerAddr"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='configuration.BrokerAddr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -67,15 +67,15 @@ limitations under the License.
 										required: $t("forms.errors.clientId"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='configuration.ClientId'
 										:label='$t("forms.fields.clientId")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -83,15 +83,15 @@ limitations under the License.
 										required: $t("forms.errors.requestTopic"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='configuration.TopicRequest'
 										:label='$t("forms.fields.requestTopic")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -99,27 +99,27 @@ limitations under the License.
 										required: $t("forms.errors.responseTopic"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='configuration.TopicResponse'
 										:label='$t("forms.fields.responseTopic")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.User'
 									:label='$t("config.daemon.messagings.mqtt.form.User")'
 								/>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.Password'
 									:label='$t("forms.fields.password")'
 								/>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
 									rules='required'
@@ -127,18 +127,18 @@ limitations under the License.
 										required: $t("config.daemon.messagings.mqtt.errors.QoS"),
 									}'
 								>
-									<CSelect
-										:value.sync='configuration.Qos'
+									<v-select
+										v-model='configuration.Qos'
 										:label='$t("config.daemon.messagings.mqtt.form.QoS")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.QoS")'
-										:options='qosOptions'
+										:items='qosOptions'
 									/>
 									<p>{{ $t(`config.daemon.messagings.mqtt.messages.qos.${configuration.Qos}`) }}</p>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -146,18 +146,18 @@ limitations under the License.
 										required: $t("config.daemon.messagings.mqtt.errors.Persistence"),
 									}'
 								>
-									<CSelect
-										:value.sync='configuration.Persistence'
+									<v-select
+										v-model='configuration.Persistence'
 										:label='$t("config.daemon.messagings.mqtt.form.Persistence")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.Persistence")'
-										:options='persistenceOptions'
+										:items='persistenceOptions'
 									/>
 									<p>{{ $t(`config.daemon.messagings.mqtt.messages.persistence.${configuration.Persistence}`) }}</p>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
@@ -166,17 +166,17 @@ limitations under the License.
 										min: $t("config.daemon.messagings.mqtt.errors.KeepAliveInterval"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='configuration.KeepAliveInterval'
 										:label='$t("config.daemon.messagings.mqtt.form.KeepAliveInterval")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										min='0'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
@@ -185,17 +185,17 @@ limitations under the License.
 										min: $t("config.daemon.messagings.mqtt.errors.ConnectTimeout"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='configuration.ConnectTimeout'
 										:label='$t("config.daemon.messagings.mqtt.form.ConnectTimeout")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										min='0'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|between:0," + configuration.MaxReconnect'
@@ -204,18 +204,18 @@ limitations under the License.
 										integer: $t("config.daemon.messagings.mqtt.errors.MinReconnect"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='configuration.MinReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MinReconnect")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:max='configuration.MaxReconnect'
 										min='0'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
+							</v-col>
+							<v-col md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|min:" + configuration.MinReconnect'
@@ -224,101 +224,90 @@ limitations under the License.
 										min: $t("config.daemon.messagings.mqtt.errors.MaxReconnect"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model.number='configuration.MaxReconnect'
 										:label='$t("config.daemon.messagings.mqtt.form.MaxReconnect")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 										type='number'
 										:min='configuration.MinReconnect'
 									/>
 								</ValidationProvider>
-							</CCol>
-							<CCol md='6'>
-								<CInputCheckbox
-									:checked.sync='configuration.acceptAsyncMsg'
+							</v-col>
+							<v-col md='6'>
+								<v-checkbox
+									v-model='configuration.acceptAsyncMsg'
 									:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 								/>
-							</CCol>
-						</CRow>
-						<CRow>
-							<CCol>
+							</v-col>
+						</v-row>
+						<v-row>
+							<v-col>
 								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
-								<CSwitch
+								<v-switch
 									color='primary'
-									size='lg'
-									shape='pill'
-									label-on='ON'
-									label-off='OFF'
-									:checked.sync='configuration.EnabledSSL'
+									inset
+									v-model='configuration.EnabledSSL'
 									style='float: right;'
 								/>
-							</CCol>
-						</CRow>
-						<CRow v-if='configuration.EnabledSSL'>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+						</v-row>
+						<v-row v-if='configuration.EnabledSSL'>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.TrustStore'
 									:label='$t("config.daemon.messagings.mqtt.form.TrustStore")'
 								/>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.KeyStore'
 									:label='$t("forms.fields.certificate")'
 								/>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.PrivateKey'
 									:label='$t("forms.fields.privateKey")'
 								/>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.PrivateKeyPassword'
 									:type='passwordVisible ? "text" : "password"'
 									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
-								>
-									<template #append-content>
-										<span @click='passwordVisible = !passwordVisible'>
-											<FontAwesomeIcon
-												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-											/>
-										</span>
-									</template>
-								</CInput>
-							</CCol>
-							<CCol md='6'>
-								<CInput
+									:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+									@click:append='passwordVisible = !passwordVisible'
+								/>
+							</v-col>
+							<v-col md='6'>
+								<v-text-field
 									v-model='configuration.EnabledCipherSuites'
 									:label='$t("config.daemon.messagings.mqtt.form.EnabledCipherSuites")'
 								/>
-							</CCol>
-							<CCol md='6'>
-								<CInputCheckbox
-									:checked.sync='configuration.EnableServerCertAuth'
+							</v-col>
+							<v-col md='6'>
+								<v-checkbox
+									v-model='configuration.EnableServerCertAuth'
 									:label='$t("config.daemon.messagings.mqtt.form.EnableServerCertAuth")'
 								/>
-							</CCol>
-						</CRow>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+							</v-col>
+						</v-row>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -331,16 +320,6 @@ import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CSwitch,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -416,7 +395,7 @@ export default class MqttMessagingForm extends Vue {
 		return options.map((option) => {
 			return {
 				value: option,
-				label: this.$t(`config.daemon.messagings.mqtt.form.Persistences.${option}`).toString()
+				text: this.$t(`config.daemon.messagings.mqtt.form.Persistences.${option}`).toString()
 			};
 		});
 	}
@@ -430,7 +409,7 @@ export default class MqttMessagingForm extends Vue {
 		return options.map((option) => {
 			return {
 				value: option,
-				label: this.$t(`config.daemon.messagings.mqtt.form.QoSes.${option.toString()}`).toString(),
+				text: this.$t(`config.daemon.messagings.mqtt.form.QoSes.${option.toString()}`).toString(),
 			};
 		});
 	}

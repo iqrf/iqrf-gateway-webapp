@@ -25,8 +25,8 @@ limitations under the License.
 		<CCard body-wrapper>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveConfig'>
-					<CRow>
-						<CCol md='6'>
+					<v-row>
+						<v-col md='6'>
 							<legend>{{ $t('config.daemon.messagings.websocket.interface.legend') }}</legend>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -68,8 +68,8 @@ limitations under the License.
 								:checked.sync='service.acceptOnlyLocalhost'
 								:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 							/>
-						</CCol>
-						<CCol>
+						</v-col>
+						<v-col>
 							<div>
 								<label style='font-size: 1.5rem;'>
 									{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
@@ -140,8 +140,8 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</div>
-						</CCol>
-					</CRow>
+						</v-col>
+					</v-row>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}
 					</CButton>

@@ -19,11 +19,11 @@ limitations under the License.
 		<h1 v-if='!$route.path.includes("/install")'>
 			{{ $t('core.security.ssh.add') }}
 		</h1>
-		<CCard>
-			<CCardHeader v-if='$route.path.includes("/install")'>
+		<v-card>
+			<v-card-title v-if='$route.path.includes("/install")'>
 				{{ $t('core.security.ssh.add') }}
-			</CCardHeader>
-			<CCardBody>
+			</v-card-title>
+			<v-card-text>
 				<CElementCover
 					v-if='running'
 					:opacity='0.75'
@@ -39,7 +39,7 @@ limitations under the License.
 				</div>
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form @submit.prevent='saveKeys'>
 						<div
 							v-for='(key, idx) of keys'
 							:key='idx'
@@ -52,11 +52,11 @@ limitations under the License.
 									required: $t("core.security.ssh.errors.descriptionMissing")
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='key.description'
 									:label='$t("core.security.ssh.form.description")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -67,51 +67,51 @@ limitations under the License.
 									ssh: $t("core.security.ssh.errors.keyInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='key.key'
 									:label='$t("core.security.ssh.form.key")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									@change='updateDescription(idx)'
 								/>
 							</ValidationProvider>
-							<CButton
+							<v-btn
 								v-if='keys.length > 1'
-								color='danger'
+								color='error'
 								@click='removeKey(idx)'
 							>
 								{{ $t('core.security.ssh.form.remove') }}
-							</CButton> <CButton
+							</v-btn> <v-btn
 								v-if='idx === (keys.length - 1)'
 								color='success'
 								@click='addKey()'
 							>
 								{{ $t('core.security.ssh.form.add') }}
-							</CButton>
+							</v-btn>
 						</div>
-						<CButton
+						<v-btn
 							color='primary'
 							:disabled='invalid'
-							@click='saveKeys'
+							type='submit'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							v-if='$route.path.includes("/install")'
 							color='secondary'
 							@click='nextStep'
 						>
 							{{ $t('forms.skip') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CElementCover, CSpinner} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
 
@@ -125,12 +125,8 @@ import {ISshInput} from '@/interfaces/ssh';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
+		CElementCover,
+		CSpinner,
 		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,

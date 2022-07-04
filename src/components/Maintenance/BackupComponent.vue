@@ -1,77 +1,76 @@
 <template>
-	<CForm @submit.prevent='backup'>
+	<form @submit.prevent='backup'>
 		<div class='form-group'>
-			<CButton
+			<v-btn
 				color='primary'
-				size='sm'
+				small
 				@click='setAll(true)'
 			>
 				{{ $t('maintenance.backup.form.selectAll') }}
-			</CButton> <CButton
+			</v-btn> <v-btn
 				color='secondary'
-				size='sm'
+				small
 				@click='setAll(false)'
 			>
 				{{ $t('maintenance.backup.form.deselectAll') }}
-			</CButton>
+			</v-btn>
 		</div>
-		<CRow>
-			<CCol>
+		<v-row>
+			<v-col>
 				<h3>{{ $t('maintenance.backup.headings.software') }}</h3>
-				<CInputCheckbox
-					:checked.sync='migration.software.iqrf'
+				<v-checkbox
+					v-model='migration.software.iqrf'
 					:label='$t("maintenance.backup.form.software.iqrf")'
 				/>
-				<CInputCheckbox
+				<v-checkbox
 					v-if='$store.getters["features/isEnabled"]("mender")'
-					:checked.sync='migration.software.mender'
+					v-model='migration.software.mender'
 					:label='$t("maintenance.backup.form.software.mender")'
 				/>
-				<CInputCheckbox
+				<v-checkbox
 					v-if='$store.getters["features/isEnabled"]("monit")'
-					:checked.sync='migration.software.monit'
+					v-model='migration.software.monit'
 					:label='$t("maintenance.backup.form.software.monit")'
 				/>
-				<CInputCheckbox
+				<v-checkbox
 					v-if='$store.getters["features/isEnabled"]("pixla")'
-					:checked.sync='migration.software.pixla'
+					v-model='migration.software.pixla'
 					:label='$t("maintenance.backup.form.software.pixla")'
 				/>
-			</CCol>
-			<CCol>
+			</v-col>
+			<v-col>
 				<h3>{{ $t('maintenance.backup.headings.system') }}</h3>
-				<CInputCheckbox
-					:checked.sync='migration.system.hostname'
+				<v-checkbox
+					v-model='migration.system.hostname'
 					:label='$t("maintenance.backup.form.system.hostname")'
 				/>
-				<CInputCheckbox
+				<v-checkbox
 					v-if='$store.getters["features/isEnabled"]("networkManager")'
-					:checked.sync='migration.system.network'
+					v-model='migration.system.network'
 					:label='$t("maintenance.backup.form.system.network")'
 				/>
-				<CInputCheckbox
-					:checked.sync='migration.system.time'
+				<v-checkbox
+					v-model='migration.system.time'
 					:label='$t("maintenance.backup.form.system.time")'
 				/>
-				<CInputCheckbox
+				<v-checkbox
 					v-if='$store.getters["features/isEnabled"]("systemdJournal")'
-					:checked.sync='migration.system.journal'
+					v-model='migration.system.journal'
 					:label='$t("maintenance.backup.form.system.journal")'
 				/>
-			</CCol>
-		</CRow>
-		<CButton
+			</v-col>
+		</v-row>
+		<v-btn
 			color='primary'
 			type='submit'
 		>
 			{{ $t('maintenance.backup.form.backup') }}
-		</CButton>
-	</CForm>
+		</v-btn>
+	</form>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCol, CForm, CInputCheckbox, CRow} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
@@ -81,15 +80,7 @@ import BackupService from '@/services/BackupService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IBackup} from '@/interfaces/backup';
 
-@Component({
-	components: {
-		CButton,
-		CCol,
-		CForm,
-		CInputCheckbox,
-		CRow,
-	}
-})
+@Component({})
 
 /**
  * Gateway backup component

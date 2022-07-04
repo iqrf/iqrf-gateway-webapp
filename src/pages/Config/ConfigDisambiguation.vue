@@ -17,83 +17,18 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<CListGroup>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/daemon/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.daemon.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.daemon.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("iqrfGatewayController") && roleIdx <= roles.normal'
-						to='/config/controller/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.controller.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.controller.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator") && roleIdx <= roles.normal'
-						to='/config/translator/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.translator.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.translator.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.normal'
-						to='/config/repository/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.repository.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.repository.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/config/smtp/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.smtp.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.smtp.description') }}
-						</p>
-					</CListGroupItem>
-				</CListGroup>
-			</CCardBody>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CListGroup, CListGroupItem} from '@coreui/vue/src';
-
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
 
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'config.title',
@@ -104,27 +39,46 @@ import {getRoleIndex} from '@/helpers/user';
  * Config disambiguation menu component
  */
 export default class ConfigDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * Returns links for disambiguation menu
+	 * @returns {Link[]} Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('config.daemon.title').toString(),
+			description: this.$t('config.daemon.description').toString(),
+			to: '/config/daemon/',
+			role: LinkRole.normal,
+		},
+		{
+			title: this.$t('config.controller.title').toString(),
+			description: this.$t('config.controller.description').toString(),
+			to: '/config/controller/',
+			role: LinkRole.normal,
+			feature: 'iqrfGatewayController',
+		},
+		{
+			title: this.$t('config.translator.title').toString(),
+			description: this.$t('config.translator.description').toString(),
+			to: '/config/translator/',
+			role: LinkRole.normal,
+			feature: 'iqrfGatewayTranslator',
+		},
+		{
+			title: this.$t('config.repository.title').toString(),
+			description: this.$t('config.repository.description').toString(),
+			to: '/config/repository/',
+			role: LinkRole.normal,
+			feature: 'iqrfRepository',
+		},
+		{
+			title: this.$t('config.smtp.title').toString(),
+			description: this.$t('config.smtp.description').toString(),
+			to: '/config/smtp/',
+			role: LinkRole.admin,
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

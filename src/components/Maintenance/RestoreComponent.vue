@@ -23,31 +23,43 @@ limitations under the License.
 		>
 			<CSpinner color='primary' />
 		</CElementCover>
-		<CForm>
-			<div class='form-group'>
-				<CInputFile
-					ref='backupArchive'
-					accept='.zip'
-					:label='$t("maintenance.backup.form.archive")'
-					@click='fileInputEmpty'
-					@input='fileInputEmpty'
-				/>
-				<CButton
-					color='primary'
-					:disabled='inputEmpty'
-					@click.prevent='restore'
-				>
-					{{ $t('maintenance.backup.form.restore') }}
-				</CButton>
-			</div>
-			<em>{{ $t('maintenance.backup.messages.restoreNote') }}</em>
-		</CForm>
+		<ValidationObserver v-slot='{invalid}'>
+			<form @submit.prevent='restore'>
+				<div class='form-group'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.backup.errors.restoreArchive"),
+						}'
+					>
+						<v-file-input
+							v-model='archive'
+							accept='.zip'
+							:label='$t("maintenance.backup.form.archive")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							prepend-icon='mdi-archive-arrow-up'
+						/>
+					</ValidationProvider>
+					<v-btn
+						color='primary'
+						:disabled='invalid'
+						type='submit'
+					>
+						{{ $t('maintenance.backup.form.restore') }}
+					</v-btn>
+				</div>
+				<em>{{ $t('maintenance.backup.messages.restoreNote') }}</em>
+			</form>
+		</ValidationObserver>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInputFile} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -57,9 +69,8 @@ import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInputFile,
+		ValidationObserver,
+		ValidationProvider,
 	},
 })
 
@@ -69,9 +80,9 @@ import {AxiosError, AxiosResponse} from 'axios';
 export default class RestoreComponent extends Vue {
 
 	/**
-	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
+	 * @var {File|null} archive Archive to restore
 	 */
-	private inputEmpty = true;
+	private archive: File|null = null;
 
 	/**
 	 * @var {boolean} running Indicates whether restore operation is running
@@ -79,15 +90,21 @@ export default class RestoreComponent extends Vue {
 	private running = false;
 
 	/**
+	 * Vue lifecycle hook created
+	 */
+	protected created(): void {
+		extend('required', required);
+	}
+
+	/**
 	 * Performs gateway restore
 	 */
 	private restore(): void {
-		const files = this.getFiles();
-		if (files === null || files.length === 0) {
+		if (this.archive === null) {
 			return;
 		}
 		this.showBlockingElement();
-		BackupService.restore(files[0])
+		BackupService.restore(this.archive)
 			.then((response: AxiosResponse) => {
 				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.hideBlockingElement();
@@ -102,23 +119,6 @@ export default class RestoreComponent extends Vue {
 				this.hideBlockingElement();
 				extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed');
 			});
-	}
-
-	/**
-	 * Extracts uploaded files from form configuration file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getFiles(): FileList {
-		const input = ((this.$refs.backupArchive as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if form configuration file input is empty
-	 */
-	private fileInputEmpty(): void {
-		const files = this.getFiles();
-		this.inputEmpty = files.length === 0;
 	}
 
 	/**

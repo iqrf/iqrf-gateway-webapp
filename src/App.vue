@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
+	<v-app dark>
 		<Blocking />
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
-	</div>
+	</v-app>
 </template>
 
 <script lang='ts'>
@@ -95,7 +95,7 @@ export default class App extends Vue {
 	 */
 	created(): void {
 		this.unwatch = this.$store.watch(
-			(state, getter) => getter['daemonClient/isConnected'],
+			(_state, getter) => getter['daemonClient/isConnected'],
 			(newVal, oldVal) => {
 				if (!oldVal && newVal) {
 					this.$store.dispatch('daemonClient/getVersion');

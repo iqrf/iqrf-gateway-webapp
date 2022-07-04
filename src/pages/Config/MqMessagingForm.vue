@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.messagings.mq.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<form @submit.prevent='saveConfig'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -34,11 +34,11 @@ limitations under the License.
 								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -48,11 +48,11 @@ limitations under the License.
 								required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.LocalMqName'
 								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -62,30 +62,29 @@ limitations under the License.
 								required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.RemoteMqName'
 								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.acceptAsyncMsg'
+						<v-checkbox
+							v-model='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -99,13 +98,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	},

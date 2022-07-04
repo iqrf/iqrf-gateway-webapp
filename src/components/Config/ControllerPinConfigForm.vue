@@ -16,147 +16,146 @@ limitations under the License.
 -->
 <template>
 	<ValidationObserver v-slot='{invalid}'>
-		<CModal
-			:color='modalColor'
-			size='lg'
-			:show.sync='show'
-			:close-on-backdrop='false'
-			:fade='false'
+		<v-dialog
+			v-model='show'
+			width='50%'
+			persistent
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ modalTitle }}
-				</h5>
-			</template>
-			<CForm>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("config.controller.pins.errors.name")
-					}'
-				>
-					<CInput
-						v-model='profile.name'
-						:label='$t("config.controller.pins.form.name")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.greenLed"),
-						required: $t("config.controller.pins.errors.greenLed"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.greenLed'
-						type='number'
-						:label='$t("config.controller.pins.form.greenLed")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.redLed"),
-						required: $t("config.controller.pins.errors.redLed"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.redLed'
-						type='number'
-						:label='$t("config.controller.pins.form.redLed")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.button"),
-						required: $t("config.controller.pins.errors.button"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.button'
-						type='number'
-						:label='$t("config.controller.pins.form.button")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<CInputCheckbox
-					:checked.sync='useI2c'
-					:label='$t("config.controller.pins.form.useI2c")'
-				/>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						integer: useI2c,
-						required: useI2c,
-					}'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.sck"),
-						required: $t("config.controller.pins.errors.sck"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.sck'
-						type='number'
-						:label='$t("config.controller.pins.form.sck")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-						:disabled='!useI2c'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						integer: useI2c,
-						required: useI2c,
-					}'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.sda"),
-						required: $t("config.controller.pins.errors.sda"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.sda'
-						type='number'
-						:label='$t("config.controller.pins.form.sda")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-						:disabled='!useI2c'
-					/>
-				</ValidationProvider>
-			</CForm>
-			<template #footer>
-				<CButton
-					:color='modalColor'
-					:disabled='invalid'
-					@click='saveProfile'
-				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+			<v-card>
+				<v-card-title>{{ modalTitle }}</v-card-title>
+				<v-card-text>
+					<form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.controller.pins.errors.name")
+							}'
+						>
+							<v-text-field
+								v-model='profile.name'
+								:label='$t("config.controller.pins.form.name")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.greenLed"),
+								required: $t("config.controller.pins.errors.greenLed"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.greenLed'
+								type='number'
+								:label='$t("config.controller.pins.form.greenLed")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.redLed"),
+								required: $t("config.controller.pins.errors.redLed"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.redLed'
+								type='number'
+								:label='$t("config.controller.pins.form.redLed")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.button"),
+								required: $t("config.controller.pins.errors.button"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.button'
+								type='number'
+								:label='$t("config.controller.pins.form.button")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-checkbox
+							v-model='useI2c'
+							:label='$t("config.controller.pins.form.useI2c")'
+						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								integer: useI2c,
+								required: useI2c,
+							}'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.sck"),
+								required: $t("config.controller.pins.errors.sck"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.sck'
+								type='number'
+								:label='$t("config.controller.pins.form.sck")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:disabled='!useI2c'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								integer: useI2c,
+								required: useI2c,
+							}'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.sda"),
+								required: $t("config.controller.pins.errors.sda"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.sda'
+								type='number'
+								:label='$t("config.controller.pins.form.sda")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:disabled='!useI2c'
+							/>
+						</ValidationProvider>
+					</form>
+				</v-card-text>
+				<v-card-actions>
+					<v-btn
+						:color='modalColor'
+						:disabled='invalid'
+						@click='saveProfile'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+					<v-spacer />
+					<v-btn
+						color='secondary'
+						@click='deactivateModal'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, required} from 'vee-validate/dist/rules';
@@ -165,10 +164,6 @@ import {IControllerPinConfig} from '@/interfaces/controller';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -194,9 +189,9 @@ export default class ControllerPinConfigForm extends Vue {
 	private useI2c = false;
 
 	/**
-	 * @var {IControllerPinConfig} profile Controller pin configuration profile
+	 * @var {IControllerPinConfig} defaultProfile Default Controller pin configuration profile
 	 */
-	private profile: IControllerPinConfig = {
+	private defaultProfile: IControllerPinConfig = {
 		name: '',
 		greenLed: 0,
 		redLed: 0,
@@ -204,6 +199,11 @@ export default class ControllerPinConfigForm extends Vue {
 		sck: 0,
 		sda: 0,
 	};
+
+	/**
+	 * @var {IControllerPinConfig} profile Controller pin configuration profile
+	 */
+	private profile: IControllerPinConfig = this.defaultProfile;
 
 	/**
 	 * Initializes validation rules
@@ -226,7 +226,11 @@ export default class ControllerPinConfigForm extends Vue {
 	 * @return {string} Modal window title
 	 */
 	get modalTitle(): string {
-		return this.$t(`config.controller.pins.${this.id === -1 ? 'add' : 'edit'}`).toString();
+		if (this.id === -1) {
+			return this.$t('config.controller.pins.add').toString();
+		} else {
+			return this.$t('config.controller.pins.edit').toString();
+		}
 	}
 
 	/**
@@ -264,14 +268,7 @@ export default class ControllerPinConfigForm extends Vue {
 		this.show = false;
 		this.useI2c = false;
 		this.id = -1;
-		this.profile = {
-			name: '',
-			greenLed: 0,
-			redLed: 0,
-			button: 0,
-			sck: 0,
-			sda: 0,
-		};
+		this.profile = this.defaultProfile;
 	}
 }
 </script>

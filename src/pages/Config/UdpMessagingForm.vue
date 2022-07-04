@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.messagings.udp.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<form @submit.prevent='saveConfig'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -34,11 +34,11 @@ limitations under the License.
 								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -49,11 +49,11 @@ limitations under the License.
 								required: $t("config.daemon.messagings.udp.errors.RemotePort"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='configuration.RemotePort'
 								:label='$t("config.daemon.messagings.udp.form.RemotePort")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								type='number'
 								min='1'
 								max='65535'
@@ -67,29 +67,28 @@ limitations under the License.
 								required: $t("config.daemon.messagings.udp.errors.LocalPort"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='configuration.LocalPort'
 								:label='$t("config.daemon.messagings.udp.form.LocalPort")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								type='number'
 								min='1'
 								max='65535'
 							/>
 						</ValidationProvider>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, required} from 'vee-validate/dist/rules';
@@ -102,12 +101,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

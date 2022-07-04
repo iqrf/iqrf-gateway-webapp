@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('service.unattended-upgrades.configuration') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='updateConfig'>
+				<form @submit.prevent='updateConfig'>
 					<ValidationProvider
 						v-if='isAdmin'
 						v-slot='{errors, touched, valid}'
@@ -32,13 +32,13 @@ limitations under the License.
 							required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='config["APT::Periodic::Update-Package-Lists"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -50,13 +50,13 @@ limitations under the License.
 							required: $t("service.unattended-upgrades.errors.upgradeInterval"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='config["APT::Periodic::Unattended-Upgrade"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.upgradeInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -69,36 +69,35 @@ limitations under the License.
 							required: $t("service.unattended-upgrades.errors.removeInterval"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='config["APT::Periodic::AutocleanInterval"]'
 							type='number'
 							min='0'
 							:label='$t("service.unattended-upgrades.form.removeInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:value.sync='config["Unattended-Upgrade::Automatic-Reboot"]'
+					<v-checkbox
+						v-model='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
 					/>
 					<div><em>{{ $t('service.unattended-upgrades.form.intervalNote') }}</em></div><br>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -111,13 +110,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	},
