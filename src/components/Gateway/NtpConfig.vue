@@ -15,28 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('gateway.ntp.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<div class='form-group'>
-						<strong>
-							<label>
-								{{ $t('gateway.ntp.form.setServer') }}
-							</label>
-						</strong><br>
-						<CSwitch
-							:checked.sync='useCustomServers'
-							size='lg'
-							shape='pill'
-							color='primary'
-							label-on='ON'
-							label-off='OFF'
-						/>
-					</div>
+				<form @submit.prevent='saveConfig'>
+					<v-switch
+						v-model='useCustomServers'
+						:label='$t("gateway.ntp.form.setServer")'
+						inset
+					/>
 					<div v-if='useCustomServers'>
 						<div
 							v-for='(key, idx) of pools'
@@ -51,49 +41,48 @@ limitations under the License.
 									server: $t("gateway.ntp.errors.serverInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='pools[idx]'
 									:label='$t("gateway.ntp.form.server")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-							<CButton
+							<v-btn
 								v-if='pools.length > 1'
-								color='danger'
+								color='error'
 								@click='removeServer(idx)'
 							>
 								{{ $t('gateway.ntp.form.remove') }}
-							</CButton> <CButton
+							</v-btn> <v-btn
 								v-if='idx === (pools.length -1)'
 								color='success'
 								@click='addServer'
 							>
 								{{ $t('gateway.ntp.form.add') }}
-							</CButton>
+							</v-btn>
 						</div>
 					</div>
-					<CButton
+					<v-btn
 						color='primary'
 						:disabled='invalid'
-						@click='saveConfig'
+						type='submit'
 					>
 						{{ $t('forms.save') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='info'
 						@click='syncTime'
 					>
 						Sync time
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CForm, CInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -107,12 +96,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},

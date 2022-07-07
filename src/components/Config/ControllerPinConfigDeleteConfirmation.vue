@@ -15,45 +15,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		color='danger'
-		size='lg'
-		:show.sync='show'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		persistent
+		width='50%'
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('config.controller.deleteModal.title') }}
-			</h5>
-		</template>
-		{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}
-		<template #footer>
-			<CButton
-				color='danger'
-				@click='deleteProfile'
-			>
-				{{ $t('forms.delete') }}
-			</CButton> <CButton
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>{{ $t('config.controller.deleteModal.title') }}</v-card-title>
+			<v-card-text>{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}</v-card-text>
+			<v-card-actions>
+				<v-btn
+					color='error'
+					@click='deleteProfile'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+				<v-spacer />
+				<v-btn
+					color='secondary'
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+@Component({})
 
 /**
  * Controller pin configuration delete confirmation modal window component

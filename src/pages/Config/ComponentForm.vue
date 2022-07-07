@@ -22,10 +22,10 @@ limitations under the License.
 		<h1 v-else>
 			{{ $t('config.daemon.components.edit') }}
 		</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<form @submit.prevent='saveConfig'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -33,14 +33,14 @@ limitations under the License.
 								required: $t("config.daemon.components.errors.name"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.name'
 								:label='$t("config.daemon.components.form.name")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInput
+						<v-text-field
 							v-model='configuration.libraryPath'
 							:label='$t("config.daemon.components.form.libraryPath")'
 						/>
@@ -51,15 +51,15 @@ limitations under the License.
 								required: $t("config.daemon.components.errors.libraryName"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.libraryName'
 								:label='$t("config.daemon.components.form.libraryName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.enabled'
+						<v-checkbox
+							v-model='configuration.enabled'
 							:label='$t("states.enabled")'
 						/>
 						<ValidationProvider
@@ -70,31 +70,30 @@ limitations under the License.
 								required: $t("config.daemon.components.errors.startLevel"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='configuration.startlevel'
 								type='number'
 								:label='$t("config.daemon.components.form.startLevel")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
 							type='submit'
 							color='primary'
 							:disabled='invalid'
 						>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -115,13 +114,6 @@ interface ComponentFormConfig {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	},

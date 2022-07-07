@@ -91,7 +91,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {CElementCover, CSpinner} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import UserService from '@/services/UserService';
@@ -105,10 +105,8 @@ import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CForm,
-		CInput,
+		CElementCover,
+		CSpinner,
 		ValidationObserver,
 		ValidationProvider,
 	},

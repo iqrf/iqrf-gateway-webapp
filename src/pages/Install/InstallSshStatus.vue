@@ -33,7 +33,12 @@ limitations under the License.
 					v-model='status'
 					:label='$t("install.ssh.state")'
 				>
-					<v-radio v-for='option in options' :key='option.value' :value='option.value' :label='option.text'/>
+					<v-radio
+						v-for='option in options'
+						:key='option.value'
+						:value='option.value'
+						:label='option.text'
+					/>
 				</v-radio-group>
 				<p>
 					<em>{{ $t('install.ssh.messages.reminder') }}</em>

@@ -21,6 +21,14 @@ limitations under the License.
 			width='50%'
 			persistent
 		>
+			<template #activator='{on, attrs}'>
+				<v-list-item v-bind='attrs' v-on='on'>
+					<v-icon dense>
+						mdi-pencil
+					</v-icon>
+					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
+				</v-list-item>
+			</template>
 			<v-card>
 				<v-card-title>{{ modalTitle }}</v-card-title>
 				<v-card-text>

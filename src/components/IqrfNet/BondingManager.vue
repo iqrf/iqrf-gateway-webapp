@@ -15,39 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
+		<v-card-text>
 			<h4>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<CSelect
+				<form>
+					<v-select
 						v-if='bondTargetAvailable'
-						:value.sync='bondTarget'
+						v-model='bondTarget'
 						:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
-						:options='bondTargetOptions'
+						:items='bondTargetOptions'
 					/>
 					<div v-if='bondTarget === "device"'>
-						<CSelect
-							:value.sync='bondMethod'
+						<v-select
+							v-model='bondMethod'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
-							:options='bondMethodOptions'
+							:items='bondMethodOptions'
 						/>
-						<div class='form-group'>
-							<label for='addressSwitch'>
-								<strong>
-									{{ $t('iqrfnet.networkManager.bondingManager.form.autoAddress') }}
-								</strong>
-							</label><br>
-							<CSwitch
-								id='addressSwitch'
-								shape='pill'
-								size='lg'
-								color='primary'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='autoAddress'
-							/>
-						</div>
+						<v-switch
+							v-model='autoAddress'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.autoAddress")'
+							inset
+						/>
 						<ValidationProvider
 							v-if='!autoAddress'
 							v-slot='{errors, touched, valid}'
@@ -58,14 +47,14 @@ limitations under the License.
 								between: $t("iqrfnet.networkManager.bondingManager.errors.address"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='address'
 								type='number'
 								min='1'
 								max='239'
 								:label='$t("forms.fields.address")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								:disabled='autoAddress'
 							/>
 						</ValidationProvider>
@@ -78,11 +67,11 @@ limitations under the License.
 								scCode: $t("iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='scCode'
 								:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
-								:is-valid='valid'
-								:invalid-feedback='errors.join(", ")'
+								:success='valid'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -94,53 +83,53 @@ limitations under the License.
 								between: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='bondingRetries'
 								type='number'
 								min='0'
 								max='255'
 								:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='unbondCoordinatorOnly'
+						<v-checkbox
+							v-model='unbondCoordinatorOnly'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
 						/>
-						<CButton
+						<v-btn
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='bond'
 						>
 							{{ $t('forms.bond') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							color='secondary'
 							:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
 							@click='modalUnbond = true'
 						>
 							{{ $t('forms.unbond') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							color='secondary'
 							type='button'
 							@click='modalClear = true'
 						>
 							{{ $t('forms.clearBonds') }}
-						</CButton>
+						</v-btn>
 					</div>
 					<div v-else>
-						<CSelect
-							:value.sync='bondTool'
+						<v-select
+							v-model='bondTool'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.toolType")'
-							:options='bondToolOptions'
+							:items='bondToolOptions'
 						/>
-						<CButton
+						<v-btn
 							v-if='bondTool === "nfc"'
 							color='primary'
 							@click='bondNfc'
 						>
 							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
-						</CButton>
+						</v-btn>
 					</div>
 					<CModal
 						color='danger'
@@ -153,17 +142,17 @@ limitations under the License.
 						</template>
 						{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
 						<template #footer>
-							<CButton
+							<v-btn
 								color='danger'
 								@click='clearAll'
 							>
 								{{ $t('forms.clearBonds') }}
-							</CButton> <CButton
+							</v-btn> <v-btn
 								color='secondary'
 								@click='modalClear = false'
 							>
 								{{ $t('forms.cancel') }}
-							</CButton>
+							</v-btn>
 						</template>
 					</CModal>
 					<CModal
@@ -177,28 +166,28 @@ limitations under the License.
 						</template>
 						{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
 						<template #footer>
-							<CButton
+							<v-btn
 								color='danger'
 								@click='unbond'
 							>
 								{{ $t('forms.unbond') }}
-							</CButton> <CButton
+							</v-btn> <v-btn
 								color='secondary'
 								@click='modalUnbond = false'
 							>
 								{{ $t('forms.cancel') }}
-							</CButton>
+							</v-btn>
 						</template>
 					</CModal>
-				</CForm>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
+import {CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -214,14 +203,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		CModal,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -252,11 +234,11 @@ export default class BondingManager extends Vue {
 	private bondMethodOptions: Array<IOption> = [
 		{
 			value: BondingMethod.LOCAL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local')
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local').toString(),
 		},
 		{
 			value: BondingMethod.SMARTCONNECT,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart')
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart').toString(),
 		}
 	];
 
@@ -276,11 +258,11 @@ export default class BondingManager extends Vue {
 	private bondTargetOptions: Array<IOption> = [
 		{
 			value: BondingTarget.DEVICE,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device')
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device').toString(),
 		},
 		{
 			value: BondingTarget.SERVICETOOL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service')
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service').toString(),
 		}
 	];
 
@@ -295,7 +277,7 @@ export default class BondingManager extends Vue {
 	private bondToolOptions: Array<IOption> = [
 		{
 			value: Tool.NFC,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc')
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc').toString(),
 		}
 	];
 

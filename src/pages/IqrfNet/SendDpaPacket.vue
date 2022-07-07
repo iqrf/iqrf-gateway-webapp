@@ -184,7 +184,7 @@ limitations under the License.
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
-		<DpaMacros @set-packet='setPacket($event)' class='mt-3' />
+		<DpaMacros class='mt-3' @set-packet='setPacket($event)' />
 		<v-card
 			v-if='messages.length !== 0'
 			body-wrapper

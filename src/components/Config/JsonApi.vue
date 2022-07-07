@@ -15,55 +15,57 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard body-wrapper class='border-0 card-margin-bottom'>
-		<CElementCover
-			v-if='loadFailed'
-			style='z-index: 1;'
-			:opacity='0.85'
-		>
-			{{ $t('config.daemon.messages.failedElement') }}
-		</CElementCover>
-		<ValidationObserver
-			v-slot='{invalid}'
-		>
-			<CForm @submit.prevent='saveConfig'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
-					}'
-				>
-					<CInput
-						v-model='insId'
-						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
+	<v-card>
+		<v-card-text>
+			<CElementCover
+				v-if='loadFailed'
+				style='z-index: 1;'
+				:opacity='0.85'
+			>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</CElementCover>
+			<ValidationObserver
+				v-slot='{invalid}'
+			>
+				<form @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
+						}'
+					>
+						<v-text-field
+							v-model='insId'
+							:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-checkbox
+						v-model='asyncDpaMessage'
+						:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
 					/>
-				</ValidationProvider>
-				<CInputCheckbox
-					:checked.sync='asyncDpaMessage'
-					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='validateJsonResponse'
-					:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
-				/>
-				<CButton
-					type='submit'
-					color='primary'
-					:disabled='invalid'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
-			</CForm>
-		</ValidationObserver>
-	</CCard>
+					<v-checkbox
+						v-model='validateJsonResponse'
+						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
+					/>
+					<v-btn
+						type='submit'
+						color='primary'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -76,14 +78,7 @@ import {IJsonRaw, IJsonSplitter} from '@/interfaces/jsonApi';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	}
