@@ -19,19 +19,21 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.mq.title') }}
 		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
+		<v-card>
+			<v-card-title class='border-0'>
+				<v-btn
 					color='success'
 					to='/config/daemon/messagings/mq/add'
-					size='sm'
+					small
 					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<v-icon small>
+						mdi-plus
+					</v-icon>
 					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<CDataTable
 					:items='instances'
 					:fields='fields'
@@ -63,26 +65,30 @@ limitations under the License.
 					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
-							<CButton
+							<v-btn
 								color='info'
 								:to='"/config/daemon/messagings/mq/edit/" + item.instance'
-								size='sm'
+								small
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<v-icon small>
+									mdi-pencil
+								</v-icon>
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
+							</v-btn> <v-btn
+								color='error'
+								small
 								@click='confirmDelete(item)'
 							>
-								<CIcon :content='icons.delete' size='sm' />
+								<v-icon small>
+									mdi-delete
+								</v-icon>
 								{{ $t('table.actions.delete') }}
-							</CButton>
+							</v-btn>
 						</td>
 					</template>
 				</CDataTable>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 		<CModal
 			color='danger'
 			:show='deleteInstance !== ""'
@@ -97,17 +103,17 @@ limitations under the License.
 				{{ $t('config.daemon.messagings.mq.modal.prompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton
-					color='danger'
+				<v-btn
+					color='error'
 					@click='performDelete'
 				>
 					{{ $t('forms.delete') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					color='secondary'
 					@click='deleteInstance = ""'
 				>
 					{{ $t('forms.cancel') }}
-				</CButton>
+				</v-btn>
 			</template>
 		</CModal>
 	</div>
@@ -116,18 +122,12 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {
-	CButton,
 	CButtonClose,
-	CCard,
-	CCardBody,
-	CCardHeader,
 	CDataTable,
 	CDropdown,
 	CDropdownItem,
-	CIcon,
 	CModal
 } from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -138,15 +138,10 @@ import {IMqInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {
-		CButton,
 		CButtonClose,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CDataTable,
 		CDropdown,
 		CDropdownItem,
-		CIcon,
 		CModal,
 	},
 	metaInfo: {
@@ -196,15 +191,6 @@ export default class MqMessagingTable extends Vue {
 			filter: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
 
 	/**
 	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances

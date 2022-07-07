@@ -15,45 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		color='danger'
-		size='lg'
-		:show.sync='show'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		persistent
+		width='50%'
 	>
-		<template #header>
-			<h5 class='modal-title'>
+		<v-card>
+			<v-card-title>
 				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.title') }}
-			</h5>
-		</template>
-		{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: name}) }}
-		<template #footer>
-			<CButton
-				color='danger'
-				@click='deleteMapping'
-			>
-				{{ $t('forms.delete') }}
-			</CButton> <CButton
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-		</template>
-	</CModal>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: name}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-btn
+					color='error'
+					@click='deleteMapping'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+				<v-spacer />
+				<v-btn
+					color='secondary'
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+@Component({})
 
 /**
  * Mapping delete confirmation modal window component

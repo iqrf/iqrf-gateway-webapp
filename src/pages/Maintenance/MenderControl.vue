@@ -17,69 +17,67 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.mender.service.pageTitle') }}</h1>
-		<CCard body-wrapper>
-			<div class='box'>
-				<div>
-					<strong>{{ $t('service.status') }}</strong>
+		<v-card>
+			<v-card-text>
+				<div class='box'>
+					<div>
+						<strong>{{ $t('service.status') }}</strong>
+					</div>
+					<div v-if='missing'>
+						{{ $t('service.states.missing') }}
+					</div>
+					<div v-if='unsupported'>
+						{{ $t('service.states.unsupported') }}
+					</div>
+					<div v-if='service !== null'>
+						{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
+						{{ $t(`service.states.${service.active ? '' : 'in'}active`) }}
+					</div>
+					<div v-if='service !== null'>
+						<v-btn
+							v-if='!service.enabled'
+							color='success'
+							small
+							@click='enable()'
+						>
+							{{ $t('service.actions.enable') }}
+						</v-btn> <v-btn
+							v-if='service.enabled'
+							color='error'
+							small
+							@click='disable()'
+						>
+							{{ $t('service.actions.disable') }}
+						</v-btn> <v-btn
+							color='primary'
+							small
+							@click='restart()'
+						>
+							{{ $t('service.actions.restart') }}
+						</v-btn>
+					</div>
 				</div>
-				<div v-if='missing'>
-					{{ $t('service.states.missing') }}
-				</div>
-				<div v-if='unsupported'>
-					{{ $t('service.states.unsupported') }}
-				</div>
-				<div v-if='service !== null'>
-					{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
-					{{ $t(`service.states.${service.active ? 'running' : 'stopped'}`) }}
-				</div>
-				<div v-if='service !== null'>
-					<CButton
-						v-if='!service.enabled'
-						color='success'
-						size='sm'
-						@click='enable()'
-					>
-						{{ $t('service.actions.enable') }}
-					</CButton> <CButton
-						v-if='service.enabled'
-						color='danger'
-						size='sm'
-						@click='disable()'
-					>
-						{{ $t('service.actions.disable') }}
-					</CButton> <CButton
-						color='primary'
-						size='sm'
-						@click='restart()'
-					>
-						{{ $t('service.actions.restart') }}
-					</CButton>
-				</div>
-			</div>
-			<MenderServiceForm />
-		</CCard>
+				<MenderServiceForm />
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
 import MenderServiceForm from '@/components/Maintenance/MenderServiceForm.vue';
 
-import ServiceService from '@/services/ServiceService';
+import ServiceService, {ServiceStatus} from '@/services/ServiceService';
 import {menderErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
-import {ServiceStatus} from '@/services/ServiceService';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
 		MenderServiceForm,
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(_to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('mender')) {
 				vm.$toast.error(vm.$t('service.mender-client.messages.disabled').toString());

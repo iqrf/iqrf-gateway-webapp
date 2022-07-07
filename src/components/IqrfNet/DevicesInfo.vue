@@ -15,58 +15,70 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</CCardHeader>
-		<CCardBody>
+	<v-card>
+		<v-card-title>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</v-card-title>
+		<v-card-text>
 			<table class='table text-center'>
 				<tbody>
 					<tr>
 						<td class='table-toprow'>
-							<CIcon class='text-info' :content='icons.coordinator' />
+							<v-icon color='info'>
+								mdi-home-outline
+							</v-icon>
 							{{ $t('forms.fields.coordinator') }}
 						</td>
 						<td class='table-toprow'>
-							<CIcon class='text-danger' :content='icons.unbonded' />
+							<v-icon color='error'>
+								mdi-close
+							</v-icon>
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-info' :content='icons.bonded' />
+							<v-icon color='info'>
+								mdi-check
+							</v-icon>
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 						</td>
 						<td>
-							<CIcon class='text-info' :content='icons.discovered' />
+							<v-icon color='info'>
+								mdi-signal-cellular-outline
+							</v-icon>
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-success' :content='icons.bonded' />
+							<v-icon color='success'>
+								mdi-check
+							</v-icon>
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 						</td>
 						<td>
-							<CIcon class='text-success' :content='icons.discovered' />
+							<v-icon color='success'>
+								mdi-signal-cellular-outline
+							</v-icon>
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<CButtonGroup class='d-flex'>
-				<CButton
-					class='w-100'
+			<v-btn-toggle class='d-flex'>
+				<v-btn
+					class='w-50'
 					color='info'
 					@click='indicateCoordinator'
 				>
 					{{ $t('forms.indicateCoordinator') }}
-				</CButton> <CButton
-					class='w-100'
+				</v-btn> <v-btn
+					class='w-50'
 					color='primary'
 					@click='frcPing'
 				>
 					{{ $t('forms.pingNodes') }}
-				</CButton>
-			</CButtonGroup>
+				</v-btn>
+			</v-btn-toggle>
 			<div v-if='devices.length !== 0' class='table-responsive'>
 				<table class='table table-striped device-info card-margin-bottom'>
 					<tbody>
@@ -90,19 +102,17 @@ limitations under the License.
 					</tbody>
 				</table>
 			</div>
-			<CAlert v-else color='danger'>
+			<v-alert v-else color='error'>
 				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
-			</CAlert>
-		</CCardBody>
-	</CCard>
+			</v-alert>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
 import DeviceIcon from './DeviceIcon.vue';
 
-import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {ToastOptions} from 'vue-toast-notification';
 
 import Device from '@/helpers/Device';
@@ -113,12 +123,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CIcon,
 		DeviceIcon,
 	}
 })
@@ -132,16 +136,6 @@ export default class DevicesInfo extends Vue {
 	 * @var {Array<Device>} devices Array of devices in network
 	 */
 	private devices: Array<Device> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		coordinator: cilHome,
-		bonded: cilCheckAlt,
-		discovered: cilSignalCellular4,
-		unbonded: cilX
-	};
 
 	/**
 	 * @var {boolean} manual Manual FRC ping request

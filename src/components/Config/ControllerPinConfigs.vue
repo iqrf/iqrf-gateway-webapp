@@ -17,41 +17,56 @@ limitations under the License.
 <template>
 	<div>
 		<h4>{{ $t('config.controller.pins.profiles') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
+		<v-btn-toggle class='flex-wrap'>
+			<v-btn
 				color='success'
-				size='sm'
+				small
 				@click='showFormModal()'
 			>
-				<CIcon :content='icons.add' />
-			</CButton>
-			<CDropdown
+				<v-icon color='white'>
+					mdi-plus
+				</v-icon>
+			</v-btn>
+			<v-menu
 				v-for='(profile, i) of profiles'
 				:key='i'
-				:toggler-text='profile.name'
-				color='primary'
-				placement='top-start'
+				:offset-y='true'
 			>
-				<CDropdownItem
-					@click='setPinConfigProfile(i)'
-				>
-					<CIcon :content='icons.set' />
-					{{ $t('config.controller.pins.actions.set') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showFormModal(profile)'
-				>
-					<CIcon :content='icons.edit' />
-					{{ $t('config.controller.pins.actions.edit') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showDeleteModal(i, profile.name)'
-				>
-					<CIcon :content='icons.delete' />
-					{{ $t('config.controller.pins.actions.delete') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CButtonGroup>
+				<template #activator='{on, attrs}'>
+					<v-btn
+						v-bind='attrs'
+						color='primary'
+						small
+						v-on='on'
+					>
+						{{ profile.name }}
+						<v-icon color='white'>
+							mdi-menu-up
+						</v-icon>
+					</v-btn>
+				</template>
+				<v-list dense>
+					<v-list-item @click='setPinConfigProfile(i)'>
+						<v-icon dense>
+							mdi-content-copy
+						</v-icon>
+						{{ $t('config.controller.pins.actions.set') }}
+					</v-list-item>
+					<v-list-item @click='showFormModal(i)'>
+						<v-icon dense>
+							mdi-pencil
+						</v-icon>
+						{{ $t('config.controller.pins.actions.edit') }}
+					</v-list-item>
+					<v-list-item @click='showDeleteModal(i, profile.name)'>
+						<v-icon dense>
+							mdi-delete
+						</v-icon>
+						{{ $t('config.controller.pins.actions.delete') }}
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</v-btn-toggle>
 		<ControllerPinConfigDeleteConfirmation ref='deleteModal' @delete-profile='deletePinConfigProfile' />
 		<ControllerPinConfigForm ref='formModal' @save-profile='savePinConfigProfile' />
 	</div>
@@ -59,7 +74,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import ControllerPinConfigDeleteConfirmation from './ControllerPinConfigDeleteConfirmation.vue';
 import ControllerPinConfigForm from './ControllerPinConfigForm.vue';
 
@@ -73,11 +87,6 @@ import {IControllerPinConfig} from '@/interfaces/controller';
 
 @Component({
 	components: {
-		CButton,
-		CButtonGroup,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
 		ControllerPinConfigDeleteConfirmation,
 		ControllerPinConfigForm,
 	},

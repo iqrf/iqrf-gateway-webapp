@@ -247,9 +247,9 @@ limitations under the License.
 									{{ $t('config.daemon.messagings.tlsTitle') }}
 								</label>
 								<v-switch
+									v-model='configuration.EnabledSSL'
 									color='primary'
 									inset
-									v-model='configuration.EnabledSSL'
 									style='float: right;'
 								/>
 							</v-col>

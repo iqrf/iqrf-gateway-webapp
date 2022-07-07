@@ -15,36 +15,42 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard v-if='macros'>
-		<CCardHeader>
-			{{ $t('iqrfnet.sendPacket.macros') }}
-		</CCardHeader>
-		<CCardBody>
-			<CButtonGroup class='flex-wrap'>
-				<CDropdown
-					v-for='group of macros'
-					:key='group.id'
-					:toggler-text='group.name'
-					color='primary'
-					placement='top-start'
-				>
-					<CDropdownItem
-						v-for='packet of group.macros'
-						:key='packet.name'
-						@click='$emit("set-packet", packet.request)'
-					>
-						{{ packet.name }}
-					</CDropdownItem>
-				</CDropdown>
-			</CButtonGroup>
-		</CCardBody>
-	</CCard>
+	<v-card v-if='macros'>
+		<v-card-title>{{ $t('iqrfnet.sendPacket.macros') }}</v-card-title>
+		<v-card-text>
+			<v-btn-toggle class='flex-wrap'>
+				<v-menu v-for='group of macros' :key='group.name'>
+					<template #activator='{on, attrs}'>
+						<v-btn
+							v-bind='attrs'
+							color='primary'
+							v-on='on'
+						>
+							{{ group.name }}
+							<v-icon color='white'>
+								mdi-menu-down
+							</v-icon>
+						</v-btn>
+					</template>
+					<v-list dense>
+						<v-list-item
+							v-for='packet of group.macros'
+							:key='packet.name'
+							dense
+							@click='$emit("set-packet", packet.request)'
+						>
+							{{ packet.name }}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</v-btn-toggle>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosResponse} from 'axios';
-import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
 import IqrfService from '@/services/IqrfService';
 
 interface IDpaMacro {
@@ -62,16 +68,7 @@ interface IDpaMacros {
 	name: string
 }
 
-@Component({
-	components: {
-		CButtonGroup,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDropdown,
-		CDropdownItem,
-	}
-})
+@Component({})
 
 /**
  * Raw DPA message macros for SendDpaPacket component

@@ -93,7 +93,9 @@ limitations under the License.
 				</table>
 			</div>
 			<v-btn color='primary' @click='downloadDiagnostics()'>
-				<v-icon small>mdi-file-download</v-icon>
+				<v-icon small>
+					mdi-file-download
+				</v-icon>
 				{{ $t('install.gwInfo.download') }}
 			</v-btn>
 		</v-card-text>

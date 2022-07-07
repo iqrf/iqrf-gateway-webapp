@@ -18,9 +18,9 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.enumeration.title') }}</h1>
 		<div v-if='response !== null'>
-			<CCard>
-				<CCardHeader>{{ $t('iqrfnet.enumeration.deviceInfo') }}</CCardHeader>
-				<CCardBody>
+			<v-card class='mb-5'>
+				<v-card-title>{{ $t('iqrfnet.enumeration.deviceInfo') }}</v-card-title>
+				<v-card-text>
 					<table class='table table-striped'>
 						<tbody>
 							<tr>
@@ -63,11 +63,11 @@ limitations under the License.
 							</tr>
 						</tbody>
 					</table>
-				</CCardBody>
-			</CCard>
-			<CCard>
-				<CCardHeader>{{ $t('iqrfnet.enumeration.trInfo') }}</CCardHeader>
-				<CCardBody>
+				</v-card-text>
+			</v-card>
+			<v-card>
+				<v-card-title>{{ $t('iqrfnet.enumeration.trInfo') }}</v-card-title>
+				<v-card-text>
 					<table class='table table-striped'>
 						<tbody>
 							<tr>
@@ -107,11 +107,11 @@ limitations under the License.
 							</tr>
 						</tbody>
 					</table>
-					<CButton color='primary' to='/iqrfnet/network/'>
+					<v-btn color='primary' to='/iqrfnet/network/'>
 						{{ $t('iqrfnet.enumeration.back') }}
-					</CButton>
-				</CCardBody>
-			</CCard>
+					</v-btn>
+				</v-card-text>
+			</v-card>
 		</div>
 	</div>
 </template>
@@ -119,7 +119,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
@@ -141,10 +140,6 @@ interface Product {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		RfModeLp,
 		RfModeStd,
 	},
