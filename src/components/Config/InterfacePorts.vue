@@ -17,30 +17,24 @@ limitations under the License.
 <template>
 	<div v-if='ports !== []'>
 		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.interfaces') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
+		<v-btn-toggle dense class='flex-wrap'>
+			<v-btn
 				v-for='port of ports'
 				:key='port'
 				color='primary'
 				@click='setPort(port)'
 			>
 				{{ port }}
-			</CButton>
-		</CButtonGroup>
+			</v-btn>
+		</v-btn-toggle>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '@/services/IqrfService';
 
-@Component({
-	components: {
-		CButton,
-		CButtonGroup,
-	},
-})
+@Component({})
 
 /**
  * Interface port mapping

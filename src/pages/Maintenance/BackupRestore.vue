@@ -17,24 +17,26 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.backup.title') }}</h1>
-		<CCard body-wrapper>
-			<BackupComponent />
-		</CCard>
-		<CCard body-wrapper>
-			<RestoreComponent />
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<BackupComponent />
+			</v-card-text>
+		</v-card>
+		<v-card>
+			<v-card-text>
+				<RestoreComponent />
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard} from '@coreui/vue/src';
 import BackupComponent from '@/components/Maintenance/BackupComponent.vue';
 import RestoreComponent from '@/components/Maintenance/RestoreComponent.vue';
 
 @Component({
 	components: {
-		CCard,
 		BackupComponent,
 		RestoreComponent,
 	},

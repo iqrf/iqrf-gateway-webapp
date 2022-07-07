@@ -17,53 +17,59 @@ limitations under the License.
 <template>
 	<div>
 		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
+		<v-btn-toggle dense class='flex-wrap'>
+			<v-btn
 				color='success'
 				size='sm'
 				@click='showFormModal()'
 			>
-				<CIcon :content='icons.add' />
-			</CButton>
-			<CDropdown
+				<v-icon color='white'>
+					mdi-plus
+				</v-icon>
+			</v-btn>
+			<v-menu
 				v-for='(mapping, i) of mappings'
 				:key='i'
-				:toggler-text='mapping.name'
-				color='primary'
-				placement='top-start'
+				:offset-y='true'
 			>
-				<CDropdownItem
-					@click='setMapping(i)'
-				>
-					<CIcon :content='icons.set' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showFormModal(mapping)'
-				>
-					<CIcon :content='icons.edit' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showDeleteModal(i, mapping.name)'
-				>
-					<CIcon :content='icons.remove' />
+				<template #activator='{on, attrs}'>
+					<v-btn
+						v-bind='attrs'
+						color='primary'
+						v-on='on'
+					>
+						{{ mapping.name }}
+						<v-icon color='white'>
+							mdi-menu-up
+						</v-icon>
+					</v-btn>
+				</template>
+				<v-list dense>
+					<v-list-item @click='setMapping(i)'>
+						<v-icon dense>
+							mdi-content-copy
+						</v-icon>
+						{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
+					</v-list-item>
+				</v-list>
+				<MappingForm ref='formModal' @update-mappings='getMappings' />
+				<v-list-item @click='showDeleteModal(i, mapping.name)'>
+					<v-icon dense>
+						mdi-delete
+					</v-icon>
 					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CButtonGroup>
-		<MappingForm ref='formModal' @update-mappings='getMappings' />
+				</v-list-item>
+			</v-menu>
+		</v-btn-toggle>
 		<MappingDeleteConfirmation ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import MappingDeleteConfirmation from '@/components/Config/MappingDeleteConfirmation.vue';
 import MappingForm from '@/components/Config/MappingForm.vue';
 
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import MappingService from '@/services/MappingService';
@@ -73,12 +79,6 @@ import {IMapping, MappingType} from '@/interfaces/mappings';
 
 @Component({
 	components: {
-		CButton,
-		CButtonGroup,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		CModal,
 		MappingDeleteConfirmation,
 		MappingForm,
 	},
@@ -97,16 +97,6 @@ export default class InterfaceMappings extends Vue {
 	 * @property {MappingType} interfaceType Communication interface type
 	 */
 	@Prop({required: true}) interfaceType!: MappingType;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		set: cilCopy,
-	};
 
 	/**
 	 * Vue lifecycle hook mounted

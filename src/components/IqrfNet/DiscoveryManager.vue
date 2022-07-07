@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<h4>{{ $t('iqrfnet.networkManager.discovery.title') }}</h4><br>
 			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='runDiscovery'>
+				<form @submit.prevent='runDiscovery'>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
@@ -29,14 +29,14 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='txPower'
 							type='number'
 							min='0'
 							max='7'
 							:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -48,28 +48,27 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.discovery.errors.maxAddr")
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='maxAddr'
 							type='number'
 							min='0'
 							max='239'
 							:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<v-btn color='primary' type='submit' :disabled='invalid'>
 						{{ $t("forms.runDiscovery") }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -80,12 +79,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	}

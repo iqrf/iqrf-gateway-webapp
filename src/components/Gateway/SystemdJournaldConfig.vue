@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('service.systemd-journald.config.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<CElementCover
 				v-if='failed'
 				style='z-index: 1;'
@@ -31,15 +31,15 @@ limitations under the License.
 				v-if='config !== null'
 				v-slot='{invalid}'
 			>
-				<CForm @submit.prevent='saveConfig'>
-					<CInputCheckbox
-						:checked.sync='config.forwardToSyslog'
-						:label='$t("service.systemd-journald.config.form.forwardToSyslog").toString()'
+				<form @submit.prevent='saveConfig'>
+					<v-checkbox
+						v-model='config.forwardToSyslog'
+						:label='$t("service.systemd-journald.config.form.forwardToSyslog")'
 					/>
-					<CSelect
-						:value.sync='config.persistence'
-						:label='$t("service.systemd-journald.config.form.storage").toString()'
-						:options='storageOptions'
+					<v-select
+						v-model='config.persistence'
+						:label='$t("service.systemd-journald.config.form.storage")'
+						:items='storageOptions'
 					/>
 					<div class='form-group'>
 						<ValidationProvider
@@ -51,13 +51,13 @@ limitations under the License.
 								min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='config.maxDiskSize'
 								type='number'
 								min='0'
-								:label='$t("service.systemd-journald.config.form.maxDisk").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+								:label='$t("service.systemd-journald.config.form.maxDisk")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
@@ -72,13 +72,13 @@ limitations under the License.
 								min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='config.maxFiles'
 								type='number'
 								min='1'
-								:label='$t("service.systemd-journald.config.form.maxFiles").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+								:label='$t("service.systemd-journald.config.form.maxFiles")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<em>{{ $t('service.systemd-journald.config.form.maxFilesNote') }}</em>
@@ -87,13 +87,10 @@ limitations under the License.
 						<label>
 							<strong>{{ $t('service.systemd-journald.config.form.sizeRotation') }}</strong>
 						</label><br>
-						<CSwitch
-							:checked.sync='sizeRotation'
+						<v-switch
+							v-model='sizeRotation'
 							color='primary'
-							shape='pill'
-							size='lg'
-							label-on='ON'
-							label-off='OFF'
+							inset
 						/>
 					</div>
 					<div
@@ -109,13 +106,13 @@ limitations under the License.
 								min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='config.sizeRotation.maxFileSize'
 								type='number'
 								min='0'
-								:label='$t("service.systemd-journald.config.form.maxFileSize").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+								:label='$t("service.systemd-journald.config.form.maxFileSize")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
@@ -124,23 +121,20 @@ limitations under the License.
 						<label>
 							<strong>{{ $t('service.systemd-journald.config.form.timeRotation') }}</strong>
 						</label><br>
-						<CSwitch
-							:checked.sync='timeRotation'
+						<v-switch
+							v-model='timeRotation'
 							color='primary'
-							shape='pill'
-							size='lg'
-							label-on='ON'
-							label-off='OFF'
+							inset
 						/>
 					</div>
 					<div
 						v-if='timeRotation'
 						class='form-group'
 					>
-						<CSelect
-							:value.sync='config.timeRotation.unit'
-							:label='$t("service.systemd-journald.config.form.unit").toString()'
-							:options='unitOptions'
+						<v-select
+							v-model='config.timeRotation.unit'
+							:label='$t("service.systemd-journald.config.form.unit")'
+							:items='unitOptions'
 						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -151,32 +145,32 @@ limitations under the License.
 								min: $t("service.systemd-journald.config.errors.countInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='config.timeRotation.count'
 								type='number'
 								min='1'
-								:label='$t("service.systemd-journald.config.form.count").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+								:label='$t("service.systemd-journald.config.form.count")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 					</div>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
@@ -191,16 +185,7 @@ import {ISystemdJournal} from '@/interfaces/systemdJournal';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -231,11 +216,11 @@ export default class SystemdJournaldConfig extends Vue {
 	 */
 	private storageOptions: Array<IOption> = [
 		{
-			label: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
+			text: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
 			value: StorageMethod.VOLATILE,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
+			text: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
 			value: StorageMethod.PERSISTENT,
 		},
 	];
@@ -245,31 +230,31 @@ export default class SystemdJournaldConfig extends Vue {
 	 */
 	private unitOptions: Array<IOption> = [
 		{
-			label: this.$t('service.systemd-journald.config.form.units.seconds').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.seconds').toString(),
 			value: TimeUnit.SECONDS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.minutes').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.minutes').toString(),
 			value: TimeUnit.MINUTES,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.hours').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.hours').toString(),
 			value: TimeUnit.HOURS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.days').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.days').toString(),
 			value: TimeUnit.DAYS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.weeks').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.weeks').toString(),
 			value: TimeUnit.WEEKS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.months').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.months').toString(),
 			value: TimeUnit.MONTHS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.years').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.years').toString(),
 			value: TimeUnit.YEAR,
 		},
 	];

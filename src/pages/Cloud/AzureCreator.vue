@@ -25,7 +25,9 @@ limitations under the License.
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
 					target='_blank'
 				>
-					<v-icon small>mdi-file-document</v-icon>
+					<v-icon small>
+						mdi-file-document
+					</v-icon>
 					{{ $t('cloud.guides.pdf') }}
 				</v-btn> <v-btn
 					color='error'
@@ -33,7 +35,9 @@ limitations under the License.
 					href='https://youtu.be/SIBoTrYwR2g'
 					target='_blank'
 				>
-					<v-icon small>mdi-youtube</v-icon>
+					<v-icon small>
+						mdi-youtube
+					</v-icon>
 					{{ $t('cloud.guides.video') }}
 				</v-btn>
 			</v-card-title>

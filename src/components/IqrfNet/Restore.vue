@@ -34,7 +34,9 @@ limitations under the License.
 							@input='fileInputTouched'
 						/>
 					</ValidationProvider>
-					<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
+					<p>
+						<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
+					</p>
 					<v-btn
 						type='submit'
 						color='primary'

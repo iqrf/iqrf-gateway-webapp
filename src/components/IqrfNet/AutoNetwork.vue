@@ -15,17 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{ invalid }'>
-				<CForm>
+				<form @submit.prevent='runAutonetwork'>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h4>
-					<CInputCheckbox
-						:checked.sync='autoNetwork.discoveryBeforeStart'
+					<v-checkbox
+						v-model='autoNetwork.discoveryBeforeStart'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
 					/>
-					<CInputCheckbox
-						:checked.sync='autoNetwork.skipDiscoveryEachWave'
+					<v-checkbox
+						v-model='autoNetwork.skipDiscoveryEachWave'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 					/>
 					<ValidationProvider
@@ -37,23 +37,23 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='autoNetwork.discoveryTxPower'
 							requred='true'
 							type='number'
 							min='0'
 							max='7'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='autoNetwork.unbondUnrespondingNodes'
+					<v-checkbox
+						v-model='autoNetwork.unbondUnrespondingNodes'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
 					/>
-					<CInputCheckbox
-						:checked.sync='autoNetwork.skipPrebonding'
+					<v-checkbox
+						v-model='autoNetwork.skipPrebonding'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
 					/>
 					<ValidationProvider
@@ -65,19 +65,19 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='autoNetwork.actionRetries'
 							type='number'
 							min='0'
 							max='3'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
-					<CInputCheckbox
-						:checked.sync='useOverlappingNetworks'
+					<v-checkbox
+						v-model='useOverlappingNetworks'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
 					/>
 					<ValidationProvider
@@ -89,14 +89,14 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='overlappingNetworks.networks'
 							type='number'
 							min='1'
 							max='50'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider>
@@ -109,20 +109,20 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='overlappingNetworks.network'
 							type='number'
 							min='1'
 							max='50'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							:disabled='!useOverlappingNetworks'
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
-					<CInputCheckbox
-						:checked.sync='useHwpidFiltering'
+					<v-checkbox
+						v-model='useHwpidFiltering'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
 					/>
 					<ValidationProvider
@@ -132,18 +132,18 @@ limitations under the License.
 							hwpidFilter: $t("iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='hwpidFiltering'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpids")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							:disabled='!useHwpidFiltering'
 						/>
 					</ValidationProvider><hr>
 					<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
 					<div class='form-group'>
-						<CInputCheckbox
-							:checked.sync='useWaves'
+						<v-checkbox
+							v-model='useWaves'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 						/>
 						<ValidationProvider
@@ -155,13 +155,13 @@ limitations under the License.
 								between: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='stopConditions.waves'
 								type='number'
 								min='1'
 								max='127'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								:disabled='!useWaves'
 							/>
 						</ValidationProvider>
@@ -175,26 +175,26 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='stopConditions.emptyWaves'
 							type='number'
 							min='1'
 							max='127'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
-						<CInputCheckbox
-							:checked.sync='useNodes'
+						<v-checkbox
+							v-model='useNodes'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
 						/>
-						<CSelect
-							:value.sync='nodeCondition'
-							:options='[
-								{value: "new", label: "New"},
-								{value: "total", label: "Total"}
+						<v-select
+							v-model='nodeCondition'
+							:items='[
+								{value: "new", text: "New"},
+								{value: "total", text: "Total"}
 							]'
 							:disabled='!useNodes'
 						/>
@@ -208,14 +208,14 @@ limitations under the License.
 								between: $t("iqrfnet.networkManager.messages.autoNetwork.totalNodes"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
 								max='239'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								:disabled='!useNodes'
 							/>
 						</ValidationProvider>
@@ -229,40 +229,38 @@ limitations under the License.
 								between: $t("iqrfnet.networkManager.messages.autoNetwork.newNodes"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='stopConditions.nodeCount'
 								type='number'
 								min='1'
 								max='239'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								:disabled='!useNodes'
 							/>
 						</ValidationProvider>
 					</div>
-					<CInputCheckbox
-						:checked.sync='stopConditions.abortOnTooManyNodesFound'
+					<v-checkbox
+						v-model='stopConditions.abortOnTooManyNodesFound'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 						:disabled='!useNodes'
 					/>
-					<CButton
+					<v-btn
 						color='primary'
-						type='button'
+						type='submit'
 						:disabled='invalid'
-						@click='runAutonetwork'
 					>
 						{{ $t('forms.runAutonetwork') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -284,12 +282,6 @@ interface NodeMessages {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	}

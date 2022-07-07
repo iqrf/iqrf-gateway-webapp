@@ -72,9 +72,9 @@ limitations under the License.
 										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
 									</label>
 									<v-switch
+										v-model='tlsEnabled'
 										color='primary'
 										inset
-										v-model='tlsEnabled'
 										style='float: right;'
 									/>
 									<ValidationProvider

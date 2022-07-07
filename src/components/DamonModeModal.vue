@@ -26,19 +26,19 @@ limitations under the License.
 		</template>
 		{{ $t('daemonStatus.modalPrompt') }}
 		<template #footer>
-			<CButton
+			<v-btn
 				color='warning'
 				@click='hideModal()'
 			>
 				{{ $t('forms.close') }}
-			</CButton>
+			</v-btn>
 		</template>
 	</CModal>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
+import {CModal} from '@coreui/vue/src';
 import {mapGetters, MutationPayload} from 'vuex';
 
 interface IMonitorMsgData {
@@ -58,7 +58,6 @@ interface IMonitorMsg {
 
 @Component({
 	components: {
-		CButton,
 		CModal,
 	},
 	computed: {
