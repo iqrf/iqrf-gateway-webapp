@@ -29,6 +29,20 @@
 	}
 }
 
+.v-application {
+	ul, ol {
+		padding-left: 0;
+	}
+}
+
+.v-chip {
+	padding: 4px;
+}
+
+.container {
+	max-width: 100%;
+}
+
 .c-sidebar {
 	.c-sidebar-nav-link.c-active {
 		font-weight: bold;
