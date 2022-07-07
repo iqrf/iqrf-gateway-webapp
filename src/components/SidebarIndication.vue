@@ -25,9 +25,13 @@ limitations under the License.
 					{{ $t('daemonStatus.mode') }}
 				</td>
 				<td class='status'>
-					<v-chip :color='daemonModeBadgeColor' small>
+					<VChip
+						:color='daemonModeBadgeColor'
+						x-small
+						label
+					>
 						{{ $t(`daemonStatus.modes.${isSocketConnected ? daemonMode : 'unknown'}`) }}
-					</v-chip>
+					</VChip>
 				</td>
 			</tr>
 			<tr>
@@ -35,9 +39,14 @@ limitations under the License.
 					{{ $t('daemonStatus.websocket.title') }}
 				</td>
 				<td class='status'>
-					<v-chip :color='isSocketConnected ? "success": "error"' small>
+					<VChip
+						:color='isSocketConnected ? "success": "error"'
+						x-small
+						label
+						:ripple='false'
+					>
 						{{ $t(`daemonStatus.websocket.${isSocketConnected ? 'connected' : 'notConnected'}`) }}
-					</v-chip>
+					</VChip>
 				</td>
 			</tr>
 			<tr>
@@ -45,9 +54,13 @@ limitations under the License.
 					{{ $t('daemonStatus.queue') }}
 				</td>
 				<td class='status'>
-					<v-chip :color='daemonQueueBadgeColor' small>
+					<VChip
+						:color='daemonQueueBadgeColor'
+						x-small
+						label
+					>
 						{{ queueLen }}
-					</v-chip>
+					</VChip>
 				</td>
 			</tr>
 		</tbody>
@@ -56,10 +69,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {VChip} from 'vuetify/lib';
 
 import {mapGetters} from 'vuex';
 
 @Component({
+	components: {
+		VChip,
+	},
 	computed: {
 		...mapGetters({
 			daemonMode: 'monitorClient/getMode',
@@ -129,18 +146,19 @@ export default class SidebarIndication extends Vue {
 <style scoped>
 table {
 	color: white;
+	border-top: 1px solid white;
 	margin-bottom: 0.5rem;
 }
 
 .item {
 	border-top: 0;
 	text-align: left;
-	padding: 0 0 0 1.25rem;
+	padding: 0 0 0 0.5rem;
 }
 
 .status {
 	border-top: 0;
 	text-align: right;
-	padding: 0 1.25rem 0 0;
+	padding: 0 0.5rem 0 0;
 }
 </style>
