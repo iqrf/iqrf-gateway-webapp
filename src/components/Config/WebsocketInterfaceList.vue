@@ -19,154 +19,163 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.websocket.interface.title') }}
 		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					color='success'
-					size='sm'
-					class='float-right'
-					to='/config/daemon/messagings/websocket/add'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
-					:items='instances'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
-				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #acceptAsyncMsg='{item}'>
-						<td>
-							<CDropdown
-								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
-								size='sm'
-							>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</template>
-					<template #acceptOnlyLocalhost='{item}'>
-						<td>
-							<CDropdown
-								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t(`states.${item.acceptOnlyLocalhost ? "enabled": "disabled"}`)'
-								size='sm'
-							>
-								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</template>
-					<template #tlsEnabled='{item}'>
-						<td>
-							<CDropdown
-								:color='item.service.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t(`states.${(item.service.tlsEnabled ?? false) ? "enabled": "disabled"}`)'
-								size='sm'
-							>
-								<CDropdownItem @click='changeTls(item.service, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeTls(item.service, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								:to='"/config/daemon/messagings/websocket/edit/" + item.instanceMessaging'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = {messaging: item.messaging.instance, service: item.service.instance}'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
-					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== null'
+		<v-data-table
+			:headers='header'
+			:items='instances'
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.interface.modal.title') }}
-				</h5>
+			<template #top>
+				<v-toolbar dense flat>
+					<v-spacer />
+					<v-btn
+						color='success'
+						small
+						to='/config/daemon/messagings/websocket/add'
+					>
+						<v-icon small>
+							mdi-plus
+						</v-icon>
+						{{ $t('table.actions.add') }}
+					</v-btn>
+				</v-toolbar>
 			</template>
-			<div v-if='deleteInstance !== null'>
-				{{ $t('config.daemon.messagings.websocket.interface.modal.prompt', {instance: deleteInstance.messaging}) }}
-			</div>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInterface()'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
+			<template #[`item.acceptAsyncMsg`]='{item}'>
+				<v-menu>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							:color='item.acceptAsyncMsg ? "success": "error"'
+							small
+							v-bind='attrs'
+							v-on='on'
+						>
+							{{ $t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`) }}
+							<v-icon>mdi-menu-down</v-icon>
+						</v-btn>
+					</template>
+					<v-list>
+						<v-list-item @click='changeAcceptAsyncMsg(item.messaging, true)'>
+							{{ $t('states.enabled') }}
+						</v-list-item>
+						<v-list-item @click='changeAcceptAsyncMsg(item.messaging, false)'>
+							{{ $t('states.disabled') }}
+						</v-list-item>
+					</v-list>
+				</v-menu>
 			</template>
-		</CModal>
+			<template #[`item.acceptOnlyLocalhost`]='{item}'>
+				<v-menu>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							:color='item.acceptOnlyLocalhost ? "success": "error"'
+							small
+							v-bind='attrs'
+							v-on='on'
+						>
+							{{ $t(`states.${item.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
+							<v-icon>mdi-menu-down</v-icon>
+						</v-btn>
+					</template>
+					<v-list>
+						<v-list-item @click='changeAcceptOnlyLocalhost(item.service, true)'>
+							{{ $t('states.enabled') }}
+						</v-list-item>
+						<v-list-item @click='changeAcceptOnlyLocalhost(item.service, false)'>
+							{{ $t('states.disabled') }}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</template>
+			<template #[`item.tlsEnabled`]='{item}'>
+				<v-menu>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							:color='item.tlsEnabled ? "success": "error"'
+							small
+							v-bind='attrs'
+							v-on='on'
+						>
+							{{ $t(`states.${item.tlsEnabled ? "enabled" : "disabled"}`) }}
+							<v-icon>mdi-menu-down</v-icon>
+						</v-btn>
+					</template>
+					<v-list>
+						<v-list-item @click='changeTls(item.service, true)'>
+							{{ $t('states.enabled') }}
+						</v-list-item>
+						<v-list-item @click='changeTls(item.service, false)'>
+							{{ $t('states.disabled') }}
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</template>
+			<template #[`item.actions`]='{item}'>
+				<v-btn
+					color='info'
+					small
+					:to='"/config/daemon/messagings/websocket/edit/" + item.instanceMessaging'
+				>
+					<v-icon small>
+						mdi-pencil
+					</v-icon>
+					{{ $t('table.actions.edit') }}
+				</v-btn>
+				<v-dialog v-model='deleteModal' width='50%'>
+					<template #activator='{ on, attrs }'>
+						<v-btn
+							color='error'
+							small
+							v-bind='attrs'
+							@click='deleteInstance = {messaging: item.messaging.instance, service: item.service.instance}'
+							v-on='on'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+					<v-card v-if='deleteInstance !== null'>
+						<v-card-title>{{ $t('config.daemon.messagings.websocket.interface.modal.title') }}</v-card-title>
+						<v-card-text>{{ $t('config.daemon.messagings.websocket.interface.modal.prompt', {instance: deleteInstance.messaging}) }}</v-card-text>
+						<v-card-actions>
+							<v-btn
+								color='error'
+								@click='removeInterface'
+							>
+								{{ $t('forms.delete') }}
+							</v-btn>
+							<v-spacer />
+							<v-btn
+								color='secondary'
+								@click='deleteInstance = null'
+							>
+								{{ $t('forms.cancel') }}
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</template>
+		</v-data-table>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 
-import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {versionHigherEqual} from '@/helpers/versionChecker';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '@/interfaces/messagingInterfaces';
+import {DataTableHeader} from 'vuetify';
+import {mapGetters} from 'vuex';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		CModal,
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonClient/getVersion',
+		}),
 	},
 })
 
@@ -188,48 +197,35 @@ export default class WebsocketInterfaceList extends Vue {
 	private deleteInstance: ModalInstance|null = null;
 
 	/**
-	 * @constant {Array<IField>} fields CoreUI datatable columns
+	 * @var {Array<DataTableHeader>} header Data table header
 	 */
-	private fields: Array<IField> = [
+	private header: Array<DataTableHeader> = [
 		{
-			key: 'instanceMessaging',
-			label: this.$t('forms.fields.instanceName'),
+			value: 'instanceMessaging',
+			text: this.$t('forms.fields.instanceName').toString(),
 		},
 		{
-			key: 'port',
-			label: this.$t('config.daemon.messagings.websocket.form.WebsocketPort'),
+			value: 'port',
+			text: this.$t('config.daemon.messagings.websocket.form.WebsocketPort').toString(),
 		},
 		{
-			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
-			filter: false,
+			value: 'acceptAsyncMsg',
+			text: this.$t('config.daemon.messagings.acceptAsyncMsg').toString(),
+			filterable: false,
 		},
 		{
-			key: 'acceptOnlyLocalhost',
-			label: this.$t('config.daemon.messagings.websocket.form.acceptOnlyLocalhost'),
-			filter: false,
+			value: 'acceptOnlyLocalhost',
+			text: this.$t('config.daemon.messagings.websocket.form.acceptOnlyLocalhost').toString(),
+			filterable: false,
 		},
 		{
-			key: 'tlsEnabled',
-			label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
-			filter: false
-		},
-		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
 
 	/**
 	 * @var {Array<WsInterface>} instances Array of websocket interface instances
@@ -237,9 +233,31 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
+	 * @var {boolean} deleteModal Delete modal visibility
+	 */
+	get deleteModal(): boolean {
+		return this.deleteInstance !== null;
+	}
+
+	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateTable(): void {
+		if (versionHigherEqual('2.3.0')) {
+			this.header.splice(4, 0, {
+				value: 'tlsEnabled',
+				text: this.$t('config.daemon.messagings.websocket.form.tlsEnabled').toString(),
+				filterable: false,
+			});
+		}
+	}
+
+	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.updateTable();
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -395,9 +413,3 @@ export default class WebsocketInterfaceList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

@@ -97,11 +97,15 @@ limitations under the License.
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 					</div>
 					<div>
-						<v-icon color='success'>mdi-check-circle-outline</v-icon>
+						<v-icon color='success'>
+							mdi-check-circle-outline
+						</v-icon>
 						{{ $t('iqrfnet.standard.table.supported') }}
 					</div>
 					<div>
-						<v-icon color='error'>mdi-close-circle-outline</v-icon>
+						<v-icon color='error'>
+							mdi-close-circle-outline
+						</v-icon>
 						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
