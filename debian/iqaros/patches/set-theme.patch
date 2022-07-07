@@ -8,12 +8,12 @@ Set theme for the IQAROS
 +VUE_APP_THEME=iqaros
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -35,7 +35,7 @@
- 
+@@ -33,7 +33,7 @@ import ClientSocket from './ws/ClientSocket';
+
  import App from './App.vue';
- 
+
 -import './css/themes/generic.scss';
 +import './css/themes/iqaros.scss';
  import './css/app.scss';
  import 'vue-datetime/dist/vue-datetime.css';
- import 'vue-select/dist/vue-select.css';
+ import 'vue-toast-notification/dist/theme-sugar.css';
