@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
@@ -28,14 +28,14 @@ limitations under the License.
 							required: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -47,14 +47,14 @@ limitations under the License.
 							required: $t("iqrfnet.standard.light.form.messages.index"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='index'
 							type='number'
 							min='0'
 							max='31'
 							:label='$t("iqrfnet.standard.light.form.index")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -66,51 +66,51 @@ limitations under the License.
 							required: $t("iqrfnet.standard.light.form.messages.power"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='power'
 							type='number'
 							min='0'
 							max='100'
 							:label='$t("iqrfnet.standard.light.form.power")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						:disabled='invalid'
 						@click.prevent='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitGetPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.getPower') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitSetPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.setPower') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitIncrementPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.increment') }}
-					</CButton> <CButton
+					</v-btn> <v-btn
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitDecrementPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.decrement') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter v-if='responseType !== null'>
+		</v-card-text>
+		<v-card-text v-if='responseType !== null'>
 			<table class='table'>
 				<thead v-if='responseType === "enum"'>
 					{{ $t('iqrfnet.standard.light.enum') }}
@@ -135,13 +135,12 @@ limitations under the License.
 					</tr>
 				</tbody>
 			</table>
-		</CCardFooter>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -153,13 +152,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	}

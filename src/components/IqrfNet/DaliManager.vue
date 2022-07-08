@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
@@ -28,14 +28,14 @@ limitations under the License.
 							required: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<div v-for='i of commands.length' :key='i' class='form-group'>
@@ -48,42 +48,42 @@ limitations under the License.
 								required: $t("iqrfnet.standard.dali.form.messages.command"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='commands[i-1]'
 								type='number'
 								min='0'
 								max='65535'
 								:label='$t("iqrfnet.standard.dali.form.command")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
 							v-if='commands.length > 1'
-							color='danger'
+							color='error'
 							@click.prevent='removeDaliCommand(i-1)'
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
-						</CButton> <CButton
+						</v-btn> <v-btn
 							v-if='i === commands.length'
 							color='success'
 							:disabled='invalid'
 							@click.prevent='addDaliCommand'
 						>
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
-						</CButton>
+						</v-btn>
 					</div>
-					<CButton
+					<v-btn
 						color='primary'
 						:disabled='invalid'
 						@click.prevent='sendDali'
 					>
 						{{ $t('iqrfnet.standard.dali.form.sendCommand') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter v-if='answers.length > 0'>
+		</v-card-text>
+		<v-card-text v-if='answers.length > 0'>
 			<table class='table'>
 				<thead>
 					{{ $t('iqrfnet.standard.dali.answers') }}
@@ -99,14 +99,13 @@ limitations under the License.
 					</tr>
 				</tbody>
 			</table>
-		</CCardFooter>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
@@ -119,13 +118,6 @@ interface DaliAnswer {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	}

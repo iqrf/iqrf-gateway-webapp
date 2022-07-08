@@ -17,29 +17,26 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.standard.title') }}</h1>
-		<CCard>
-			<CTabs variant='tabs'>
-				<CTab :title='$t("iqrfnet.standard.sensor.title")'>
-					<SensorManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.binaryOutput.title")'>
-					<BinaryOutputManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.light.title")'>
-					<LightManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.dali.title")'>
-					<DaliManager />
-				</CTab>
-			</CTabs>
-		</CCard>
+		<v-card class='mb-5'>
+			<v-tabs v-model='activeTab'>
+				<v-tab>{{ $t('iqrfnet.standard.sensor.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.binaryOutput.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.light.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.dali.title') }}</v-tab>
+			</v-tabs>
+			<v-tabs-items v-model='activeTab'>
+				<v-tab-item><SensorManager /></v-tab-item>
+				<v-tab-item><BinaryOutputManager /></v-tab-item>
+				<v-tab-item><LightManager /></v-tab-item>
+				<v-tab-item><DaliManager /></v-tab-item>
+			</v-tabs-items>
+		</v-card>
 		<StandardDevices />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CTab, CTabs} from '@coreui/vue/src';
 import BinaryOutputManager from '@/components/IqrfNet/BinaryOutputManager.vue';
 import DaliManager from '@/components/IqrfNet/DaliManager.vue';
 import LightManager from '@/components/IqrfNet/LightManager.vue';
@@ -48,8 +45,6 @@ import StandardDevices from '@/components/IqrfNet/StandardDevices.vue';
 
 @Component({
 	components: {
-		CTab,
-		CTabs,
 		BinaryOutputManager,
 		DaliManager,
 		LightManager,
@@ -64,5 +59,12 @@ import StandardDevices from '@/components/IqrfNet/StandardDevices.vue';
 /**
  * Standard manager page component
  */
-export default class StandardManager extends Vue {}
+export default class StandardManager extends Vue {
+
+	/**
+	 * @const {number} activeTab Default active tab
+	 */
+	private activeTab = 0;
+
+}
 </script>

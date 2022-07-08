@@ -311,7 +311,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
-import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
+import {cilCheckCircle, cilInfo, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -367,15 +367,9 @@ export default class StandardDevices extends Vue {
 	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
 	 */
 	private icons: Record<string, Array<string>> = {
-		coordinator: cilHome,
-		bonded: cilCheckAlt,
-		discovered: cilSignalCellular4,
 		supported: cilCheckCircle,
 		unsupported: cilXCircle,
 		details: cilInfo,
-		enumerate: cilSpreadsheet,
-		refresh: cilSync,
-		reset: cilReload,
 	};
 
 	/**
