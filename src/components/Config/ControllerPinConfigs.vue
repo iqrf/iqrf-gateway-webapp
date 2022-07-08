@@ -77,7 +77,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import ControllerPinConfigDeleteConfirmation from './ControllerPinConfigDeleteConfirmation.vue';
 import ControllerPinConfigForm from './ControllerPinConfigForm.vue';
 
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import ControllerPinConfigService from '@/services/ControllerPinConfigService';
@@ -100,16 +99,6 @@ export default class ControllerPinConfigs extends Vue {
 	 * @var {Array<IControllerPinConfig>} profiles Controller pin configuration profiles
 	 */
 	private profiles: Array<IControllerPinConfig> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		delete: cilTrash,
-		set: cilCopy,
-	};
 
 	/**
 	 * Initializes pin configurations component
