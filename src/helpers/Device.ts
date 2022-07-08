@@ -71,7 +71,7 @@ class Device {
 		}
 		if (this.bonded) {
 			if (this.discovered) {
-				return 'mdi-signal-cellular-outine';
+				return 'mdi-signal-cellular-outline';
 			}
 			return 'mdi-check';
 		}
