@@ -19,24 +19,38 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.networkManager.title') }}</h1>
 		<v-row>
 			<v-col lg='6'>
-				<CCard>
-					<CTabs variant='tabs' :active-tab='activeTab'>
-						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
+				<v-card>
+					<v-tabs v-model='activeTab'>
+						<v-tab>
+							{{ $t("iqrfnet.networkManager.iqmesh") }}
+						</v-tab>
+						<v-tab>
+							{{ $t("iqrfnet.networkManager.autoNetwork.title") }}
+						</v-tab>
+						<v-tab>
+							{{ $t("iqrfnet.networkManager.backupRestore") }}
+						</v-tab>
+						<v-tab v-if='daemon236'>
+							{{ $t("iqrfnet.networkManager.otaUpload.title") }}
+						</v-tab>
+					</v-tabs>
+					<v-tabs-items v-model='activeTab'>
+						<v-tab-item>
 							<BondingManager @update-devices='updateDevices' />
 							<DiscoveryManager @update-devices='updateDevices' />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
+						</v-tab-item>
+						<v-tab-item>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
+						</v-tab-item>
+						<v-tab-item>
 							<Backup />
 							<Restore />
-						</CTab>
-						<CTab v-if='daemon236' :title='$t("iqrfnet.networkManager.otaUpload.title")'>
+						</v-tab-item>
+						<v-tab-item v-if='daemon236'>
 							<OtaUpload />
-						</CTab>
-					</CTabs>
-				</CCard>
+						</v-tab-item>
+					</v-tabs-items>
+				</v-card>
 			</v-col>
 			<v-col lg='6'>
 				<DevicesInfo ref='devs' />
@@ -47,7 +61,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CCard, CTab, CTabs} from '@coreui/vue/src';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '@/helpers/versionChecker';
 import Backup from '@/components/IqrfNet/Backup.vue';
@@ -61,9 +74,6 @@ import {ToastOptions} from 'vue-toast-notification';
 
 @Component({
 	components: {
-		CCard,
-		CTab,
-		CTabs,
 		AutoNetwork,
 		Backup,
 		BondingManager,

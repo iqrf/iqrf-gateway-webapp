@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
 import {IInfoSensorDetail} from '@/interfaces/iqrfInfo';
 import {IProduct} from '@/interfaces/repository';
 import i18n from '@/i18n';
@@ -304,34 +303,6 @@ class StandardDevice {
 	 */
 	setSensors(sensors: Array<IInfoSensorDetail>): void {
 		this.sensors = sensors;
-	}
-
-	/**
-	 * Returns device icon
-	 * @returns Icon to render
-	 */
-	getIcon(): Array<string> {
-		if (this.address === 0) {
-			return cilHome;
-		}
-		if (this.discovered) {
-			return cilSignalCellular4;
-		}
-		return cilCheckAlt;
-	}
-
-	/**
-	 * Returns the icon color
-	 * @returns Icon color
-	 */
-	getIconColor(): string {
-		if (this.address === 0) {
-			return 'text-info';
-		}
-		if (this.online) {
-			return 'text-success';
-		}
-		return 'text-info';
 	}
 
 	/**
