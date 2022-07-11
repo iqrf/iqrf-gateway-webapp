@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
+	<v-card :loading='loading'>
 		<v-card-title>
 			{{ $t("config.daemon.misc.otaUpload.title") }}
 		</v-card-title>
-		<v-card-text>
+		<v-card-text v-if='!loading'>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -94,7 +94,7 @@ export default class OtaUpload extends Vue {
 	private componentName = 'iqrf::OtaUploadService';
 
 	/**
-	 * @var {string} instance name of daemon componenent instance
+	 * @var {string} instance name of daemon component instance
 	 */
 	private instance = '';
 
@@ -114,6 +114,11 @@ export default class OtaUpload extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -124,6 +129,7 @@ export default class OtaUpload extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.getConfig();
 	}
 
@@ -137,11 +143,15 @@ export default class OtaUpload extends Vue {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
-				this.$emit('fetched', {name: 'otaUpload', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'otaUpload', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'otaUpload'})
+						.toString()
+				);
 			});
 	}
 
@@ -166,6 +176,7 @@ export default class OtaUpload extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.otaUpload.messages.saveSuccess').toString()
 			);
