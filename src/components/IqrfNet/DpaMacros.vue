@@ -18,8 +18,13 @@ limitations under the License.
 	<v-card v-if='macros'>
 		<v-card-title>{{ $t('iqrfnet.sendPacket.macros') }}</v-card-title>
 		<v-card-text>
-			<v-btn-toggle class='flex-wrap'>
-				<v-menu v-for='group of macros' :key='group.name'>
+			<v-btn-toggle class='flex-wrap' dense>
+				<v-menu
+					v-for='group of macros'
+					:key='group.name'
+					offset-y
+					top
+				>
 					<template #activator='{on, attrs}'>
 						<v-btn
 							v-bind='attrs'
@@ -27,8 +32,8 @@ limitations under the License.
 							v-on='on'
 						>
 							{{ group.name }}
-							<v-icon color='white'>
-								mdi-menu-down
+							<v-icon>
+								mdi-menu-up
 							</v-icon>
 						</v-btn>
 					</template>
@@ -50,23 +55,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosResponse} from 'axios';
-import IqrfService from '@/services/IqrfService';
-
-interface IDpaMacro {
-	confirmation: boolean
-	enabled: boolean
-	name: string
-	note: string
-	request: string
-}
-
-interface IDpaMacros {
-	enabled: boolean
-	id: number
-	macros: Array<IDpaMacro>
-	name: string
-}
+import IqrfService, {DpaMacro, DpaMacroGroup} from '@/services/IqrfService';
 
 @Component({})
 
@@ -77,7 +66,7 @@ export default class DpaMacros extends Vue {
 	/**
 	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
 	 */
-	private macros: Array<IDpaMacros> = [];
+	private macros: Array<DpaMacroGroup> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -85,17 +74,13 @@ export default class DpaMacros extends Vue {
 	 */
 	created(): void {
 		IqrfService.getMacros()
-			.then((response: AxiosResponse) => {
-				this.macros = response.data.filter((group: IDpaMacros) => {
+			.then((response: Array<DpaMacroGroup>) => {
+				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {
-						return null;
+						return false;
 					}
-					group.macros = group.macros.filter((packet: IDpaMacro) => {
-						if (packet.enabled) {
-							return packet;
-						}
-					});
-					return group;
+					group.macros = group.macros.filter((packet: DpaMacro): boolean => packet.enabled);
+					return true;
 				});
 			});
 	}
