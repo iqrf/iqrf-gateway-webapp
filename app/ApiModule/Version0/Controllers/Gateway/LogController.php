@@ -115,7 +115,8 @@ class LogController extends GatewayController {
 		self::checkScopes($request, ['gateway:log']);
 		$service = $request->getParameter('service');
 		try {
-			return $response->writeBody($this->logManager->getServiceLog($service));
+			return $response->withHeader('Content-Type', 'text/plain')
+				->writeBody($this->logManager->getServiceLog($service));
 		} catch (ServiceLogNotAvailableException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (LogNotFoundException $e) {
