@@ -25,7 +25,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -50,27 +51,27 @@ export default class MaintenanceDisambiguation extends Vue {
 			title: this.$t('maintenance.backup.title').toString(),
 			description: this.$t('maintenance.backup.description').toString(),
 			to: '/maintenance/backup-restore/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('maintenance.pixla.title').toString(),
 			description: this.$t('maintenance.pixla.description').toString(),
 			to: '/maintenance/pixla/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'pixla',
 		},
 		{
 			title: this.$t('maintenance.mender.title').toString(),
 			description: this.$t('maintenance.mender.description').toString(),
 			to: '/maintenance/mender/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'mender',
 		},
 		{
 			title: this.$t('maintenance.monit.title').toString(),
 			description: this.$t('maintenance.monit.description').toString(),
 			to: '/maintenance/monit/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'monit',
 		},
 	];

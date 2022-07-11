@@ -199,7 +199,7 @@ import MenderService from '@/services/MenderService';
 /**
  * Mender configuration form component
  */
-export default class MenderForm extends Vue {
+export default class MenderServiceForm extends Vue {
 
 	/**
 	 * @constant {string} featureName Feature name

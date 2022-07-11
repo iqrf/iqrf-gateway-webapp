@@ -98,6 +98,32 @@ export enum UserRole {
 }
 
 /**
+ * User role indexes
+ */
+export enum UserRoleIndex {
+
+	/**
+	 * Admin user
+	 */
+	ADMIN = 0,
+
+	/**
+	 * Normal user
+	 */
+	NORMAL = 1,
+
+	/**
+	 * Basic user with user management
+	 */
+	BASICADMIN = 2,
+
+	/**
+	 * Basic user
+	 */
+	BASIC = 3,
+}
+
+/**
  * User information with JWT
  */
 export interface User extends UserInfo {

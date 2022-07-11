@@ -35,7 +35,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-import {getRoleIndex} from '@/helpers/user';
 import DisambiguationHelper, {Link} from '@/helpers/DisambiguationHelper';
 
 @Component({})
@@ -53,7 +52,9 @@ export default class Disambiguation extends Vue {
 	/**
 	 * @var {number} roleIdx Index of role in user role enum
 	 */
-	private roleIdx = 0;
+	get roleIdx() {
+		return this.$store.getters['user/getRoleIndex'];
+	}
 
 	/**
 	 * Returns links for disambiguation menu
@@ -63,12 +64,5 @@ export default class Disambiguation extends Vue {
 		return this.links.filter((link: Link) => DisambiguationHelper.filter(link, this.roleIdx));
 	}
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

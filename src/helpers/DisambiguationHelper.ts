@@ -15,16 +15,7 @@
  * limitations under the License.
  */
 import store from '@/store';
-
-/**
- * Link role enum
- */
-export enum LinkRole {
-	admin = 0,
-	normal = 1,
-	basicadmin = 2,
-	basic = 3,
-}
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 /**
  * Link target enum
@@ -66,7 +57,7 @@ export interface Link {
 	/**
 	 * Link role
 	 */
-	role?: LinkRole|Array<LinkRole>;
+	role?: UserRoleIndex|Array<UserRoleIndex>;
 
 	/**
 	 * Link target
@@ -82,9 +73,9 @@ export default class DisambiguationHelper {
 	/**
 	 * Filters links by role and feature
 	 * @param {Link} link Link to filter
-	 * @param {LinkRole} role Role to filter by
+	 * @param {UserRoleIndex} role Role to filter by
 	 */
-	public static filter(link: Link, role: LinkRole): boolean {
+	public static filter(link: Link, role: UserRoleIndex): boolean {
 		if (link.role !== undefined && ((Array.isArray(link.role) && link.role.indexOf(role) === -1) || role > link.role)) {
 			return false;
 		}

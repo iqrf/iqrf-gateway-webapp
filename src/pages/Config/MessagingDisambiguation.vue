@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,25 +50,25 @@ export default class MessagingDisambiguation extends Vue {
 			title: this.$t('config.daemon.messagings.mqtt.title').toString(),
 			description: this.$t('config.daemon.messagings.mqtt.description').toString(),
 			to: '/config/daemon/messagings/mqtt',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.messagings.websocket.title').toString(),
 			description: this.$t('config.daemon.messagings.websocket.description').toString(),
 			to: '/config/daemon/messagings/websocket',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.messagings.mq.title').toString(),
 			description: this.$t('config.daemon.messagings.mq.description').toString(),
 			to: '/config/daemon/messagings/mq',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.messagings.udp.title').toString(),
 			description: this.$t('config.daemon.messagings.udp.description').toString(),
 			to: '/config/daemon/messagings/udp',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 	];
 
