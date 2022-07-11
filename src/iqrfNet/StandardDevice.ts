@@ -98,6 +98,16 @@ class StandardDevice {
 	private product: IProduct;
 
 	/**
+	 * Standard supported icon
+	 */
+	private readonly standardSupported = 'mdi-check-circle-outline';
+
+	/**
+	 * Standard unsupported icon
+	 */
+	private readonly standardUnsupported = 'mdi-check-circle-outline';
+
+	/**
 	 * Constructor
 	 * @param address Device address
 	 * @param mid Device MID
@@ -376,6 +386,75 @@ class StandardDevice {
 	 */
 	hasStandard(): boolean {
 		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
+	}
+
+	/**
+	 * Returns device icon
+	 * @returns Device MDI
+	 */
+	getIcon(): string {
+		if (this.address === 0) {
+			return 'mdi-home-outline';
+		}
+		if (this.discovered) {
+			return 'mdi-signal-cellular-outline';
+		}
+		return 'mdi-check';
+	}
+
+	/**
+	 * Returns device icon color
+	 * @return Device MDI color
+	 */
+	getIconColor(): string {
+		if (this.online) {
+			return 'success';
+		}
+		return 'info';
+	}
+
+	/**
+	 * Returns binout icon
+	 * @returns Binout icon
+	 */
+	getBinoutIcon(): string {
+		if (this.hasBinout()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns dali icon
+	 * @returns Dali icon
+	 */
+	getDaliIcon(): string {
+		if (this.hasDali()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns light icon
+	 * @returns Light icon
+	 */
+	getLightIcon(): string {
+		if (this.hasLight()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns sensor icon
+	 * @returns Sensor icon
+	 */
+	getSensorIcon(): string {
+		if (this.hasSensor()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
 	}
 }
 

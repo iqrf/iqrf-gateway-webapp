@@ -16,68 +16,65 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>
+		<v-card>
+			<v-card-title>
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
-			</CCardHeader>
-			<CCardBody>
-				<CElementCover
+			</v-card-title>
+			<v-card-text>
+				<v-overlay
 					v-if='loadFailed'
-					style='z-index: 1;'
-					:opacity='0.85'
+					absolute
+					:opacity='0.65'
 				>
 					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFailed') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='upgradeOs()'>
-						<fieldset :disabled='loadFailed'>
-							<p>
-								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-									<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
-								</span>
-							</p>
-							<div v-if='selectVersions.length > 0'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("iqrfnet.trUpload.osUpload.errors.version"),
-									}'
-								>
-									<CSelect
-										:value.sync='osVersion'
-										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
-										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-										:options='selectVersions'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									/>
-								</ValidationProvider>
-								<CButton
-									color='primary'
-									type='submit'
-									:disabled='invalid'
-								>
-									{{ $t('forms.upload') }}
-								</CButton>
-							</div>
-							<CAlert
-								v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
-								color='success'
+					<v-form>
+						<p>
+							<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
+								<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+							</span>
+						</p>
+						<div v-if='selectVersions.length > 0'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: $t("iqrfnet.trUpload.osUpload.errors.version"),
+								}'
 							>
-								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-							</CAlert>
-						</fieldset>
-					</CForm>
+								<v-select
+									v-model='osVersion'
+									:items='selectVersions'
+									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
+									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors'
+								/>
+							</ValidationProvider>
+							<v-btn
+								color='primary'
+								:disabled='invalid'
+								@click='upgradeOs'
+							>
+								{{ $t('forms.upload') }}
+							</v-btn>
+						</div>
+						<v-alert
+							v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
+							color='success'
+						>
+							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
+						</v-alert>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -91,14 +88,6 @@ import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '@/interfaces/tr
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CModal,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -203,29 +192,28 @@ export default class OsUpdater extends Vue {
 		const versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
 			const upgrade: IqrfOsUpgrade = this.upgrades[i];
-			console.warn(upgrade);
-			let label = upgrade.os.version + ' (' + upgrade.os.build;
+			let text = upgrade.os.version + ' (' + upgrade.os.build;
 			if (upgrade.os.attributes.beta) {
-				label += ', Beta version';
+				text += ', Beta version';
 			}
 			if (upgrade.os.attributes.obsolete) {
-				label += ', Obsolete';
+				text += ', Obsolete';
 			}
-			label += '), DPA ' + upgrade.dpa.version;
+			text += '), DPA ' + upgrade.dpa.version;
 			if (upgrade.dpa.attributes.beta || upgrade.dpa.attributes.obsolete) {
-				label += ' (';
+				text += ' (';
 				if (upgrade.dpa.attributes.beta) {
-					label += 'Beta version, ';
+					text += 'Beta version, ';
 				}
 				if (upgrade.dpa.attributes.obsolete) {
-					label += 'Obsolete)';
+					text += 'Obsolete)';
 				} else {
-					label = label.substring(0, label.length - 2) + ')';
+					text = text.substring(0, text.length - 2) + ')';
 				}
 			}
 			versions.push({
 				value: i,
-				label: label,
+				text: text,
 			});
 		}
 		versions.sort();

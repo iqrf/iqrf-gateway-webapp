@@ -45,12 +45,18 @@ limitations under the License.
 		<v-card v-else-if='loaded && logs.length > 0'>
 			<v-tabs v-model='tab'>
 				<v-tab v-for='(item, i) in logs' :key='i'>
-					{{ item.name }}
+					{{ $t(`gateway.log.services.${item.name}`) }}
 				</v-tab>
-				<v-tab-item v-for='(item, i) in logs' :key='i'>
+			</v-tabs>
+			<v-tabs-items v-model='tab'>
+				<v-tab-item
+					v-for='(item, i) in logs'
+					:key='i'
+					:transition='false'
+				>
 					<LogTab v-if='item.loaded' :log.sync='item.log' />
 				</v-tab-item>
-			</v-tabs>
+			</v-tabs-items>
 		</v-card>
 	</div>
 </template>
