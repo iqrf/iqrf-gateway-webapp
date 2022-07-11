@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,65 +50,65 @@ export default class GatewayDisambiguation extends Vue {
 			title: this.$t('gateway.info.title').toString(),
 			description: this.$t('gateway.info.description').toString(),
 			to: '/gateway/info/',
-			role: LinkRole.basic,
+			role: UserRoleIndex.BASIC,
 		},
 		{
 			title: this.$t('gateway.datetime.title').toString(),
 			description: this.$t('gateway.datetime.description').toString(),
 			to: '/gateway/date-time/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('gateway.log.title').toString(),
 			description: this.$t('gateway.log.description').toString(),
 			to: '/gateway/log/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('gateway.mode.title').toString(),
 			description: this.$t('gateway.mode.description').toString(),
 			to: '/gateway/change-mode/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('service.iqrf.title').toString(),
 			description: this.$t('service.iqrf.description').toString(),
 			to: '/gateway/iqrf-services/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('service.ssh.title').toString(),
 			description: this.$t('service.ssh.description').toString(),
 			to: '/gateway/service/ssh/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'ssh',
 		},
 		{
 			title: this.$t('service.tempgw.title').toString(),
 			description: this.$t('service.tempgw.description').toString(),
 			to: '/gateway/service/tempgw/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iTemp',
 		},
 		{
 			title: this.$t('service.unattended-upgrades.title').toString(),
 			description: this.$t('service.unattended-upgrades.description').toString(),
 			to: '/gateway/service/unattended-upgrades/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'unattendedUpgrades',
 		},
 		{
 			title: this.$t('service.systemd-journald.title').toString(),
 			description: this.$t('service.systemd-journald.description').toString(),
 			to: '/gateway/service/systemd-journald/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'systemdJournal',
 		},
 		{
 			title: this.$t('gateway.power.title').toString(),
 			description: this.$t('gateway.power.description').toString(),
 			to: '/gateway/power/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 	];
 

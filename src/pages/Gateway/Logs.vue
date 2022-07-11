@@ -42,19 +42,21 @@ limitations under the License.
 		>
 			{{ $t('gateway.log.messages.noLogs') }}
 		</v-alert>
-		<CCard v-else-if='loaded && logs.length > 0'>
-			<CTabs variant='tabs' :active-tab.sync='tab'>
-				<CTab v-for='(item, i) in logs' :key='i' :title='$t(`gateway.log.services.${item.name}`)'>
+		<v-card v-else-if='loaded && logs.length > 0'>
+			<v-tabs v-model='tab'>
+				<v-tab v-for='(item, i) in logs' :key='i'>
+					{{ item.name }}
+				</v-tab>
+				<v-tab-item v-for='(item, i) in logs' :key='i'>
 					<LogTab v-if='item.loaded' :log.sync='item.log' />
-				</CTab>
-			</CTabs>
-		</CCard>
+				</v-tab-item>
+			</v-tabs>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import LogTab from '@/components/Gateway/LogTab.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -68,10 +70,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CTab,
-		CTabs,
 		LogTab,
 	},
 	metaInfo(): MetaInfo {

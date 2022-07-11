@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,34 +50,34 @@ export default class ConfigDisambiguation extends Vue {
 			title: this.$t('config.daemon.title').toString(),
 			description: this.$t('config.daemon.description').toString(),
 			to: '/config/daemon/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.controller.title').toString(),
 			description: this.$t('config.controller.description').toString(),
 			to: '/config/controller/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfGatewayController',
 		},
 		{
 			title: this.$t('config.translator.title').toString(),
 			description: this.$t('config.translator.description').toString(),
 			to: '/config/translator/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfGatewayTranslator',
 		},
 		{
 			title: this.$t('config.repository.title').toString(),
 			description: this.$t('config.repository.description').toString(),
 			to: '/config/repository/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfRepository',
 		},
 		{
 			title: this.$t('config.smtp.title').toString(),
 			description: this.$t('config.smtp.description').toString(),
 			to: '/config/smtp/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 	];
 

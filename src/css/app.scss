@@ -15,46 +15,12 @@
  * limitations under the License.
  */
 
-.btn-group {
-	& > .dropup {
-		&:not(:last-child) > .btn {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-
-		&:not(:first-child) > .btn {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-	}
+.v-application {
+  background-color: #ebedef !important;
 }
 
-.v-chip {
-	padding: 4px;
-}
-
-.container {
-	max-width: 100%;
-}
-
-.c-sidebar {
-	.c-sidebar-nav-link.c-active {
-		font-weight: bold;
-	}
-
-	.c-sidebar-nav-dropdown {
-		.c-sidebar-nav-dropdown {
-			.c-sidebar-nav-dropdown-items {
-				text-indent: 0.3rem;
-			}
-
-			.c-sidebar-nav-dropdown {
-				.c-sidebar-nav-dropdown-items {
-					text-indent: 0.6rem;
-				}
-			}
-		}
-	}
+fieldset {
+  border: 0;
 }
 
 .tooltip-old {
@@ -65,26 +31,12 @@
 	}
 }
 
-.dropdown-item {
-	padding: 0.25rem 1.25rem;
-}
-
-.form-group > label {
-	font-weight: bolder;
-}
-
 .form-check {
 	margin-bottom: 1rem;
 }
 
 .log {
 	max-height: 75vh;
-}
-
-.col-actions {
-	white-space: nowrap;
-	width: 1%;
-	text-align: right;
 }
 
 .rf-mode-icon {
@@ -97,10 +49,6 @@
 	td {
 		vertical-align: middle;
 	}
-}
-
-.card-margin-bottom {
-	margin-bottom: 0;
 }
 
 .loading-spinner-centered {
@@ -139,36 +87,6 @@
 
 .prism-editor__textarea {
 	outline: 0;
-}
-
-.datatable-header {
-	display: flex;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.datatable-info {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: -1px;
-}
-
-.datatable-collapse {
-	display: flex;
-	align-items: flex-start;
-	justify-content: left;
-
-	& > table {
-		margin-left: 1em;
-		margin-right: 1em;
-
-		th,
-		td {
-			border: 0;
-		}
-	}
 }
 
 .vdatetime-calendar__month__day--selected {

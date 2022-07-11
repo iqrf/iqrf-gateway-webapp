@@ -15,28 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div class='c-app flex-row align-items-center'>
-		<CContainer>
-			<v-row class='justify-content-center'>
+	<v-main>
+		<v-container>
+			<v-row class='m-auto'>
+				<v-col lg='1' />
 				<v-col lg='10'>
 					<div class='logo'>
 						<Logo :alt='title' />
 					</div>
 					<slot />
 				</v-col>
+				<v-col lg='1' />
 			</v-row>
-		</CContainer>
-	</div>
+		</v-container>
+	</v-main>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer} from '@coreui/vue/src';
 import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {
-		CContainer,
 		Logo: ThemeManager.getWizardLogo(),
 	},
 })
@@ -67,5 +67,4 @@ export default class TheWizard extends Vue {
 		width: 100%;
 	}
 }
-
 </style>

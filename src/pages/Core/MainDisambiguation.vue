@@ -71,7 +71,8 @@ import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole, LinkTarget} from '@/helpers/DisambiguationHelper';
+import {Link, LinkTarget} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -103,78 +104,78 @@ export default class MainDisambiguation extends Vue {
 			title: this.$t('gateway.title').toString(),
 			description: this.$t('gateway.description').toString(),
 			to: '/gateway/',
-			role: LinkRole.basic,
+			role: UserRoleIndex.BASIC,
 		},
 		{
 			title: this.$t('config.title').toString(),
 			description: this.$t('config.description').toString(),
 			to: '/config/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('iqrfnet.title').toString(),
 			description: this.$t('iqrfnet.description').toString(),
 			to: '/iqrfnet/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('network.title').toString(),
 			description: this.$t('network.description').toString(),
 			to: '/ip-network/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'networkManager',
 		},
 		{
 			title: this.$t('cloud.title').toString(),
 			description: this.$t('cloud.description').toString(),
 			to: '/cloud/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('maintenance.title').toString(),
 			description: this.$t('maintenance.description').toString(),
 			to: '/maintenance/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('core.grafana.title').toString(),
 			description: this.$t('core.grafana.description').toString(),
 			href: this.$store.getters['features/configuration']('grafana').url,
-			role: LinkRole.basic,
+			role: UserRoleIndex.BASIC,
 			feature: 'grafana',
 		},
 		{
 			title: this.$t('core.nodeRed.workflow.title').toString(),
 			description: this.$t('core.nodeRed.workflow.description').toString(),
 			href: this.$store.getters['features/configuration']('nodeRed').url,
-			role: LinkRole.basicadmin,
+			role: UserRoleIndex.BASICADMIN,
 			feature: 'nodeRed',
 		},
 		{
 			title: this.$t('core.nodeRed.dashboard.title').toString(),
 			description: this.$t('core.nodeRed.dashboard.description').toString(),
 			href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
-			role: LinkRole.basic,
+			role: UserRoleIndex.BASIC,
 			feature: 'nodeRed',
 		},
 		{
 			title: this.$t('core.supervisor.title').toString(),
 			description: this.$t('core.supervisor.description').toString(),
 			href: this.$store.getters['features/configuration']('supervisord').url,
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'supervisord',
 		},
 		{
 			title: this.$t('core.user.title').toString(),
 			description: this.$t('core.user.description').toString(),
 			to: '/user/',
-			role: [LinkRole.admin, LinkRole.basicadmin],
+			role: [UserRoleIndex.ADMIN, UserRoleIndex.BASICADMIN],
 		},
 		{
 			title: this.$t('core.security.title').toString(),
 			description: this.$t('core.security.description').toString(),
 			to: '/security/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('core.documentation.title').toString(),

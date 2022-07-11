@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<table
+	<v-simple-table
 		v-if='!$store.getters["sidebar/isMinimized"]'
-		class='table'
+		dense
 	>
 		<tbody>
 			<tr>
@@ -64,7 +64,7 @@ limitations under the License.
 				</td>
 			</tr>
 		</tbody>
-	</table>
+	</v-simple-table>
 </template>
 
 <script lang='ts'>
@@ -146,8 +146,8 @@ export default class SidebarIndication extends Vue {
 <style scoped>
 table {
 	color: white;
-	border-top: 1px solid white;
-	margin-bottom: 0.5rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0;
 }
 
 .item {

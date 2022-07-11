@@ -25,7 +25,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -50,13 +51,13 @@ export default class SecurityDisambiguation extends Vue {
 			title: this.$t('core.security.apiKey.title').toString(),
 			description: this.$t('core.security.apiKey.description').toString(),
 			to: '/security/api-key/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('core.security.ssh.title').toString(),
 			description: this.$t('core.security.ssh.description').toString(),
 			to: '/security/ssh-key/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'ssh',
 		},
 	];

@@ -19,7 +19,7 @@ limitations under the License.
 		<v-card-title>{{ $t('install.gwInfo.title') }}</v-card-title>
 		<v-card-text>
 			<div class='table-responsive'>
-				<table v-if='info !== null' class='table table-striped'>
+				<v-simple-table v-if='info !== null'>
 					<tbody>
 						<tr>
 							<th>{{ $t('gateway.info.board') }}</th>
@@ -90,7 +90,7 @@ limitations under the License.
 							</td>
 						</tr>
 					</tbody>
-				</table>
+				</v-simple-table>
 			</div>
 			<v-btn color='primary' @click='downloadDiagnostics()'>
 				<v-icon small>

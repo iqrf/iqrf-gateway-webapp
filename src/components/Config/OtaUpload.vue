@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card class='border-0 card-margin-bottom'>
+	<v-card>
 		<v-card-title>
 			{{ $t("config.daemon.misc.otaUpload.title") }}
 		</v-card-title>

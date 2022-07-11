@@ -8,7 +8,8 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 import {NavigationGuardNext, Route} from 'vue-router';
 
@@ -43,13 +44,13 @@ export default class MenderDisambiguation extends Vue {
 			title: this.$t('maintenance.mender.service.title').toString(),
 			description: this.$t('maintenance.mender.service.description').toString(),
 			to: '/maintenance/mender/service/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('maintenance.mender.update.title').toString(),
 			description: this.$t('maintenance.mender.update.description').toString(),
 			to: '/maintenance/mender/update/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 	];
 

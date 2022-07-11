@@ -39,8 +39,8 @@ limitations under the License.
 				</v-toolbar>
 			</template>
 			<template #expanded-item='{headers, item}'>
-				<td :colspan='headers.length'>
-					<table class='table'>
+				<td :colspan='headers.length' class='pl-0 pr-0'>
+					<v-simple-table>
 						<tbody>
 							<tr>
 								<th>{{ $t('core.security.ssh.table.type') }}</th>
@@ -51,7 +51,7 @@ limitations under the License.
 									{{ $t('core.security.ssh.table.hash') }}
 								</th>
 								<td>{{ item.hash }}</td>
-								<td>
+								<td class='text-end'>
 									<v-btn
 										v-clipboard:copy='item.hash'
 										v-clipboard:success='hashClipboardMessage'
@@ -72,7 +72,7 @@ limitations under the License.
 								<td style='max-width: 60vw;'>
 									{{ item.key }}
 								</td>
-								<td>
+								<td class='text-end'>
 									<v-btn
 										v-clipboard:copy='item.key'
 										v-clipboard:success='keyClipboardMessage'
@@ -87,7 +87,7 @@ limitations under the License.
 								</td>
 							</tr>
 						</tbody>
-					</table>
+					</v-simple-table>
 				</td>
 			</template>
 			<template #[`item.createdAt`]='{item}'>
