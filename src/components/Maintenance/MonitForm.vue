@@ -20,7 +20,7 @@ limitations under the License.
 		v-slot='{invalid}'
 	>
 		<hr>
-		<CForm @submit.prevent='saveConfig'>
+		<form @submit.prevent='saveConfig'>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				rules='required'
@@ -28,11 +28,11 @@ limitations under the License.
 					required: $t("maintenance.monit.errors.endpoint"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='configuration.endpoint'
 					:label='$t("maintenance.monit.form.endpoint")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
@@ -43,11 +43,11 @@ limitations under the License.
 					userpass: $t("maintenance.monit.errors.usernameInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='configuration.username'
 					:label='$t("maintenance.monit.form.username")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
@@ -58,30 +58,31 @@ limitations under the License.
 					userpass: $t("maintenance.monit.errors.passwordInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='configuration.password'
 					:label='$t("maintenance.monit.form.password")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
+					:type='passwordVisible ? "text" : "password"'
+					:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+					@click:append='passwordVisible = !passwordVisible'
 				/>
 			</ValidationProvider>
-			<CButton
+			<v-btn
 				color='primary'
 				type='submit'
 				:disabled='invalid'
 			>
 				{{ $t('forms.save') }}
-			</CButton>
-		</CForm>
+			</v-btn>
+		</form>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput} from '@coreui/vue/src';
-import {ValidationObserver, ValidationProvider} from 'vee-validate';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {extend} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
@@ -92,9 +93,6 @@ import {IMonitConfig} from '@/interfaces/maintenance';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -114,6 +112,11 @@ export default class MonitForm extends Vue {
 	 * @var {IMonitConfig|null} configuration Monit configuration
 	 */
 	private configuration: IMonitConfig|null = null;
+
+	/**
+	 * @var {boolean} passwordVisible Password visibility
+	 */
+	private passwordVisible = false;
 
 	/**
 	 * Initializes validation rules

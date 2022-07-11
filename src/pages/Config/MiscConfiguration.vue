@@ -22,7 +22,9 @@ limitations under the License.
 				<v-tab>{{ $t("config.daemon.misc.jsonApi.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.iqrfRepository.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.iqrfInfo.title") }}</v-tab>
-				<v-tab v-if='isAdmin'>{{ $t("config.daemon.misc.iqmesh") }}</v-tab>
+				<v-tab v-if='isAdmin'>
+					{{ $t("config.daemon.misc.iqmesh") }}
+				</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.monitor.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.tracer.title") }}</v-tab>
 			</v-tabs>
@@ -37,7 +39,9 @@ limitations under the License.
 				</v-tab-item>
 				<v-tab-item><IqrfRepository /></v-tab-item>
 				<v-tab-item><IqrfInfo /></v-tab-item>
-				<v-tab-item v-if='isAdmin'><OtaUpload /></v-tab-item>
+				<v-tab-item v-if='isAdmin'>
+					<OtaUpload />
+				</v-tab-item>
 				<v-tab-item><MonitorList /></v-tab-item>
 				<v-tab-item><TracerList /></v-tab-item>
 			</v-tabs-items>
