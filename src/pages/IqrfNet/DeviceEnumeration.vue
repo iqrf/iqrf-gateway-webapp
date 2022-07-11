@@ -21,7 +21,7 @@ limitations under the License.
 			<v-card class='mb-5'>
 				<v-card-title>{{ $t('iqrfnet.enumeration.deviceInfo') }}</v-card-title>
 				<v-card-text>
-					<table class='table table-striped'>
+					<v-simple-table>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.deviceAddr') }}</th>
@@ -54,21 +54,24 @@ limitations under the License.
 							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.picture') }}</th>
 								<td>
-									<img
+									<v-img
 										:alt='response.product'
 										class='product-picture'
 										:src='product.picture'
-									>
+										contain
+										min-width='256px'
+										min-height='256px'
+									/>
 								</td>
 							</tr>
 						</tbody>
-					</table>
+					</v-simple-table>
 				</v-card-text>
 			</v-card>
 			<v-card>
 				<v-card-title>{{ $t('iqrfnet.enumeration.trInfo') }}</v-card-title>
 				<v-card-text>
-					<table class='table table-striped'>
+					<v-simple-table>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.trType') }}</th>
@@ -106,7 +109,7 @@ limitations under the License.
 								<td>{{ osData.supplyVoltage }}</td>
 							</tr>
 						</tbody>
-					</table>
+					</v-simple-table>
 					<v-btn color='primary' to='/iqrfnet/network/'>
 						{{ $t('iqrfnet.enumeration.back') }}
 					</v-btn>
@@ -213,7 +216,7 @@ export default class DeviceEnumeration extends Vue {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(_state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();

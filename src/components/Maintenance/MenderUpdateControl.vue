@@ -33,7 +33,7 @@
 				</CButton>
 			</CCardBody>
 		</CCard>
-		<CCard class='border-0 card-margin-bottom'>
+		<CCard>
 			<CCardBody>
 				<h4>{{ $t('maintenance.mender.update.control') }}</h4>
 				<CButton
