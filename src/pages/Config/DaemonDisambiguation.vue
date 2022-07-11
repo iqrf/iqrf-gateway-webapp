@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,31 +50,31 @@ export default class DaemonDisambiguation extends Vue {
 			title: this.$t('config.daemon.main.title').toString(),
 			description: this.$t('config.daemon.main.description').toString(),
 			to: '/config/daemon/main/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('config.daemon.interfaces.title').toString(),
 			description: this.$t('config.daemon.interfaces.description').toString(),
 			to: '/config/daemon/interfaces/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.messagings.title').toString(),
 			description: this.$t('config.daemon.messagings.description').toString(),
 			to: '/config/daemon/messagings/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.scheduler.title').toString(),
 			description: this.$t('config.daemon.scheduler.description').toString(),
 			to: '/config/daemon/scheduler/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('config.daemon.misc.title').toString(),
 			description: this.$t('config.daemon.misc.description').toString(),
 			to: '/config/daemon/misc/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 	];
 

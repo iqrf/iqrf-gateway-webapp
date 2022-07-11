@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,31 +50,31 @@ export default class CloudDisambiguation extends Vue {
 			title: this.$t('cloud.ibmCloud.title').toString(),
 			description: this.$t('cloud.ibmCloud.description').toString(),
 			to: '/cloud/ibm-cloud/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('cloud.msAzure.title').toString(),
 			description: this.$t('cloud.msAzure.description').toString(),
 			to: '/cloud/azure/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('cloud.amazonAws.title').toString(),
 			description: this.$t('cloud.amazonAws.description').toString(),
 			to: '/cloud/aws/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('cloud.hexio.title').toString(),
 			description: this.$t('cloud.hexio.description').toString(),
 			to: '/cloud/hexio/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('cloud.intelimentsInteliGlue.title').toString(),
 			description: this.$t('cloud.intelimentsInteliGlue.description').toString(),
 			to: '/cloud/inteli-glue/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 	];
 

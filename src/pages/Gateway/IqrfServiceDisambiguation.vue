@@ -24,9 +24,9 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
-import {getRoleIndex} from '@/helpers/user';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -51,20 +51,20 @@ export default class IqrfServiceDisambiguation extends Vue {
 			title: this.$t('service.iqrf-gateway-daemon.title').toString(),
 			description: this.$t('service.iqrf-gateway-daemon.description').toString(),
 			to: '/gateway/service/iqrf-gateway-daemon/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('service.iqrf-gateway-controller.title').toString(),
 			description: this.$t('service.iqrf-gateway-controller.description').toString(),
 			to: '/gateway/service/iqrf-gateway-controller/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfGatewayController',
 		},
 		{
 			title: this.$t('service.iqrf-gateway-translator.title').toString(),
 			description: this.$t('service.iqrf-gateway-translator.description').toString(),
 			to: '/gateway/service/iqrf-gateway-translator/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfGatewayTranslator',
 		},
 	];

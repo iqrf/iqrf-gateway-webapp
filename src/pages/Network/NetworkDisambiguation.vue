@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,25 +50,25 @@ export default class NetworkDisambiguation extends Vue {
 			title: this.$t('network.ethernet.title').toString(),
 			description: this.$t('network.ethernet.description').toString(),
 			to: '/ip-network/ethernet',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('network.wireless.title').toString(),
 			description: this.$t('network.wireless.description').toString(),
 			to: '/ip-network/wireless',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 		{
 			title: this.$t('network.mobile.title').toString(),
 			description: this.$t('network.mobile.description').toString(),
 			to: '/ip-network/mobile',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 
 		}, {
 			title: this.$t('network.wireguard.title').toString(),
 			description: this.$t('network.wireguard.description').toString(),
 			to: '/ip-network/vpn',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 		},
 	];
 

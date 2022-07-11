@@ -24,7 +24,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import Disambiguation from '@/components/Disambiguation.vue';
-import {Link, LinkRole} from '@/helpers/DisambiguationHelper';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -49,38 +50,38 @@ export default class IqrfNetDisambiguation extends Vue {
 			title: this.$t('iqrfnet.sendPacket.title').toString(),
 			description: this.$t('iqrfnet.sendPacket.description').toString(),
 			to: '/iqrfnet/send-raw/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('iqrfnet.sendJson.title').toString(),
 			description: this.$t('iqrfnet.sendJson.description').toString(),
 			to: '/iqrfnet/send-json/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('iqrfnet.trUpload.title').toString(),
 			description: this.$t('iqrfnet.trUpload.description').toString(),
 			to: '/iqrfnet/tr-upload/',
-			role: LinkRole.admin,
+			role: UserRoleIndex.ADMIN,
 			feature: 'trUpload',
 		},
 		{
 			title: this.$t('iqrfnet.trConfiguration.title').toString(),
 			description: this.$t('iqrfnet.trConfiguration.description').toString(),
 			to: '/iqrfnet/tr-config/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('iqrfnet.networkManager.title').toString(),
 			description: this.$t('iqrfnet.networkManager.description').toString(),
 			to: '/iqrfnet/network/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 		{
 			title: this.$t('iqrfnet.standard.title').toString(),
 			description: this.$t('iqrfnet.standard.description').toString(),
 			to: '/iqrfnet/standard/',
-			role: LinkRole.normal,
+			role: UserRoleIndex.NORMAL,
 		},
 	];
 

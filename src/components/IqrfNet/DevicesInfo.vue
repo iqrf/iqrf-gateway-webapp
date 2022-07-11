@@ -18,7 +18,7 @@ limitations under the License.
 	<v-card>
 		<v-card-title>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</v-card-title>
 		<v-card-text>
-			<table class='table text-center'>
+			<v-simple-table class='text-center'>
 				<tbody>
 					<tr>
 						<td class='table-toprow'>
@@ -63,7 +63,7 @@ limitations under the License.
 						</td>
 					</tr>
 				</tbody>
-			</table>
+			</v-simple-table>
 			<v-btn-toggle class='d-flex'>
 				<v-btn
 					class='w-50'
@@ -80,7 +80,7 @@ limitations under the License.
 				</v-btn>
 			</v-btn-toggle>
 			<div v-if='devices.length !== 0' class='table-responsive'>
-				<table class='table table-striped device-info card-margin-bottom'>
+				<v-simple-table class='device-info'>
 					<tbody>
 						<tr>
 							<td colspan='11' class='text-center'>
@@ -100,7 +100,7 @@ limitations under the License.
 							</td>
 						</tr>
 					</tbody>
-				</table>
+				</v-simple-table>
 			</div>
 			<v-alert v-else color='error'>
 				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
