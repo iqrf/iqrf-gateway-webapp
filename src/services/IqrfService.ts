@@ -24,6 +24,21 @@ interface IqrfInterfacePorts {
 	uart: Array<string>;
 }
 
+export interface DpaMacro {
+	confirmation: boolean
+	enabled: boolean
+	name: string
+	note: string
+	request: string
+}
+
+export interface DpaMacroGroup {
+	enabled: boolean
+	id: number
+	macros: Array<DpaMacro>
+	name: string
+}
+
 /**
  * IQRF networks service
  */
@@ -43,8 +58,9 @@ class IqrfService {
 	/**
 	 * Retrieves IQRF IDE Macros
 	 */
-	getMacros(): Promise<AxiosResponse> {
-		return axios.get('iqrf/macros/', {headers: authorizationHeader()});
+	getMacros(): Promise<Array<DpaMacroGroup>> {
+		return axios.get('iqrf/macros/', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => response.data as Array<DpaMacroGroup>);
 	}
 
 	/**
