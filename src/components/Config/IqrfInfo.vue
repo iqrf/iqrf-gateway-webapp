@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
+	<v-card :loading='loading'>
+		<v-card-text v-if='!loading'>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -159,6 +159,11 @@ export default class IqrfInfo extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
@@ -189,6 +194,7 @@ export default class IqrfInfo extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.updateForm();
 		this.getConfig();
 	}
@@ -202,11 +208,15 @@ export default class IqrfInfo extends Vue {
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
 				}
-				this.$emit('fetched', {name: 'iqrfInfo', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'iqrfInfo', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'iqrfInfo'},)
+						.toString()
+				);
 			});
 	}
 
@@ -246,6 +256,7 @@ export default class IqrfInfo extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.iqrfInfo.messages.saveSuccess').toString()
 			);

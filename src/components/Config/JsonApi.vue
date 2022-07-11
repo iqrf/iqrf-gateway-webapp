@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
+	<v-card :loading='loading'>
+		<v-card-text v-if='!loading'>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -127,6 +127,11 @@ export default class JsonApi extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -137,6 +142,7 @@ export default class JsonApi extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.getConfig();
 	}
 
@@ -155,11 +161,15 @@ export default class JsonApi extends Vue {
 				this.splitter = responses[1].data.instances[0];
 				this.insId = responses[1].data.instances[0].insId;
 				this.validateJsonResponse = responses[1].data.instances[0].validateJsonResponse;
-				this.$emit('fetched', {name: 'jsonApi', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'jsonApi', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'jsonApi'})
+						.toString()
+				);
 			});
 	}
 
@@ -188,6 +198,7 @@ export default class JsonApi extends Vue {
 		Promise.all(requests)
 			.then(() => {
 				this.getConfig().then(() => {
+					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.daemon.misc.jsonApi.messages.saveSuccess').toString()
 					);
