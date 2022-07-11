@@ -314,7 +314,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
-import {cilCheckCircle, cilInfo, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -355,15 +354,6 @@ export default class StandardDevices extends Vue {
 	 * @var {boolean} showModal Controls rendering of database reset modal
 	 */
 	private showModal = false;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		supported: cilCheckCircle,
-		unsupported: cilXCircle,
-		details: cilInfo,
-	};
 
 	/**
 	 * @constant {Array<DataTableHeader>} fields Array of CoreUI data table fields
