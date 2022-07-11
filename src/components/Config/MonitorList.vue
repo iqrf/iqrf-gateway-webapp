@@ -18,6 +18,7 @@ limitations under the License.
 	<v-data-table
 		:headers='header'
 		:items='instances'
+		:loading='loading'
 	>
 		<template #top>
 			<v-toolbar dense flat>
@@ -35,7 +36,7 @@ limitations under the License.
 			</v-toolbar>
 		</template>
 		<template #[`item.acceptOnlyLocalhost`]='{item}'>
-			<v-menu>
+			<v-menu offset-y>
 				<template #activator='{ on, attrs }'>
 					<v-btn
 						:color='item.acceptOnlyLocalhost ? "success": "error"'
@@ -47,7 +48,7 @@ limitations under the License.
 						<v-icon>mdi-menu-down</v-icon>
 					</v-btn>
 				</template>
-				<v-list>
+				<v-list dense>
 					<v-list-item @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
 						{{ $t('states.enabled') }}
 					</v-list-item>
@@ -58,7 +59,7 @@ limitations under the License.
 			</v-menu>
 		</template>
 		<template #[`item.tlsEnabled`]='{item}'>
-			<v-menu>
+			<v-menu offset-y>
 				<template #activator='{ on, attrs }'>
 					<v-btn
 						:color='item.tlsEnabled ? "success": "error"'
@@ -70,7 +71,7 @@ limitations under the License.
 						<v-icon>mdi-menu-down</v-icon>
 					</v-btn>
 				</template>
-				<v-list>
+				<v-list dense>
 					<v-list-item @click='changeTls(item.webSocket, true)'>
 						{{ $t('states.enabled') }}
 					</v-list-item>
@@ -160,6 +161,11 @@ export default class MonitorList extends Vue {
 	private deleteInstance: Record<string, string>|'' = '';
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<DataTableHeader>} header Data table header
 	 */
 	private header: Array<DataTableHeader> = [
@@ -218,6 +224,7 @@ export default class MonitorList extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getConfig(): Promise<void> {
+		this.loading = true;
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.monitor),
 			DaemonConfigurationService.getComponent(this.componentNames.webSocket),
@@ -251,10 +258,14 @@ export default class MonitorList extends Vue {
 					}
 				}
 				this.instances = instances;
-				this.$emit('fetched', {name: 'monitor', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
-				this.$emit('fetched', {name: 'monitor', success: false});
+				this.loading = false;
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'monitor'},)
+						.toString()
+				);
 			});
 	}
 
@@ -289,7 +300,6 @@ export default class MonitorList extends Vue {
 	 * @param service WebSocket service instance
 	 */
 	private changeServiceSetting(service): void {
-		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
 			.then(() => {
 				this.getConfig().then(() => {
@@ -315,7 +325,7 @@ export default class MonitorList extends Vue {
 		}
 		const deleteInstance = this.deleteInstance;
 		this.deleteInstance = '';
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		Promise.all([
 			DaemonConfigurationService.deleteInstance(this.componentNames.monitor, deleteInstance.monitor),
 			DaemonConfigurationService.deleteInstance(this.componentNames.webSocket, deleteInstance.webSocket),

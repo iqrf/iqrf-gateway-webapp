@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
+	<v-card :loading='loading'>
 		<v-card-title>
 			{{ $t('config.daemon.misc.jsonRawApi.title') }}
 		</v-card-title>
-		<v-card-text>
+		<v-card-text v-if='!loading'>
 			<CElementCover
 				v-if='loadFailed'
 				style='z-index: 1;'
@@ -112,6 +112,11 @@ export default class JsonRawApi extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -122,6 +127,7 @@ export default class JsonRawApi extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.getConfig();
 	}
 
@@ -135,11 +141,15 @@ export default class JsonRawApi extends Vue {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
-				this.$emit('fetched', {name: 'jsonRawApi', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'jsonRawApi', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'jsonRawApi'})
+						.toString()
+				);
 			});
 	}
 
@@ -164,6 +174,7 @@ export default class JsonRawApi extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.jsonRawApi.messages.saveSuccess').toString()
 			);
