@@ -1,33 +1,24 @@
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('maintenance.mender.update.log.title') }}
-		</CCardHeader>
-		<CCardBody>
-			<CAlert
+		</v-card-title>
+		<v-card-text>
+			<v-alert
 				v-if='log.length === 0'
-				class='card-margin-bottom'
-				color='info'
+				type='info'
 			>
 				{{ $t('maintenance.mender.update.log.noLog') }}
-			</CAlert>
+			</v-alert>
 			<pre class='log card-margin-bottom'>{{ log }}</pre>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CAlert, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
-@Component({
-	components: {
-		CAlert,
-		CCard,
-		CCardBody,
-		CCardHeader,
-	}
-})
+@Component({})
 
 /**
  * Mender execution log card

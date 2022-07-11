@@ -1,67 +1,79 @@
 <template>
-	<CCard>
-		<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-			<CCardBody>
+	<div>
+		<v-card>
+			<v-card-text>
 				<h4>{{ $t('maintenance.mender.update.update') }}</h4>
-				<CForm>
-					<CInputFile
-						ref='artifactInput'
-						:label='$t("maintenance.mender.update.form.artifact")'
-						accept='.mender'
-						@input='isInputEmpty'
-						@click='isInputEmpty'
-					/>
-				</CForm>
-				<CButton
-					color='primary'
-					:disabled='inputEmpty'
-					@click='install'
-				>
-					{{ $t('maintenance.mender.update.form.install') }}
-				</CButton> <CButton
-					color='success'
-					:disabled='!installSuccess'
-					@click='commit'
-				>
-					{{ $t('maintenance.mender.update.form.commit') }}
-				</CButton> <CButton
-					color='danger'
-					:disabled='!installSuccess'
-					@click='rollback'
-				>
-					{{ $t('maintenance.mender.update.form.rollback') }}
-				</CButton>
-			</CCardBody>
-		</CCard>
-		<CCard>
-			<CCardBody>
+				<ValidationObserver v-slot='{invalid}'>
+					<form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("maintenance.mender.update.messages.missingArtifact"),
+							}'
+						>
+							<v-file-input
+								v-model='file'
+								:label='$t("maintenance.mender.update.form.artifact")'
+								accept='.mender'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+					</form>
+					<v-btn
+						color='primary'
+						:disabled='invalid'
+						@click='install'
+					>
+						{{ $t('maintenance.mender.update.form.install') }}
+					</v-btn> <v-btn
+						color='success'
+						:disabled='!installSuccess'
+						@click='commit'
+					>
+						{{ $t('maintenance.mender.update.form.commit') }}
+					</v-btn> <v-btn
+						color='error'
+						:disabled='!installSuccess'
+						@click='rollback'
+					>
+						{{ $t('maintenance.mender.update.form.rollback') }}
+					</v-btn>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
+		<v-card>
+			<v-card-text>
 				<h4>{{ $t('maintenance.mender.update.control') }}</h4>
-				<CButton
+				<v-btn
 					color='primary'
 					@click='reboot()'
 				>
 					{{ $t('gateway.power.reboot') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					v-if='$store.getters["features/isEnabled"]("remount")'
 					color='primary'
 					@click='remount(false)'
 				>
 					{{ $t('maintenance.mender.update.remountRo') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					v-if='$store.getters["features/isEnabled"]("remount")'
 					color='primary'
 					@click='remount(true)'
 				>
 					{{ $t('maintenance.mender.update.remountRw') }}
-				</CButton>
-			</CCardBody>
-		</CCard>
-	</CCard>
+				</v-btn>
+			</v-card-text>
+		</v-card>
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+
 
 import MenderService from '@/services/MenderService';
 
@@ -70,14 +82,11 @@ import GatewayService from '@/services/GatewayService';
 import { MountModes } from '@/enums/Maintenance/Mender';
 import { extendedErrorToast } from '@/helpers/errorToast';
 import {ErrorResponse} from '@/types';
-import {TranslateResult} from 'vue-i18n';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CInputFile,
+		ValidationObserver,
+		ValidationProvider,
 	},
 })
 
@@ -87,9 +96,9 @@ import {TranslateResult} from 'vue-i18n';
 export default class MenderUpdateControl extends Vue {
 
 	/**
-	 * @var {boolean} inputEmpty Indicates that mender artifact file input is empty
+	 * @var {File|null} file Artifact input file
 	 */
-	private inputEmpty = true;
+	private file: File|null = null;
 
 	/**
 	 * @var {boolean} installSuccess Indicates that mender artifact has been installed
@@ -97,38 +106,31 @@ export default class MenderUpdateControl extends Vue {
 	private installSuccess = false;
 
 	/**
-	 * Retrieves selected file from file input
-	 * @return {FileList} List of uploaded files
+	 * Vue lifecycle hook created
 	 */
-	private getInputFile(): FileList {
-		const input = ((this.$refs.artifactInput as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if artifact file input is empty
-	 */
-	private isInputEmpty(): void {
-		this.inputEmpty = this.getInputFile().length === 0;
+	created(): void {
+		extend('required', required);
 	}
 
 	/**
 	 * Performs mender install artifact task
 	 */
 	private install(): void {
+		if (this.file === null) {
+			return;
+		}
 		this.installSuccess = false;
 		const formData = new FormData();
-		const file = this.getInputFile()[0];
-		formData.append('file', file);
+		formData.append('file', this.file);
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
 		MenderService.install(formData)
 			.then((response: AxiosResponse) => {
-				this.handleResponse(this.$t('maintenance.mender.update.messages.installSuccess'), response.data);
+				this.handleResponse(this.$t('maintenance.mender.update.messages.installSuccess').toString(), response.data);
 				this.installSuccess = true;
 			})
 			.catch((error: AxiosError) => this.handleError(
-				this.$t('maintenance.mender.update.messages.installFailed'),
+				this.$t('maintenance.mender.update.messages.installFailed').toString(),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -140,11 +142,11 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		MenderService.commit()
 			.then((response: AxiosResponse) => this.handleResponse(
-				this.$t('maintenance.mender.update.messages.commitSuccess'),
+				this.$t('maintenance.mender.update.messages.commitSuccess').toString(),
 				response.data
 			))
 			.catch((error: AxiosError) => this.handleError(
-				this.$t('maintenance.mender.update.messages.commitFailed'),
+				this.$t('maintenance.mender.update.messages.commitFailed').toString(),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -156,11 +158,11 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		MenderService.rollback()
 			.then((response: AxiosResponse) => this.handleResponse(
-				this.$t('maintenance.mender.update.messages.rollbackSuccess'),
+				this.$t('maintenance.mender.update.messages.rollbackSuccess').toString(),
 				response.data
 			))
 			.catch((error: AxiosError) => this.handleError(
-				this.$t('maintenance.mender.update.messages.rollbackFailed'),
+				this.$t('maintenance.mender.update.messages.rollbackFailed').toString(),
 				error.response ? (error.response.data as ErrorResponse).message : error.message
 			));
 	}
@@ -207,21 +209,21 @@ export default class MenderUpdateControl extends Vue {
 
 	/**
 	 * Handles axios response
-	 * @param {TranslateResult} message Toast message to project
+	 * @param {string} message Toast message to project
 	 * @param {string} output Output log
 	 */
-	private handleResponse(message: TranslateResult, output: string): void {
+	private handleResponse(message: string, output: string): void {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(message.toString());
+		this.$toast.success(message);
 		this.updateLog(output);
 	}
 
 	/**
 	 * Handles axios error
-   * @param {TranslateResult} message Toast message to project
+   * @param {string} message Toast message to project
    * @param {string} output Output log
 	 */
-	private handleError(message: TranslateResult, output: string): void {
+	private handleError(message: string, output: string): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.error(message.toString());
 		this.updateLog(output);
