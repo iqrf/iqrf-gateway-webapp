@@ -13,7 +13,7 @@
 				{{ $t('iqrfnet.product.browse') }}
 			</v-btn>
 		</template>
-		<c-card>
+		<v-card>
 			<v-card-title>
 				{{ $t('iqrfnet.product.title') }}
 			</v-card-title>
@@ -59,7 +59,7 @@
 					{{ $t('forms.close') }}
 				</v-btn>
 			</v-card-actions>
-		</c-card>
+		</v-card>
 	</v-dialog>
 </template>
 
