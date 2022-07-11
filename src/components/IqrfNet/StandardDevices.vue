@@ -109,207 +109,210 @@ limitations under the License.
 						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
-				<CDataTable
-					:fields='fields'
+				<v-data-table
+					:headers='headers'
 					:items='devices'
-					:column-filter='true'
-					:pagination='true'
-					:items-per-page='10'
-					:sorter='{external: false, resetable: true}'
+					:no-data-text='$t("iqrfnet.standard.table.fields.noDevices")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('iqrfnet.standard.table.fields.noDevices') }}
-					</template>
-					<template #address='{item}'>
+					<template #[`item.address`]='{item}'>
 						<td>
 							<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
 								{{ item.getAddress() }}
 							</router-link>
 						</td>
 					</template>
-					<template #product='{item}'>
+					<template #[`item.product`]='{item}'>
 						<td class='datatable-details'>
 							{{ item.getProductName() }}
-							<span
-								style='cursor: pointer;'
+							<v-btn
+								color='info'
+								size='xl'
+								icon
 								@click='item.showDetails = !item.showDetails'
 							>
-								<CIcon
-									class='text-info'
-									:content='icons.details'
-									size='xl'
-								/>
-							</span>
+								<v-icon>
+									mdi-information-outline
+								</v-icon>
+							</v-btn>
 						</td>
 					</template>
-					<template #os='{item}'>
+					<template #[`item.os`]='{item}'>
 						<td>
 							{{ item.getOs() }}
 						</td>
 					</template>
-					<template #dpa='{item}'>
+					<template #[`item.dpa`]='{item}'>
 						<td>
 							{{ item.getDpa() }}
 						</td>
 					</template>
-					<template #status='{item}'>
+					<template #[`item.status`]='{item}'>
 						<td>
-							<CIcon
+							<v-icon
+								:color='item.getIconColor()'
 								size='xl'
-								:class='item.getIconColor()'
-								:content='item.getIcon()'
-							/>
+							>
+								{{ item.getIcon() }}
+							</v-icon>
 						</td>
 					</template>
-					<template #sensor='{item}'>
+					<template #[`item.sensor`]='{item}'>
 						<td>
-							<CIcon
+							<v-icon
+								:color='item.hasSensor() ? "success" : "error"'
 								size='xl'
-								:class='item.hasSensor() ? "text-success" : "text-danger"'
-								:content='item.hasSensor() ? icons.supported : icons.unsupported'
-							/>
+							>
+								{{ item.getSensorIcon() }}
+							</v-icon>
 						</td>
 					</template>
-					<template #binout='{item}'>
+					<template #[`item.binout`]='{item}'>
 						<td>
-							<CIcon
+							<v-icon
+								:color='item.hasBinout() ? "success" : "error"'
 								size='xl'
-								:class='item.hasBinout() ? "text-success" : "text-danger"'
-								:content='item.hasBinout() ? icons.supported : icons.unsupported'
-							/>
+							>
+								{{ item.getBinoutIcon() }}
+							</v-icon>
 						</td>
 					</template>
-					<template #light='{item}'>
+					<template #[`item.light`]='{item}'>
 						<td>
-							<CIcon
+							<v-icon
+								:color='item.hasLight() ? "success" : "error"'
 								size='xl'
-								:class='item.hasLight() ? "text-success" : "text-danger"'
-								:content='item.hasLight() ? icons.supported : icons.unsupported'
-							/>
+							>
+								{{ item.getLightIcon() }}
+							</v-icon>
 						</td>
 					</template>
-					<template #dali='{item}'>
+					<template #[`item.dali`]='{item}'>
 						<td>
-							<CIcon
+							<v-icon
+								:color='item.hasDali() ? "success" : "error"'
 								size='xl'
-								:class='item.hasDali() ? "text-success" : "text-danger"'
-								:content='item.hasDali() ? icons.supported : icons.unsupported'
-							/>
+							>
+								{{ item.getDaliIcon() }}
+							</v-icon>
 						</td>
 					</template>
-					<template #details='{item}'>
-						<CCollapse :show='item.showDetails'>
-							<CCardBody>
-								<CMedia
+					<template #[`item.details`]='{item}'>
+						<v-card v-if='item.showDetails'>
+							<v-card-text>
+								<v-img
 									v-if='item.showDetails'
+									:src='item.getImg'
 									:aside-image-props='{
 										src: item.getImg(),
 										block: true,
 										width: `150px`,
 										height: `150px`,
 									}'
+								/>
+								<div
+									class='details-table'
 								>
-									<div
-										class='details-table'
-									>
-										<table>
-											<tbody>
-												<tr>
-													<th>
-														{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
-													</th>
-													<td>
-														{{ item.getManufacturer() }}
-													</td>
-												</tr>
-												<tr>
-													<th>
-														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
-													</th>
-													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
-												</tr>
-												<tr>
-													<th>
-														{{ $t('iqrfnet.standard.table.fields.hwpidVer') }}
-													</th>
-													<td>{{ item.getHwpidVer() }}</td>
-												</tr>
-												<tr>
-													<th>
-														{{ $t('iqrfnet.standard.table.fields.mid') }}
-													</th>
-													<td>
-														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<table>
-											<tbody>
-												<tr v-if='item.hasBinout()'>
-													<th>
-														{{ $t('iqrfnet.standard.binaryOutput.title') }}
-													</th>
-													<td>
-														{{ item.getBinouts() }}
-													</td>
-												</tr>
-												<tr v-if='item.hasLight()'>
-													<th>
-														{{ $t('iqrfnet.standard.light.title') }}
-													</th>
-													<td>
-														{{ item.getLights() }}
-													</td>
-												</tr>
-												<tr v-if='item.hasSensor()'>
-													<th>
-														{{ $t('iqrfnet.standard.sensor.title') }}
-													</th>
-													<td style='white-space: pre-line;'>
-														{{ item.getSensorDetails() }}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</CMedia>
-							</CCardBody>
-						</CCollapse>
+									<table>
+										<tbody>
+											<tr>
+												<th>
+													{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
+												</th>
+												<td>
+													{{ item.getManufacturer() }}
+												</td>
+											</tr>
+											<tr>
+												<th>
+													{{ $t('iqrfnet.standard.table.fields.hwpid') }}
+												</th>
+												<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
+											</tr>
+											<tr>
+												<th>
+													{{ $t('iqrfnet.standard.table.fields.hwpidVer') }}
+												</th>
+												<td>{{ item.getHwpidVer() }}</td>
+											</tr>
+											<tr>
+												<th>
+													{{ $t('iqrfnet.standard.table.fields.mid') }}
+												</th>
+												<td>
+													{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<table>
+										<tbody>
+											<tr v-if='item.hasBinout()'>
+												<th>
+													{{ $t('iqrfnet.standard.binaryOutput.title') }}
+												</th>
+												<td>
+													{{ item.getBinouts() }}
+												</td>
+											</tr>
+											<tr v-if='item.hasLight()'>
+												<th>
+													{{ $t('iqrfnet.standard.light.title') }}
+												</th>
+												<td>
+													{{ item.getLights() }}
+												</td>
+											</tr>
+											<tr v-if='item.hasSensor()'>
+												<th>
+													{{ $t('iqrfnet.standard.sensor.title') }}
+												</th>
+												<td style='white-space: pre-line;'>
+													{{ item.getSensorDetails() }}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</v-card-text>
+						</v-card>
 					</template>
-				</CDataTable>
+				</v-data-table>
 			</v-card-text>
 		</v-card>
-		<CModal
-			color='danger'
-			:show.sync='showModal'
+		<v-dialog
+			v-model='showModal'
+			width='auto'
+			persistent
+			no-click-animation
 		>
-			<template #header>
-				<h5 class='modal-title'>
+			<v-card>
+				<v-card-title class='text-h5 error'>
 					{{ $t('iqrfnet.standard.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.standard.modal.prompt') }}
-			<template #footer>
-				<v-btn
-					color='danger'
-					@click='resetDb'
-				>
-					{{ $t('iqrfnet.standard.table.actions.reset') }}
-				</v-btn> <v-btn
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-			</template>
-		</CModal>
+				</v-card-title>
+				<v-card-text>
+					{{ $t('iqrfnet.standard.modal.prompt') }}
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						color='error'
+						@click='resetDb'
+					>
+						{{ $t('iqrfnet.standard.table.actions.reset') }}
+					</v-btn> <v-btn
+						color='secondary'
+						@click='showModal = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 
 import {cilCheckCircle, cilInfo, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
@@ -321,23 +324,13 @@ import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/iqrfInfo';
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 
-@Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CCollapse,
-		CDataTable,
-		CIcon,
-		CMedia,
-	},
-})
+
+@Component({})
 
 /**
  * Standard devices component
@@ -373,54 +366,54 @@ export default class StandardDevices extends Vue {
 	};
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table fields
+	 * @constant {Array<DataTableHeader>} fields Array of CoreUI data table fields
 	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'address',
-			label: this.$t('iqrfnet.standard.table.fields.address'),
+			value: 'address',
+			text: this.$t('iqrfnet.standard.table.fields.address').toString(),
 		},
 		{
-			key: 'product',
-			label: this.$t('iqrfnet.standard.table.fields.product'),
+			value: 'product',
+			text: this.$t('iqrfnet.standard.table.fields.product').toString(),
 		},
 		{
-			key: 'os',
-			label: this.$t('iqrfnet.standard.table.fields.os'),
+			value: 'os',
+			text: this.$t('iqrfnet.standard.table.fields.os').toString(),
 		},
 		{
-			key: 'dpa',
-			label: this.$t('iqrfnet.standard.table.fields.dpa'),
+			value: 'dpa',
+			text: this.$t('iqrfnet.standard.table.fields.dpa').toString(),
 		},
 		{
-			key: 'status',
-			label: this.$t('iqrfnet.standard.table.fields.status'),
-			filter: false,
-			sorter: false,
+			value: 'status',
+			text: this.$t('iqrfnet.standard.table.fields.status').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'sensor',
-			label: this.$t('iqrfnet.standard.table.fields.sensor'),
-			filter: false,
-			sorter: false,
+			value: 'sensor',
+			text: this.$t('iqrfnet.standard.table.fields.sensor').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'binout',
-			label: this.$t('iqrfnet.standard.table.fields.binout'),
-			filter: false,
-			sorter: false,
+			value: 'binout',
+			text: this.$t('iqrfnet.standard.table.fields.binout').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'light',
-			label: this.$t('iqrfnet.standard.table.fields.light'),
-			filter: false,
-			sorter: false,
+			value: 'light',
+			text: this.$t('iqrfnet.standard.table.fields.light').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'dali',
-			label: this.$t('iqrfnet.standard.table.fields.dali'),
-			filter: false,
-			sorter: false,
+			value: 'dali',
+			text: this.$t('iqrfnet.standard.table.fields.dali').toString(),
+			filterable: false,
+			sortable: false,
 		},
 	];
 

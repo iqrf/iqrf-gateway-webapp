@@ -2274,7 +2274,8 @@
 					"file":"File to upload"
 				},
 				"errors": {
-					"file": "Please select the file to upload."
+					"file": "Please select the file to upload.",
+					"invalidFormat": "The selected file is not a .hex file."
 				},
 				"messages": {
 					"gatewayUpload": "Uploading HEX file to gateway...",
@@ -2282,8 +2283,7 @@
 					"gatewayUploadSuccess": "Hex file successfully uploaded to gateway.",
 					"trUpload": "Uploading HEX file to TR...",
 					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
-					"trUploadSuccess": "Hex file successfully uploaded to TR.",
-					"invalidFormat": "The uploaded file is not a .hex file."
+					"trUploadSuccess": "Hex file successfully uploaded to TR."
 				}
 			},
 			"osUpload": {

@@ -15,30 +15,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		:show.sync='modalState'
-		color='warning'
+	<v-dialog
+		v-model='modalState'
+		width='auto'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
+		<v-card>
+			<v-card-title class='text-h5 warning'>
+				<v-icon>mdi-alert</v-icon>
 				{{ $t('daemonStatus.modalTitle') }}
-			</h5>
-		</template>
-		{{ $t('daemonStatus.modalPrompt') }}
-		<template #footer>
-			<v-btn
-				color='warning'
-				@click='hideModal()'
-			>
-				{{ $t('forms.close') }}
-			</v-btn>
-		</template>
-	</CModal>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('daemonStatus.modalPrompt') }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					color='warning'
+					@click='hideModal()'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CModal} from '@coreui/vue/src';
 import {mapGetters, MutationPayload} from 'vuex';
 
 interface IMonitorMsgData {
@@ -57,9 +62,6 @@ interface IMonitorMsg {
 }
 
 @Component({
-	components: {
-		CModal,
-	},
 	computed: {
 		...mapGetters({
 			modalState: 'monitorClient/getModalState'

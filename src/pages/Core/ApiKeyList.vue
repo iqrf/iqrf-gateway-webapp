@@ -124,7 +124,7 @@ export default class ApiKeyList extends Vue {
 	private keys: Array<ApiKey> = [];
 
 	/**
-	 * @var {number|null} deleteKey API key id used in remove modal
+	 * @var {number} deleteKey API key id used in remove modal
 	 */
 	private deleteKey = -1;
 
@@ -191,7 +191,7 @@ export default class ApiKeyList extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		const key = this.deleteKey;
-		this.deleteKey = null;
+		this.deleteKey = -1;
 		ApiKeyService.deleteApiKey(key)
 			.then(() => {
 				this.getKeys().then(() => {

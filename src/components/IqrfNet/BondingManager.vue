@@ -131,54 +131,64 @@ limitations under the License.
 							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
 						</v-btn>
 					</div>
-					<CModal
-						color='danger'
-						:show.sync='modalClear'
+					<v-dialog
+						v-model='modalClear'
+						width='auto'
+						persistent
+						no-click-animation
 					>
-						<template #header>
-							<h5 class='modal-title'>
+						<v-card>
+							<v-card-title class='text-h5 error'>
 								{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
-							</h5>
-						</template>
-						{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
-						<template #footer>
-							<v-btn
-								color='danger'
-								@click='clearAll'
-							>
-								{{ $t('forms.clearBonds') }}
-							</v-btn> <v-btn
-								color='secondary'
-								@click='modalClear = false'
-							>
-								{{ $t('forms.cancel') }}
-							</v-btn>
-						</template>
-					</CModal>
-					<CModal
-						color='danger'
-						:show.sync='modalUnbond'
+							</v-card-title>
+							<v-card-text>
+								{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
+							</v-card-text>
+							<v-card-actions>
+								<v-spacer />
+								<v-btn
+									color='error'
+									@click='clearAll'
+								>
+									{{ $t('forms.clearBonds') }}
+								</v-btn> <v-btn
+									color='secondary'
+									@click='modalClear = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+					<v-dialog
+						v-model='modalUnbond'
+						width='auto'
+						persistent
+						no-click-animation
 					>
-						<template #header>
-							<h5 class='modal-title'>
+						<v-card>
+							<v-card-title class='text-h5 error'>
 								{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
-							</h5>
-						</template>
-						{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
-						<template #footer>
-							<v-btn
-								color='danger'
-								@click='unbond'
-							>
-								{{ $t('forms.unbond') }}
-							</v-btn> <v-btn
-								color='secondary'
-								@click='modalUnbond = false'
-							>
-								{{ $t('forms.cancel') }}
-							</v-btn>
-						</template>
-					</CModal>
+							</v-card-title>
+							<v-card-text>
+								{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
+							</v-card-text>
+							<v-card-actions>
+								<v-spacer />
+								<v-btn
+									color='error'
+									@click='unbond'
+								>
+									{{ $t('forms.unbond') }}
+								</v-btn> <v-btn
+									color='secondary'
+									@click='modalUnbond = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
 				</form>
 			</ValidationObserver>
 		</v-card-text>
