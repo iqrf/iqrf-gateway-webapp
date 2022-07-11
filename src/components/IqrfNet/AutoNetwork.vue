@@ -23,10 +23,12 @@ limitations under the License.
 					<v-checkbox
 						v-model='autoNetwork.discoveryBeforeStart'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+						dense
 					/>
 					<v-checkbox
 						v-model='autoNetwork.skipDiscoveryEachWave'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+						dense
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
@@ -51,10 +53,12 @@ limitations under the License.
 					<v-checkbox
 						v-model='autoNetwork.unbondUnrespondingNodes'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
+						dense
 					/>
 					<v-checkbox
 						v-model='autoNetwork.skipPrebonding'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
+						dense
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
@@ -79,6 +83,7 @@ limitations under the License.
 					<v-checkbox
 						v-model='useOverlappingNetworks'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
+						dense
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
@@ -124,6 +129,7 @@ limitations under the License.
 					<v-checkbox
 						v-model='useHwpidFiltering'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
+						dense
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
@@ -145,6 +151,7 @@ limitations under the License.
 						<v-checkbox
 							v-model='useWaves'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
+							dense
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
@@ -189,6 +196,7 @@ limitations under the License.
 						<v-checkbox
 							v-model='useNodes'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
+							dense
 						/>
 						<v-select
 							v-model='nodeCondition'
@@ -245,6 +253,7 @@ limitations under the License.
 						v-model='stopConditions.abortOnTooManyNodesFound'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 						:disabled='!useNodes'
+						dense
 					/>
 					<v-btn
 						color='primary'

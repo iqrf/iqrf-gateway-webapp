@@ -111,16 +111,11 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.state') }}</th>
 						<td v-for='ind of Array(32).keys()' :key='ind'>
-							<CIcon
-								v-if='states[ind] === true'
-								class='text-success'
-								:content='icons.on'
-							/>
-							<CIcon
-								v-if='states[ind] === false'
-								class='text-danger'
-								:content='icons.off'
-							/>
+							<v-icon
+								:class='states[ind] ? "text-success" : "text-danger"'
+							>
+								{{ states[ind] ? 'mdi-check' : 'mdi-close' }}
+							</v-icon>
 						</td>
 					</tr>
 				</tbody>
@@ -131,11 +126,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CIcon} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {cilCheckAlt, cilX} from '@coreui/icons';
 
 import StandardBinaryOutputService, {StandardBinaryOutput} from '@/services/DaemonApi/StandardBinaryOutputService';
 
@@ -144,7 +137,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CIcon,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -158,14 +150,6 @@ export default class BinaryOutputManager extends Vue {
 	 * @var {number} address Address of device implementing BinaryOutput standard
 	 */
 	private address = 1;
-
-	/**
-	 * @constant {Record<string, Array<string>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		on: cilCheckAlt,
-		off: cilX
-	};
 
 	/**
 	 * @var {number} index Index of binary output
