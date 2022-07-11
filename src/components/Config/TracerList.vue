@@ -18,6 +18,7 @@ limitations under the License.
 	<v-data-table
 		:headers='header'
 		:items='instances'
+		:loading='loading'
 	>
 		<template #top>
 			<v-toolbar dense flat>
@@ -108,6 +109,11 @@ export default class TracerList extends Vue {
 	private componentName = 'shape::TraceFileService';
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+   */
+	private loading = false;
+
+	/**
 	 * @var {Array<DataTableHeader>} header Data table header
 	 */
 	private header: Array<DataTableHeader> = [
@@ -160,13 +166,19 @@ export default class TracerList extends Vue {
 	 * Retrieves configuration of logging service component
 	 */
 	private getConfig(): Promise<void> {
+		this.instances = [];
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				this.instances = response.data.instances;
-				this.$emit('fetched', {name: 'tracer', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
-				this.$emit('fetched', {name: 'tracer', success: false});
+				this.loading = false;
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'tracer'},)
+						.toString()
+				);
 			});
 	}
 
@@ -176,7 +188,7 @@ export default class TracerList extends Vue {
 	private removeInstance(): void {
 		const instance = this.deleteInstance;
 		this.deleteInstance = '';
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		DaemonConfigurationService.deleteInstance(this.componentName, instance)
 			.then(() => {
 				this.getConfig().then(() => {

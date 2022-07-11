@@ -17,41 +17,36 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
-		<CCard>
-			<CTabs variant='tabs' :active-tab='activeTab'>
-				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
-					<JsonApi
-						v-if='!isAdmin'
-						@fetched='configFetch'
-					/>
+		<v-card>
+			<v-tabs v-model='activeTab'>
+				<v-tab>{{ $t("config.daemon.misc.jsonApi.title") }}</v-tab>
+				<v-tab>{{ $t("config.daemon.misc.iqrfRepository.title") }}</v-tab>
+				<v-tab>{{ $t("config.daemon.misc.iqrfInfo.title") }}</v-tab>
+				<v-tab v-if='isAdmin'>{{ $t("config.daemon.misc.iqmesh") }}</v-tab>
+				<v-tab>{{ $t("config.daemon.misc.monitor.title") }}</v-tab>
+				<v-tab>{{ $t("config.daemon.misc.tracer.title") }}</v-tab>
+			</v-tabs>
+			<v-tabs-items v-model='activeTab'>
+				<v-tab-item>
+					<JsonApi v-if='!isAdmin' />
 					<div v-else>
-						<JsonRawApi @fetched='configFetch' />
-						<JsonSplitter @fetched='configFetch' />
+						<JsonRawApi />
+						<hr>
+						<JsonSplitter />
 					</div>
-				</CTab>
-				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
-					<IqrfRepository @fetched='configFetch' />
-				</CTab>
-				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
-					<IqrfInfo @fetched='configFetch' />
-				</CTab>
-				<CTab v-if='isAdmin' :title='$t("config.daemon.misc.iqmesh")'>
-					<OtaUpload @fetched='configFetch' />
-				</CTab>
-				<CTab :title='$t("config.daemon.misc.monitor.title")'>
-					<MonitorList @fetched='configFetch' />
-				</CTab>
-				<CTab :title='$t("config.daemon.misc.tracer.title")'>
-					<TracerList @fetched='configFetch' />
-				</CTab>
-			</CTabs>
-		</CCard>
+				</v-tab-item>
+				<v-tab-item><IqrfRepository /></v-tab-item>
+				<v-tab-item><IqrfInfo /></v-tab-item>
+				<v-tab-item v-if='isAdmin'><OtaUpload /></v-tab-item>
+				<v-tab-item><MonitorList /></v-tab-item>
+				<v-tab-item><TracerList /></v-tab-item>
+			</v-tabs-items>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import IqrfInfo from '@/components/Config/IqrfInfo.vue';
 import IqrfRepository from '@/components/Config/IqrfRepository.vue';
 import JsonApi from '@/components/Config/JsonApi.vue';
@@ -63,15 +58,8 @@ import TracerList from '@/components/Config/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
 
-import {IConfigFetch} from '@/interfaces/daemonComponent';
-
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CTab,
-		CTabs,
 		IqrfInfo,
 		IqrfRepository,
 		JsonApi,
@@ -150,34 +138,6 @@ export default class MiscConfiguration extends Vue {
 		if (this.$attrs.tabName !== undefined) {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
-		this.$store.commit('spinner/SHOW',
-			this.$t('config.daemon.messages.configMiscFetch').toString()
-		);
-	}
-
-	/**
-	 * Handles successful child component config fetch event
-	 * @param {IConfigFetch} data Component fetch meta
-	 */
-	private configFetch(data: IConfigFetch): void {
-		this.children = this.children.filter((item: string) => item !== data.name);
-		if (!data.success) {
-			this.failed.push(this.$t(`config.daemon.misc.${data.name}.title`).toString());
-		}
-		if (this.children.length > 0) {
-			return;
-		}
-		this.$store.commit('spinner/HIDE');
-		if (this.failed.length === 0) {
-			return;
-		}
-		this.$toast.error(
-			this.$t(
-				'config.daemon.messages.configFetchFailed',
-				{children: this.failed.sort().join(', ')},
-			).toString()
-		);
-		this.failed = [];
 	}
 
 }
