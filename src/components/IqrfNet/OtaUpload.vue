@@ -64,7 +64,7 @@ limitations under the License.
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
-							:is-valid='touched ? valid : null'
+							:success='touched ? valid : null'
 							:invalid-feedback='errors'
 							@input='resetChecks'
 						/>
@@ -93,7 +93,7 @@ limitations under the License.
 								min='0'
 								max='65535'
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
-								:is-valid='touched ? valid : null'
+								:success='touched ? valid : null'
 								:invalid-feedback='errors'
 								@input='resetChecks'
 							/>
@@ -119,7 +119,7 @@ limitations under the License.
 							min='768'
 							max='16383'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
-							:is-valid='touched ? valid : null'
+							:success='touched ? valid : null'
 							:invalid-feedback='errors'
 							@input='resetChecks'
 						/>

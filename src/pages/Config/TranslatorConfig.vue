@@ -157,7 +157,7 @@ limitations under the License.
 									<v-text-field
 										v-model='config.mqtt.response_topic'
 										:label='$t("forms.fields.responseTopic")'
-										:is-valid='touched ? valid: null'
+										:success='touched ? valid : null'
 										:error-messages='errors'
 									/>
 								</ValidationProvider>

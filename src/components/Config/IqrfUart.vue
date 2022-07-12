@@ -40,8 +40,8 @@ limitations under the License.
 						<v-text-field
 							v-model='configuration.instance'
 							:label='$t("forms.fields.instanceName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -54,8 +54,8 @@ limitations under the License.
 						<v-text-field
 							v-model='configuration.IqrfInterface'
 							:label='$t("config.daemon.interfaces.iqrfUart.form.iqrfInterface")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -68,8 +68,8 @@ limitations under the License.
 						<v-select
 							v-model='configuration.baudRate'
 							:label='$t("config.daemon.interfaces.iqrfUart.form.baudRate")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 							:placeholder='$t("config.daemon.interfaces.iqrfUart.errors.baudRate")'
 							:options='baudRates'
 						/>
@@ -92,8 +92,8 @@ limitations under the License.
 									v-model.number='configuration.powerEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 						</v-col>
@@ -110,8 +110,8 @@ limitations under the License.
 									v-model.number='configuration.busEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 						</v-col>
@@ -128,8 +128,8 @@ limitations under the License.
 									v-model.number='configuration.pgmSwitchGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
 						</v-col>
@@ -155,8 +155,8 @@ limitations under the License.
 									v-model.number='configuration.i2cEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
@@ -177,8 +177,8 @@ limitations under the License.
 									v-model.number='configuration.spiEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>
@@ -199,8 +199,8 @@ limitations under the License.
 									v-model.number='configuration.uartEnableGpioPin'
 									type='number'
 									:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 									:disabled='!useAdditionalPins'
 								/>
 							</ValidationProvider>

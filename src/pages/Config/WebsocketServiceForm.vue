@@ -91,7 +91,7 @@ limitations under the License.
 											:items='tlsModeOptions'
 											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 											:disabled='!tlsEnabled'
-											:is-valid='touched && tlsEnabled ? valid : null'
+											:success='touched && tlsEnabled ? valid : null'
 											:error-messages='errors'
 										/>
 										<p
@@ -113,7 +113,7 @@ limitations under the License.
 											v-model='certificate'
 											:label='$t("forms.fields.certificate")'
 											:disabled='!tlsEnabled'
-											:is-valid='touched && tlsEnabled ? valid : null'
+											:success='touched && tlsEnabled ? valid : null'
 											:error-messages='errors'
 										/>
 									</ValidationProvider>
@@ -129,7 +129,7 @@ limitations under the License.
 											v-model='privateKey'
 											:label='$t("forms.fields.privateKey")'
 											:disabled='!tlsEnabled'
-											:is-valid='touched && tlsEnabled ? valid : null'
+											:success='touched && tlsEnabled ? valid : null'
 											:error-messages='errors'
 										/>
 									</ValidationProvider>

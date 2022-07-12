@@ -38,7 +38,7 @@ limitations under the License.
 							<v-text-field
 								v-model='operator.name'
 								:label='$t("network.operators.form.name")'
-								:is-valid='touched ? valid : null'
+								:success='touched ? valid : null'
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
@@ -52,7 +52,7 @@ limitations under the License.
 							<v-text-field
 								v-model='operator.apn'
 								:label='$t("network.operators.form.apn")'
-								:is-valid='touched ? valid : null'
+								:success='touched ? valid : null'
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
@@ -68,7 +68,7 @@ limitations under the License.
 							<v-text-field
 								v-model='operator.username'
 								:label='$t("network.operators.form.username")'
-								:is-valid='touched ? valid : null'
+								:success='touched ? valid : null'
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
@@ -84,7 +84,7 @@ limitations under the License.
 							<v-text-field
 								v-model='operator.password'
 								:label='$t("network.operators.form.password")'
-								:is-valid='touched ? valid : null'
+								:success='touched ? valid : null'
 								:error-messages='errors'
 							/>
 						</ValidationProvider>

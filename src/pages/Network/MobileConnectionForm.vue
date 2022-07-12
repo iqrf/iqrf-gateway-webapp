@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ pageTitle }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConnection'>
+					<form @submit.prevent='saveConnection'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -28,11 +28,11 @@ limitations under the License.
 								required: $t("network.connection.errors.name"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.name'
 								:label='$t("network.connection.name")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -42,30 +42,22 @@ limitations under the License.
 								required: $t("network.mobile.errors.interfaceMissing"),
 							}'
 						>
-							<CSelect
-								:value.sync='connection.interface'
+							<v-select
+								v-model='connection.interface'
 								:label='$t("network.connection.interface")'
 								:placeholder='$t("network.mobile.form.interface")'
-								:options='interfaceOptions'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:items='interfaceOptions'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div class='form-group'>
-							<label for='autoconnect'>
-								<strong>{{ $t("network.connection.autoconnect") }}</strong>
-							</label><br>
-							<CSwitch
-								id='autoconnect'
-								:checked.sync='connection.autoConnect.enabled'
-								size='lg'
-								shape='pill'
-								color='primary'
-								label-on='ON'
-								label-off='OFF'
-							/>
-						</div>
-						<legend>{{ $t('network.mobile.form.title') }}</legend>
+						<v-switch
+							v-model='connection.autoConnect.enabled'
+							inset
+							color='primary'
+							:label='$t("network.connection.autoconnect")'
+						/>
+						<h2>{{ $t('network.mobile.form.title') }}</h2>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|apn'
@@ -74,11 +66,11 @@ limitations under the License.
 								apn: $t("network.mobile.errors.apnInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.gsm.apn'
 								:label='$t("network.mobile.form.apn")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -88,11 +80,11 @@ limitations under the License.
 								pin: $t("network.mobile.errors.pinInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.gsm.pin'
 								:label='$t("network.mobile.form.pin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -104,11 +96,11 @@ limitations under the License.
 								required: $t("network.mobile.errors.credentialsMissing"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.gsm.username'
 								:label='$t("forms.fields.username")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -120,34 +112,34 @@ limitations under the License.
 								required: $t("network.mobile.errors.credentialsMissing"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connection.gsm.password'
 								:label='$t("forms.fields.password")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-
-						<CButton
+						<v-btn
 							color='primary'
 							type='submit'
 							:disabled='invalid'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard body-wrapper>
-			<NetworkOperators @apply='updateGsm' />
-		</CCard>
+			</v-card-text>
+		</v-card>
+		<v-card>
+			<v-card-text>
+				<NetworkOperators @apply='updateGsm' />
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
@@ -166,13 +158,6 @@ import NetworkOperator from '@/entities/NetworkOperator';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CSelect,
-		CSwitch,
 		NetworkOperators,
 		ValidationObserver,
 		ValidationProvider,
@@ -271,7 +256,7 @@ export default class MobileConnectionForm extends Vue {
 			.then((response: AxiosResponse) => {
 				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
+					interfaces.push({text: item.name, value: item.name});
 				});
 				this.interfaceOptions = interfaces;
 				this.$store.commit('spinner/HIDE');

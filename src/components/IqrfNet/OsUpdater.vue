@@ -48,7 +48,7 @@ limitations under the License.
 									:items='selectVersions'
 									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
 									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-									:is-valid='touched ? valid : null'
+									:success='touched ? valid : null'
 									:invalid-feedback='errors'
 								/>
 							</ValidationProvider>
