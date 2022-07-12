@@ -197,7 +197,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -213,7 +212,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CModal,
 		ValidationObserver,
 		ValidationProvider
 	}
