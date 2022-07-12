@@ -18,13 +18,13 @@ limitations under the License.
 	<v-card>
 		<v-card-title>{{ $t('install.ssh.title') }}</v-card-title>
 		<v-card-text>
-			<CElementCover
+			<v-overlay
 				v-if='running'
-				:opacity='0.75'
-				style='z-index: 10000;'
+				:opacity='0.65'
+				absolute
 			>
-				<CSpinner color='primary' />
-			</CElementCover>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
 			<form @submit.prevent='setService'>
 				<div class='form-group'>
 					{{ $t('install.ssh.messages.note') }}

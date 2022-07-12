@@ -16,100 +16,102 @@ limitations under the License.
 -->
 <template>
 	<ValidationObserver v-slot='{invalid}'>
-		<CModal
-			:color='modalColor'
-			size='lg'
-			:show.sync='show'
-			:close-on-backdrop='false'
+		<v-dialog
+			v-model='show'
+			width='auto'
+			persistent
+			no-click-animation
 		>
-			<template #header>
-				<h5 class='modal-title'>
+			<v-card>
+				<v-card-title class='text-h5'>
 					{{ modalTitle }}
-				</h5>
-			</template>
-			<CForm>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("network.operators.errors.nameRequired"),
-					}'
-				>
-					<CInput
-						v-model='operator.name'
-						:label='$t("network.operators.form.name")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("network.operators.errors.apnRequired"),
-					}'
-				>
-					<CInput
-						v-model='operator.apn'
-						:label='$t("network.operators.form.apn")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						required: operator.password.length > 0
-					}'
-					:custom-messages='{
-						required: $t("forms.errors.credentials"),
-					}'
-				>
-					<CInput
-						v-model='operator.username'
-						:label='$t("network.operators.form.username")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						required: operator.username.length > 0
-					}'
-					:custom-messages='{
-						required: $t("forms.errors.credentials"),
-					}'
-				>
-					<CInput
-						v-model='operator.password'
-						:label='$t("network.operators.form.password")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-			</CForm>
-			<template #footer>
-				<CButton
-					:color='modalColor'
-					:disabled='invalid'
-					@click='saveOperator'
-				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+				</v-card-title>
+				<v-card-text>
+					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("network.operators.errors.nameRequired"),
+							}'
+						>
+							<v-text-field
+								v-model='operator.name'
+								:label='$t("network.operators.form.name")'
+								:is-valid='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("network.operators.errors.apnRequired"),
+							}'
+						>
+							<v-text-field
+								v-model='operator.apn'
+								:label='$t("network.operators.form.apn")'
+								:is-valid='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								required: operator.password.length > 0
+							}'
+							:custom-messages='{
+								required: $t("forms.errors.credentials"),
+							}'
+						>
+							<v-text-field
+								v-model='operator.username'
+								:label='$t("network.operators.form.username")'
+								:is-valid='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								required: operator.username.length > 0
+							}'
+							:custom-messages='{
+								required: $t("forms.errors.credentials"),
+							}'
+						>
+							<v-text-field
+								v-model='operator.password'
+								:label='$t("network.operators.form.password")'
+								:is-valid='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+					</v-form>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						:color='modalColor'
+						:disabled='invalid'
+						@click='saveOperator'
+					>
+						{{ $t('forms.save') }}
+					</v-btn> <v-btn
+						color='secondary'
+						@click='deactivateModal'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CIcon, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {digits, required} from 'vee-validate/dist/rules';
@@ -122,11 +124,6 @@ import {IOperator} from '@/interfaces/network';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CIcon,
-		CInput,
-		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},

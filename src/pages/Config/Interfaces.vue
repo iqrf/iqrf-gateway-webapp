@@ -19,13 +19,13 @@ limitations under the License.
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<v-card class='mb-3'>
 			<v-card-text>
-				<CElementCover
+				<v-overlay
 					v-if='loadFailed'
-					style='z-index: 1;'
-					:opacity='0.85'
+					:opacity='0.65'
+					absolute
 				>
 					{{ $t('config.daemon.interfaces.messages.fetchFailed') }}
-				</CElementCover>
+				</v-overlay>
 				<v-select
 					v-else
 					v-model='iqrfInterface'

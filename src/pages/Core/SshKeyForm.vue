@@ -24,13 +24,13 @@ limitations under the License.
 				{{ $t('core.security.ssh.add') }}
 			</v-card-title>
 			<v-card-text>
-				<CElementCover
+				<v-overlay
 					v-if='running'
-					:opacity='0.75'
-					style='z-index: 10000;'
+					:opacity='0.65'
+					absolute
 				>
-					<CSpinner color='primary' />
-				</CElementCover>
+					<v-progress-circular color='primary' indeterminate />
+				</v-overlay>
 				<div
 					v-if='$route.path.includes("/install")'
 					class='form-group'

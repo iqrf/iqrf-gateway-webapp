@@ -16,13 +16,13 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CElementCover
+		<v-overlay
 			v-if='running'
-			:opacity='0.75'
-			style='z-index: 10000;'
+			:opacity='0.65'
+			absolute
 		>
-			<CSpinner color='primary' />
-		</CElementCover>
+			<v-progress-circular color='primary' indeterminate />
+		</v-overlay>
 		<ValidationObserver v-slot='{invalid}'>
 			<form @submit.prevent='restore'>
 				<div class='form-group'>

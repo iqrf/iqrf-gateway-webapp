@@ -16,7 +16,11 @@ limitations under the License.
 -->
 <template>
 	<span v-if='requestRunning'>
-		<CSpinner color='info' class='cinfo-spinner' />
+		<v-progress-circular
+			color='info'
+			class='cinfo-spinner'
+			indeterminate
+		/>
 	</span>
 	<span v-else>
 		<span v-if='hasData'>
