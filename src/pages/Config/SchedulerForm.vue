@@ -164,9 +164,9 @@ limitations under the License.
 									>
 										<JsonEditor
 											v-model='tasks[i-1].message'
-											:label='$t("config.daemon.scheduler.form.messages.label").toString()'
-											:success='touched ? valid : null'
-											:invalid-feedback='errors.join(", ").toString()'
+											:label='$t("config.daemon.scheduler.form.messages.label")'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
 									<v-btn
