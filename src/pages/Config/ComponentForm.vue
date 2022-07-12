@@ -55,7 +55,7 @@ limitations under the License.
 								v-model='configuration.libraryName'
 								:label='$t("config.daemon.components.form.libraryName")'
 								:success='touched ? valid : null'
-								:error-messages='errors.join(", ")'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<v-checkbox

@@ -40,7 +40,7 @@ limitations under the License.
 									v-model='version'
 									:items='versions'
 									:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
-									:is-valid='touched ? valid : null'
+									:success='touched ? valid : null'
 									:invalid-feedback='errors'
 									:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
 								/>
@@ -97,7 +97,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -117,14 +116,6 @@ interface DpaVersions {
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CModal,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	}

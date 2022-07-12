@@ -64,15 +64,13 @@ limitations under the License.
 					</tr>
 				</tbody>
 			</v-simple-table>
-			<v-btn-toggle class='d-flex'>
+			<v-btn-toggle>
 				<v-btn
-					class='w-50'
 					color='info'
 					@click='indicateCoordinator'
 				>
 					{{ $t('forms.indicateCoordinator') }}
 				</v-btn> <v-btn
-					class='w-50'
 					color='primary'
 					@click='frcPing'
 				>

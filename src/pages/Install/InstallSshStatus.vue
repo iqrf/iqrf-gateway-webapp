@@ -62,7 +62,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
-
 import ServiceService from '@/services/ServiceService';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
