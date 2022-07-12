@@ -15,36 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		color='danger'
-		:show.sync='show'
-		:close-on-backdrop='false'
+	<v-dialog
+		v-model='show'
+		width='auto'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
+		<v-card>
+			<v-card-title class='text-h5 error'>
 				{{ $t('network.operators.modal.title') }}
-			</h5>
-		</template>
-		{{ $t('network.operators.modal.prompt', {name: name}) }}
-		<template #footer>
-			<CButton
-				color='danger'
-				@click='deleteOperator'
-			>
-				{{ $t('forms.delete') }}
-			</CButton> <CButton
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-		</template>
-	</CModal>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('network.operators.modal.prompt', {name: name}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					color='error'
+					@click='deleteOperator'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn> <v-btn
+					color='secondary'
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -52,12 +55,7 @@ import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError} from 'axios';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+@Component({})
 
 /**
  * Network operator delete modal component

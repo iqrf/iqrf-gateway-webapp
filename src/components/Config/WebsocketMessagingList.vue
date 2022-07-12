@@ -19,7 +19,6 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.websocket.messaging.title') }}
 		</h1>
-
 		<v-data-table
 			:headers='header'
 			:items='instances'

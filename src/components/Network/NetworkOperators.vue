@@ -15,44 +15,70 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div class='form-group'>
-		<h4>{{ $t('network.operators.title') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
-				color='success'
-				size='sm'
-				@click='addOperator'
-			>
-				<CIcon :content='icons.add' />
-			</CButton>
-			<CDropdown
-				v-for='(operator, i) of operators'
-				:key='i'
-				:toggler-text='operator.getName()'
-				color='primary'
-				placement='top-start'
-			>
-				<CDropdownItem
-					v-if='$route.path.includes("network/mobile/add") || $route.path.includes("network/mobile/edit")'
-					@click='$emit("apply", operator)'
-				>
-					<CIcon :content='icons.apply' />
-					{{ $t('network.operators.apply') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='editOperator(i)'
-				>
-					<CIcon :content='icons.edit' />
-					{{ $t('network.operators.edit') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='deleteOperator(i)'
-				>
-					<CIcon :content='icons.delete' />
-					{{ $t('network.operators.delete') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CButtonGroup>
+	<div>
+		<v-card>
+			<v-card-title>{{ $t('network.operators.title') }}</v-card-title>
+			<v-card-text>
+				<v-btn-toggle class='flex-wrap' dense>
+					<v-btn
+						color='success'
+						small
+						@click='addOperator'
+					>
+						<v-icon small>
+							mdi-plus
+						</v-icon>
+					</v-btn>
+					<v-menu
+						v-for='(operator, i) of operators'
+						:key='i'
+						offset-y
+						top
+					>
+						<template #activator='{on, attrs}'>
+							<v-btn
+								v-bind='attrs'
+								color='primary'
+								small
+								v-on='on'
+							>
+								{{ operator.getName() }}
+								<v-icon color='white'>
+									mdi-menu-up
+								</v-icon>
+							</v-btn>
+						</template>
+						<v-list dense>
+							<v-list-item
+								v-if='$route.path.includes("network/mobile/add") || $route.path.includes("network/mobile/edit")'
+								@click='$emit("apply", operator)'
+							>
+								<v-icon dense>
+									mdi-content-copy
+								</v-icon>
+								{{ $t('network.operators.apply') }}
+							</v-list-item>
+							<v-list-item
+								@click='editOperator(i)'
+							>
+								<v-icon dense>
+									mdi-pencil
+								</v-icon>
+								{{ $t('network.operators.edit') }}
+							</v-list-item>
+							<v-list-item
+								@click='deleteOperator(i)'
+							>
+								<v-icon dense>
+									mdi-delete
+								</v-icon>
+								{{ $t('network.operators.delete') }}
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</v-btn-toggle>
+			</v-card-text>
+		</v-card>
 		<NetworkOperatorDeleteModal ref='operatorDelete' @closed='getOperators' />
 		<NetworkOperatorForm ref='operatorForm' @closed='getOperators' />
 	</div>
@@ -60,15 +86,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CButtonGroup,
-	CDropdown,
-	CDropdownItem,
-	CIcon,
-	CModal
-} from '@coreui/vue/src';
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
 import NetworkOperatorForm from './NetworkOperatorForm.vue';
 
@@ -84,12 +101,6 @@ import {IOperator} from '@/interfaces/network';
 
 @Component({
 	components: {
-		CButton,
-		CButtonGroup,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		CModal,
 		NetworkOperatorDeleteModal,
 		NetworkOperatorForm,
 	},
@@ -104,16 +115,6 @@ export default class NetworkOperators extends Vue {
 	 * @var {Array<IOperator>} operators Array of network operators
 	 */
 	private operators: Array<NetworkOperator> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		delete: cilTrash,
-		apply: cilCopy,
-	};
 
 	/**
 	 * Retrieves operators

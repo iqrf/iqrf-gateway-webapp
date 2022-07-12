@@ -20,133 +20,125 @@ limitations under the License.
 			{{ $t('config.daemon.messagings.mq.title') }}
 		</h1>
 		<v-card>
-			<v-card-title class='border-0'>
-				<v-btn
-					color='success'
-					to='/config/daemon/messagings/mq/add'
-					small
-					class='float-right'
-				>
-					<v-icon small>
-						mdi-plus
-					</v-icon>
-					{{ $t('table.actions.add') }}
-				</v-btn>
-			</v-card-title>
 			<v-card-text>
-				<CDataTable
+				<v-data-table
+					:headers='headers'
 					:items='instances'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #acceptAsyncMsg='{item}'>
-						<td>
-							<CDropdown
-								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
-								placement='top-start'
-								size='sm'
-							>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
 							<v-btn
-								color='info'
-								:to='"/config/daemon/messagings/mq/edit/" + item.instance'
+								color='success'
+								to='/config/daemon/messagings/mq/add'
 								small
 							>
 								<v-icon small>
-									mdi-pencil
+									mdi-plus
 								</v-icon>
-								{{ $t('table.actions.edit') }}
-							</v-btn> <v-btn
-								color='error'
-								small
-								@click='confirmDelete(item)'
-							>
-								<v-icon small>
-									mdi-delete
-								</v-icon>
-								{{ $t('table.actions.delete') }}
+								{{ $t('table.actions.add') }}
 							</v-btn>
-						</td>
+						</v-toolbar>
 					</template>
-				</CDataTable>
+					<template #[`item.acceptAsyncMsg`]='{item}'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									:color='item.acceptAsyncMsg ? "success" : "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list>
+								<v-list-item @click='changeAcceptAsyncMsg(item, true)'>
+									{{ $t('states.enabled') }}
+								</v-list-item>
+								<v-list-item @click='changeAcceptAsyncMsg(item, false)'>
+									{{ $t('states.disabled') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							:to='"/config/daemon/messagings/mq/edit/" + item.instance'
+							small
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-dialog
+							v-model='deleteModal'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									v-on='on'
+									@click='confirmDelete(item)'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									{{ $t('config.daemon.messagings.mq.modal.title') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('config.daemon.messagings.mq.modal.prompt', {instance: deleteInstance}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='performDelete'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='deleteInstance = ""'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</template>
+				</v-data-table>
 			</v-card-text>
 		</v-card>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.mq.modal.title') }}
-				</h5>
-				<CButtonClose class='text-white' @click='deleteInstance = ""' />
-			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.mq.modal.prompt', {instance: deleteInstance}) }}
-			</span>
-			<template #footer>
-				<v-btn
-					color='error'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn> <v-btn
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButtonClose,
-	CDataTable,
-	CDropdown,
-	CDropdownItem,
-	CModal
-} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IMqInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
-	components: {
-		CButtonClose,
-		CDataTable,
-		CDropdown,
-		CDropdownItem,
-		CModal,
-	},
 	metaInfo: {
-		title: 'config.daemon.messagings.mq.title'
-	}
+		title: 'config.daemon.messagings.mq.title',
+	},
 })
 
 /**
@@ -164,31 +156,31 @@ export default class MqMessagingTable extends Vue {
 	private deleteInstance = '';
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
 	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'instance',
-			label: this.$t('forms.fields.instanceName'),
+			value: 'instance',
+			text: this.$t('forms.fields.instanceName').toString(),
 		},
 		{
-			key: 'LocalMqName',
-			label: this.$t('config.daemon.messagings.mq.form.LocalMqName'),
+			value: 'LocalMqName',
+			text: this.$t('config.daemon.messagings.mq.form.LocalMqName').toString(),
 		},
 		{
-			key: 'RemoteMqName',
-			label: this.$t('config.daemon.messagings.mq.form.RemoteMqName'),
+			value: 'RemoteMqName',
+			text: this.$t('config.daemon.messagings.mq.form.RemoteMqName').toString(),
 		},
 		{
-			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
-			filter: false,
+			value: 'acceptAsyncMsg',
+			text: this.$t('config.daemon.messagings.acceptAsyncMsg').toString(),
+			filterable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
 		},
 	];
 
@@ -196,6 +188,13 @@ export default class MqMessagingTable extends Vue {
 	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances
 	 */
 	private instances: Array<IMqInstance> = [];
+
+	/**
+	 * @var {boolean} deleteModal Delete modal visibility
+	 */
+	get deleteModal(): boolean {
+		return this.deleteInstance !== '';
+	}
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -272,9 +271,3 @@ export default class MqMessagingTable extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

@@ -19,153 +19,146 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.mqtt.title') }}
 		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					color='success'
-					to='/config/daemon/messagings/mqtt/add'
-					size='sm'
-					class='float-right'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
 					:items='instances'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #EnabledSSL='{item}'>
-						<td>
-							<CDropdown
-								:color='item.EnabledSSL ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.EnabledSSL ? "enabled" : "disabled"}`)'
-								placement='top-start'
-								size='sm'
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
+								color='success'
+								to='/config/daemon/messagings/mqtt/add'
+								small
 							>
-								<CDropdownItem @click='changeEnabledSSL(item, true)'>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+						</v-toolbar>
+					</template>
+					<template #[`item.EnabledSSL`]='{item}'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									:color='item.EnabledSSL ? "success" : "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.EnabledSSL ? "enabled" : "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list>
+								<v-list-item @click='changeEnabledSSL(item, true)'>
 									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeEnabledSSL(item, false)'>
+								</v-list-item>
+								<v-list-item @click='changeEnabledSSL(item, false)'>
 									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</template>
-					<template #acceptAsyncMsg='{item}'>
-						<td>
-							<CDropdown
-								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`)'
-								placement='top-start'
-								size='sm'
-							>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, true)'>
+					<template #[`item.acceptAsyncMsg`]='{item}'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									:color='item.acceptAsyncMsg ? "success" : "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list>
+								<v-list-item @click='changeAcceptAsyncMsg(item, true)'>
 									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, false)'>
+								</v-list-item>
+								<v-list-item @click='changeAcceptAsyncMsg(item, false)'>
 									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								:to='"/config/daemon/messagings/mqtt/edit/" + item.instance'
-								size='sm'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='confirmDelete(item)'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							:to='"/config/daemon/messagings/mqtt/edit/" + item.instance'
+							small
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									v-on='on'
+									@click='confirmDelete(item)'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									{{ $t('config.daemon.messagings.mqtt.modal.title') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('config.daemon.messagings.mqtt.modal.prompt', {instance: deleteInstance}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='remove'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='deleteInstance = ""'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.mqtt.modal.title') }}
-				</h5>
-				<CButtonClose class='text-white' @click='deleteInstance = ""' />
-			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.mqtt.modal.prompt', {instance: deleteInstance}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CButtonClose,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CDropdown,
-	CDropdownItem,
-	CIcon,
-	CModal
-} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
-	components: {
-		CButton,
-		CButtonClose,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		CModal,
-	},
 	metaInfo: {
 		title: 'config.daemon.messagings.mqtt.title'
 	}
@@ -186,60 +179,58 @@ export default class MqttMessagingTable extends Vue {
 	private deleteInstance = '';
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
 	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'instance',
-			label: this.$t('forms.fields.instanceName'),
+			value: 'instance',
+			text: this.$t('forms.fields.instanceName').toString(),
 		},
 		{
-			key: 'BrokerAddr',
-			label: this.$t('config.daemon.messagings.mqtt.form.BrokerAddr'),
+			value: 'BrokerAddr',
+			text: this.$t('config.daemon.messagings.mqtt.form.BrokerAddr').toString(),
 		},
 		{
-			key: 'ClientId',
-			label: this.$t('forms.fields.clientId'),
+			value: 'ClientId',
+			text: this.$t('forms.fields.clientId').toString(),
 		},
 		{
-			key: 'TopicRequest',
-			label: this.$t('forms.fields.requestTopic'),
+			value: 'TopicRequest',
+			text: this.$t('forms.fields.requestTopic').toString(),
 		},
 		{
-			key: 'TopicResponse',
-			label: this.$t('forms.fields.responseTopic'),
+			value: 'TopicResponse',
+			text: this.$t('forms.fields.responseTopic').toString(),
 		},
 		{
-			key: 'EnabledSSL',
-			label: this.$t('config.daemon.messagings.mqtt.form.EnabledSSL'),
-			filter: false,
+			value: 'EnabledSSL',
+			text: this.$t('config.daemon.messagings.mqtt.form.EnabledSSL').toString(),
+			filterable: false,
 		},
 		{
-			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
-			filter: false,
+			value: 'acceptAsyncMsg',
+			text: this.$t('config.daemon.messagings.acceptAsyncMsg').toString(),
+			filterable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
 
 	/**
 	 * @var {Array<IMqttInstance>} instances Array of MQTT messaging component instances
 	 */
 	private instances: Array<IMqttInstance> = [];
+
+	/**
+	 * @var {boolean} deleteDialog Delete dialog visibility
+	 */
+	get deleteDialog(): boolean {
+		return this.deleteInstance !== '';
+	}
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -320,7 +311,7 @@ export default class MqttMessagingTable extends Vue {
 	/**
 	 * Removes instance of MQTT messaging component
 	 */
-	private performDelete(): void {
+	private remove(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;
 		this.deleteInstance = '';

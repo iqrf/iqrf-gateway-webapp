@@ -16,121 +16,123 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>
-			{{ $t('config.daemon.components.title') }}
-		</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
-					color='success'
-					size='sm'
-					class='float-right'
-					to='/config/daemon/component/add'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
+		<h1>{{ $t('config.daemon.components.title') }}</h1>
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
 					:items='components'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #enabled='{item}'>
-						<td>
-							<CDropdown
-								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.enabled ? "enabled": "disabled"}`)'
-								size='sm'
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
+								color='success'
+								small
+								to='/config/daemon/component/add'
 							>
-								<CDropdownItem @click='changeEnabled(item, true)'>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+						</v-toolbar>
+					</template>
+					<template #[`item.enabled`]='{item}'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									:color='item.enabled ? "success" : "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.enabled ? "enabled": "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list>
+								<v-list-item @click='changeEnabled(item, true)'>
 									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeEnabled(item, false)'>
+								</v-list-item>
+								<v-list-item @click='changeEnabled(item, false)'>
 									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								:to='"/config/daemon/component/edit/" + item.name'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='component = item.name'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							small
+							:to='"/config/daemon/component/edit/" + item.name'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <v-btn
+							color='danger'
+							small
+							@click='component = item.name'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+						<v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									<v-icon>mdi-alert</v-icon>
+									{{ $t('config.daemon.components.messages.deleteTitle') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('config.daemon.components.messages.deletePrompt', {component: component}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='removeComponent'
+									>
+										{{ $t('forms.yes') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='component = ""'
+									>
+										{{ $t('forms.no') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='component !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.components.messages.deleteTitle') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.components.messages.deletePrompt', {component: component}) }}
-			<template #footer>
-				<CButton color='danger' @click='component = ""'>
-					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeComponent'>
-					{{ $t('forms.yes') }}
-				</CButton>
-			</template>
-		</CModal>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {UserRole} from '@/services/AuthenticationService';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {DataTableHeader} from 'vuetify';
 import {IComponent} from '@/interfaces/daemonComponent';
-import {IField} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		CModal,
-	},
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as unknown as ComponentList).pageTitle
@@ -158,46 +160,44 @@ export default class ComponentList extends Vue {
 	private role: UserRole = UserRole.NORMAL;
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = [
+	private fields: Array<DataTableHeader> = [
 		{
-			key: 'name',
-			label: this.$t('config.daemon.components.form.name'),
+			value: 'name',
+			text: this.$t('config.daemon.components.form.name').toString(),
 		},
 		{
-			key: 'startlevel',
-			label: this.$t('config.daemon.components.form.startLevel'),
+			value: 'startlevel',
+			text: this.$t('config.daemon.components.form.startLevel').toString(),
 		},
 		{
-			key: 'libraryPath',
-			label: this.$t('config.daemon.components.form.libraryPath'),
+			value: 'libraryPath',
+			text: this.$t('config.daemon.components.form.libraryPath').toString(),
 		},
 		{
-			key: 'libraryName',
-			label: this.$t('config.daemon.components.form.libraryName'),
+			value: 'libraryName',
+			text: this.$t('config.daemon.components.form.libraryName').toString(),
 		},
 		{
-			key: 'enabled',
-			label: this.$t('states.enabled'),
-			filter: false,
+			value: 'enabled',
+			text: this.$t('states.enabled').toString(),
+			filterable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
 		}
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
+	 * @var {boolean} deleteDialog Delete dialog visibility
 	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
+	get deleteDialog(): boolean {
+		return this.component !== '';
+	}
 
 	/**
 	 * Computes page title depending on the user role

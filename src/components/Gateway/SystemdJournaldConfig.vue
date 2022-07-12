@@ -20,13 +20,13 @@ limitations under the License.
 			{{ $t('service.systemd-journald.config.title') }}
 		</v-card-title>
 		<v-card-text>
-			<CElementCover
-				v-if='failed'
-				style='z-index: 1;'
-				:opacity='0.85'
+			<v-overlay
+				v-if='loadFailed'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('service.systemd-journald.config.messages.fetchFailed') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver
 				v-if='config !== null'
 				v-slot='{invalid}'

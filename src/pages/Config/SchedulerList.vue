@@ -19,69 +19,155 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.scheduler.title') }}
 		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<div class='float-right'>
-					<CButton
-						color='success'
-						size='sm'
-						to='/config/daemon/scheduler/add'
-					>
-						<CIcon :content='icons.add' size='sm' />
-						{{ $t('table.actions.add') }}
-					</CButton> <CButton
-						color='primary'
-						size='sm'
-						@click='showImportModal = true'
-					>
-						<CIcon :content='icons.import' size='sm' />
-						{{ $t('forms.import') }}
-					</CButton> <CButton
-						color='secondary'
-						size='sm'
-						@click='exportScheduler'
-					>
-						<CIcon :content='icons.export' size='sm' />
-						{{ $t('forms.export') }}
-					</CButton> <CButton
-						color='danger'
-						size='sm'
-						@click='showDeleteAllModal = true'
-					>
-						<CIcon :content='icons.remove' size='sm' />
-						{{ $t('table.actions.deleteAll') }}
-					</CButton>
-				</div>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
 					:items='tasks'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{external: false, resetable: true}'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
+								color='success'
+								small
+								to='/config/daemon/scheduler/add'
+							>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+							<v-dialog
+								v-model='showImportModal'
+								width='50%'
+								persistent
+								no-click-animation
+							>
+								<template #activator='{on, attrs}'>
+									<v-btn
+										color='primary'
+										small
+										v-bind='attrs'
+										v-on='on'
+										@click='showImportModal = true'
+									>
+										<v-icon small>
+											mdi-import
+										</v-icon>
+										{{ $t('forms.import') }}
+									</v-btn>
+								</template>
+								<v-card>
+									<ValidationObserver v-slot='{invalid}'>
+										<v-card-title class='text-h5 primary'>
+											{{ $t('config.daemon.scheduler.import.title') }}
+										</v-card-title>
+										<v-card-text>
+											<v-form>
+												<ValidationProvider
+													v-slot='{errors, valid}'
+													rules='required|taskFile'
+													:custom-messages='{
+														required: $t("config.daemon.scheduler.import.errors.file"),
+														taskFile: $t("config.daemon.scheduler.import.errors.invalidFile"),
+													}'
+												>
+													<v-file-input
+														v-model='file'
+														accept='application/json,.zip'
+														:label='$t("config.daemon.scheduler.import.file")'
+														:error-messages='errors'
+														:success='valid'
+														required
+													/>
+												</ValidationProvider>
+											</v-form>
+										</v-card-text>
+										<v-card-actions>
+											<v-spacer />
+											<v-btn
+												color='primary'
+												:disabled='invalid'
+												@click='importScheduler'
+											>
+												{{ $t('forms.import') }}
+											</v-btn> <v-btn
+												color='secondary'
+												@click='showImportModal = false; file = null;'
+											>
+												{{ $t('forms.cancel') }}
+											</v-btn>
+										</v-card-actions>
+									</ValidationObserver>
+								</v-card>
+							</v-dialog>
+							<v-btn
+								color='secondary'
+								small
+								@click='exportScheduler'
+							>
+								<v-icon small>
+									mdi-export
+								</v-icon>
+								{{ $t('forms.export') }}
+							</v-btn>
+							<v-dialog
+								v-model='showDeleteAllModal'
+								width='50%'
+								persistent
+								no-click-animation
+							>
+								<template #activator='{on, attrs}'>
+									<v-btn
+										color='error'
+										small
+										v-bind='attrs'
+										v-on='on'
+										@click='showDeleteAllModal = true'
+									>
+										<v-icon small>
+											mdi-delete
+										</v-icon>
+										{{ $t('table.actions.deleteAll') }}
+									</v-btn>
+								</template>
+								<v-card>
+									<v-card-title class='text-h5 error'>
+										{{ $t('config.daemon.scheduler.modal.title') }}
+									</v-card-title>
+									<v-card-text>
+										{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
+									</v-card-text>
+									<v-card-actions>
+										<v-spacer />
+										<v-btn
+											color='error'
+											@click='removeAllTasks'
+										>
+											{{ $t('table.actions.deleteAll') }}
+										</v-btn> <v-btn
+											color='secondary'
+											@click='showDeleteAllModal = false'
+										>
+											{{ $t('forms.cancel') }}
+										</v-btn>
+									</v-card-actions>
+								</v-card>
+							</v-dialog>
+						</v-toolbar>
 					</template>
-					<template v-if='retrieved === "rest"' #taskId='{item}'>
-						<td>
-							{{ item.id }}
-						</td>
+					<template v-if='retrieved === "rest"' #[`item.taskId`]='{item}'>
+						{{ item.id }}
 					</template>
-					<template v-if='retrieved === "rest"' #clientId='{item}'>
-						<td>
-							{{ item.service }}
-						</td>
+					<template v-if='retrieved === "rest"' #[`item.clientId`]='{item}'>
+						{{ item.service }}
 					</template>
-					<template #timeSpec='{item}'>
-						<td>
-							{{ timeString(item.timeSpec) }}
-						</td>
+					<template #[`item.timeSpec`]='{item}'>
+						{{ timeString(item.timeSpec) }}
 					</template>
-					<template #task='{item}'>
+					<template #[`item.task`]='{item}'>
 						<td v-if='retrieved === "daemon"'>
 							{{ displayMTypes(item.task) }}
 						</td>
@@ -89,120 +175,73 @@ limitations under the License.
 							{{ displayMTypes(item.mTypes) }}
 						</td>
 					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								size='sm'
-								:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteTask = retrieved === "daemon" ? item.taskId : item.id'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							small
+							:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									v-on='on'
+									@click='deleteTask = retrieved === "daemon" ? item.taskId : item.id'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									{{ $t('config.daemon.scheduler.modal.title') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: deleteTask}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='removeTask'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='deleteTask = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			:show.sync='showImportModal'
-			color='primary'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.import.title') }}
-				</h5>
-			</template>
-			<CForm>
-				<div class='form-group'>
-					<CInputFile
-						ref='schedulerImport'
-						accept='application/json,.zip'
-						:label='$t("config.daemon.scheduler.import.file")'
-						@input='fileImportEmpty'
-						@click='fileImportEmpty'
-					/>
-				</div>
-			</CForm>
-			<template #footer>
-				<CButton
-					color='primary'
-					:disabled='importEmpty'
-					@click='importScheduler'
-				>
-					{{ $t('forms.import') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showImportModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-		<CModal
-			color='danger'
-			:show='deleteTask !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: deleteTask}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeTask'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteTask = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-		<CModal
-			color='danger'
-			:show.sync='showDeleteAllModal'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeAllTasks'
-				>
-					{{ $t('table.actions.deleteAll') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showDeleteAllModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {DateTime, Duration} from 'luxon';
+import {required} from 'vee-validate/dist/rules';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
@@ -210,21 +249,15 @@ import ServiceService from '@/services/ServiceService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {ITaskRest, ITaskTimeSpec} from '@/interfaces/scheduler';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CIcon,
-		CInputFile,
-		CModal,
+		ValidationObserver,
+		ValidationProvider,
 	},
 	metaInfo: {
 		title: 'config.daemon.scheduler.title',
@@ -235,7 +268,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
  * List of Daemon scheduler tasks
  */
 export default class SchedulerList extends Vue {
-
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
 	 */
@@ -255,45 +287,34 @@ export default class SchedulerList extends Vue {
 	private deleteTask: number|null = null;
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
 	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'taskId',
-			label: this.$t('config.daemon.scheduler.form.task.taskId'),
+			value: 'taskId',
+			text: this.$t('config.daemon.scheduler.form.task.taskId').toString(),
 		},
 		{
-			key: 'timeSpec',
-			label: this.$t('config.daemon.scheduler.table.time'),
-			filter: false,
-			sorter: false,
+			value: 'timeSpec',
+			text: this.$t('config.daemon.scheduler.table.time').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'clientId',
-			label: this.$t('config.daemon.scheduler.table.service'),
+			value: 'clientId',
+			text: this.$t('config.daemon.scheduler.table.service').toString(),
 		},
 		{
-			key: 'task',
-			label: this.$t('config.daemon.scheduler.table.mType'),
+			value: 'task',
+			text: this.$t('config.daemon.scheduler.table.mType').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		import: cilArrowTop,
-		export: cilArrowBottom,
-	};
 
 	/**
 	 * @var {Array<string>} msgIds Array of message ids used for response handling
@@ -313,7 +334,7 @@ export default class SchedulerList extends Vue {
 	/**
 	 * @var {Array<Task>} tasks Array of scheduler tasks
 	 */
-	private tasks: Array<ITaskRest>|null = null;
+	private tasks: Array<ITaskRest> = [];
 
 	/**
 	 * Component unsubscribe function
@@ -331,20 +352,36 @@ export default class SchedulerList extends Vue {
 	private showImportModal = false;
 
 	/**
-	 * @var {boolean} importEmpty Indicates whether file input is empty or not
-	 */
-	private importEmpty = true;
-
-	/**
 	 * @var {boolean} fetchTasks Indicates whether tasks should be fetched
 	 */
 	private fetchTasks = true;
 
 	/**
+	 * @var {File|null} file Task file to import
+	 */
+	private file: File|null = null;
+
+	/**
+	 * @var {boolean} deleteDialog Delete dialog visibility
+	 */
+	get deleteDialog(): boolean {
+		return this.deleteTask !== null;
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.$store.commit('spinner/SHOW');
+		extend('required', required);
+		extend('taskFile', (file: File|null) => {
+			if (!file) {
+				return false;
+			}
+			if (!['application/json', 'application/zip'].includes(file.type)) {
+				return false;
+			}
+			return true;
+		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') { // websocket connection with daemon established
 				this.getTasks();
@@ -600,29 +637,15 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Extracts files from import modal file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getFile(): FileList {
-		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if file input is empty
-	 */
-	private fileImportEmpty(): void {
-		this.importEmpty = this.getFile().length === 0;
-	}
-
-	/**
 	 * Imports scheduler tasks from zip file
 	 */
 	private importScheduler(): void {
+		if (!this.file) {
+			return;
+		}
 		this.showImportModal = false;
 		this.$store.commit('spinner/SHOW');
-		const files = this.getFile();
-		SchedulerService.importConfig(files[0])
+		SchedulerService.importConfig(this.file)
 			.then(() => {
 				this.$toast.success(
 					this.$t('config.daemon.scheduler.messages.importSuccess').toString()

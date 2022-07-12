@@ -698,7 +698,8 @@
 					"title": "Import task(s)",
 					"file": "JSON task file or ZIP archive with tasks",
 					"errors": {
-						"fileEmpty": "Please select file to import."
+						"file": "Please select file to import.",
+						"invalidFile": "Selected file should be a JSON or ZIP file."
 					}
 				},
 				"modal": {
