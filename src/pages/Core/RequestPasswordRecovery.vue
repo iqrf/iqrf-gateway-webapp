@@ -20,13 +20,13 @@ limitations under the License.
 			{{ $t('account.recovery.title') }}
 		</h1>
 		<v-card-text>
-			<CElementCover
+			<v-overlay
 				v-if='requestInProgress'
-				:opacity='0.75'
-				style='z-index: 10000;'
+				:opacity='0.65'
+				absolute
 			>
-				<CSpinner color='primary' />
-			</CElementCover>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
 			<div v-if='!sent'>
 				<p>
 					{{ $t('account.recovery.requestPrompt') }}

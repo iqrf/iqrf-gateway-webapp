@@ -19,13 +19,13 @@ limitations under the License.
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
 		<v-card body-wrapper>
 			<v-card-text>
-				<CElementCover
+				<v-overlay
 					v-if='!isSocketConnected'
-					style='z-index: 1;'
-					:opacity='0.85'
+					:opacity='0.65'
+					absolute
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
 					<form @submit.prevent='handleSubmit'>
 						<v-row>

@@ -2,6 +2,8 @@
 	<v-dialog
 		v-model='render'
 		width='66%'
+		persistent
+		no-click-animation
 	>
 		<template #activator='{ on, attrs }'>
 			<v-btn

@@ -20,13 +20,13 @@ limitations under the License.
 			{{ $t('config.daemon.interfaces.iqrfSpi.title') }}
 		</v-card-title>
 		<v-card-text>
-			<CElementCover
+			<v-overlay
 				v-if='loadFailed'
-				style='z-index: 1;'
-				:opacity='0.85'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('config.daemon.messages.failedElement') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver v-slot='{invalid}'>
 				<form @submit.prevent='saveConfig'>
 					<ValidationProvider

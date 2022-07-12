@@ -19,113 +19,104 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.udp.title') }}
 		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					v-if='instances.length < 1'
-					color='success'
-					to='/config/daemon/messagings/udp/add'
-					size='sm'
-					class='float-right'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
 					:items='instances'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								color='info'
-								:to='"/config/daemon/messagings/udp/edit/" + item.instance'
-								size='sm'
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
+								color='success'
+								to='/config/daemon/messagings/udp/add'
+								small
 							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='confirmDelete(item)'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+						</v-toolbar>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.udp.modal.title') }}
-				</h5>
-				<CButtonClose
-					class='text-white'
-					@click='deleteInstance = ""'
-				/>
-			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.udp.modal.prompt', {instance: deleteInstance}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							:to='"/config/daemon/messagings/udp/edit/" + item.instance'
+							small
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									v-on='on'
+									@click='confirmDelete(item)'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									{{ $t('config.daemon.messagings.udp.modal.title') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('config.daemon.messagings.udp.modal.prompt', {instance: deleteInstance}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='remove'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='deleteInstance = ""'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IUdpInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
-	components: {
-		CButton,
-		CButtonClose,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
-		CModal,
-	},
 	metaInfo: {
-		title: 'config.daemon.messagings.udp.title'
-	}
+		title: 'config.daemon.messagings.udp.title',
+	},
 })
 
 /**
@@ -143,42 +134,40 @@ export default class UdpMessagingTable extends Vue {
 	private deleteInstance = '';
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
 	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'instance',
-			label: this.$t('forms.fields.instanceName'),
+			value: 'instance',
+			text: this.$t('forms.fields.instanceName').toString(),
 		},
 		{
-			key: 'RemotePort',
-			label: this.$t('config.daemon.messagings.udp.form.RemotePort'),
+			value: 'RemotePort',
+			text: this.$t('config.daemon.messagings.udp.form.RemotePort').toString(),
 		},
 		{
-			key: 'LocalPort',
-			label: this.$t('config.daemon.messagings.udp.form.LocalPort'),
+			value: 'LocalPort',
+			text: this.$t('config.daemon.messagings.udp.form.LocalPort').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
 
 	/**
 	 * @var {Array<IUdpInstance>} instances Array of UDP messaging component instances
 	 */
 	private instances: Array<IUdpInstance> = [];
+
+	/**
+	 * @var {boolean} deleteDialog Delete dialog visibility
+	 */
+	get deleteDialog(): boolean {
+		return this.deleteInstance !== '';
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -218,7 +207,7 @@ export default class UdpMessagingTable extends Vue {
 	/**
 	 * Removes instance of UDP messaging component
 	 */
-	private performDelete(): void {
+	private remove(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;
 		this.deleteInstance = '';
@@ -235,10 +224,3 @@ export default class UdpMessagingTable extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-
-</style>

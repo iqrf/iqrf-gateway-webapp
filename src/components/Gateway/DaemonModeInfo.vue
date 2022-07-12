@@ -16,7 +16,11 @@ limitations under the License.
 -->
 <template>
 	<span v-if='requestRunning && mode === "unknown"'>
-		<CSpinner color='info' class='cinfo-spinner' />
+		<v-progress-circular
+			color='info'
+			class='cinfo-spinner'
+			indeterminate
+		/>
 	</span>
 	<span v-else>{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}</span>
 </template>
