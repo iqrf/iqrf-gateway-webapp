@@ -17,114 +17,103 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<CCard>
+		<v-card>
 			<div v-if='interfacesLoaded && noInterfaces'>
-				<CCardBody>
+				<v-card-text>
 					{{ $t('network.mobile.messages.noInterfaces') }}
-				</CCardBody>
+				</v-card-text>
 			</div>
 			<div v-else>
-				<CCardHeader class='border-0 datatable-header'>
-					{{ $t('network.connection.title') }}
-					<CButton
-						color='success'
-						size='sm'
-						to='/ip-network/mobile/add'
-					>
-						<CIcon :content='icons.add' size='sm' />
-						Add connection
-					</CButton>
-				</CCardHeader>
-				<CCardBody>
-					<CDataTable
-						:fields='fields'
+				<v-card-text>
+					<v-data-table
+						:headers='headers'
 						:items='connections'
-						:column-filter='true'
-						:items-per-page='20'
-						:pagination='true'
-						:sorter='{external: false, resetable: true}'
+						:no-data-text='$t("network.mobile.messages.noConnections")'
 					>
-						<template #no-items-view='{}'>
-							{{ $t('network.mobile.messages.noConnections') }}
+						<template #top>
+							<v-toolbar dense flat>
+								{{ $t('network.connection.title') }}
+								<v-spacer />
+								<v-btn
+									color='success'
+									small
+									to='/ip-network/mobile/add'
+								>
+									<v-icon>
+										mdi-plus
+									</v-icon>
+									Add connection
+								</v-btn>
+							</v-toolbar>
 						</template>
-						<template #interfaceName='{item}'>
-							<td>
-								{{ item.interfaceName }}
-							</td>
+						<template #[`item.interfaceName`]='{item}'>
+							{{ item.interfaceName }}
 						</template>
-						<template #signal='{item}'>
-							<td>
-								<CProgress
-									v-if='item.signal !== undefined'
-									:value='item.signal'
-									:color='signalColor(item.signal)'
-								/>
-							</td>
+						<template #[`item.signal`]='{item}'>
+							<v-progress-linear
+								v-if='item.signal !== undefined'
+								:value='item.signal'
+								:color='signalColor(item.signal)'
+								height='20'
+							/>
 						</template>
-						<template #rssi='{item}'>
-							<td>
-								{{ item.rssi }} dBm
-							</td>
+						<template #[`item.rssi`]='{item}'>
+							{{ item.rssi }} dBm
 						</template>
 						<template #actions='{item}'>
-							<td class='col-actions'>
-								<CButton
-									size='sm'
-									:color='item.interfaceName === null ? "success" : "danger"'
-									@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
-								>
-									<CIcon :content='item.interfaceName === null ? icons.connect : icons.disconnect' size='sm' />
-									{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
-								</CButton> <CButton
-									size='sm'
-									color='primary'
-									:to='"/ip-network/mobile/edit/" + item.uuid'
-								>
-									<CIcon :content='icons.edit' size='sm' />
-									{{ $t('table.actions.edit') }}
-								</CButton> <CButton
-									size='sm'
-									color='danger'
-									@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
-								>
-									<CIcon :content='icons.remove' size='sm' />
-									{{ $t('table.actions.delete') }}
-								</CButton>
-							</td>
+							<v-btn
+								small
+								:color='item.interfaceName === null ? "success" : "danger"'
+								@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
+							>
+								<v-icon small>
+									{{ item.interfaceName === null ? 'mdi-link-plus' : 'mdi-link-off' }}
+								</v-icon>
+								{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
+							</v-btn> <v-btn
+								small
+								color='primary'
+								:to='"/ip-network/mobile/edit/" + item.uuid'
+							>
+								<v-icon small>
+									mdi-pencil
+								</v-icon>
+								{{ $t('table.actions.edit') }}
+							</v-btn> <v-btn
+								size='sm'
+								color='error'
+								@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
+							>
+								<v-icon small>
+									mdi-delete
+								</v-icon>
+								{{ $t('table.actions.delete') }}
+							</v-btn>
 						</template>
-					</CDataTable>
-				</CCardBody>
+					</v-data-table>
+				</v-card-text>
 			</div>
-		</CCard>
-		<CCard body-wrapper>
+		</v-card>
+		<v-card>
 			<NetworkOperators />
-		</CCard>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
-import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IModem, NetworkConnection} from '@/interfaces/network';
 
 @Component({
 	components: {
-		CBadge,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
-		CProgress,
 		NetworkOperators,
 	},
 	metaInfo: {
@@ -158,47 +147,36 @@ export default class MobileConnections extends Vue {
 	private modems: Array<IModem> = [];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Table icons
+	 * @constant {Array<DataTableHeader>} fields GSM connections table fields
 	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		connect: cilLink,
-		disconnect: cilLinkBroken,
-	};
-
-	/**
-	 * @constant {Array<IField>} fields GSM connections table fields
-	 */
-	private fields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'name',
-			label: this.$t('network.connection.name'),
+			value: 'name',
+			text: this.$t('network.connection.name').toString(),
 		},
 		{
-			key: 'interfaceName',
-			label: this.$t('network.connection.interface'),
-			filter: false,
-			sorter: false,
+			value: 'interfaceName',
+			text: this.$t('network.connection.interface').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'signal',
-			label: this.$t('network.mobile.table.signal'),
-			filter: false,
-			sorter: false,
+			value: 'signal',
+			text: this.$t('network.mobile.table.signal').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'rssi',
-			label: this.$t('network.mobile.table.rssi'),
-			filter: false,
-			sorter: false,
+			value: 'rssi',
+			text: this.$t('network.mobile.table.rssi').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
 		},
 	];
 
@@ -218,7 +196,7 @@ export default class MobileConnections extends Vue {
 		} else if (signal >= 34) {
 			return 'warning';
 		} else {
-			return 'danger';
+			return 'error';
 		}
 	}
 

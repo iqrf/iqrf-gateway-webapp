@@ -17,13 +17,13 @@ limitations under the License.
 <template>
 	<v-card :loading='loading'>
 		<v-card-text v-if='!loading'>
-			<CElementCover
+			<v-overlay
 				v-if='loadFailed'
-				style='z-index: 1;'
-				:opacity='0.85'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('config.daemon.messages.failedElement') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver v-slot='{invalid}'>
 				<form	@submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>

@@ -30,13 +30,13 @@ limitations under the License.
 			</v-card-title>
 			<v-card-text>
 				<JsonSchemaErrors :errors='validatorErrors' />
-				<CElementCover
+				<v-overlay
 					v-if='!isSocketConnected'
-					style='z-index: 1;'
-					:opacity='0.85'
+					:opacity='0.65'
+					absolute
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}' slim>
 					<form @submit.prevent='processSubmit'>
 						<ValidationProvider
