@@ -104,7 +104,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
@@ -124,7 +123,6 @@ import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 
 @Component({
 	components: {
-		CElementCover,
 		JsonEditor,
 		JsonMessage,
 		JsonSchemaErrors,

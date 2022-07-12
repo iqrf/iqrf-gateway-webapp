@@ -17,188 +17,160 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.wireguard.title') }}</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				{{ $t('network.wireguard.tunnels.title') }}
-				<CButton
-					style='float: right;'
-					color='success'
-					size='sm'
-					to='/ip-network/vpn/add'
-				>
-					<CIcon :content='icons.add' size='sm' />
-					{{ $t('forms.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='tableFields'
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
 					:items='tunnels'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:sorter='{external: false, resetable: true}'
+					:no-data-text='$t("network.wireguard.tunnels.table.noTunnels")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('network.wireguard.tunnels.table.noTunnels') }}
+					<template #top>
+						<v-toolbar dense flat>
+							{{ $t('network.wireguard.tunnels.title') }}
+							<v-spacer />
+							<v-btn
+								color='success'
+								small
+								to='/ip-network/vpn/add'
+							>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('forms.add') }}
+							</v-btn>
+						</v-toolbar>
 					</template>
-					<template #state='{item}'>
-						<td>
-							<CBadge
-								:color='item.active ? "success" : "danger"'
-							>
-								{{ $t(`network.wireguard.tunnels.table.states.${item.active ? '' : 'in'}active`) }}
-							</CBadge>
-						</td>
+					<template #[`item.state`]='{item}'>
+						<v-chip
+							:color='item.active ? "success" : "error"'
+							x-small
+							label
+						>
+							{{ $t(`network.wireguard.tunnels.table.states.${item.active ? '' : 'in'}active`) }}
+						</v-chip>
 					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								size='sm'
-								:color='item.active ? "danger" : "success"'
-								@click='changeActiveState(item.id, item.name, !item.active)'
-							>
-								<CIcon
-									:content='item.active ? icons.deactivate : icons.activate'
-									size='sm'
-								/>
-								{{ $t(`network.wireguard.tunnels.table.action.${item.active ? 'deactivate' : 'activate'}`) }}
-							</CButton> <CButton
-								size='sm'
-								:color='item.enabled ? "danger" : "success"'
-								@click='changeEnabledState(item.id, item.name, !item.enabled)'
-							>
-								<CIcon
-									:content='item.enabled ? icons.disable : icons.enable'
-									size='sm'
-								/>
-								{{ $t(`table.actions.${item.enabled ? 'disable' : 'enable'}`) }}
-							</CButton> <CButton
-								size='sm'
-								color='primary'
-								:to='"/ip-network/vpn/edit/" + item.id'
-							>
-								<CIcon :content='icons.edit' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								size='sm'
-								color='danger'
-								@click='tunnelToDelete = item'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							:color='item.active ? "error" : "success"'
+							small
+							@click='changeActiveState(item.id, item.name, !item.active)'
+						>
+							<v-icon small>
+								{{ item.active ? 'mdi-link-off' : 'mdi-link-plus' }}
+							</v-icon>
+							{{ $t(`network.wireguard.tunnels.table.action.${item.active ? 'deactivate' : 'activate'}`) }}
+						</v-btn> <v-btn
+							:color='item.enabled ? "error" : "success"'
+							small
+							@click='changeEnabledState(item.id, item.name, !item.enabled)'
+						>
+							<v-icon small>
+								{{ item.enabled ? 'mdi-close-circle-outline' : 'mdi-check-circle-outline' }}
+							</v-icon>
+							{{ $t(`table.actions.${item.enabled ? 'disable' : 'enable'}`) }}
+						</v-btn> <v-btn
+							color='primary'
+							small
+							:to='"/ip-network/vpn/edit/" + item.id'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									v-on='on'
+									@click='tunnelToDelete = item'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title class='text-h5 error'>
+									{{ $t('network.wireguard.tunnels.modal.title') }}
+								</v-card-title>
+								<v-card-text v-if='tunnelToDelete !== null'>
+									{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='tunnelToDelete = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			color='danger'
-			:show='tunnelToDelete !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.wireguard.tunnels.modal.title') }}
-				</h5>
-			</template>
-			<span v-if='tunnelToDelete !== null'>
-				{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='tunnelToDelete = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CBadge,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CIcon,
-	CInput
-} from '@coreui/vue/src';
 
-import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import WireguardService from '@/services/WireguardService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {DataTableHeader} from 'vuetify';
 import {IWG} from '@/interfaces/network';
 
 @Component({
-	components: {
-		CBadge,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CIcon,
-		CInput,
-	},
 	metaInfo: {
-		title: 'network.wireguard.title'
-	}
+		title: 'network.wireguard.title',
+	},
 })
 
 /**
  * WireGuard connections component
  */
 export default class WireguardTunnels extends Vue {
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		activate: cilLink,
-		deactivate: cilLinkBroken,
-		enable: cilCheckCircle,
-		disable: cilXCircle,
-	};
-
 	/**
 	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */
 	private tunnels: Array<IWG> = [];
 
 	/**
-	 * @constant {Array<IField>} tableField Array of CoreUI data table fields
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
 	 */
-	private tableFields: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			key: 'name',
-			label: this.$t('network.wireguard.tunnels.table.name'),
+			value: 'name',
+			text: this.$t('network.wireguard.tunnels.table.name').toString(),
 		},
 		{
-			key: 'state',
-			label: this.$t('network.wireguard.tunnels.table.state'),
-			sorter: false,
-			filter: false,
+			value: 'state',
+			text: this.$t('network.wireguard.tunnels.table.state').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
 		},
 	];
 
@@ -206,6 +178,13 @@ export default class WireguardTunnels extends Vue {
 	 * @var {IWG} tunnelToDelete Tunnel information used in delete modal window
 	 */
 	private tunnelToDelete: IWG|null = null;
+
+	/**
+	 * @var {boolean} deleteDialog Delete dialog visibility
+	 */
+	get deleteDialog(): boolean {
+		return this.tunnelToDelete !== null;
+	}
 
 	/**
 	 * Retrieves existing WireGuard tunnels
