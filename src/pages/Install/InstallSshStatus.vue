@@ -61,7 +61,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover, CSpinner} from '@coreui/vue/src';
+
 
 import ServiceService from '@/services/ServiceService';
 
@@ -72,13 +72,9 @@ import {AxiosError} from 'axios';
 import {IOption} from '@/interfaces/coreui';
 
 @Component({
-	components: {
-		CElementCover,
-		CSpinner,
-	},
 	metaInfo: {
-		title: 'install.ssh.title'
-	}
+		title: 'install.ssh.title',
+	},
 })
 
 export default class InstallSshStatus extends Vue {

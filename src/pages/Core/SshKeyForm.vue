@@ -111,7 +111,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover, CSpinner} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
 
@@ -125,8 +124,6 @@ import {ISshInput} from '@/interfaces/ssh';
 
 @Component({
 	components: {
-		CElementCover,
-		CSpinner,
 		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,
