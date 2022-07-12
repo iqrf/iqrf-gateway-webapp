@@ -33,7 +33,7 @@ limitations under the License.
 					<div v-if='mode !== "unknown"'>
 						<v-btn
 							color='primary'
-							@click='setMode(mode)'
+							@click='setMode(modes.operational)'
 						>
 							{{ $t('gateway.mode.modes.operational') }}
 						</v-btn> <v-btn
