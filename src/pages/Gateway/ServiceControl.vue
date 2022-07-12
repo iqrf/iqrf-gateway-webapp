@@ -75,7 +75,7 @@ limitations under the License.
 					<span v-else>{{ $t('service.states.inactive') }}</span>
 				</span>
 				<br><br>
-				<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
+				<pre style='white-space: pre-wrap;' v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
 			</v-card-text>
 		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
@@ -367,3 +367,10 @@ export default class ServiceControl extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+</style>
