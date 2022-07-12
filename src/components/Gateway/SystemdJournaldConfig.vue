@@ -21,7 +21,7 @@ limitations under the License.
 		</v-card-title>
 		<v-card-text>
 			<v-overlay
-				v-if='loadFailed'
+				v-if='failed'
 				:opacity='0.65'
 				absolute
 			>
@@ -170,7 +170,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
@@ -185,7 +184,6 @@ import {ISystemdJournal} from '@/interfaces/systemdJournal';
 
 @Component({
 	components: {
-		CElementCover,
 		ValidationObserver,
 		ValidationProvider,
 	},

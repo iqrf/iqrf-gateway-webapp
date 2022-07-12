@@ -73,7 +73,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -86,7 +85,6 @@ import {IIqrfDpa} from '@/interfaces/iqrfInterfaces';
 
 @Component({
 	components: {
-		CElementCover,
 		ValidationObserver,
 		ValidationProvider
 	}

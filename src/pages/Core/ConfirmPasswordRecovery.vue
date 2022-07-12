@@ -63,7 +63,6 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CElementCover, CSpinner} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -76,8 +75,6 @@ import UserService from '@/services/UserService';
 
 @Component({
 	components: {
-		CElementCover,
-		CSpinner,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,

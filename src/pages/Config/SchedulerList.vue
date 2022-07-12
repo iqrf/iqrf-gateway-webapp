@@ -210,7 +210,7 @@ limitations under the License.
 								<v-card-title class='text-h5 error'>
 									{{ $t('config.daemon.scheduler.modal.title') }}
 								</v-card-title>
-								<v-card-text>
+								<v-card-text v-if='deleteTask !== null'>
 									{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: deleteTask}) }}
 								</v-card-text>
 								<v-card-actions>

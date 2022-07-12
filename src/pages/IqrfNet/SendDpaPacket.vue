@@ -222,7 +222,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '@/components/IqrfNet/DpaMacros.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
@@ -239,7 +238,6 @@ import {RawMessage} from '@/interfaces/dpa';
 
 @Component({
 	components: {
-		CElementCover,
 		DpaMacros,
 		JsonMessage,
 		ValidationObserver,

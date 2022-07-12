@@ -91,7 +91,8 @@ limitations under the License.
 							<v-list dense>
 								<v-list-item
 									dense
-									@click='changeLanguage(item, "en")'>
+									@click='changeLanguage(item, "en")'
+								>
 									{{ $t('core.user.languages.en') }}
 								</v-list-item>
 							</v-list>
