@@ -52,7 +52,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
 import IqrfSpi from '@/components/Config/IqrfSpi.vue';
 import IqrfCdc from '@/components/Config/IqrfCdc.vue';
 import IqrfUart from '@/components/Config/IqrfUart.vue';
@@ -68,7 +67,6 @@ import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
-		CElementCover,
 		IqrfCdc,
 		IqrfDpa,
 		IqrfSpi,

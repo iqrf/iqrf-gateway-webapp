@@ -81,7 +81,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CElementCover} from '@coreui/vue/src';
+
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 
@@ -96,7 +96,6 @@ import {IIqrfCdc} from '@/interfaces/iqrfInterfaces';
 
 @Component({
 	components: {
-		CElementCover,
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,

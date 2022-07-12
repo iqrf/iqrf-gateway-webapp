@@ -50,15 +50,10 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import IqrfNetService from '@/services/IqrfNetService';
-import {CSpinner} from '@coreui/vue/src';
 import {DaemonClientState} from '@/interfaces/wsClient';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/dpa';
 
-@Component({
-	components: {
-		CSpinner,
-	},
-})
+@Component({})
 
 /**
  * Coordinator information block component for gateway information
