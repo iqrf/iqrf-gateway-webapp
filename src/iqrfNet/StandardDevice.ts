@@ -105,7 +105,7 @@ class StandardDevice {
 	/**
 	 * Standard unsupported icon
 	 */
-	private readonly standardUnsupported = 'mdi-check-circle-outline';
+	private readonly standardUnsupported = 'mdi-close-circle-outline';
 
 	/**
 	 * Constructor
@@ -313,6 +313,14 @@ class StandardDevice {
 	 */
 	setSensors(sensors: Array<IInfoSensorDetail>): void {
 		this.sensors = sensors;
+	}
+
+	/**
+	 * Returns implemented sensors
+	 * @returns Implemented sensors
+	 */
+	getSensors(): Array<IInfoSensorDetail> {
+		return this.sensors;
 	}
 
 	/**
