@@ -17,51 +17,50 @@ limitations under the License.
 <template>
 	<div>
 		<v-card>
-			<v-card-title class='datatable-header'>
-				<div>
+			<v-toolbar flat>
+				<v-toolbar-title>
 					{{ $t('iqrfnet.standard.table.title') }}
-				</div>
-				<div>
-					<v-btn
-						color='primary'
-						small
-						@click='enumerateNetwork'
-					>
-						<v-icon small>
-							mdi-google-spreadsheet
-						</v-icon>
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
-						</span>
-					</v-btn> <v-btn
-						color='primary'
-						small
-						@click='getDevices'
-					>
-						<v-icon small>
-							mdi-sync
-						</v-icon>
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.refresh') }}
-						</span>
-					</v-btn> <v-btn
-						color='error'
-						small
-						@click='showModal = true'
-					>
-						<v-icon small>
-							mdi-refresh
-						</v-icon>
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.reset') }}
-						</span>
-					</v-btn>
-				</div>
-			</v-card-title>
+				</v-toolbar-title>
+				<v-spacer />
+				<v-btn
+					color='primary'
+					small
+					@click='enumerateNetwork'
+				>
+					<v-icon small>
+						mdi-google-spreadsheet
+					</v-icon>
+					<span class='d-none d-lg-inline'>
+						{{ $t('iqrfnet.standard.table.actions.enumerate') }}
+					</span>
+				</v-btn> <v-btn
+					color='primary'
+					small
+					@click='getDevices'
+				>
+					<v-icon small>
+						mdi-sync
+					</v-icon>
+					<span class='d-none d-lg-inline'>
+						{{ $t('iqrfnet.standard.table.actions.refresh') }}
+					</span>
+				</v-btn> <v-btn
+					color='error'
+					small
+					@click='showModal = true'
+				>
+					<v-icon small>
+						mdi-refresh
+					</v-icon>
+					<span class='d-none d-lg-inline'>
+						{{ $t('iqrfnet.standard.table.actions.reset') }}
+					</span>
+				</v-btn>
+			</v-toolbar>
 			<v-card-text>
 				<div class='datatable-legend'>
 					<div>
-						<v-icon	color='info'>
+						<v-icon>
 							mdi-information-outline
 						</v-icon>
 						{{ $t('iqrfnet.standard.table.info') }}
@@ -113,168 +112,132 @@ limitations under the License.
 					:headers='headers'
 					:items='devices'
 					:no-data-text='$t("iqrfnet.standard.table.fields.noDevices")'
+					show-expand
+					:expanded.sync='expanded'
+					expand-icon='mdi-information-outline'
+					item-key='address'
 				>
 					<template #[`item.address`]='{item}'>
-						<td>
-							<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
-								{{ item.getAddress() }}
-							</router-link>
-						</td>
+						<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
+							{{ item.getAddress() }}
+						</router-link>
 					</template>
 					<template #[`item.product`]='{item}'>
-						<td class='datatable-details'>
-							{{ item.getProductName() }}
-							<v-btn
-								color='info'
-								size='xl'
-								icon
-								@click='item.showDetails = !item.showDetails'
-							>
-								<v-icon>
-									mdi-information-outline
-								</v-icon>
-							</v-btn>
-						</td>
+						{{ item.getProductName() }}
 					</template>
 					<template #[`item.os`]='{item}'>
-						<td>
-							{{ item.getOs() }}
-						</td>
+						{{ item.getOs() }}
 					</template>
 					<template #[`item.dpa`]='{item}'>
-						<td>
-							{{ item.getDpa() }}
-						</td>
+						{{ item.getDpa() }}
 					</template>
 					<template #[`item.status`]='{item}'>
-						<td>
-							<v-icon
-								:color='item.getIconColor()'
-								size='xl'
-							>
-								{{ item.getIcon() }}
-							</v-icon>
-						</td>
+						<v-icon
+							:color='item.getIconColor()'
+							size='xl'
+						>
+							{{ item.getIcon() }}
+						</v-icon>
 					</template>
 					<template #[`item.sensor`]='{item}'>
-						<td>
-							<v-icon
-								:color='item.hasSensor() ? "success" : "error"'
-								size='xl'
-							>
-								{{ item.getSensorIcon() }}
-							</v-icon>
-						</td>
+						<v-icon
+							:color='item.hasSensor() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getSensorIcon() }}
+						</v-icon>
 					</template>
 					<template #[`item.binout`]='{item}'>
-						<td>
-							<v-icon
-								:color='item.hasBinout() ? "success" : "error"'
-								size='xl'
-							>
-								{{ item.getBinoutIcon() }}
-							</v-icon>
-						</td>
+						<v-icon
+							:color='item.hasBinout() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getBinoutIcon() }}
+						</v-icon>
 					</template>
 					<template #[`item.light`]='{item}'>
-						<td>
-							<v-icon
-								:color='item.hasLight() ? "success" : "error"'
-								size='xl'
-							>
-								{{ item.getLightIcon() }}
-							</v-icon>
-						</td>
+						<v-icon
+							:color='item.hasLight() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getLightIcon() }}
+						</v-icon>
 					</template>
 					<template #[`item.dali`]='{item}'>
-						<td>
-							<v-icon
-								:color='item.hasDali() ? "success" : "error"'
-								size='xl'
-							>
-								{{ item.getDaliIcon() }}
-							</v-icon>
-						</td>
+						<v-icon
+							:color='item.hasDali() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getDaliIcon() }}
+						</v-icon>
 					</template>
-					<template #[`item.details`]='{item}'>
-						<v-card v-if='item.showDetails'>
-							<v-card-text>
-								<v-img
-									v-if='item.showDetails'
-									:src='item.getImg'
-									:aside-image-props='{
-										src: item.getImg(),
-										block: true,
-										width: `150px`,
-										height: `150px`,
-									}'
-								/>
-								<div
-									class='details-table'
-								>
-									<table>
-										<tbody>
-											<tr>
-												<th>
-													{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
-												</th>
-												<td>
-													{{ item.getManufacturer() }}
-												</td>
-											</tr>
-											<tr>
-												<th>
-													{{ $t('iqrfnet.standard.table.fields.hwpid') }}
-												</th>
-												<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
-											</tr>
-											<tr>
-												<th>
-													{{ $t('iqrfnet.standard.table.fields.hwpidVer') }}
-												</th>
-												<td>{{ item.getHwpidVer() }}</td>
-											</tr>
-											<tr>
-												<th>
-													{{ $t('iqrfnet.standard.table.fields.mid') }}
-												</th>
-												<td>
-													{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									<table>
-										<tbody>
-											<tr v-if='item.hasBinout()'>
-												<th>
-													{{ $t('iqrfnet.standard.binaryOutput.title') }}
-												</th>
-												<td>
-													{{ item.getBinouts() }}
-												</td>
-											</tr>
-											<tr v-if='item.hasLight()'>
-												<th>
-													{{ $t('iqrfnet.standard.light.title') }}
-												</th>
-												<td>
-													{{ item.getLights() }}
-												</td>
-											</tr>
-											<tr v-if='item.hasSensor()'>
-												<th>
-													{{ $t('iqrfnet.standard.sensor.title') }}
-												</th>
-												<td style='white-space: pre-line;'>
-													{{ item.getSensorDetails() }}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</v-card-text>
-						</v-card>
+					<template #expanded-item='{headers, item}'>
+						<td :colspan='headers.length'>
+							<v-container>
+								<v-row>
+									<v-col cols='auto' align-self='center'>
+										<v-img
+											:src='item.getImg()'
+											max-width='150'
+											max-height='150'
+										/>
+									</v-col>
+									<v-divider vertical />
+									<v-col cols='auto'>
+										<div class='details-table'>
+											<table>
+												<caption class='sensor-caption'>
+													<b>{{ $t('iqrfnet.standard.table.info') }}</b>
+												</caption>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
+													</th>
+													<td>
+														{{ item.getManufacturer() }}
+													</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
+													</th>
+													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.hwpidVer') }}
+													</th>
+													<td>{{ item.getHwpidVer() }}</td>
+												</tr>
+												<tr>
+													<th>
+														{{ $t('iqrfnet.standard.table.fields.mid') }}
+													</th>
+													<td>
+														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
+													</td>
+												</tr>
+											</table>
+											<table v-if='item.hasSensor()'>
+												<caption class='sensor-caption'>
+													<b>{{ $t('iqrfnet.standard.table.sensor.title') }}</b>
+												</caption>
+												<tr>
+													<th>{{ $t('iqrfnet.standard.table.sensor.name') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.type') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.index') }}</th>
+												</tr>
+												<tr v-for='(sensor, i) of item.getSensors()' :key='i'>
+													<td>{{ sensor.name }}</td>
+													<td>{{ sensor.type }}</td>
+													<td>{{ sensor.idx }}</td>
+												</tr>
+											</table>
+										</div>
+									</v-col>
+								</v-row>
+							</v-container>
+						</td>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -355,6 +318,8 @@ export default class StandardDevices extends Vue {
 	 */
 	private showModal = false;
 
+	private expanded: Array<StandardDevices> = [];
+
 	/**
 	 * @constant {Array<DataTableHeader>} fields Array of CoreUI data table fields
 	 */
@@ -404,6 +369,10 @@ export default class StandardDevices extends Vue {
 			text: this.$t('iqrfnet.standard.table.fields.dali').toString(),
 			filterable: false,
 			sortable: false,
+		},
+		{
+			value: 'data-table-expand',
+			text: '',
 		},
 	];
 
@@ -727,6 +696,7 @@ export default class StandardDevices extends Vue {
 				});
 		}
 		this.devices = this.auxDevices;
+		this.auxDevices = [];
 	}
 
 	/**
@@ -844,13 +814,6 @@ export default class StandardDevices extends Vue {
 	margin-bottom: 1.25em;
 }
 
-.datatable-details {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: -1px;
-}
-
 .details-table {
 	display: flex;
 	align-items: flex-start;
@@ -860,13 +823,23 @@ export default class StandardDevices extends Vue {
 .details-table > table {
 	margin-left: 1em;
 	margin-right: 1em;
-}
+	text-align: left;
+	border-collapse: collapse;
 
-.table {
+	tr {
+		border-top: 1px solid #d8dbe0;
+	}
+
 	th,
 	td {
+		padding: 0.75rem 0.75rem 0.75rem 0;
 		vertical-align: top;
-		border: 0;
 	}
+}
+
+.sensor-caption {
+	caption-side: top;
+	color: #3c4b64;
+	text-align: left;
 }
 </style>
