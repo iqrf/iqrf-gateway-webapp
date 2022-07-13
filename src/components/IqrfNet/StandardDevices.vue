@@ -184,9 +184,9 @@ limitations under the License.
 									</v-col>
 									<v-divider vertical />
 									<v-col cols='auto'>
-										<div class='details-table'>
+										<div class='datatable-expansion-table'>
 											<table>
-												<caption class='sensor-caption'>
+												<caption>
 													<b>{{ $t('iqrfnet.standard.table.info') }}</b>
 												</caption>
 												<tr>
@@ -812,34 +812,5 @@ export default class StandardDevices extends Vue {
 	align-items: center;
 	justify-content: space-evenly;
 	margin-bottom: 1.25em;
-}
-
-.details-table {
-	display: flex;
-	align-items: flex-start;
-	justify-content: left;
-}
-
-.details-table > table {
-	margin-left: 1em;
-	margin-right: 1em;
-	text-align: left;
-	border-collapse: collapse;
-
-	tr {
-		border-top: 1px solid #d8dbe0;
-	}
-
-	th,
-	td {
-		padding: 0.75rem 0.75rem 0.75rem 0;
-		vertical-align: top;
-	}
-}
-
-.sensor-caption {
-	caption-side: top;
-	color: #3c4b64;
-	text-align: left;
 }
 </style>

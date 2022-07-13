@@ -18,195 +18,195 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('network.wireless.title') }}</h1>
 		<v-card>
-			<div v-if='interfacesLoaded && ifNameOptions.length === 0'>
-				<v-card-text>
+			<v-card-text>
+				<span v-if='interfacesLoaded && ifNameOptions.length === 0'>
 					{{ $t('network.wireless.messages.noInterfaces') }}
-				</v-card-text>
-			</div>
-			<div v-else>
-				<v-card-text>
-					<v-data-table
-						:headers='headers'
-						:items='accessPoints'
-						:no-data-text='$t("network.wireless.table.noAccessPoints")'
-					>
-						<template #top>
-							<v-toolbar dense flat>
-								<v-spacer />
-								<v-btn
-									color='primary'
-									small
-									@click='getAccessPoints'
-								>
-									<v-icon small>
-										mdi-refresh
-									</v-icon>
-									{{ $t('forms.refresh') }}
-								</v-btn>
-							</v-toolbar>
-						</template>
-						<template #[`item.ssid`]='{item}'>
-							<v-chip
-								v-if='item.aps[0].inUse'
-								color='success'
-								small
-								label
-							>
-								{{ $t('network.connection.states.connected') }}
-							</v-chip>
-							{{ item.ssid }}
+				</span>
+				<v-data-table
+					v-else
+					:headers='headers'
+					:items='accessPoints'
+					item-key='ssid'
+					:no-data-text='$t("network.wireless.table.noAccessPoints")'
+					show-expand
+					expand-icon='mdi-information-outline'
+					:expanded.sync='expanded'
+				>
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
 							<v-btn
-								icon
-								@click='item.aps[0].showDetails = !item.aps[0].showDetails'
-							>
-								<v-icon color='info'>
-									mdi-information-outline
-								</v-icon>
-							</v-btn>
-						</template>
-						<template #[`item.signal`]='{item}'>
-							<v-progress-linear
-								:value='item.aps[0].signal'
-								:color='signalColor(item.aps[0].signal)'
-								height='20'
-							/>
-						</template>
-						<template #[`item.security`]='{item}'>
-							{{ item.aps[0].security }}
-						</template>
-						<template #[`item.interfaceName`]='{item}'>
-							{{ item.aps[0].interfaceName }}
-						</template>
-						<template #[`item.actions`]='{item}'>
-							<v-btn
-								small
-								:color='item.aps[0].inUse ? "error" : "success"'
-								@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
-									item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
-									addConnection(item.aps[0])'
-							>
-								<v-icon small>
-									{{ item.aps[0].inUse ? 'mdi-link-off' : 'mdi-link-plus' }}
-								</v-icon>
-								{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
-							</v-btn> <v-btn
-								v-if='item.aps[0].uuid'
-								small
 								color='primary'
-								:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
-							>
-								<v-icon small>
-									mdi-pencil
-								</v-icon>
-								{{ $t('table.actions.edit') }}
-							</v-btn> <v-btn
-								v-if='item.aps[0].uuid'
 								small
-								color='danger'
-								@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
+								@click='getAccessPoints'
 							>
 								<v-icon small>
-									mdi-delete
+									mdi-refresh
 								</v-icon>
-								{{ $t('table.actions.delete') }}
+								{{ $t('forms.refresh') }}
 							</v-btn>
-							<v-dialog
-								v-model='disconnectDialog'
-								width='50%'
-								persistent
-								no-click-animation
-							>
-								<v-card>
-									<v-card-title class='text-h5 warning'>
-										{{ $t('network.wireless.modal.titleDisconnect') }}
-									</v-card-title>
-									<v-card-text>
-										{{ $t('network.wireless.modal.promptDisconnect') }}
-									</v-card-text>
-									<v-card-actions>
-										<v-spacer />
-										<v-btn
-											color='warning'
-											@click='disconnect(disconnectAp.uuid, disconnectAp.ssid, disconnectAp.interfaceName)'
-										>
-											{{ $t('network.table.disconnect') }}
-										</v-btn> <v-btn
-											color='secondary'
-											@click='disconnectAp = null'
-										>
-											{{ $t('forms.cancel') }}
-										</v-btn>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
-							<v-dialog
-								v-model='deleteDialog'
-								width='50%'
-								persistent
-								no-click-animation
-							>
-								<v-card>
-									<v-card-title class='text-h5 warning'>
-										<v-icon>mdi-alert</v-icon>
-										{{ $t('network.wireless.modal.titleDelete') }}
-									</v-card-title>
-									<v-card-text>
-										{{ $t('network.wireless.modal.promptDelete') }}
-									</v-card-text>
-									<v-card-actions>
-										<v-spacer />
-										<v-btn
-											color='warning'
-											@click='removeConnection(deleteAp.uuid, deleteAp.ssid)'
-										>
-											{{ $t('table.actions.delete') }}
-										</v-btn> <v-btn
-											color='secondary'
-											@click='deleteAp = null'
-										>
-											{{ $t('forms.cancel') }}
-										</v-btn>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
-						</template>
-						<template #details='{item}'>
-							<v-card-text :show='item.aps[0].showDetails'>
-								<div class='table-details'>
-									<table>
-										<tbody>
-											<tr>
-												<th>BSSID</th>
-												<td>
-													{{ item.aps[0].bssid }}
-												</td>
-											</tr>
-											<tr>
-												<th>Mode</th>
-												<td>
-													{{ item.aps[0].mode }}
-												</td>
-											</tr>
-											<tr>
-												<th>Channel</th>
-												<td>
-													{{ item.aps[0].channel }}
-												</td>
-											</tr>
-											<tr>
-												<th>Rate</th>
-												<td>
-													{{ item.aps[0].rate }}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</v-card-text>
-						</template>
-					</v-data-table>
-				</v-card-text>
-			</div>
+						</v-toolbar>
+					</template>
+					<template #[`item.ssid`]='{item}'>
+						<v-chip
+							v-if='item.aps[0].inUse'
+							color='success'
+							small
+							label
+						>
+							{{ $t('network.connection.states.connected') }}
+						</v-chip>
+						{{ item.ssid }}
+					</template>
+					<template #[`item.signal`]='{item}'>
+						<v-progress-linear
+							:value='item.aps[0].signal'
+							:color='signalColor(item.aps[0].signal)'
+							height='20'
+						/>
+					</template>
+					<template #[`item.security`]='{item}'>
+						{{ item.aps[0].security }}
+					</template>
+					<template #[`item.interfaceName`]='{item}'>
+						{{ item.aps[0].interfaceName }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							small
+							:color='item.aps[0].inUse ? "error" : "success"'
+							@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
+								item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
+								addConnection(item.aps[0])'
+						>
+							<v-icon small>
+								{{ item.aps[0].inUse ? 'mdi-link-off' : 'mdi-link-plus' }}
+							</v-icon>
+							{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
+						</v-btn> <v-btn
+							v-if='item.aps[0].uuid'
+							small
+							color='primary'
+							:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <v-btn
+							v-if='item.aps[0].uuid'
+							small
+							color='danger'
+							@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+						<v-dialog
+							v-model='disconnectDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<v-card>
+								<v-card-title class='text-h5 warning'>
+									{{ $t('network.wireless.modal.titleDisconnect') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('network.wireless.modal.promptDisconnect') }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='warning'
+										@click='disconnect(disconnectAp.uuid, disconnectAp.ssid, disconnectAp.interfaceName)'
+									>
+										{{ $t('network.table.disconnect') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='disconnectAp = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+						<v-dialog
+							v-model='deleteDialog'
+							width='50%'
+							persistent
+							no-click-animation
+						>
+							<v-card>
+								<v-card-title class='text-h5 warning'>
+									<v-icon>mdi-alert</v-icon>
+									{{ $t('network.wireless.modal.titleDelete') }}
+								</v-card-title>
+								<v-card-text>
+									{{ $t('network.wireless.modal.promptDelete') }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='warning'
+										@click='removeConnection(deleteAp.uuid, deleteAp.ssid)'
+									>
+										{{ $t('table.actions.delete') }}
+									</v-btn> <v-btn
+										color='secondary'
+										@click='deleteAp = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</template>
+					<template #expanded-item='{headers, item}'>
+						<td :colspan='headers.length'>
+							<v-container>
+								<v-row>
+									<v-col>
+										<div class='datatable-expansion-table'>
+											<table>
+												<caption>
+													<b>{{ $t('network.wireless.table.details') }}</b>
+												</caption>
+												<tr>
+													<th>{{ $t('network.wireless.table.bssid') }}</th>
+													<td>
+														{{ item.aps[0].bssid }}
+													</td>
+												</tr>
+												<tr>
+													<th>{{ $t('network.wireless.table.mode') }}</th>
+													<td>
+														{{ item.aps[0].mode }}
+													</td>
+												</tr>
+												<tr>
+													<th>{{ $t('network.wireless.table.channel') }}</th>
+													<td>
+														{{ item.aps[0].channel }}
+													</td>
+												</tr>
+												<tr>
+													<th>{{ $t('network.wireless.table.rate') }}</th>
+													<td>
+														{{ item.aps[0].rate }}
+													</td>
+												</tr>
+											</table>
+										</div>
+									</v-col>
+								</v-row>
+							</v-container>
+						</td>
+					</template>
+				</v-data-table>
+			</v-card-text>
 		</v-card>
 	</div>
 </template>
@@ -240,6 +240,11 @@ export default class WifiConnections extends Vue {
 	 * @var {Array<IAccessPointArray>} accessPoints Array of available access points
 	 */
 	private accessPoints: Array<IAccessPointArray> = [];
+
+	/**
+	 * @var {Array<IAccessPointArray>} expanded Expanded table rows
+	 */
+	private expanded: Array<IAccessPointArray> = [];
 
 	/**
 	 * @var {Array<IOption>} ifnameOptions Array of vuetify interface select options
@@ -281,6 +286,10 @@ export default class WifiConnections extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			filterable: false,
 			sortable: false,
+		},
+		{
+			value: 'data-table-expand',
+			text: '',
 		},
 	];
 
@@ -402,7 +411,6 @@ export default class WifiConnections extends Vue {
 				const connections: Array<NetworkConnection> = response.data;
 				const apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
-					ap['showDetails'] = false;
 					const idx = apArray.findIndex(item => item.ssid === ap.ssid);
 					if (idx !== -1) {
 						if (ap.inUse) {
@@ -593,30 +601,3 @@ export default class WifiConnections extends Vue {
 	}
 }
 </script>
-
-<style lang='scss' scoped>
-.table-ssid {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: -1px;
-}
-
-.table-details {
-	display: flex;
-	align-items: flex-start;
-	justify-content: left;
-}
-
-.table-details > table {
-	margin-left: 1em;
-	margin-right: 1em;
-}
-
-.table {
-	th,
-	td {
-		border: 0;
-	}
-}
-</style>
