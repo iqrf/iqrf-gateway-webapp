@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<v-card>
+		<v-card class='mb-3'>
 			<div v-if='interfacesLoaded && noInterfaces'>
 				<v-card-text>
 					{{ $t('network.mobile.messages.noInterfaces') }}
