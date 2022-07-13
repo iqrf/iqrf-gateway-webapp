@@ -106,3 +106,31 @@ fieldset {
 .vdatetime-year-picker__item--selected {
 	color: var(--primary) !important;
 }
+
+.datatable-expansion-table {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+
+	table {
+		margin-left: 1em;
+		margin-right: 1em;
+		text-align: left;
+		border-collapse: collapse;
+
+		caption {
+			caption-side: top;
+			color: #3c4b64;
+			text-align: left;
+		}
+
+		tr {
+			border-top: 1px solid #d8dbe0;
+		}
+		th,
+		td {
+			padding: 0.75rem 0.75rem 0.75rem 0;
+			vertical-align: top;
+		}
+	}
+}
