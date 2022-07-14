@@ -200,7 +200,7 @@ limitations under the License.
 													<th>
 														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
 													</th>
-													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
+													<td>{{ `${item.getHwpid()} [${item.getHwpidHex()}]` }}</td>
 												</tr>
 												<tr>
 													<th>
@@ -213,7 +213,7 @@ limitations under the License.
 														{{ $t('iqrfnet.standard.table.fields.mid') }}
 													</th>
 													<td>
-														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
+														{{ `${item.getMid()} [${item.getMidHex()}]` }}
 													</td>
 												</tr>
 											</table>
