@@ -105,13 +105,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-
-
-interface ApiKey {
-	description: string
-	expiration: string
-	id: number
-}
+import { IApiKey } from '@/interfaces/apiKey';
 
 @Component({
 	metaInfo: {
@@ -127,7 +121,7 @@ export default class ApiKeyList extends Vue {
 	/**
 	 * @var {Array<ApiKey>} keys List of API key objects
 	 */
-	private keys: Array<ApiKey> = [];
+	private keys: Array<IApiKey> = [];
 
 	/**
 	 * @var {number} deleteKey API key id used in remove modal
@@ -211,7 +205,10 @@ export default class ApiKeyList extends Vue {
 	 * Converts expiration date and time from UTC to locale string
 	 * @returns {string} Expiration date and time in locale format
 	 */
-	private timeString(item: ApiKey): string {
+	private timeString(item: IApiKey): string {
+		if (!item.expiration) {
+			return '';
+		}
 		return DateTime.fromISO(item.expiration).toLocaleString(DateTime.DATETIME_FULL);
 	}
 

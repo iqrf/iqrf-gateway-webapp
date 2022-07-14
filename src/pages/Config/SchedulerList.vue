@@ -697,7 +697,7 @@ export default class SchedulerList extends Vue {
 	private timeString(item: ITaskTimeSpec): string|undefined {
 		try {
 			if (item.exactTime) {
-				return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(this.dateFormat) + ')';
+				return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(DateTime.DATETIME_FULL) + ')';
 			}
 			if (item.periodic) { // human readable periodic time specification conversion
 				let message = 'every ';

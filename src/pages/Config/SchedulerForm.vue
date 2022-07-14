@@ -24,8 +24,8 @@ limitations under the License.
 		</h1>
 		<v-card>
 			<v-card-text>
-				<ValidationObserver v-slot='{ invalid }'>
-					<form @submit.prevent='saveTask'>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='integer|required'
@@ -116,24 +116,118 @@ limitations under the License.
 						</ValidationProvider>
 						<div
 							v-if='timeSpecSelected === "exact"'
-							class='form-group'
 						>
-							<label for='exactTime'>
-								{{ $t("config.daemon.scheduler.form.task.startTime") }}
-							</label>
-							<Datetime
-								id='exactTime'
-								v-model='timeSpec.startTime'
-								type='datetime'
-								:format='dateFormat'
-								:min-datetime='new Date().toISOString()'
-								input-class='form-control'
-							/>
-						</div><hr>
-						<div class='messages-header'>
-							<h3>
+							<v-row>
+								<v-col>
+									<v-dialog
+										ref='date'
+										v-model='showDateDialog'
+										:return-value.sync='date'
+										width='auto'
+										persistent
+										no-click-animation
+									>
+										<template #activator='{on, attrs}'>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												rules='required'
+												:custom-messages='{
+													required: $t("forms.errors.date")
+												}'
+											>
+												<v-text-field
+													v-model='date'
+													:label='$t("forms.fields.date")'
+													:success='touched ? valid : null'
+													:error-messages='errors'
+													readonly
+													prepend-icon='mdi-calendar'
+													v-bind='attrs'
+													v-on='on'
+												/>
+											</ValidationProvider>
+										</template>
+										<v-date-picker
+											v-model='date'
+											:min='new Date().toISOString()'
+										>
+											<v-spacer />
+											<v-btn
+												color='primary'
+												text
+												@click='$refs.date.save(date)'
+											>
+												{{ $t('forms.ok') }}
+											</v-btn> <v-btn
+												color='secondary'
+												text
+												@click='showDateDialog = false'
+											>
+												{{ $t('forms.cancel') }}
+											</v-btn>
+										</v-date-picker>
+									</v-dialog>
+								</v-col>
+								<v-col>
+									<v-dialog
+										ref='time'
+										v-model='showTimeDialog'
+										:return-value.sync='time'
+										width='auto'
+										persistent
+										no-click-animation
+									>
+										<template #activator='{on, attrs}'>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												rules='required'
+												:custom-messages='{
+													required: $t("forms.errors.time")
+												}'
+											>
+												<v-text-field
+													v-model='time'
+													:label='$t("forms.fields.time")'
+													:success='touched ? valid : null'
+													:error-messages='errors'
+													readonly
+													prepend-icon='mdi-clock-outline'
+													v-bind='attrs'
+													v-on='on'
+												/>
+											</ValidationProvider>
+										</template>
+										<v-time-picker
+											v-model='time'
+										>
+											<v-spacer />
+											<v-btn
+												color='primary'
+												text
+												@click='$refs.time.save(time)'
+											>
+												{{ $t('forms.ok') }}
+											</v-btn> <v-btn
+												color='secondary'
+												text
+												@click='showTimeDialog = false'
+											>
+												{{ $t('forms.cancel') }}
+											</v-btn>
+										</v-time-picker>
+									</v-dialog>
+								</v-col>
+							</v-row>
+						</div>
+						<v-divider />
+						<v-toolbar
+							dense
+							flat
+						>
+							<v-toolbar-title>
 								{{ $t('config.daemon.scheduler.form.messages.title') }}
-							</h3>
+							</v-toolbar-title>
+							<v-spacer />
 							<v-btn
 								color='primary'
 								small
@@ -142,8 +236,8 @@ limitations under the License.
 							>
 								{{ $t("iqrfnet.sendJson.documentation") }}
 							</v-btn>
-						</div>
-						<div v-for='i of tasks.length' :key='i' class='form-group'>
+						</v-toolbar>
+						<div v-for='i of tasks.length' :key='i'>
 							<hr v-if='i > 1'>
 							<v-row>
 								<v-col>
@@ -187,7 +281,6 @@ limitations under the License.
 									<div
 										v-for='(messaging, j) of tasks[i-1].messaging'
 										:key='j'
-										class='form-group'
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
@@ -222,10 +315,14 @@ limitations under the License.
 								</v-col>
 							</v-row>
 						</div>
-						<v-btn type='submit' color='primary' :disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'>
+						<v-btn
+							color='primary'
+							:disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'
+							@click='saveTask'
+						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -236,9 +333,9 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
-import {Datetime} from 'vue-datetime';
 
 import DaemonApiValidator from '@/helpers/DaemonApiValidator';
+import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import cron from 'cron-validate';
@@ -265,7 +362,6 @@ enum TimeSpecTypes {
 
 @Component({
 	components: {
-		Datetime,
 		JsonEditor,
 		JsonSchemaErrors,
 		ValidationObserver,
@@ -300,19 +396,6 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null;
-
-	/**
-	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
-	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
 
 	/**
 	 * @var {Array<IOption>} messagings Array of available messaging component instances
@@ -359,6 +442,26 @@ export default class SchedulerForm extends Vue {
 		exactTime: false,
 		startTime: ''
 	};
+
+	/**
+	 * @var {string} date Date string
+	 */
+	private date = '';
+
+	/**
+	 * @var {string} time Time string
+	 */
+	private time = '';
+
+	/**
+	 * @var {boolean} showDateDialog Date dialog visibility
+	 */
+	private showDateDialog = false;
+
+	/**
+	 * @var {boolean} showTimeDialog Time dialog visibility
+	 */
+	private showTimeDialog = false;
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
@@ -665,6 +768,9 @@ export default class SchedulerForm extends Vue {
 			this.timeSpecSelected = TimeSpecTypes.CRON;
 		} else if (taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
 			this.timeSpecSelected = TimeSpecTypes.EXACT;
+			const date = DateTime.fromISO(taskDaemon.timeSpec.startTime);
+			this.date = date.toISODate();
+			this.time = date.toLocaleString(DateTime.TIME_24_SIMPLE);
 		} else {
 			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
 		}
@@ -698,6 +804,9 @@ export default class SchedulerForm extends Vue {
 			this.timeSpecSelected = TimeSpecTypes.CRON;
 		} else if (taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
 			this.timeSpecSelected = TimeSpecTypes.EXACT;
+			const date = DateTime.fromISO(taskRest.timeSpec.startTime);
+			this.date = date.toISODate();
+			this.time = date.toLocaleString(DateTime.TIME_24_SIMPLE);
 		} else {
 			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
 		}
@@ -763,9 +872,8 @@ export default class SchedulerForm extends Vue {
 			timeSpec.exactTime = true;
 			timeSpec.periodic = false;
 			timeSpec.period = 0;
-			const date = new Date(timeSpec.startTime);
-			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-			timeSpec.startTime = date.toISOString().split('.')[0];
+			const date = DateTime.fromISO(`${this.date}T${this.time}`);
+			timeSpec.startTime = date.toISO();
 		} else if (this.timeSpecSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
 			timeSpec.cronTime = Array(7).fill('');
 			timeSpec.exactTime = false;
