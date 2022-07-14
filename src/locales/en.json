@@ -212,6 +212,7 @@
 		"clipboardCopy": "Copy to clipboard",
 		"changePassword": "Change password",
 		"downloadBackup": "Download backup",
+		"unknown": "Unknown",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",

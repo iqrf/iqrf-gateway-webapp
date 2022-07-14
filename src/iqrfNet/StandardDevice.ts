@@ -193,7 +193,7 @@ class StandardDevice {
 	getDpa(): string {
 		const major = (this.dpa >> 8).toString(16);
 		const minor = (this.dpa & 0xff).toString(16).padStart(2, '0');
-		return major + '.' + minor;
+		return `${major}.${minor}`;
 	}
 
 	/**
@@ -218,10 +218,10 @@ class StandardDevice {
 	 */
 	getOs(): string {
 		const build = this.getOsBuild();
-		if (this.osVersion === '') {
-			return build;
+		if (!this.osVersion || this.osVersion === '') {
+			return `${i18n.t('forms.unknown').toString()} (${build})`;
 		}
-		return this.osVersion + ' (' + build + ')';
+		return `${this.osVersion} (${build})`;
 	}
 
 	/**
@@ -321,31 +321,6 @@ class StandardDevice {
 	 */
 	getSensors(): Array<IInfoSensorDetail> {
 		return this.sensors;
-	}
-
-	/**
-	 * Returns breakdown of implemented sensors
-	 * @returns Implemented sensors details
-	 */
-	getSensorDetails(): string {
-		if (this.sensors.length > 0) {
-			let message = '';
-			this.sensors.forEach((sensor: IInfoSensorDetail) => {
-				message += '\n\n' + i18n.t(
-					'iqrfnet.standard.table.messages.sensor.detail',
-					{
-						name: sensor.name,
-						short: sensor.shortName,
-						type: sensor.type,
-						unit: sensor.unit === '?' ? 'N/A' : sensor.unit,
-						commands: sensor.frcs.join(', '),
-					},
-				).toString();
-			});
-			return message.trim();
-		} else {
-			return i18n.t('iqrfnet.standard.table.messages.sensor.notImplemented').toString();
-		}
 	}
 
 	/**
