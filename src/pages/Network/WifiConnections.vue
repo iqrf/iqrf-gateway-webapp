@@ -29,7 +29,6 @@ limitations under the License.
 					item-key='ssid'
 					:no-data-text='$t("network.wireless.table.noAccessPoints")'
 					show-expand
-					expand-icon='mdi-information-outline'
 					:expanded.sync='expanded'
 				>
 					<template #top>

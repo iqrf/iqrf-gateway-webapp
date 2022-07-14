@@ -114,7 +114,6 @@ limitations under the License.
 					:no-data-text='$t("iqrfnet.standard.table.fields.noDevices")'
 					show-expand
 					:expanded.sync='expanded'
-					expand-icon='mdi-information-outline'
 					item-key='address'
 				>
 					<template #[`item.address`]='{item}'>
