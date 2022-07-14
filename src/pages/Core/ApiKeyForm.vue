@@ -16,54 +16,151 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/security/api-key/add"'>
-			{{ $t('core.security.apiKey.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('core.security.apiKey.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
-				<ValidationObserver v-slot='{ invalid }'>
-					<form @submit.prevent='saveKey'>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: $t("core.security.apiKey.errors.description"),
 							}'
 						>
 							<v-text-field
-								v-model='metadata.description'
+								v-model='keyData.description'
 								:label='$t("core.security.apiKey.form.description")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div class='form-group'>
-							<v-checkbox
-								v-model='useExpiration'
-								:label='$t("core.security.apiKey.form.expiration")'
-								@change='clear'
-							/>
-							<Datetime
-								v-if='useExpiration'
-								v-model='metadata.expiration'
-								type='datetime'
-								:format='dateFormat'
-								:min-datetime='new Date().toISOString()'
-								input-class='form-control'
-								:disabled='!useExpiration'
-							/>
-						</div>
+						<v-checkbox
+							v-model='useExpiration'
+							:label='$t("core.security.apiKey.form.expiration")'
+							dense
+						/>
+						<v-dialog
+							ref='date'
+							v-model='showDateDialog'
+							:return-value.sync='date'
+							width='auto'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: useExpiration,
+									}'
+									:custom-messages='{
+										required: $t("forms.errors.date")
+									}'
+								>
+									<v-text-field
+										v-model='date'
+										:label='$t("forms.fields.date")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										readonly
+										:disabled='!useExpiration'
+										v-bind='attrs'
+										v-on='on'
+									>
+										<v-icon
+											slot='prepend'
+											:color='inputIconColor'
+										>
+											mdi-calendar
+										</v-icon>
+									</v-text-field>
+								</ValidationProvider>
+							</template>
+							<v-date-picker
+								v-model='date'
+								:min='new Date().toISOString()'
+							>
+								<v-spacer />
+								<v-btn
+									color='primary'
+									text
+									@click='$refs.date.save(date)'
+								>
+									{{ $t('forms.ok') }}
+								</v-btn> <v-btn
+									color='secondary'
+									text
+									@click='showDateDialog = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+							</v-date-picker>
+						</v-dialog>
+						<v-dialog
+							ref='time'
+							v-model='showTimeDialog'
+							:return-value.sync='time'
+							width='auto'
+							persistent
+							no-click-animation
+						>
+							<template #activator='{on, attrs}'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: useExpiration,
+									}'
+									:custom-messages='{
+										required: $t("forms.errors.time")
+									}'
+								>
+									<v-text-field
+										v-model='time'
+										:label='$t("forms.fields.time")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										readonly
+										:disabled='!useExpiration'
+										v-bind='attrs'
+										v-on='on'
+									>
+										<v-icon
+											slot='prepend'
+											:color='inputIconColor'
+										>
+											mdi-clock-outline
+										</v-icon>
+									</v-text-field>
+								</ValidationProvider>
+							</template>
+							<v-time-picker
+								v-model='time'
+							>
+								<v-spacer />
+								<v-btn
+									color='primary'
+									text
+									@click='$refs.time.save(time)'
+								>
+									{{ $t('forms.ok') }}
+								</v-btn> <v-btn
+									color='secondary'
+									text
+									@click='showTimeDialog = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+							</v-time-picker>
+						</v-dialog>
 						<v-btn
-							type='submit'
 							color='primary'
 							:disabled='invalid'
+							@click='save'
 						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -75,16 +172,16 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import ApiKeyService from '@/services/ApiKeyService';
-import {Datetime} from 'vue-datetime';
+import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IApiKey} from '@/interfaces/apiKey';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		Datetime,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -100,30 +197,37 @@ import {MetaInfo} from 'vue-meta';
  */
 export default class ApiKeyForm extends Vue {
 	/**
-	 * @constant {Record<string, string|boolean} dateFormat Date formatting options
+	 * @var {IApiKey} keyData API key data
 	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
-
-	/**
-	 * @var {Record<string, string>} metadata API key metadata
-	 */
-	private metadata: Record<string, string|null> = {
+	private keyData: IApiKey = {
 		description: '',
 		expiration: null
 	};
 
 	/**
+	 * @var {string} date Date string
+	 */
+	private date = '';
+
+	/**
+	 * @var {string} time Time string
+	 */
+	private time = '';
+
+	/**
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false;
+
+	/**
+	 * @var {boolean} showDateDialog Date dialog visibility
+	 */
+	private showDateDialog = false;
+
+	/**
+	 * @var {boolean} showTimeDialog Time dialog visibility
+	 */
+	private showTimeDialog = false;
 
 	/**
 	 * @property {number} keyId API key id
@@ -135,8 +239,7 @@ export default class ApiKeyForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/security/api-key/add' ?
-			this.$t('core.security.apiKey.add').toString() : this.$t('core.security.apiKey.edit').toString();
+		return this.$t(`core.security.apiKey.${this.$route.path === '/security/api-key/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
@@ -144,8 +247,14 @@ export default class ApiKeyForm extends Vue {
 	 * @return {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/security/api-key/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+		return this.$t(`forms.${this.$route.path === '/security/api-key/add' ? 'add' : 'edit'}`).toString();
+	}
+
+	/**
+	 * Returns input icon color depending on expiration required
+	 */
+	get inputIconColor(): string {
+		return this.useExpiration ? 'primary' : 'muted';
 	}
 
 	/**
@@ -155,15 +264,6 @@ export default class ApiKeyForm extends Vue {
 		extend('required', required);
 		if (this.keyId) {
 			this.getKey();
-		}
-	}
-
-	/**
-	 * Clears the expiration field value if it is hidden
-	 */
-	private clear(): void {
-		if (!this.useExpiration) {
-			this.metadata.expiration = null;
 		}
 	}
 
@@ -178,8 +278,11 @@ export default class ApiKeyForm extends Vue {
 		ApiKeyService.getApiKey(this.keyId)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.metadata = response.data;
-				if (this.metadata.expiration !== null) {
+				this.keyData = response.data;
+				if (this.keyData.expiration !== null) {
+					const luxondate = DateTime.fromISO(this.keyData.expiration);
+					this.date = luxondate.toISODate();
+					this.time = luxondate.toLocaleString(DateTime.TIME_24_SIMPLE);
 					this.useExpiration = true;
 				}
 			})
@@ -192,14 +295,21 @@ export default class ApiKeyForm extends Vue {
 	/**
 	 * Creates a new API key or updates metadata of existing API key
 	 */
-	private saveKey(): void {
+	private save(): void {
 		this.$store.commit('spinner/SHOW');
+		const config = JSON.parse(JSON.stringify(this.keyData));
+		if (this.useExpiration) {
+			const luxondate = DateTime.fromISO(`${this.date}T${this.time}`);
+			config.expiration = luxondate.toISO();
+		} else {
+			config.expiration = null;
+		}
 		if (this.keyId !== null) {
-			ApiKeyService.editApiKey(this.keyId, this.metadata)
+			ApiKeyService.editApiKey(this.keyId, config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		} else {
-			ApiKeyService.addApiKey(this.metadata)
+			ApiKeyService.addApiKey(config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		}

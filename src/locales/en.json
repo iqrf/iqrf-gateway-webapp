@@ -158,7 +158,9 @@
 				"error": "Error"
 			},
 			"verbose": "Verbose mode",
-			"coordinator": "Coordinator"
+			"coordinator": "Coordinator",
+			"date": "Date",
+			"time": "Time"
 		},
 		"errors": {
 			"email": "Please enter the e-mail address.",
@@ -169,7 +171,9 @@
 			"requestTopic": "Please enter the topic for requests.",
 			"responseTopic": "Please enter the topic for responses.",
 			"integer": "This parameter should be an integer.",
-			"credentials": "Please enter both username and password, or leave both fields empty."
+			"credentials": "Please enter both username and password, or leave both fields empty.",
+			"date": "Please select date.",
+			"time": "Please select time."
 		},
 		"import": "Import",
 		"export": "Export",
