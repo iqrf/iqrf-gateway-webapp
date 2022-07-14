@@ -15,5 +15,4 @@ Set theme for the IQAROS
 -import './css/themes/generic.scss';
 +import './css/themes/iqaros.scss';
  import './css/app.scss';
- import 'vue-datetime/dist/vue-datetime.css';
  import 'vue-toast-notification/dist/theme-sugar.css';
