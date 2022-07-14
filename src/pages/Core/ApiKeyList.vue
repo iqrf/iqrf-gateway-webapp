@@ -17,76 +17,82 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.apiKey.title') }}</h1>
-		<v-data-table
-			:headers='header'
-			:items='keys'
-		>
-			<template #top>
-				<v-toolbar dense flat>
-					<v-spacer />
-					<v-btn
-						color='success'
-						small
-						to='/security/api-key/add'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-						{{ $t('table.actions.add') }}
-					</v-btn>
-				</v-toolbar>
-			</template>
-			<template #[`item.expiration`]='{item}'>
-				{{ item.expiration !== null ? timeString(item) : 'never' }}
-			</template>
-			<template #[`item.actions`]='{item}'>
-				<v-btn
-					color='info'
-					small
-					:to='"/security/api-key/edit/" + item.id'
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='header'
+					:items='keys'
 				>
-					<v-icon small>
-						mdi-pencil
-					</v-icon>
-					{{ $t('table.actions.edit') }}
-				</v-btn>
-				<v-dialog v-model='deleteModal' width='50%'>
-					<template #activator='{ on, attrs }'>
-						<v-btn
-							color='error'
-							small
-							v-bind='attrs'
-							@click='deleteKey = item.id'
-							v-on='on'
-						>
-							<v-icon small>
-								mdi-delete
-							</v-icon>
-							{{ $t('table.actions.delete') }}
-						</v-btn>
-					</template>
-					<v-card>
-						<v-card-title>{{ $t('core.security.apiKey.modal.title') }}}</v-card-title>
-						<v-card-text>{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}</v-card-text>
-						<v-card-actions>
-							<v-btn
-								color='error'
-								@click='removeKey'
-							>
-								{{ $t('forms.delete') }}
-							</v-btn>
+					<template #top>
+						<v-toolbar dense flat>
 							<v-spacer />
 							<v-btn
-								color='secondary'
-								@click='deleteKey = -1'
+								color='success'
+								small
+								to='/security/api-key/add'
 							>
-								{{ $t('forms.cancel') }}
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
 							</v-btn>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-			</template>
-		</v-data-table>
+						</v-toolbar>
+					</template>
+					<template #[`item.expiration`]='{item}'>
+						{{ item.expiration !== null ? timeString(item) : 'never' }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							small
+							:to='"/security/api-key/edit/" + item.id'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <v-dialog
+							v-model='deleteModal'
+							width='50%'
+						>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									@click='deleteKey = item.id'
+									v-on='on'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title>{{ $t('core.security.apiKey.modal.title') }}</v-card-title>
+								<v-card-text>{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}</v-card-text>
+								<v-card-actions>
+									<v-spacer />
+									<v-btn
+										color='error'
+										@click='removeKey'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn>
+									<v-btn
+										color='secondary'
+										@click='deleteKey = -1'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
