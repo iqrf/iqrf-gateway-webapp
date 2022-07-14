@@ -35,7 +35,6 @@ import App from './App.vue';
 
 import './css/themes/generic.scss';
 import './css/app.scss';
-import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 import * as version from '../version.json';
