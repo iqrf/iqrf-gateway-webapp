@@ -118,8 +118,7 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-dialog
+						</v-btn> <v-dialog
 							v-model='deleteDialog'
 							width='50%'
 							persistent

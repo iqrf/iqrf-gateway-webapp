@@ -17,130 +17,133 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.ssh.title') }}</h1>
-
-		<v-data-table
-			:headers='header'
-			:items='keys'
-			:expanded='expandedKeys'
-		>
-			<template #top>
-				<v-toolbar dense flat>
-					<v-spacer />
-					<v-btn
-						color='success'
-						small
-						to='/security/ssh-key/add'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-						{{ $t('table.actions.add') }}
-					</v-btn>
-				</v-toolbar>
-			</template>
-			<template #expanded-item='{headers, item}'>
-				<td :colspan='headers.length' class='pl-0 pr-0'>
-					<v-simple-table>
-						<tbody>
-							<tr>
-								<th>{{ $t('core.security.ssh.table.type') }}</th>
-								<td>{{ item.type }}</td>
-							</tr>
-							<tr>
-								<th>
-									{{ $t('core.security.ssh.table.hash') }}
-								</th>
-								<td>{{ item.hash }}</td>
-								<td class='text-end'>
-									<v-btn
-										v-clipboard:copy='item.hash'
-										v-clipboard:success='hashClipboardMessage'
-										color='primary'
-										small
-									>
-										<v-icon small>
-											mdi-clipboard-outline
-										</v-icon>
-										{{ $t('forms.clipboardCopy') }}
-									</v-btn>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									{{ $t('core.security.ssh.table.key') }}
-								</th>
-								<td style='max-width: 60vw;'>
-									{{ item.key }}
-								</td>
-								<td class='text-end'>
-									<v-btn
-										v-clipboard:copy='item.key'
-										v-clipboard:success='keyClipboardMessage'
-										color='primary'
-										small
-									>
-										<v-icon small>
-											mdi-clipboard-outline
-										</v-icon>
-										{{ $t('forms.clipboardCopy') }}
-									</v-btn>
-								</td>
-							</tr>
-						</tbody>
-					</v-simple-table>
-				</td>
-			</template>
-			<template #[`item.createdAt`]='{item}'>
-				{{ timeString(item) }}
-			</template>
-			<template #[`item.actions`]='{item}'>
-				<v-btn
-					color='info'
-					small
-					@click='expandItem(item)'
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:headers='header'
+					:items='keys'
+					:expanded='expandedKeys'
 				>
-					<v-icon small>
-						mdi-information-outline
-					</v-icon>
-					{{ $t('table.actions.details') }}
-				</v-btn>
-				<v-dialog v-model='deleteModal' width='50%'>
-					<template #activator='{ on, attrs }'>
-						<v-btn
-							color='error'
-							small
-							v-bind='attrs'
-							@click='deleteKey = item.id'
-							v-on='on'
-						>
-							<v-icon small>
-								mdi-delete
-							</v-icon>
-							{{ $t('table.actions.delete') }}
-						</v-btn>
-					</template>
-					<v-card>
-						<v-card-title>{{ $t('core.security.ssh.modal.title') }}}</v-card-title>
-						<v-card-text>{{ $t('core.security.ssh.modal.prompt', {id: deleteKey}) }}</v-card-text>
-						<v-card-actions>
-							<v-btn
-								color='error'
-								@click='removeKey'
-							>
-								{{ $t('forms.delete') }}
-							</v-btn>
+					<template #top>
+						<v-toolbar dense flat>
 							<v-spacer />
 							<v-btn
-								color='secondary'
-								@click='deleteKey = -1'
+								color='success'
+								small
+								to='/security/ssh-key/add'
 							>
-								{{ $t('forms.cancel') }}
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
 							</v-btn>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-			</template>
-		</v-data-table>
+						</v-toolbar>
+					</template>
+					<template #expanded-item='{headers, item}'>
+						<td :colspan='headers.length' class='pl-0 pr-0'>
+							<v-simple-table>
+								<tbody>
+									<tr>
+										<th>{{ $t('core.security.ssh.table.type') }}</th>
+										<td>{{ item.type }}</td>
+									</tr>
+									<tr>
+										<th>
+											{{ $t('core.security.ssh.table.hash') }}
+										</th>
+										<td>{{ item.hash }}</td>
+										<td class='text-end'>
+											<v-btn
+												v-clipboard:copy='item.hash'
+												v-clipboard:success='hashClipboardMessage'
+												color='primary'
+												small
+											>
+												<v-icon small>
+													mdi-clipboard-outline
+												</v-icon>
+												{{ $t('forms.clipboardCopy') }}
+											</v-btn>
+										</td>
+									</tr>
+									<tr>
+										<th>
+											{{ $t('core.security.ssh.table.key') }}
+										</th>
+										<td style='max-width: 60vw;'>
+											{{ item.key }}
+										</td>
+										<td class='text-end'>
+											<v-btn
+												v-clipboard:copy='item.key'
+												v-clipboard:success='keyClipboardMessage'
+												color='primary'
+												small
+											>
+												<v-icon small>
+													mdi-clipboard-outline
+												</v-icon>
+												{{ $t('forms.clipboardCopy') }}
+											</v-btn>
+										</td>
+									</tr>
+								</tbody>
+							</v-simple-table>
+						</td>
+					</template>
+					<template #[`item.createdAt`]='{item}'>
+						{{ timeString(item) }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							small
+							@click='expandItem(item)'
+						>
+							<v-icon small>
+								mdi-information-outline
+							</v-icon>
+							{{ $t('table.actions.details') }}
+						</v-btn>
+						<v-dialog v-model='deleteModal' width='50%'>
+							<template #activator='{ on, attrs }'>
+								<v-btn
+									color='error'
+									small
+									v-bind='attrs'
+									@click='deleteKey = item.id'
+									v-on='on'
+								>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+									{{ $t('table.actions.delete') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title>{{ $t('core.security.ssh.modal.title') }}</v-card-title>
+								<v-card-text>{{ $t('core.security.ssh.modal.prompt', {id: deleteKey}) }}</v-card-text>
+								<v-card-actions>
+									<v-btn
+										color='error'
+										@click='removeKey'
+									>
+										{{ $t('forms.delete') }}
+									</v-btn>
+									<v-spacer />
+									<v-btn
+										color='secondary'
+										@click='deleteKey = -1'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
