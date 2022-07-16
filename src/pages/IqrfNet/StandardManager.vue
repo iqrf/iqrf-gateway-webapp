@@ -25,10 +25,18 @@ limitations under the License.
 				<v-tab>{{ $t('iqrfnet.standard.dali.title') }}</v-tab>
 			</v-tabs>
 			<v-tabs-items v-model='activeTab'>
-				<v-tab-item><SensorManager /></v-tab-item>
-				<v-tab-item><BinaryOutputManager /></v-tab-item>
-				<v-tab-item><LightManager /></v-tab-item>
-				<v-tab-item><DaliManager /></v-tab-item>
+				<v-tab-item :transition='false'>
+					<SensorManager />
+				</v-tab-item>
+				<v-tab-item :transition='false'>
+					<BinaryOutputManager />
+				</v-tab-item>
+				<v-tab-item :transition='false'>
+					<LightManager />
+				</v-tab-item>
+				<v-tab-item :transition='false'>
+					<DaliManager />
+				</v-tab-item>
 			</v-tabs-items>
 		</v-card>
 		<StandardDevices />
@@ -37,11 +45,11 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import BinaryOutputManager from '@/components/IqrfNet/BinaryOutputManager.vue';
-import DaliManager from '@/components/IqrfNet/DaliManager.vue';
-import LightManager from '@/components/IqrfNet/LightManager.vue';
-import SensorManager from '@/components/IqrfNet/SensorManager.vue';
-import StandardDevices from '@/components/IqrfNet/StandardDevices.vue';
+import BinaryOutputManager from '@/components/IqrfNet/StandardManager/BinaryOutputManager.vue';
+import DaliManager from '@/components/IqrfNet/StandardManager/DaliManager.vue';
+import LightManager from '@/components/IqrfNet/StandardManager/LightManager.vue';
+import SensorManager from '@/components/IqrfNet/StandardManager/SensorManager.vue';
+import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevices.vue';
 
 @Component({
 	components: {

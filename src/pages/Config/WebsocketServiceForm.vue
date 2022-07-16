@@ -16,16 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/messagings/websocket/add-service"'>
-			{{ $t('config.daemon.messagings.websocket.service.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.messagings.websocket.service.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveInstance'>
+					<v-form>
 						<v-row>
 							<v-col md='6'>
 								<legend>{{ $t('config.daemon.messagings.websocket.service.legend') }}</legend>
@@ -67,15 +62,12 @@ limitations under the License.
 								/>
 							</v-col>
 							<v-col md='6'>
-								<div>
-									<label style='font-size: 1.5rem;'>
-										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
-									</label>
+								<fieldset>
 									<v-switch
 										v-model='tlsEnabled'
+										:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 										color='primary'
 										inset
-										style='float: right;'
 									/>
 									<ValidationProvider
 										v-if='tlsEnabled'
@@ -133,13 +125,17 @@ limitations under the License.
 											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</div>
+								</fieldset>
 							</v-col>
 						</v-row>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveInstance'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -245,21 +241,19 @@ export default class WebsocketServiceForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
-	 * Computes page title depending on the action (add, edit)
-	 * @returns {string} Page title
+	 * @var {string} pageTitle Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/messagings/websocket/add-service' ?
-			this.$t('config.daemon.messagings.websocket.service.add').toString() : this.$t('config.daemon.messagings.websocket.service.edit').toString();
+		return this.$t(
+			`config.daemon.messagings.websocket.service.${this.$route.path === '/config/daemon/messagings/websocket/add-service' ? 'add' : 'edit'}`
+		).toString();
 	}
 
 	/**
-	 * Computes the text of form submit button depending on the action (add, edit)
-	 * @returns {string} Button text
+	 * @var {string} submitButton Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/messagings/websocket/add-service' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+		return this.$t(`forms.${this.$route.path === '/config/daemon/messagings/websocket/add-service' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**

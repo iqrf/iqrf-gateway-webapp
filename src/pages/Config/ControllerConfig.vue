@@ -20,9 +20,9 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='save'>
-						<div>
-							<h3>{{ $t("config.controller.form.wsServers.title") }}</h3>
+					<v-form>
+						<fieldset>
+							<legend>{{ $t("config.controller.form.wsServers.title") }}</legend>
 							<v-row>
 								<v-col md='6'>
 									<ValidationProvider
@@ -59,9 +59,10 @@ limitations under the License.
 									</ValidationProvider>
 								</v-col>
 							</v-row>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.logger.title") }}</h3>
+						</fieldset>
+						<v-divider />
+						<fieldset>
+							<legend>{{ $t("config.controller.form.logger.title") }}</legend>
 							<v-row>
 								<v-col md='6'>
 									<ValidationProvider
@@ -115,9 +116,10 @@ limitations under the License.
 									/>
 								</v-col>
 							</v-row>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
+						</fieldset>
+						<v-divider />
+						<fieldset>
+							<legend>{{ $t("config.controller.form.factoryReset.title") }}</legend>
 							<v-row>
 								<v-col md='2'>
 									<v-checkbox
@@ -150,16 +152,17 @@ limitations under the License.
 									/>
 								</v-col>
 							</v-row>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
+						</fieldset>
+						<v-divider />
+						<fieldset>
+							<legend>{{ $t("config.controller.form.resetButton.title") }}</legend>
 							<v-select
 								v-model='config.resetButton.api'
 								:items='apiCallOptions'
 								:label='$t("config.controller.form.resetButton.api")'
 							/>
 							<div v-if='config.resetButton.api === "discovery"'>
-								<h3>{{ $t("config.controller.form.daemonApi.discovery.title") }}</h3>
+								<legend>{{ $t("config.controller.form.daemonApi.discovery.title") }}</legend>
 								<v-row>
 									<v-col md='6'>
 										<ValidationProvider
@@ -210,7 +213,7 @@ limitations under the License.
 								/>
 							</div>
 							<div v-if='config.resetButton.api === "autoNetwork"'>
-								<h3>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</h3>
+								<legend>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</legend>
 								<v-row>
 									<v-col md='6'>
 										<ValidationProvider
@@ -269,9 +272,7 @@ limitations under the License.
 										/>
 									</v-col>
 								</v-row>
-								<h4>
-									{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
-								</h4>
+								<legend>{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}</legend>
 								<v-row>
 									<v-col md='6'>
 										<ValidationProvider
@@ -331,9 +332,10 @@ limitations under the License.
 									</v-col>
 								</v-row>
 							</div>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.pins.title") }}</h3>
+						</fieldset>
+						<v-divider />
+						<fieldset>
+							<legend>{{ $t("config.controller.pins.title") }}</legend>
 							<v-row>
 								<v-col md='4'>
 									<ValidationProvider
@@ -434,11 +436,15 @@ limitations under the License.
 									</ValidationProvider>
 								</v-col>
 							</v-row>
-						</div>
-						<v-btn color='primary' type='submit' :disabled='invalid'>
+						</fieldset>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='save'
+						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 			<v-card-text>

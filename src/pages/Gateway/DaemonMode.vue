@@ -19,69 +19,89 @@ limitations under the License.
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<v-card>
 			<v-card-text>
-				<div class='form-group'>
-					<v-row style='margin-bottom: 1.25rem;'>
-						<v-col>
-							<strong>
-								{{ $t('gateway.info.gwMode') }}
-							</strong>
-						</v-col>
-						<v-col>
-							{{ $t(mode !== 'unknown' ? `gateway.mode.modes.${mode}`: 'gateway.mode.messages.getFailed') }}
-						</v-col>
-					</v-row>
-					<div v-if='mode !== "unknown"'>
-						<v-btn
-							color='primary'
-							@click='setMode(modes.operational)'
-						>
-							{{ $t('gateway.mode.modes.operational') }}
-						</v-btn> <v-btn
-							color='primary'
-							@click='setMode(modes.service)'
-						>
-							{{ $t('gateway.mode.modes.service') }}
-						</v-btn> <v-btn
-							color='primary'
-							@click='setMode(modes.forwarding)'
-						>
-							{{ $t('gateway.mode.modes.forwarding') }}
-						</v-btn>
-					</div>
-				</div>
-				<div
+				<v-row align='center'>
+					<v-col md='2'>
+						<strong>
+							{{ $t('gateway.info.gwMode') }}
+						</strong>
+					</v-col>
+					<v-col md='2'>
+						{{ $t(`gateway.mode.modes.${mode !== unknown ? mode : 'getFailed'}`) }}
+					</v-col>
+					<v-col md='2'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='primary'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t('gateway.mode.select') }}
+									<v-icon>
+										mdi-menu-down
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item dense @click='setMode(modes.operational)'>
+									{{ $t('gateway.mode.modes.operational') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item dense @click='setMode(modes.service)'>
+									{{ $t('gateway.mode.modes.service') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item dense @click='setMode(modes.forwarding)'>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</v-col>
+				</v-row>
+				<v-row
 					v-if='ideConfiguration !== null'
-					class='form-group'
+					align='center'
 				>
-					<v-row style='margin-bottom: 1.25rem;'>
-						<v-col>
-							<strong>
-								{{ $t('gateway.mode.startupMode') }}
-							</strong>
-						</v-col>
-						<v-col>
-							{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
-						</v-col>
-					</v-row>
-					<div v-if='ideConfiguration.operMode !== "unknown"'>
-						<v-btn
-							color='primary'
-							@click='setStartupMode(modes.operational)'
-						>
-							{{ $t('gateway.mode.modes.operational') }}
-						</v-btn> <v-btn
-							color='primary'
-							@click='setStartupMode(modes.service)'
-						>
-							{{ $t('gateway.mode.modes.service') }}
-						</v-btn> <v-btn
-							color='primary'
-							@click='setStartupMode(modes.forwarding)'
-						>
-							{{ $t('gateway.mode.modes.forwarding') }}
-						</v-btn>
-					</div>
-				</div>
+					<v-col md='2'>
+						<strong>
+							{{ $t('gateway.mode.startupMode') }}
+						</strong>
+					</v-col>
+					<v-col md='2'>
+						{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
+					</v-col>
+					<v-col md='2'>
+						<v-menu>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='primary'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t('gateway.mode.select') }}
+									<v-icon>
+										mdi-menu-down
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item dense @click='setStartupMode(modes.operational)'>
+									{{ $t('gateway.mode.modes.operational') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item dense @click='setStartupMode(modes.service)'>
+									{{ $t('gateway.mode.modes.service') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item dense @click='setStartupMode(modes.forwarding)'>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</v-col>
+				</v-row>
 			</v-card-text>
 		</v-card>
 	</div>

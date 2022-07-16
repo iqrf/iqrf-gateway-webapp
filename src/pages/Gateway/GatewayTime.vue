@@ -24,8 +24,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import DateTimeZone from '@/components/Gateway/DateTimeZone.vue';
-import NtpConfig from '@/components/Gateway/NtpConfig.vue';
+import DateTimeZone from '@/components/Gateway/Time/DateTimeZone.vue';
+import NtpConfig from '@/components/Gateway/Time/NtpConfig.vue';
 
 @Component({
 	components: {

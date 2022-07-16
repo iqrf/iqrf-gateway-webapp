@@ -17,22 +17,24 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
-		<HexUpload />
-		<DpaUpdater ref='dpaUpdater' @loaded='osDpaLoaded' />
+		<HexUpload class='mb-5' />
+		<DpaUpdater ref='dpaUpdater' class='mb-5' @loaded='osDpaLoaded' />
 		<OsUpdater ref='osUpdater' @loaded='osDpaLoaded' @os-upload='osInfoUpload' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router';
-import {MutationPayload} from 'vuex';
-import {DaemonClientState} from '@/interfaces/wsClient';
-import DpaUpdater from '@/components/IqrfNet/DpaUpdater.vue';
-import HexUpload from '@/components/IqrfNet/HexUpload.vue';
-import OsUpdater from '@/components/IqrfNet/OsUpdater.vue';
-import {IConfigFetch} from '@/interfaces/daemonComponent';
+import DpaUpdater from '@/components/IqrfNet/TrUpload/DpaUpdater.vue';
+import HexUpload from '@/components/IqrfNet/TrUpload/HexUpload.vue';
+import OsUpdater from '@/components/IqrfNet/TrUpload/OsUpdater.vue';
+
 import IqrfNetService from '@/services/IqrfNetService';
+
+import {DaemonClientState} from '@/interfaces/wsClient';
+import {IConfigFetch} from '@/interfaces/daemonComponent';
+import {MutationPayload} from 'vuex';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {

@@ -35,18 +35,18 @@ limitations under the License.
 						</v-tab>
 					</v-tabs>
 					<v-tabs-items v-model='activeTab'>
-						<v-tab-item>
-							<BondingManager @update-devices='updateDevices' />
+						<v-tab-item :transition='false'>
+							<BondingManager class='mb-5' @update-devices='updateDevices' />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</v-tab-item>
-						<v-tab-item>
+						<v-tab-item :transition='false'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</v-tab-item>
-						<v-tab-item>
-							<Backup />
+						<v-tab-item :transition='false'>
+							<Backup class='mb-5' />
 							<Restore />
 						</v-tab-item>
-						<v-tab-item v-if='daemon236'>
+						<v-tab-item v-if='daemon236' :transition='false'>
 							<OtaUpload />
 						</v-tab-item>
 					</v-tabs-items>
@@ -63,13 +63,13 @@ limitations under the License.
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '@/helpers/versionChecker';
-import Backup from '@/components/IqrfNet/Backup.vue';
-import Restore from '@/components/IqrfNet/Restore.vue';
-import BondingManager from '@/components/IqrfNet/BondingManager.vue';
-import DevicesInfo from '@/components/IqrfNet/DevicesInfo.vue';
-import DiscoveryManager from '@/components/IqrfNet/DiscoveryManager.vue';
-import AutoNetwork from '@/components/IqrfNet/AutoNetwork.vue';
-import OtaUpload from '@/components/IqrfNet/OtaUpload.vue';
+import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
+import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
+import BondingManager from '@/components/IqrfNet/NetworkManager/BondingManager.vue';
+import DevicesInfo from '@/components/IqrfNet/NetworkManager/DevicesInfo.vue';
+import DiscoveryManager from '@/components/IqrfNet/NetworkManager/DiscoveryManager.vue';
+import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork.vue';
+import OtaUpload from '@/components/IqrfNet/NetworkManager/OtaUpload.vue';
 import {ToastOptions} from 'vue-toast-notification';
 
 @Component({

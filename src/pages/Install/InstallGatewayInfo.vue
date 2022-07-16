@@ -104,12 +104,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
+import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 import GatewayService from '@/services/GatewayService';
+
 import {fileDownloader} from '@/helpers/fileDownloader';
-import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/gatewayInfo';
-import { AxiosResponse } from 'axios';
+
+import {AxiosResponse} from 'axios';
+import {IGatewayInfo,IpAddress,MacAddress} from '@/interfaces/gatewayInfo';
 
 @Component({
 	components: {

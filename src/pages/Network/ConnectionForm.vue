@@ -20,7 +20,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='prepareModal'>
+					<v-form @submit.prevent='prepareModal'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -54,14 +54,13 @@ limitations under the License.
 						<v-row v-if='connection.type === "802-11-wireless"'>
 							<v-col md='6'>
 								<legend>{{ $t('network.wireless.form.title') }}</legend>
-								<div class='form-group'>
-									<strong>
-										<span>{{ $t('network.wireless.form.security') }}</span>
-									</strong> {{ $t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`) }}
-								</div>
-								<div
+								<v-text-field
+									:label='$t("network.wireless.form.security")'
+									:value='$t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`)'
+									readonly
+								/>
+								<fieldset
 									v-if='connection.wifi.security.type === "ieee8021x"'
-									class='form-group'
 								>
 									<v-text-field
 										v-model='connection.wifi.security.leap.username'
@@ -71,10 +70,9 @@ limitations under the License.
 										v-model='connection.wifi.security.leap.password'
 										:label='$t("network.wireless.form.password")'
 									/>
-								</div>
+								</fieldset>
 								<div
 									v-else-if='connection.wifi.security.type === "wep"'
-									class='form-group'
 								>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
@@ -230,8 +228,7 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<div v-if='connection.ipv4.method === "manual"'>
-									<hr>
+								<fieldset v-if='connection.ipv4.method === "manual"'>
 									<v-alert
 										v-if='!ipv4InSubnet'
 										type='error'
@@ -240,7 +237,10 @@ limitations under the License.
 									</v-alert>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+										:rules='{
+											required: connection.ipv4.method === "manual",
+											ipv4: connection.ipv4.method === "manual",
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.address"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -255,7 +255,11 @@ limitations under the License.
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4|netmask" : ""'
+										:rules='{
+											required: connection.ipv4.method === "manual",
+											ipv4: connection.ipv4.method === "manual",
+											netmask: connection.ipv4.method === "manual",
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.mask"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -271,7 +275,10 @@ limitations under the License.
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+										:rules='{
+											required: connection.ipv4.method === "manual",
+											ipv4: connection.ipv4.method === "manual",
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.gateway"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -284,43 +291,50 @@ limitations under the License.
 											:error-messages='errors'
 										/>
 									</ValidationProvider>
-									<hr>
-									<div
+									<ValidationProvider
 										v-for='(address, index) in connection.ipv4.dns'
 										:key='index'
+										v-slot='{errors, touched, valid}'
+										:rules='{
+											required: connection.ipv4.method === "manual",
+											ipv4: connection.ipv4.method === "manual",
+										}'
+										:custom-messages='{
+											required: $t("network.connection.ipv4.errors.dns"),
+											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
+										}'
 									>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
-											:custom-messages='{
-												required: $t("network.connection.ipv4.errors.dns"),
-												ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
-											}'
+										<v-text-field
+											v-model='address.address'
+											:label='$t("network.connection.ipv4.dns.address")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										>
-											<v-text-field
-												v-model='address.address'
-												:label='$t("network.connection.ipv4.dns.address")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-											/>
-										</ValidationProvider>
-										<div class='form-group'>
-											<v-btn
-												v-if='connection.ipv4.dns.length > 1'
-												color='error'
-												@click='deleteIpv4Dns(index)'
-											>
-												{{ $t('network.connection.ipv4.dns.remove') }}
-											</v-btn> <v-btn
-												v-if='index === (connection.ipv4.dns.length - 1)'
-												color='success'
-												@click='addIpv4Dns'
-											>
-												{{ $t('network.connection.ipv4.dns.add') }}
-											</v-btn>
-										</div>
-									</div>
-								</div>
+											<template #append-outer>
+												<v-btn
+													v-if='index === 0'
+													color='success'
+													small
+													@click='addIpv4Dns'
+												>
+													<v-icon>
+														mdi-plus
+													</v-icon>
+												</v-btn>
+												<v-btn
+													v-else
+													color='error'
+													small
+													@click='deleteIpv4Dns(index)'
+												>
+													<v-icon>
+														mdi-delete-outline
+													</v-icon>
+												</v-btn>
+											</template>
+										</v-text-field>
+									</ValidationProvider>
+								</fieldset>
 							</v-col>
 							<v-col md='6'>
 								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
@@ -340,61 +354,82 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<div v-if='connection.ipv6.method === "manual"'>
-									<div
-										v-for='(address, index) in connection.ipv6.addresses'
-										:key='index'
+								<fieldset v-if='connection.ipv6.method === "manual"'>
+									<v-row
+										v-for='(address, i) in connection.ipv6.addresses'
+										:key='i'
 									>
-										<hr>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
-											:custom-messages='{
-												required: $t("network.connection.ipv6.errors.address"),
-												ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
-											}'
-										>
-											<v-text-field
-												v-model='address.address'
-												:label='$t("network.connection.ipv6.address")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-											/>
-										</ValidationProvider>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|between:48,128":""'
-											:custom-messages='{
-												required: $t("network.connection.ipv6.errors.prefix"),
-												between: $t("network.connection.ipv6.errors.prefixInvalid"),
-											}'
-										>
-											<v-text-field
-												v-model.number='address.prefix'
-												type='number'
-												min='48'
-												max='128'
-												:label='$t("network.connection.ipv6.prefix")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-											/>
-										</ValidationProvider>
-										<div class='form-group'>
-											<v-btn
-												v-if='connection.ipv6.addresses.length > 1'
-												color='error'
-												@click='deleteIpv6Address(index)'
+										<v-col>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												:rules='{
+													required: connection.ipv6.method === "manual",
+													ipv6: connection.ipv6.method === "manual",
+												}'
+												:custom-messages='{
+													required: $t("network.connection.ipv6.errors.address"),
+													ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
+												}'
 											>
-												{{ $t('network.connection.ipv6.addresses.remove') }}
-											</v-btn> <v-btn
-												v-if='index === (connection.ipv6.addresses.length - 1)'
-												color='success'
-												@click='addIpv6Address'
+												<v-text-field
+													v-model='address.address'
+													:label='$t("network.connection.ipv6.address")'
+													:success='touched ? valid : null'
+													:error-messages='errors'
+												/>
+											</ValidationProvider>
+										</v-col>
+										<v-col>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												:rules='{
+													required: connection.ipv6.method === "manual",
+													between: {
+														min: 48,
+														max: 128,
+														enabled: connection.ipv6.method === "manual"
+													}
+												}'
+												:custom-messages='{
+													required: $t("network.connection.ipv6.errors.prefix"),
+													between: $t("network.connection.ipv6.errors.prefixInvalid"),
+												}'
 											>
-												{{ $t('network.connection.ipv6.addresses.add') }}
-											</v-btn>
-										</div>
-									</div><hr>
+												<v-text-field
+													v-model.number='address.prefix'
+													type='number'
+													min='48'
+													max='128'
+													:label='$t("network.connection.ipv6.prefix")'
+													:success='touched ? valid : null'
+													:error-messages='errors'
+												>
+													<template #append-outer>
+														<v-btn
+															v-if='i === 0'
+															color='success'
+															small
+															@click='addIpv6Address'
+														>
+															<v-icon>
+																mdi-plus
+															</v-icon>
+														</v-btn>
+														<v-btn
+															v-else
+															color='error'
+															small
+															@click='deleteIpv6Address(i)'
+														>
+															<v-icon>
+																mdi-delete-outline
+															</v-icon>
+														</v-btn>
+													</template>
+												</v-text-field>
+											</ValidationProvider>
+										</v-col>
+									</v-row>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
@@ -409,7 +444,7 @@ limitations under the License.
 											:success='touched ? valid : null'
 											:error-messages='errors'
 										/>
-									</ValidationProvider><hr>
+									</ValidationProvider>
 									<div
 										v-for='(address, index) in connection.ipv6.dns'
 										:key='index+"a"'
@@ -427,25 +462,33 @@ limitations under the License.
 												:label='$t("network.connection.ipv6.dns.address")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
-											/>
+											>
+												<template #append-outer>
+													<v-btn
+														v-if='index === 0'
+														color='success'
+														small
+														@click='addIpv6Dns'
+													>
+														<v-icon>
+															mdi-plus
+														</v-icon>
+													</v-btn>
+													<v-btn
+														v-else
+														color='error'
+														small
+														@click='deleteIpv6Dns(index)'
+													>
+														<v-icon>
+															mdi-delete-outline
+														</v-icon>
+													</v-btn>
+												</template>
+											</v-text-field>
 										</ValidationProvider>
-										<div class='form-group'>
-											<v-btn
-												v-if='connection.ipv6.dns.length > 1'
-												color='error'
-												@click='deleteIpv6Dns(index)'
-											>
-												{{ $t('network.connection.ipv6.dns.remove') }}
-											</v-btn> <v-btn
-												v-if='index === (connection.ipv6.dns.length - 1)'
-												color='success'
-												@click='addIpv6Dns'
-											>
-												{{ $t('network.connection.ipv6.dns.add') }}
-											</v-btn>
-										</div>
 									</div>
-								</div>
+								</fieldset>
 							</v-col>
 						</v-row>
 						<v-btn
@@ -455,11 +498,11 @@ limitations under the License.
 						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
-		<v-dialog	v-model='showModal' width='50%'>
+		<v-dialog v-model='showModal' width='50%'>
 			<v-card>
 				<v-card-title>{{ $t('network.connection.modal.title') }}</v-card-title>
 				<v-card-text>

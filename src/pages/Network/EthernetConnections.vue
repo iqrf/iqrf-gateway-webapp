@@ -29,6 +29,7 @@ limitations under the License.
 							v-if='item.interfaceName !== null'
 							color='success'
 							small
+							label
 						>
 							{{ $t('network.connection.states.connected') }}
 						</v-chip>
@@ -70,23 +71,27 @@ limitations under the License.
 				</v-data-table>
 			</v-card-text>
 		</v-card>
-		<v-dialog v-model='connectionModal' width='50%'>
+		<v-dialog
+			v-model='connectionModal'
+			width='50%'
+			persistent
+			no-click-animation
+		>
 			<v-card>
 				<v-card-title>{{ $t('network.ethernet.modal.title') }}</v-card-title>
 				<v-card-text>{{ $t('network.ethernet.modal.prompt') }}</v-card-text>
 				<v-card-actions>
-					<v-btn
-						color='warning'
-						@click='disconnect(connectionModal)'
-					>
-						{{ $t('network.table.disconnect') }}
-					</v-btn>
 					<v-spacer />
 					<v-btn
 						color='error'
 						@click='connectionModal = null'
 					>
 						{{ $t('forms.cancel') }}
+					</v-btn> <v-btn
+						color='error'
+						@click='disconnect(connectionModal)'
+					>
+						{{ $t('network.table.disconnect') }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>

@@ -20,6 +20,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='headers'
 					:items='users'
 					:no-data-text='$t("table.messages.noRecords")'
@@ -118,49 +119,10 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn> <v-dialog
-							v-model='deleteDialog'
-							width='50%'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									v-on='on'
-									@click='confirmDelete(item)'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title class='text-h5 error'>
-									{{ $t('core.user.modal.title') }}
-								</v-card-title>
-								<v-card-text v-if='deleteUser !== null'>
-									{{ $t('core.user.modal.prompt', {user: deleteUser.username}) }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='performDelete'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='deleteUser = null'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <UserDeleteDialog
+							:user='item'
+							@deleted='handleDeleteSuccess'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -170,6 +132,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import UserDeleteDialog from '@/components/Core/UserDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import UserService from '@/services/UserService';
@@ -182,7 +145,11 @@ import {IUser} from '@/interfaces/user';
 
 import punycode from 'punycode/';
 
+
 @Component({
+	components: {
+		UserDeleteDialog,
+	},
 	metaInfo: {
 		title: 'core.user.title',
 	},
@@ -193,9 +160,9 @@ import punycode from 'punycode/';
  */
 export default class UserList extends Vue {
 	/**
-	 * @var {IUser|null} deleteUser User object used in remove modal
+	 * @var {boolean} loading Loading data
 	 */
-	private deleteUser: IUser|null = null;
+	private loading = false;
 
 	/**
 	 * @var {Array<DataTableHeader>} headers Vuetify data table headers
@@ -222,6 +189,7 @@ export default class UserList extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			sortable: false,
 			filterable: false,
+			align: 'end',
 		},
 	];
 
@@ -241,13 +209,6 @@ export default class UserList extends Vue {
 	];
 
 	/**
-	 * @var {boolean} deleteDialog Delete dialog visibility
-	 */
-	get deleteDialog(): boolean {
-		return this.deleteUser !== null;
-	}
-
-	/**
 	 * Retrieves list of existing user
 	 */
 	mounted(): void {
@@ -258,13 +219,14 @@ export default class UserList extends Vue {
 	 * Retrieves list of existing users
 	 */
 	private getUsers(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return UserService.list()
 			.then((response: Array<IUser>) => {
-				this.$store.commit('spinner/HIDE');
 				this.users = response;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'core.user.messages.listFetchFailed');
 				if (error.response?.status === 403) {
 					this.$router.push('/');
@@ -338,44 +300,11 @@ export default class UserList extends Vue {
 	}
 
 	/**
-	 * Assigns user object to remove modal variable
-	 */
-	private confirmDelete(user: IUser): void {
-		this.deleteUser = user;
-	}
-
-	/**
-	 * Removes an existing user
-	 */
-	private performDelete(): void {
-		if (this.deleteUser === null) {
-			return;
-		}
-		const user = this.deleteUser;
-		this.deleteUser = null;
-		if (user.id === undefined) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		UserService.delete(user.id)
-			.then(() => this.handleDeleteSuccess(user))
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: user.username}));
-	}
-
-	/**
 	 * Handles user delete success REST API response
-	 * @param {IUser} user Removed user object
 	 */
-	private async handleDeleteSuccess(user: IUser): Promise<void> {
-		if (user.id === this.$store.getters['user/getId']) {
+	private async handleDeleteSuccess(userId: number): Promise<void> {
+		if (userId === this.$store.getters['user/getId']) {
 			await this.$store.dispatch('user/signOut');
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(
-				this.$t(
-					'core.user.messages.deleteSuccess',
-					{user: user.username}
-				).toString()
-			);
 			if (this.users.length === 1) {
 				await this.$store.dispatch('features/fetch');
 				await this.$router.push('/install/');
@@ -384,14 +313,7 @@ export default class UserList extends Vue {
 			}
 			return;
 		}
-		this.getUsers().then(() => {
-			this.$toast.success(
-				this.$t(
-					'core.user.messages.deleteSuccess',
-					{user: user.username}
-				).toString()
-			);
-		});
+		this.getUsers();
 	}
 
 	/**
