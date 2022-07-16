@@ -22,6 +22,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='headers'
 					:items='instances'
 					:no-data-text='$t("table.messages.noRecords")'
@@ -51,50 +52,11 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-dialog
-							v-model='deleteDialog'
-							width='50%'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									v-on='on'
-									@click='confirmDelete(item)'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title class='text-h5 error'>
-									{{ $t('config.daemon.messagings.udp.modal.title') }}
-								</v-card-title>
-								<v-card-text>
-									{{ $t('config.daemon.messagings.udp.modal.prompt', {instance: deleteInstance}) }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='remove'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='deleteInstance = ""'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <MessagingDeleteDialog
+							:messaging-type='MessagingTypes.UDP'
+							:instance='item.instance'
+							@deleted='getInstances'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -104,9 +66,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-
+import MessagingDeleteDialog from '@/components/Config/Messagings/MessagingDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {MessagingTypes} from '@/enums/Config/Messagings';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -114,6 +77,12 @@ import {DataTableHeader} from 'vuetify';
 import {IUdpInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
+	components: {
+		MessagingDeleteDialog,
+	},
+	data: () => ({
+		MessagingTypes,
+	}),
 	metaInfo: {
 		title: 'config.daemon.messagings.udp.title',
 	},
@@ -124,14 +93,14 @@ import {IUdpInstance} from '@/interfaces/messagingInterfaces';
  */
 export default class UdpMessagingTable extends Vue {
 	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
+	/**
 	 * @constant {string} componentName UDP messaging component name
 	 */
 	private componentName = 'iqrf::UdpMessaging';
-
-	/**
-	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
@@ -154,6 +123,7 @@ export default class UdpMessagingTable extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			sortable: false,
 			filterable: false,
+			align: 'end',
 		},
 	];
 
@@ -163,20 +133,6 @@ export default class UdpMessagingTable extends Vue {
 	private instances: Array<IUdpInstance> = [];
 
 	/**
-	 * @var {boolean} deleteDialog Delete dialog visibility
-	 */
-	get deleteDialog(): boolean {
-		return this.deleteInstance !== '';
-	}
-
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		this.$store.commit('spinner/SHOW');
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
@@ -184,43 +140,20 @@ export default class UdpMessagingTable extends Vue {
 	}
 
 	/**
-	 * Assigns name of UDP messaging instances selected to remove to the remove modal
-	 * @param {IUdpInstance} instance UDP messaging instance
-	 */
-	private confirmDelete(instance: IUdpInstance): void {
-		this.deleteInstance = instance.instance;
-	}
-
-	/**
 	 * Retrieves instances of UDP messaging component
 	 * @returns {Promise<void>} Empty promise for response chaining
 	 */
 	private getInstances(): Promise<void> {
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.listFailed'));
-	}
-
-	/**
-	 * Removes instance of UDP messaging component
-	 */
-	private remove(): void {
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.udp.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.deleteFailed', {instance: instance}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.udp.messages.listFailed');
+			});
 	}
 }
 </script>

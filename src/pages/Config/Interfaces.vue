@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
-		<v-card class='mb-3'>
+		<v-card class='mb-5'>
 			<v-card-text>
 				<v-overlay
 					v-if='loadFailed'
@@ -45,7 +45,7 @@ limitations under the License.
 			<IqrfSpi v-if='iqrfInterface === "iqrf::IqrfSpi"' @fetched='configFetched' />
 			<IqrfCdc v-if='iqrfInterface === "iqrf::IqrfCdc"' @fetched='configFetched' />
 			<IqrfUart v-if='iqrfInterface === "iqrf::IqrfUart"' @fetched='configFetched' />
-			<IqrfDpa class='mt-3' @fetched='configFetched' />
+			<IqrfDpa class='mt-5' @fetched='configFetched' />
 		</div>
 	</div>
 </template>

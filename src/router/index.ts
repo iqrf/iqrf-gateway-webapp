@@ -68,7 +68,7 @@ const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pag
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
 const InstallRestore = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
 const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
-const GatewayUserPassword = () => import('@/components/Gateway/GatewayUserPassword.vue');
+const GatewayUserPassword = () => import('@/components/Gateway/Services/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
 const InstallSshStatus = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSshStatus.vue');
 const MissingExtension = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingExtension.vue');

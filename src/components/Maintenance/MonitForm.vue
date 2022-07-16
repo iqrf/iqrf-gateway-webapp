@@ -19,7 +19,6 @@ limitations under the License.
 		v-if='configuration !== null'
 		v-slot='{invalid}'
 	>
-		<hr>
 		<form @submit.prevent='saveConfig'>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'

@@ -45,7 +45,9 @@ limitations under the License.
 								<tbody>
 									<tr>
 										<th>{{ $t('core.security.ssh.table.type') }}</th>
-										<td>{{ item.type }}</td>
+										<td colspan='2'>
+											{{ item.type }}
+										</td>
 									</tr>
 									<tr>
 										<th>

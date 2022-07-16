@@ -40,119 +40,125 @@ limitations under the License.
 							:label='$t("core.security.apiKey.form.expiration")'
 							dense
 						/>
-						<v-dialog
-							ref='date'
-							v-model='showDateDialog'
-							:return-value.sync='date'
-							width='auto'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									:rules='{
-										required: useExpiration,
-									}'
-									:custom-messages='{
-										required: $t("forms.errors.date")
-									}'
+						<v-row>
+							<v-col>
+								<v-dialog
+									ref='date'
+									v-model='showDateDialog'
+									:return-value.sync='date'
+									width='auto'
+									persistent
+									no-click-animation
 								>
-									<v-text-field
+									<template #activator='{on, attrs}'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											:rules='{
+												required: useExpiration,
+											}'
+											:custom-messages='{
+												required: $t("forms.errors.date")
+											}'
+										>
+											<v-text-field
+												v-model='date'
+												:label='$t("forms.fields.date")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												readonly
+												:disabled='!useExpiration'
+												v-bind='attrs'
+												v-on='on'
+											>
+												<v-icon
+													slot='prepend'
+													:color='inputIconColor'
+												>
+													mdi-calendar
+												</v-icon>
+											</v-text-field>
+										</ValidationProvider>
+									</template>
+									<v-date-picker
 										v-model='date'
-										:label='$t("forms.fields.date")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										readonly
-										:disabled='!useExpiration'
-										v-bind='attrs'
-										v-on='on'
+										:min='new Date().toISOString()'
 									>
-										<v-icon
-											slot='prepend'
-											:color='inputIconColor'
+										<v-spacer />
+										<v-btn
+											color='primary'
+											text
+											@click='$refs.date.save(date)'
 										>
-											mdi-calendar
-										</v-icon>
-									</v-text-field>
-								</ValidationProvider>
-							</template>
-							<v-date-picker
-								v-model='date'
-								:min='new Date().toISOString()'
-							>
-								<v-spacer />
-								<v-btn
-									color='primary'
-									text
-									@click='$refs.date.save(date)'
+											{{ $t('forms.ok') }}
+										</v-btn> <v-btn
+											color='secondary'
+											text
+											@click='showDateDialog = false'
+										>
+											{{ $t('forms.cancel') }}
+										</v-btn>
+									</v-date-picker>
+								</v-dialog>
+							</v-col>
+							<v-col>
+								<v-dialog
+									ref='time'
+									v-model='showTimeDialog'
+									:return-value.sync='time'
+									width='auto'
+									persistent
+									no-click-animation
 								>
-									{{ $t('forms.ok') }}
-								</v-btn> <v-btn
-									color='secondary'
-									text
-									@click='showDateDialog = false'
-								>
-									{{ $t('forms.cancel') }}
-								</v-btn>
-							</v-date-picker>
-						</v-dialog>
-						<v-dialog
-							ref='time'
-							v-model='showTimeDialog'
-							:return-value.sync='time'
-							width='auto'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									:rules='{
-										required: useExpiration,
-									}'
-									:custom-messages='{
-										required: $t("forms.errors.time")
-									}'
-								>
-									<v-text-field
+									<template #activator='{on, attrs}'>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											:rules='{
+												required: useExpiration,
+											}'
+											:custom-messages='{
+												required: $t("forms.errors.time")
+											}'
+										>
+											<v-text-field
+												v-model='time'
+												:label='$t("forms.fields.time")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												readonly
+												:disabled='!useExpiration'
+												v-bind='attrs'
+												v-on='on'
+											>
+												<v-icon
+													slot='prepend'
+													:color='inputIconColor'
+												>
+													mdi-clock-outline
+												</v-icon>
+											</v-text-field>
+										</ValidationProvider>
+									</template>
+									<v-time-picker
 										v-model='time'
-										:label='$t("forms.fields.time")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										readonly
-										:disabled='!useExpiration'
-										v-bind='attrs'
-										v-on='on'
 									>
-										<v-icon
-											slot='prepend'
-											:color='inputIconColor'
+										<v-spacer />
+										<v-btn
+											color='primary'
+											text
+											@click='$refs.time.save(time)'
 										>
-											mdi-clock-outline
-										</v-icon>
-									</v-text-field>
-								</ValidationProvider>
-							</template>
-							<v-time-picker
-								v-model='time'
-							>
-								<v-spacer />
-								<v-btn
-									color='primary'
-									text
-									@click='$refs.time.save(time)'
-								>
-									{{ $t('forms.ok') }}
-								</v-btn> <v-btn
-									color='secondary'
-									text
-									@click='showTimeDialog = false'
-								>
-									{{ $t('forms.cancel') }}
-								</v-btn>
-							</v-time-picker>
-						</v-dialog>
+											{{ $t('forms.ok') }}
+										</v-btn> <v-btn
+											color='secondary'
+											text
+											@click='showTimeDialog = false'
+										>
+											{{ $t('forms.cancel') }}
+										</v-btn>
+									</v-time-picker>
+								</v-dialog>
+							</v-col>
+						</v-row>
 						<v-btn
 							color='primary'
 							:disabled='invalid'

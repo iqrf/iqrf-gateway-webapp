@@ -16,19 +16,13 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/misc/monitor/add"'>
-			{{ $t('config.daemon.misc.monitor.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.misc.monitor.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveConfig'>
+					<v-form>
 						<v-row>
 							<v-col md='6'>
-								<legend>{{ $t('config.daemon.misc.monitor.form.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -146,10 +140,14 @@ limitations under the License.
 								</ValidationProvider>
 							</v-col>
 						</v-row>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveConfig'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -275,9 +273,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/misc/monitor/add' ?
-			this.$t('config.daemon.misc.monitor.add').toString() :
-			this.$t('config.daemon.misc.monitor.edit').toString();
+		return this.$t(`config.daemon.misc.monitor.${this.$route.path === '/config/daemon/misc/monitor/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
@@ -285,9 +281,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/misc/monitor/add' ?
-			this.$t('forms.add').toString() :
-			this.$t('forms.save').toString();
+		return this.$t(`forms.${this.$route.path === '/config/daemon/misc/monitor/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
@@ -385,17 +379,12 @@ export default class MonitorForm extends Vue {
 	 */
 	private successfulSave() {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/misc/monitor/add') {
-			this.$toast.success(
-				this.$t('config.daemon.misc.monitor.messages.addSuccess', {instance: this.monitor.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.misc.monitor.messages.editSuccess', {instance: this.monitor.instance})
-					.toString()
-			);
-		}
+		this.$toast.success(
+			this.$t(
+				`config.daemon.misc.monitor.messages.${this.$route.path === '/config/daemon/misc/monitor/add' ? 'addSuccess' : 'editSuccess'}`,
+				{instance: this.monitor.instance}
+			).toString()
+		);
 		this.$router.push({
 			name: 'misc',
 			params: {

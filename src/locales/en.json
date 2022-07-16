@@ -430,6 +430,12 @@
 				"tlsTitle": "TLS",
 				"title": "Messagings",
 				"description": "Configuration of messagings.",
+				"deleteDialog": {
+					"title": "{messaging} messaging instance delete confirmation",
+					"prompt": "Are you sure you want to delete {messaging} messaging instance {instance}?",
+					"success": "{messaging} messaging instance {instance} has been deleted.",
+					"failed": "Failed to delete {messaging} messaging instance {instance}: {error}"
+				},
 				"mqtt": {
 					"title": "MQTT messaging",
 					"description": "MQTT messaging settings.",
@@ -461,15 +467,9 @@
 						"EnabledCipherSuites": "Enabled cipher suites",
 						"EnableServerCertAuth": "Enable server certificate authentication"
 					},
-					"modal": {
-						"title": "MQTT messaging instance delete confirmation",
-						"prompt": "Are you sure you want to delete MQTT messaging instance {instance}?"
-					},
 					"messages": {
 						"addFailed": "Failed to create new MQTT messaging instance: {error}",
 						"addSuccess": "MQTT messaging instance {instance} has been added.",
-						"deleteFailed": "Failed to delete MQTT messaging instance {instance}: {error}",
-						"deleteSuccess": "MQTT messaging instance {instance} has been deleted.",
 						"editFailed": "Failed to edit MQTT messaging instance {instance}: {error}",
 						"editSuccess": "MQTT messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
@@ -603,15 +603,9 @@
 						"LocalMqName": "Local MQ name",
 						"RemoteMqName": "Remote MQ name"
 					},
-					"modal": {
-						"title": "MQ messaging instance delete confirmation",
-						"prompt": "Are you sure you want to delete MQ messaging instance {instance}?"
-					},
 					"messages": {
 						"addFailed": "Failed to create new MQ messaging instance: {error}",
 						"addSuccess": "MQ messaging instance {instance} has been added.",
-						"deleteFailed": "Failed to delete MQ messaging instance {instance}: {error}",
-						"deleteSuccess": "MQ messaging instance {instance} has been deleted.",
 						"editFailed": "Failed to edit MQ messaging instance {instance}: {error}",
 						"editSuccess": "MQ messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve MQ messaging instance {instance}: {error}",
@@ -632,15 +626,9 @@
 						"RemotePort": "Remote port",
 						"LocalPort": "Local port"
 					},
-					"modal": {
-						"title": "UDP messaging instance delete confirmation",
-						"prompt": "Are you sure you want to delete UDP messaging instance {instance}?"
-					},
 					"messages": {
 						"addFailed": "Failed to create new UDP messaging instance: {error}",
 						"addSuccess": "UDP messaging instance {instance} has been added.",
-						"deleteFailed": "Failed to delete UDP messaging instance {instance}: {error}",
-						"deleteSuccess": "UDP messaging instance {instance} has been deleted.",
 						"editFailed": "Failed to edit UDP messaging instance {instance}: {error}",
 						"editSuccess": "UDP messaging instance {instance} has been edited.",
 						"fetchFailed": "Failed to retrieve UDP messaging instance {instance}: {error}",
@@ -1115,7 +1103,7 @@
 			"404": {
 				"title": "Page not found",
 				"header": "Error 404",
-				"message": "'The page you requested could not be found. It is possible that the address is incorrect, or that the page no longer exists. Please use a search engine to find what you are looking for."
+				"message": "The page you requested could not be found. It is possible that the address is incorrect, or that the page no longer exists. Please use a search engine to find what you are looking for."
 			}
 		},
 		"grafana": {
@@ -1429,10 +1417,11 @@
 		"mode": {
 			"title": "Change mode",
 			"description": "Change gateway mode.",
+			"select": "Select",
 			"modes": {
-				"forwarding": "Forwarding mode",
-				"operational": "Operational mode",
-				"service": "Service mode",
+				"forwarding": "Forwarding",
+				"operational": "Operational",
+				"service": "Service",
 				"unknown": "Unknown"
 			},
 			"currentMode": "Current Daemon mode",
@@ -1588,10 +1577,9 @@
 				"title": "Coordinator restore",
 				"form": {
 					"backupFile": "Backup file",
-					"restartOnRestore": "Restart Coordinator on restore",
-					"messages": {
-						"backupFile": "Please insert a TR backup file.",
-						"address": "Please enter integer between 1 and 239 to restore a node device."
+					"errors": {
+						"file": "Please select a backup file.",
+						"invalidFile": "Selected file should be a .iqrfbkp file."
 					}
 				},
 				"messages": {
@@ -1738,8 +1726,8 @@
 					"automaticUpload": "Automatic upload",
 					"uploadSteps": {
 						"uploadEeeprom": "Step 1: Upload to external EEPROM",
-						"verifyEeeprom": "Step 2: Verify data in external EEPROM",
-						"loadFlash": "Step 3: Load from to external EEPROM to Flash"
+						"verifyEeeprom": "Step 2: Verify uploaded data",
+						"loadFlash": "Step 3: Load data to Flash"
 					}
 				},
 				"errors": {

@@ -16,16 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/messagings/mqtt/add"'>
-			{{ $t('config.daemon.messagings.mqtt.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.messagings.mqtt.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveConfig'>
+					<v-form>
 						<legend>{{ $t('config.daemon.messagings.mqtt.legend') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -241,19 +236,12 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<v-row>
-							<v-col>
-								<label style='font-size: 1.5rem;'>
-									{{ $t('config.daemon.messagings.tlsTitle') }}
-								</label>
-								<v-switch
-									v-model='configuration.EnabledSSL'
-									color='primary'
-									inset
-									style='float: right;'
-								/>
-							</v-col>
-						</v-row>
+						<v-switch
+							v-model='configuration.EnabledSSL'
+							:label='$t("config.daemon.messagings.tlsTitle")'
+							color='primary'
+							inset
+						/>
 						<v-row v-if='configuration.EnabledSSL'>
 							<v-col md='6'>
 								<v-text-field
@@ -295,10 +283,14 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveConfig'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -378,17 +370,21 @@ export default class MqttMessagingForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
-	 * Computes page title depending on the action (add, edit)
-	 * @returns {string} Page title
+	 * @var {string} pageTitle Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/messagings/mqtt/add' ?
-			this.$t('config.daemon.messagings.mqtt.add').toString() : this.$t('config.daemon.messagings.mqtt.edit').toString();
+		return this.$t(`config.daemon.messagings.mqtt.${this.$route.path === '/config/daemon/messagings/mqtt/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
-	 * Computes array of CoreUI persistence select options
-	 * @returns {Array<IOption>} Persistence select options
+	 * @var {string} submitButton Button text
+	 */
+	get submitButton(): string {
+		return this.$t(`forms.${this.$route.path === '/config/daemon/messagings/mqtt/add' ? 'add' : 'edit'}`).toString();
+	}
+
+	/**
+	 * @var {Array<IOption>} persistenceOptions Persistence select options
 	 */
 	get persistenceOptions(): Array<IOption> {
 		const options = [0, 1, 2];
@@ -412,15 +408,6 @@ export default class MqttMessagingForm extends Vue {
 				text: this.$t(`config.daemon.messagings.mqtt.form.QoSes.${option.toString()}`).toString(),
 			};
 		});
-	}
-
-	/**
-	 * Computes the text of form submit button depending on the action (add, edit)
-	 * @returns {string} Button text
-	 */
-	get submitButton(): string {
-		return this.$route.path === '/config/daemon/messagings/mqtt/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
 	/**
@@ -483,17 +470,12 @@ export default class MqttMessagingForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/mqtt/add') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mqtt.messages.addSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		}
+		this.$toast.success(
+			this.$t(
+				`config.daemon.messagings.mqtt.messages.${this.$route.path === '/config/daemon/messagings/mqtt/add' ? 'add' : 'edit'}Success`,
+				{instance: this.configuration.instance},
+			).toString()
+		);
 		this.$router.push('/config/daemon/messagings/mqtt/');
 	}
 }

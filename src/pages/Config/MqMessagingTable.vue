@@ -22,6 +22,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='headers'
 					:items='instances'
 					:no-data-text='$t("table.messages.noRecords")'
@@ -74,50 +75,11 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-dialog
-							v-model='deleteModal'
-							width='50%'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									v-on='on'
-									@click='confirmDelete(item)'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title class='text-h5 error'>
-									{{ $t('config.daemon.messagings.mq.modal.title') }}
-								</v-card-title>
-								<v-card-text>
-									{{ $t('config.daemon.messagings.mq.modal.prompt', {instance: deleteInstance}) }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='performDelete'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='deleteInstance = ""'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <MessagingDeleteDialog
+							:messaging-type='MessagingTypes.MQ'
+							:instance='item.instance'
+							@deleted='getInstances'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -127,15 +89,25 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import MessagingDeleteDialog from '@/components/Config/Messagings/MessagingDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {MessagingTypes} from '@/enums/Config/Messagings';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {IMqInstance} from '@/interfaces/messagingInterfaces';
 
+
 @Component({
+	components: {
+		MessagingDeleteDialog,
+	},
+	data: () => ({
+		MessagingTypes,
+	}),
 	metaInfo: {
 		title: 'config.daemon.messagings.mq.title',
 	},
@@ -146,14 +118,14 @@ import {IMqInstance} from '@/interfaces/messagingInterfaces';
  */
 export default class MqMessagingTable extends Vue {
 	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
+	/**
 	 * @constant {string} componentName MQ messaging component name
 	 */
 	private componentName = 'iqrf::MqMessaging';
-
-	/**
-	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
@@ -181,6 +153,7 @@ export default class MqMessagingTable extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			filterable: false,
 			sortable: false,
+			align: 'end',
 		},
 	];
 
@@ -190,26 +163,10 @@ export default class MqMessagingTable extends Vue {
 	private instances: Array<IMqInstance> = [];
 
 	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteInstance !== '';
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.$store.commit('spinner/SHOW');
 		this.getInstances();
-	}
-
-	/**
-	 * Assigns name of MQ messaging instance selected to remove to the remove modal
-	 * @param {IMqInstance} instance MQ messaging instance
-	 */
-	private confirmDelete(instance: IMqInstance): void {
-		this.deleteInstance = instance.instance;
 	}
 
 	/**
@@ -228,6 +185,7 @@ export default class MqMessagingTable extends Vue {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.getInstances().then(() => {
 					this.$toast.success(
 						this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: settings.instance})
@@ -243,31 +201,17 @@ export default class MqMessagingTable extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getInstances(): Promise<void> {
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed');
+			});
 	}
 
-	/**
-	 * Removes instance of MQ messaging component
-	 */
-	private performDelete(): void {
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.mq.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.deleteFailed', {instance: instance}));
-	}
 }
 </script>

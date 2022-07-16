@@ -49,7 +49,6 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<div v-if='target === "network"'>
-									<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|integer|between:0,65535'
@@ -67,7 +66,11 @@ limitations under the License.
 											:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
-										/>
+										>
+											<template #append-outer>
+												<ProductModal ref='productModal' @selected-product='setSelectedProduct' />
+											</template>
+										</v-text-field>
 									</ValidationProvider>
 									<em>
 										{{ $t('iqrfnet.trConfiguration.messages.targetNote') }}<br>
@@ -82,362 +85,371 @@ limitations under the License.
 									{{ $t('forms.read') }}
 								</v-btn>
 							</v-col>
-						</v-row><hr>
+						</v-row>
 						<v-row>
 							<v-col md='6'>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
-								<v-select
-									v-model='config.rfBand'
-									:label='$t("iqrfnet.trConfiguration.form.rfBand")'
-									:items='[
-										{value: "443", text: $t("iqrfnet.trConfiguration.form.rfBands.443")},
-										{value: "868", text: $t("iqrfnet.trConfiguration.form.rfBands.868")},
-										{value: "916", text: $t("iqrfnet.trConfiguration.form.rfBands.916")},
-									]'
-									:disabled='true'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									:rules='rfChannelRules.rule'
-									:custom-messages='rfChannelValidatorMessages'
-								>
-									<v-text-field
-										v-model.number='config.rfChannelA'
-										:label='$t("iqrfnet.trConfiguration.form.rfChannelA")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										type='number'
-										:max='rfChannelRules.max'
-										:min='rfChannelRules.min'
+								<fieldset>
+									<legend>{{ $t('iqrfnet.trConfiguration.form.rf') }}</legend>
+									<v-select
+										v-model='config.rfBand'
+										:label='$t("iqrfnet.trConfiguration.form.rfBand")'
+										:items='[
+											{value: "443", text: $t("iqrfnet.trConfiguration.form.rfBands.443")},
+											{value: "868", text: $t("iqrfnet.trConfiguration.form.rfBands.868")},
+											{value: "916", text: $t("iqrfnet.trConfiguration.form.rfBands.916")},
+										]'
+										:disabled='true'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									:rules='rfChannelRules.rule'
-									:custom-messages='rfChannelValidatorMessages'
-								>
-									<v-text-field
-										v-model.number='config.rfChannelB'
-										:label='$t("iqrfnet.trConfiguration.form.rfChannelB")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										type='number'
-										:max='rfChannelRules.max'
-										:min='rfChannelRules.min'
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										:rules='rfChannelRules.rule'
+										:custom-messages='rfChannelValidatorMessages'
+									>
+										<v-text-field
+											v-model.number='config.rfChannelA'
+											:label='$t("iqrfnet.trConfiguration.form.rfChannelA")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											type='number'
+											:max='rfChannelRules.max'
+											:min='rfChannelRules.min'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										:rules='rfChannelRules.rule'
+										:custom-messages='rfChannelValidatorMessages'
+									>
+										<v-text-field
+											v-model.number='config.rfChannelB'
+											:label='$t("iqrfnet.trConfiguration.form.rfChannelB")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											type='number'
+											:max='rfChannelRules.max'
+											:min='rfChannelRules.min'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
+										v-slot='{valid, touched, errors}'
+										:rules='rfChannelRules.rule'
+										:custom-messages='rfChannelValidatorMessages'
+									>
+										<v-text-field
+											v-model.number='config.rfSubChannelA'
+											:label='$t("iqrfnet.trConfiguration.form.rfSubChannelA")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											type='number'
+											:max='rfChannelRules.max'
+											:min='rfChannelRules.min'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
+										v-slot='{valid, touched, errors}'
+										:rules='rfChannelRules.rule'
+										:custom-messages='rfChannelValidatorMessages'
+									>
+										<v-text-field
+											v-model.number='config.rfSubChannelB'
+											:label='$t("iqrfnet.trConfiguration.form.rfSubChannelB")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											type='number'
+											:max='rfChannelRules.max'
+											:min='rfChannelRules.min'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										:rules='rfChannelRules.rule'
+										:custom-messages='rfChannelValidatorMessages'
+									>
+										<v-text-field
+											v-model.number='config.rfAltDsmChannel'
+											:label='$t("iqrfnet.trConfiguration.form.rfAltDsmChannel")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											type='number'
+											:max='rfChannelRules.max'
+											:min='rfChannelRules.min'
+										/>
+									</ValidationProvider>
+									<v-alert
+										v-if='address === 0 && config.stdAndLpNetwork === false'
+										type='warning'
+									>
+										{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
+									</v-alert>
+									<v-select
+										v-model='config.stdAndLpNetwork'
+										:label='$t("iqrfnet.trConfiguration.form.networkType")'
+										:items='networkTypeOptions'
+										:disabled='address !== 0 || target === "network"'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
-									v-slot='{valid, touched, errors}'
-									:rules='rfChannelRules.rule'
-									:custom-messages='rfChannelValidatorMessages'
-								>
-									<v-text-field
-										v-model.number='config.rfSubChannelA'
-										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelA")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										type='number'
-										:max='rfChannelRules.max'
-										:min='rfChannelRules.min'
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='integer|between:0,7|required'
+										:custom-messages='{
+											between: $t("iqrfnet.trConfiguration.form.messages.txPower"),
+											integer: $t("iqrfnet.trConfiguration.form.messages.txPower"),
+											required: $t("iqrfnet.trConfiguration.form.messages.txPower"),
+										}'
+									>
+										<v-text-field
+											v-model.number='config.txPower'
+											type='number'
+											max='7'
+											min='0'
+											:label='$t("iqrfnet.trConfiguration.form.txPower")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='integer|between:0,64|required'
+										:custom-messages='{
+											between: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
+											integer: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
+											required: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
+										}'
+									>
+										<v-text-field
+											v-model.number='config.rxFilter'
+											type='number'
+											max='64'
+											min='0'
+											:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+										/>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='integer|between:1,255|required'
+										:custom-messages='{
+											between: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
+											integer: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
+											required: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
+										}'
+									>
+										<v-text-field
+											v-model.number='config.lpRxTimeout'
+											type='number'
+											min='1'
+											max='255'
+											:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:disabled='isCoordinator'
+										/>
+									</ValidationProvider>
+								</fieldset>
+								<fieldset>
+									<legend>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</legend>
+									<v-checkbox
+										v-model='config.rfPgmEnableAfterReset'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmEnableAfterReset")'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
-									v-slot='{valid, touched, errors}'
-									:rules='rfChannelRules.rule'
-									:custom-messages='rfChannelValidatorMessages'
-								>
-									<v-text-field
-										v-model.number='config.rfSubChannelB'
-										:label='$t("iqrfnet.trConfiguration.form.rfSubChannelB")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										type='number'
-										:max='rfChannelRules.max'
-										:min='rfChannelRules.min'
+									<v-checkbox
+										v-model='config.rfPgmTerminateAfter1Min'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateAfter1Min")'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									:rules='rfChannelRules.rule'
-									:custom-messages='rfChannelValidatorMessages'
-								>
-									<v-text-field
-										v-model.number='config.rfAltDsmChannel'
-										:label='$t("iqrfnet.trConfiguration.form.rfAltDsmChannel")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										type='number'
-										:max='rfChannelRules.max'
-										:min='rfChannelRules.min'
+									<v-checkbox
+										v-model='config.rfPgmTerminateMcuPin'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateMcuPin")'
 									/>
-								</ValidationProvider>
-								<v-alert
-									v-if='address === 0 && config.stdAndLpNetwork === false'
-									type='warning'
-								>
-									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
-								</v-alert>
-								<v-select
-									v-model='config.stdAndLpNetwork'
-									:label='$t("iqrfnet.trConfiguration.form.networkType")'
-									:items='networkTypeOptions'
-									:disabled='address !== 0 || target === "network"'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='integer|between:0,7|required'
-									:custom-messages='{
-										between: $t("iqrfnet.trConfiguration.form.messages.txPower"),
-										integer: $t("iqrfnet.trConfiguration.form.messages.txPower"),
-										required: $t("iqrfnet.trConfiguration.form.messages.txPower"),
-									}'
-								>
-									<v-text-field
-										v-model.number='config.txPower'
-										type='number'
-										max='7'
-										min='0'
-										:label='$t("iqrfnet.trConfiguration.form.txPower")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+									<v-checkbox
+										v-model='config.rfPgmDualChannel'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmDualChannel")'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='integer|between:0,64|required'
-									:custom-messages='{
-										between: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
-										integer: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
-										required: $t("iqrfnet.trConfiguration.form.messages.rxFilter"),
-									}'
-								>
-									<v-text-field
-										v-model.number='config.rxFilter'
-										type='number'
-										max='64'
-										min='0'
-										:label='$t("iqrfnet.trConfiguration.form.rxFilter")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+									<v-checkbox
+										v-model='config.rfPgmLpMode'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmLpMode")'
 									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='integer|between:1,255|required'
-									:custom-messages='{
-										between: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
-										integer: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
-										required: $t("iqrfnet.trConfiguration.form.messages.lpRxTimeout"),
-									}'
-								>
-									<v-text-field
-										v-model.number='config.lpRxTimeout'
-										type='number'
-										min='1'
-										max='255'
-										:label='$t("iqrfnet.trConfiguration.form.lpRxTimeout")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										:disabled='isCoordinator'
+									<v-checkbox
+										v-model='config.rfPgmIncorrectUpload'
+										:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
+										:disabled='true'
 									/>
-								</ValidationProvider>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h2>
-								<v-checkbox
-									v-model='config.rfPgmEnableAfterReset'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmEnableAfterReset")'
-								/>
-								<v-checkbox
-									v-model='config.rfPgmTerminateAfter1Min'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateAfter1Min")'
-								/>
-								<v-checkbox
-									v-model='config.rfPgmTerminateMcuPin'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmTerminateMcuPin")'
-								/>
-								<v-checkbox
-									v-model='config.rfPgmDualChannel'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmDualChannel")'
-								/>
-								<v-checkbox
-									v-model='config.rfPgmLpMode'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmLpMode")'
-								/>
-								<v-checkbox
-									v-model='config.rfPgmIncorrectUpload'
-									:label='$t("iqrfnet.trConfiguration.form.rfPgmIncorrectUpload")'
-									:disabled='true'
-								/>
-								<h2>{{ $t('iqrfnet.trConfiguration.security.title') }}</h2>
-								<v-checkbox
-									v-model='securityPassword'
-									:label='$t("iqrfnet.trConfiguration.security.form.accessPassword")'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='security|maxlen:16'
-									:custom-messages='{
-										security: $t("iqrfnet.trConfiguration.security.errors.password"),
-										maxlen: $t("iqrfnet.trConfiguration.security.errors.passwordLen"),
-									}'
-								>
-									<v-text-field
-										v-if='securityPassword'
-										v-model='config.accessPassword'
-										:type='passwordVisible ? "text" : "password"'
-										:label='$t("iqrfnet.trConfiguration.security.form.value")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
-										@click:append='passwordVisible = !passwordVisible'
+								</fieldset>
+								<fieldset>
+									<legend>{{ $t('iqrfnet.trConfiguration.security.title') }}</legend>
+									<v-checkbox
+										v-model='securityPassword'
+										:label='$t("iqrfnet.trConfiguration.security.form.accessPassword")'
 									/>
-								</ValidationProvider>
-								<v-checkbox
-									v-model='securityKey'
-									:label='$t("iqrfnet.trConfiguration.security.form.userKey")'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='security|maxlen:16'
-									:custom-messages='{
-										security: $t("iqrfnet.trConfiguration.security.errors.key"),
-										maxlen: $t("iqrfnet.trConfiguration.security.errors.keyLen"),
-									}'
-								>
-									<v-text-field
-										v-if='securityKey'
-										v-model='config.securityUserKey'
-										:type='keyVisible ? "text" : "password"'
-										:label='$t("iqrfnet.trConfiguration.security.form.value")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										:append-icon='keyVisible ? "mdi-eye" : "mdi-eye-off"'
-										@click:append='keyVisible = !keyVisible'
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='security|maxlen:16'
+										:custom-messages='{
+											security: $t("iqrfnet.trConfiguration.security.errors.password"),
+											maxlen: $t("iqrfnet.trConfiguration.security.errors.passwordLen"),
+										}'
+									>
+										<v-text-field
+											v-if='securityPassword'
+											v-model='config.accessPassword'
+											:type='passwordVisible ? "text" : "password"'
+											:label='$t("iqrfnet.trConfiguration.security.form.value")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+											@click:append='passwordVisible = !passwordVisible'
+										/>
+									</ValidationProvider>
+									<v-checkbox
+										v-model='securityKey'
+										:label='$t("iqrfnet.trConfiguration.security.form.userKey")'
 									/>
-								</ValidationProvider>
-								<p>
-									<em v-if='securityPassword || securityKey'>
-										{{ $t('iqrfnet.trConfiguration.security.messages.note') }}
-									</em>
-								</p>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='security|maxlen:16'
+										:custom-messages='{
+											security: $t("iqrfnet.trConfiguration.security.errors.key"),
+											maxlen: $t("iqrfnet.trConfiguration.security.errors.keyLen"),
+										}'
+									>
+										<v-text-field
+											v-if='securityKey'
+											v-model='config.securityUserKey'
+											:type='keyVisible ? "text" : "password"'
+											:label='$t("iqrfnet.trConfiguration.security.form.value")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:append-icon='keyVisible ? "mdi-eye" : "mdi-eye-off"'
+											@click:append='keyVisible = !keyVisible'
+										/>
+									</ValidationProvider>
+									<p>
+										<em v-if='securityPassword || securityKey'>
+											{{ $t('iqrfnet.trConfiguration.security.messages.note') }}
+										</em>
+									</p>
+								</fieldset>
 							</v-col>
 							<v-col md='6'>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h2>
-								<v-checkbox
-									v-model='config.embPers.coordinator'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
-									:disabled='unchangeablePeripherals.includes("coordinator") || address !== 0'
-								/>
-								<v-checkbox
-									v-model='config.embPers.node'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
-									:disabled='unchangeablePeripherals.includes("node") || address === 0'
-								/>
-								<v-checkbox
-									v-model='config.embPers.os'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
-									:disabled='unchangeablePeripherals.includes("os")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.eeprom'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.eeeprom'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.ram'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.ledr'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.ledg'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.spi'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
-									:disabled='isCoordinator || compareDpaVersion("4.14", ">")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.io'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.thermometer'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
-								/>
-								<v-checkbox
-									v-model='config.embPers.uart'
-									:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
-									:disabled='isCoordinator'
-								/>
-								<h2>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h2>
-								<v-checkbox
-									v-model='config.customDpaHandler'
-									:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
-									:disabled='!dpaHandlerDetected'
-								/>
-								<v-checkbox
-									v-model='config.dpaPeerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
-									:disabled='isCoordinator || compareDpaVersion("4.10", "<")'
-								/>
-								<v-checkbox
-									v-model='config.peerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
-								/>
-								<v-checkbox
-									v-model='config.localFrcReception'
-									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
-									:disabled='isCoordinator || compareDpaVersion("4.15", "<")'
-								/>
-								<v-checkbox
-									v-model='config.ioSetup'
-									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
-								/>
-								<v-checkbox
-									v-model='config.dpaAutoexec'
-									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
-									:disabled='compareDpaVersion("4.14", ">")'
-								/>
-								<v-checkbox
-									v-model='config.routingOff'
-									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
-									:disabled='isCoordinator'
-								/>
-								<v-checkbox
-									v-model='config.neverSleep'
-									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
-									:disabled='isCoordinator || compareDpaVersion("3.03", "<")'
-								/>
-								<v-checkbox
-									v-model='config.nodeDpaInterface'
-									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
-									:disabled='compareDpaVersion("4.00", ">=")'
-								/>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='required'
-									:custom-messages='{
-										required: $t("iqrfnet.trConfiguration.form.messages.uartBaudRate"),
-									}'
-								>
-									<v-select
-										v-model='config.uartBaudrate'
-										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudRate" : "config.daemon.interfaces.iqrfUart.errors.baudRate")'
-										:items='uartBaudRates'
+								<fieldset>
+									<legend>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</legend>
+									<v-checkbox
+										v-model='config.embPers.coordinator'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
+										:disabled='unchangeablePeripherals.includes("coordinator") || address !== 0'
 									/>
-								</ValidationProvider><hr>
-								<div class='form-group'>
+									<v-checkbox
+										v-model='config.embPers.node'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.node")'
+										:disabled='unchangeablePeripherals.includes("node") || address === 0'
+									/>
+									<v-checkbox
+										v-model='config.embPers.os'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.os")'
+										:disabled='unchangeablePeripherals.includes("os")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.eeprom'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.eeprom")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.eeeprom'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.eeeprom")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.ram'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.ram")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.ledr'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.ledr")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.ledg'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.ledg")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.spi'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
+										:disabled='isCoordinator || compareDpaVersion("4.14", ">")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.io'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.io")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.thermometer'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.thermometer")'
+									/>
+									<v-checkbox
+										v-model='config.embPers.uart'
+										:label='$t("iqrfnet.trConfiguration.form.embPers.uart")'
+										:disabled='isCoordinator'
+									/>
+								</fieldset>
+								<fieldset>
+									<legend>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</legend>
+									<v-checkbox
+										v-model='config.customDpaHandler'
+										:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
+										:disabled='!dpaHandlerDetected'
+									/>
+									<v-checkbox
+										v-model='config.dpaPeerToPeer'
+										:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
+										:disabled='(isCoordinator) || compareDpaVersion("4.10", "<")'
+									/>
+									<v-checkbox
+										v-model='config.peerToPeer'
+										:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
+									/>
+									<v-checkbox
+										v-model='config.localFrcReception'
+										:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
+										:disabled='isCoordinator || compareDpaVersion("4.15", "<")'
+									/>
+									<v-checkbox
+										v-model='config.ioSetup'
+										:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
+									/>
+									<v-checkbox
+										v-model='config.dpaAutoexec'
+										:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
+										:disabled='compareDpaVersion("4.14", ">")'
+									/>
+									<v-checkbox
+										v-model='config.routingOff'
+										:label='$t("iqrfnet.trConfiguration.form.routingOff")'
+										:disabled='isCoordinator'
+									/>
+									<v-checkbox
+										v-model='config.neverSleep'
+										:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
+										:disabled='isCoordinator || compareDpaVersion("3.03", "<")'
+									/>
+									<v-checkbox
+										v-model='config.nodeDpaInterface'
+										:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
+										:disabled='compareDpaVersion("4.00", ">=")'
+									/>
+									<ValidationProvider
+										v-slot='{valid, touched, errors}'
+										rules='required'
+										:custom-messages='{
+											required: $t("iqrfnet.trConfiguration.form.messages.uartBaudRate"),
+										}'
+									>
+										<v-select
+											v-model='config.uartBaudrate'
+											:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudRate" : "config.daemon.interfaces.iqrfUart.errors.baudRate")'
+											:items='uartBaudRates'
+										/>
+									</ValidationProvider>
+									<v-divider />
 									<em>
 										{{ $t('iqrfnet.trConfiguration.form.notes.dpa3Higher') }}<br>
 										{{ $t('iqrfnet.trConfiguration.form.notes.dpa4Lower') }}<br>
@@ -449,7 +461,7 @@ limitations under the License.
 										{{ $t('iqrfnet.trConfiguration.form.notes.uart') }}<br>
 										{{ $t('iqrfnet.trConfiguration.form.notes.readOnly') }}
 									</em>
-								</div>
+								</fieldset>
 							</v-col>
 						</v-row>
 						<v-btn
@@ -490,7 +502,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import ProductModal from '@/components/IqrfNet/ProductModal.vue';
+import ProductModal from '@/components/IqrfNet/TrConfiguration/ProductDialog.vue';
 
 import {
 	between,
@@ -1123,13 +1135,6 @@ export default class TrConfiguration extends Vue {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.info(this.message.join(' '));
 		}
-	}
-
-	/**
-	 * Renders product modal
-	 */
-	private showProductModal(): void {
-		(this.$refs.productModal as ProductModal).show();
 	}
 
 	/**
