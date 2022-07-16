@@ -33,8 +33,8 @@ import ClientSocket from './ws/ClientSocket';
 
 import App from './App.vue';
 
-import './css/themes/generic.scss';
-import './css/app.scss';
+import './styles/themes/generic.scss';
+import './styles/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 import * as version from '../version.json';
@@ -106,15 +106,18 @@ axios.interceptors.response.use(
 	(response: AxiosResponse) => {
 		return response;
 	},
-	(error: AxiosError) => {
+	async (error: AxiosError) => {
 		if (error.response === undefined) {
 			// TODO: Add Network error toaster notification
 			return Promise.reject(error);
 		}
 		if (error.response.status === 401) {
-			store.dispatch('user/signOut')
-				.then(() => {
-					router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
+			if (!store.getters['user/get']) {
+				return;
+			}
+			await store.dispatch('user/signOut')
+				.then(async () => {
+					await router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
 					Vue.$toast.warning(
 						i18n.t('core.sign.out.expired').toString(),
 					);

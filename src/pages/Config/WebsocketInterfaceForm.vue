@@ -16,16 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/messagings/websocket/add"'>
-			{{ $t('config.daemon.messagings.websocket.interface.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.messagings.websocket.interface.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveConfig'>
+					<v-form>
 						<v-row>
 							<v-col md='6'>
 								<legend>{{ $t('config.daemon.messagings.websocket.interface.legend') }}</legend>
@@ -140,10 +135,14 @@ limitations under the License.
 								</div>
 							</v-col>
 						</v-row>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveConfig'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -244,21 +243,19 @@ export default class WebsocketInterfaceForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
-	 * Computes page title depending on the action (add, edit)
-	 * @returns {string} Page title
+	 * @var {string} pageTitle Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/messagings/websocket/add' ?
-			this.$t('config.daemon.messagings.websocket.interface.add').toString() : this.$t('config.daemon.messagings.websocket.interface.edit').toString();
+		return this.$t(
+			`config.daemon.messagings.websocket.interface.${this.$route.path === '/config/daemon/messagings/websocket/add' ? 'add' : 'edit'}`
+		).toString();
 	}
 
 	/**
-	 * Computes the text of form submit button depending on the action (add, edit)
-	 * @returns {string} Button text
+	 * @var {string} submitButton Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/messagings/websocket/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+		return this.$t(`forms.${this.$route.path === '/config/daemon/messagings/websocket/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**

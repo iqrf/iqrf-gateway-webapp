@@ -70,13 +70,14 @@
 							</v-list-item-content>
 						</v-list-item>
 					</v-list-group>
-				</span></v-list-group>
+				</span>
+			</v-list-group>
 		</span>
 	</v-list>
 </template>
 
 <script lang='ts'>
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 

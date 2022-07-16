@@ -136,13 +136,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
-import ResourceUsage from '@/components/Gateway/ResourceUsage.vue';
-import GatewayService from '@/services/GatewayService';
-import HostnameChange from '@/components/Gateway/HostnameChange.vue';
+import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
+import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
+import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
 
 import {fileDownloader} from '@/helpers/fileDownloader';
+
+import GatewayService from '@/services/GatewayService';
 
 import {AxiosResponse} from 'axios';
 import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/gatewayInfo';

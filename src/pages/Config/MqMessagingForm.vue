@@ -16,16 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/messagings/mq/add"'>
-			{{ $t('config.daemon.messagings.mq.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.messagings.mq.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveConfig'>
+					<v-form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -73,10 +68,14 @@ limitations under the License.
 							v-model='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveConfig'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -134,21 +133,17 @@ export default class MqMessagingForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
-	 * Computes page title depending on the action (add, edit)
-	 * @returns {string} Page title
+	 * @var {string} pageTitle Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/messagings/mq/add' ?
-			this.$t('config.daemon.messagings.mq.add').toString() : this.$t('config.daemon.messagings.mq.edit').toString();
+		return this.$t(`config.daemon.messagings.mq.${this.$route.path === '/config/daemon/messagings/mq/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
-	 * Computes the text of form submit button depending on the action (add, edit)
-	 * @returns {string} Button text
+	 * @var {string} submitButton Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/messagings/mq/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+		return this.$t(`forms.${this.$route.path === '/config/daemon/messagings/mq/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
@@ -208,17 +203,12 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private successfulSave(): void  {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/mq/add') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mq.messages.addSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		}
+		this.$toast.success(
+			this.$t(
+				`config.daemon.messagings.mq.messages.${this.$route.path === '/config/daemon/messagings/mq/add' ? 'add' : 'edit'}Success`,
+				{instance: this.configuration.instance},
+			).toString()
+		);
 		this.$router.push('/config/daemon/messagings/mq/');
 	}
 }

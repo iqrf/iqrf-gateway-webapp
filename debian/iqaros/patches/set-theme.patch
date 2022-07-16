@@ -12,7 +12,7 @@ Set theme for the IQAROS
 
  import App from './App.vue';
 
--import './css/themes/generic.scss';
-+import './css/themes/iqaros.scss';
- import './css/app.scss';
+-import './styles/themes/generic.scss';
++import './styles/themes/iqaros.scss';
+ import './styles/app.scss';
  import 'vue-toast-notification/dist/theme-sugar.css';

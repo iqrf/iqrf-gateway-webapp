@@ -17,9 +17,7 @@ limitations under the License.
 <template>
 	<TheWizard>
 		<v-card class='p-4'>
-			<h1 class='text-center'>
-				{{ $t('core.sign.in.title') }}
-			</h1>
+			<v-card-title>{{ $t('core.sign.in.title') }}</v-card-title>
 			<v-card-text>
 				<ValidationObserver v-slot='{ invalid }'>
 					<form @submit.prevent='handleSubmit'>

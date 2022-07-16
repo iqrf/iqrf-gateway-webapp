@@ -29,21 +29,30 @@ limitations under the License.
 				<v-tab>{{ $t("config.daemon.misc.tracer.title") }}</v-tab>
 			</v-tabs>
 			<v-tabs-items v-model='activeTab'>
-				<v-tab-item>
-					<JsonApi v-if='!isAdmin' />
+				<v-tab-item :transition='false'>
+					<div v-if='!isAdmin'>
+						<JsonApi />
+					</div>
 					<div v-else>
 						<JsonRawApi />
-						<hr>
 						<JsonSplitter />
 					</div>
 				</v-tab-item>
-				<v-tab-item><IqrfRepository /></v-tab-item>
-				<v-tab-item><IqrfInfo /></v-tab-item>
-				<v-tab-item v-if='isAdmin'>
+				<v-tab-item :transition='false'>
+					<IqrfRepository />
+				</v-tab-item>
+				<v-tab-item :transition='false'>
+					<IqrfInfo />
+				</v-tab-item>
+				<v-tab-item v-if='isAdmin' :transition='false'>
 					<OtaUpload />
 				</v-tab-item>
-				<v-tab-item><MonitorList /></v-tab-item>
-				<v-tab-item><TracerList /></v-tab-item>
+				<v-tab-item :transition='false'>
+					<MonitorList />
+				</v-tab-item>
+				<v-tab-item :transition='false'>
+					<TracerList />
+				</v-tab-item>
 			</v-tabs-items>
 		</v-card>
 	</div>
@@ -51,14 +60,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import IqrfInfo from '@/components/Config/IqrfInfo.vue';
-import IqrfRepository from '@/components/Config/IqrfRepository.vue';
-import JsonApi from '@/components/Config/JsonApi.vue';
-import JsonRawApi from '@/components/Config/JsonRawApi.vue';
-import JsonSplitter from '@/components/Config/JsonSplitter.vue';
-import MonitorList from '@/components/Config/MonitorList.vue';
-import OtaUpload from '@/components/Config/OtaUpload.vue';
-import TracerList from '@/components/Config/TracerList.vue';
+import IqrfInfo from '@/components/Config/Misc/IqrfInfo.vue';
+import IqrfRepository from '@/components/Config/Misc/IqrfRepository.vue';
+import JsonApi from '@/components/Config/Misc/JsonApi.vue';
+import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
+import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
+import MonitorList from '@/components/Config/Misc/MonitorList.vue';
+import OtaUpload from '@/components/Config/Misc/OtaUpload.vue';
+import TracerList from '@/components/Config/Misc/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
 
@@ -99,16 +108,6 @@ export default class MiscConfiguration extends Vue {
 	];
 
 	/**
-	 * @var {Array<string>} children Children components loading configuration
-	 */
-	private children: Array<string> = [
-		'iqrfInfo',
-		'iqrfRepository',
-		'monitor',
-		'tracer',
-	];
-
-	/**
 	 * @var {Array<string>} failed Children components config fetch failed
 	 */
 	private failed: Array<string> = [];
@@ -119,17 +118,6 @@ export default class MiscConfiguration extends Vue {
 	 */
 	get isAdmin(): boolean {
 		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
-	}
-
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		if (this.isAdmin) {
-			this.children.push('jsonRawApi', 'jsonSplitter');
-		} else {
-			this.children.push('jsonApi');
-		}
 	}
 
 	/**
