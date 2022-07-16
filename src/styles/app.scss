@@ -1,0 +1,156 @@
+/**
+ * Copyright 2017-2021 IQRF Tech s.r.o.
+ * Copyright 2019-2021 MICRORISC s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.v-application {
+	background-color: #ebedef !important;
+}
+
+.v-input--selection-controls {
+	margin-bottom: 8px;
+}
+
+a {
+	text-decoration: none;
+}
+
+fieldset {
+	border: 0;
+}
+
+legend {
+	font-weight: bold;
+	font-size: large;
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
+}
+
+.tooltip-old {
+	.tooltip-old-inner {
+		text-align: left;
+		white-space: pre-wrap;
+		max-width: none;
+	}
+}
+
+.form-check {
+	margin-bottom: 1rem;
+}
+
+.log {
+	max-height: 75vh;
+}
+
+.rf-mode-icon {
+	height: 1em;
+	width: 1em;
+}
+
+.table {
+	th,
+	td {
+		vertical-align: middle;
+	}
+}
+
+.loading-spinner-centered {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.box div {
+	flex-grow: 1;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.box div:nth-of-type(1) {
+	text-align: left;
+}
+
+.box div:nth-of-type(2) {
+	text-align: center;
+	overflow: hidden;
+}
+
+.box div:nth-of-type(3) {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.prism-editor__textarea {
+	outline: 0;
+}
+
+.vdatetime-calendar__month__day--selected {
+	& > span > span,
+	&:hover > span > span {
+		background: var(--primary) !important;
+	}
+}
+
+.vdatetime-popup__header {
+	background: var(--primary) !important;
+}
+
+.vdatetime-popup__actions__button,
+.vdatetime-month-picker__item--selected,
+.vdatetime-time-picker__item--selected,
+.vdatetime-year-picker__item--selected {
+	color: var(--primary) !important;
+}
+
+.datatable-expansion-table {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+
+	table {
+		margin-left: 1em;
+		margin-right: 1em;
+		text-align: left;
+		border-collapse: collapse;
+
+		caption {
+			caption-side: top;
+			color: #3c4b64;
+			text-align: left;
+		}
+
+		tr {
+			border-top: 1px solid #d8dbe0;
+		}
+
+		th,
+		td {
+			padding: 0.75rem 0.75rem 0.75rem 0;
+			vertical-align: top;
+		}
+	}
+}
+
+.simpletable-caption {
+	text-align: left;
+}

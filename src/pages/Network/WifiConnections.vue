@@ -72,6 +72,16 @@ limitations under the License.
 					</template>
 					<template #[`item.actions`]='{item}'>
 						<v-btn
+							v-if='item.aps[0].uuid'
+							small
+							color='primary'
+							:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <v-btn
 							small
 							:color='item.aps[0].inUse ? "error" : "success"'
 							@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
@@ -85,17 +95,7 @@ limitations under the License.
 						</v-btn> <v-btn
 							v-if='item.aps[0].uuid'
 							small
-							color='primary'
-							:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
-						>
-							<v-icon small>
-								mdi-pencil
-							</v-icon>
-							{{ $t('table.actions.edit') }}
-						</v-btn> <v-btn
-							v-if='item.aps[0].uuid'
-							small
-							color='danger'
+							color='error'
 							@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
 						>
 							<v-icon small>
@@ -165,7 +165,7 @@ limitations under the License.
 					</template>
 					<template #expanded-item='{headers, item}'>
 						<td :colspan='headers.length'>
-							<v-container>
+							<v-container fluid>
 								<v-row>
 									<v-col>
 										<div class='datatable-expansion-table'>
@@ -285,6 +285,7 @@ export default class WifiConnections extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			filterable: false,
 			sortable: false,
+			align: 'end',
 		},
 		{
 			value: 'data-table-expand',
@@ -405,6 +406,7 @@ export default class WifiConnections extends Vue {
 	 * @param {Array<IAccessPoint>} accessPoints Array of available access points
 	 */
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
+		this.accessPoints = [];
 		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
 				const connections: Array<NetworkConnection> = response.data;

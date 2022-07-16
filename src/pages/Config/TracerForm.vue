@@ -16,19 +16,13 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/misc/tracer/add"'>
-			{{ $t('config.daemon.misc.tracer.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.misc.tracer.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveInstance'>
+					<v-form>
 						<v-row>
 							<v-col md='6'>
-								<legend>{{ $t("config.daemon.misc.tracer.form.title") }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -81,11 +75,9 @@ limitations under the License.
 								<v-switch
 									v-model='configuration.timestampFiles'
 									:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
+									inset
 								/>
-								<div
-									v-if='configuration.timestampFiles'
-									class='form-group'
-								>
+								<div v-if='configuration.timestampFiles'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|min:0'
@@ -124,66 +116,80 @@ limitations under the License.
 								</div>
 							</v-col>
 							<v-col md='6'>
-								<legend>{{ $t("config.daemon.misc.tracer.form.verbosityLevels.title") }}</legend>
-								<div
-									v-for='(level, i) of configuration.VerbosityLevels'
-									:key='i'
-									class='form-group'
+								<v-row
+									v-for='(level, idx) of configuration.VerbosityLevels'
+									:key='idx'
 								>
-									<hr v-if='i > 0'>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										rules='integer|required'
-										:custom-messages='{
-											integer: $t("forms.errors.integer"),
-											required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
-										}'
-									>
-										<v-text-field
-											v-model.number='level.channel'
-											type='number'
-											:label='$t("config.daemon.misc.tracer.form.channel")'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										rules='required'
-										:custom-messages='{
-											required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
-										}'
-									>
-										<v-select
-											v-model='level.level'
-											:label='$t("config.daemon.misc.tracer.form.level")'
-											:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
-											:items='selectOptions'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-									<v-btn
-										v-if='configuration.VerbosityLevels.length > 1'
-										color='danger'
-										@click='removeLevel(i)'
-									>
-										{{ $t('config.daemon.misc.tracer.form.verbosityLevels.remove') }}
-									</v-btn> <v-btn
-										v-if='i === (configuration.VerbosityLevels.length - 1)'
-										color='success'
-										:disabled='level.channel === undefined || level.level === undefined'
-										@click='addLevel'
-									>
-										{{ $t('config.daemon.misc.tracer.form.verbosityLevels.add') }}
-									</v-btn>
-								</div>
+									<v-col>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='required'
+											:custom-messages='{
+												required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
+											}'
+										>
+											<v-select
+												v-model='level.level'
+												:label='$t("config.daemon.misc.tracer.form.level")'
+												:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
+												:items='selectOptions'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col>
+										<ValidationProvider
+											v-slot='{errors, touched, valid}'
+											rules='integer|required'
+											:custom-messages='{
+												integer: $t("forms.errors.integer"),
+												required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
+											}'
+										>
+											<v-text-field
+												v-model.number='level.channel'
+												type='number'
+												:label='$t("config.daemon.misc.tracer.form.channel")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+											>
+												<template #append-outer>
+													<v-btn
+														v-if='idx === 0'
+														color='success'
+														small
+														@click='addLevel'
+													>
+														<v-icon>
+															mdi-plus
+														</v-icon>
+													</v-btn>
+													<v-btn
+														v-else
+														color='error'
+														small
+														@click='removeLevel(idx)'
+													>
+														<v-icon>
+															mdi-delete-outline
+														</v-icon>
+													</v-btn>
+												</template>
+											</v-text-field>
+										</ValidationProvider>
+									</v-col>
+								</v-row>
 							</v-col>
 						</v-row>
-						<v-btn type='submit' color='primary' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							:disabled='invalid'
+							@click='saveInstance'
+						>
 							{{ submitButton }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
@@ -273,8 +279,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/misc/tracer/add' ?
-			this.$t('config.daemon.misc.tracer.add').toString() : this.$t('config.daemon.misc.tracer.edit').toString();
+		return this.$t(`config.daemon.misc.tracer.${this.$route.path === '/config/daemon/misc/tracer/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**
@@ -282,8 +287,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/misc/tracer/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+		return this.$t(`forms.${this.$route.path === '/config/daemon/misc/tracer/add' ? 'add' : 'edit'}`).toString();
 	}
 
 	/**

@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ title }}</h1>
-		<v-card>
+		<v-card class='mb-5'>
 			<v-card-text>
 				<div v-if='!missing && !unsupported && !unknown'>
 					<v-btn
@@ -75,7 +75,7 @@ limitations under the License.
 					<span v-else>{{ $t('service.states.inactive') }}</span>
 				</span>
 				<br><br>
-				<pre style='white-space: pre-wrap;' v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
+				<pre v-if='service.status !== null && !unsupported' style='white-space: pre-wrap;' class='log'>{{ service.status }}</pre>
 			</v-card-text>
 		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
@@ -86,9 +86,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import AptConfig from '@/components/Gateway/AptConfig.vue';
-import GatewayUserPassword from '@/components/Gateway/GatewayUserPassword.vue';
-import SystemdJournaldConfig from '@/components/Gateway/SystemdJournaldConfig.vue';
+import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
+import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
+import SystemdJournaldConfig from '@/components/Gateway/Services/SystemdJournaldConfig.vue';
 
 import AptService from '@/services/AptService';
 import ServiceService from '@/services/ServiceService';

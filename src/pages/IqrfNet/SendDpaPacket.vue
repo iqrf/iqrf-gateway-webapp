@@ -30,80 +30,90 @@ limitations under the License.
 					<form @submit.prevent='handleSubmit'>
 						<v-row>
 							<v-col md='6'>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='nadr|minLen:2|maxLen:2|required'
-									:custom-messages='{
-										nadr: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-										minLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-										maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-										required: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-									}'
-								>
-									<v-text-field
-										v-model='packetNadr'
-										maxlength='4'
-										:label='$t("iqrfnet.sendPacket.form.nadr")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										:disabled='addressOverwrite'
-										class='dpa-section'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='pnum|minLen:2|maxLen:2|required'
-									:custom-messages='{
-										pnum: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-										minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-										maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-										required: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-									}'
-								>
-									<v-text-field
-										v-model='packetPnum'
-										:label='$t("iqrfnet.sendPacket.form.pnum")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										class='dpa-section'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='pcmd|minLen:2|maxLen:2|required'
-									:custom-messages='{
-										pcmd: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-										minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-										maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-										required: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-									}'
-								>
-									<v-text-field
-										v-model='packetPcmd'
-										:label='$t("iqrfnet.sendPacket.form.pcmd")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										class='dpa-section'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='hwpid|minLen:4|maxLen:4|required'
-									:custom-messages='{
-										hwpid: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-										minLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-										maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-										required: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-									}'
-								>
-									<v-text-field
-										v-model='packetHwpid'
-										:label='$t("iqrfnet.sendPacket.form.hwpid")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										class='dpa-section'
-									/>
-								</ValidationProvider>
+								<v-row>
+									<v-col>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='nadr|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												nadr: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+											}'
+										>
+											<v-text-field
+												v-model='packetNadr'
+												maxlength='4'
+												:label='$t("iqrfnet.sendPacket.form.nadr")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												:disabled='addressOverwrite'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pnum|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												pnum: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPnum'
+												:label='$t("iqrfnet.sendPacket.form.pnum")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pcmd|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												pcmd: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPcmd'
+												:label='$t("iqrfnet.sendPacket.form.pcmd")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='hwpid|minLen:4|maxLen:4|required'
+											:custom-messages='{
+												hwpid: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+											}'
+										>
+											<v-text-field
+												v-model='packetHwpid'
+												:label='$t("iqrfnet.sendPacket.form.hwpid")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+								</v-row>
 							</v-col>
 							<v-col md='6'>
 								<ValidationProvider
@@ -119,6 +129,7 @@ limitations under the License.
 										:label='$t("iqrfnet.sendPacket.form.pdata")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
+										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>

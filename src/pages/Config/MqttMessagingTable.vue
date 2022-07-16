@@ -22,6 +22,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='headers'
 					:items='instances'
 					:no-data-text='$t("table.messages.noRecords")'
@@ -97,50 +98,11 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-dialog
-							v-model='deleteDialog'
-							width='50%'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									v-on='on'
-									@click='confirmDelete(item)'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title class='text-h5 error'>
-									{{ $t('config.daemon.messagings.mqtt.modal.title') }}
-								</v-card-title>
-								<v-card-text>
-									{{ $t('config.daemon.messagings.mqtt.modal.prompt', {instance: deleteInstance}) }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='remove'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='deleteInstance = ""'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <MessagingDeleteDialog
+							:messaging-type='MessagingTypes.MQTT'
+							:instance='item.instance'
+							@deleted='getInstances'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -150,15 +112,26 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import MessagingDeleteDialog from '@/components/Config/Messagings/MessagingDeleteDialog.vue';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {MessagingTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
+
+
 @Component({
+	components: {
+		MessagingDeleteDialog,
+	},
+	data: () => ({
+		MessagingTypes,
+	}),
 	metaInfo: {
 		title: 'config.daemon.messagings.mqtt.title'
 	}
@@ -169,14 +142,14 @@ import {IMqttInstance} from '@/interfaces/messagingInterfaces';
  */
 export default class MqttMessagingTable extends Vue {
 	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
+	/**
 	 * @constant {string} componentName MQTT messaging component name
 	 */
 	private componentName = 'iqrf::MqttMessaging';
-
-	/**
-	 * @var {string} deleteInstance MQTT messaging instance name used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
@@ -217,6 +190,7 @@ export default class MqttMessagingTable extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			sortable: false,
 			filterable: false,
+			align: 'end',
 		},
 	];
 
@@ -226,26 +200,10 @@ export default class MqttMessagingTable extends Vue {
 	private instances: Array<IMqttInstance> = [];
 
 	/**
-	 * @var {boolean} deleteDialog Delete dialog visibility
-	 */
-	get deleteDialog(): boolean {
-		return this.deleteInstance !== '';
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.$store.commit('spinner/SHOW');
 		this.getInstances();
-	}
-
-	/**
-	 * Assigns name of MQTT messaging instance selected to remove to the remove modal
-	 * @param {IMqttInstance} instance MQTT messaging instance
-	 */
-	private confirmDelete(instance: IMqttInstance): void {
-		this.deleteInstance = instance.instance;
 	}
 
 	/**
@@ -278,13 +236,14 @@ export default class MqttMessagingTable extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private edit(instance: IMqttInstance, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
 		const settings = {
 			...instance,
 			...newSettings,
 		};
+		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.getInstances().then(() => {
 					this.$toast.success(
 						this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: settings.instance})
@@ -300,37 +259,13 @@ export default class MqttMessagingTable extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getInstances(): Promise<void> {
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.listFailed'));
 	}
-
-	/**
-	 * Removes instance of MQTT messaging component
-	 */
-	private remove(): void {
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.mqtt.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.deleteFailed', {instance: instance}));
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>
