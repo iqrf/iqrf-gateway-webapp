@@ -18,6 +18,7 @@ import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
 import {AutoNetworkOptions} from '@/interfaces/autonetwork';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import { IOtaUploadParams } from '@/interfaces/IqrfNet/NetworkManager';
 
 /**
  * IQRF Network service
@@ -255,29 +256,22 @@ class IqrfNetService {
 
 	/**
 	 * Sends request to execute OTA upload action
-	 * @param {number} deviceAddr Target device address
-	 * @param {number} hwpid HWPID filter
-	 * @param {string} file Full name of file to upload
-	 * @param {number} eepromAddr External EEPROM address
-	 * @param {boolean} uploadEeprom Upload to EEPROM?
-	 * @param {boolean} uploadEeeprom Upload to EEEPROM?
-	 * @param {OtaUploadAction} action OTA upload action
-	 * @param {DaemonMessageOptions} options Daemon request options
+	 * @param {IOtaUploadParams} params OTA upload parameters
 	 * @return {Promise<string>} Message ID
 	 */
-	otaUpload(deviceAddr: number, hwpid: number, file: string, eepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: DaemonMessageOptions): Promise<string> {
+	otaUpload(params: IOtaUploadParams, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_OtaUpload',
 			'data': {
 				'repeat': 1,
 				'req': {
-					'deviceAddr': deviceAddr,
-					'hwpId': hwpid,
-					'fileName': file,
-					'startMemAddr': eepromAddr,
-					'loadingAction': action,
-					'uploadEepromData': uploadEeprom,
-					'uploadEeepromData': uploadEeeprom,
+					'deviceAddr': params.address,
+					'hwpId': params.hwpid,
+					'fileName': params.file,
+					'startMemAddr': params.startMemAddr,
+					'loadingAction': params.loadingAction,
+					'uploadEepromData': params.uploadEeprom,
+					'uploadEeepromData': params.uploadEeeprom,
 				},
 				'returnVerbose': true,
 			},

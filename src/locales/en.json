@@ -1730,19 +1730,27 @@
 						"loadFlash": "Step 3: Load data to Flash"
 					}
 				},
+				"resultDialog": {
+					"verifyTitle": "Verify step result",
+					"address": "Device address",
+					"online": "Online",
+					"compatible": "Compatible",
+					"success": "Success"
+				},
 				"errors": {
 					"file": "Please select a file to upload.",
+					"notHexFile": "Selected file is not .hex file.",
+					"notIqrfFile": "Selected file is not .iqrf file.",
 					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
 					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
 				"messages": {
+					"generalError": "An error has occured during OTA upload process: {error}",
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
 					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
 					"hwpid": "* HWPID 65535 includes all devices.",
-					"notHexFile": "Selected file is not .hex file.",
-					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occurred during file content parsing: {error}",
