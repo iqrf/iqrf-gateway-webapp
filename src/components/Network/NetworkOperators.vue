@@ -20,18 +20,11 @@ limitations under the License.
 			<v-card-title>{{ $t('network.operators.title') }}</v-card-title>
 			<v-card-text>
 				<v-btn-toggle class='flex-wrap' dense>
-					<v-btn
-						color='success'
-						small
-						@click='addOperator'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-					</v-btn>
+					<NetworkOperatorFormDialog @saved='getOperators' />
 					<v-menu
 						v-for='(operator, i) of operators'
 						:key='i'
+						ref='menu'
 						offset-y
 						top
 					>
@@ -42,7 +35,7 @@ limitations under the License.
 								small
 								v-on='on'
 							>
-								{{ operator.getName() }}
+								{{ operator.name }}
 								<v-icon color='white'>
 									mdi-menu-up
 								</v-icon>
@@ -50,7 +43,6 @@ limitations under the License.
 						</template>
 						<v-list dense>
 							<v-list-item
-								v-if='$route.path.includes("network/mobile/add") || $route.path.includes("network/mobile/edit")'
 								@click='$emit("apply", operator)'
 							>
 								<v-icon dense>
@@ -58,40 +50,30 @@ limitations under the License.
 								</v-icon>
 								{{ $t('network.operators.apply') }}
 							</v-list-item>
-							<v-list-item
-								@click='editOperator(i)'
-							>
-								<v-icon dense>
-									mdi-pencil
-								</v-icon>
-								{{ $t('network.operators.edit') }}
-							</v-list-item>
-							<v-list-item
-								@click='deleteOperator(i)'
-							>
-								<v-icon dense>
-									mdi-delete
-								</v-icon>
-								{{ $t('network.operators.delete') }}
-							</v-list-item>
+							<NetworkOperatorFormDialog
+								:operator='operator'
+								@saved='getOperators'
+								@close-menu='$refs.menu[i].isActive = false'
+							/>
+							<NetworkOperatorDeleteDialog
+								:operator='operator'
+								@deleted='getOperators'
+								@close-menu='$refs.menu[i].isActive = false'
+							/>
 						</v-list>
 					</v-menu>
 				</v-btn-toggle>
 			</v-card-text>
 		</v-card>
-		<NetworkOperatorDeleteModal ref='operatorDelete' @closed='getOperators' />
-		<NetworkOperatorForm ref='operatorForm' @closed='getOperators' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
-import NetworkOperatorForm from './NetworkOperatorForm.vue';
+import NetworkOperatorDeleteDialog from './NetworkOperatorDeleteDialog.vue';
+import NetworkOperatorFormDialog from './NetworkOperatorFormDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import NetworkOperator from '@/entities/NetworkOperator';
 
 import NetworkOperatorService from '@/services/NetworkOperatorService';
 
@@ -101,8 +83,8 @@ import {IOperator} from '@/interfaces/network';
 
 @Component({
 	components: {
-		NetworkOperatorDeleteModal,
-		NetworkOperatorForm,
+		NetworkOperatorDeleteDialog,
+		NetworkOperatorFormDialog,
 	},
 })
 
@@ -110,11 +92,10 @@ import {IOperator} from '@/interfaces/network';
  * Network operators components
  */
 export default class NetworkOperators extends Vue {
-
 	/**
 	 * @var {Array<IOperator>} operators Array of network operators
 	 */
-	private operators: Array<NetworkOperator> = [];
+	private operators: Array<IOperator> = [];
 
 	/**
 	 * Retrieves operators
@@ -129,39 +110,25 @@ export default class NetworkOperators extends Vue {
 	private getOperators(): Promise<void> {
 		return NetworkOperatorService.getOperators()
 			.then((rsp: AxiosResponse) => {
-				const operators: Array<NetworkOperator> = [];
-				rsp.data.forEach((operator: IOperator) => {
-					operators.push(new NetworkOperator(operator));
+				const operators: Array<IOperator> = rsp.data;
+				this.operators = operators.map((operator: IOperator) => {
+					if (!operator.username) {
+						operator.username = '';
+					}
+					if (!operator.password) {
+						operator.password = '';
+					}
+					return operator;
 				});
-				this.operators = operators;
 			})
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.listFailed'));
 	}
 
 	/**
-	 * Activates network operator form modal window to add new operator
+	 *
 	 */
-	private addOperator(): void {
-		(this.$refs.operatorForm as NetworkOperatorForm).activateModal();
-	}
-
-	/**
-	 * Activates network operator form modal window to edit existing operator
-	 * @param {number} idx Operator index
-	 */
-	private editOperator(idx: number): void {
-		const id = this.operators[idx].getId();
-		(this.$refs.operatorForm as NetworkOperatorForm).activateModal(id);
-	}
-
-	/**
-	 * Deletes operator
-	 * @param {number} idx Operator index
-	 */
-	private deleteOperator(idx: number): void {
-		const id = this.operators[idx].getId();
-		const name = this.operators[idx].getName();
-		(this.$refs.operatorDelete as NetworkOperatorDeleteModal).activateModal(id, name);
+	private handleCloseMenu(idx: number): void {
+		(this.$refs['menu']![idx] as any).isActive = false;
 	}
 }
 </script>

@@ -17,29 +17,40 @@ limitations under the License.
 <template>
 	<v-dialog
 		v-model='show'
-		width='auto'
+		width='50%'
 		persistent
 		no-click-animation
 	>
+		<template #activator='{attrs, on}'>
+			<v-list-item
+				v-bind='attrs'
+				v-on='on'
+				@click='showDialog'
+			>
+				<v-icon dense>
+					mdi-delete
+				</v-icon>
+				{{ $t('network.operators.delete') }}
+			</v-list-item>
+		</template>
 		<v-card>
-			<v-card-title class='text-h5 error'>
+			<v-card-title>
 				{{ $t('network.operators.modal.title') }}
 			</v-card-title>
 			<v-card-text>
-				{{ $t('network.operators.modal.prompt', {name: name}) }}
+				{{ $t('network.operators.modal.prompt', {name: operator.name}) }}
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
 				<v-btn
+					@click='closeDialog'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn> <v-btn
 					color='error'
 					@click='deleteOperator'
 				>
 					{{ $t('forms.delete') }}
-				</v-btn> <v-btn
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
 				</v-btn>
 			</v-card-actions>
 		</v-card>
@@ -47,76 +58,56 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
+import DialogBase from '../DialogBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError} from 'axios';
+import {IOperator} from '@/interfaces/network';
 
 @Component({})
 
 /**
- * Network operator delete modal component
+ * Network operator delete dialog component
  */
-export default class NetworkOperatorDeleteModal extends Vue {
-
+export default class NetworkOperatorDeleteDialog extends DialogBase {
 	/**
-	 * @var {boolean} show Controls whether modal is displayed
+	 * @property {IOperator} operator Network operator
 	 */
-	private show = false;
-
-	/**
-	 * @var {number} id Operator ID
-	 */
-	private id = 0;
-
-	/**
-	 * @var {string} name Operator name
-	 */
-	private name = '';
-
-	/**
-	 * Shows the modal window
-	 * @param {number} id Operator ID
-	 * @param {string} name Operator name
-	 */
-	public activateModal(id: number, name: string): void {
-		this.id = id;
-		this.name = name;
-		this.show = true;
-	}
-
-	/**
-	 * Hides the modal window
-	 */
-	public deactivateModal(): void {
-		this.id = 0;
-		this.name = '';
-		this.show = false;
-	}
+	@Prop({required: true}) operator!: IOperator;
 
 	/**
 	 * Deletes operator
 	 */
 	private deleteOperator(): void {
+		if (!this.operator.id) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
-		NetworkOperatorService.deleteOperator(this.id)
+		NetworkOperatorService.deleteOperator(this.operator.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('network.operators.messages.deleteSuccess', {operator: this.name}).toString()
+					this.$t('network.operators.messages.deleteSuccess', {operator: this.operator.name}).toString()
 				);
-				this.deactivateModal();
 				this.$emit('closed');
 			})
 			.catch((err: AxiosError) => {
-				const params = {name: this.name};
+				const params = {name: this.operator.name};
 				extendedErrorToast(err, 'network.operators.messages.deleteFailed', params);
-				this.deactivateModal();
 				this.$emit('closed');
 			});
+	}
+
+	/**
+	 * Emits event to close parent menu (temporary workaround) and opens dialog
+	 */
+	private showDialog(): void {
+		this.$emit('close-menu');
+		this.openDialog();
 	}
 }
 </script>
