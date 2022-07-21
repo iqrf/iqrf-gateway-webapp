@@ -39,14 +39,7 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<v-btn
-									style='float: right;'
-									small
-									color='primary'
-									@click='generateKeys'
-								>
-									{{ $t("network.wireguard.tunnels.form.generateKeys") }}
-								</v-btn>
+
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|base64Key'
@@ -60,7 +53,17 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.privateKey")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-									/>
+									>
+										<template #append-outer>
+											<v-btn
+												small
+												color='primary'
+												@click='generateKeys'
+											>
+												{{ $t("network.wireguard.tunnels.form.generateKeys") }}
+											</v-btn>
+										</template>
+									</v-text-field>
 								</ValidationProvider>
 								<div
 									v-if='tunnel.publicKey !== ""'
