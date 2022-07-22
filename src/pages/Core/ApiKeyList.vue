@@ -20,6 +20,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='header'
 					:items='keys'
 				>
@@ -51,44 +52,10 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn> <v-dialog
-							v-model='deleteModal'
-							width='50%'
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									@click='deleteKey = item.id'
-									v-on='on'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title>{{ $t('core.security.apiKey.modal.title') }}</v-card-title>
-								<v-card-text>{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='removeKey'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn>
-									<v-btn
-										color='secondary'
-										@click='deleteKey = -1'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <ApiKeyDeleteDialog
+							:api-key='item'
+							@deleted='getKeys'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -98,6 +65,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import ApiKeyDeleteDialog from '@/components/Core/ApiKeyDeleteDialog.vue';
 
 import ApiKeyService from '@/services/ApiKeyService';
 import {DateTime} from 'luxon';
@@ -105,9 +73,13 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import { IApiKey } from '@/interfaces/apiKey';
+import {IApiKey} from '@/interfaces/apiKey';
+
 
 @Component({
+	components: {
+		ApiKeyDeleteDialog,
+	},
 	metaInfo: {
 		title: 'core.security.apiKey.title'
 	}
@@ -117,23 +89,15 @@ import { IApiKey } from '@/interfaces/apiKey';
  * List of existing API keys
  */
 export default class ApiKeyList extends Vue {
+	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
 
 	/**
 	 * @var {Array<ApiKey>} keys List of API key objects
 	 */
 	private keys: Array<IApiKey> = [];
-
-	/**
-	 * @var {number} deleteKey API key id used in remove modal
-	 */
-	private deleteKey = -1;
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteKey !== -1;
-	}
 
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
@@ -171,34 +135,16 @@ export default class ApiKeyList extends Vue {
 	 * Retrieves list of existing API keys
 	 */
 	private getKeys(): Promise<void> {
-		if (!this.$store.getters['spinner/isEnabled']) {
-			this.$store.commit('spinner/SHOW');
-		}
+		this.loading = true;
 		return ApiKeyService.getApiKeys()
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.keys = response.data;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.listFetchFailed'));
-	}
-
-	/**
-	 * Removes an existing API key
-	 */
-	private removeKey(): void  {
-		if (this.deleteKey === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const key = this.deleteKey;
-		this.deleteKey = -1;
-		ApiKeyService.deleteApiKey(key)
-			.then(() => {
-				this.getKeys().then(() => {
-					this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: key}).toString());
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: key}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'core.security.apiKey.messages.listFetchFailed');
+			});
 	}
 
 	/**

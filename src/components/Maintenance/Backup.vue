@@ -1,67 +1,73 @@
 <template>
-	<form @submit.prevent='backup'>
-		<div class='form-group'>
-			<v-btn
-				color='primary'
-				small
-				@click='setAll(true)'
-			>
-				{{ $t('maintenance.backup.form.selectAll') }}
-			</v-btn> <v-btn
-				color='secondary'
-				small
-				@click='setAll(false)'
-			>
-				{{ $t('maintenance.backup.form.deselectAll') }}
-			</v-btn>
-		</div>
-		<v-row>
-			<v-col>
-				<h3>{{ $t('maintenance.backup.headings.software') }}</h3>
-				<v-checkbox
-					v-model='migration.software.iqrf'
-					:label='$t("maintenance.backup.form.software.iqrf")'
-				/>
-				<v-checkbox
-					v-if='$store.getters["features/isEnabled"]("mender")'
-					v-model='migration.software.mender'
-					:label='$t("maintenance.backup.form.software.mender")'
-				/>
-				<v-checkbox
-					v-if='$store.getters["features/isEnabled"]("monit")'
-					v-model='migration.software.monit'
-					:label='$t("maintenance.backup.form.software.monit")'
-				/>
-			</v-col>
-			<v-col>
-				<h3>{{ $t('maintenance.backup.headings.system') }}</h3>
-				<v-checkbox
-					v-model='migration.system.hostname'
-					:label='$t("maintenance.backup.form.system.hostname")'
-				/>
-				<v-checkbox
-					v-if='$store.getters["features/isEnabled"]("networkManager")'
-					v-model='migration.system.network'
-					:label='$t("maintenance.backup.form.system.network")'
-				/>
-				<v-checkbox
-					v-model='migration.system.time'
-					:label='$t("maintenance.backup.form.system.time")'
-				/>
-				<v-checkbox
-					v-if='$store.getters["features/isEnabled"]("systemdJournal")'
-					v-model='migration.system.journal'
-					:label='$t("maintenance.backup.form.system.journal")'
-				/>
-			</v-col>
-		</v-row>
-		<v-btn
-			color='primary'
-			type='submit'
-		>
-			{{ $t('maintenance.backup.form.backup') }}
-		</v-btn>
-	</form>
+	<v-card>
+		<v-card-title>
+			<v-item-group>
+				<v-btn
+					color='primary'
+					small
+					@click='setAll(true)'
+				>
+					{{ $t('maintenance.backup.form.selectAll') }}
+				</v-btn> <v-btn
+					color='secondary'
+					small
+					@click='setAll(false)'
+				>
+					{{ $t('maintenance.backup.form.deselectAll') }}
+				</v-btn>
+			</v-item-group>
+		</v-card-title>
+		<v-card-text>
+			<v-form @submit.prevent='backup'>
+				<v-row>
+					<v-col>
+						<legend>{{ $t('maintenance.backup.headings.software') }}</legend>
+						<v-checkbox
+							v-model='migration.software.iqrf'
+							:label='$t("maintenance.backup.form.software.iqrf")'
+						/>
+						<v-checkbox
+							v-if='$store.getters["features/isEnabled"]("mender")'
+							v-model='migration.software.mender'
+							:label='$t("maintenance.backup.form.software.mender")'
+						/>
+						<v-checkbox
+							v-if='$store.getters["features/isEnabled"]("monit")'
+							v-model='migration.software.monit'
+							:label='$t("maintenance.backup.form.software.monit")'
+						/>
+					</v-col>
+					<v-col>
+						<legend>{{ $t('maintenance.backup.headings.system') }}</legend>
+						<v-checkbox
+							v-model='migration.system.hostname'
+							:label='$t("maintenance.backup.form.system.hostname")'
+						/>
+						<v-checkbox
+							v-if='$store.getters["features/isEnabled"]("networkManager")'
+							v-model='migration.system.network'
+							:label='$t("maintenance.backup.form.system.network")'
+						/>
+						<v-checkbox
+							v-model='migration.system.time'
+							:label='$t("maintenance.backup.form.system.time")'
+						/>
+						<v-checkbox
+							v-if='$store.getters["features/isEnabled"]("systemdJournal")'
+							v-model='migration.system.journal'
+							:label='$t("maintenance.backup.form.system.journal")'
+						/>
+					</v-col>
+				</v-row>
+				<v-btn
+					color='primary'
+					type='submit'
+				>
+					{{ $t('maintenance.backup.form.backup') }}
+				</v-btn>
+			</v-form>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
@@ -80,7 +86,7 @@ import {IBackup} from '@/interfaces/backup';
 /**
  * Gateway backup component
  */
-export default class BackupComponent extends Vue {
+export default class Backup extends Vue {
 
 	/**
 	 * @var {IBackup} migration Gateway migration request

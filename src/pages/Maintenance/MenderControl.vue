@@ -17,12 +17,12 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.mender.service.pageTitle') }}</h1>
-		<v-card>
+		<v-card class='mb-5'>
 			<v-card-text>
 				<ServiceControl service-name='mender-client' />
-				<MenderServiceForm />
 			</v-card-text>
 		</v-card>
+		<MenderServiceForm />
 	</div>
 </template>
 

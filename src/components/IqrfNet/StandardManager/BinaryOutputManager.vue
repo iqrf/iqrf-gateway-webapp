@@ -59,9 +59,10 @@ limitations under the License.
 					</ValidationProvider>
 					<v-switch
 						v-model='state'
+						:label='$t("iqrfnet.standard.binaryOutput.form.state")'
 						color='primary'
 						inset
-						:label='$t("iqrfnet.standard.binaryOutput.form.state")'
+						dense
 					/>
 					<v-btn
 						color='primary'

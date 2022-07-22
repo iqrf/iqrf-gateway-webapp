@@ -36,6 +36,7 @@ limitations under the License.
 							v-model='autoAddress'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.autoAddress")'
 							inset
+							dense
 						/>
 						<ValidationProvider
 							v-if='!autoAddress'

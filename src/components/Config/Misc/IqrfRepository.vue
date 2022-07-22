@@ -58,6 +58,7 @@ limitations under the License.
 						:label='$t("config.daemon.misc.iqrfRepository.form.enableCheck")'
 						color='primary'
 						inset
+						dense
 					/>
 					<ValidationProvider
 						v-if='checkEnabled'

@@ -19,63 +19,47 @@ limitations under the License.
 		<v-card-text>
 			<v-row v-if='gatewayTime !== null'>
 				<v-col md='6'>
-					<p>
-						<strong>
-							{{ $t('gateway.datetime.currentTime') }}
-						</strong>
-					</p>
+					<p><strong>{{ $t('gateway.datetime.currentTime') }}</strong></p>
 					<p style='font-size: 2em;'>
 						{{ timeDisplay }}
 					</p>
 					<p style='font-size: 1.5em;'>
 						{{ timezoneDisplay }}
 					</p>
-					<div class='form-group'>
-						<label for='clockFormatSwitch'>
-							{{ $t('gateway.datetime.clockFormat') }}
-						</label><br>
-						<v-switch
-							id='clockFormatSwitch'
-							v-model='hour12'
-							color='primary'
-							inset
-						/>
-					</div>
+					<v-switch
+						v-model='hour12'
+						:label='$t("gateway.datetime.clockFormat")'
+						color='primary'
+						inset
+						dense
+					/>
 					<p>
-						<strong>
-							{{ $t('gateway.datetime.ntpSync') }}
-						</strong>
+						<strong>{{ $t('gateway.datetime.ntpSync') }}</strong>
 						<v-icon :color='gatewayTime.ntpSynchronized ? "success" : "error"'>
 							{{ gatewayTime.ntpSynchronized ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
 						</v-icon>
 					</p>
 				</v-col>
 				<v-col md='6'>
-					<p>
-						<strong>
-							{{ $t('gateway.datetime.currentTimezone') }}
-						</strong>
-					</p>
-					<p>
-						{{ currentTimezone }}
-					</p>
-					<form @submit.prevent='setTimezone'>
-						<div class='form-group'>
-							<label>
-								<strong>
-									{{ $t('gateway.datetime.form.timezone') }}
-								</strong>
-							</label>
-							<v-autocomplete
-								v-model='timezone'
-								:items='timezoneOptions'
-								:label='$t("gateway.datetime.form.timezone")'
-							/>
-						</div>
-						<v-btn color='primary' type='submit'>
+					<v-text-field
+						:value='currentTimezone'
+						:label='$t("gateway.datetime.currentTimezone")'
+						readonly
+						disabled
+					/>
+					<v-form @submit.prevent='setTimezone'>
+						<v-autocomplete
+							v-model='timezone'
+							:items='timezoneOptions'
+							:label='$t("gateway.datetime.form.timezone")'
+						/>
+						<v-btn
+							color='primary'
+							type='submit'
+						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</v-col>
 			</v-row>
 		</v-card-text>

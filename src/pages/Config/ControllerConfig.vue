@@ -24,7 +24,7 @@ limitations under the License.
 						<fieldset>
 							<legend>{{ $t("config.controller.form.wsServers.title") }}</legend>
 							<v-row>
-								<v-col md='6'>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
@@ -38,10 +38,11 @@ limitations under the License.
 											:label='$t("config.controller.form.wsServers.api")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col md='6'>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
@@ -55,6 +56,7 @@ limitations under the License.
 											:label='$t("config.controller.form.wsServers.monitor")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
@@ -64,7 +66,7 @@ limitations under the License.
 						<fieldset>
 							<legend>{{ $t("config.controller.form.logger.title") }}</legend>
 							<v-row>
-								<v-col md='6'>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -77,10 +79,11 @@ limitations under the License.
 											:label='$t("config.controller.form.logger.filePath")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col md='6'>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -94,25 +97,24 @@ limitations under the License.
 											:label='$t("config.controller.form.logger.severity")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
-											:placeholder='$t("config.controller.errors.missing.l_severity")'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
 							</v-row>
-							<label>
-								<strong>{{ $t('config.controller.form.logger.sink') }}</strong>
-							</label>
 							<v-row>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.logger.sinks.file'
 										:label='$t("config.controller.form.logger.sinks.file")'
+										hide-details='auto'
 									/>
 								</v-col>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.logger.sinks.syslog'
 										:label='$t("config.controller.form.logger.sinks.syslog")'
+										hide-details='auto'
 									/>
 								</v-col>
 							</v-row>
@@ -121,34 +123,39 @@ limitations under the License.
 						<fieldset>
 							<legend>{{ $t("config.controller.form.factoryReset.title") }}</legend>
 							<v-row>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.coordinator'
 										:label='$t("forms.fields.coordinator")'
+										hide-details='auto'
 									/>
 								</v-col>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.daemon'
 										:label='$t("config.controller.form.factoryReset.daemon")'
+										hide-details='auto'
 									/>
 								</v-col>
-								<v-col v-if='config.factoryReset.iqaros !== undefined' md='2'>
+								<v-col v-if='config.factoryReset.iqaros !== undefined' cols='6' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.iqaros'
 										:label='$t("config.controller.form.factoryReset.iqaros")'
+										hide-details='auto'
 									/>
 								</v-col>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.network'
 										:label='$t("config.controller.form.factoryReset.network")'
+										hide-details='auto'
 									/>
 								</v-col>
-								<v-col md='2'>
+								<v-col cols='6' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.webapp'
 										:label='$t("config.controller.form.factoryReset.webapp")'
+										hide-details='auto'
 									/>
 								</v-col>
 							</v-row>
@@ -160,11 +167,12 @@ limitations under the License.
 								v-model='config.resetButton.api'
 								:items='apiCallOptions'
 								:label='$t("config.controller.form.resetButton.api")'
+								hide-details='auto'
 							/>
 							<div v-if='config.resetButton.api === "discovery"'>
 								<legend>{{ $t("config.controller.form.daemonApi.discovery.title") }}</legend>
 								<v-row>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,239'
@@ -182,10 +190,11 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
@@ -203,6 +212,7 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
@@ -210,12 +220,13 @@ limitations under the License.
 								<v-checkbox
 									v-model='config.daemonApi.discovery.returnVerbose'
 									:label='$t("forms.fields.verbose")'
+									hide-details='auto'
 								/>
 							</div>
 							<div v-if='config.resetButton.api === "autoNetwork"'>
 								<legend>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</legend>
 								<v-row>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='required|integer|between:0,3'
@@ -233,10 +244,11 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
@@ -254,27 +266,30 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
 								</v-row>
 								<v-row>
-									<v-col md='6'>
+									<v-col cols='6' md='3'>
 										<v-checkbox
 											v-model='config.daemonApi.autoNetwork.discoveryBeforeStart'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+											hide-details='auto'
 										/>
 									</v-col>
-									<v-col md='6'>
+									<v-col col='6' md='3'>
 										<v-checkbox
 											v-model='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+											hide-details='auto'
 										/>
 									</v-col>
 								</v-row>
 								<legend>{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}</legend>
 								<v-row>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
@@ -292,10 +307,11 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
-									<v-col md='6'>
+									<v-col cols='12' md='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
@@ -313,21 +329,24 @@ limitations under the License.
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 												:success='touched ? valid : null'
 												:error-messages='errors'
+												hide-details='auto'
 											/>
 										</ValidationProvider>
 									</v-col>
 								</v-row>
 								<v-row>
-									<v-col md='6'>
+									<v-col cols='6' md='3'>
 										<v-checkbox
 											v-model='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
+											hide-details='auto'
 										/>
 									</v-col>
-									<v-col md='6'>
+									<v-col cols='6' md='3'>
 										<v-checkbox
 											v-model='config.daemonApi.autoNetwork.returnVerbose'
 											:label='$t("forms.fields.verbose")'
+											hide-details='auto'
 										/>
 									</v-col>
 								</v-row>
@@ -337,7 +356,7 @@ limitations under the License.
 						<fieldset>
 							<legend>{{ $t("config.controller.pins.title") }}</legend>
 							<v-row>
-								<v-col md='4'>
+								<v-col cols='12' md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -352,10 +371,11 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.greenLed")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col md='4'>
+								<v-col cols='12' md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -370,10 +390,11 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.redLed")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col md='4'>
+								<v-col cols='12' md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -388,16 +409,20 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.button")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 										/>
 									</ValidationProvider>
 								</v-col>
 							</v-row>
-							<v-checkbox
-								v-model='useI2cPins'
-								:label='$t("config.controller.pins.form.useI2c")'
-							/>
 							<v-row>
-								<v-col md='4'>
+								<v-col cols='12' md='4'>
+									<v-checkbox
+										v-model='useI2cPins'
+										:label='$t("config.controller.pins.form.useI2c")'
+										hide-details='auto'
+									/>
+								</v-col>
+								<v-col cols='12' md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -412,11 +437,12 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.sck")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col md='4'>
+								<v-col cols='12' md='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -431,6 +457,7 @@ limitations under the License.
 											:label='$t("config.controller.pins.form.sda")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											hide-details='auto'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
@@ -438,6 +465,7 @@ limitations under the License.
 							</v-row>
 						</fieldset>
 						<v-btn
+							class='mt-4'
 							color='primary'
 							:disabled='invalid'
 							@click='save'

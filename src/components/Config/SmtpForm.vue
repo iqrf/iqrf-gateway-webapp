@@ -24,15 +24,14 @@ limitations under the License.
 			<v-progress-circular color='primary' indeterminate />
 		</v-overlay>
 		<ValidationObserver v-slot='{invalid}'>
-			<form @submit.prevent='saveConfig'>
-				<div class='form-group'>
-					<v-switch
-						v-model='configuration.enabled'
-						:label='$t("config.smtp.form.enabled")'
-						color='primary'
-						inset
-					/>
-				</div>
+			<v-form @submit.prevent='saveConfig'>
+				<v-switch
+					v-model='configuration.enabled'
+					:label='$t("config.smtp.form.enabled")'
+					color='primary'
+					inset
+					dense
+				/>
 				<fieldset :disabled='!configuration.enabled'>
 					<v-row>
 						<v-col md='6'>
@@ -138,7 +137,7 @@ limitations under the License.
 				>
 					{{ $t('forms.skip') }}
 				</v-btn>
-			</form>
+			</v-form>
 		</ValidationObserver>
 	</div>
 </template>

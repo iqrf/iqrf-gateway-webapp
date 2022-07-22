@@ -44,9 +44,10 @@ limitations under the License.
 						</ValidationProvider>
 						<v-switch
 							v-model='enumPeriodic'
-							color='primary'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enablePeriodic")'
+							color='primary'
 							inset
+							dense
 						/>
 						<ValidationProvider
 							v-if='enumPeriodic'

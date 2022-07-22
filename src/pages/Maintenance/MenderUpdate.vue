@@ -3,7 +3,8 @@
 		<h1>{{ $t('maintenance.mender.update.pageTitle') }}</h1>
 		<v-row>
 			<v-col md='6'>
-				<MenderUpdateControl @update-log='updateLog' />
+				<MenderUpdateForm class='mb-5' @update-log='updateLog' />
+				<MenderFilesystemControl />
 			</v-col>
 			<v-col md='6'>
 				<MenderUpdateLog :log='log' />
@@ -14,14 +15,16 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import MenderUpdateControl from '@/components/Maintenance/MenderUpdateControl.vue';
+import MenderFilesystemControl from '@/components/Maintenance/MenderFilesystemControl.vue';
+import MenderUpdateForm from '@/components/Maintenance/MenderUpdateForm.vue';
 import MenderUpdateLog from '@/components/Maintenance/MenderUpdateLog.vue';
 
 import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
-		MenderUpdateControl,
+		MenderFilesystemControl,
+		MenderUpdateForm,
 		MenderUpdateLog,
 	},
 	beforeRouteEnter(_to: Route, from: Route, next: NavigationGuardNext): void {
@@ -41,7 +44,6 @@ import {NavigationGuardNext, Route} from 'vue-router';
  * Mender update page component
  */
 export default class MenderUpdate extends Vue {
-
 	/**
 	 * @var {string} log Execution log
 	 */
@@ -58,6 +60,5 @@ export default class MenderUpdate extends Vue {
 			this.log += '\n' + log;
 		}
 	}
-
 }
 </script>
