@@ -192,14 +192,12 @@ limitations under the License.
 						</v-row>
 						<v-row>
 							<v-col>
-								<h3 style='font-size: 1.5rem; float: left;'>
-									{{ $t('config.daemon.messagings.tlsTitle') }}
-								</h3>
 								<v-switch
 									v-model='config.mqtt.tls.enabled'
+									:label='$t("config.daemon.messagings.tlsTitle")'
 									color='primary'
 									inset
-									style='float: right;'
+									dense
 								/>
 							</v-col>
 						</v-row>

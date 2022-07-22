@@ -155,10 +155,7 @@ limitations under the License.
 										@click:append='pskVisible = !pskVisible'
 									/>
 								</ValidationProvider>
-								<div
-									v-if='connection.wifi.security.type === "wpa-eap"'
-									class='form-group'
-								>
+								<div v-if='connection.wifi.security.type === "wpa-eap"'>
 									<v-select
 										v-model='connection.wifi.security.eap.phaseOneMethod'
 										:items='authOneOptions'

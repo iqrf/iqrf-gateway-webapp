@@ -68,6 +68,7 @@ limitations under the License.
 										:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 										color='primary'
 										inset
+										dense
 									/>
 									<ValidationProvider
 										v-if='tlsEnabled'

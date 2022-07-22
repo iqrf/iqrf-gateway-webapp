@@ -15,67 +15,71 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver
-		v-if='configuration !== null'
-		v-slot='{invalid}'
-	>
-		<form @submit.prevent='saveConfig'>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.endpoint"),
-				}'
+	<v-card>
+		<v-card-text>
+			<ValidationObserver
+				v-if='configuration !== null'
+				v-slot='{invalid}'
 			>
-				<v-text-field
-					v-model='configuration.endpoint'
-					:label='$t("maintenance.monit.form.endpoint")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required|userpass'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.username"),
-					userpass: $t("maintenance.monit.errors.usernameInvalid"),
-				}'
-			>
-				<v-text-field
-					v-model='configuration.username'
-					:label='$t("maintenance.monit.form.username")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required|userpass'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.password"),
-					userpass: $t("maintenance.monit.errors.passwordInvalid"),
-				}'
-			>
-				<v-text-field
-					v-model='configuration.password'
-					:label='$t("maintenance.monit.form.password")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-					:type='passwordVisible ? "text" : "password"'
-					:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
-					@click:append='passwordVisible = !passwordVisible'
-				/>
-			</ValidationProvider>
-			<v-btn
-				color='primary'
-				type='submit'
-				:disabled='invalid'
-			>
-				{{ $t('forms.save') }}
-			</v-btn>
-		</form>
-	</ValidationObserver>
+				<v-form @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.endpoint"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.endpoint'
+							:label='$t("maintenance.monit.form.endpoint")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required|userpass'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.username"),
+							userpass: $t("maintenance.monit.errors.usernameInvalid"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.username'
+							:label='$t("maintenance.monit.form.username")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required|userpass'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.password"),
+							userpass: $t("maintenance.monit.errors.passwordInvalid"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.password'
+							:label='$t("maintenance.monit.form.password")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:type='passwordVisible ? "text" : "password"'
+							:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+							@click:append='passwordVisible = !passwordVisible'
+						/>
+					</ValidationProvider>
+					<v-btn
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>

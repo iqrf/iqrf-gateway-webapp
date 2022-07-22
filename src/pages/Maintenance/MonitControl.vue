@@ -17,12 +17,12 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.monit.title') }}</h1>
-		<v-card>
+		<v-card class='mb-5'>
 			<v-card-text>
 				<ServiceControl service-name='monit' />
-				<MonitForm />
 			</v-card-text>
 		</v-card>
+		<MonitForm />
 	</div>
 </template>
 

@@ -15,17 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
-		<v-overlay
-			v-if='running'
-			:opacity='0.65'
-			absolute
-		>
-			<v-progress-circular color='primary' indeterminate />
-		</v-overlay>
-		<ValidationObserver v-slot='{invalid}'>
-			<form @submit.prevent='restore'>
-				<div class='form-group'>
+	<v-card>
+		<v-card-text>
+			<v-overlay
+				v-if='running'
+				:opacity='0.65'
+				absolute
+			>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
+			<ValidationObserver v-slot='{invalid}'>
+				<form @submit.prevent='restore'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required'
@@ -49,11 +49,10 @@ limitations under the License.
 					>
 						{{ $t('maintenance.backup.form.restore') }}
 					</v-btn>
-				</div>
-				<em>{{ $t('maintenance.backup.messages.restoreNote') }}</em>
-			</form>
-		</ValidationObserver>
-	</div>
+				</form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
@@ -77,7 +76,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 /**
  * Gateway restore component
  */
-export default class RestoreComponent extends Vue {
+export default class Restore extends Vue {
 
 	/**
 	 * @var {File|null} archive Archive to restore

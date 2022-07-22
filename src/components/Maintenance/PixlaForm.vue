@@ -15,35 +15,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver
-		v-if='token !== null'
-		v-slot='{invalid}'
-	>
-		<hr>
-		<form @submit.prevent='saveToken'>
-			<ValidationProvider
-				v-slot='{ errors, touched, valid }'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.pixla.errors.token"),
-				}'
+	<v-card>
+		<v-card-text>
+			<ValidationObserver
+				v-if='token !== null'
+				v-slot='{invalid}'
 			>
-				<v-text-field
-					v-model='token'
-					:label='$t("maintenance.pixla.form.token")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<v-btn
-				color='primary'
-				type='submit'
-				:disabled='invalid'
-			>
-				{{ $t('forms.save') }}
-			</v-btn>
-		</form>
-	</ValidationObserver>
+				<v-form @submit.prevent='saveToken'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.pixla.errors.token"),
+						}'
+					>
+						<v-text-field
+							v-model='token'
+							:label='$t("maintenance.pixla.form.token")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-btn
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>

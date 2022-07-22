@@ -26,9 +26,7 @@ limitations under the License.
 				<v-progress-circular color='primary' indeterminate />
 			</v-overlay>
 			<form @submit.prevent='setService'>
-				<div class='form-group'>
-					{{ $t('install.ssh.messages.note') }}
-				</div>
+				<div>{{ $t('install.ssh.messages.note') }}</div>
 				<v-radio-group
 					v-model='status'
 					:label='$t("install.ssh.state")'
