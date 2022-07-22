@@ -28,12 +28,12 @@ limitations under the License.
 				{{ $t('maintenance.pixla.dashboard') }}
 			</v-btn>
 		</header>
-		<v-card>
+		<v-card class='mb-5'>
 			<v-card-text>
 				<ServiceControl service-name='gwman-client' />
-				<PixlaForm />
 			</v-card-text>
 		</v-card>
+		<PixlaForm />
 	</div>
 </template>
 

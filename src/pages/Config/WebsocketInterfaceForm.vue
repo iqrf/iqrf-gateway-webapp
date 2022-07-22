@@ -67,14 +67,12 @@ limitations under the License.
 							</v-col>
 							<v-col>
 								<div>
-									<label style='font-size: 1.5rem;'>
-										{{ $t('config.daemon.messagings.websocket.form.tlsEnabled') }}
-									</label>
 									<v-switch
 										v-model='service.tlsEnabled'
+										:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 										color='primary'
 										inset
-										style='float: right;'
+										dense
 									/>
 									<ValidationProvider
 										v-if='service.tlsEnabled'

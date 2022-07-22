@@ -106,42 +106,10 @@ limitations under the License.
 								mdi-information-outline
 							</v-icon>
 							{{ $t('table.actions.details') }}
-						</v-btn>
-						<v-dialog v-model='deleteModal' width='50%'>
-							<template #activator='{ on, attrs }'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									@click='deleteKey = item.id'
-									v-on='on'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title>{{ $t('core.security.ssh.modal.title') }}</v-card-title>
-								<v-card-text>{{ $t('core.security.ssh.modal.prompt', {id: deleteKey}) }}</v-card-text>
-								<v-card-actions>
-									<v-btn
-										color='error'
-										@click='removeKey'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn>
-									<v-spacer />
-									<v-btn
-										color='secondary'
-										@click='deleteKey = -1'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <SshKeyDeleteDialog
+							:ssh-key='item'
+							@deleted='listKeys'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -151,6 +119,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import SshKeyDeleteDialog from '@/components/Core/SshKeyDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -161,7 +130,11 @@ import {ISshKey} from '@/interfaces/ssh';
 import {DateTime} from 'luxon';
 import {DataTableHeader} from 'vuetify';
 
+
 @Component({
+	components: {
+		SshKeyDeleteDialog,
+	},
 	metaInfo: {
 		title: 'core.security.ssh.title',
 	},
@@ -171,7 +144,10 @@ import {DataTableHeader} from 'vuetify';
  * SSH key list component
  */
 export default class SshKeyList extends Vue {
-
+	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
 	/**
 	 * @var {Array<ISshKey>} keys List of authorized SSH public keys
 	 */
@@ -179,20 +155,8 @@ export default class SshKeyList extends Vue {
 
 	/**
 	 * @var {Array<ISshKey>} expandedKeys List of expanded SSH keys
-   */
+	 */
 	private expandedKeys: Array<ISshKey> = [];
-
-	/**
-	 * @var {number|null} deleteKey API key id used in remove modal
-	 */
-	private deleteKey = -1;
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteKey !== -1;
-	}
 
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
@@ -230,33 +194,16 @@ export default class SshKeyList extends Vue {
 	 * Retrieves list of authorized SSH public keys
 	 */
 	private listKeys(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return SshService.listKeys()
 			.then((response: AxiosResponse) => {
-				const keys: Array<ISshKey> = response.data;
-				for (const i in keys) {
-					keys[i].showDetails = false;
-				}
 				this.keys = response.data;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.listFailed'));
-	}
-
-	/**
-	 * Removes authorized SSH public key
-	 */
-	private removeKey(): void {
-		this.$store.commit('spinner/SHOW');
-		const id = this.deleteKey;
-		this.deleteKey = -1;
-		SshService.deleteKey(id)
-			.then(() => {
-				this.listKeys().then(() => this.$toast.success(
-					this.$t('core.security.ssh.messages.deleteSuccess', {id: id}).toString()
-				));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: id}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'core.security.ssh.messages.listFailed');
+			});
 	}
 
 	/**

@@ -31,11 +31,10 @@ limitations under the License.
 				<form>
 					<div
 						v-if='$route.path.includes("/install")'
-						class='form-group'
 					>
 						{{ $t('install.gwUser.note') }}
 					</div>
-					<div class='form-group'>
+					<div>
 						<strong>{{ $t('gateway.user.user') }}</strong>{{ user }}
 					</div>
 					<ValidationProvider

@@ -76,6 +76,7 @@ limitations under the License.
 									v-model='configuration.timestampFiles'
 									:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
 									inset
+									dense
 								/>
 								<div v-if='configuration.timestampFiles'>
 									<ValidationProvider

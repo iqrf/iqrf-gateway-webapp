@@ -37,9 +37,10 @@ limitations under the License.
 						</ValidationProvider>
 						<v-switch
 							v-model='credentials'
+							:label='$t("config.repository.form.credentials")'
 							color='primary'
 							inset
-							:label='$t("config.repository.form.credentials")'
+							dense
 						/>
 						<div v-if='credentials'>
 							<ValidationProvider

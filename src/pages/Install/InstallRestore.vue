@@ -17,17 +17,17 @@ limitations under the License.
 <template>
 	<v-card>
 		<v-card-title>{{ $t('install.restore.title') }}</v-card-title>
-		<v-card-text><RestoreComponent /></v-card-text>
+		<v-card-text><Restore /></v-card-text>
 	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import RestoreComponent from '@/components/Maintenance/RestoreComponent.vue';
+import Restore from '@/components/Maintenance/Restore.vue';
 
 @Component({
 	components: {
-		RestoreComponent,
+		Restore,
 	},
 	metaInfo: {
 		title: 'install.restore.title',

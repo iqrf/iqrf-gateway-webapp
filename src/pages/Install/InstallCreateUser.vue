@@ -28,11 +28,9 @@ limitations under the License.
 				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
 					<form @submit.prevent='handleSubmit'>
-						<div class='form-group'>
-							{{ $t('install.createUser.note') }}
-						</div>
+						<div>{{ $t('install.createUser.note') }}</div>
 						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
+							v-slot='{valid, touched, errors}'
 							rules='required'
 							:custom-messages='{
 								required: $t("forms.errors.username"),

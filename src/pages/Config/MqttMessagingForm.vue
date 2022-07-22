@@ -241,6 +241,7 @@ limitations under the License.
 							:label='$t("config.daemon.messagings.tlsTitle")'
 							color='primary'
 							inset
+							dense
 						/>
 						<v-row v-if='configuration.EnabledSSL'>
 							<v-col md='6'>
