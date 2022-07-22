@@ -65,10 +65,7 @@ limitations under the License.
 							:label='$t("config.daemon.scheduler.form.task.timeSpec")'
 							:items='timeSpecOptions'
 						/>
-						<div
-							v-if='timeSpecSelected === "cron"'
-							class='form-group'
-						>
+						<div v-if='timeSpecSelected === "cron"'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='cron|required'
@@ -77,22 +74,24 @@ limitations under the License.
 									required: $t("config.daemon.scheduler.errors.cron"),
 								}'
 							>
-								<label for='cronTime'>
-									<strong>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</strong>
-								</label> <v-chip
-									v-if='cronMessage !== null'
-									small
-									:color='valid ? "info" : "error"'
-								>
-									{{ cronMessage }}
-								</v-chip>
 								<v-text-field
-									id='cronTime'
 									v-model='timeSpec.cronTime'
+									:label='$t("config.daemon.scheduler.form.task.cronTime")'
 									:success='touched ? valid : null'
 									:error-messages='errors'
 									@input='cronMessage = null'
-								/>
+								>
+									<template #append>
+										<v-chip
+											v-if='cronMessage !== null'
+											label
+											small
+											:color='valid ? "info" : "error"'
+										>
+											{{ cronMessage }}
+										</v-chip>
+									</template>
+								</v-text-field>
 							</ValidationProvider>
 						</div>
 						<ValidationProvider

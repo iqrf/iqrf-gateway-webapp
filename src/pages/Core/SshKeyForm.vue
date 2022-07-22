@@ -31,19 +31,15 @@ limitations under the License.
 				>
 					<v-progress-circular color='primary' indeterminate />
 				</v-overlay>
-				<div
-					v-if='$route.path.includes("/install")'
-					class='form-group'
-				>
+				<div v-if='$route.path.includes("/install")'>
 					{{ $t('core.security.ssh.messages.installNote') }}
 				</div>
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveKeys'>
+					<v-form @submit.prevent='saveKeys'>
 						<div
 							v-for='(key, idx) of keys'
 							:key='idx'
-							class='form-group'
 						>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -73,21 +69,31 @@ limitations under the License.
 									:success='touched ? valid : null'
 									:error-messages='errors'
 									@change='updateDescription(idx)'
-								/>
+								>
+									<template #append-outer>
+										<v-btn
+											v-if='idx === 0'
+											color='success'
+											small
+											@click='addKey'
+										>
+											<v-icon>
+												mdi-plus
+											</v-icon>
+										</v-btn>
+										<v-btn
+											v-else
+											color='error'
+											small
+											@click='removeKey(idx)'
+										>
+											<v-icon>
+												mdi-delete-outline
+											</v-icon>
+										</v-btn>
+									</template>
+								</v-text-field>
 							</ValidationProvider>
-							<v-btn
-								v-if='keys.length > 1'
-								color='error'
-								@click='removeKey(idx)'
-							>
-								{{ $t('core.security.ssh.form.remove') }}
-							</v-btn> <v-btn
-								v-if='idx === (keys.length - 1)'
-								color='success'
-								@click='addKey()'
-							>
-								{{ $t('core.security.ssh.form.add') }}
-							</v-btn>
 						</div>
 						<v-btn
 							color='primary'
@@ -102,7 +108,7 @@ limitations under the License.
 						>
 							{{ $t('forms.skip') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>

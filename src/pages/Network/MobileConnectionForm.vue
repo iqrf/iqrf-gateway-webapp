@@ -53,9 +53,10 @@ limitations under the License.
 						</ValidationProvider>
 						<v-switch
 							v-model='connection.autoConnect.enabled'
-							inset
-							color='primary'
 							:label='$t("network.connection.autoconnect")'
+							color='primary'
+							inset
+							dense
 						/>
 						<h2>{{ $t('network.mobile.form.title') }}</h2>
 						<ValidationProvider

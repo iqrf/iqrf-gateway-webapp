@@ -15,161 +15,169 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver v-slot='{invalid}'>
-		<hr>
-		<form @submit.prevent='processSubmit'>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.mender.service.errors.server"),
-				}'
-			>
-				<v-text-field
-					v-model='configuration.ServerURL'
-					:label='$t("maintenance.mender.service.form.server")'
-					:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<v-text-field
-				v-model='configuration.ServerCertificate'
-				:label='$t("maintenance.mender.service.form.cert")'
-				:disabled='uploadCert'
-			/>
-			<div class='form-group'>
-				<label for='uploadSwitch'>
-					{{ $t('maintenance.mender.service.form.uploadCert') }}
-				</label><br>
-				<v-switch
-					ref='uploadSwitch'
-					v-model='uploadCert'
-					color='primary'
-					inset
-				/>
-			</div>
-			<ValidationProvider
-				v-if='uploadCert'
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.mender.service.errors.tenantToken"),
-				}'
-			>
-				<v-file-input
-					v-model='certificate'
-					accept='.crt'
-					:label='$t("maintenance.mender.service.form.newCert")'
-					prepend-icon='mdi-file-certificate'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<v-select
-				v-model='configuration.ClientProtocol'
-				:label='$t("maintenance.mender.service.form.protocol")'
-				:items='protocolOptions'
-			/>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.mender.service.errors.tenantToken"),
-				}'
-			>
-				<v-text-field
-					v-model='configuration.TenantToken'
-					:label='$t("maintenance.mender.service.form.tenantToken")'
-					:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-					required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-				}'
-			>
-				<strong>
-					<label for='inventoryPoll'>
-						{{ $t('maintenance.mender.service.form.inventoryPollInterval') }}
-					</label>
-				</strong> <v-chip color='info' label small>
-					{{ inventoryPollTime }}
-				</v-chip>
-				<v-text-field
-					id='inventoryPoll'
-					v-model.number='configuration.InventoryPollIntervalSeconds'
-					type='number'
-					min='0'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.retryPollInterval"),
-					required: $t("maintenance.mender.service.errors.retryPollInterval"),
-				}'
-			>
-				<strong>
-					<label for='retryPoll'>
-						{{ $t('maintenance.mender.service.form.retryPollInterval') }}
-					</label>
-				</strong> <v-chip color='info' label small>
-					{{ retryPollTime }}
-				</v-chip>
-				<v-text-field
-					id='retryPoll'
-					v-model.number='configuration.RetryPollIntervalSeconds'
-					type='number'
-					min='0'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.updatePollInterval"),
-					required: $t("maintenance.mender.service.errors.updatePollInterval"),
-				}'
-			>
-				<strong>
-					<label for='retryPoll'>
-						{{ $t('maintenance.mender.service.form.updatePollInterval') }}
-					</label>
-				</strong> <v-chip color='info' label small>
-					{{ updatePollTime }}
-				</v-chip>
-				<v-text-field
-					id='updatePoll'
-					v-model.number='configuration.UpdatePollIntervalSeconds'
-					type='number'
-					min='0'
-					:success='touched ? valid : null'
-					:error-messages='errors'
-				/>
-			</ValidationProvider>
-			<v-btn
-				color='primary'
-				type='submit'
-				:disabled='invalid || (uploadCert && inputEmpty)'
-			>
-				{{ $t('forms.save') }}
-			</v-btn>
-		</form>
-	</ValidationObserver>
+	<v-card>
+		<v-card-text>
+			<ValidationObserver v-slot='{invalid}'>
+				<v-form @submit.prevent='save'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.mender.service.errors.server"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.ServerURL'
+							:label='$t("maintenance.mender.service.form.server")'
+							:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-text-field
+						v-model='configuration.ServerCertificate'
+						:label='$t("maintenance.mender.service.form.cert")'
+						:disabled='uploadCert'
+					/>
+					<v-switch
+						v-model='uploadCert'
+						:label='$t("maintenance.mender.service.form.uploadCert")'
+						color='primary'
+						inset
+						dense
+					/>
+					<ValidationProvider
+						v-if='uploadCert'
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.mender.service.errors.tenantToken"),
+						}'
+					>
+						<v-file-input
+							v-model='certificate'
+							accept='.crt'
+							:label='$t("maintenance.mender.service.form.newCert")'
+							prepend-icon='mdi-file-certificate'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-select
+						v-model='configuration.ClientProtocol'
+						:label='$t("maintenance.mender.service.form.protocol")'
+						:items='protocolOptions'
+					/>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.mender.service.errors.tenantToken"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.TenantToken'
+							:label='$t("maintenance.mender.service.form.tenantToken")'
+							:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='min:0|required|integer'
+						:custom-messages='{
+							integer: $t("forms.errors.integer"),
+							min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+							required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+						}'
+					>
+						<v-text-field
+							v-model.number='configuration.InventoryPollIntervalSeconds'
+							:label='$t("maintenance.mender.service.form.inventoryPollInterval")'
+							type='number'
+							min='0'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						>
+							<template #append>
+								<v-chip
+									color='info'
+									label
+									small
+								>
+									{{ inventoryPollTime }}
+								</v-chip>
+							</template>
+						</v-text-field>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='min:0|required|integer'
+						:custom-messages='{
+							integer: $t("forms.errors.integer"),
+							min: $t("maintenance.mender.service.errors.retryPollInterval"),
+							required: $t("maintenance.mender.service.errors.retryPollInterval"),
+						}'
+					>
+						<v-text-field
+							v-model.number='configuration.RetryPollIntervalSeconds'
+							:label='$t("maintenance.mender.service.form.retryPollInterval")'
+							type='number'
+							min='0'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						>
+							<template #append>
+								<v-chip
+									color='info'
+									label
+									small
+								>
+									{{ retryPollTime }}
+								</v-chip>
+							</template>
+						</v-text-field>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='min:0|required|integer'
+						:custom-messages='{
+							integer: $t("forms.errors.integer"),
+							min: $t("maintenance.mender.service.errors.updatePollInterval"),
+							required: $t("maintenance.mender.service.errors.updatePollInterval"),
+						}'
+					>
+						<v-text-field
+							v-model.number='configuration.UpdatePollIntervalSeconds'
+							:label='$t("maintenance.mender.service.form.updatePollInterval")'
+							type='number'
+							min='0'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						>
+							<template #append>
+								<v-chip
+									color='info'
+									label
+									small
+								>
+									{{ updatePollTime }}
+								</v-chip>
+							</template>
+						</v-text-field>
+					</ValidationProvider>
+					<v-btn
+						color='primary'
+						type='submit'
+						:disabled='invalid || (uploadCert && inputEmpty)'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
@@ -330,7 +338,7 @@ export default class MenderServiceForm extends Vue {
 	/**
 	 * Updates configuration of the Mender feature
 	 */
-	private processSubmit(): void {
+	private save(): void {
 		if (this.configuration === null) {
 			return;
 		}
@@ -343,10 +351,7 @@ export default class MenderServiceForm extends Vue {
 					this.configuration.ServerCertificate = response.data;
 					this.saveConfig();
 				})
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'maintenance.mender.service.messages.certificateFailed',
-				));
+				.catch((error: AxiosError) => extendedErrorToast(error,'maintenance.mender.service.messages.certificateFailed'));
 		} else {
 			this.saveConfig();
 		}

@@ -26,6 +26,7 @@ limitations under the License.
 						v-model='useCustomServers'
 						:label='$t("gateway.ntp.form.setServer")'
 						inset
+						dense
 					/>
 					<div v-if='useCustomServers'>
 						<ValidationProvider

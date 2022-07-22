@@ -81,6 +81,7 @@ limitations under the License.
 									v-model='webSocket.tlsEnabled'
 									:label='$t("config.daemon.messagings.tlsTitle")'
 									inset
+									dense
 								/>
 								<ValidationProvider
 									v-if='webSocket.tlsEnabled'
