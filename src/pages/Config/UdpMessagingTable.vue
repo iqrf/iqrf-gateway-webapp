@@ -74,7 +74,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IUdpInstance} from '@/interfaces/messagingInterfaces';
+import {IUdpInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {

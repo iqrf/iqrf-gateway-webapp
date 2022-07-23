@@ -121,9 +121,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IMqttInstance} from '@/interfaces/messagingInterfaces';
-
-
+import {IMqttInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {

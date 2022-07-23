@@ -47,7 +47,6 @@ limitations under the License.
 				>
 					{{ $t('forms.save') }}
 				</v-btn> <v-btn
-					color='secondary'
 					@click='nextStep'
 				>
 					{{ $t('forms.skip') }}

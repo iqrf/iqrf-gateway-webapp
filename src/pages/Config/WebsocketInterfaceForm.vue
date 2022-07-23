@@ -158,8 +158,8 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
+import {IWsMessaging, IWsService, ModalInstance} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
-import {WsMessaging, ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -196,7 +196,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @var {WsMessging} messaging WebSocket messaging component instance
 	 */
-	private messaging: WsMessaging = {
+	private messaging: IWsMessaging = {
 		component: '',
 		instance: '',
 		acceptAsyncMsg: false,
@@ -349,7 +349,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Handles REST API success
 	 */
 	private handleSuccess(): void {
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
 			this.$t('config.daemon.messagings.websocket.interface.messages.saveSuccess', {interface: this.instances.service}).toString()
 		);

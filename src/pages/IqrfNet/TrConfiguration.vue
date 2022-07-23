@@ -475,23 +475,27 @@ limitations under the License.
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
-		<v-dialog v-model='dpaEnabledNotDetected' width='50%'>
+		<v-dialog
+			v-model='dpaEnabledNotDetected'
+			width='50%'
+			persistent
+			no-click-animation
+		>
 			<v-card>
 				<v-card-title>{{ $t('iqrfnet.trConfiguration.messages.modalTitle') }}</v-card-title>
 				<v-card-text>{{ $t('iqrfnet.trConfiguration.messages.modalPrompt') }}</v-card-text>
 				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='dpaEnabledNotDetected = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
 					<v-btn
 						color='warning'
 						@click='disableHandler'
 					>
 						{{ $t('service.actions.disable') }}
-					</v-btn>
-					<v-spacer />
-					<v-btn
-						color='secondary'
-						@click='dpaEnabledNotDetected = false'
-					>
-						{{ $t('forms.cancel') }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>

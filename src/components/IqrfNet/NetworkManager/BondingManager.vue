@@ -105,14 +105,13 @@ limitations under the License.
 						>
 							{{ $t('forms.bond') }}
 						</v-btn> <v-btn
-							color='secondary'
+							color='primary'
 							:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
 							@click='modalUnbond = true'
 						>
 							{{ $t('forms.unbond') }}
 						</v-btn> <v-btn
-							color='secondary'
-							type='button'
+							color='primary'
 							@click='modalClear = true'
 						>
 							{{ $t('forms.clearBonds') }}
@@ -139,7 +138,7 @@ limitations under the License.
 						no-click-animation
 					>
 						<v-card>
-							<v-card-title class='text-h5 error'>
+							<v-card-title>
 								{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
 							</v-card-title>
 							<v-card-text>
@@ -148,15 +147,15 @@ limitations under the License.
 							<v-card-actions>
 								<v-spacer />
 								<v-btn
+									@click='modalClear = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+								<v-btn
 									color='error'
 									@click='clearAll'
 								>
 									{{ $t('forms.clearBonds') }}
-								</v-btn> <v-btn
-									color='secondary'
-									@click='modalClear = false'
-								>
-									{{ $t('forms.cancel') }}
 								</v-btn>
 							</v-card-actions>
 						</v-card>
@@ -168,7 +167,7 @@ limitations under the License.
 						no-click-animation
 					>
 						<v-card>
-							<v-card-title class='text-h5 error'>
+							<v-card-title>
 								{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
 							</v-card-title>
 							<v-card-text>
@@ -177,15 +176,15 @@ limitations under the License.
 							<v-card-actions>
 								<v-spacer />
 								<v-btn
+									@click='modalUnbond = false'
+								>
+									{{ $t('forms.cancel') }}
+								</v-btn>
+								<v-btn
 									color='error'
 									@click='unbond'
 								>
 									{{ $t('forms.unbond') }}
-								</v-btn> <v-btn
-									color='secondary'
-									@click='modalUnbond = false'
-								>
-									{{ $t('forms.cancel') }}
 								</v-btn>
 							</v-card-actions>
 						</v-card>

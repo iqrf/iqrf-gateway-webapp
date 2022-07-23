@@ -208,7 +208,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
-import {ITracerFile} from '@/interfaces/tracerFile';
+import {ITraceService} from '@/interfaces/Config/Misc';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
@@ -227,16 +227,15 @@ import {MetaInfo} from 'vue-meta';
  * Daemon Logging service component configuration card
  */
 export default class TracerForm extends Vue {
-
 	/**
 	 * @constant {string} componentName Component name
 	 */
 	private componentName = 'shape::TraceFileService';
 
 	/**
-	 * @var {ITracerFile|null} configuration TraceFile component configuration
+	 * @var {ITraceService} configuration TraceFile component configuration
 	 */
-	private configuration: ITracerFile = {
+	private configuration: ITraceService = {
 		component: '',
 		instance: '',
 		filename: '',

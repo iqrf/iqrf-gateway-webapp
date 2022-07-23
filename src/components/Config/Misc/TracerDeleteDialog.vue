@@ -21,13 +21,13 @@ limitations under the License.
 		persistent
 		no-click-animation
 	>
-		<template #activator='{on, attrs}'>
+		<template #activator='{attrs, on}'>
 			<v-btn
 				color='error'
 				small
 				v-bind='attrs'
-				v-on='on'
 				@click='openDialog'
+				v-on='on'
 			>
 				<v-icon small>
 					mdi-delete
@@ -37,10 +37,12 @@ limitations under the License.
 		</template>
 		<v-card>
 			<v-card-title>
-				{{ $t('config.daemon.messagings.deleteDialog.title', {messaging: messagingType}) }}
+				{{ $t('config.daemon.misc.tracer.modal.title') }}
 			</v-card-title>
 			<v-card-text>
-				{{ $t('config.daemon.messagings.deleteDialog.prompt', {messaging: messagingType, instance: instance}) }}
+				{{
+					$t('config.daemon.misc.tracer.modal.prompt', {instance: instance.instance})
+				}}
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
@@ -48,7 +50,8 @@ limitations under the License.
 					@click='closeDialog'
 				>
 					{{ $t('forms.cancel') }}
-				</v-btn> <v-btn
+				</v-btn>
+				<v-btn
 					color='error'
 					@click='remove'
 				>
@@ -64,53 +67,40 @@ import {Component, Prop} from 'vue-property-decorator';
 import DialogBase from '@/components/DialogBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MessagingTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError} from 'axios';
-
+import {ITraceService} from '@/interfaces/Config/Misc';
 
 /**
- * Messaging delete dialog component
+ * Tracer delete dialog component
  */
 @Component
-export default class MessagingDeleteDialog extends DialogBase {
+export default class TracerDeleteDialog extends DialogBase {
 	/**
-	 * @property {MessagingTypes} messagingType Messaging type
+	 * @property {ITraceService} instance Tracer instance to delete
 	 */
-	@Prop({required: true}) messagingType!: MessagingTypes;
+	@Prop({required: true}) instance!: ITraceService;
 
 	/**
-	 * @property {string} instance Messaging instance name
-	 */
-	@Prop({required: true}) instance!: string;
-
-	/**
-	 * @constant {Record<MessagingTypes, string>} componentNames Component names
-	 */
-	private componentNames: Record<MessagingTypes, string> = {
-		MQ: 'iqrf::MqMessaging',
-		MQTT: 'iqrf::MqttMessaging',
-		UDP: 'iqrf::UdpMessaging',
-	};
-
-	/**
-	 * Removes instance of UDP messaging component
+	 * Removes instance of logging service component
 	 */
 	private remove(): void {
 		this.closeDialog();
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(this.componentNames[this.messagingType], this.instance)
+		DaemonConfigurationService.deleteInstance(this.instance.component, this.instance.instance)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.daemon.messagings.deleteDialog.success', {messaging: this.messagingType, instance: this.instance})
+					this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: this.instance.instance})
 						.toString()
 				);
 				this.$emit('deleted');
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.deleteDialog.failed', {messaging: this.messagingType, instance: this.instance}));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.misc.tracer.messages.deleteFailed', {instance: this.instance.instance});
+			});
 	}
 }
 </script>

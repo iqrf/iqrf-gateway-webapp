@@ -20,6 +20,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='headers'
 					:items='tunnels'
 					:no-data-text='$t("network.wireguard.tunnels.table.noTunnels")'
@@ -77,49 +78,10 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn> <v-dialog
-							v-model='deleteDialog'
-							width='50%'
-							persistent
-							no-click-animation
-						>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									v-on='on'
-									@click='tunnelToDelete = item'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title class='text-h5 error'>
-									{{ $t('network.wireguard.tunnels.modal.title') }}
-								</v-card-title>
-								<v-card-text v-if='tunnelToDelete !== null'>
-									{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer />
-									<v-btn
-										color='error'
-										@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='tunnelToDelete = null'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <WireguardTunnelDeleteDialog
+							:tunnel='item'
+							@deleted='getTunnels'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -129,6 +91,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import WireguardTunnelDeleteDialog from '@/components/Network/WireguardTunnelDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import WireguardService from '@/services/WireguardService';
@@ -137,7 +100,11 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {IWG} from '@/interfaces/network';
 
+
 @Component({
+	components: {
+		WireguardTunnelDeleteDialog,
+	},
 	metaInfo: {
 		title: 'network.wireguard.title',
 	},
@@ -147,6 +114,11 @@ import {IWG} from '@/interfaces/network';
  * WireGuard connections component
  */
 export default class WireguardTunnels extends Vue {
+	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
 	/**
 	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */
@@ -171,20 +143,9 @@ export default class WireguardTunnels extends Vue {
 			text: this.$t('table.actions.title').toString(),
 			filterable: false,
 			sortable: false,
+			align: 'end',
 		},
 	];
-
-	/**
-	 * @var {IWG} tunnelToDelete Tunnel information used in delete modal window
-	 */
-	private tunnelToDelete: IWG|null = null;
-
-	/**
-	 * @var {boolean} deleteDialog Delete dialog visibility
-	 */
-	get deleteDialog(): boolean {
-		return this.tunnelToDelete !== null;
-	}
 
 	/**
 	 * Retrieves existing WireGuard tunnels
@@ -197,13 +158,16 @@ export default class WireguardTunnels extends Vue {
 	 * Retrieves existing WireGuard tunnels and stores data into table
 	 */
 	private getTunnels(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return WireguardService.listTunnels()
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.tunnels = response.data;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'network.wireguard.tunnels.messages.listFailed');
+			});
 	}
 
 	/**
@@ -213,7 +177,7 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeActiveState(id: number, name: string, state: boolean): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		if (state) {
 			WireguardService.activateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
@@ -254,7 +218,7 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeEnabledState(id: number, name: string, state: boolean): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		if (state) {
 			WireguardService.enableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
@@ -285,30 +249,6 @@ export default class WireguardTunnels extends Vue {
 				{tunnel: name}
 			).toString()
 		));
-	}
-
-	/**
-	 * Removes an existing WireGuard tunnel
-	 * @param {number} id WireGuard tunnel ID
-	 * @param {string} name WireGuard tunnel name
-	 */
-	private removeTunnel(id: number, name: string): void {
-		this.tunnelToDelete = null;
-		this.$store.commit('spinner/SHOW');
-		WireguardService.removeTunnel(id)
-			.then(() => {
-				this.getTunnels().then(() => this.$toast.success(
-					this.$t(
-						'network.wireguard.tunnels.messages.deleteSuccess',
-						{tunnel: name}
-					).toString()
-				));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'network.wireguard.tunnels.messages.deleteFailed',
-				{tunnel: name}
-			));
 	}
 }
 </script>

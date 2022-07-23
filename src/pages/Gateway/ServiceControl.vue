@@ -51,7 +51,6 @@ limitations under the License.
 					>
 						{{ $t('service.actions.restart') }}
 					</v-btn> <v-btn
-						color='secondary'
 						@click='refreshStatus()'
 					>
 						{{ $t('service.actions.status') }}

@@ -335,142 +335,146 @@ limitations under the License.
 										:items='stackOptions'
 										:label='$t("network.wireguard.tunnels.form.stack")'
 									/>
-									<v-row
-										v-for='(ip, ipIndex) of peer.allowedIPs.ipv4'
-										:key='`ip4-${ipIndex}`'
-									>
-										<v-col cols='12' md='6'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required|ipv4'
-												:custom-messages='{
-													required: $t("network.wireguard.tunnels.errors.ipv4"),
-													ipv4: $t("network.wireguard.tunnels.errors.ipv4Invalid"),
-												}'
-											>
-												<v-text-field
-													v-model='ip.address'
-													:label='$t("network.wireguard.tunnels.form.ipv4")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													hide-details='auto'
-												/>
-											</ValidationProvider>
-										</v-col>
-										<v-col cols='12' md='6'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required|between:1,32'
-												:custom-messages='{
-													required: $t("network.wireguard.tunnels.errors.ipv4Prefix"),
-													integer: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
-													between: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
-												}'
-											>
-												<v-text-field
-													v-model.number='ip.prefix'
-													type='number'
-													min='1'
-													max='32'
-													:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													hide-details='auto'
+									<div v-if='[WireguardStacks.SINGLE_IPV4, WireguardStacks.DUAL].includes(peerStacks[index])'>
+										<v-row
+											v-for='(ip, ipIndex) of peer.allowedIPs.ipv4'
+											:key='`ip4-${ipIndex}`'
+										>
+											<v-col cols='12' md='6'>
+												<ValidationProvider
+													v-slot='{errors, touched, valid}'
+													rules='required|ipv4'
+													:custom-messages='{
+														required: $t("network.wireguard.tunnels.errors.ipv4"),
+														ipv4: $t("network.wireguard.tunnels.errors.ipv4Invalid"),
+													}'
 												>
-													<template #append-outer>
-														<v-btn
-															v-if='ipIndex === 0'
-															color='success'
-															small
-															@click='addIPv4(index)'
-														>
-															<v-icon>
-																mdi-plus
-															</v-icon>
-														</v-btn>
-														<v-btn
-															v-else
-															color='error'
-															small
-															@click='removeIPv4(index, ipIndex)'
-														>
-															<v-icon>
-																mdi-delete-outline
-															</v-icon>
-														</v-btn>
-													</template>
-												</v-text-field>
-											</ValidationProvider>
-										</v-col>
-									</v-row>
-									<v-row
-										v-for='(ip, ipIndex) of peer.allowedIPs.ipv6'
-										:key='`ip6-${ipIndex}`'
-									>
-										<v-col cols='12' md='6'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required|ipv6'
-												:custom-messages='{
-													required: $t("network.wireguard.tunnels.errors.ipv6"),
-													ipv6: $t("network.wireguard.tunnels.errors.ipv6Invalid"),
-												}'
-											>
-												<v-text-field
-													v-model='ip.address'
-													:label='$t("network.wireguard.tunnels.form.ipv6")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													hide-details='auto'
-												/>
-											</ValidationProvider>
-										</v-col>
-										<v-col cols='12' md='6'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required|integer|between:48,128'
-												:custom-messages='{
-													required: $t("network.wireguard.tunnels.errors.ipv6Prefix"),
-													integer: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
-													between: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
-												}'
-											>
-												<v-text-field
-													v-model.number='ip.prefix'
-													type='number'
-													min='48'
-													max='128'
-													:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													hide-details='auto'
+													<v-text-field
+														v-model='ip.address'
+														:label='$t("network.wireguard.tunnels.form.ipv4")'
+														:success='touched ? valid : null'
+														:error-messages='errors'
+														hide-details='auto'
+													/>
+												</ValidationProvider>
+											</v-col>
+											<v-col cols='12' md='6'>
+												<ValidationProvider
+													v-slot='{errors, touched, valid}'
+													rules='required|between:1,32'
+													:custom-messages='{
+														required: $t("network.wireguard.tunnels.errors.ipv4Prefix"),
+														integer: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
+														between: $t("network.wireguard.tunnels.errors.ipv4PrefixInvalid"),
+													}'
 												>
-													<template #append-outer>
-														<v-btn
-															v-if='ipIndex === 0'
-															color='success'
-															small
-															@click='addIPv6(index)'
-														>
-															<v-icon>
-																mdi-plus
-															</v-icon>
-														</v-btn>
-														<v-btn
-															v-else
-															color='error'
-															small
-															@click='removeIPv6(index, ipIndex)'
-														>
-															<v-icon>
-																mdi-delete-outline
-															</v-icon>
-														</v-btn>
-													</template>
-												</v-text-field>
-											</ValidationProvider>
-										</v-col>
-									</v-row>
+													<v-text-field
+														v-model.number='ip.prefix'
+														type='number'
+														min='1'
+														max='32'
+														:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
+														:success='touched ? valid : null'
+														:error-messages='errors'
+														hide-details='auto'
+													>
+														<template #append-outer>
+															<v-btn
+																v-if='ipIndex === 0'
+																color='success'
+																small
+																@click='addIPv4(index)'
+															>
+																<v-icon>
+																	mdi-plus
+																</v-icon>
+															</v-btn>
+															<v-btn
+																v-else
+																color='error'
+																small
+																@click='removeIPv4(index, ipIndex)'
+															>
+																<v-icon>
+																	mdi-delete-outline
+																</v-icon>
+															</v-btn>
+														</template>
+													</v-text-field>
+												</ValidationProvider>
+											</v-col>
+										</v-row>
+									</div>
+									<div v-if='[WireguardStacks.SINGLE_IPV6, WireguardStacks.DUAL].includes(peerStacks[index])'>
+										<v-row
+											v-for='(ip, ipIndex) of peer.allowedIPs.ipv6'
+											:key='`ip6-${ipIndex}`'
+										>
+											<v-col cols='12' md='6'>
+												<ValidationProvider
+													v-slot='{errors, touched, valid}'
+													rules='required|ipv6'
+													:custom-messages='{
+														required: $t("network.wireguard.tunnels.errors.ipv6"),
+														ipv6: $t("network.wireguard.tunnels.errors.ipv6Invalid"),
+													}'
+												>
+													<v-text-field
+														v-model='ip.address'
+														:label='$t("network.wireguard.tunnels.form.ipv6")'
+														:success='touched ? valid : null'
+														:error-messages='errors'
+														hide-details='auto'
+													/>
+												</ValidationProvider>
+											</v-col>
+											<v-col cols='12' md='6'>
+												<ValidationProvider
+													v-slot='{errors, touched, valid}'
+													rules='required|integer|between:48,128'
+													:custom-messages='{
+														required: $t("network.wireguard.tunnels.errors.ipv6Prefix"),
+														integer: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
+														between: $t("network.wireguard.tunnels.errors.ipv6PrefixInvalid"),
+													}'
+												>
+													<v-text-field
+														v-model.number='ip.prefix'
+														type='number'
+														min='48'
+														max='128'
+														:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
+														:success='touched ? valid : null'
+														:error-messages='errors'
+														hide-details='auto'
+													>
+														<template #append-outer>
+															<v-btn
+																v-if='ipIndex === 0'
+																color='success'
+																small
+																@click='addIPv6(index)'
+															>
+																<v-icon>
+																	mdi-plus
+																</v-icon>
+															</v-btn>
+															<v-btn
+																v-else
+																color='error'
+																small
+																@click='removeIPv6(index, ipIndex)'
+															>
+																<v-icon>
+																	mdi-delete-outline
+																</v-icon>
+															</v-btn>
+														</template>
+													</v-text-field>
+												</ValidationProvider>
+											</v-col>
+										</v-row>
+									</div>
 								</v-expansion-panel-content>
 							</v-expansion-panel>
 						</v-expansion-panels>

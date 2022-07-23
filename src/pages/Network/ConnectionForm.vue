@@ -499,7 +499,12 @@ limitations under the License.
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
-		<v-dialog v-model='showModal' width='50%'>
+		<v-dialog
+			v-model='showModal'
+			width='50%'
+			persistent
+			no-click-animation
+		>
 			<v-card>
 				<v-card-title>{{ $t('network.connection.modal.title') }}</v-card-title>
 				<v-card-text>

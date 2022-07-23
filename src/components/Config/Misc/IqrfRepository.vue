@@ -107,7 +107,7 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfRepository} from '@/interfaces/iqrfRepository';
+import {IIqrfRepository} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {

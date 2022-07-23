@@ -22,6 +22,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
+					:loading='loading'
 					:headers='header'
 					:items='instances'
 				>
@@ -76,41 +77,11 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn> <v-dialog v-model='deleteModal' width='50%'>
-							<template #activator='{ on, attrs }'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									@click='deleteInstance = item'
-									v-on='on'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card v-if='deleteInstance !== null'>
-								<v-card-title>{{ $t('config.daemon.messagings.websocket.messaging.modal.title') }}</v-card-title>
-								<v-card-text>{{ $t('config.daemon.messagings.websocket.messaging.modal.prompt', {messaging: deleteInstance.instance}) }}</v-card-text>
-								<v-card-actions>
-									<v-btn
-										color='error'
-										@click='removeInstance'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn>
-									<v-spacer />
-									<v-btn
-										color='secondary'
-										@click='deleteInstance = null'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <WebsocketDeleteDialog
+							:component-type='WebsocketTypes.MESSAGING'
+							:instance='item'
+							@deleted='getConfig'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -120,30 +91,38 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import WebsocketDeleteDialog from './WebsocketDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {WebsocketTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {WsMessaging} from '@/interfaces/messagingInterfaces';
 import {DataTableHeader} from 'vuetify';
-
-@Component({})
+import {IWsMessaging} from '@/interfaces/Config/Messaging';
 
 /**
  * Websocket messaging list card for normal user
  */
+@Component({
+	components: {
+		WebsocketDeleteDialog,
+	},
+	data: () => ({
+		WebsocketTypes,
+	}),
+})
 export default class WebsocketMessagingList extends Vue {
+	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
 	/**
 	 * @constant {string} componentName Websocket messaging component name
 	 */
 	private componentName = 'iqrf::WebsocketMessaging';
-
-	/**
-	 * @var {string|null} deleteInstance Websocket messaging instance used in remove modal
-	 */
-	private deleteInstance: WsMessaging|null = null;
 
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
@@ -173,16 +152,9 @@ export default class WebsocketMessagingList extends Vue {
 	];
 
 	/**
-	 * @var {Array<WsMessaging>} instances Array of Websocket messaging instances
+	 * @var {Array<IWsMessaging>} instances Array of Websocket messaging instances
 	 */
-	private instances: Array<WsMessaging> = [];
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteInstance !== null;
-	}
+	private instances: Array<IWsMessaging> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -195,28 +167,30 @@ export default class WebsocketMessagingList extends Vue {
 	 * Retrieves instances of Websocket messaging component
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.listFailed');
 			});
 	}
 
 	/**
 	 * Updates accepting asynchronous messages setting of Websocket messaging component instance
-	 * @param {WsMessaging} instance Websocket messaging instance
+	 * @param {IWsMessaging} instance Websocket messaging instance
 	 * @param {boolean} setting new setting
 	 */
-	private changeAccept(instance: WsMessaging, setting: boolean): void {
+	private changeAccept(instance: IWsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg !== setting) {
 			const conf = {
 				...instance,
 			};
 			conf.acceptAsyncMsg = setting;
+			this.loading = true;
 			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, conf)
 				.then(() => {
 					this.getConfig().then(() => {
@@ -227,33 +201,10 @@ export default class WebsocketMessagingList extends Vue {
 					});
 				})
 				.catch((error: AxiosError) => {
+					this.loading = false;
 					extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.updateFailed', {messaging: instance.instance});
 				});
 		}
-	}
-
-	/**
-	 * Removes an existing instance of Websocket messaging component
-	 */
-	private removeInstance(): void {
-		if (this.deleteInstance === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = null;
-		DaemonConfigurationService.deleteInstance(this.componentName, instance.instance)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.messaging.messages.deleteSuccess', {messaging: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.deleteFailed', {messaging: instance.instance});
-			});
 	}
 }
 </script>

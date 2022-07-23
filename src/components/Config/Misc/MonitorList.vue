@@ -37,16 +37,25 @@ limitations under the License.
 						</v-btn>
 					</v-toolbar>
 				</template>
+				<template #[`item.instance`]='{item}'>
+					{{ item.monitor.instance }}
+				</template>
+				<template #[`item.reportPeriod`]='{item}'>
+					{{ item.monitor.reportPeriod }}
+				</template>
+				<template #[`item.port`]='{item}'>
+					{{ item.webSocket.WebsocketPort }}
+				</template>
 				<template #[`item.acceptOnlyLocalhost`]='{item}'>
 					<v-menu offset-y>
-						<template #activator='{ on, attrs }'>
+						<template #activator='{attrs, on}'>
 							<v-btn
-								:color='item.acceptOnlyLocalhost ? "success": "error"'
+								:color='item.webSocket.acceptOnlyLocalhost ? "success": "error"'
 								small
 								v-bind='attrs'
 								v-on='on'
 							>
-								{{ $t(`states.${item.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
+								{{ $t(`states.${item.webSocket.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
 								<v-icon>mdi-menu-down</v-icon>
 							</v-btn>
 						</template>
@@ -62,14 +71,14 @@ limitations under the License.
 				</template>
 				<template #[`item.tlsEnabled`]='{item}'>
 					<v-menu offset-y>
-						<template #activator='{ on, attrs }'>
+						<template #activator='{attrs, on}'>
 							<v-btn
-								:color='item.tlsEnabled ? "success": "error"'
+								:color='item.webSocket.tlsEnabled ? "success": "error"'
 								small
 								v-bind='attrs'
 								v-on='on'
 							>
-								{{ $t(`states.${item.tlsEnabled ? "enabled" : "disabled"}`) }}
+								{{ $t(`states.${item.webSocket.tlsEnabled ? "enabled" : "disabled"}`) }}
 								<v-icon>mdi-menu-down</v-icon>
 							</v-btn>
 						</template>
@@ -87,47 +96,16 @@ limitations under the License.
 					<v-btn
 						color='info'
 						small
-						:to='"/config/daemon/misc/monitor/edit/" + item.instance'
+						:to='"/config/daemon/misc/monitor/edit/" + item.monitor.instance'
 					>
 						<v-icon small>
 							mdi-pencil
 						</v-icon>
 						{{ $t('table.actions.edit') }}
-					</v-btn> <v-dialog v-model='deleteModal' width='50%'>
-						<template #activator='{ on, attrs }'>
-							<v-btn
-								color='error'
-								small
-								v-bind='attrs'
-								@click='deleteInstance = {monitor: item.monitor.instance, webSocket: item.webSocket.instance}'
-								v-on='on'
-							>
-								<v-icon small>
-									mdi-delete
-								</v-icon>
-								{{ $t('table.actions.delete') }}
-							</v-btn>
-						</template>
-						<v-card>
-							<v-card-title>{{ $t('config.daemon.misc.monitor.modal.title') }}</v-card-title>
-							<v-card-text>{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: deleteInstance.monitor}) }}</v-card-text>
-							<v-card-actions>
-								<v-btn
-									color='error'
-									@click='removeInterface'
-								>
-									{{ $t('forms.delete') }}
-								</v-btn>
-								<v-spacer />
-								<v-btn
-									color='secondary'
-									@click='deleteInstance = ""'
-								>
-									{{ $t('forms.cancel') }}
-								</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-dialog>
+					</v-btn> <MonitorDeleteDialog
+						:instance='item'
+						@deleted='getConfig'
+					/>
 				</template>
 			</v-data-table>
 		</v-card-text>
@@ -136,6 +114,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import MonitorDeleteDialog from './MonitorDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -143,13 +122,23 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-
-@Component({})
+import {IMonitorWsInstance} from '@/interfaces/Config/Misc';
+import {IWsService} from '@/interfaces/Config/Messaging';
 
 /**
  * List of monitoring component instances
  */
+@Component({
+	components: {
+		MonitorDeleteDialog,
+	},
+})
 export default class MonitorList extends Vue {
+	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
 	/**
 	 * @constant {Record<string, string>} componentNames Names of monitor and websocket components
 	 */
@@ -159,14 +148,9 @@ export default class MonitorList extends Vue {
 	};
 
 	/**
-	 * @var {Record<string, string>|null} deleteInstance Monitor component instance object used in remove modal
+	 * @var {Array<IMonitorWsInstance>} instances Array of monitoring component instances
 	 */
-	private deleteInstance: Record<string, string>|'' = '';
-
-	/**
-	 * @var {boolean} loading Flag for loading state
-	 */
-	private loading = false;
+	private instances: Array<IMonitorWsInstance> = [];
 
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
@@ -204,18 +188,6 @@ export default class MonitorList extends Vue {
 	];
 
 	/**
-	 * @var {Array<unknown>} instances Array of monitoring component instances
-	 */
-	private instances: Array<unknown> = [];
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteInstance !== '';
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	mounted(): void {
@@ -235,7 +207,7 @@ export default class MonitorList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const monitors = responses[0].data.instances;
 				const webSockets = responses[1].data.instances;
-				const instances: Array<unknown> = [];
+				const instances: Array<IMonitorWsInstance> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
 							monitor.RequiredInterfaces.length === 0 ||
@@ -251,12 +223,6 @@ export default class MonitorList extends Vue {
 						instances.push({
 							monitor: monitor,
 							webSocket: webSocket,
-							instance: monitor.instance,
-							reportPeriod: monitor.reportPeriod,
-							acceptAsyncMsg: monitor.acceptAsyncMsg,
-							port: webSocket.WebsocketPort,
-							acceptOnlyLocalhost: webSocket.acceptOnlyLocalhost,
-							tlsEnabled: webSocket.tlsEnabled
 						});
 					}
 				}
@@ -274,36 +240,40 @@ export default class MonitorList extends Vue {
 
 	/**
 	 * Updates websocket service message accepting setting
-	 * @param service WebSocket service instance
-	 * @param {boolean} setting Message accepting setting
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {boolean} acceptOnlyLocalhost Message accepting setting
 	 */
-	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
-		if (service.acceptOnlyLocalhost === setting) {
+	private changeAcceptOnlyLocalhost(service: IWsService, acceptOnlyLocalhost: boolean): void {
+		if (service.acceptOnlyLocalhost === acceptOnlyLocalhost) {
 			return;
 		}
-		service.acceptOnlyLocalhost = setting;
-		this.changeServiceSetting(service);
+		this.changeServiceSetting(service, {acceptOnlyLocalhost: acceptOnlyLocalhost});
 	}
 
 	/**
 	 * Updates websocket service TLS setting
-	 * @param service WebSocket service instance
-	 * @param {boolean} setting TLS setting
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {boolean} tlsEnabled TLS setting
 	 */
-	private changeTls(service, setting: boolean): void {
-		if (service.tlsEnabled === setting) {
+	private changeTls(service: IWsService, tlsEnabled: boolean): void {
+		if (service.tlsEnabled === tlsEnabled) {
 			return;
 		}
-		service.tlsEnabled = setting;
-		this.changeServiceSetting(service);
+		this.changeServiceSetting(service, {tlsEnabled: tlsEnabled});
 	}
 
 	/**
 	 * Updates configuration of websocket service
-	 * @param service WebSocket service instance
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
-	private changeServiceSetting(service): void {
-		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
+	private changeServiceSetting(service: IWsService, newSettings: Record<string, boolean>): void {
+		this.loading = true;
+		const settings = {
+			...service,
+			...newSettings,
+		};
+		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, settings)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
@@ -312,39 +282,10 @@ export default class MonitorList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.monitor.messages.editFailed',
-				{instance: service.instance}
-			));
-	}
-
-	/**
-	 * Removes instance of the monitoring component
-	 */
-	private removeInterface(): void {
-		if (this.deleteInstance === '') {
-			return;
-		}
-		const deleteInstance = this.deleteInstance;
-		this.deleteInstance = '';
-		this.loading = true;
-		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.componentNames.monitor, deleteInstance.monitor),
-			DaemonConfigurationService.deleteInstance(this.componentNames.webSocket, deleteInstance.webSocket),
-		])
-			.then(() => {
-				this.getConfig()
-					.then(() => this.$toast.success(
-						this.$t('config.daemon.misc.monitor.messages.deleteSuccess', {instance: deleteInstance.monitor})
-							.toString())
-					);
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.monitor.messages.deleteFailed',
-				{instance: deleteInstance.monitor}
-			));
+			.catch((error: AxiosError) => {
+				this.loading = true;
+				extendedErrorToast(error, 'config.daemon.misc.monitor.messages.editFailed', {instance: service.instance});
+			});
 	}
 }
 </script>

@@ -97,7 +97,7 @@ import {required} from 'vee-validate/dist/rules';
 import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
 
 import {AxiosError} from 'axios';
-import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {

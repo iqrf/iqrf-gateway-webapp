@@ -37,10 +37,10 @@ limitations under the License.
 		</template>
 		<v-card>
 			<v-card-title>
-				{{ $t('config.daemon.messagings.deleteDialog.title', {messaging: messagingType}) }}
+				{{ $t('network.wireguard.tunnels.modal.title') }}
 			</v-card-title>
 			<v-card-text>
-				{{ $t('config.daemon.messagings.deleteDialog.prompt', {messaging: messagingType, instance: instance}) }}
+				{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnel.name}) }}
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
@@ -50,7 +50,7 @@ limitations under the License.
 					{{ $t('forms.cancel') }}
 				</v-btn> <v-btn
 					color='error'
-					@click='remove'
+					@click='deleteTunnel'
 				>
 					{{ $t('forms.delete') }}
 				</v-btn>
@@ -61,56 +61,45 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop} from 'vue-property-decorator';
-import DialogBase from '@/components/DialogBase.vue';
+import DialogBase from '../DialogBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MessagingTypes} from '@/enums/Config/Messagings';
 
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+import WireguardService from '@/services/WireguardService';
 
 import {AxiosError} from 'axios';
-
+import {IWG} from '@/interfaces/network';
 
 /**
- * Messaging delete dialog component
+ * Wireguard tunnel delete dialog component
  */
 @Component
-export default class MessagingDeleteDialog extends DialogBase {
+export default class WireguardTunnelDeleteDialog extends DialogBase {
 	/**
-	 * @property {MessagingTypes} messagingType Messaging type
+	 * @property {IWG} tunnel Wireguard tunnel to delete
 	 */
-	@Prop({required: true}) messagingType!: MessagingTypes;
+	@Prop({required: true}) tunnel!: IWG;
 
 	/**
-	 * @property {string} instance Messaging instance name
+	 * Removes an existing WireGuard tunnel
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {string} name WireGuard tunnel name
 	 */
-	@Prop({required: true}) instance!: string;
-
-	/**
-	 * @constant {Record<MessagingTypes, string>} componentNames Component names
-	 */
-	private componentNames: Record<MessagingTypes, string> = {
-		MQ: 'iqrf::MqMessaging',
-		MQTT: 'iqrf::MqttMessaging',
-		UDP: 'iqrf::UdpMessaging',
-	};
-
-	/**
-	 * Removes instance of UDP messaging component
-	 */
-	private remove(): void {
+	private deleteTunnel(): void {
 		this.closeDialog();
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(this.componentNames[this.messagingType], this.instance)
+		WireguardService.removeTunnel(this.tunnel.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.daemon.messagings.deleteDialog.success', {messaging: this.messagingType, instance: this.instance})
-						.toString()
+					this.$t(
+						'network.wireguard.tunnels.messages.deleteSuccess',
+						{tunnel: this.tunnel.name}
+					).toString()
 				);
 				this.$emit('deleted');
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.deleteDialog.failed', {messaging: this.messagingType, instance: this.instance}));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.deleteFailed', {tunnel: this.tunnel.name}));
 	}
 }
 </script>
