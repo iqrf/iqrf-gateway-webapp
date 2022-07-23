@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
+import store from '@/store';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
 import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 import {IProduct} from '@/interfaces/repository';
@@ -32,8 +33,16 @@ class ProductService {
 	 */
 	public async get(hwpid: number): Promise<AxiosResponse> {
 		let baseUrl = 'https://repository.iqrfalliance.org/api';
-		await IqrfRepositoryConfigService.get()
-			.then((config: IIqrfRepositoryConfig) => (baseUrl = config.apiEndpoint));
+		let config = store.getters['repository/configuration'];
+		if (!config) {
+			await IqrfRepositoryConfigService.get()
+				.then((repositoryConfig: IIqrfRepositoryConfig) => {
+					config = repositoryConfig;
+				});
+		}
+		if (!config) {
+			baseUrl = config.apiEndpoint;
+		}
 		return axios.get(baseUrl + '/products/' + hwpid);
 	}
 
