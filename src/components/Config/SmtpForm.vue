@@ -126,13 +126,13 @@ limitations under the License.
 					{{ $t('forms.save') }}
 				</v-btn> <v-btn
 					v-if='hasEmail'
-					color='info'
+					color='primary'
 					@click='test'
 				>
 					{{ $t('config.smtp.test') }}
 				</v-btn> <v-btn
 					v-if='$route.path.includes("/install/smtp")'
-					color='secondary'
+					color='primary'
 					@click='$emit("done")'
 				>
 					{{ $t('forms.skip') }}

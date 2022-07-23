@@ -99,15 +99,15 @@ limitations under the License.
 								<v-card-actions>
 									<v-spacer />
 									<v-btn
+										@click='component = ""'
+									>
+										{{ $t('forms.no') }}
+									</v-btn>
+									<v-btn
 										color='error'
 										@click='removeComponent'
 									>
 										{{ $t('forms.yes') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='component = ""'
-									>
-										{{ $t('forms.no') }}
 									</v-btn>
 								</v-card-actions>
 							</v-card>

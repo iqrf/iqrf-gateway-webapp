@@ -17,8 +17,9 @@ limitations under the License.
 <template>
 	<v-dialog
 		v-model='show'
-		persistent
 		width='50%'
+		persistent
+		no-click-animation
 	>
 		<v-card>
 			<v-card-title>
@@ -28,18 +29,17 @@ limitations under the License.
 				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: name}) }}
 			</v-card-text>
 			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
 				<v-btn
 					color='error'
 					@click='deleteMapping'
 				>
 					{{ $t('forms.delete') }}
-				</v-btn>
-				<v-spacer />
-				<v-btn
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
 				</v-btn>
 			</v-card-actions>
 		</v-card>

@@ -92,7 +92,7 @@ limitations under the License.
 						>
 							{{ $t('forms.save') }}
 						</v-btn> <v-btn
-							color='secondary'
+							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>

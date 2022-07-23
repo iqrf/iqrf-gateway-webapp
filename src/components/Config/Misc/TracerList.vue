@@ -47,47 +47,10 @@ limitations under the License.
 							mdi-pencil
 						</v-icon>
 						{{ $t('table.actions.edit') }}
-					</v-btn> <v-dialog v-model='deleteModal' width='50%'>
-						<template #activator='{ on, attrs }'>
-							<v-btn
-								color='error'
-								small
-								v-bind='attrs'
-								@click='deleteInstance = item.instance'
-								v-on='on'
-							>
-								<v-icon small>
-									mdi-delete
-								</v-icon>
-								{{ $t('table.actions.delete') }}
-							</v-btn>
-						</template>
-						<v-card>
-							<v-card-title>
-								{{ $t('config.daemon.misc.tracer.modal.title') }}
-							</v-card-title>
-							<v-card-text>
-								{{
-									$t('config.daemon.misc.tracer.modal.prompt', {instance: deleteInstance})
-								}}
-							</v-card-text>
-							<v-card-actions>
-								<v-btn
-									color='error'
-									@click='removeInstance'
-								>
-									{{ $t('forms.delete') }}
-								</v-btn>
-								<v-spacer />
-								<v-btn
-									color='secondary'
-									@click='deleteInstance = ""'
-								>
-									{{ $t('forms.cancel') }}
-								</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-dialog>
+					</v-btn> <TracerDeleteDialog
+						:instance='item'
+						@deleted='getConfig'
+					/>
 				</template>
 			</v-data-table>
 		</v-card-text>
@@ -96,25 +59,33 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
-import {AxiosError, AxiosResponse} from 'axios';
+import TracerDeleteDialog from './TracerDeleteDialog.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
+
+import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 
-@Component({})
 /**
  * List of Daemon logging service component instances
  */
+@Component({
+	components: {
+		TracerDeleteDialog,
+	},
+})
 export default class TracerList extends Vue {
+	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
 	/**
 	 * @constant {string} componentName Logging service component name
 	 */
 	private componentName = 'shape::TraceFileService';
-
-	/**
-	 * @var {boolean} loading Flag for loading state
-   */
-	private loading = false;
 
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
@@ -147,18 +118,6 @@ export default class TracerList extends Vue {
 	private instances: Array<unknown> = [];
 
 	/**
-	 * @var {string} deleteInstance Name of logging service component instance used in remove modal
-	 */
-	private deleteInstance = '';
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteInstance !== '';
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	mounted(): void {
@@ -183,29 +142,6 @@ export default class TracerList extends Vue {
 						.toString()
 				);
 			});
-	}
-
-	/**
-	 * Removes instance of logging service component
-	 */
-	private removeInstance(): void {
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		this.loading = true;
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.tracer.messages.deleteFailed',
-				{instance: instance}
-			));
 	}
 }
 </script>

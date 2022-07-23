@@ -21,6 +21,13 @@
 export enum MessagingTypes {
 	MQ = 'MQ',
 	MQTT = 'MQTT',
-	WS = 'WS',
 	UDP = 'UDP',
+}
+
+/**
+ * Websocket messaging types enum
+ */
+export enum WebsocketTypes {
+	MESSAGING = 'messaging',
+	SERVICE = 'service',
 }

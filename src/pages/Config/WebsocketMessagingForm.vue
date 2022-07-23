@@ -133,8 +133,8 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IWsService, ModalInstance} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
-import {ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
 import {RequiredInterface} from '@/interfaces/requiredInterfaces';
 
 interface ServiceInstance {
@@ -324,6 +324,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 * Handles REST API success
 	 */
 	private handleSuccess(): void {
+		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
 			this.$t('config.daemon.messagings.websocket.messaging.messages.saveSuccess', {messaging: this.configuration.instance}).toString()
 		);
