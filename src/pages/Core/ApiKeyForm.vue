@@ -85,17 +85,16 @@ limitations under the License.
 									>
 										<v-spacer />
 										<v-btn
+											text
+											@click='showDateDialog = false'
+										>
+											{{ $t('forms.cancel') }}
+										</v-btn> <v-btn
 											color='primary'
 											text
 											@click='$refs.date.save(date)'
 										>
 											{{ $t('forms.ok') }}
-										</v-btn> <v-btn
-											color='secondary'
-											text
-											@click='showDateDialog = false'
-										>
-											{{ $t('forms.cancel') }}
 										</v-btn>
 									</v-date-picker>
 								</v-dialog>
@@ -143,17 +142,16 @@ limitations under the License.
 									>
 										<v-spacer />
 										<v-btn
+											text
+											@click='showTimeDialog = false'
+										>
+											{{ $t('forms.cancel') }}
+										</v-btn> <v-btn
 											color='primary'
 											text
 											@click='$refs.time.save(time)'
 										>
 											{{ $t('forms.ok') }}
-										</v-btn> <v-btn
-											color='secondary'
-											text
-											@click='showTimeDialog = false'
-										>
-											{{ $t('forms.cancel') }}
 										</v-btn>
 									</v-time-picker>
 								</v-dialog>
@@ -168,6 +166,7 @@ limitations under the License.
 						</v-btn>
 					</v-form>
 				</ValidationObserver>
+				<DateTimePicker />
 			</v-card-text>
 		</v-card>
 	</div>
@@ -185,9 +184,11 @@ import {required} from 'vee-validate/dist/rules';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IApiKey} from '@/interfaces/apiKey';
 import {MetaInfo} from 'vue-meta';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 
 @Component({
 	components: {
+		DateTimePicker,
 		ValidationObserver,
 		ValidationProvider,
 	},

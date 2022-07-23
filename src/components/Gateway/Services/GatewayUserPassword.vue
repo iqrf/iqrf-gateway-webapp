@@ -62,7 +62,6 @@ limitations under the License.
 						{{ $t('forms.changePassword') }}
 					</v-btn> <v-btn
 						v-if='$route.path.includes("/install")'
-						color='secondary'
 						@click='nextStep'
 					>
 						{{ $t('forms.skip') }}

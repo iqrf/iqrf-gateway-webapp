@@ -152,17 +152,16 @@ limitations under the License.
 										>
 											<v-spacer />
 											<v-btn
+												text
+												@click='showDateDialog = false'
+											>
+												{{ $t('forms.cancel') }}
+											</v-btn> <v-btn
 												color='primary'
 												text
 												@click='$refs.date.save(date)'
 											>
 												{{ $t('forms.ok') }}
-											</v-btn> <v-btn
-												color='secondary'
-												text
-												@click='showDateDialog = false'
-											>
-												{{ $t('forms.cancel') }}
 											</v-btn>
 										</v-date-picker>
 									</v-dialog>
@@ -201,17 +200,16 @@ limitations under the License.
 										>
 											<v-spacer />
 											<v-btn
+												text
+												@click='showTimeDialog = false'
+											>
+												{{ $t('forms.cancel') }}
+											</v-btn> <v-btn
 												color='primary'
 												text
 												@click='$refs.time.save(time)'
 											>
 												{{ $t('forms.ok') }}
-											</v-btn> <v-btn
-												color='secondary'
-												text
-												@click='showTimeDialog = false'
-											>
-												{{ $t('forms.cancel') }}
 											</v-btn>
 										</v-time-picker>
 									</v-dialog>
@@ -348,7 +346,7 @@ import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} fro
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import {WsMessaging} from '@/interfaces/messagingInterfaces';
+import {IWsMessaging} from '@/interfaces/Config/Messaging';
 
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
@@ -846,7 +844,7 @@ export default class SchedulerForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				responses.forEach((item: AxiosResponse) => {
 					if (item.data.instances) {
-						item.data.instances.forEach((messaging: WsMessaging) => {
+						item.data.instances.forEach((messaging: IWsMessaging) => {
 							this.messagings.push({
 								value: messaging.instance, text: messaging.instance,
 							});

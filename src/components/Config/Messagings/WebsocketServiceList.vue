@@ -22,7 +22,8 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<v-data-table
-					:headers='header'
+					:loading='loading'
+					:headers='headers'
 					:items='instances'
 				>
 					<template #top>
@@ -96,41 +97,11 @@ limitations under the License.
 								mdi-pencil
 							</v-icon>
 							{{ $t('table.actions.edit') }}
-						</v-btn> <v-dialog v-model='deleteModal' width='50%'>
-							<template #activator='{ on, attrs }'>
-								<v-btn
-									color='error'
-									small
-									v-bind='attrs'
-									@click='deleteService = item.instance'
-									v-on='on'
-								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-									{{ $t('table.actions.delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-title>{{ $t('config.daemon.messagings.websocket.service.modal.title') }}</v-card-title>
-								<v-card-text>{{ $t('config.daemon.messagings.websocket.service.modal.prompt', {service: deleteService}) }}</v-card-text>
-								<v-card-actions>
-									<v-btn
-										color='error'
-										@click='removeService'
-									>
-										{{ $t('forms.delete') }}
-									</v-btn>
-									<v-spacer />
-									<v-btn
-										color='secondary'
-										@click='deleteService = null'
-									>
-										{{ $t('forms.cancel') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
+						</v-btn> <WebsocketDeleteDialog
+							:component-type='WebsocketTypes.SERVICE'
+							:instance='item'
+							@deleted='getConfig'
+						/>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -140,29 +111,42 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
+import WebsocketDeleteDialog from './WebsocketDeleteDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '@/helpers/versionChecker';
+import {WebsocketTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IWsService} from '@/interfaces/messagingInterfaces';
 import {DataTableHeader} from 'vuetify';
+import {IWsService} from '@/interfaces/Config/Messaging';
 
+/**
+ * Websocket service list card for normal user
+ */
 @Component({
+	components: {
+		WebsocketDeleteDialog,
+	},
 	computed: {
 		...mapGetters({
 			daemonVersion: 'daemonClient/getVersion',
 		}),
 	},
+	data: () => ({
+		WebsocketTypes,
+	}),
 })
 
-/**
- * Websocket service list card for normal user
- */
 export default class WebsocketServiceList extends Vue {
+	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
 	/**
 	 * @constant {string} componentName Websocket service component name
 	 */
@@ -176,7 +160,7 @@ export default class WebsocketServiceList extends Vue {
 	/**
 	 * @var {Array<DataTableHeader>} header Data table header
 	 */
-	private header: Array<DataTableHeader> = [
+	private headers: Array<DataTableHeader> = [
 		{
 			value: 'instance',
 			text: this.$t('forms.fields.instanceName').toString(),
@@ -200,16 +184,9 @@ export default class WebsocketServiceList extends Vue {
 	];
 
 	/**
-	 * @var {Array<WsService>} instances Array of Websocket service instances
+	 * @var {Array<IWsService>} instances Array of Websocket service instances
 	 */
 	private instances: Array<IWsService> = [];
-
-	/**
-	 * @var {boolean} deleteModal Delete modal visibility
-	 */
-	get deleteModal(): boolean {
-		return this.deleteService !== null;
-	}
 
 	/**
 	 * Daemon version computed property watcher to re-render elements dependent on version
@@ -217,7 +194,7 @@ export default class WebsocketServiceList extends Vue {
 	@Watch('daemonVersion')
 	private updateTable(): void {
 		if (versionHigherEqual('2.3.0')) {
-			this.header.splice(3, 0, {
+			this.headers.splice(3, 0, {
 				value: 'tlsEnabled',
 				text: this.$t('config.daemon.messagings.websocket.form.tlsEnabled').toString(),
 				filterable: false,
@@ -237,13 +214,14 @@ export default class WebsocketServiceList extends Vue {
 	 * Retrieves instances of Websocket service component
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.getFailed');
 			});
 	}
@@ -278,7 +256,7 @@ export default class WebsocketServiceList extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private edit(service: IWsService, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		const settings = {
 			...service,
 			...newSettings,
@@ -293,31 +271,8 @@ export default class WebsocketServiceList extends Vue {
 				});
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.updateFailed', {service: settings.instance});
-			});
-	}
-
-	/**
-	 * Removes an existing instance of Websocket service component
-	 */
-	private removeService(): void {
-		if (this.deleteService === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const service = this.deleteService;
-		this.deleteService = null;
-		DaemonConfigurationService.deleteInstance(this.componentName, service)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.service.messages.deleteSuccess', {service: service})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.deleteFailed', {service: service});
 			});
 	}
 }

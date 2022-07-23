@@ -307,9 +307,9 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IMqttInstance} from '@/interfaces/Config/Messaging';
 import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {IMqttInstance} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {

@@ -52,7 +52,7 @@ limitations under the License.
 						</v-icon>
 						{{ $t('config.controller.pins.actions.set') }}
 					</v-list-item>
-					<v-list-item @click='showFormModal(i)'>
+					<v-list-item @click='showFormModal(profile)'>
 						<v-icon dense>
 							mdi-pencil
 						</v-icon>

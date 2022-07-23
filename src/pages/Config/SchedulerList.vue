@@ -29,28 +29,31 @@ limitations under the License.
 					<template #top>
 						<v-toolbar dense flat>
 							<v-spacer />
-							<v-btn
-								color='success'
-								small
-								to='/config/daemon/scheduler/add'
-							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-								{{ $t('table.actions.add') }}
-							</v-btn>
-							<TaskImportDialog @imported='refreshTasks' />
-							<v-btn
-								color='secondary'
-								small
-								@click='exportScheduler'
-							>
-								<v-icon small>
-									mdi-export
-								</v-icon>
-								{{ $t('forms.export') }}
-							</v-btn>
-							<TasksDeleteDialog @deleted='{tasks = []}' />
+							<v-item-group>
+								<v-btn
+									color='success'
+									small
+									to='/config/daemon/scheduler/add'
+								>
+									<v-icon small>
+										mdi-plus
+									</v-icon>
+									{{ $t('table.actions.add') }}
+								</v-btn> <TaskImportDialog
+									@imported='refreshTasks'
+								/> <v-btn
+									color='secondary'
+									small
+									@click='exportScheduler'
+								>
+									<v-icon small>
+										mdi-export
+									</v-icon>
+									{{ $t('forms.export') }}
+								</v-btn> <TasksDeleteDialog
+									@deleted='{tasks = []}'
+								/>
+							</v-item-group>
 						</v-toolbar>
 					</template>
 					<template v-if='retrieved === "rest"' #[`item.taskId`]='{item}'>

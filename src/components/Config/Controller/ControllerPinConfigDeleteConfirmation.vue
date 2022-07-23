@@ -17,25 +17,25 @@ limitations under the License.
 <template>
 	<v-dialog
 		v-model='show'
-		persistent
 		width='50%'
+		persistent
+		no-click-animation
 	>
 		<v-card>
 			<v-card-title>{{ $t('config.controller.deleteModal.title') }}</v-card-title>
 			<v-card-text>{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}</v-card-text>
 			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
 				<v-btn
 					color='error'
 					@click='deleteProfile'
 				>
 					{{ $t('forms.delete') }}
-				</v-btn>
-				<v-spacer />
-				<v-btn
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
 				</v-btn>
 			</v-card-actions>
 		</v-card>

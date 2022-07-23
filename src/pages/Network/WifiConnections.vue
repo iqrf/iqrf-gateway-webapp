@@ -119,15 +119,14 @@ limitations under the License.
 								<v-card-actions>
 									<v-spacer />
 									<v-btn
+										@click='disconnectAp = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn> <v-btn
 										color='warning'
 										@click='disconnect(disconnectAp.uuid, disconnectAp.ssid, disconnectAp.interfaceName)'
 									>
 										{{ $t('network.table.disconnect') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='disconnectAp = null'
-									>
-										{{ $t('forms.cancel') }}
 									</v-btn>
 								</v-card-actions>
 							</v-card>
@@ -149,15 +148,14 @@ limitations under the License.
 								<v-card-actions>
 									<v-spacer />
 									<v-btn
+										@click='deleteAp = null'
+									>
+										{{ $t('forms.cancel') }}
+									</v-btn> <v-btn
 										color='warning'
 										@click='removeConnection(deleteAp.uuid, deleteAp.ssid)'
 									>
 										{{ $t('table.actions.delete') }}
-									</v-btn> <v-btn
-										color='secondary'
-										@click='deleteAp = null'
-									>
-										{{ $t('forms.cancel') }}
 									</v-btn>
 								</v-card-actions>
 							</v-card>
