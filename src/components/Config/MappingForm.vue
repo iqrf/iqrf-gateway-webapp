@@ -188,19 +188,18 @@ limitations under the License.
 					</form>
 				</v-card-text>
 				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='deactivateModal'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
 					<v-btn
 						:color='modalColor'
 						:disabled='invalid'
 						@click='saveMapping'
 					>
 						{{ $t('forms.save') }}
-					</v-btn>
-					<v-spacer />
-					<v-btn
-						color='secondary'
-						@click='deactivateModal'
-					>
-						{{ $t('forms.cancel') }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>

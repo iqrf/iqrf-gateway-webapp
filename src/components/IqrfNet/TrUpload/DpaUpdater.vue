@@ -70,7 +70,7 @@ limitations under the License.
 			no-click-animation
 		>
 			<v-card>
-				<v-card-title class='text-h5 warning'>
+				<v-card-title>
 					{{ $t('iqrfnet.trUpload.dpaUpload.modal.title') }}
 				</v-card-title>
 				<v-card-text>
@@ -79,15 +79,15 @@ limitations under the License.
 				<v-card-actions>
 					<v-spacer />
 					<v-btn
+						@click='showModal = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+					<v-btn
 						color='warning'
 						@click='uploadDpa'
 					>
 						{{ $t('forms.upload') }}
-					</v-btn> <v-btn
-						color='secondary'
-						@click='showModal = false'
-					>
-						{{ $t('forms.cancel') }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>

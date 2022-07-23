@@ -22,7 +22,7 @@ limitations under the License.
 		no-click-animation
 	>
 		<v-card>
-			<v-card-title class='text-h5 warning'>
+			<v-card-title>
 				<v-icon>mdi-alert</v-icon>
 				{{ $t('daemonStatus.modalTitle') }}
 			</v-card-title>
@@ -44,22 +44,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+
+import {IMonitorMsg} from '@/interfaces/DaemonMonitor';
 import {mapGetters, MutationPayload} from 'vuex';
-
-interface IMonitorMsgData {
-	num: number
-	timestamp: number
-	dpaQueueLen: number
-	iqrfChannelState: string
-	dpaChannelState: string
-	msgQueueLen: number
-	operMode: string
-}
-
-interface IMonitorMsg {
-	mType: string
-	data: IMonitorMsgData
-}
 
 @Component({
 	computed: {
@@ -73,7 +60,6 @@ interface IMonitorMsg {
  * Daemon mode notice modal window
  */
 export default class DaemonModeModal extends Vue {
-
 	/**
 	 * Component unsubscribe function
 	 */

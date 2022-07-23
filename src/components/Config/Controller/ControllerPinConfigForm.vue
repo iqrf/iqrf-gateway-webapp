@@ -20,6 +20,7 @@ limitations under the License.
 			v-model='show'
 			width='50%'
 			persistent
+			no-click-animation
 		>
 			<v-card>
 				<v-card-title>{{ modalTitle }}</v-card-title>
@@ -134,19 +135,18 @@ limitations under the License.
 					</form>
 				</v-card-text>
 				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='deactivateModal'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
 					<v-btn
 						:color='modalColor'
 						:disabled='invalid'
 						@click='saveProfile'
 					>
 						{{ $t('forms.save') }}
-					</v-btn>
-					<v-spacer />
-					<v-btn
-						color='secondary'
-						@click='deactivateModal'
-					>
-						{{ $t('forms.cancel') }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>

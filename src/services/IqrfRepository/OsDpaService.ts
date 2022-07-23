@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
 
 /**
@@ -196,7 +196,7 @@ class OsDpaService {
 	 * Retrieves name of DPA file to upload
 	 * @param metadata DPA file metadata
 	 */
-	public getDpaFile(metadata: any): Promise<AxiosResponse> {
+	public getDpaFile(metadata): Promise<AxiosResponse> {
 		return axios.post('iqrf/dpaFile', metadata, {headers: authorizationHeader()});
 	}
 
