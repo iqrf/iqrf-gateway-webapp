@@ -40,123 +40,12 @@ limitations under the License.
 							:label='$t("core.security.apiKey.form.expiration")'
 							dense
 						/>
-						<v-row>
-							<v-col>
-								<v-dialog
-									ref='date'
-									v-model='showDateDialog'
-									:return-value.sync='date'
-									width='auto'
-									persistent
-									no-click-animation
-								>
-									<template #activator='{on, attrs}'>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='{
-												required: useExpiration,
-											}'
-											:custom-messages='{
-												required: $t("forms.errors.date")
-											}'
-										>
-											<v-text-field
-												v-model='date'
-												:label='$t("forms.fields.date")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-												readonly
-												:disabled='!useExpiration'
-												v-bind='attrs'
-												v-on='on'
-											>
-												<v-icon
-													slot='prepend'
-													:color='inputIconColor'
-												>
-													mdi-calendar
-												</v-icon>
-											</v-text-field>
-										</ValidationProvider>
-									</template>
-									<v-date-picker
-										v-model='date'
-										:min='new Date().toISOString()'
-									>
-										<v-spacer />
-										<v-btn
-											text
-											@click='showDateDialog = false'
-										>
-											{{ $t('forms.cancel') }}
-										</v-btn> <v-btn
-											color='primary'
-											text
-											@click='$refs.date.save(date)'
-										>
-											{{ $t('forms.ok') }}
-										</v-btn>
-									</v-date-picker>
-								</v-dialog>
-							</v-col>
-							<v-col>
-								<v-dialog
-									ref='time'
-									v-model='showTimeDialog'
-									:return-value.sync='time'
-									width='auto'
-									persistent
-									no-click-animation
-								>
-									<template #activator='{on, attrs}'>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='{
-												required: useExpiration,
-											}'
-											:custom-messages='{
-												required: $t("forms.errors.time")
-											}'
-										>
-											<v-text-field
-												v-model='time'
-												:label='$t("forms.fields.time")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-												readonly
-												:disabled='!useExpiration'
-												v-bind='attrs'
-												v-on='on'
-											>
-												<v-icon
-													slot='prepend'
-													:color='inputIconColor'
-												>
-													mdi-clock-outline
-												</v-icon>
-											</v-text-field>
-										</ValidationProvider>
-									</template>
-									<v-time-picker
-										v-model='time'
-									>
-										<v-spacer />
-										<v-btn
-											text
-											@click='showTimeDialog = false'
-										>
-											{{ $t('forms.cancel') }}
-										</v-btn> <v-btn
-											color='primary'
-											text
-											@click='$refs.time.save(time)'
-										>
-											{{ $t('forms.ok') }}
-										</v-btn>
-									</v-time-picker>
-								</v-dialog>
-							</v-col>
-						</v-row>
+						<DateTimePicker
+							:date.sync='date'
+							:time.sync='time'
+							:min-date='new Date().toISOString()'
+							:disabled='!useExpiration'
+						/>
 						<v-btn
 							color='primary'
 							:disabled='invalid'
@@ -166,7 +55,6 @@ limitations under the License.
 						</v-btn>
 					</v-form>
 				</ValidationObserver>
-				<DateTimePicker />
 			</v-card-text>
 		</v-card>
 	</div>
@@ -175,6 +63,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 
 import ApiKeyService from '@/services/ApiKeyService';
 import {DateTime} from 'luxon';
@@ -184,7 +73,6 @@ import {required} from 'vee-validate/dist/rules';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IApiKey} from '@/interfaces/apiKey';
 import {MetaInfo} from 'vue-meta';
-import DateTimePicker from '@/components/DateTimePicker.vue';
 
 @Component({
 	components: {
@@ -225,16 +113,6 @@ export default class ApiKeyForm extends Vue {
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false;
-
-	/**
-	 * @var {boolean} showDateDialog Date dialog visibility
-	 */
-	private showDateDialog = false;
-
-	/**
-	 * @var {boolean} showTimeDialog Time dialog visibility
-	 */
-	private showTimeDialog = false;
 
 	/**
 	 * @property {number} keyId API key id
