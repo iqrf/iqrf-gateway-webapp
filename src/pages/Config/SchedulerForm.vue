@@ -113,109 +113,12 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div
+						<DateTimePicker
 							v-if='timeSpecSelected === "exact"'
-						>
-							<v-row>
-								<v-col>
-									<v-dialog
-										ref='date'
-										v-model='showDateDialog'
-										:return-value.sync='date'
-										width='auto'
-										persistent
-										no-click-animation
-									>
-										<template #activator='{on, attrs}'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required'
-												:custom-messages='{
-													required: $t("forms.errors.date")
-												}'
-											>
-												<v-text-field
-													v-model='date'
-													:label='$t("forms.fields.date")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													readonly
-													prepend-icon='mdi-calendar'
-													v-bind='attrs'
-													v-on='on'
-												/>
-											</ValidationProvider>
-										</template>
-										<v-date-picker
-											v-model='date'
-											:min='new Date().toISOString()'
-										>
-											<v-spacer />
-											<v-btn
-												text
-												@click='showDateDialog = false'
-											>
-												{{ $t('forms.cancel') }}
-											</v-btn> <v-btn
-												color='primary'
-												text
-												@click='$refs.date.save(date)'
-											>
-												{{ $t('forms.ok') }}
-											</v-btn>
-										</v-date-picker>
-									</v-dialog>
-								</v-col>
-								<v-col>
-									<v-dialog
-										ref='time'
-										v-model='showTimeDialog'
-										:return-value.sync='time'
-										width='auto'
-										persistent
-										no-click-animation
-									>
-										<template #activator='{on, attrs}'>
-											<ValidationProvider
-												v-slot='{errors, touched, valid}'
-												rules='required'
-												:custom-messages='{
-													required: $t("forms.errors.time")
-												}'
-											>
-												<v-text-field
-													v-model='time'
-													:label='$t("forms.fields.time")'
-													:success='touched ? valid : null'
-													:error-messages='errors'
-													readonly
-													prepend-icon='mdi-clock-outline'
-													v-bind='attrs'
-													v-on='on'
-												/>
-											</ValidationProvider>
-										</template>
-										<v-time-picker
-											v-model='time'
-										>
-											<v-spacer />
-											<v-btn
-												text
-												@click='showTimeDialog = false'
-											>
-												{{ $t('forms.cancel') }}
-											</v-btn> <v-btn
-												color='primary'
-												text
-												@click='$refs.time.save(time)'
-											>
-												{{ $t('forms.ok') }}
-											</v-btn>
-										</v-time-picker>
-									</v-dialog>
-								</v-col>
-							</v-row>
-						</div>
+							:date.sync='date'
+							:time.sync='time'
+							:min-date='new Date().toISOString()'
+						/>
 						<v-divider />
 						<v-toolbar
 							dense
@@ -314,7 +217,7 @@ limitations under the License.
 						</div>
 						<v-btn
 							color='primary'
-							:disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'
+							:disabled='invalid || (timeSpecSelected === "exact" && date.length === 0 && time.length === 0)'
 							@click='saveTask'
 						>
 							{{ $t('forms.save') }}
@@ -329,27 +232,28 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required, min_value} from 'vee-validate/dist/rules';
+import DateTimePicker from '@/components/DateTimePicker.vue';
+import JsonEditor from '@/components/Config/JsonEditor.vue';
+import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {integer, required, min_value} from 'vee-validate/dist/rules';
 
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
+import DaemonApiValidator from '@/helpers/DaemonApiValidator';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
+import {IWsMessaging} from '@/interfaces/Config/Messaging';
 import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '@/interfaces/scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import {IWsMessaging} from '@/interfaces/Config/Messaging';
-
-import JsonEditor from '@/components/Config/JsonEditor.vue';
-import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 enum TimeSpecTypes {
 	CRON = 'cron',
@@ -359,6 +263,7 @@ enum TimeSpecTypes {
 
 @Component({
 	components: {
+		DateTimePicker,
 		JsonEditor,
 		JsonSchemaErrors,
 		ValidationObserver,
@@ -449,16 +354,6 @@ export default class SchedulerForm extends Vue {
 	 * @var {string} time Time string
 	 */
 	private time = '';
-
-	/**
-	 * @var {boolean} showDateDialog Date dialog visibility
-	 */
-	private showDateDialog = false;
-
-	/**
-	 * @var {boolean} showTimeDialog Time dialog visibility
-	 */
-	private showTimeDialog = false;
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
