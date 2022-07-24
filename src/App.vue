@@ -20,17 +20,20 @@ limitations under the License.
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
+		<SessionExpirationDialog v-if='loggedIn' />
 	</v-app>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import InstallationService, {InstallationCheck} from './services/InstallationService';
-import {AxiosError} from 'axios';
-
 import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
+import SessionExpirationDialog from './components/SessionExpirationDialog.vue';
+
+import InstallationService, {InstallationCheck} from './services/InstallationService';
+
+import {AxiosError} from 'axios';
 import {mapGetters} from 'vuex';
 
 @Component({
@@ -38,10 +41,12 @@ import {mapGetters} from 'vuex';
 		Blocking,
 		DaemonModeModal,
 		LoadingSpinner,
+		SessionExpirationDialog,
 	},
 	computed: {
 		...mapGetters({
 			installationChecked: 'installation/isChecked',
+			loggedIn: 'user/isLoggedIn'
 		}),
 	},
 })
@@ -84,7 +89,9 @@ export default class App extends Vue {
 				} else if (check.hasUsers && installUrl) {
 					this.$router.push('/sign/in/');
 				}
-				this.$store.dispatch('repository/get');
+				if (this.$store.getters['user/isLoggedIn']) {
+					this.$store.dispatch('repository/get');
+				}
 			})
 			.catch((error: AxiosError) => {
 				console.error(error);
