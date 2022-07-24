@@ -45,7 +45,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
-import {IMonitorMsg} from '@/interfaces/DaemonMonitor';
+import {IMonitorMsg} from '@/interfaces/Config/Misc';
 import {mapGetters, MutationPayload} from 'vuex';
 
 @Component({
