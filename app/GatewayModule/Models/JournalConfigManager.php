@@ -31,7 +31,7 @@ use stdClass;
 /**
  * Systemd journal manager
  */
-class SystemdJournalManager {
+class JournalConfigManager {
 
 	/**
 	 * @var array<string, string> Journal configuration
