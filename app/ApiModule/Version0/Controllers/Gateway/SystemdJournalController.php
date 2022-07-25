@@ -32,7 +32,8 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
-use App\GatewayModule\Models\SystemdJournalManager;
+use App\GatewayModule\Models\JournalConfigManager;
+use App\GatewayModule\Models\JournalReaderManager;
 
 /**
  * System journald controller
@@ -46,19 +47,25 @@ class SystemdJournalController extends GatewayController {
 	private FeatureManager $featureManager;
 
 	/**
-	 * @var SystemdJournalManager Systemd journal manager
+	 * @var JournalConfigManager Journal config manager
 	 */
-	private SystemdJournalManager $manager;
+	private JournalConfigManager $configManager;
+
+	/**
+	 * @var JournalReaderManager Journal reader manager
+	 */
+	private JournalReaderManager $readerManager;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
-	 * @param SystemdJournalManager $manager Systemd journal manager
+	 * @param JournalConfigManager $configManager Journal config manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, SystemdJournalManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, JournalConfigManager $configManager, JournalReaderManager $readerManager, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
-		$this->manager = $manager;
+		$this->configManager = $configManager;
+		$this->readerManager = $readerManager;
 		parent::__construct($validator);
 	}
 
@@ -84,7 +91,7 @@ class SystemdJournalController extends GatewayController {
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
 		try {
-			return $response->writeJsonBody($this->manager->getConfig());
+			return $response->writeJsonBody($this->configManager->getConfig());
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -117,11 +124,45 @@ class SystemdJournalController extends GatewayController {
 		$this->featureEnabled();
 		$this->validator->validateRequest('systemdJournal', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody(false));
+			$this->configManager->saveConfig($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns journal records
+	 *  parameters:
+	 *      - in: query
+	 *        name: last
+	 *        schema:
+	 *          type: integer
+	 *          minimum: 1
+	 *          maximum: 1000
+	 *          default: 500
+	 *        required: false
+	 *        description: Number of last records to retrieve
+	 *      - in: query
+	 *        name: cursor
+	 *        schema:
+	 *          type: string
+	 *        required: false
+	 *        description: Specifies a record cursor to start from
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 */
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$last = $request->getQueryParam('last', 500);
+		$cursor = $request->getQueryParam('cursor', null);
+		return $response->writeJsonBody($this->readerManager->getRecords($last, $cursor));
 	}
 
 	/**
