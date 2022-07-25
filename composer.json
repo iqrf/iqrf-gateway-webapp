@@ -116,7 +116,8 @@
 		"sort-packages": true,
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"composer/package-versions-deprecated": true
+			"composer/package-versions-deprecated": true,
+			"cweagans/composer-patches": true
 		}
 	}
 }
