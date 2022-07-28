@@ -206,7 +206,7 @@ limitations under the License.
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -309,17 +309,7 @@ limitations under the License.
 										>
 											<template #append-outer>
 												<v-btn
-													v-if='index === 0'
-													color='success'
-													small
-													@click='addIpv4Dns'
-												>
-													<v-icon>
-														mdi-plus
-													</v-icon>
-												</v-btn>
-												<v-btn
-													v-else
+													v-if='connection.ipv4.dns.length > 1'
 													color='error'
 													small
 													@click='deleteIpv4Dns(index)'
@@ -328,12 +318,22 @@ limitations under the License.
 														mdi-delete-outline
 													</v-icon>
 												</v-btn>
+												<v-btn
+													v-if='index === (connection.ipv4.dns.length - 1)'
+													color='success'
+													small
+													@click='addIpv4Dns'
+												>
+													<v-icon>
+														mdi-plus
+													</v-icon>
+												</v-btn>
 											</template>
 										</v-text-field>
 									</ValidationProvider>
 								</fieldset>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
@@ -356,7 +356,7 @@ limitations under the License.
 										v-for='(address, i) in connection.ipv6.addresses'
 										:key='i'
 									>
-										<v-col>
+										<v-col cols='12' md='6'>
 											<ValidationProvider
 												v-slot='{errors, touched, valid}'
 												:rules='{
@@ -376,7 +376,7 @@ limitations under the License.
 												/>
 											</ValidationProvider>
 										</v-col>
-										<v-col>
+										<v-col cols='12' md='6'>
 											<ValidationProvider
 												v-slot='{errors, touched, valid}'
 												:rules='{
@@ -403,23 +403,23 @@ limitations under the License.
 												>
 													<template #append-outer>
 														<v-btn
-															v-if='i === 0'
-															color='success'
-															small
-															@click='addIpv6Address'
-														>
-															<v-icon>
-																mdi-plus
-															</v-icon>
-														</v-btn>
-														<v-btn
-															v-else
+															v-if='connection.ipv6.addresses.length > 1'
 															color='error'
 															small
 															@click='deleteIpv6Address(i)'
 														>
 															<v-icon>
 																mdi-delete-outline
+															</v-icon>
+														</v-btn>
+														<v-btn
+															v-if='i === (connection.ipv6.addresses.length - 1)'
+															color='success'
+															small
+															@click='addIpv6Address'
+														>
+															<v-icon>
+																mdi-plus
 															</v-icon>
 														</v-btn>
 													</template>
@@ -462,23 +462,23 @@ limitations under the License.
 											>
 												<template #append-outer>
 													<v-btn
-														v-if='index === 0'
-														color='success'
-														small
-														@click='addIpv6Dns'
-													>
-														<v-icon>
-															mdi-plus
-														</v-icon>
-													</v-btn>
-													<v-btn
-														v-else
+														v-if='connection.ipv6.dns.length > 1'
 														color='error'
 														small
 														@click='deleteIpv6Dns(index)'
 													>
 														<v-icon>
 															mdi-delete-outline
+														</v-icon>
+													</v-btn>
+													<v-btn
+														v-if='index === (connection.ipv6.dns.length - 1)'
+														color='success'
+														small
+														@click='addIpv6Dns'
+													>
+														<v-icon>
+															mdi-plus
 														</v-icon>
 													</v-btn>
 												</template>

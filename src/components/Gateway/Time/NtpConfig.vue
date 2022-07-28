@@ -47,22 +47,23 @@ limitations under the License.
 							>
 								<template #append-outer>
 									<v-btn
-										v-if='idx === 0'
-										color='success'
-										small
-										@click='addServer'
-									>
-										<v-icon>
-											mdi-plus
-										</v-icon>
-									</v-btn> <v-btn
-										v-else
+										v-if='pools.length > 1'
 										color='error'
 										small
 										@click='removeServer(idx)'
 									>
 										<v-icon>
 											mdi-delete-outline
+										</v-icon>
+									</v-btn>
+									<v-btn
+										v-if='idx === (pools.length - 1)'
+										color='success'
+										small
+										@click='addServer'
+									>
+										<v-icon>
+											mdi-plus
 										</v-icon>
 									</v-btn>
 								</template>
