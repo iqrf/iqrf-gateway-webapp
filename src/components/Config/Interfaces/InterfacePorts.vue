@@ -21,6 +21,7 @@ limitations under the License.
 			<v-btn
 				v-for='port of ports'
 				:key='port'
+				small
 				color='primary'
 				@click='setPort(port)'
 			>

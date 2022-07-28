@@ -35,6 +35,12 @@
 		"powerEnableGpioPin"
 	],
 	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "integer",
+			"title": "Mapping ID",
+			"example": 2
+		},
 		"type": {
 			"$id": "#/properties/type",
 			"type": "string",

@@ -660,7 +660,8 @@
 					},
 					"messages": {
 						"title": "Messages",
-						"label": "Message (JSON request)",
+						"subtitle": "Message",
+						"message": "JSON request",
 						"messaging": "Messaging",
 						"messagingPlaceholder": "Select messaging",
 						"add": "Add another message",

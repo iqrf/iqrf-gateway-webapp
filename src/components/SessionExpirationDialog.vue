@@ -89,9 +89,13 @@ export default class SessionExpirationDialog extends DialogBase {
 	/**
 	 * Initializes session expiration warning and logout timeouts
 	 */
-	private setup(): void {
-		const expiration: number = (this.$store.getters['user/getExpiration'] * 1000);
+	private async setup(): Promise<void> {
+		let expiration: number = (this.$store.getters['user/getExpiration'] * 1000);
 		const now = new Date().getTime();
+		if ((expiration - now) < 300000) {
+			await this.renewSession();
+			expiration = (this.$store.getters['user/getExpiration'] * 1000);
+		}
 		const timeout = expiration - now;
 		const warning = timeout - 60000;
 		this.expirationWarningTimeout = window.setTimeout(() => {
@@ -115,8 +119,8 @@ export default class SessionExpirationDialog extends DialogBase {
 	/**
 	 * Renews the session by refreshing jwt token and setting up new expiration
 	 */
-	private renewSession(): void {
-		UserService.refreshToken()
+	private async renewSession(): Promise<void> {
+		await UserService.refreshToken()
 			.then((rsp: User) => {
 				this.$store.dispatch('user/setJwt', rsp)
 					.then(() => {

@@ -71,9 +71,14 @@ limitations under the License.
 					</form>
 				</ValidationObserver>
 			</v-card-text>
+			<v-card-title>
+				{{ $t('config.daemon.interfaces.iqrfCdc.mappings' ) }}
+			</v-card-title>
 			<v-card-text>
-				<h4>{{ $t('config.daemon.interfaces.iqrfCdc.mappings' ) }}</h4><hr>
-				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
+				<InterfacePorts
+					:interface-type='MappingType.CDC'
+					@update-port='updatePort'
+				/>
 			</v-card-text>
 		</v-card>
 	</div>
@@ -81,13 +86,13 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-
+import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import InterfacePorts from '@/components/Config/InterfacePorts.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {UserRole} from '@/services/AuthenticationService';
 import {required} from 'vee-validate/dist/rules';
+import {MappingType} from '@/interfaces/mappings';
+import {UserRole} from '@/services/AuthenticationService';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
@@ -100,6 +105,9 @@ import {IIqrfCdc} from '@/interfaces/iqrfInterfaces';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		MappingType,
+	})
 })
 
 /**

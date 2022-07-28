@@ -16,18 +16,13 @@ limitations under the License.
 -->
 <template>
 	<v-app-bar
-		:clipped-left='true'
 		fixed
 		app
-		color='primary'
 		dark
+		color='#3c4b64'
+		height='60'
 	>
 		<v-app-bar-nav-icon @click.stop='$store.commit("sidebar/toggleVisibility")' />
-		<v-toolbar-title>
-			<router-link to='/'>
-				<Logo :alt='title' />
-			</router-link>
-		</v-toolbar-title>
 		<v-spacer />
 		<v-menu
 			v-if='$store.getters["user/isLoggedIn"]'

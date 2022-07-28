@@ -43,7 +43,7 @@ limitations under the License.
 						</v-toolbar>
 					</template>
 					<template #[`item.EnabledSSL`]='{item}'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{on, attrs}'>
 								<v-btn
 									:color='item.EnabledSSL ? "success" : "error"'
@@ -55,18 +55,24 @@ limitations under the License.
 									<v-icon>mdi-menu-down</v-icon>
 								</v-btn>
 							</template>
-							<v-list>
-								<v-list-item @click='changeEnabledSSL(item, true)'>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeEnabledSSL(item, true)'
+								>
 									{{ $t('states.enabled') }}
 								</v-list-item>
-								<v-list-item @click='changeEnabledSSL(item, false)'>
+								<v-list-item
+									dense
+									@click='changeEnabledSSL(item, false)'
+								>
 									{{ $t('states.disabled') }}
 								</v-list-item>
 							</v-list>
 						</v-menu>
 					</template>
 					<template #[`item.acceptAsyncMsg`]='{item}'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{on, attrs}'>
 								<v-btn
 									:color='item.acceptAsyncMsg ? "success" : "error"'
@@ -78,11 +84,17 @@ limitations under the License.
 									<v-icon>mdi-menu-down</v-icon>
 								</v-btn>
 							</template>
-							<v-list>
-								<v-list-item @click='changeAcceptAsyncMsg(item, true)'>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeAcceptAsyncMsg(item, true)'
+								>
 									{{ $t('states.enabled') }}
 								</v-list-item>
-								<v-list-item @click='changeAcceptAsyncMsg(item, false)'>
+								<v-list-item
+									dense
+									@click='changeAcceptAsyncMsg(item, false)'
+								>
 									{{ $t('states.disabled') }}
 								</v-list-item>
 							</v-list>

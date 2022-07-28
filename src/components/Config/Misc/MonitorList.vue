@@ -60,10 +60,16 @@ limitations under the License.
 							</v-btn>
 						</template>
 						<v-list dense>
-							<v-list-item @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
+							<v-list-item
+								dense
+								@click='changeAcceptOnlyLocalhost(item.webSocket, true)'
+							>
 								{{ $t('states.enabled') }}
 							</v-list-item>
-							<v-list-item @click='changeAcceptOnlyLocalhost(item.webSocket, false)'>
+							<v-list-item
+								dense
+								@click='changeAcceptOnlyLocalhost(item.webSocket, false)'
+							>
 								{{ $t('states.disabled') }}
 							</v-list-item>
 						</v-list>
@@ -83,10 +89,16 @@ limitations under the License.
 							</v-btn>
 						</template>
 						<v-list dense>
-							<v-list-item @click='changeTls(item.webSocket, true)'>
+							<v-list-item
+								dense
+								@click='changeTls(item.webSocket, true)'
+							>
 								{{ $t('states.enabled') }}
 							</v-list-item>
-							<v-list-item @click='changeTls(item.webSocket, false)'>
+							<v-list-item
+								dense
+								@click='changeTls(item.webSocket, false)'
+							>
 								{{ $t('states.disabled') }}
 							</v-list-item>
 						</v-list>

@@ -42,7 +42,7 @@ limitations under the License.
 						</v-toolbar>
 					</template>
 					<template #[`item.acceptOnlyLocalhost`]='{item}'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{ on, attrs }'>
 								<v-btn
 									:color='item.acceptOnlyLocalhost ? "success": "error"'
@@ -54,18 +54,24 @@ limitations under the License.
 									<v-icon>mdi-menu-down</v-icon>
 								</v-btn>
 							</template>
-							<v-list>
-								<v-list-item @click='changeAccept(item, true)'>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeAccept(item, true)'
+								>
 									{{ $t('states.enabled') }}
 								</v-list-item>
-								<v-list-item @click='changeAccept(item, false)'>
+								<v-list-item
+									dense
+									@click='changeAccept(item, false)'
+								>
 									{{ $t('states.disabled') }}
 								</v-list-item>
 							</v-list>
 						</v-menu>
 					</template>
 					<template #[`item.tlsEnabled`]='{item}'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{ on, attrs }'>
 								<v-btn
 									:color='item.tlsEnabled ? "success": "error"'
@@ -77,11 +83,17 @@ limitations under the License.
 									<v-icon>mdi-menu-down</v-icon>
 								</v-btn>
 							</template>
-							<v-list>
-								<v-list-item @click='changeTLS(item, true)'>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeTLS(item, true)'
+								>
 									{{ $t('states.enabled') }}
 								</v-list-item>
-								<v-list-item @click='changeTLS(item, false)'>
+								<v-list-item
+									dense
+									@click='changeTLS(item, false)'
+								>
 									{{ $t('states.disabled') }}
 								</v-list-item>
 							</v-list>

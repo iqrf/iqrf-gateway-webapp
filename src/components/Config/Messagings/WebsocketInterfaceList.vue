@@ -46,7 +46,7 @@ limitations under the License.
 				{{ item.service.WebsocketPort }}
 			</template>
 			<template #[`item.acceptAsyncMsg`]='{item}'>
-				<v-menu>
+				<v-menu offset-y>
 					<template #activator='{attrs, on}'>
 						<v-btn
 							:color='item.messaging.acceptAsyncMsg ? "success": "error"'
@@ -58,18 +58,24 @@ limitations under the License.
 							<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
-					<v-list>
-						<v-list-item @click='changeAcceptAsyncMsg(item.messaging, true)'>
+					<v-list dense>
+						<v-list-item
+							dense
+							@click='changeAcceptAsyncMsg(item.messaging, true)'
+						>
 							{{ $t('states.enabled') }}
 						</v-list-item>
-						<v-list-item @click='changeAcceptAsyncMsg(item.messaging, false)'>
+						<v-list-item
+							dense
+							@click='changeAcceptAsyncMsg(item.messaging, false)'
+						>
 							{{ $t('states.disabled') }}
 						</v-list-item>
 					</v-list>
 				</v-menu>
 			</template>
 			<template #[`item.acceptOnlyLocalhost`]='{item}'>
-				<v-menu>
+				<v-menu offset-y>
 					<template #activator='{attrs, on}'>
 						<v-btn
 							:color='item.service.acceptOnlyLocalhost ? "success": "error"'
@@ -81,18 +87,24 @@ limitations under the License.
 							<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
-					<v-list>
-						<v-list-item @click='changeAcceptOnlyLocalhost(item.service, true)'>
+					<v-list dense>
+						<v-list-item
+							dense
+							@click='changeAcceptOnlyLocalhost(item.service, true)'
+						>
 							{{ $t('states.enabled') }}
 						</v-list-item>
-						<v-list-item @click='changeAcceptOnlyLocalhost(item.service, false)'>
+						<v-list-item
+							dense
+							@click='changeAcceptOnlyLocalhost(item.service, false)'
+						>
 							{{ $t('states.disabled') }}
 						</v-list-item>
 					</v-list>
 				</v-menu>
 			</template>
 			<template #[`item.tlsEnabled`]='{item}'>
-				<v-menu>
+				<v-menu offset-y>
 					<template #activator='{attrs, on}'>
 						<v-btn
 							:color='item.service.tlsEnabled ? "success": "error"'
@@ -104,11 +116,17 @@ limitations under the License.
 							<v-icon>mdi-menu-down</v-icon>
 						</v-btn>
 					</template>
-					<v-list>
-						<v-list-item @click='changeTls(item.service, true)'>
+					<v-list dense>
+						<v-list-item
+							dense
+							@click='changeTls(item.service, true)'
+						>
 							{{ $t('states.enabled') }}
 						</v-list-item>
-						<v-list-item @click='changeTls(item.service, false)'>
+						<v-list-item
+							dense
+							@click='changeTls(item.service, false)'
+						>
 							{{ $t('states.disabled') }}
 						</v-list-item>
 					</v-list>

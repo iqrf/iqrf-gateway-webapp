@@ -21,40 +21,42 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.daemon.misc.tracer.errors.instance"),
+							}'
+						>
+							<v-text-field
+								v-model='configuration.instance'
+								:label='$t("forms.fields.instanceName")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.daemon.misc.tracer.errors.filename"),
+							}'
+						>
+							<v-text-field
+								v-model='configuration.filename'
+								:label='$t("config.daemon.misc.tracer.form.filename")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
 						<v-row>
-							<v-col md='6'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("config.daemon.misc.tracer.errors.instance"),
-									}'
-								>
-									<v-text-field
-										v-model='configuration.instance'
-										:label='$t("forms.fields.instanceName")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
+							<v-col cols='12' md='6'>
 								<v-text-field
 									v-model='configuration.path'
 									:label='$t("config.daemon.misc.tracer.form.path")'
 								/>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("config.daemon.misc.tracer.errors.filename"),
-									}'
-								>
-									<v-text-field
-										v-model='configuration.filename'
-										:label='$t("config.daemon.misc.tracer.form.filename")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|required|min:1'
@@ -72,13 +74,17 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<v-switch
-									v-model='configuration.timestampFiles'
-									:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
-									inset
-									dense
-								/>
-								<div v-if='configuration.timestampFiles'>
+							</v-col>
+						</v-row>
+						<v-switch
+							v-model='configuration.timestampFiles'
+							:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
+							inset
+							dense
+						/>
+						<div v-if='configuration.timestampFiles'>
+							<v-row>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|min:0'
@@ -94,8 +100,12 @@ limitations under the License.
 											:label='$t("config.daemon.misc.tracer.form.maxAgeMinutes") + " *"'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											:hint='$t("config.daemon.misc.tracer.messages.zeroValues")'
+											persistent-hint
 										/>
 									</ValidationProvider>
+								</v-col>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|min:0'
@@ -111,76 +121,75 @@ limitations under the License.
 											:label='$t("config.daemon.misc.tracer.form.maxNumber") + " *"'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+											:hint='$t("config.daemon.misc.tracer.messages.zeroValues")'
+											persistent-hint
 										/>
 									</ValidationProvider>
-									<em>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</em>
-								</div>
-							</v-col>
-							<v-col md='6'>
-								<v-row
-									v-for='(level, idx) of configuration.VerbosityLevels'
-									:key='idx'
+								</v-col>
+							</v-row>
+						</div>
+						<v-row
+							v-for='(level, idx) of configuration.VerbosityLevels'
+							:key='idx'
+						>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
+									}'
 								>
-									<v-col>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											rules='required'
-											:custom-messages='{
-												required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
-											}'
-										>
-											<v-select
-												v-model='level.level'
-												:label='$t("config.daemon.misc.tracer.form.level")'
-												:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
-												:items='selectOptions'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-											/>
-										</ValidationProvider>
-									</v-col>
-									<v-col>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											rules='integer|required'
-											:custom-messages='{
-												integer: $t("forms.errors.integer"),
-												required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
-											}'
-										>
-											<v-text-field
-												v-model.number='level.channel'
-												type='number'
-												:label='$t("config.daemon.misc.tracer.form.channel")'
-												:success='touched ? valid : null'
-												:error-messages='errors'
+									<v-select
+										v-model='level.level'
+										:label='$t("config.daemon.misc.tracer.form.level")'
+										:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
+										:items='selectOptions'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='integer|required'
+									:custom-messages='{
+										integer: $t("forms.errors.integer"),
+										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
+									}'
+								>
+									<v-text-field
+										v-model.number='level.channel'
+										type='number'
+										:label='$t("config.daemon.misc.tracer.form.channel")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									>
+										<template #append-outer>
+											<v-btn
+												v-if='configuration.VerbosityLevels.length > 1'
+												color='error'
+												small
+												@click='removeLevel(idx)'
 											>
-												<template #append-outer>
-													<v-btn
-														v-if='idx === 0'
-														color='success'
-														small
-														@click='addLevel'
-													>
-														<v-icon>
-															mdi-plus
-														</v-icon>
-													</v-btn>
-													<v-btn
-														v-else
-														color='error'
-														small
-														@click='removeLevel(idx)'
-													>
-														<v-icon>
-															mdi-delete-outline
-														</v-icon>
-													</v-btn>
-												</template>
-											</v-text-field>
-										</ValidationProvider>
-									</v-col>
-								</v-row>
+												<v-icon>
+													mdi-delete-outline
+												</v-icon>
+											</v-btn>
+											<v-btn
+												v-if='idx === (configuration.VerbosityLevels.length - 1)'
+												color='success'
+												small
+												@click='addLevel'
+											>
+												<v-icon>
+													mdi-plus
+												</v-icon>
+											</v-btn>
+										</template>
+									</v-text-field>
+								</ValidationProvider>
 							</v-col>
 						</v-row>
 						<v-btn

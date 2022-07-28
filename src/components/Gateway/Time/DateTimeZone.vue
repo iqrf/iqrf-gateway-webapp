@@ -41,12 +41,6 @@ limitations under the License.
 					</p>
 				</v-col>
 				<v-col md='6'>
-					<v-text-field
-						:value='currentTimezone'
-						:label='$t("gateway.datetime.currentTimezone")'
-						readonly
-						disabled
-					/>
 					<v-form @submit.prevent='setTimezone'>
 						<v-autocomplete
 							v-model='timezone'
@@ -151,17 +145,6 @@ export default class DateTimeZone extends Vue {
 		}
 		return DateTime.fromMillis(this.gatewayTime.timestamp * 1000,
 			{zone: this.gatewayTime.name}).toFormat('ZZZZZ (ZZZZ)');
-	}
-
-	/**
-	 * Computes current timezone string
-	 * @returns {string} Gateway timezone string
-	 */
-	get currentTimezone(): string {
-		if (this.gatewayTime === null) {
-			return '';
-		}
-		return this.gatewayTime.name + ' (' + this.gatewayTime.code + ', ' + this.gatewayTime.offset + ')';
 	}
 
 	/**
