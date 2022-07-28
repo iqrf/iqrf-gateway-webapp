@@ -62,7 +62,6 @@ limitations under the License.
 								</v-col>
 							</v-row>
 						</fieldset>
-						<v-divider />
 						<fieldset>
 							<legend>{{ $t("config.controller.form.logger.title") }}</legend>
 							<v-row>

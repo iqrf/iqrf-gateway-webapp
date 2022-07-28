@@ -18,11 +18,20 @@ limitations under the License.
 	<v-navigation-drawer
 		v-model='show'
 		:mini-variant='minimized'
-		:clipped='true'
 		fixed
 		app
 		dark
+		color='#3c4b64'
 	>
+		<template #prepend>
+			<v-list-item class='corner-logo'>
+				<router-link to='/'>
+					<LogoSmall v-if='minimized' :alt='title' />
+					<LogoBig v-else :alt='title' />
+				</router-link>
+			</v-list-item>
+		</template>
+		<v-divider />
 		<SidebarItems :items='items' />
 		<template #append>
 			<SidebarIndication />
@@ -473,3 +482,10 @@ export default class TheSidebar extends Vue {
 
 }
 </script>
+
+<style scoped>
+.corner-logo {
+	height: 60px;
+	justify-content: center;
+}
+</style>

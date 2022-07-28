@@ -46,7 +46,7 @@ limitations under the License.
 								v-for='(iface, idx) of configuration.RequiredInterfaces'
 								:key='idx'
 							>
-								<v-col>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -66,7 +66,7 @@ limitations under the License.
 										/>
 									</ValidationProvider>
 								</v-col>
-								<v-col>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -84,23 +84,23 @@ limitations under the License.
 										>
 											<template #append-outer>
 												<v-btn
-													v-if='idx === 0'
+													v-if='configuration.RequiredInterfaces.length > 1'
+													color='error'
+													small
+													@click='removeInterface(idx)'
+												>
+													<v-icon>
+														mdi-delete-outline
+													</v-icon>
+												</v-btn>
+												<v-btn
+													v-if='idx === (configuration.RequiredInterfaces.length - 1)'
 													color='success'
 													small
 													@click='addInterface'
 												>
 													<v-icon>
 														mdi-plus
-													</v-icon>
-												</v-btn>
-												<v-btn
-													v-else
-													color='error'
-													small
-													@click='removeInterface(i-1)'
-												>
-													<v-icon>
-														mdi-delete-outline
 													</v-icon>
 												</v-btn>
 											</template>

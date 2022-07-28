@@ -65,7 +65,7 @@ limitations under the License.
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|base64Key'
@@ -80,19 +80,19 @@ limitations under the License.
 										:success='touched ? valid : null'
 										:error-messages='errors'
 									>
-										<template #prepend>
+										<template #append-outer>
 											<v-btn
 												small
 												color='primary'
 												@click='generateKeys'
 											>
-												{{ $t("network.wireguard.tunnels.form.generateKeys") }}
+												<v-icon>mdi-key-plus</v-icon>
 											</v-btn>
 										</template>
 									</v-text-field>
 								</ValidationProvider>
 							</v-col>
-							<v-col>
+							<v-col cols='12' md='6'>
 								<v-text-field
 									:value='tunnel.publicKey'
 									:label='$t("network.wireguard.tunnels.form.publicKeyIface")'
@@ -106,10 +106,7 @@ limitations under the License.
 											small
 											color='primary'
 										>
-											<v-icon small>
-												mdi-clipboard-outline
-											</v-icon>
-											{{ $t('forms.clipboardCopy') }}
+											<v-icon>mdi-clipboard-outline</v-icon>
 										</v-btn>
 									</template>
 								</v-text-field>
@@ -212,7 +209,8 @@ limitations under the License.
 								:key='index'
 							>
 								<v-expansion-panel-header class='pt-0 pb-0'>
-									<v-col>
+									{{ $t('network.wireguard.tunnels.form.peers') }}
+									<span class='text-end'>
 										<v-btn
 											v-if='index === 0'
 											color='success'
@@ -224,7 +222,6 @@ limitations under the License.
 											</v-icon>
 										</v-btn>
 										<v-btn
-											v-else
 											color='error'
 											small
 											@click.native.stop='removePeer(index)'
@@ -233,8 +230,7 @@ limitations under the License.
 												mdi-delete-outline
 											</v-icon>
 										</v-btn>
-										{{ $t('network.wireguard.tunnels.form.peers') }}
-									</v-col>
+									</span>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content eager>
 									<v-row>

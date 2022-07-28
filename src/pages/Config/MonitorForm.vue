@@ -21,22 +21,22 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.daemon.misc.monitor.errors.instance"),
+							}'
+						>
+							<v-text-field
+								v-model='monitor.instance'
+								:label='$t("forms.fields.instanceName")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
 						<v-row>
-							<v-col md='6'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("config.daemon.misc.monitor.errors.instance"),
-									}'
-								>
-									<v-text-field
-										v-model='monitor.instance'
-										:label='$t("forms.fields.instanceName")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:1|required'
@@ -54,6 +54,8 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|between:1,65535|required'
@@ -71,18 +73,20 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<v-checkbox
-									v-model='webSocket.acceptOnlyLocalhost'
-									:label='$t("config.daemon.misc.monitor.form.acceptOnlyLocalhost")'
-								/>
 							</v-col>
-							<v-col md='6'>
-								<v-switch
-									v-model='webSocket.tlsEnabled'
-									:label='$t("config.daemon.messagings.tlsTitle")'
-									inset
-									dense
-								/>
+						</v-row>
+						<v-checkbox
+							v-model='webSocket.acceptOnlyLocalhost'
+							:label='$t("config.daemon.misc.monitor.form.acceptOnlyLocalhost")'
+						/>
+						<v-switch
+							v-model='webSocket.tlsEnabled'
+							:label='$t("config.daemon.messagings.tlsTitle")'
+							inset
+							dense
+						/>
+						<v-row>
+							<v-col>
 								<ValidationProvider
 									v-if='webSocket.tlsEnabled'
 									v-slot='{errors, touched, valid}'
@@ -99,14 +103,14 @@ limitations under the License.
 										:disabled='!webSocket.tlsEnabled'
 										:success='touched && webSocket.tlsEnabled ? valid : null'
 										:error-messages='errors'
+										:hint='$t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${webSocket.tlsMode}`)'
+										persistent-hint
 									/>
-									<p
-										v-if='webSocket.tlsMode !== "" && webSocket.tlsMode !== undefined'
-										:class='!webSocket.tlsEnabled ? "text-secondary" : ""'
-									>
-										{{ $t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${webSocket.tlsMode}`) }}
-									</p>
 								</ValidationProvider>
+							</v-col>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-if='webSocket.tlsEnabled'
 									v-slot='{errors, touched, valid}'
@@ -123,6 +127,8 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-if='webSocket.tlsEnabled'
 									v-slot='{errors, touched, valid}'

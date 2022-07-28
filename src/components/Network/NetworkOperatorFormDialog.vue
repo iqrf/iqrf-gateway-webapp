@@ -39,10 +39,8 @@ limitations under the License.
 				</v-btn>
 				<v-list-item
 					v-else
-					type='button'
 					v-bind='attrs'
 					v-on='on'
-
 					@click='showDialog'
 				>
 					<v-icon dense>
@@ -52,9 +50,7 @@ limitations under the License.
 				</v-list-item>
 			</template>
 			<v-card>
-				<v-card-title>
-					{{ modalTitle }}
-				</v-card-title>
+				<v-card-title>{{ title }}</v-card-title>
 				<v-card-text>
 					<v-form>
 						<ValidationProvider
@@ -126,7 +122,7 @@ limitations under the License.
 					>
 						{{ $t('forms.cancel') }}
 					</v-btn> <v-btn
-						:color='modalColor'
+						:color='buttonColor'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
@@ -162,29 +158,39 @@ import {IOperator} from '@/interfaces/network';
  * Network operator form dialog component
  */
 export default class NetworkOperatorFormDialog extends DialogBase {
+	/**
+	 * @property {IOperator} operator Network operator prop
+	 */
 	@Prop({
 		type: Object,
-		default: () => {return {name: '', apn: '', username: '', password: ''};}
-	}) operator!: IOperator;
-
-	/**
-	 * Returns modal color depending on operator id
-	 */
-	get modalColor(): string {
-		if (!this.operator.id) {
-			return 'success';
+		default: () => {
+			return {
+				name: '',
+				apn: '',
+				username: '',
+				password: '',
+			};
 		}
-		return 'primary';
-	}
+	}) operator!: IOperator;
 
 	/**
 	 * Returns modal title depending on operator title
 	 */
-	get modalTitle(): string {
+	get title(): string {
 		if (!this.operator.id) {
 			return this.$t('network.operators.form.add').toString();
 		}
 		return this.$t('network.operators.form.edit').toString();
+	}
+
+	/**
+	 * Returns modal color depending on operator id
+	 */
+	get buttonColor(): string {
+		if (!this.operator.id) {
+			return 'success';
+		}
+		return 'primary';
 	}
 
 	/**

@@ -25,14 +25,14 @@ limitations under the License.
 						v-for='(operator, i) of operators'
 						:key='i'
 						ref='menu'
-						offset-y
 						top
+						:offset-y='true'
 					>
-						<template #activator='{on, attrs}'>
+						<template #activator='{attrs, on}'>
 							<v-btn
-								v-bind='attrs'
 								color='primary'
 								small
+								v-bind='attrs'
 								v-on='on'
 							>
 								{{ operator.name }}
