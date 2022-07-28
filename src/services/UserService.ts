@@ -136,7 +136,7 @@ class UserService {
 	 * Refreshes user JWT
 	 */
 	refreshToken(): Promise<User> {
-		return axios.get('user/refreshToken', {headers: authorizationHeader()})
+		return axios.post('user/refreshToken', null, {headers: authorizationHeader()})
 			.then((response: AxiosResponse) => (response.data as User));
 	}
 

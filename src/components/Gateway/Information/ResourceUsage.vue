@@ -23,6 +23,7 @@ limitations under the License.
 			v-model='value'
 			:color='color'
 			height='1em'
+			rounded
 		/>
 	</div>
 </template>

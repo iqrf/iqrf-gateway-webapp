@@ -16,12 +16,7 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/scheduler/add"'>
-			{{ $t('config.daemon.scheduler.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.scheduler.edit') }}
-		</h1>
+		<h1>{{ pageTitle }}</h1>
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
@@ -65,7 +60,7 @@ limitations under the License.
 							:label='$t("config.daemon.scheduler.form.task.timeSpec")'
 							:items='timeSpecOptions'
 						/>
-						<div v-if='timeSpecSelected === "cron"'>
+						<div v-if='timeSpecSelected === TimeSpecTypes.CRON'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='cron|required'
@@ -95,7 +90,7 @@ limitations under the License.
 							</ValidationProvider>
 						</div>
 						<ValidationProvider
-							v-if='timeSpecSelected === "periodic"'
+							v-if='timeSpecSelected === TimeSpecTypes.PERIODIC'
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|min:0'
 							:custom-messages='{
@@ -114,7 +109,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<DateTimePicker
-							v-if='timeSpecSelected === "exact"'
+							v-if='timeSpecSelected === TimeSpecTypes.EXACT'
 							:date.sync='date'
 							:time.sync='time'
 							:min-date='new Date().toISOString()'
@@ -137,15 +132,38 @@ limitations under the License.
 								{{ $t("iqrfnet.sendJson.documentation") }}
 							</v-btn>
 						</v-toolbar>
-						<div v-for='i of tasks.length' :key='i'>
-							<hr v-if='i > 1'>
-							<v-row>
-								<v-col>
+						<v-expansion-panels accordion class='mb-5'>
+							<v-expansion-panel
+								v-for='i of tasks.length'
+								:key='i'
+							>
+								<v-expansion-panel-header class='pt-0 pb-0'>
+									{{ $t('config.daemon.scheduler.form.messages.subtitle') }}
+									<span class='text-end'>
+										<v-btn
+											v-if='tasks.length > 1'
+											color='error'
+											small
+											@click.native.stop='removeMessage(i-1)'
+										>
+											<v-icon>
+												mdi-delete-outline
+											</v-icon>
+										</v-btn>
+										<v-btn
+											v-if='i === tasks.length'
+											color='success'
+											small
+											@click.native.stop='addMessage'
+										>
+											<v-icon>
+												mdi-plus
+											</v-icon>
+										</v-btn>
+									</span>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content eager>
 									<JsonSchemaErrors :errors='validatorErrors[i-1]' />
-								</v-col>
-							</v-row>
-							<v-row>
-								<v-col md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|json|mType'
@@ -158,66 +176,57 @@ limitations under the License.
 									>
 										<JsonEditor
 											v-model='tasks[i-1].message'
-											:label='$t("config.daemon.scheduler.form.messages.label")'
+											:label='$t("config.daemon.scheduler.form.messages.message")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='errors.join(", ")'
 										/>
 									</ValidationProvider>
-									<v-btn
-										v-if='tasks.length > 1'
-										color='error'
-										@click='removeMessage(i-1)'
-									>
-										{{ $t('config.daemon.scheduler.form.messages.remove') }}
-									</v-btn> <v-btn
-										v-if='i === tasks.length'
-										color='success'
-										@click='addMessage'
-									>
-										{{ $t('config.daemon.scheduler.form.messages.add') }}
-									</v-btn>
-								</v-col>
-								<v-col md='6'>
-									<div
+									<ValidationProvider
 										v-for='(messaging, j) of tasks[i-1].messaging'
 										:key='j'
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: $t("config.daemon.scheduler.errors.service"),
+										}'
 									>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											rules='required'
-											:custom-messages='{
-												required: $t("config.daemon.scheduler.errors.service"),
-											}'
+										<v-select
+											v-model='tasks[i-1].messaging[j]'
+											:label='$t("config.daemon.scheduler.form.messages.messaging")'
+											:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
+											:items='messagings'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										>
-											<v-select
-												v-model='tasks[i-1].messaging[j]'
-												:label='$t("config.daemon.scheduler.form.messages.messaging")'
-												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
-												:items='messagings'
-												:success='touched ? valid : null'
-												:error-messages='errors'
-											/>
-										</ValidationProvider>
-										<v-btn
-											v-if='tasks[i-1].messaging.length > 1'
-											color='error'
-											@click='removeTaskMessaging(i-1, j)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.remove') }}
-										</v-btn> <v-btn
-											v-if='j === (tasks[i-1].messaging.length - 1)'
-											color='success'
-											@click='addTaskMessaging(i-1)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.add') }}
-										</v-btn>
-									</div>
-								</v-col>
-							</v-row>
-						</div>
+											<template #append-outer>
+												<v-btn
+													v-if='tasks[i-1].messaging.length > 1'
+													color='error'
+													small
+													@click='removeTaskMessaging(i-1, j)'
+												>
+													<v-icon>
+														mdi-delete-outline
+													</v-icon>
+												</v-btn> <v-btn
+													v-if='j === (tasks[i-1].messaging.length - 1)'
+													color='success'
+													small
+													@click='addTaskMessaging(i-1)'
+												>
+													<v-icon>
+														mdi-plus
+													</v-icon>
+												</v-btn>
+											</template>
+										</v-select>
+									</ValidationProvider>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+						</v-expansion-panels>
 						<v-btn
 							color='primary'
-							:disabled='invalid || (timeSpecSelected === "exact" && date.length === 0 && time.length === 0)'
+							:disabled='invalid || (timeSpecSelected === TimeSpecTypes.EXACT && date.length === 0 && time.length === 0)'
 							@click='saveTask'
 						>
 							{{ $t('forms.save') }}
@@ -239,6 +248,7 @@ import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
+import {TimeSpecTypes} from '@/enums/Config/Scheduler';
 
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
@@ -255,11 +265,7 @@ import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} fro
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 
-enum TimeSpecTypes {
-	CRON = 'cron',
-	EXACT = 'exact',
-	PERIODIC = 'periodic'
-}
+
 
 @Component({
 	components: {
@@ -269,6 +275,9 @@ enum TimeSpecTypes {
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		TimeSpecTypes,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as unknown as SchedulerForm).pageTitle
@@ -453,6 +462,15 @@ export default class SchedulerForm extends Vue {
 	@Prop({required: false, default: null}) id!: number;
 
 	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		return this.$route.path === '/config/daemon/scheduler/add' ?
+			this.$t('config.daemon.scheduler.add').toString() : this.$t('config.daemon.scheduler.edit').toString();
+	}
+
+	/**
 	 * Constructor
 	 */
 	constructor() {
@@ -548,15 +566,6 @@ export default class SchedulerForm extends Vue {
 	beforeDestroy(): void {
 		this.msgIds.forEach((item: string) => this.$store.dispatch('daemonClient/removeMessage', item));
 		this.unsubscribe();
-	}
-
-	/**
-	 * Computes page title depending on the action (add, edit)
-	 * @returns {string} Page title
-	 */
-	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/scheduler/add' ?
-			this.$t('config.daemon.scheduler.add').toString() : this.$t('config.daemon.scheduler.edit').toString();
 	}
 
 	/**

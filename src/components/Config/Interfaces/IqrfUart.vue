@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<v-card>
 		<v-card-title>
-			{{ $t('config.daemon.interfaces.iqrfSpi.title') }}
+			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
 		</v-card-title>
 		<v-card-text>
 			<v-overlay
@@ -34,7 +34,7 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='required'
 						:custom-messages='{
-							required: $t("config.daemon.interfaces.iqrfSpi.errors.instance"),
+							required: $t("config.daemon.interfaces.iqrfUart.errors.instance"),
 						}'
 					>
 						<v-text-field
@@ -48,22 +48,38 @@ limitations under the License.
 						v-slot='{errors, touched, valid}'
 						rules='required'
 						:custom-messages='{
-							required: $t("config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"),
+							required: $t("config.daemon.interfaces.iqrfUart.errors.iqrfInterface"),
 						}'
 					>
 						<v-text-field
 							v-model='configuration.IqrfInterface'
-							:label='$t("config.daemon.interfaces.iqrfSpi.form.iqrfInterface")'
+							:label='$t("config.daemon.interfaces.iqrfUart.form.iqrfInterface")'
 							:success='touched ? valid : null'
 							:error-messages='errors'
 						/>
 					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: $t("config.daemon.interfaces.iqrfUart.errors.baudRate"),
+						}'
+					>
+						<v-select
+							v-model='configuration.baudRate'
+							:items='baudRates'
+							:label='$t("config.daemon.interfaces.iqrfUart.form.baudRate")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:placeholder='$t("config.daemon.interfaces.iqrfUart.errors.baudRate")'
+						/>
+					</ValidationProvider>
 					<v-checkbox
-						v-model='configuration.spiReset'
-						:label='$t("config.daemon.interfaces.iqrfSpi.form.spiReset")'
+						v-model='configuration.uartReset'
+						:label='$t("config.daemon.interfaces.iqrfUart.form.uartReset")'
 					/>
 					<v-row>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -81,7 +97,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</v-col>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -99,7 +115,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</v-col>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer'
@@ -123,7 +139,7 @@ limitations under the License.
 						:label='$t("config.daemon.interfaces.interfaceMapping.form.useAdditionalPins")'
 					/>
 					<v-row>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -145,7 +161,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</v-col>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -167,7 +183,7 @@ limitations under the License.
 								/>
 							</ValidationProvider>
 						</v-col>
-						<v-col md='4'>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -200,14 +216,20 @@ limitations under the License.
 				</form>
 			</ValidationObserver>
 		</v-card-text>
+		<v-card-title>{{ $t('config.daemon.interfaces.iqrfUart.mappings' ) }}</v-card-title>
 		<v-card-text>
-			<h4>{{ $t('config.daemon.interfaces.iqrfSpi.mappings' ) }}</h4><hr>
 			<v-row>
-				<v-col md='6'>
-					<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
+				<v-col cols='12' md='6'>
+					<InterfaceMappings
+						:interface-type='MappingType.UART'
+						@update-mapping='updateMapping'
+					/>
 				</v-col>
-				<v-col md='6'>
-					<InterfacePorts interface-type='spi' @update-port='updatePort' />
+				<v-col cols='12' md='6'>
+					<InterfacePorts
+						:interface-type='MappingType.UART'
+						@update-port='updatePort'
+					/>
 				</v-col>
 			</v-row>
 		</v-card-text>
@@ -216,8 +238,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import InterfaceMappings from '@/components/Config/InterfaceMappings.vue';
-import InterfacePorts from '@/components/Config/InterfacePorts.vue';
+import InterfaceMappings from '@/components/Config/Interfaces/InterfaceMappings.vue';
+import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -227,8 +249,9 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfSpi} from '@/interfaces/iqrfInterfaces';
-import {IMapping} from '@/interfaces/mappings';
+import {IIqrfUart} from '@/interfaces/iqrfInterfaces';
+import {IMapping, MappingType} from '@/interfaces/mappings';
+import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {
@@ -236,27 +259,31 @@ import {IMapping} from '@/interfaces/mappings';
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
+	data: () => ({
+		MappingType,
+	})
 })
 
 /**
- * IQRF SPI communication interface configuration component
+ * IQRF UART communication interface configuration component
  */
-export default class IqrfSpi extends Vue {
+export default class IqrfUart extends Vue {
 	/**
-	 * @var {IIqrfSpi} configuration SPI component instance configuration
+	 * @var {IIqrfUart} configuration UART component instance configuration
 	 */
-	private configuration: IIqrfSpi = {
-		component: 'iqrf::IqrfSpi',
+	private configuration: IIqrfUart = {
+		component: 'iqrf::IqrfUart',
 		instance: '',
 		IqrfInterface: '',
-		powerEnableGpioPin: 0,
 		busEnableGpioPin: 0,
+		powerEnableGpioPin: 0,
 		pgmSwitchGpioPin: 0,
-		spiReset: true,
+		uartReset: true,
 		i2cEnableGpioPin: 0,
 		spiEnableGpioPin: 0,
-		uartEnableGpioPin: 0
+		uartEnableGpioPin: 0,
+		baudRate: 57600,
 	};
 
 	/**
@@ -265,12 +292,12 @@ export default class IqrfSpi extends Vue {
 	private useAdditionalPins = false;
 
 	/**
-	 * @constant {string} componentName SPI component name, used for REST API communication
+	 * @constant {string} componentName UART component name, used for REST API communication
 	 */
-	private componentName = 'iqrf::IqrfSpi';
+	private componentName = 'iqrf::IqrfUart';
 
 	/**
-	 * @var {string} instance SPI component instance name, used for REST API communication
+	 * @var {string} instance UART component instance name, used for REST API communication
 	 */
 	private instance = '';
 
@@ -278,6 +305,23 @@ export default class IqrfSpi extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * Computes array of CoreUI select options for baudrate
+	 * @returns {Array<IOption>} Baudrate select options
+	 */
+	get baudRates(): Array<IOption> {
+		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+		return baudRates.map((baudRate: number) => ({value: baudRate, text: baudRate + ' Bd'}));
+	}
+
+	/**
+	 * Checks if user is an administrator
+	 * @returns {boolean} True if user is an administrator
+	 */
+	get isAdmin(): boolean {
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -288,52 +332,44 @@ export default class IqrfSpi extends Vue {
 	}
 
 	/**
-	 * Retrieves user role and spi configuration
+	 * Retrieves user role and uart configuration
 	 */
 	mounted(): void {
 		this.getConfig();
 	}
 
 	/**
-	 * Checks if user is an administrator
-   * @returns {boolean} True if user is an administrator
-   */
-	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
-	}
-
-	/**
-	 * Retrieves configuration of IQRF SPI interface component
+	 * Retrieves configuration of IQRF UART interface component
 	 */
 	private getConfig(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				if (response.data.instances.length > 0) {
 					this.instance = response.data.instances[0].instance;
-					const config: IIqrfSpi = response.data.instances[0];
+					const config: IIqrfUart = response.data.instances[0];
 					this.useAdditionalPins = !(config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined);
 					this.configuration = config;
 				}
-				this.$emit('fetched', {name: 'iqrfSpi', success: true});
+				this.$emit('fetched', {name: 'iqrfUart', success: true});
 			})
 			.catch(() => {
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'iqrfSpi', success: false});
+				this.$emit('fetched', {name: 'iqrfUart', success: false});
 			});
 	}
 
 	/**
-	 * Saves new or updates existing configuration of IQRF SPI interface component instance
+	 * Saves new or updates existing configuration of IQRF UART interface component instance
 	 */
 	private saveConfig(): void {
-		const config: IIqrfSpi = JSON.parse(JSON.stringify(this.configuration));
+		const config: IIqrfUart = JSON.parse(JSON.stringify(this.configuration));
 		if (!this.useAdditionalPins) {
 			delete config.i2cEnableGpioPin;
 			delete config.spiEnableGpioPin;
 			delete config.uartEnableGpioPin;
 		}
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== '') {
+		if (this.instance !==  '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, config)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
@@ -350,7 +386,7 @@ export default class IqrfSpi extends Vue {
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
 			this.$toast.success(
-				this.$t('config.daemon.interfaces.iqrfSpi.messages.saveSuccess').toString()
+				this.$t('config.daemon.interfaces.iqrfUart.messages.saveSuccess').toString()
 			);
 		});
 	}
@@ -360,7 +396,7 @@ export default class IqrfSpi extends Vue {
 	 * @param {AxiosError} err Error response
 	 */
 	private handleFailure(err: AxiosError): void {
-		extendedErrorToast(err, 'config.daemon.interfaces.iqrfSpi.messages.saveFailed');
+		extendedErrorToast(err, 'config.daemon.interfaces.iqrfUart.messages.saveFailed');
 	}
 
 	/**
@@ -372,6 +408,7 @@ export default class IqrfSpi extends Vue {
 		this.configuration.powerEnableGpioPin = mapping.powerEnableGpioPin;
 		this.configuration.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
 		this.configuration.busEnableGpioPin = mapping.busEnableGpioPin;
+		this.configuration.baudRate = (mapping.baudRate as number);
 		if (mapping.i2cEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined && mapping.uartEnableGpioPin !== undefined) {
 			this.configuration.i2cEnableGpioPin = mapping.i2cEnableGpioPin;
 			this.configuration.spiEnableGpioPin = mapping.spiEnableGpioPin;
@@ -390,5 +427,6 @@ export default class IqrfSpi extends Vue {
 	private updatePort(port: string): void {
 		this.configuration.IqrfInterface = port;
 	}
+
 }
 </script>

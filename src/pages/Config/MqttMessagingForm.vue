@@ -21,7 +21,6 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
-						<legend>{{ $t('config.daemon.messagings.mqtt.legend') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -38,7 +37,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<v-row>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -54,7 +53,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -70,7 +69,9 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -86,7 +87,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -102,19 +103,23 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<v-text-field
 									v-model='configuration.User'
 									:label='$t("config.daemon.messagings.mqtt.form.User")'
 								/>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<v-text-field
 									v-model='configuration.Password'
 									:label='$t("forms.fields.password")'
 								/>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
 									rules='required'
@@ -133,7 +138,7 @@ limitations under the License.
 									<p>{{ $t(`config.daemon.messagings.mqtt.messages.qos.${configuration.Qos}`) }}</p>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -152,7 +157,9 @@ limitations under the License.
 									<p>{{ $t(`config.daemon.messagings.mqtt.messages.persistence.${configuration.Persistence}`) }}</p>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
@@ -171,7 +178,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|min:0'
@@ -190,7 +197,9 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|between:0," + configuration.MaxReconnect'
@@ -229,13 +238,11 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
-								<v-checkbox
-									v-model='configuration.acceptAsyncMsg'
-									:label='$t("config.daemon.messagings.acceptAsyncMsg")'
-								/>
-							</v-col>
 						</v-row>
+						<v-checkbox
+							v-model='configuration.acceptAsyncMsg'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
+						/>
 						<v-switch
 							v-model='configuration.EnabledSSL'
 							:label='$t("config.daemon.messagings.tlsTitle")'
@@ -243,47 +250,53 @@ limitations under the License.
 							inset
 							dense
 						/>
-						<v-row v-if='configuration.EnabledSSL'>
-							<v-col md='6'>
-								<v-text-field
-									v-model='configuration.TrustStore'
-									:label='$t("config.daemon.messagings.mqtt.form.TrustStore")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='configuration.KeyStore'
-									:label='$t("forms.fields.certificate")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='configuration.PrivateKey'
-									:label='$t("forms.fields.privateKey")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='configuration.PrivateKeyPassword'
-									:type='passwordVisible ? "text" : "password"'
-									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
-									:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
-									@click:append='passwordVisible = !passwordVisible'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='configuration.EnabledCipherSuites'
-									:label='$t("config.daemon.messagings.mqtt.form.EnabledCipherSuites")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-checkbox
-									v-model='configuration.EnableServerCertAuth'
-									:label='$t("config.daemon.messagings.mqtt.form.EnableServerCertAuth")'
-								/>
-							</v-col>
-						</v-row>
+						<div v-if='configuration.EnabledSSL'>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='configuration.TrustStore'
+										:label='$t("config.daemon.messagings.mqtt.form.TrustStore")'
+									/>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='configuration.KeyStore'
+										:label='$t("forms.fields.certificate")'
+									/>
+								</v-col>
+							</v-row>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='configuration.PrivateKey'
+										:label='$t("forms.fields.privateKey")'
+									/>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='configuration.PrivateKeyPassword'
+										:type='passwordVisible ? "text" : "password"'
+										:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
+										:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+										@click:append='passwordVisible = !passwordVisible'
+									/>
+								</v-col>
+							</v-row>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='configuration.EnabledCipherSuites'
+										:label='$t("config.daemon.messagings.mqtt.form.EnabledCipherSuites")'
+									/>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<v-checkbox
+										v-model='configuration.EnableServerCertAuth'
+										:label='$t("config.daemon.messagings.mqtt.form.EnableServerCertAuth")'
+									/>
+								</v-col>
+							</v-row>
+						</div>
 						<v-btn
 							color='primary'
 							:disabled='invalid'

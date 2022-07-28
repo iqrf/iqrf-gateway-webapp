@@ -17,25 +17,23 @@ limitations under the License.
 <template>
 	<div>
 		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</h4>
-		<v-btn-toggle dense class='flex-wrap'>
-			<v-btn
-				color='success'
-				size='sm'
-				@click='showFormModal()'
-			>
-				<v-icon color='white'>
-					mdi-plus
-				</v-icon>
-			</v-btn>
+		<v-btn-toggle class='flex-wrap' dense>
+			<MappingFormDialog
+				:type='interfaceType'
+				@saved='getMappings'
+			/>
 			<v-menu
 				v-for='(mapping, i) of mappings'
 				:key='i'
+				ref='menu'
+				top
 				:offset-y='true'
 			>
-				<template #activator='{on, attrs}'>
+				<template #activator='{attrs, on}'>
 					<v-btn
-						v-bind='attrs'
 						color='primary'
+						small
+						v-bind='attrs'
 						v-on='on'
 					>
 						{{ mapping.name }}
@@ -45,30 +43,35 @@ limitations under the License.
 					</v-btn>
 				</template>
 				<v-list dense>
-					<v-list-item @click='setMapping(i)'>
+					<v-list-item
+						@click='setMapping(i)'
+					>
 						<v-icon dense>
 							mdi-content-copy
 						</v-icon>
 						{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
 					</v-list-item>
+					<MappingFormDialog
+						:type='interfaceType'
+						:mapping='mapping'
+						@saved='getMappings'
+						@close-menu='$refs.menu[i].isActive = false'
+					/>
+					<MappingDeleteDialog
+						:mapping='mapping'
+						@deleted='getMappings'
+						@close-menu='$refs.menu[i].isActive = false'
+					/>
 				</v-list>
-				<MappingForm ref='formModal' @update-mappings='getMappings' />
-				<v-list-item @click='showDeleteModal(i, mapping.name)'>
-					<v-icon dense>
-						mdi-delete
-					</v-icon>
-					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
-				</v-list-item>
 			</v-menu>
 		</v-btn-toggle>
-		<MappingDeleteConfirmation ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import MappingDeleteConfirmation from '@/components/Config/MappingDeleteConfirmation.vue';
-import MappingForm from '@/components/Config/MappingForm.vue';
+import MappingDeleteDialog from '@/components/Config/Interfaces/MappingDeleteDialog.vue';
+import MappingFormDialog from '@/components/Config/Interfaces/MappingFormDialog.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -79,8 +82,8 @@ import {IMapping, MappingType} from '@/interfaces/mappings';
 
 @Component({
 	components: {
-		MappingDeleteConfirmation,
-		MappingForm,
+		MappingDeleteDialog,
+		MappingFormDialog,
 	},
 })
 
@@ -116,45 +119,6 @@ export default class InterfaceMappings extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.listFailed');
 			});
-	}
-
-	/**
-	 * Removes a mapping from mappings database
-	 * @param {number} index Mapping index
-	 */
-	private deleteMapping(index: number): void {
-		const id = (this.mappings[index].id as number);
-		const name = this.mappings[index].name;
-		this.$store.commit('spinner/SHOW');
-		MappingService.removeMapping(id)
-			.then(() => {
-				this.getMappings().then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: name}).toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: name});
-			});
-	}
-
-	/**
-	 * Invokes mapping add or edit form
-	 * @param {IMapping|null} mapping Mapping
-	 */
-	private showFormModal(mapping: IMapping|null = null): void {
-		(this.$refs.formModal as MappingForm).activateModal(mapping);
-	}
-
-	/**
-	 * Shows mapping delete modal
-	 * @param {number} idx Mapping index
-	 * @param {string} name Mapping name
-	 */
-	private showDeleteModal(idx: number, name: string): void {
-		(this.$refs.deleteModal as MappingDeleteConfirmation).activateModal(idx, name);
 	}
 
 	/**
