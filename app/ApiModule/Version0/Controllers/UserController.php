@@ -383,11 +383,11 @@ class UserController extends BaseController {
 
 	/**
 	 * @Path("/refreshToken")
-	 * @Method("GET")
+	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Refreshes user access token
 	 *  responses:
-	 *      '200':
+	 *      '201':
 	 *          description: Success
 	 *      '403':
 	 *          description: Forbidden - API key is used

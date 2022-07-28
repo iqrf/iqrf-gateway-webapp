@@ -26,33 +26,40 @@ limitations under the License.
 						</strong>
 					</v-col>
 					<v-col md='2'>
-						{{ $t(`gateway.mode.modes.${mode !== unknown ? mode : 'getFailed'}`) }}
-					</v-col>
-					<v-col md='2'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{on, attrs}'>
 								<v-btn
 									color='primary'
 									small
+									:disabled='mode === DaemonModeEnum.unknown'
 									v-bind='attrs'
 									v-on='on'
 								>
-									{{ $t('gateway.mode.select') }}
+									{{ $t(`gateway.mode.modes.${mode}`) }}
 									<v-icon>
 										mdi-menu-down
 									</v-icon>
 								</v-btn>
 							</template>
 							<v-list dense>
-								<v-list-item dense @click='setMode(modes.operational)'>
+								<v-list-item
+									dense
+									@click='setMode(modes.operational)'
+								>
 									{{ $t('gateway.mode.modes.operational') }}
 								</v-list-item>
 								<v-divider />
-								<v-list-item dense @click='setMode(modes.service)'>
+								<v-list-item
+									dense
+									@click='setMode(modes.service)'
+								>
 									{{ $t('gateway.mode.modes.service') }}
 								</v-list-item>
 								<v-divider />
-								<v-list-item dense @click='setMode(modes.forwarding)'>
+								<v-list-item
+									dense
+									@click='setMode(modes.forwarding)'
+								>
 									{{ $t('gateway.mode.modes.forwarding') }}
 								</v-list-item>
 							</v-list>
@@ -69,10 +76,7 @@ limitations under the License.
 						</strong>
 					</v-col>
 					<v-col md='2'>
-						{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
-					</v-col>
-					<v-col md='2'>
-						<v-menu>
+						<v-menu offset-y>
 							<template #activator='{on, attrs}'>
 								<v-btn
 									color='primary'
@@ -80,22 +84,31 @@ limitations under the License.
 									v-bind='attrs'
 									v-on='on'
 								>
-									{{ $t('gateway.mode.select') }}
+									{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
 									<v-icon>
 										mdi-menu-down
 									</v-icon>
 								</v-btn>
 							</template>
 							<v-list dense>
-								<v-list-item dense @click='setStartupMode(modes.operational)'>
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.operational)'
+								>
 									{{ $t('gateway.mode.modes.operational') }}
 								</v-list-item>
 								<v-divider />
-								<v-list-item dense @click='setStartupMode(modes.service)'>
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.service)'
+								>
 									{{ $t('gateway.mode.modes.service') }}
 								</v-list-item>
 								<v-divider />
-								<v-list-item dense @click='setStartupMode(modes.forwarding)'>
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.forwarding)'
+								>
 									{{ $t('gateway.mode.modes.forwarding') }}
 								</v-list-item>
 							</v-list>
@@ -120,6 +133,9 @@ import {IIdeCounterpart} from '@/interfaces/ideCounterpart';
 import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
+	data: () => ({
+		DaemonModeEnum,
+	}),
 	metaInfo: {
 		title: 'gateway.mode.title',
 	}

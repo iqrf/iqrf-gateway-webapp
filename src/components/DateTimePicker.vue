@@ -72,7 +72,7 @@
 					</template>
 					<v-time-picker
 						v-model='_time'
-						ampm-in-title
+						format='24h'
 						header-color='white'
 						@input='timeMenu = false'
 					/>
@@ -106,7 +106,7 @@ export default class DateTimePicker extends Vue {
 	@Prop({type: String, required: false, default: undefined}) minDate!: string|undefined;
 
 	/**
-	 * @property {string} minDate Specifies maximum allowed date
+	 * @property {string} maxTime Specifies maximum allowed date
 	 */
 	@Prop({type: String, required: false, default: undefined}) maxDate!: string|undefined;
 

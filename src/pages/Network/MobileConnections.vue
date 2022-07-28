@@ -55,6 +55,7 @@ limitations under the License.
 								:value='item.signal'
 								:color='signalColor(item.signal)'
 								height='20'
+								rounded
 							/>
 						</template>
 						<template #[`item.rssi`]='{item}'>

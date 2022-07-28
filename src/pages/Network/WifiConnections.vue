@@ -62,6 +62,7 @@ limitations under the License.
 							:value='item.aps[0].signal'
 							:color='signalColor(item.aps[0].signal)'
 							height='20'
+							rounded
 						/>
 					</template>
 					<template #[`item.security`]='{item}'>

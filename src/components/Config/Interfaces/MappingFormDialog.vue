@@ -20,17 +20,37 @@ limitations under the License.
 			v-model='show'
 			width='50%'
 			persistent
+			no-click-animation
 		>
-			<template #activator='{on, attrs}'>
-				<v-list-item v-bind='attrs' v-on='on'>
-					<v-icon dense>
+			<template #activator='{attrs, on}'>
+				<v-btn
+					v-if='mapping.id === undefined'
+					color='success'
+					small
+					tile
+					elevation='0'
+					v-bind='attrs'
+					v-on='on'
+					@click='showDialog'
+				>
+					<v-icon small>
+						mdi-plus
+					</v-icon>
+				</v-btn>
+				<v-list-item
+					v-else
+					v-bind='attrs'
+					v-on='on'
+					@click='showDialog'
+				>
+					<v-icon small>
 						mdi-pencil
 					</v-icon>
 					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
 				</v-list-item>
 			</template>
 			<v-card>
-				<v-card-title>{{ modalTitle }}</v-card-title>
+				<v-card-title>{{ title }}</v-card-title>
 				<v-card-text>
 					<form>
 						<ValidationProvider
@@ -67,6 +87,12 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
+						<v-select
+							v-if='mapping.type === MappingType.UART'
+							v-model='mapping.baudRate'
+							:items='baudRateOptions'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.baudRate")'
+						/>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='integer|required'
@@ -179,25 +205,19 @@ limitations under the License.
 								:disabled='!useAdditionalPins'
 							/>
 						</ValidationProvider>
-						<v-select
-							v-if='mapping.type === "uart"'
-							v-model='mapping.baudRate'
-							:items='baudRateOptions'
-							:label='$t("config.daemon.interfaces.interfaceMapping.form.baudRate")'
-						/>
 					</form>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer />
 					<v-btn
-						@click='deactivateModal'
+						@click='closeDialog'
 					>
 						{{ $t('forms.cancel') }}
 					</v-btn>
 					<v-btn
-						:color='modalColor'
+						:color='buttonColor'
 						:disabled='invalid'
-						@click='saveMapping'
+						@click='save'
 					>
 						{{ $t('forms.save') }}
 					</v-btn>
@@ -208,8 +228,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import DialogBase from '@/components/DialogBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -224,43 +245,41 @@ import {IOption} from '@/interfaces/coreui';
 	components: {
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
+	data: () => ({
+		MappingType,
+	}),
 })
 
 /**
  * Modal form to add or edit mapping
  */
-export default class MappingForm extends Vue {
+export default class MappingFormDialog extends DialogBase {
 	/**
-	 * @var {boolean} show Controls whether modal mapping form is shown
+	 * @property {MappingType} type Mapping type
 	 */
-	private show = false;
+	@Prop({required: true}) type!: MappingType;
 
 	/**
-	 * @var {number} id Mapping id
+	 * @property {IMapping} mapping Mapping object
 	 */
-	private id = -1;
-
-	/**
-	 * @var {IMapping} mapping Default mapping
-	 */
-	private defaultMapping: IMapping = {
-		name: '',
-		type: null,
-		IqrfInterface: '',
-		powerEnableGpioPin: 0,
-		pgmSwitchGpioPin: 0,
-		busEnableGpioPin: 0,
-		i2cEnableGpioPin: 0,
-		spiEnableGpioPin: 0,
-		uartEnableGpioPin: 0,
-		baudRate: 57600,
-	};
-
-	/**
-	 * @var {IMapping} mapping Mapping
-	 */
-	private mapping: IMapping = this.defaultMapping;
+	@Prop({
+		type: Object,
+		default: () => {
+			return {
+				name: '',
+				type: null,
+				IqrfInterface: '',
+				powerEnableGpioPin: 0,
+				pgmSwitchGpioPin: 0,
+				busEnableGpioPin: 0,
+				i2cEnableGpioPin: 0,
+				spiEnableGpioPin: 0,
+				uartEnableGpioPin: 0,
+				baudRate: 57600,
+			};
+		}
+	}) mapping!: IMapping;
 
 	/**
 	 * @var {boolean} useAdditionalPins Use additional pins
@@ -272,11 +291,11 @@ export default class MappingForm extends Vue {
 	 */
 	private typeOptions: Array<IOption> = [
 		{
-			value: 'spi',
+			value: MappingType.SPI,
 			text: this.$t('config.daemon.interfaces.types.spi').toString(),
 		},
 		{
-			value: 'uart',
+			value: MappingType.UART,
 			text: this.$t('config.daemon.interfaces.types.uart').toString(),
 		}
 	];
@@ -285,8 +304,8 @@ export default class MappingForm extends Vue {
 	 * Computes title of mapping modal
 	 * @returns {string} Mapping modal title
 	 */
-	get modalTitle(): string {
-		if (this.id === -1) {
+	get title(): string {
+		if (this.mapping.id === undefined) {
 			return this.$t('config.daemon.interfaces.interfaceMapping.add').toString();
 		}
 		return this.$t('config.daemon.interfaces.interfaceMapping.edit').toString();
@@ -296,8 +315,8 @@ export default class MappingForm extends Vue {
 	 * Computes modal color
 	 * @returns {string} Modal color
 	 */
-	get modalColor(): string {
-		return (this.id === -1 ? 'success' : 'primary');
+	get buttonColor(): string {
+		return (this.mapping.id === undefined ? 'success' : 'primary');
 	}
 
 	/**
@@ -320,9 +339,8 @@ export default class MappingForm extends Vue {
 	/**
 	 * Saves new or updates existing mapping
 	 */
-	private saveMapping(): void {
+	private save(): void {
 		const mapping: IMapping = JSON.parse(JSON.stringify(this.mapping));
-		delete mapping.id;
 		if (!this.useAdditionalPins) {
 			delete mapping.i2cEnableGpioPin;
 			delete mapping.spiEnableGpioPin;
@@ -332,12 +350,12 @@ export default class MappingForm extends Vue {
 			delete mapping.baudRate;
 		}
 		this.$store.commit('spinner/SHOW');
-		if (this.id !== -1) {
-			MappingService.editMapping(this.id, mapping)
+		if (mapping.id === undefined) {
+			MappingService.addMapping(mapping)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			MappingService.addMapping(mapping)
+			MappingService.editMapping(mapping.id, mapping)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}
@@ -351,8 +369,8 @@ export default class MappingForm extends Vue {
 		this.$toast.success(
 			this.$t('config.daemon.interfaces.interfaceMapping.messages.saveSuccess', {mapping: this.mapping.name}).toString()
 		);
-		this.deactivateModal();
-		this.$emit('update-mappings');
+		this.closeDialog();
+		this.$emit('saved');
 	}
 
 	/**
@@ -364,28 +382,17 @@ export default class MappingForm extends Vue {
 	}
 
 	/**
-	 * Stores mapping and renders the modal window
+	 * Emits event to close parent menu (temporary workaround) and opens dialog
 	 */
-	public activateModal(mapping: IMapping|null): void {
-		if (mapping !== null) {
-			this.mapping = mapping;
-			this.id = (mapping.id as number);
-			if (mapping.uartEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined) {
+	private showDialog(): void {
+		this.$emit('close-menu');
+		if (this.mapping.id !== undefined) {
+			if (this.mapping.i2cEnableGpioPin !== undefined && this.mapping.spiEnableGpioPin !== undefined && this.mapping.uartEnableGpioPin !== undefined) {
 				this.useAdditionalPins = true;
 			}
 		}
-		this.show = true;
+		this.mapping.type = this.type;
+		this.openDialog();
 	}
-
-	/**
-	 * Clears mapping and closes the modal window
-	 */
-	private deactivateModal(): void {
-		this.show = false;
-		this.id = -1;
-		this.mapping = this.defaultMapping;
-		this.useAdditionalPins = false;
-	}
-
 }
 </script>

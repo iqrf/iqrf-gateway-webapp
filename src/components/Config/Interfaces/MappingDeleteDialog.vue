@@ -30,15 +30,15 @@ limitations under the License.
 				<v-icon dense>
 					mdi-delete
 				</v-icon>
-				{{ $t('network.operators.delete') }}
+				{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
 			</v-list-item>
 		</template>
 		<v-card>
 			<v-card-title>
-				{{ $t('network.operators.modal.title') }}
+				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.title') }}
 			</v-card-title>
 			<v-card-text>
-				{{ $t('network.operators.modal.prompt', {name: operator.name}) }}
+				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: mapping.name}) }}
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
@@ -46,9 +46,10 @@ limitations under the License.
 					@click='closeDialog'
 				>
 					{{ $t('forms.cancel') }}
-				</v-btn> <v-btn
+				</v-btn>
+				<v-btn
 					color='error'
-					@click='deleteOperator'
+					@click='deleteMapping'
 				>
 					{{ $t('forms.delete') }}
 				</v-btn>
@@ -59,45 +60,48 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop} from 'vue-property-decorator';
-import DialogBase from '../DialogBase.vue';
+import DialogBase from '@/components/DialogBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperatorService from '@/services/NetworkOperatorService';
+import MappingService from '@/services/MappingService';
 
 import {AxiosError} from 'axios';
-import {IOperator} from '@/interfaces/network';
+import {IMapping} from '@/interfaces/mappings';
 
 /**
- * Network operator delete dialog component
+ * Mapping delete confirmation modal window component
  */
 @Component
-export default class NetworkOperatorDeleteDialog extends DialogBase {
+export default class MappingDeleteDialog extends DialogBase {
 	/**
-	 * @property {IOperator} operator Network operator
+	 * @property {IMapping} mapping Mapping to delete
 	 */
-	@Prop({required: true}) operator!: IOperator;
+	@Prop({required: true}) mapping!: IMapping;
 
 	/**
-	 * Deletes operator
+	 * Removes a mapping from mappings database
 	 */
-	private deleteOperator(): void {
-		if (this.operator.id === undefined) {
+	private deleteMapping(): void {
+		if (this.mapping.id === undefined) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		NetworkOperatorService.deleteOperator(this.operator.id)
+		MappingService.removeMapping(this.mapping.id)
 			.then(() => {
 				this.closeDialog();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('network.operators.messages.deleteSuccess', {operator: this.operator.name}).toString()
+					this.$t(
+						'config.daemon.interfaces.interfaceMapping.messages.deleteSuccess',
+						{mapping: this.mapping.name}
+					).toString()
 				);
 				this.$emit('deleted');
 			})
-			.catch((err: AxiosError) => {
-				const params = {name: this.operator.name};
-				extendedErrorToast(err, 'network.operators.messages.deleteFailed', params);
+			.catch((error: AxiosError) => {
+				const params = {mapping: this.mapping.name};
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', params);
 			});
 	}
 

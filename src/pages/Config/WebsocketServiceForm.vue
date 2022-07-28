@@ -21,112 +21,109 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|instance'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.websocket.errors.serviceInstance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
+							}'
+						>
+							<v-text-field
+								v-model='componentInstance'
+								:label='$t("forms.fields.instanceName")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|between:1,65535|required'
+							:custom-messages='{
+								between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
+								required: $t("config.daemon.messagings.websocket.errors.WebsocketPort"),
+								integer: $t("forms.errors.integer"),
+							}'
+						>
+							<v-text-field
+								v-model.number='WebsocketPort'
+								type='number'
+								:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-checkbox
+							v-model='acceptOnlyLocalhost'
+							:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
+						/>
+						<v-switch
+							v-model='tlsEnabled'
+							:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
+							color='primary'
+							inset
+							dense
+						/>
 						<v-row>
-							<v-col md='6'>
-								<legend>{{ $t('config.daemon.messagings.websocket.service.legend') }}</legend>
+							<v-col>
 								<ValidationProvider
+									v-if='tlsEnabled'
 									v-slot='{errors, touched, valid}'
-									rules='required|instance'
+									rules='required'
 									:custom-messages='{
-										required: $t("config.daemon.messagings.websocket.errors.serviceInstance"),
-										instance: $t("config.daemon.messagings.instanceInvalid"),
+										required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
 									}'
 								>
-									<v-text-field
-										v-model='componentInstance'
-										:label='$t("forms.fields.instanceName")'
-										:success='touched ? valid : null'
+									<v-select
+										v-model='tlsMode'
+										:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
+										:items='tlsModeOptions'
+										:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
+										:disabled='!tlsEnabled'
+										:success='touched && tlsEnabled ? valid : null'
 										:error-messages='errors'
+										persistent-hint
+										:hint='$t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${tlsMode}`)'
 									/>
 								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='integer|between:1,65535|required'
-									:custom-messages='{
-										between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
-										required: $t("config.daemon.messagings.websocket.errors.WebsocketPort"),
-										integer: $t("forms.errors.integer"),
-									}'
-								>
-									<v-text-field
-										v-model.number='WebsocketPort'
-										type='number'
-										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
-								<v-checkbox
-									v-model='acceptOnlyLocalhost'
-									:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
-								/>
 							</v-col>
-							<v-col md='6'>
-								<fieldset>
-									<v-switch
-										v-model='tlsEnabled'
-										:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
-										color='primary'
-										inset
-										dense
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-if='tlsEnabled'
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.messagings.websocket.errors.certificate"),
+									}'
+								>
+									<v-text-field
+										v-model='certificate'
+										:label='$t("forms.fields.certificate")'
+										:disabled='!tlsEnabled'
+										:success='touched && tlsEnabled ? valid : null'
+										:error-messages='errors'
 									/>
-									<ValidationProvider
-										v-if='tlsEnabled'
-										v-slot='{errors, touched, valid}'
-										rules='required'
-										:custom-messages='{
-											required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
-										}'
-									>
-										<v-select
-											v-model='tlsMode'
-											:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
-											:items='tlsModeOptions'
-											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
-											:disabled='!tlsEnabled'
-											:success='touched && tlsEnabled ? valid : null'
-											:error-messages='errors'
-										/>
-										<p
-											v-if='tlsMode !== "" && tlsMode !== undefined'
-											:class='!tlsEnabled ? "text-secondary" : ""'
-										>
-											{{ $t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${tlsMode}`) }}
-										</p>
-									</ValidationProvider>
-									<ValidationProvider
-										v-if='tlsEnabled'
-										v-slot='{errors, touched, valid}'
-										rules='required'
-										:custom-messages='{
-											required: $t("config.daemon.messagings.websocket.errors.certificate"),
-										}'
-									>
-										<v-text-field
-											v-model='certificate'
-											:label='$t("forms.fields.certificate")'
-											:disabled='!tlsEnabled'
-											:success='touched && tlsEnabled ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-									<ValidationProvider
-										v-if='tlsEnabled'
-										v-slot='{errors, touched, valid}'
-										rules='required'
-										:custom-messages='{
-											required: $t("config.daemon.messagings.websocket.errors.privateKey"),
-										}'
-									>
-										<v-text-field
-											v-model='privateKey'
-											:label='$t("forms.fields.privateKey")'
-											:disabled='!tlsEnabled'
-											:success='touched && tlsEnabled ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-								</fieldset>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-if='tlsEnabled'
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.messagings.websocket.errors.privateKey"),
+									}'
+								>
+									<v-text-field
+										v-model='privateKey'
+										:label='$t("forms.fields.privateKey")'
+										:disabled='!tlsEnabled'
+										:success='touched && tlsEnabled ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
 							</v-col>
 						</v-row>
 						<v-btn
