@@ -34,7 +34,7 @@ limitations under the License.
 				/>
 				<fieldset :disabled='!configuration.enabled'>
 					<v-row>
-						<v-col md='6'>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -49,6 +49,8 @@ limitations under the License.
 									:error-messages='errors'
 								/>
 							</ValidationProvider>
+						</v-col>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -63,13 +65,11 @@ limitations under the License.
 									:error-messages='errors'
 								/>
 							</ValidationProvider>
-							<v-select
-								v-model='configuration.secure'
-								:items='protocols'
-								:label='$t("config.smtp.form.security")'
-							/>
+
 						</v-col>
-						<v-col md='6'>
+					</v-row>
+					<v-row>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -84,6 +84,8 @@ limitations under the License.
 									:error-messages='errors'
 								/>
 							</ValidationProvider>
+						</v-col>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -101,6 +103,17 @@ limitations under the License.
 									@click:append='passwordVisible = !passwordVisible'
 								/>
 							</ValidationProvider>
+						</v-col>
+					</v-row>
+					<v-row>
+						<v-col cols='12' md='6'>
+							<v-select
+								v-model='configuration.secure'
+								:items='protocols'
+								:label='$t("config.smtp.form.security")'
+							/>
+						</v-col>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'

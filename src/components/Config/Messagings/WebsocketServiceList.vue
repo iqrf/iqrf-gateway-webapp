@@ -165,11 +165,6 @@ export default class WebsocketServiceList extends Vue {
 	private componentName = 'shape::WebsocketCppService';
 
 	/**
-	 * @var {string|null} deleteService Websocket service instance used in remove modal
-	 */
-	private deleteService: string|null = null;
-
-	/**
 	 * @var {Array<DataTableHeader>} header Data table header
 	 */
 	private headers: Array<DataTableHeader> = [

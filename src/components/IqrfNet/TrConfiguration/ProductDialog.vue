@@ -37,13 +37,13 @@ limitations under the License.
 			</v-card-title>
 			<v-card-text>
 				<v-row>
-					<v-col md='6'>
+					<v-col cols='12' md='6'>
 						<v-text-field
 							v-model='filters.companyName'
 							:label='$t("iqrfnet.enumeration.manufacturer")'
 						/>
 					</v-col>
-					<v-col md='6'>
+					<v-col cols='12' md='6'>
 						<v-text-field
 							v-model='filters.name'
 							:label='$t("iqrfnet.enumeration.product")'
@@ -54,6 +54,7 @@ limitations under the License.
 					:headers='header'
 					:items='items'
 					:loading='loading'
+					mobile-breakpoint='0'
 				>
 					<template #[`item.actions`]='{item}'>
 						<v-btn
@@ -133,14 +134,17 @@ export default class ProductDialog extends Vue {
 		{
 			value: 'companyName',
 			text: this.$t('iqrfnet.enumeration.manufacturer').toString(),
+			width: '20%',
 		},
 		{
 			value: 'name',
 			text: this.$t('iqrfnet.enumeration.product').toString(),
+			width: '50%',
 		},
 		{
 			value: 'hwpid',
 			text: this.$t('iqrfnet.enumeration.hwpid').toString(),
+			width: '15%',
 		},
 		{
 			value: 'actions',
@@ -148,6 +152,7 @@ export default class ProductDialog extends Vue {
 			sortable: false,
 			filterable: false,
 			align: 'end',
+			width: '15%',
 		},
 	];
 

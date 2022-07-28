@@ -48,7 +48,7 @@ limitations under the License.
 				</v-btn>
 			</template>
 			<v-list dense>
-				<v-list-item to='/profile'>
+				<v-list-item dense to='/profile'>
 					<v-list-item-icon>
 						<v-icon dense>
 							mdi-account
@@ -56,7 +56,8 @@ limitations under the License.
 					</v-list-item-icon>
 					<v-list-item-title>{{ $t('core.profile.title') }}</v-list-item-title>
 				</v-list-item>
-				<v-list-item @click='signOut'>
+				<v-divider />
+				<v-list-item dense @click='signOut'>
 					<v-list-item-icon>
 						<v-icon dense>
 							mdi-logout

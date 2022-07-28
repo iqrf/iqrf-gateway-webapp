@@ -136,7 +136,7 @@ limitations under the License.
 				<v-btn
 					color='info'
 					small
-					:to='"/config/daemon/messagings/websocket/edit/" + item.instanceMessaging'
+					:to='"/config/daemon/messagings/websocket/edit/" + item.messaging.instance'
 				>
 					<v-icon small>
 						mdi-pencil
