@@ -212,22 +212,23 @@ limitations under the License.
 									{{ $t('network.wireguard.tunnels.form.peers') }}
 									<span class='text-end'>
 										<v-btn
-											v-if='index === 0'
-											color='success'
-											small
-											@click.native.stop='addPeer'
-										>
-											<v-icon>
-												mdi-plus
-											</v-icon>
-										</v-btn>
-										<v-btn
+											v-if='tunnel.peers.length > 1'
 											color='error'
 											small
 											@click.native.stop='removePeer(index)'
 										>
 											<v-icon>
 												mdi-delete-outline
+											</v-icon>
+										</v-btn>
+										<v-btn
+											v-if='index === (tunnel.peers.length - 1)'
+											color='success'
+											small
+											@click.native.stop='addPeer'
+										>
+											<v-icon>
+												mdi-plus
 											</v-icon>
 										</v-btn>
 									</span>

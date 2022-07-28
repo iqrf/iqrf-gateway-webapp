@@ -7,6 +7,7 @@
 			<v-alert
 				v-if='log.length === 0'
 				type='info'
+				text
 			>
 				{{ $t('maintenance.mender.update.log.noLog') }}
 			</v-alert>
