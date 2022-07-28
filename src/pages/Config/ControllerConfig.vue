@@ -102,14 +102,14 @@ limitations under the License.
 								</v-col>
 							</v-row>
 							<v-row>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.logger.sinks.file'
 										:label='$t("config.controller.form.logger.sinks.file")'
 										hide-details='auto'
 									/>
 								</v-col>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.logger.sinks.syslog'
 										:label='$t("config.controller.form.logger.sinks.syslog")'
@@ -118,39 +118,38 @@ limitations under the License.
 								</v-col>
 							</v-row>
 						</fieldset>
-						<v-divider />
 						<fieldset>
 							<legend>{{ $t("config.controller.form.factoryReset.title") }}</legend>
 							<v-row>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.coordinator'
 										:label='$t("forms.fields.coordinator")'
 										hide-details='auto'
 									/>
 								</v-col>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.daemon'
 										:label='$t("config.controller.form.factoryReset.daemon")'
 										hide-details='auto'
 									/>
 								</v-col>
-								<v-col v-if='config.factoryReset.iqaros !== undefined' cols='6' md='2'>
+								<v-col v-if='config.factoryReset.iqaros !== undefined' cols='12' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.iqaros'
 										:label='$t("config.controller.form.factoryReset.iqaros")'
 										hide-details='auto'
 									/>
 								</v-col>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.network'
 										:label='$t("config.controller.form.factoryReset.network")'
 										hide-details='auto'
 									/>
 								</v-col>
-								<v-col cols='6' md='2'>
+								<v-col cols='12' md='2'>
 									<v-checkbox
 										v-model='config.factoryReset.webapp'
 										:label='$t("config.controller.form.factoryReset.webapp")'
@@ -159,7 +158,6 @@ limitations under the License.
 								</v-col>
 							</v-row>
 						</fieldset>
-						<v-divider />
 						<fieldset>
 							<legend>{{ $t("config.controller.form.resetButton.title") }}</legend>
 							<v-select

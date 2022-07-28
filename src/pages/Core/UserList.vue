@@ -52,8 +52,8 @@ limitations under the License.
 						</v-icon>
 					</template>
 					<template #[`item.role`]='{item}'>
-						<v-menu>
-							<template #activator='{on, attrs}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
 								<v-btn
 									color='success'
 									small
@@ -77,8 +77,8 @@ limitations under the License.
 						</v-menu>
 					</template>
 					<template #[`item.language`]='{item}'>
-						<v-menu>
-							<template #activator='{on, attrs}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
 								<v-btn
 									color='success'
 									small

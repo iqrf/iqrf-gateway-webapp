@@ -72,23 +72,23 @@ limitations under the License.
 								>
 									<template #append-outer>
 										<v-btn
-											v-if='idx === 0'
-											color='success'
-											small
-											@click='addKey'
-										>
-											<v-icon>
-												mdi-plus
-											</v-icon>
-										</v-btn>
-										<v-btn
-											v-else
+											v-if='keys.length > 1'
 											color='error'
 											small
 											@click='removeKey(idx)'
 										>
 											<v-icon>
 												mdi-delete-outline
+											</v-icon>
+										</v-btn>
+										<v-btn
+											v-if='idx === (keys.length - 1)'
+											color='success'
+											small
+											@click='addKey'
+										>
+											<v-icon>
+												mdi-plus
 											</v-icon>
 										</v-btn>
 									</template>

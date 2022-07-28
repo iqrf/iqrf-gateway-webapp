@@ -21,9 +21,9 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
 					<form @submit.prevent='processSubmit'>
+						<legend>{{ $t("config.translator.form.rest.title") }}</legend>
 						<v-row>
-							<v-col>
-								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -38,6 +38,8 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
@@ -57,23 +59,23 @@ limitations under the License.
 										:error-messages='errors'
 									/>
 								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|apiKey'
-									:custom-messages='{
-										required: $t("config.translator.errors.apiKey"),
-										apiKey: $t("config.translator.errors.apiKeyInvalid"),
-									}'
-								>
-									<v-text-field
-										v-model='config.rest.api_key'
-										:label='$t("config.translator.form.rest.apiKey")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
 							</v-col>
 						</v-row>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|apiKey'
+							:custom-messages='{
+								required: $t("config.translator.errors.apiKey"),
+								apiKey: $t("config.translator.errors.apiKeyInvalid"),
+							}'
+						>
+							<v-text-field
+								v-model='config.rest.api_key'
+								:label='$t("config.translator.form.rest.apiKey")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
 						<legend>{{ $t("config.translator.form.mqtt.title") }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -91,7 +93,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<v-row>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -107,7 +109,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
@@ -128,7 +130,9 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|requestTopic'
@@ -145,7 +149,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|responseTopic'
@@ -162,7 +166,9 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+						</v-row>
+						<v-row>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
@@ -174,7 +180,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
@@ -190,44 +196,48 @@ limitations under the License.
 								</ValidationProvider>
 							</v-col>
 						</v-row>
-						<v-row>
-							<v-col>
-								<v-switch
-									v-model='config.mqtt.tls.enabled'
-									:label='$t("config.daemon.messagings.tlsTitle")'
-									color='primary'
-									inset
-									dense
-								/>
-							</v-col>
-						</v-row>
-						<v-row v-if='config.mqtt.tls.enabled'>
-							<v-col md='6'>
-								<v-text-field
-									v-model='config.mqtt.tls.trust_store'
-									:label='$t("config.translator.form.mqtt.tls.trustStore")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='config.mqtt.tls.key_store'
-									:label='$t("config.translator.form.mqtt.tls.keyStore")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-text-field
-									v-model='config.mqtt.tls.private_key'
-									:label='$t("config.translator.form.mqtt.tls.privateKey")'
-								/>
-							</v-col>
-							<v-col md='6'>
-								<v-checkbox
-									:checked.sync='config.mqtt.tls.require_broker_certificate'
-									:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
-								/>
-							</v-col>
-						</v-row>
-						<v-btn color='primary' type='submit' :disabled='invalid'>
+						<v-switch
+							v-model='config.mqtt.tls.enabled'
+							:label='$t("config.daemon.messagings.tlsTitle")'
+							color='primary'
+							inset
+							dense
+						/>
+						<div v-if='config.mqtt.tls.enabled'>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='config.mqtt.tls.trust_store'
+										:label='$t("config.translator.form.mqtt.tls.trustStore")'
+									/>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='config.mqtt.tls.key_store'
+										:label='$t("config.translator.form.mqtt.tls.keyStore")'
+									/>
+								</v-col>
+							</v-row>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<v-text-field
+										v-model='config.mqtt.tls.private_key'
+										:label='$t("config.translator.form.mqtt.tls.privateKey")'
+									/>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<v-checkbox
+										:checked.sync='config.mqtt.tls.require_broker_certificate'
+										:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
+									/>
+								</v-col>
+							</v-row>
+						</div>
+						<v-btn
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
 							{{ $t('forms.save') }}
 						</v-btn>
 					</form>
