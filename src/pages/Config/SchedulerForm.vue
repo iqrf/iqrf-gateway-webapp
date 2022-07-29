@@ -110,8 +110,7 @@ limitations under the License.
 						</ValidationProvider>
 						<DateTimePicker
 							v-if='timeSpecSelected === TimeSpecTypes.EXACT'
-							:date.sync='date'
-							:time.sync='time'
+							:datetime.sync='datetime'
 							:min-date='new Date().toISOString()'
 						/>
 						<v-divider />
@@ -226,7 +225,7 @@ limitations under the License.
 						</v-expansion-panels>
 						<v-btn
 							color='primary'
-							:disabled='invalid || (timeSpecSelected === TimeSpecTypes.EXACT && date.length === 0 && time.length === 0)'
+							:disabled='invalid'
 							@click='saveTask'
 						>
 							{{ $t('forms.save') }}
@@ -355,14 +354,9 @@ export default class SchedulerForm extends Vue {
 	};
 
 	/**
-	 * @var {string} date Date string
+	 * @var {Date} Datetime Date object
 	 */
-	private date = '';
-
-	/**
-	 * @var {string} time Time string
-	 */
-	private time = '';
+	private datetime: Date = new Date(0);
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
@@ -670,8 +664,7 @@ export default class SchedulerForm extends Vue {
 		} else if (taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
 			this.timeSpecSelected = TimeSpecTypes.EXACT;
 			const date = DateTime.fromISO(taskDaemon.timeSpec.startTime);
-			this.date = date.toISODate();
-			this.time = date.toLocaleString(DateTime.TIME_24_SIMPLE);
+			this.datetime = date.toJSDate();
 		} else {
 			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
 		}
@@ -706,8 +699,7 @@ export default class SchedulerForm extends Vue {
 		} else if (taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
 			this.timeSpecSelected = TimeSpecTypes.EXACT;
 			const date = DateTime.fromISO(taskRest.timeSpec.startTime);
-			this.date = date.toISODate();
-			this.time = date.toLocaleString(DateTime.TIME_24_SIMPLE);
+			this.datetime = date.toJSDate();
 		} else {
 			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
 		}
@@ -773,7 +765,7 @@ export default class SchedulerForm extends Vue {
 			timeSpec.exactTime = true;
 			timeSpec.periodic = false;
 			timeSpec.period = 0;
-			const date = DateTime.fromISO(`${this.date}T${this.time}`);
+			const date = DateTime.fromJSDate(this.datetime);
 			timeSpec.startTime = date.toISO();
 		} else if (this.timeSpecSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
 			timeSpec.cronTime = Array(7).fill('');

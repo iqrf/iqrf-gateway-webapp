@@ -65,7 +65,6 @@ limitations under the License.
 									:error-messages='errors'
 								/>
 							</ValidationProvider>
-
 						</v-col>
 					</v-row>
 					<v-row>
