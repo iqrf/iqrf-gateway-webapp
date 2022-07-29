@@ -41,8 +41,7 @@ limitations under the License.
 							dense
 						/>
 						<DateTimePicker
-							:date.sync='date'
-							:time.sync='time'
+							:datetime.sync='datetime'
 							:min-date='new Date().toISOString()'
 							:disabled='!useExpiration'
 						/>
@@ -100,19 +99,14 @@ export default class ApiKeyForm extends Vue {
 	};
 
 	/**
-	 * @var {string} date Date string
-	 */
-	private date = '';
-
-	/**
-	 * @var {string} time Time string
-	 */
-	private time = '';
-
-	/**
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false;
+
+	/**
+	 * @var {Date} datetime Datetime object
+	 */
+	private datetime = new Date(0);
 
 	/**
 	 * @property {number} keyId API key id
@@ -166,8 +160,7 @@ export default class ApiKeyForm extends Vue {
 				this.keyData = response.data;
 				if (this.keyData.expiration !== null) {
 					const luxondate = DateTime.fromISO(this.keyData.expiration);
-					this.date = luxondate.toISODate();
-					this.time = luxondate.toLocaleString(DateTime.TIME_24_SIMPLE);
+					this.datetime = luxondate.toJSDate();
 					this.useExpiration = true;
 				}
 			})
@@ -184,7 +177,7 @@ export default class ApiKeyForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		const config = JSON.parse(JSON.stringify(this.keyData));
 		if (this.useExpiration) {
-			const luxondate = DateTime.fromISO(`${this.date}T${this.time}`);
+			const luxondate = DateTime.fromJSDate(this.datetime);
 			config.expiration = luxondate.toISO();
 		} else {
 			config.expiration = null;
