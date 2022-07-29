@@ -19,7 +19,7 @@
 							}'
 						>
 							<v-text-field
-								v-model='_date'
+								v-model='date'
 								:label='$t("forms.fields.date")'
 								prepend-icon='mdi-calendar'
 								readonly
@@ -32,11 +32,11 @@
 						</ValidationProvider>
 					</template>
 					<v-date-picker
-						v-model='_date'
+						v-model='date'
 						no-title
 						:min='minDate'
 						:max='maxDate'
-						@input='dateMenu = false'
+						@input='dateMenu = false; updateDate($event)'
 					/>
 				</v-menu>
 			</v-col>
@@ -58,7 +58,7 @@
 							}'
 						>
 							<v-text-field
-								v-model='_time'
+								v-model='time'
 								:label='$t("forms.fields.time")'
 								prepend-icon='mdi-clock-outline'
 								readonly
@@ -71,10 +71,13 @@
 						</ValidationProvider>
 					</template>
 					<v-time-picker
-						v-model='_time'
-						format='24h'
+						v-model='time'
+						format='24hr'
 						header-color='white'
-						@input='timeMenu = false'
+						use-seconds
+						@click:hour='_datetime.setHours($event)'
+						@click:minute='_datetime.setMinutes($event);'
+						@click:second='timeMenu = false;_datetime.setSeconds($event)'
 					/>
 				</v-menu>
 			</v-col>
@@ -87,7 +90,7 @@ import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
-
+import {DateTime} from 'luxon';
 
 @Component({
 	components: {
@@ -111,14 +114,19 @@ export default class DateTimePicker extends Vue {
 	@Prop({type: String, required: false, default: undefined}) maxDate!: string|undefined;
 
 	/**
-	 * @property {string} date Date string
+	 * @property {Date} datetime Date object
 	 */
-	@PropSync('date', {type: String, default: ''}) _date!: string;
+	@PropSync('datetime', {type: Date, default: () => {return new Date();}}) _datetime!: Date;
 
 	/**
-	 * @property {string} time Time string
+	 * @var {string} date Date string
 	 */
-	@PropSync('time', {type: String, default: ''}) _time!: string;
+	private date = '';
+
+	/**
+	 * @var {string} time Time string
+	 */
+	private time = '';
 
 	/**
 	 * @var {boolean} dateMenu Date picker visibility
@@ -135,6 +143,21 @@ export default class DateTimePicker extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	mounted(): void {
+		const date = DateTime.fromJSDate(this._datetime);
+		this.date = date.toISODate();
+		this.time = date.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+	}
+
+	/**
+	 * Updates date object
+	 * @param {string} date Date string
+	 */
+	private updateDate(date: string): void {
+		const eventDate = new Date(date);
+		this._datetime.setFullYear(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
 	}
 }
 </script>
