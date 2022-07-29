@@ -24,13 +24,27 @@ use FFI;
 
 class JournalReaderManager {
 
-	private $ffi;
+	/**
+	 * @var FFI|null FFI C code interface
+	 */
+	private ?FFI $ffi = null;
 
+	/**
+	 * Contructor
+	 */
 	public function __construct() {
 		$this->ffi = FFI::load(__DIR__ . '/journal.h');
 	}
 
+	/**
+	 * Returns number of last journal records or records before cursor if specified
+	 * @param int $last Number of records to retrieve
+	 * @param string|null $cursor Journal cursor
+	 * @return array<mixed> Journal records
+	 */
 	public function getRecords(int $last, ?string $cursor = null): array {
+		$this->ffi = $this->ffi;
 		return [];
 	}
+
 }
