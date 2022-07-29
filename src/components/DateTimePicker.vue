@@ -13,7 +13,9 @@
 					<template #activator='{on, attrs}'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							:rules='{
+								required: !disabled
+							}'
 							:custom-messages='{
 								required: $t("forms.errors.date"),
 							}'
@@ -52,7 +54,9 @@
 					<template #activator='{on, attrs}'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							:rules='{
+								required: !disabled
+							}'
 							:custom-messages='{
 								required: $t("forms.errors.time"),
 							}'
@@ -86,7 +90,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
+import {Component, Prop, PropSync, Vue, Watch} from 'vue-property-decorator';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -95,7 +99,7 @@ import {DateTime} from 'luxon';
 @Component({
 	components: {
 		ValidationProvider,
-	}
+	},
 })
 export default class DateTimePicker extends Vue {
 	/**
@@ -116,7 +120,7 @@ export default class DateTimePicker extends Vue {
 	/**
 	 * @property {Date} datetime Date object
 	 */
-	@PropSync('datetime', {type: Date, default: () => {return new Date();}}) _datetime!: Date;
+	@PropSync('datetime', {default: null, required: true}) _datetime!: Date|null;
 
 	/**
 	 * @var {string} date Date string
@@ -145,10 +149,13 @@ export default class DateTimePicker extends Vue {
 		extend('required', required);
 	}
 
-	mounted(): void {
-		const date = DateTime.fromJSDate(this._datetime);
-		this.date = date.toISODate();
-		this.time = date.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+	@Watch('_datetime')
+	onDatetimeChanged(): void {
+		if (this._datetime !== null) {
+			const date = DateTime.fromJSDate(this._datetime);
+			this.date = date.toISODate();
+			this.time = date.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+		}
 	}
 
 	/**
@@ -157,7 +164,11 @@ export default class DateTimePicker extends Vue {
 	 */
 	private updateDate(date: string): void {
 		const eventDate = new Date(date);
-		this._datetime.setFullYear(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+		if (this._datetime === null) {
+			this._datetime = eventDate;
+		} else {
+			this._datetime.setFullYear(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+		}
 	}
 }
 </script>
