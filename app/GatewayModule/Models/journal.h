@@ -1,4 +1,3 @@
-
 #define FFI_LIB "libsystemd.so.0"
 
 typedef struct sd_journal sd_journal;
