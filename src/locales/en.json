@@ -1748,6 +1748,7 @@
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occurred during file content parsing: {error}",
 					"invalidMemory": "Invalid memory operation: {error}",
+					"compatibilityError": "Compatibility error: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",

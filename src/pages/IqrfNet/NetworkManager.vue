@@ -20,7 +20,10 @@ limitations under the License.
 		<v-row>
 			<v-col lg='6'>
 				<v-card>
-					<v-tabs v-model='activeTab'>
+					<v-tabs
+						v-model='activeTab'
+						:show-arrows='true'
+					>
 						<v-tab>
 							{{ $t("iqrfnet.networkManager.iqmesh") }}
 						</v-tab>

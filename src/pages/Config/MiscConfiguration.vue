@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
 		<v-card>
-			<v-tabs v-model='activeTab'>
+			<v-tabs v-model='activeTab' :show-arrows='true'>
 				<v-tab>{{ $t("config.daemon.misc.jsonApi.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.iqrfRepository.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.iqrfInfo.title") }}</v-tab>
