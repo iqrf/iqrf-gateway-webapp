@@ -18,7 +18,7 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.standard.title') }}</h1>
 		<v-card class='mb-5'>
-			<v-tabs v-model='activeTab'>
+			<v-tabs v-model='activeTab' :show-arrows='true'>
 				<v-tab>{{ $t('iqrfnet.standard.sensor.title') }}</v-tab>
 				<v-tab>{{ $t('iqrfnet.standard.binaryOutput.title') }}</v-tab>
 				<v-tab>{{ $t('iqrfnet.standard.light.title') }}</v-tab>
