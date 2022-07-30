@@ -411,7 +411,7 @@ limitations under the License.
 									</ValidationProvider>
 								</v-col>
 							</v-row>
-							<v-row>
+							<v-row align='center'>
 								<v-col cols='12' md='4'>
 									<v-checkbox
 										v-model='useI2cPins'

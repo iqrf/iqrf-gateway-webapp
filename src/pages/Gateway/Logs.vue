@@ -43,7 +43,7 @@ limitations under the License.
 			{{ $t('gateway.log.messages.noLogs') }}
 		</v-alert>
 		<v-card v-else-if='loaded && logs.length > 0'>
-			<v-tabs v-model='tab'>
+			<v-tabs v-model='tab' :show-arrows='true'>
 				<v-tab v-for='(item, i) in logs' :key='i'>
 					{{ $t(`gateway.log.services.${item.name}`) }}
 				</v-tab>
