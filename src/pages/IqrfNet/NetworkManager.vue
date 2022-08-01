@@ -33,7 +33,7 @@ limitations under the License.
 						<v-tab>
 							{{ $t("iqrfnet.networkManager.backupRestore") }}
 						</v-tab>
-						<v-tab v-if='daemon236'>
+						<v-tab>
 							{{ $t("iqrfnet.networkManager.otaUpload.title") }}
 						</v-tab>
 					</v-tabs>
@@ -49,7 +49,7 @@ limitations under the License.
 							<Backup class='mb-5' />
 							<Restore />
 						</v-tab-item>
-						<v-tab-item v-if='daemon236' :transition='false'>
+						<v-tab-item :transition='false'>
 							<OtaUpload />
 						</v-tab-item>
 					</v-tabs-items>
@@ -64,8 +64,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '@/helpers/versionChecker';
 import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
 import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
 import BondingManager from '@/components/IqrfNet/NetworkManager/BondingManager.vue';
@@ -85,11 +83,6 @@ import {ToastOptions} from 'vue-toast-notification';
 		OtaUpload,
 		Restore,
 	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonClient/getVersion',
-		}),
-	},
 	metaInfo: {
 		title: 'iqrfnet.networkManager.title',
 	},
@@ -103,28 +96,6 @@ export default class NetworkManager extends Vue {
 	 * @const {number} activeTab Default active tab
 	 */
 	private activeTab = 0;
-
-	/**
-	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
-	 */
-	private daemon236 = false;
-
-	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
-	 */
-	@Watch('daemonVersion')
-	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.6')) {
-			this.daemon236 = true;
-		}
-	}
-
-	/**
-	 * Vue lifecycle hook mounted
-	 */
-	mounted(): void {
-		this.updateDaemonVersion();
-	}
 
 	/**
 	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
