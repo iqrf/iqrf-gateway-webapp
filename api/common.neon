@@ -152,8 +152,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperator.json
 		NetworkWifiList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWifiList.json
-		Ntp:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/ntp.json
 		OpenApiSpecification:
 			$ref: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json
 		PasswordChange:
@@ -186,6 +184,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
 		TimeGet:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeGet.json
+		TimeSet:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeSet.json
 		TimezoneList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneList.json
 		TimezoneSet:

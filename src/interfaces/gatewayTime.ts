@@ -34,17 +34,76 @@ export interface ITimezone {
 	offset: string
 }
 
-/**
- * Gateway time information interface
- */
-export interface ITime extends ITimezone {
+export interface ITime {
 	/**
-	 * Timestamp in seconds
+	 * Timezone name
 	 */
-	timestamp: number
+	zoneName: string
 
 	/**
-	 * Indicates whether system clock is synchronized
+	 * Timezone abbreviation
 	 */
-	ntpSynchronized: boolean
+	abbreviation: string
+
+	/**
+	 * GMT offset code
+	 */
+	gmtOffset: string
+
+	/**
+	 * GMT offset in seconds
+	 */
+	gmtOffsetSec: number
+
+	/**
+	 * Formatted timezone string
+	 */
+	formattedZone: string
+
+	/**
+	 * UTC unix timestamp
+	 */
+	utcTimestamp: number
+
+	/**
+	 * Local unix timestamp
+	 */
+	localTimestamp: number
+
+	/**
+	 * Formatted time string
+	 */
+	formattedTime: string
+
+	/**
+	 * Is NTP used to synchronize time?
+	 */
+	ntpSync: boolean
+
+	/**
+	 * NTP servers
+	 */
+	ntpServers: Array<string>
+}
+
+export interface ITimeSet {
+	/**
+	 * Synchronize using NTP?
+	 */
+	ntpSync: boolean
+
+	/**
+	 * Timezone to set
+	 */
+	zoneName?: string
+
+	/**
+	 * Time to set if not synchronized
+	 */
+	datetime?: string
+
+	/**
+	 * NTP servers
+	 */
+	ntpServers?: Array<string>
 }
