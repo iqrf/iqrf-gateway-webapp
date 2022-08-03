@@ -17,6 +17,10 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# timesyncd configuration
+	timesyncd:
+		# path to conf file
+		path: '/etc/systemd/timesyncd.conf'
 	# Controller configuration
 	controller:
 		# Path to directory containing IQRF Gateway Controller's configuration

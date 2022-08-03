@@ -118,6 +118,11 @@ export default class DateTimePicker extends Vue {
 	@Prop({type: String, required: false, default: undefined}) maxDate!: string|undefined;
 
 	/**
+	 * @property {string} fromBrowser Allows to set date and time frow browser
+	 */
+	@Prop({type: Boolean, required: false, default: false}) fromBrowser!: boolean;
+
+	/**
 	 * @property {Date} datetime Date object
 	 */
 	@PropSync('datetime', {default: null, required: true}) _datetime!: Date|null;
@@ -149,6 +154,9 @@ export default class DateTimePicker extends Vue {
 		extend('required', required);
 	}
 
+	/**
+	 * Datetime prop change watcher
+	 */
 	@Watch('_datetime')
 	onDatetimeChanged(): void {
 		if (this._datetime !== null) {
@@ -169,6 +177,25 @@ export default class DateTimePicker extends Vue {
 		} else {
 			this._datetime.setFullYear(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
 		}
+	}
+
+	/**
+	 * Sets date from Luxon DateTime object
+	 * @param {DateTime} datetime Luxon DateTime object
+	 */
+	public setFromDateTime(datetime: DateTime): void {
+		console.warn(datetime.zoneName);
+		this._datetime = datetime.toJSDate();
+		this.date = datetime.toISODate();
+		this.time = datetime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+	}
+
+	/**
+	 * Resets values of textfields
+	 */
+	public resetInputs(): void {
+		this.date = '';
+		this.time = '';
 	}
 }
 </script>
