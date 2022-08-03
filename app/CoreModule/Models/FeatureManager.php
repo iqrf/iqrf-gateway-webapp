@@ -77,11 +77,6 @@ class FeatureManager {
 			'enabled' => false,
 			'url' => '/node-red/',
 		],
-		'ntp' => [
-			'enabled' => false,
-			'utility' => 'timesyncd',
-			'path' => '/etc/systemd/timesyncd.conf',
-		],
 		'pixla' => [
 			'enabled' => false,
 		],
