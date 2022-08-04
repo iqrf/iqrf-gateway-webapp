@@ -17,9 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<v-card class='p-4'>
-			<h1 class='text-center'>
-				{{ $t('core.user.verification.title') }}
-			</h1>
+			<v-card-title>{{ $t('core.user.verification.title') }}</v-card-title>
 			<v-card-text v-if='success !== null'>
 				<p class='text-center'>
 					<span v-if='success'>
