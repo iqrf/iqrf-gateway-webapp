@@ -16,9 +16,7 @@ limitations under the License.
 -->
 <template>
 	<v-card class='p-4'>
-		<h1 class='text-center'>
-			{{ $t('account.recovery.title') }}
-		</h1>
+		<v-card-title>{{ $t('account.recovery.title') }}</v-card-title>
 		<v-card-text>
 			<v-overlay
 				v-if='requestInProgress'
