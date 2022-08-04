@@ -15,20 +15,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-main>
-		<v-container>
-			<v-row class='m-auto'>
-				<v-col lg='1' />
-				<v-col lg='10'>
+	<v-content>
+		<v-container fluid fill-height>
+			<v-layout align-center justify-center>
+				<v-flex
+					xs12
+					sm8
+					md6
+					lg4
+				>
 					<div class='logo'>
 						<Logo :alt='title' />
 					</div>
 					<slot />
-				</v-col>
-				<v-col lg='1' />
-			</v-row>
+				</v-flex>
+			</v-layout>
 		</v-container>
-	</v-main>
+	</v-content>
 </template>
 
 <script lang='ts'>
@@ -59,8 +62,7 @@ export default class TheWizard extends Vue {
 
 <style lang='scss' scoped>
 .logo {
-	padding-bottom: 3rem;
-	padding-top: 3rem;
+	padding-bottom: 2rem;
 
 	svg {
 		height: 32pt;
