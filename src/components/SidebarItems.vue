@@ -11,6 +11,7 @@
 				:target='item.target'
 				router
 				exact
+				active-class='font-italic font-weight-bold'
 			>
 				<v-list-item-icon v-if='item.icon !== undefined'>
 					<v-icon>{{ item.icon }}</v-icon>

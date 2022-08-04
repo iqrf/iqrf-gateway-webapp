@@ -1,95 +1,36 @@
-<!--
-Copyright 2017-2021 IQRF Tech s.r.o.
-Copyright 2019-2021 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-navigation-drawer
-		v-model='show'
-		:mini-variant='minimized'
-		fixed
-		app
-		dark
-		color='#3c4b64'
-	>
-		<template #prepend>
-			<v-list-item class='corner-logo'>
-				<router-link to='/'>
-					<LogoSmall v-if='minimized' :alt='title' />
-					<LogoBig v-else :alt='title' />
-				</router-link>
-			</v-list-item>
-		</template>
-		<v-divider />
-		<SidebarItems :items='items' />
-		<template #append>
-			<SidebarIndication />
-			<v-list dense>
-				<v-list-item style='margin-top: auto;' @click.stop='$store.commit("sidebar/toggleSize")'>
-					<v-list-item-action>
-						<v-icon dense>
-							mdi-{{ `chevron-${minimized ? 'right' : 'left'}` }}
-						</v-icon>
-					</v-list-item-action>
-				</v-list-item>
-			</v-list>
-		</template>
+	<v-navigation-drawer>
+		<v-list nav>
+			<template v-for='(navItem, idx) in items'>
+				<NavGroup v-if='navItem.children !== undefined && navItem.children.length > 0' :key='idx' :item='navItem' />
+				<NavItem v-else :key='idx' :item='navItem' />
+			</template>
+		</v-list>
 	</v-navigation-drawer>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import SidebarIndication from './SidebarIndication.vue';
-import SidebarItems, {NavigationItem} from '@/components/SidebarItems.vue';
-import ThemeManager from '@/helpers/themeManager';
+import NavGroup from '@/components/NavGroup.vue';
+import NavItem from '@/components/NavItem.vue';
+
+import {NavigationItem} from '@/components/SidebarItems.vue';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
 
-
 @Component({
 	components: {
-		LogoBig: ThemeManager.getSidebarLogo(),
-		LogoSmall: ThemeManager.getSidebarSmallLogo(),
-		SidebarItems,
-		SidebarIndication,
+		NavGroup,
+		NavItem,	
 	},
+	data: () => ({
+		UserRoleIndex,
+	}),
+	metaInfo: {
+		title: 'Nav Test'
+	}
 })
-
-/**
- * Sidebar component
- */
-export default class TheSidebar extends Vue {
-
-	/**
-	 * Computes sidebar show state
-	 * @returns {boolean} Sidebar show state
-	 */
-	get show(): boolean {
-		return this.$store.getters['sidebar/isVisible'];
-	}
-
-	set show(value: boolean) {
-		this.$store.commit('sidebar/setVisibility', value);
-	}
-
-	/**
-	 * Computes sidebar minimize state
-	 * @returns {boolean} Sidebar minimize state
-	 */
-	get minimized(): boolean {
-		return this.$store.getters['sidebar/isMinimized'];
-	}
+export default class NavMenu extends Vue {
 
 	private items: Array<NavigationItem> = [
 		{
@@ -372,6 +313,12 @@ export default class TheSidebar extends Vue {
 					role: UserRoleIndex.ADMIN,
 				},
 				{
+					title: this.$t('maintenance.pixla.title').toString(),
+					to: '/maintenance/pixla/',
+					feature: 'pixla',
+					role: UserRoleIndex.ADMIN,
+				},
+				{
 					title: this.$t('maintenance.mender.title').toString(),
 					to: '/maintenance/mender/',
 					feature: 'mender',
@@ -464,28 +411,6 @@ export default class TheSidebar extends Vue {
 			icon: 'mdi-book',
 			role: UserRoleIndex.BASIC,
 		},
-		{
-			title: 'Nav',
-			to: '/nav/',
-			icon: 'mdi-navigation-outline',
-			role: UserRoleIndex.BASIC,
-		}
 	];
-
-	/**
-	 * Returns the app title
-	 * @return {string} App title
-	 */
-	get title(): string {
-		return this.$t(ThemeManager.getTitleKey()).toString();
-	}
-
 }
 </script>
-
-<style scoped>
-.corner-logo {
-	height: 60px;
-	justify-content: center;
-}
-</style>
