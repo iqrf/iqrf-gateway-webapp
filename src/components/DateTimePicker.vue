@@ -184,7 +184,6 @@ export default class DateTimePicker extends Vue {
 	 * @param {DateTime} datetime Luxon DateTime object
 	 */
 	public setFromDateTime(datetime: DateTime): void {
-		console.warn(datetime.zoneName);
 		this._datetime = datetime.toJSDate();
 		this.date = datetime.toISODate();
 		this.time = datetime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);

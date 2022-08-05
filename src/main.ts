@@ -36,6 +36,7 @@ import App from './App.vue';
 import './styles/themes/generic.scss';
 import './styles/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import '@fontsource/roboto/latin.css';
 
 import * as version from '../version.json';
 import vuetify from './plugins/vuetify';
