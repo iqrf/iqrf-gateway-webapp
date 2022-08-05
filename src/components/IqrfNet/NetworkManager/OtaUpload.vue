@@ -44,8 +44,14 @@ limitations under the License.
 						</ValidationProvider>
 						<v-select
 							v-model='target'
+							:class='target === NetworkTarget.NETWORK ? "mb-2": ""'
 							:items='targetOptions'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
+							:error-count='2'
+							:messages='target === NetworkTarget.NETWORK ?
+								[$t("iqrfnet.networkManager.otaUpload.notes.networkOs"),
+									$t("iqrfnet.networkManager.otaUpload.notes.networkNoC")
+								] : []'
 							@change='resetChecks'
 						/>
 						<ValidationProvider
@@ -69,38 +75,30 @@ limitations under the License.
 								@input='resetChecks'
 							/>
 						</ValidationProvider>
-						<div v-if='target === NetworkTarget.NETWORK'>
-							<p>
-								<em class='text-danger'>
-									{{ $t('iqrfnet.networkManager.otaUpload.messages.networkNote') }}
-								</em>
-							</p>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|integer|between:0,65535'
-								:custom-messages='{
-									required: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
-									integer: $t("forms.errors.integer"),
-									between: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
-								}'
-							>
-								<v-text-field
-									v-model.number='params.hwpid'
-									type='number'
-									min='0'
-									max='65535'
-									:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
-									:success='touched ? valid : null'
-									:invalid-feedback='errors'
-									@input='resetChecks'
-								/>
-							</ValidationProvider>
-							<p>
-								<em>
-									{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}
-								</em>
-							</p>
-						</div>
+						<ValidationProvider
+							v-if='target === NetworkTarget.NETWORK'
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|between:0,65535'
+							:custom-messages='{
+								required: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
+								integer: $t("forms.errors.integer"),
+								between: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
+							}'
+						>
+							<v-text-field
+								v-model.number='params.hwpid'
+								class='mb-2'
+								type='number'
+								min='0'
+								max='65535'
+								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
+								:success='touched ? valid : null'
+								:invalid-feedback='errors'
+								:hint='$t("iqrfnet.networkManager.otaUpload.notes.hwpid")'
+								persistent-hint
+								@input='resetChecks'
+							/>
+						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:768,16383'
