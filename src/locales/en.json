@@ -1701,7 +1701,7 @@
 						"node": "Node",
 						"network": "Network"
 					},
-					"hwpidFilter": "Filter nodes by HWPID *",
+					"hwpidFilter": "Filter nodes by HWPID",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
 					"uploadEeprom": "Upload EEPROM data",
@@ -1729,12 +1729,15 @@
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
 					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
+				"notes": {
+					"networkOs": "Warning: Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version.",
+					"networkNoC": "Note: Network upload does not include Coordinator device.",
+					"hwpid": "Note: HWPID 65535 includes all devices."
+				},
 				"messages": {
 					"generalError": "An error has occured during OTA upload process: {error}",
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
-					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
-					"hwpid": "* HWPID 65535 includes all devices.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occurred during file content parsing: {error}",
