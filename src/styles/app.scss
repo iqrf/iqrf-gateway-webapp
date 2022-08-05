@@ -31,13 +31,24 @@
 		}
 
 		.v-list-group--sub-group {
-			.v-list-group__header {
-				padding-left: 44px;
-			}
-
 			.v-list-item {
 				padding-left: 44px;
 			}
+
+			.v-list-group {
+				.v-list-group__items {
+					.v-list-item {
+						padding-left: 68px;
+					}
+				}
+			}
+
+			.v-list-group__items {
+				.v-list-item {
+					padding-left: 56px;
+				}
+			}
+			
 		}
 	}
 }
@@ -181,4 +192,9 @@ legend {
 
 .simpletable-caption {
 	text-align: left;
+}
+
+.v-toast__text {
+	font-family: 'Roboto';
+	font-weight: 400;
 }
