@@ -24,6 +24,24 @@
 	margin-bottom: 0 !important;
 }
 
+.v-navigation-drawer__content {
+	.v-list--dense {
+		.v-list-group__items .v-list-item {
+			padding-left: 44px;
+		}
+
+		.v-list-group--sub-group {
+			.v-list-group__header {
+				padding-left: 44px;
+			}
+
+			.v-list-item {
+				padding-left: 44px;
+			}
+		}
+	}
+}
+
 a {
 	text-decoration: none;
 }

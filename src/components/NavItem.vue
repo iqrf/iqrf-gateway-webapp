@@ -5,7 +5,6 @@
 		:target='item.target'
 		router
 		exact
-		active-class='text-weight-bold'
 	>
 		<v-list-item-icon v-if='item.icon !== undefined'>
 			<v-icon>
