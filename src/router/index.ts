@@ -115,8 +115,6 @@ const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/page
 const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderUpdate.vue');
 const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
-const NavMenu = () => import('@/pages/Core/NavMenu.vue');
-
 import i18n from '@/i18n';
 import store from '@/store';
 
@@ -1163,13 +1161,6 @@ const routes: Array<RouteConfig> = [
 			{
 				component: UserProfile,
 				path: 'profile',
-				meta: {
-					role: UserRole.BASIC,
-				},
-			},
-			{
-				component: NavMenu,
-				path: 'nav',
 				meta: {
 					role: UserRole.BASIC,
 				},

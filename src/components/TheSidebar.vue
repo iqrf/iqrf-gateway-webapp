@@ -32,7 +32,12 @@ limitations under the License.
 			</v-list-item>
 		</template>
 		<v-divider />
-		<SidebarItems :items='items' />
+		<v-list dense>
+			<template v-for='(navItem, idx) in items'>
+				<NavGroup v-if='navItem.children !== undefined && navItem.children.length > 0' :key='idx' :item='navItem' />
+				<NavItem v-else :key='idx' :item='navItem' />
+			</template>
+		</v-list>
 		<template #append>
 			<SidebarIndication />
 			<v-list dense>
@@ -55,12 +60,16 @@ import SidebarItems, {NavigationItem} from '@/components/SidebarItems.vue';
 import ThemeManager from '@/helpers/themeManager';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
+import NavGroup from './NavGroup.vue';
+import NavItem from './NavItem.vue';
 
 
 @Component({
 	components: {
 		LogoBig: ThemeManager.getSidebarLogo(),
 		LogoSmall: ThemeManager.getSidebarSmallLogo(),
+		NavGroup,
+		NavItem,
 		SidebarItems,
 		SidebarIndication,
 	},
@@ -464,12 +473,6 @@ export default class TheSidebar extends Vue {
 			icon: 'mdi-book',
 			role: UserRoleIndex.BASIC,
 		},
-		{
-			title: 'Nav',
-			to: '/nav/',
-			icon: 'mdi-navigation-outline',
-			role: UserRoleIndex.BASIC,
-		}
 	];
 
 	/**

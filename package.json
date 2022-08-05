@@ -45,6 +45,7 @@
 		"@coreui/coreui": "^3.4.0",
 		"@coreui/icons": "^2.1.0",
 		"@coreui/vue": "^3.2.12",
+		"@fontsource/roboto": "^4.5.8",
 		"@mdi/font": "^6.9.96",
 		"@popperjs/core": "^2.11.6",
 		"@sentry/tracing": "^7.17.4",
