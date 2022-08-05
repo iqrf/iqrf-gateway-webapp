@@ -80,6 +80,10 @@ export default class TheSidebar extends Vue {
 		return this.$store.getters['sidebar/isVisible'];
 	}
 
+	/**
+	 * Sets sidebar visibility
+	 * @param {boolean} value Visibility
+	 */
 	set show(value: boolean) {
 		this.$store.commit('sidebar/setVisibility', value);
 	}
@@ -92,6 +96,9 @@ export default class TheSidebar extends Vue {
 		return this.$store.getters['sidebar/isMinimized'];
 	}
 
+	/**
+	 * @constant {Array<NavigationItem>} items Navigation menu items
+	 */
 	private items: Array<NavigationItem> = [
 		{
 			icon: 'mdi-apps',
