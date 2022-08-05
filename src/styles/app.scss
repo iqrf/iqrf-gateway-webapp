@@ -35,6 +35,12 @@
 				padding-left: 44px;
 			}
 
+			.v-list-group__items {
+				.v-list-item {
+					padding-left: 56px;
+				}
+			}
+
 			.v-list-group {
 				.v-list-group__items {
 					.v-list-item {
@@ -42,13 +48,6 @@
 					}
 				}
 			}
-
-			.v-list-group__items {
-				.v-list-item {
-					padding-left: 56px;
-				}
-			}
-			
 		}
 	}
 }
@@ -195,6 +194,6 @@ legend {
 }
 
 .v-toast__text {
-	font-family: 'Roboto';
+	font-family: Roboto, sans-serif;
 	font-weight: 400;
 }
