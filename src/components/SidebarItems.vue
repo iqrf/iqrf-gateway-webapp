@@ -17,16 +17,16 @@ limitations under the License.
 <template>
 	<v-list dense>
 		<template v-for='(navItem, idx) in filteredItems'>
-			<NavGroup v-if='navItem.children !== undefined && navItem.children.length > 0' :key='idx' :item='navItem' />
-			<NavItem v-else :key='idx' :item='navItem' />
+			<ListGroup v-if='navItem.children !== undefined && navItem.children.length > 0' :key='idx' :item='navItem' />
+			<ListItem v-else :key='idx' :item='navItem' />
 		</template>
 	</v-list>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import NavGroup from './NavGroup.vue';
-import NavItem from './NavItem.vue';
+import ListGroup from './ListGroup.vue';
+import ListItem from './ListItem.vue';
 
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
 import {UserRoleIndex} from '@/services/AuthenticationService';
@@ -47,8 +47,8 @@ export interface NavigationItem {
  */
 @Component({
 	components: {
-		NavGroup,
-		NavItem,
+		ListGroup,
+		ListItem,
 	},
 })
 export default class SidebarItems extends Vue {
