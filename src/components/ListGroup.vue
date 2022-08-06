@@ -26,19 +26,17 @@ limitations under the License.
 		<template #activator>
 			<v-list-item-title>{{ item.title }}</v-list-item-title>
 		</template>
-		<template v-for='(navItem, idx) in item.children'>
+		<div v-for='(navItem, idx) in item.children' :key='idx'>
 			<ListGroup
 				v-if='navItem.children !== undefined && navItem.children.length > 0'
-				:key='idx'
 				:item='navItem'
 				sub-group
 			/>
 			<ListItem
 				v-else
-				:key='idx'
 				:item='navItem'
 			/>
-		</template>
+		</div>
 	</v-list-group>
 </template>
 
@@ -52,6 +50,7 @@ import {NavigationItem} from './SidebarItems.vue';
  * Navigation menu item group component
  */
 @Component({
+	name: 'ListGroup',
 	components: {
 		ListItem,
 	},
