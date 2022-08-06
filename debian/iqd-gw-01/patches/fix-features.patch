@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -41,10 +41,10 @@ mender:
+@@ -41,23 +41,23 @@ mender:
  	enabled: false
  # Monitoring service
  monit:
@@ -31,8 +31,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -55,13 +55,13 @@ ntp:
- 	path: /etc/systemd/timesyncd.conf
+ 	url: /node-red/
  # PIXLA management system
  pixla:
 -	enabled: false
@@ -47,7 +46,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -75,10 +75,10 @@ updater:
+@@ -71,10 +71,10 @@ updater:
  	enabled: false
  # IQRF TR native upload
  trUpload:
