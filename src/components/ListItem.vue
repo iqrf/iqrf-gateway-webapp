@@ -15,56 +15,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-list-group
-		:sub-group='subGroup'
-		:group='item.to'
-		:prepend-icon='subGroup ? "" : item.icon'
+	<v-list-item
+		:to='item.to'
+		:href='item.href'
+		:target='item.target'
+		router
+		exact
 	>
-		<template v-if='subGroup' #appendIcon>
-			<v-icon>mdi-chevron-down</v-icon>
-		</template>
-		<template #activator>
+		<v-list-item-icon v-if='item.icon !== undefined'>
+			<v-icon>
+				{{ item.icon }}
+			</v-icon>
+		</v-list-item-icon>
+		<v-list-item-content>
 			<v-list-item-title>{{ item.title }}</v-list-item-title>
-		</template>
-		<template v-for='(navItem, idx) in item.children'>
-			<NavGroup
-				v-if='navItem.children !== undefined && navItem.children.length > 0'
-				:key='idx'
-				:item='navItem'
-				:sub-group='true'
-			/>
-			<NavItem
-				v-else
-				:key='idx'
-				:item='navItem'
-			/>
-		</template>
-	</v-list-group>
+		</v-list-item-content>
+	</v-list-item>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import NavItem from './NavItem.vue';
 
 import {NavigationItem} from './SidebarItems.vue';
 
 /**
- * Navigation menu item group component
+ * Navigation menu item component
  */
-@Component({
-	components: {
-		NavItem,
-	},
-})
-export default class NavGroup extends Vue {
+@Component
+export default class ListItem extends Vue {
 	/**
 	 * @property {NavigationItem} item Navigation item
 	 */
 	@Prop({required: true}) item!: NavigationItem;
-
-	/**
-	 * @property {boolean} subGroup Indicates whether item is a top level group or not
-	 */
-	@Prop({required: false, type: Boolean, default: false}) subGroup!: boolean;
 }
 </script>
