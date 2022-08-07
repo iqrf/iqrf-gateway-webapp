@@ -16,6 +16,6 @@ Architecture: all
 Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl,
  php7.4-common, php7.4-cli, php7.4-fpm, php7.4-curl, php7.4-json,
  php7.4-mbstring, php7.4-sqlite3, php7.4-xml, php7.4-zip,
- nginx | apache2, sudo, wireguard, wireguard-tools
+ nginx | apache2, sudo, wireguard-tools
 Description: Web user interface for IQRF Gateway Daemon
  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.
