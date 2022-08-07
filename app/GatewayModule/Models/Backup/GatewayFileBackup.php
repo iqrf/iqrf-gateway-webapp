@@ -74,7 +74,7 @@ class GatewayFileBackup implements IBackupManager {
 	private $gwId;
 
 	/**
-	 * @var string Gateway token
+	 * @var string|null Gateway token
 	 */
 	private $gwToken;
 
@@ -88,7 +88,8 @@ class GatewayFileBackup implements IBackupManager {
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
 	 */
 	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
-		$this->gwId = Strings::lower($gwInfo->getProperty('gwId'));
+		$gwId = $gwInfo->getProperty('gwId');
+		$this->gwId = $gwId === null ? '' : Strings::lower($gwId);
 		$this->gwToken = $gwInfo->getProperty('gwToken');
 		$this->restoreLogger = $restoreLogger;
 	}
