@@ -1,7 +1,32 @@
-// $input-top-spacing: 8px;
-// $input-slot-margin-bottom: 4px;
+// typography
+$body-font-family: 'Helvetica', sans-serif !important;
+$font-size-root: 1rem;
+
+// buttons
 $btn-text-transform: none;
-$time-picker-title-color: black;
-$list-item-action-icon-margin: 4px;
-$list-item-dense-title-font-weight: 400 !important;
+
+// chips
+$chip-padding: 0 6px;
+
+// lists
 $list-padding: 0 !important;
+$list-dense-min-height: 48px !important;
+$list-dense-icon-margin: 12px;
+$list-item-action-icon-margin: 16px;
+$list-item-dense-title-font-weight: 400 !important;
+$list-item-dense-title-font-size: 0.875rem !important;
+
+// pickers
+$time-picker-title-color: black;
+
+// tables
+$data-table-regular-header-font-size: 0.875rem;
+
+// materials
+$material-light: (
+    'text': (
+        'theme': #3c4b64,
+        'primary': rgba(#3c4b64, 1),
+        'secondary': rgba(#3c4b64, 1)
+    )
+);

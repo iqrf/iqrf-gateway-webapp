@@ -101,12 +101,6 @@ export default class TheSidebar extends Vue {
 	 */
 	private items: Array<NavigationItem> = [
 		{
-			icon: 'mdi-apps',
-			title: this.$t('core.dashboard').toString(),
-			to: '/',
-			role: UserRoleIndex.BASIC,
-		},
-		{
 			title: this.$t('gateway.title').toString(),
 			to: '/gateway/',
 			icon: 'mdi-server',
