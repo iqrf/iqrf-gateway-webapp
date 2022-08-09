@@ -1753,65 +1753,61 @@
 						"node": "Node",
 						"network": "Network"
 					},
-					"hwpidFilter": "Filter nodes by HWPID *",
+					"hwpidFilter": "Filter nodes by HWPID",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
 					"uploadEeprom": "Upload EEPROM data",
 					"uploadEeeprom": "Upload EEEPROM data",
-					"manualUpload": "Manual upload",
-					"automaticUpload": "Automatic upload",
 					"uploadSteps": {
 						"uploadEeeprom": "Step 1: Upload to external EEPROM",
 						"verifyEeeprom": "Step 2: Verify data in external EEPROM",
 						"loadFlash": "Step 3: Load from to external EEPROM to Flash"
 					}
 				},
+				"resultModal": {
+					"verifyTitle": "Verify step results",
+					"loadTitle": "Load step results",
+					"address": "Device address",
+					"success": "Success"
+				},
 				"errors": {
 					"file": "Please select a file to upload.",
+					"notHexFile": "Selected file is not HEX file.",
+					"notIqrfFile": "Selected file is not IQRF plugin file.",
 					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
 					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
+				"notes": {
+					"network": "Note: Network upload does not include Coordinator device. Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version.",
+					"hwpid": "Note: HWPID 65535 includes all devices."
+				},
 				"messages": {
+					"generalError": "An error has occured during OTA upload process: {error}",
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
-					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
-					"hwpid": "* HWPID 65535 includes all devices.",
-					"notHexFile": "Selected file is not .hex file.",
-					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occurred during file content parsing: {error}",
 					"invalidMemory": "Invalid memory operation: {error}",
+					"compatibilityError": "Compatibility error: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",
 					"coordinator": {
-						"uploadStepSuccess": "Upload step has been successfully completed for coordinator.",
-						"verifyStepSuccess": "Verification step has been successfully completed for coordinator.",
-						"loadStepSuccess": "Flash load step has been successfully completed for coordinator.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for coordinator."
+						"uploadStepSuccess": "Data successfully uploaded to coordinator device.",
+						"verifyStepSuccess": "Data successfully verified in coordinator device.",
+						"loadStepSuccess": "Data successfully loaded to flash in coordinator device."
 					},
 					"node": {
-						"uploadStepSuccess": "Upload step has been successfully completed for node at address {address}.",
-						"verifyStepSuccess": "Verification step has been successfully completed for node at address {address}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for node at address {address}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
+						"uploadStepSuccess": "Data successfully uploaded to device at address {address}.",
+						"verifyStepSuccess": "Data successfully verified on device at address {address}.",
+						"loadStepSuccess": "Data successfully loaded to flash on device at address {address}."
 					},
 					"network": {
-						"uploadStepSuccess": "Upload step has been successfully completed.",
-						"verifyStepSuccess": "Verification step has been successfully completed for all devices.",
-						"verifyStepHwpidSuccess": "Verification step has been successfully completed for all devices with HWPID {hwpid}.",
-						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
-						"loadStepHwpidSuccess": "Flash load step has been successfully completed for all devices with HWPID {hwpid}.",
-						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
-						"runAllHwpidSuccess": "All OTA upload steps have been successfully completed for all devices with HWPID {hwpid}.",
-						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+						"uploadStepSuccess": "Data successfully uploaded to network devices.",
+						"verifyStepSuccess": "Data successfully verified in network devices.",
+						"loadStepSuccess": "Data successfully loaded to flash of network devices."
 					},
 					"uploadStepFail": "An error has occurred during the upload step.",
 					"verifyStepFail": "An error has occurred during the verification step.",
