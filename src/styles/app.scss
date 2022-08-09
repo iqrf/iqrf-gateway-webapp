@@ -27,24 +27,24 @@
 .v-navigation-drawer__content {
 	.v-list--dense {
 		.v-list-group__items .v-list-item {
-			padding-left: 44px;
+			padding-left: 56px;
 		}
 
 		.v-list-group--sub-group {
 			.v-list-item {
-				padding-left: 44px;
+				padding-left: 56px;
 			}
 
 			.v-list-group__items {
 				.v-list-item {
-					padding-left: 56px;
+					padding-left: 68px;
 				}
 			}
 
 			.v-list-group {
 				.v-list-group__items {
 					.v-list-item {
-						padding-left: 68px;
+						padding-left: 80px;
 					}
 				}
 			}
@@ -67,29 +67,13 @@ legend {
 	margin-bottom: 0.75em;
 }
 
-.form-section-title {
-	color: rgba(0 0 0 / 87%) !important;
-	font-size: 1.25rem;
-	font-weight: 500;
-	letter-spacing: 0.0125em;
-	line-height: 2rem;
-	word-break: break-all;
-}
-
-.tooltip-old {
-	.tooltip-old-inner {
-		text-align: left;
-		white-space: pre-wrap;
-		max-width: none;
-	}
-}
-
 .form-check {
 	margin-bottom: 1rem;
 }
 
 .log {
 	max-height: 75vh;
+	font-size: 87.5%;
 }
 
 .rf-mode-icon {
@@ -194,6 +178,6 @@ legend {
 }
 
 .v-toast__text {
-	font-family: Roboto, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	font-weight: 400;
 }

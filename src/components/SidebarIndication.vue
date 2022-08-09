@@ -27,7 +27,7 @@ limitations under the License.
 				<td class='status'>
 					<VChip
 						:color='daemonModeBadgeColor'
-						x-small
+						small
 						label
 					>
 						{{ $t(`daemonStatus.modes.${isSocketConnected ? daemonMode : 'unknown'}`) }}
@@ -41,7 +41,7 @@ limitations under the License.
 				<td class='status'>
 					<VChip
 						:color='isSocketConnected ? "success": "error"'
-						x-small
+						small
 						label
 						:ripple='false'
 					>
@@ -56,7 +56,7 @@ limitations under the License.
 				<td class='status'>
 					<VChip
 						:color='daemonQueueBadgeColor'
-						x-small
+						small
 						label
 					>
 						{{ queueLen }}
@@ -143,11 +143,12 @@ export default class SidebarIndication extends Vue {
 }
 </script>
 
-<style scoped>
-table {
-	color: white;
-	margin-top: 0.5rem;
-	margin-bottom: 0;
+<style scoped lang='scss'>
+tbody {
+	background-color: rgb(60, 75, 100);
+	tr:hover {
+		background-color: transparent !important;
+	}
 }
 
 .item {
@@ -159,6 +160,6 @@ table {
 .status {
 	border-top: 0;
 	text-align: right;
-	padding: 0 0.5rem 0 0;
+	height: 20px !important;
 }
 </style>
