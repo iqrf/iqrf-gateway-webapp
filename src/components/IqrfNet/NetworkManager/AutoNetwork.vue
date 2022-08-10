@@ -20,7 +20,7 @@ limitations under the License.
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form @submit.prevent='runAutonetwork'>
 					<fieldset>
-						<legend>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</legend>
+						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h5>
 						<v-checkbox
 							v-model='autoNetwork.discoveryBeforeStart'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
@@ -82,59 +82,62 @@ limitations under the License.
 						</ValidationProvider>
 					</fieldset>
 					<fieldset>
-						<legend>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</legend>
+						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h5>
 						<v-checkbox
 							v-model='useOverlappingNetworks'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
 							dense
 						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,50'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
-							}'
-						>
-							<v-text-field
-								v-model.number='overlappingNetworks.networks'
-								type='number'
-								min='1'
-								max='50'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:disabled='!useOverlappingNetworks'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,50'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
-							}'
-						>
-							<v-text-field
-								v-model.number='overlappingNetworks.network'
-								type='number'
-								min='1'
-								max='50'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:disabled='!useOverlappingNetworks'
-							/>
-						</ValidationProvider>
+						<div v-if='useOverlappingNetworks'>
+							<ValidationProvider
+								v-slot='{ errors, touched, valid }'
+								rules='integer|required|between:1,50'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
+									between: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
+								}'
+							>
+								<v-text-field
+									v-model.number='overlappingNetworks.networks'
+									type='number'
+									min='1'
+									max='50'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useOverlappingNetworks'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{ errors, touched, valid }'
+								rules='integer|required|between:1,50'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
+									between: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
+								}'
+							>
+								<v-text-field
+									v-model.number='overlappingNetworks.network'
+									type='number'
+									min='1'
+									max='50'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useOverlappingNetworks'
+								/>
+							</ValidationProvider>
+						</div>
 					</fieldset>
 					<fieldset>
-						<legend>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</legend>
+						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h5>
 						<v-checkbox
 							v-model='useHwpidFiltering'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
 							dense
+							hide-details
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
@@ -153,11 +156,12 @@ limitations under the License.
 						</ValidationProvider>
 					</fieldset>
 					<fieldset>
-						<legend>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</legend>
+						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h5>
 						<v-checkbox
 							v-model='useWaves'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 							dense
+							hide-details
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
@@ -201,6 +205,7 @@ limitations under the License.
 							v-model='useNodes'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
 							dense
+							hide-details
 						/>
 						<v-select
 							v-model='nodeCondition'

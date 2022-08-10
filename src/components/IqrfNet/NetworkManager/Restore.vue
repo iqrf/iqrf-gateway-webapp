@@ -16,10 +16,10 @@ limitations under the License.
 -->
 <template>
 	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.restore.title') }}</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form @submit.prevent='restoreDevice'>
-					<legend>{{ $t('iqrfnet.networkManager.restore.title') }}</legend>
 					<ValidationProvider
 						v-slot='{errors, valid}'
 						rules='required|file'
@@ -34,6 +34,8 @@ limitations under the License.
 							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
 							:error-messages='errors'
 							:success='valid'
+							:prepend-icon='null'
+							prepend-inner-icon='mdi-paperclip'
 							required
 							@change='fileInputTouched'
 						/>

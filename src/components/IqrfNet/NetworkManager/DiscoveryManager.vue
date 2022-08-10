@@ -16,10 +16,10 @@ limitations under the License.
 -->
 <template>
 	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.discovery.title') }}</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form>
-					<legend>{{ $t('iqrfnet.networkManager.discovery.title') }}</legend>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,7'

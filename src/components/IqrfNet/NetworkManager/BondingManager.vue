@@ -16,10 +16,10 @@ limitations under the License.
 -->
 <template>
 	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form>
-					<legend>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</legend>
 					<v-select
 						v-if='bondTargetAvailable'
 						v-model='bondTarget'
