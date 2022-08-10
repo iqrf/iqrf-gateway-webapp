@@ -20,6 +20,32 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
+						<v-radio-group
+							v-model='fileType'
+							:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
+							column
+							dense
+						>
+							<v-radio
+								v-for='(type, idx) of fileTypeOptions'
+								:key='idx'
+								:label='type.text'
+								:value='type.value'
+							/>
+						</v-radio-group>
+						<v-radio-group
+							v-model='fileType'
+							:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
+							row
+							dense
+						>
+							<v-radio
+								v-for='(type, idx) of fileTypeOptions'
+								:key='idx'
+								:label='type.text'
+								:value='type.value'
+							/>
+						</v-radio-group>
 						<v-select
 							v-model='fileType'
 							:items='fileTypeOptions'
@@ -39,6 +65,8 @@ limitations under the License.
 								:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
 								:error-messages='errors'
 								:success='valid'
+								:prepend-icon='null'
+								prepend-inner-icon='mdi-file-outline'
 								required
 							/>
 						</ValidationProvider>
@@ -52,6 +80,7 @@ limitations under the License.
 								[$t("iqrfnet.networkManager.otaUpload.notes.networkOs"),
 									$t("iqrfnet.networkManager.otaUpload.notes.networkNoC")
 								] : []'
+
 							@change='resetChecks'
 						/>
 						<ValidationProvider
@@ -130,7 +159,9 @@ limitations under the License.
 							dense
 						/>
 						<v-divider />
-						<legend>{{ $t('iqrfnet.networkManager.otaUpload.form.manualUpload') }}</legend>
+						<h5 class='pt-2'>
+							{{ $t('iqrfnet.networkManager.otaUpload.form.manualUpload') }}
+						</h5>
 						<div>
 							<v-row align='center'>
 								<v-col>

@@ -145,7 +145,8 @@ export default class SidebarIndication extends Vue {
 
 <style scoped lang='scss'>
 tbody {
-	background-color: rgb(60, 75, 100);
+	background-color: rgb(60 75 100 / 60%);
+
 	tr:hover {
 		background-color: transparent !important;
 	}
@@ -160,6 +161,7 @@ tbody {
 .status {
 	border-top: 0;
 	text-align: right;
-	height: 20px !important;
+	height: 18px !important;
+	font-weight: bold;
 }
 </style>

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// vuetify
 .v-application {
 	background-color: #ebedef !important;
 }
@@ -22,6 +23,14 @@
 .v-input--selection-controls {
 	margin-top: 0 !important;
 	margin-bottom: 0 !important;
+}
+
+.v-input--checkbox,
+.v-input--switch,
+.v-radio {
+	label {
+		font-weight: normal;
+	}
 }
 
 .v-navigation-drawer__content {
@@ -52,6 +61,49 @@
 	}
 }
 
+.v-input--radio-group__input {
+	legend {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+}
+
+.v-label--active {
+	font-weight: bold;
+}
+
+.v-tab {
+	text-transform: none !important;
+}
+
+.row {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.col-12 {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.v-alert__content {
+	.row {
+		margin-top: -12px;
+		margin-bottom: -12px;
+	}
+
+	.col-12 {
+		padding-top: 12 !important;
+		padding-bottom: 12 !important;
+	}
+}
+
+.row + .row {
+	margin-top: 0;
+}
+
+// general
+
 a {
 	text-decoration: none;
 }
@@ -60,12 +112,42 @@ fieldset {
 	border: 0;
 }
 
-legend {
-	font-weight: bold;
-	font-size: large;
-	margin-top: 0.75em;
-	margin-bottom: 0.75em;
+h1 {
+	font-size: 2.25rem;
 }
+
+h2 {
+	font-size: 2rem;
+}
+
+h3 {
+	font-size: 1.75rem;
+}
+
+h4 {
+	font-size: 1.5rem;
+}
+
+h5 {
+	font-size: 1.25rem;
+}
+
+h6 {
+	font-size: 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+	line-height: 150%;
+}
+
+// custom
 
 .form-check {
 	margin-bottom: 1rem;

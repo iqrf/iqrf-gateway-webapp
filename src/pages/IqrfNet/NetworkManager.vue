@@ -39,14 +39,16 @@ limitations under the License.
 					</v-tabs>
 					<v-tabs-items v-model='activeTab'>
 						<v-tab-item :transition='false'>
-							<BondingManager class='mb-5' @update-devices='updateDevices' />
+							<BondingManager @update-devices='updateDevices' />
+							<v-divider />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
-							<Backup class='mb-5' />
+							<Backup />
+							<v-divider />
 							<Restore />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
@@ -63,7 +65,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
 import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
 import BondingManager from '@/components/IqrfNet/NetworkManager/BondingManager.vue';
