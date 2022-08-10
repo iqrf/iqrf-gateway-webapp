@@ -21,6 +21,7 @@ limitations under the License.
 		:target='item.target'
 		router
 		exact
+		active-class='selected'
 	>
 		<v-list-item-icon v-if='item.icon !== undefined'>
 			<v-icon>
