@@ -16,45 +16,43 @@ limitations under the License.
 -->
 <template>
 	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.backup.title') }}</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form @submit.prevent='backupDevice'>
-					<fieldset>
-						<legend>{{ $t('iqrfnet.networkManager.backup.title') }}</legend>
-						<v-select
-							v-model='target'
-							:label='$t("iqrfnet.networkManager.backup.form.target")'
-							:items='selectOptions'
-							:placeholder='$t("iqrfnet.networkManager.backup.form.messages.select")'
+					<v-select
+						v-model='target'
+						:label='$t("iqrfnet.networkManager.backup.form.target")'
+						:items='selectOptions'
+						:placeholder='$t("iqrfnet.networkManager.backup.form.messages.select")'
+					/>
+					<ValidationProvider
+						v-if='target === "node"'
+						v-slot='{errors, touched, valid}'
+						rules='required|integer|between:1,239'
+						:custom-messages='{
+							integer: $t("iqrfnet.networkManager.backup.form.messages.address"),
+							between: $t("iqrfnet.networkManager.backup.form.messages.address"),
+							required: $t("iqrfnet.networkManager.backup.form.messages.address"),
+						}'
+					>
+						<v-text-field
+							v-model.number='address'
+							type='number'
+							min='1'
+							max='239'
+							:label='$t("forms.fields.address")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
-						<ValidationProvider
-							v-if='target === "node"'
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|between:1,239'
-							:custom-messages='{
-								integer: $t("iqrfnet.networkManager.backup.form.messages.address"),
-								between: $t("iqrfnet.networkManager.backup.form.messages.address"),
-								required: $t("iqrfnet.networkManager.backup.form.messages.address"),
-							}'
-						>
-							<v-text-field
-								v-model.number='address'
-								type='number'
-								min='1'
-								max='239'
-								:label='$t("forms.fields.address")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<v-btn
-							type='submit'
-							color='primary'
-							:disabled='invalid'
-						>
-							{{ $t('forms.backup') }}
-						</v-btn>
-					</fieldset>
+					</ValidationProvider>
+					<v-btn
+						type='submit'
+						color='primary'
+						:disabled='invalid'
+					>
+						{{ $t('forms.backup') }}
+					</v-btn>
 				</v-form>
 			</ValidationObserver>
 		</v-card-text>

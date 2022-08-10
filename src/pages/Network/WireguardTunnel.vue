@@ -37,7 +37,6 @@ limitations under the License.
 										placeholder='wg0'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
@@ -59,7 +58,6 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.port")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
@@ -132,7 +130,6 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.ipv4")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
@@ -154,7 +151,6 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
@@ -174,7 +170,6 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.ipv6")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
@@ -196,13 +191,13 @@ limitations under the License.
 										:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
 										:success='touched ? valid : null'
 										:error-messages='errors'
-										hide-details='auto'
 									/>
 								</ValidationProvider>
 							</v-col>
 						</v-row>
-						<v-row><v-col><v-divider /></v-col></v-row>
-						<legend>Peers</legend>
+						<h5 class='mt-2'>
+							Peers
+						</h5>
 						<v-expansion-panels accordion class='mb-5'>
 							<v-expansion-panel
 								v-for='(peer, index) of tunnel.peers'
@@ -249,7 +244,6 @@ limitations under the License.
 													:label='$t("network.wireguard.tunnels.form.publicKey")'
 													:success='touched ? valid : null'
 													:error-messages='errors'
-													hide-details='auto'
 												/>
 											</ValidationProvider>
 										</v-col>
@@ -257,7 +251,6 @@ limitations under the License.
 											<v-text-field
 												v-model='peer.psk'
 												:label='$t("network.wireguard.tunnels.form.psk")'
-												hide-details='auto'
 											/>
 										</v-col>
 									</v-row>
@@ -275,7 +268,6 @@ limitations under the License.
 													:label='$t("network.wireguard.tunnels.form.endpoint")'
 													:success='touched ? valid : null'
 													:error-messages='errors'
-													hide-details='auto'
 												/>
 											</ValidationProvider>
 										</v-col>
@@ -297,7 +289,6 @@ limitations under the License.
 													:label='$t("network.wireguard.tunnels.form.port")'
 													:success='touched ? valid : null'
 													:error-messages='errors'
-													hide-details='auto'
 												/>
 											</ValidationProvider>
 										</v-col>
@@ -327,11 +318,15 @@ limitations under the License.
 											</ValidationProvider>
 										</v-col>
 									</v-row>
-									<v-select
-										v-model='peerStacks[index]'
-										:items='stackOptions'
-										:label='$t("network.wireguard.tunnels.form.stack")'
-									/>
+									<v-row>
+										<v-col>
+											<v-select
+												v-model='peerStacks[index]'
+												:items='stackOptions'
+												:label='$t("network.wireguard.tunnels.form.stack")'
+											/>
+										</v-col>
+									</v-row>
 									<div v-if='[WireguardStacks.SINGLE_IPV4, WireguardStacks.DUAL].includes(peerStacks[index])'>
 										<v-row
 											v-for='(ip, ipIndex) of peer.allowedIPs.ipv4'
@@ -351,7 +346,6 @@ limitations under the License.
 														:label='$t("network.wireguard.tunnels.form.ipv4")'
 														:success='touched ? valid : null'
 														:error-messages='errors'
-														hide-details='auto'
 													/>
 												</ValidationProvider>
 											</v-col>
@@ -373,7 +367,6 @@ limitations under the License.
 														:label='$t("network.wireguard.tunnels.form.ipv4Prefix")'
 														:success='touched ? valid : null'
 														:error-messages='errors'
-														hide-details='auto'
 													>
 														<template #append-outer>
 															<v-btn
@@ -421,7 +414,6 @@ limitations under the License.
 														:label='$t("network.wireguard.tunnels.form.ipv6")'
 														:success='touched ? valid : null'
 														:error-messages='errors'
-														hide-details='auto'
 													/>
 												</ValidationProvider>
 											</v-col>
@@ -443,7 +435,6 @@ limitations under the License.
 														:label='$t("network.wireguard.tunnels.form.ipv6Prefix")'
 														:success='touched ? valid : null'
 														:error-messages='errors'
-														hide-details='auto'
 													>
 														<template #append-outer>
 															<v-btn
