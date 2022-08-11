@@ -382,6 +382,35 @@ class UserController extends BaseController {
 	}
 
 	/**
+	 * @Path("/refreshToken")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Refreshes user access token
+	 *  responses:
+	 *      '201':
+	 *          description: Success
+	 *          content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UserSignIn'
+	 *      '403':
+	 *          description: Forbidden - API key is used
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if (!($user instanceof User)) {
+			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+		}
+		$json = $user->jsonSerialize();
+		$json['token'] = $this->createToken($user);
+		return $response->writeJsonBody($json);
+	}
+
+	/**
 	 * @Path("/signIn")
 	 * @Method("POST")
 	 * @OpenApi("

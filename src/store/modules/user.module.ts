@@ -142,11 +142,14 @@ const getters: GetterTree<UserState, any> = {
 		}
 		return Object.values(UserRole).indexOf(state.user.role) as UserRoleIndex;
 	},
-	getToken(state: UserState) {
+	getToken(state: UserState): string|null {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.token;
+	},
+	getExpiration(state: UserState): number {
+		return state.expiration;
 	},
 };
 
