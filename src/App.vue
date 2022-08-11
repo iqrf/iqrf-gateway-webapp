@@ -20,12 +20,14 @@ limitations under the License.
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
+		<SessionExpirationModal v-if='loggedIn' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import InstallationService, {InstallationCheck} from './services/InstallationService';
+import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
 import {AxiosError} from 'axios';
 
 import Blocking from './components/Blocking.vue';
@@ -38,10 +40,12 @@ import {mapGetters} from 'vuex';
 		Blocking,
 		DaemonModeModal,
 		LoadingSpinner,
+		SessionExpirationModal,
 	},
 	computed: {
 		...mapGetters({
 			installationChecked: 'installation/isChecked',
+			loggedIn: 'user/isLoggedIn',
 		}),
 	},
 })

@@ -3137,5 +3137,12 @@
 		"second": "{count} second | {count} seconds"
 	},
 	"messageError": "Request could not be processed: {error}",
-	"forbiddenAccess": "You do not have sufficient permission to access this page."
+	"forbiddenAccess": "You do not have sufficient permission to access this page.",
+	"sessionExpiration": {
+		"title": "Session expiration warning",
+		"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
+		"renew": "Renew session",
+		"success": "Your session has been successfully renewed.",
+		"failed": "Failed to renew session."
+	}
 }
