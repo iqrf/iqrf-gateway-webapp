@@ -516,7 +516,7 @@ class UserController extends BaseController {
 		$hostname = gethostname();
 		$builder = $this->configuration->builder()
 			->issuedAt($now)
-			->expiresAt($now->modify('+90 sec'))
+			->expiresAt($now->modify('+90 min'))
 			->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
 			$builder->issuedBy($hostname)->identifiedBy($hostname);
