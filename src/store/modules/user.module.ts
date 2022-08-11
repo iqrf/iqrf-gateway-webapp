@@ -135,11 +135,14 @@ const getters: GetterTree<UserState, any> = {
 		}
 		return state.user.role;
 	},
-	getToken(state: UserState) {
+	getToken(state: UserState): string|null {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.token;
+	},
+	getExpiration(state: UserState): number {
+		return state.expiration;
 	},
 };
 
