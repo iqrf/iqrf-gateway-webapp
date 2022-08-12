@@ -41,7 +41,7 @@ limitations under the License.
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<fieldset>
-							<legend>{{ $t('config.daemon.messagings.websocket.form.requiredInterfaces') }}</legend>
+							<h5>{{ $t('config.daemon.messagings.websocket.form.requiredInterfaces') }}</h5>
 							<v-row
 								v-for='(iface, idx) of configuration.RequiredInterfaces'
 								:key='idx'

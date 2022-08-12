@@ -39,7 +39,8 @@ limitations under the License.
 							:label='$t("maintenance.backup.form.archive")'
 							:success='touched ? valid : null'
 							:error-messages='errors'
-							prepend-icon='mdi-archive-arrow-up'
+							:prepend-icon='null'
+							prepend-inner-icon='mdi-archive-arrow-up'
 						/>
 					</ValidationProvider>
 					<v-btn

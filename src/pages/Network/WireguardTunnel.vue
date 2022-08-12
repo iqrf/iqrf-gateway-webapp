@@ -20,8 +20,8 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveTunnel'>
-						<legend>{{ $t('network.wireguard.tunnels.form.interface') }}</legend>
+					<v-form @submit.prevent='saveTunnel'>
+						<h5>{{ $t('network.wireguard.tunnels.form.interface') }}</h5>
 						<v-row>
 							<v-col cols='12' md='6'>
 								<ValidationProvider
@@ -473,7 +473,7 @@ limitations under the License.
 						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>

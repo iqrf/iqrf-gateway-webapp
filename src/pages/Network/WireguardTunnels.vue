@@ -27,7 +27,7 @@ limitations under the License.
 				>
 					<template #top>
 						<v-toolbar dense flat>
-							{{ $t('network.wireguard.tunnels.title') }}
+							<h5>{{ $t('network.wireguard.tunnels.title') }}</h5>
 							<v-spacer />
 							<v-btn
 								color='success'

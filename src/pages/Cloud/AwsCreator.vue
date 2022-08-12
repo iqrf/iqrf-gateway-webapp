@@ -74,7 +74,8 @@ limitations under the License.
 								:label='$t("forms.fields.certificate")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
-								prepend-icon='mdi-file-certificate'
+								:prepend-icon='null'
+								prepend-inner-icon='mdi-file-certificate'
 							/>
 						</ValidationProvider>
 
@@ -91,7 +92,8 @@ limitations under the License.
 								:label='$t("forms.fields.privateKey")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
-								prepend-icon='mdi-file-key'
+								:prepend-icon='null'
+								prepend-inner-icon='mdi-file-key'
 							/>
 						</ValidationProvider>
 						<v-btn

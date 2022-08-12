@@ -58,9 +58,10 @@ limitations under the License.
 							v-model='certificate'
 							accept='.crt'
 							:label='$t("maintenance.mender.service.form.newCert")'
-							prepend-icon='mdi-file-certificate'
 							:success='touched ? valid : null'
 							:error-messages='errors'
+							:prepend-icon='null'
+							prepend-inner-icon='mdi-file-certificate'
 						/>
 					</ValidationProvider>
 					<v-select

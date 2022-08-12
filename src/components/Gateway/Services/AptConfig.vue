@@ -21,63 +21,71 @@ limitations under the License.
 		</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<form @submit.prevent='updateConfig'>
-					<ValidationProvider
-						v-if='isAdmin'
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
-							required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
-						}'
-					>
-						<v-text-field
-							v-model='config["APT::Periodic::Update-Package-Lists"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.upgradeInterval"),
-							required: $t("service.unattended-upgrades.errors.upgradeInterval"),
-						}'
-					>
-						<v-text-field
-							v-model='config["APT::Periodic::Unattended-Upgrade"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.upgradeInterval")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-if='isAdmin'
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.removeInterval"),
-							required: $t("service.unattended-upgrades.errors.removeInterval"),
-						}'
-					>
-						<v-text-field
-							v-model='config["APT::Periodic::AutocleanInterval"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.removeInterval")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
+				<v-form @submit.prevent='updateConfig'>
+					<v-row>
+						<v-col cols='12' md='4'>
+							<ValidationProvider
+								v-if='isAdmin'
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
+									required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
+								}'
+							>
+								<v-text-field
+									v-model='config["APT::Periodic::Update-Package-Lists"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+						</v-col>
+						<v-col cols='12' md='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.upgradeInterval"),
+									required: $t("service.unattended-upgrades.errors.upgradeInterval"),
+								}'
+							>
+								<v-text-field
+									v-model='config["APT::Periodic::Unattended-Upgrade"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.upgradeInterval")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+						</v-col>
+						<v-col cols='12' md='4'>
+							<ValidationProvider
+								v-if='isAdmin'
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.removeInterval"),
+									required: $t("service.unattended-upgrades.errors.removeInterval"),
+								}'
+							>
+								<v-text-field
+									v-model='config["APT::Periodic::AutocleanInterval"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.removeInterval")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+						</v-col>
+					</v-row>
 					<v-checkbox
 						v-model='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
@@ -90,7 +98,7 @@ limitations under the License.
 					>
 						{{ $t('forms.save') }}
 					</v-btn>
-				</form>
+				</v-form>
 			</ValidationObserver>
 		</v-card-text>
 	</v-card>

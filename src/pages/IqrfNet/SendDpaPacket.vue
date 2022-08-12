@@ -27,11 +27,11 @@ limitations under the License.
 					{{ $t('iqrfnet.messages.socketError') }}
 				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='handleSubmit'>
+					<v-form @submit.prevent='handleSubmit'>
 						<v-row>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<v-row>
-									<v-col>
+									<v-col md='3'>
 										<ValidationProvider
 											v-slot='{valid, touched, errors}'
 											rules='nadr|minLen:2|maxLen:2|required'
@@ -115,23 +115,27 @@ limitations under the License.
 									</v-col>
 								</v-row>
 							</v-col>
-							<v-col md='6'>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='pdata'
-									:custom-messages='{
-										pdata: $t("iqrfnet.sendPacket.form.messages.invalid.pdata"),
-									}'
-								>
-									<v-text-field
-										v-model='packetPdata'
-										v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
-										:label='$t("iqrfnet.sendPacket.form.pdata")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-										hide-details='auto'
-									/>
-								</ValidationProvider>
+							<v-col cols='12' md='6'>
+								<v-row>
+									<v-col>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pdata'
+											:custom-messages='{
+												pdata: $t("iqrfnet.sendPacket.form.messages.invalid.pdata"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPdata'
+												v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
+												:label='$t("iqrfnet.sendPacket.form.pdata")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+								</v-row>
 							</v-col>
 						</v-row>
 						<v-row>
@@ -191,7 +195,7 @@ limitations under the License.
 						<v-btn color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.send') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
