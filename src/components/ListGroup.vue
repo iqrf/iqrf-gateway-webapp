@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<v-list-group
 		:sub-group='subGroup'
-		:group='item.to'
+		:group='item.group ?? item.to'
 		:prepend-icon='subGroup ? "" : item.icon'
 	>
 		<template v-if='subGroup' #appendIcon>

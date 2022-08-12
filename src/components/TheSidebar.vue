@@ -129,6 +129,7 @@ export default class TheSidebar extends Vue {
 				{
 					title: this.$t('service.iqrf.title').toString(),
 					to: '/gateway/iqrf-services/',
+					group: /^\/gateway\/service\/iqrf-.*\/$/,
 					role: UserRoleIndex.NORMAL,
 					children: [
 						{
