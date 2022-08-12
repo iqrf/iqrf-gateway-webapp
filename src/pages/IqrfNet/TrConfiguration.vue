@@ -89,7 +89,7 @@ limitations under the License.
 						<v-row>
 							<v-col md='6'>
 								<fieldset>
-									<legend>{{ $t('iqrfnet.trConfiguration.form.rf') }}</legend>
+									<h5>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h5>
 									<v-select
 										v-model='config.rfBand'
 										:label='$t("iqrfnet.trConfiguration.form.rfBand")'
@@ -249,7 +249,7 @@ limitations under the License.
 									</ValidationProvider>
 								</fieldset>
 								<fieldset>
-									<legend>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</legend>
+									<h5>{{ $t('iqrfnet.trConfiguration.form.rfPgm') }}</h5>
 									<v-checkbox
 										v-model='config.rfPgmEnableAfterReset'
 										:label='$t("iqrfnet.trConfiguration.form.rfPgmEnableAfterReset")'
@@ -277,7 +277,7 @@ limitations under the License.
 									/>
 								</fieldset>
 								<fieldset>
-									<legend>{{ $t('iqrfnet.trConfiguration.security.title') }}</legend>
+									<h5>{{ $t('iqrfnet.trConfiguration.security.title') }}</h5>
 									<v-checkbox
 										v-model='securityPassword'
 										:label='$t("iqrfnet.trConfiguration.security.form.accessPassword")'
@@ -333,7 +333,7 @@ limitations under the License.
 							</v-col>
 							<v-col md='6'>
 								<fieldset>
-									<legend>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</legend>
+									<h5>{{ $t('iqrfnet.trConfiguration.form.dpa.embeddedPeripherals') }}</h5>
 									<v-checkbox
 										v-model='config.embPers.coordinator'
 										:label='$t("iqrfnet.trConfiguration.form.embPers.coordinator")'
@@ -389,7 +389,7 @@ limitations under the License.
 									/>
 								</fieldset>
 								<fieldset>
-									<legend>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</legend>
+									<h5>{{ $t('iqrfnet.trConfiguration.form.dpa.other') }}</h5>
 									<v-checkbox
 										v-model='config.customDpaHandler'
 										:label='$t("iqrfnet.trConfiguration.form.customDpaHandler")'
@@ -449,7 +449,6 @@ limitations under the License.
 											:items='uartBaudRates'
 										/>
 									</ValidationProvider>
-									<v-divider />
 									<em>
 										{{ $t('iqrfnet.trConfiguration.form.notes.dpa3Higher') }}<br>
 										{{ $t('iqrfnet.trConfiguration.form.notes.dpa4Lower') }}<br>
@@ -966,7 +965,7 @@ export default class TrConfiguration extends Vue {
 	 * Parses device enumeration response
 	 * @param response Daemon API response
 	 */
-	private parseResponse(response: any): void {
+	private parseResponse(response): void {
 		const rsp = response.data.rsp;
 		this.config = {...this.config, ...rsp.trConfiguration};
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;

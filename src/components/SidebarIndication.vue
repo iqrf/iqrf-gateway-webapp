@@ -161,7 +161,6 @@ tbody {
 .status {
 	border-top: 0;
 	text-align: right;
-	height: 18px !important;
 	font-weight: bold;
 }
 </style>

@@ -22,35 +22,45 @@ limitations under the License.
 				<div v-if='!missing && !unsupported && !unknown'>
 					<v-btn
 						v-if='!service.enabled'
+						class='mr-1'
 						color='success'
 						@click='enable()'
 					>
 						{{ $t('service.actions.enable') }}
-					</v-btn> <v-btn
+					</v-btn>
+					<v-btn
 						v-if='service.enabled'
+						class='mr-1'
 						color='error'
 						@click='disable()'
 					>
 						{{ $t('service.actions.disable') }}
-					</v-btn> <v-btn
+					</v-btn>
+					<v-btn
 						v-if='!service.active'
+						class='mr-1'
 						color='success'
 						@click='start()'
 					>
 						{{ $t('service.actions.start') }}
-					</v-btn> <v-btn
+					</v-btn>
+					<v-btn
 						v-if='service.active'
+						class='mr-1'
 						color='error'
 						@click='stop()'
 					>
 						{{ $t('service.actions.stop') }}
-					</v-btn> <v-btn
+					</v-btn>
+					<v-btn
 						v-if='service.active'
+						class='mr-1'
 						color='info'
 						@click='restart()'
 					>
 						{{ $t('service.actions.restart') }}
-					</v-btn> <v-btn
+					</v-btn>
+					<v-btn
 						@click='refreshStatus()'
 					>
 						{{ $t('service.actions.status') }}

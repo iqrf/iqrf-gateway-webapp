@@ -53,7 +53,7 @@ limitations under the License.
 						</ValidationProvider>
 						<v-row v-if='connection.type === "802-11-wireless"'>
 							<v-col md='6'>
-								<legend>{{ $t('network.wireless.form.title') }}</legend>
+								<h5>{{ $t('network.wireless.form.title') }}</h5>
 								<v-text-field
 									:label='$t("network.wireless.form.security")'
 									:value='$t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`)'
@@ -207,7 +207,7 @@ limitations under the License.
 						</v-row>
 						<v-row>
 							<v-col cols='12' md='6'>
-								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
+								<h5>{{ $t('network.connection.ipv4.title') }}</h5>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -334,7 +334,7 @@ limitations under the License.
 								</fieldset>
 							</v-col>
 							<v-col cols='12' md='6'>
-								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
+								<h5>{{ $t('network.connection.ipv6.title') }}</h5>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'

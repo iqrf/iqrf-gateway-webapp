@@ -20,8 +20,8 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
-					<form @submit.prevent='processSubmit'>
-						<legend>{{ $t("config.translator.form.rest.title") }}</legend>
+					<v-form @submit.prevent='processSubmit'>
+						<h5>{{ $t("config.translator.form.rest.title") }}</h5>
 						<v-row>
 							<v-col cols='12' md='6'>
 								<ValidationProvider
@@ -76,7 +76,7 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<legend>{{ $t("config.translator.form.mqtt.title") }}</legend>
+						<h5>{{ $t("config.translator.form.mqtt.title") }}</h5>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|clientId'
@@ -240,7 +240,7 @@ limitations under the License.
 						>
 							{{ $t('forms.save') }}
 						</v-btn>
-					</form>
+					</v-form>
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>

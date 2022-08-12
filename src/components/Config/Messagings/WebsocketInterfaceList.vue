@@ -19,135 +19,139 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.websocket.interface.title') }}
 		</h1>
-		<v-data-table
-			:loading='loading'
-			:headers='header'
-			:items='instances'
-		>
-			<template #top>
-				<v-toolbar dense flat>
-					<v-spacer />
-					<v-btn
-						color='success'
-						small
-						to='/config/daemon/messagings/websocket/add'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-						{{ $t('table.actions.add') }}
-					</v-btn>
-				</v-toolbar>
-			</template>
-			<template #[`item.instanceMessaging`]='{item}'>
-				{{ item.messaging.instance }}
-			</template>
-			<template #[`item.port`]='{item}'>
-				{{ item.service.WebsocketPort }}
-			</template>
-			<template #[`item.acceptAsyncMsg`]='{item}'>
-				<v-menu offset-y>
-					<template #activator='{attrs, on}'>
-						<v-btn
-							:color='item.messaging.acceptAsyncMsg ? "success": "error"'
-							small
-							v-bind='attrs'
-							v-on='on'
-						>
-							{{ $t(`states.${item.messaging.acceptAsyncMsg ? "enabled" : "disabled"}`) }}
-							<v-icon>mdi-menu-down</v-icon>
-						</v-btn>
-					</template>
-					<v-list dense>
-						<v-list-item
-							dense
-							@click='changeAcceptAsyncMsg(item.messaging, true)'
-						>
-							{{ $t('states.enabled') }}
-						</v-list-item>
-						<v-list-item
-							dense
-							@click='changeAcceptAsyncMsg(item.messaging, false)'
-						>
-							{{ $t('states.disabled') }}
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</template>
-			<template #[`item.acceptOnlyLocalhost`]='{item}'>
-				<v-menu offset-y>
-					<template #activator='{attrs, on}'>
-						<v-btn
-							:color='item.service.acceptOnlyLocalhost ? "success": "error"'
-							small
-							v-bind='attrs'
-							v-on='on'
-						>
-							{{ $t(`states.${item.service.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
-							<v-icon>mdi-menu-down</v-icon>
-						</v-btn>
-					</template>
-					<v-list dense>
-						<v-list-item
-							dense
-							@click='changeAcceptOnlyLocalhost(item.service, true)'
-						>
-							{{ $t('states.enabled') }}
-						</v-list-item>
-						<v-list-item
-							dense
-							@click='changeAcceptOnlyLocalhost(item.service, false)'
-						>
-							{{ $t('states.disabled') }}
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</template>
-			<template #[`item.tlsEnabled`]='{item}'>
-				<v-menu offset-y>
-					<template #activator='{attrs, on}'>
-						<v-btn
-							:color='item.service.tlsEnabled ? "success": "error"'
-							small
-							v-bind='attrs'
-							v-on='on'
-						>
-							{{ $t(`states.${item.service.tlsEnabled ? "enabled" : "disabled"}`) }}
-							<v-icon>mdi-menu-down</v-icon>
-						</v-btn>
-					</template>
-					<v-list dense>
-						<v-list-item
-							dense
-							@click='changeTls(item.service, true)'
-						>
-							{{ $t('states.enabled') }}
-						</v-list-item>
-						<v-list-item
-							dense
-							@click='changeTls(item.service, false)'
-						>
-							{{ $t('states.disabled') }}
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</template>
-			<template #[`item.actions`]='{item}'>
-				<v-btn
-					color='info'
-					small
-					:to='"/config/daemon/messagings/websocket/edit/" + item.messaging.instance'
+		<v-card>
+			<v-card-text>
+				<v-data-table
+					:loading='loading'
+					:headers='header'
+					:items='instances'
 				>
-					<v-icon small>
-						mdi-pencil
-					</v-icon>
-					{{ $t('table.actions.edit') }}
-				</v-btn> <WebsocketInterfaceDeleteDialog
-					:instance='item'
-					@deleted='getConfig'
-				/>
-			</template>
-		</v-data-table>
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
+								color='success'
+								small
+								to='/config/daemon/messagings/websocket/add'
+							>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+						</v-toolbar>
+					</template>
+					<template #[`item.instanceMessaging`]='{item}'>
+						{{ item.messaging.instance }}
+					</template>
+					<template #[`item.port`]='{item}'>
+						{{ item.service.WebsocketPort }}
+					</template>
+					<template #[`item.acceptAsyncMsg`]='{item}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
+								<v-btn
+									:color='item.messaging.acceptAsyncMsg ? "success": "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.messaging.acceptAsyncMsg ? "enabled" : "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeAcceptAsyncMsg(item.messaging, true)'
+								>
+									{{ $t('states.enabled') }}
+								</v-list-item>
+								<v-list-item
+									dense
+									@click='changeAcceptAsyncMsg(item.messaging, false)'
+								>
+									{{ $t('states.disabled') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+					<template #[`item.acceptOnlyLocalhost`]='{item}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
+								<v-btn
+									:color='item.service.acceptOnlyLocalhost ? "success": "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.service.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeAcceptOnlyLocalhost(item.service, true)'
+								>
+									{{ $t('states.enabled') }}
+								</v-list-item>
+								<v-list-item
+									dense
+									@click='changeAcceptOnlyLocalhost(item.service, false)'
+								>
+									{{ $t('states.disabled') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+					<template #[`item.tlsEnabled`]='{item}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
+								<v-btn
+									:color='item.service.tlsEnabled ? "success": "error"'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`states.${item.service.tlsEnabled ? "enabled" : "disabled"}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeTls(item.service, true)'
+								>
+									{{ $t('states.enabled') }}
+								</v-list-item>
+								<v-list-item
+									dense
+									@click='changeTls(item.service, false)'
+								>
+									{{ $t('states.disabled') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='info'
+							small
+							:to='"/config/daemon/messagings/websocket/edit/" + item.messaging.instance'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn> <WebsocketInterfaceDeleteDialog
+							:instance='item'
+							@deleted='getConfig'
+						/>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 

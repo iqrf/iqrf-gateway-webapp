@@ -249,7 +249,7 @@
 		},
 		"daemon": {
 			"title": "IQRF GW daemon",
-			"description": "IQRF Daemon configuration",
+			"description": "IQRF Daemon configuration.",
 			"main": {
 				"title": "Main configuration",
 				"description": "Main configuration of IQRF Gateway Daemon.",
@@ -637,7 +637,7 @@
 			},
 			"scheduler": {
 				"title": "Scheduler",
-				"description": "Scheduler settings.",
+				"description": "Configure scheduler tasks.",
 				"add": "Add task",
 				"edit": "Edit task",
 				"table": {
@@ -723,7 +723,7 @@
 			},
 			"misc": {
 				"title": "Misc",
-				"description": "Configuration of miscellaneous Daemon components",
+				"description": "Configure miscellaneous Daemon components.",
 				"jsonApi": {
 					"title": "JSON API",
 					"messages": {
@@ -1348,6 +1348,7 @@
 		},
 		"datetime": {
 			"title": "Location & Time",
+			"description": "Configure gateway time and NTP.",
 			"status": "Gateway date and time",
 			"location": {
 				"title": "Location settings",
