@@ -18,6 +18,8 @@
 							accept='.mender'
 							:success='touched ? valid : null'
 							:error-messages='errors'
+							:prepend-icon='null'
+							prepend-inner-icon='mdi-file-outline'
 						/>
 					</ValidationProvider>
 				</v-form>

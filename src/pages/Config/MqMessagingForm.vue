@@ -36,34 +36,40 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
-							}'
-						>
-							<v-text-field
-								v-model='configuration.LocalMqName'
-								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
-							}'
-						>
-							<v-text-field
-								v-model='configuration.RemoteMqName'
-								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
+									}'
+								>
+									<v-text-field
+										v-model='configuration.LocalMqName'
+										:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
+									}'
+								>
+									<v-text-field
+										v-model='configuration.RemoteMqName'
+										:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
 						<v-checkbox
 							v-model='configuration.acceptAsyncMsg'
 							:label='$t("config.daemon.messagings.acceptAsyncMsg")'

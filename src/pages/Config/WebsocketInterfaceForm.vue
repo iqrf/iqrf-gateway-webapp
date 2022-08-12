@@ -21,85 +21,82 @@ limitations under the License.
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|instance'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.websocket.errors.instance"),
+								instance: $t("config.daemon.messagings.instanceInvalid"),
+							}'
+						>
+							<v-text-field
+								v-model='messaging.instance'
+								:label='$t("forms.fields.instanceName")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|between:1,65535|required'
+							:custom-messages='{
+								between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
+								required: $t("config.daemon.messagings.websocket.errors.WebsocketPort"),
+								integer: $t("forms.errors.integer"),
+							}'
+						>
+							<v-text-field
+								v-model.number='service.WebsocketPort'
+								type='number'
+								:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
 						<v-row>
-							<v-col md='6'>
-								<legend>{{ $t('config.daemon.messagings.websocket.interface.legend') }}</legend>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required|instance'
-									:custom-messages='{
-										required: $t("config.daemon.messagings.websocket.errors.instance"),
-										instance: $t("config.daemon.messagings.instanceInvalid"),
-									}'
-								>
-									<v-text-field
-										v-model='messaging.instance'
-										:label='$t("forms.fields.instanceName")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='integer|between:1,65535|required'
-									:custom-messages='{
-										between: $t("config.daemon.messagings.websocket.errors.WebsocketPortRange"),
-										required: $t("config.daemon.messagings.websocket.errors.WebsocketPort"),
-										integer: $t("forms.errors.integer"),
-									}'
-								>
-									<v-text-field
-										v-model.number='service.WebsocketPort'
-										type='number'
-										:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
+							<v-col cols='12' md='6'>
 								<v-checkbox
 									v-model='messaging.acceptAsyncMsg'
 									:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 								/>
+							</v-col>
+							<v-col cols='12' md='6'>
 								<v-checkbox
 									v-model='service.acceptOnlyLocalhost'
 									:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 								/>
 							</v-col>
-							<v-col>
-								<div>
-									<v-switch
-										v-model='service.tlsEnabled'
-										:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
-										color='primary'
-										inset
-										dense
-									/>
+						</v-row>
+						<v-switch
+							v-model='service.tlsEnabled'
+							:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
+							color='primary'
+							inset
+							dense
+						/>
+						<div v-if='service.tlsEnabled'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
+								}'
+							>
+								<v-select
+									v-model='service.tlsMode'
+									:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
+									:items='tlsModeOptions'
+									:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
+									:disabled='!service.tlsEnabled'
+									:success='touched && service.tlsEnabled ? valid : null'
+									:error-messages='errors'
+									:hint='$t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${service.tlsMode}`)'
+									persistent-hint
+								/>
+							</ValidationProvider>
+							<v-row>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
-										v-if='service.tlsEnabled'
-										v-slot='{errors, touched, valid}'
-										rules='required'
-										:custom-messages='{
-											required: $t("config.daemon.messagings.websocket.errors.tlsMode"),
-										}'
-									>
-										<v-select
-											v-model='service.tlsMode'
-											:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
-											:items='tlsModeOptions'
-											:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
-											:disabled='!service.tlsEnabled'
-											:success='touched && service.tlsEnabled ? valid : null'
-											:error-messages='errors'
-										/>
-										<p
-											v-if='service.tlsMode !== "" && service.tlsMode !== undefined'
-											:class='!service.tlsEnabled ? "text-secondary" : ""'
-										>
-											{{ $t(`config.daemon.messagings.websocket.form.tlsModes.descriptions.${service.tlsMode}`) }}
-										</p>
-									</ValidationProvider>
-									<ValidationProvider
-										v-if='service.tlsEnabled'
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
@@ -114,8 +111,9 @@ limitations under the License.
 											:error-messages='errors'
 										/>
 									</ValidationProvider>
+								</v-col>
+								<v-col cols='12' md='6'>
 									<ValidationProvider
-										v-if='service.tlsEnabled'
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
@@ -130,9 +128,9 @@ limitations under the License.
 											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</div>
-							</v-col>
-						</v-row>
+								</v-col>
+							</v-row>
+						</div>
 						<v-btn
 							color='primary'
 							:disabled='invalid'

@@ -42,36 +42,40 @@ limitations under the License.
 							inset
 							dense
 						/>
-						<div v-if='credentials'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("forms.errors.username"),
-								}'
-							>
-								<v-text-field
-									v-model='config.credentials.username'
-									:label='$t("forms.fields.username")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("forms.errors.password"),
-								}'
-							>
-								<v-text-field
-									v-model='config.credentials.password'
-									:label='$t("forms.fields.password")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-						</div>
+						<v-row v-if='credentials'>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("forms.errors.username"),
+									}'
+								>
+									<v-text-field
+										v-model='config.credentials.username'
+										:label='$t("forms.fields.username")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("forms.errors.password"),
+									}'
+								>
+									<v-text-field
+										v-model='config.credentials.password'
+										:label='$t("forms.fields.password")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
 						<v-btn
 							color='primary'
 							type='submit'

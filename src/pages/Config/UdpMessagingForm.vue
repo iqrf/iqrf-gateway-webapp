@@ -36,42 +36,48 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|between:1,65535'
-							:custom-messages='{
-								between: $t("config.daemon.messagings.udp.errors.RemotePort"),
-								required: $t("config.daemon.messagings.udp.errors.RemotePort"),
-							}'
-						>
-							<v-text-field
-								v-model.number='configuration.RemotePort'
-								:label='$t("config.daemon.messagings.udp.form.RemotePort")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								type='number'
-								min='1'
-								max='65535'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|between:1,65535'
-							:custom-messages='{
-								between: $t("config.daemon.messagings.udp.errors.LocalPort"),
-								required: $t("config.daemon.messagings.udp.errors.LocalPort"),
-							}'
-						>
-							<v-text-field
-								v-model.number='configuration.LocalPort'
-								:label='$t("config.daemon.messagings.udp.form.LocalPort")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								type='number'
-								min='1'
-								max='65535'
-							/>
-						</ValidationProvider>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|between:1,65535'
+									:custom-messages='{
+										between: $t("config.daemon.messagings.udp.errors.RemotePort"),
+										required: $t("config.daemon.messagings.udp.errors.RemotePort"),
+									}'
+								>
+									<v-text-field
+										v-model.number='configuration.RemotePort'
+										:label='$t("config.daemon.messagings.udp.form.RemotePort")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										type='number'
+										min='1'
+										max='65535'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|between:1,65535'
+									:custom-messages='{
+										between: $t("config.daemon.messagings.udp.errors.LocalPort"),
+										required: $t("config.daemon.messagings.udp.errors.LocalPort"),
+									}'
+								>
+									<v-text-field
+										v-model.number='configuration.LocalPort'
+										:label='$t("config.daemon.messagings.udp.form.LocalPort")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										type='number'
+										min='1'
+										max='65535'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
 						<v-btn
 							color='primary'
 							:disabled='invalid'

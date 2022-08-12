@@ -20,8 +20,8 @@
 		<v-card-text>
 			<v-form @submit.prevent='backup'>
 				<v-row>
-					<v-col>
-						<legend>{{ $t('maintenance.backup.headings.software') }}</legend>
+					<v-col cols='12' md='6'>
+						<h5>{{ $t('maintenance.backup.headings.software') }}</h5>
 						<v-checkbox
 							v-model='migration.software.iqrf'
 							:label='$t("maintenance.backup.form.software.iqrf")'
@@ -42,8 +42,8 @@
 							:label='$t("maintenance.backup.form.software.pixla")'
 						/>
 					</v-col>
-					<v-col>
-						<legend>{{ $t('maintenance.backup.headings.system') }}</legend>
+					<v-col cols='12' md='6'>
+						<h5>{{ $t('maintenance.backup.headings.system') }}</h5>
 						<v-checkbox
 							v-model='migration.system.hostname'
 							:label='$t("maintenance.backup.form.system.hostname")'

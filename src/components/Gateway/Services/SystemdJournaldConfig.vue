@@ -36,51 +36,59 @@ limitations under the License.
 						v-model='config.forwardToSyslog'
 						:label='$t("service.systemd-journald.config.form.forwardToSyslog")'
 					/>
-					<v-select
-						v-model='config.persistence'
-						:label='$t("service.systemd-journald.config.form.storage")'
-						:items='storageOptions'
-					/>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required|integer|min:0'
-						:custom-messages='{
-							required: $t("service.systemd-journald.config.errors.maxDisk"),
-							integer: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
-							min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
-						}'
-					>
-						<v-text-field
-							v-model.number='config.maxDiskSize'
-							type='number'
-							min='0'
-							:label='$t("service.systemd-journald.config.form.maxDisk")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							:hint='$t("service.systemd-journald.config.form.defaultNote")'
-							persistent-hint
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required|integer|min:1'
-						:custom-messages='{
-							required: $t("service.systemd-journald.config.errors.maxFiles"),
-							integer: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
-							min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
-						}'
-					>
-						<v-text-field
-							v-model.number='config.maxFiles'
-							type='number'
-							min='1'
-							:label='$t("service.systemd-journald.config.form.maxFiles")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							:hint='$t("service.systemd-journald.config.form.maxFilesNote")'
-							persistent-hint
-						/>
-					</ValidationProvider>
+					<v-row>
+						<v-col cols='12' md='4'>
+							<v-select
+								v-model='config.persistence'
+								:label='$t("service.systemd-journald.config.form.storage")'
+								:items='storageOptions'
+							/>
+						</v-col>
+						<v-col cols='12' md='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:0'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.maxDisk"),
+									integer: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
+									min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
+								}'
+							>
+								<v-text-field
+									v-model.number='config.maxDiskSize'
+									type='number'
+									min='0'
+									:label='$t("service.systemd-journald.config.form.maxDisk")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:hint='$t("service.systemd-journald.config.form.defaultNote")'
+									persistent-hint
+								/>
+							</ValidationProvider>
+						</v-col>
+						<v-col cols='12' md='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:1'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.maxFiles"),
+									integer: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
+									min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
+								}'
+							>
+								<v-text-field
+									v-model.number='config.maxFiles'
+									type='number'
+									min='1'
+									:label='$t("service.systemd-journald.config.form.maxFiles")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:hint='$t("service.systemd-journald.config.form.maxFilesNote")'
+									persistent-hint
+								/>
+							</ValidationProvider>
+						</v-col>
+					</v-row>
 					<v-switch
 						v-model='sizeRotation'
 						:label='$t("service.systemd-journald.config.form.sizeRotation")'
@@ -118,29 +126,35 @@ limitations under the License.
 						dense
 					/>
 					<div v-if='timeRotation'>
-						<v-select
-							v-model='config.timeRotation.unit'
-							:label='$t("service.systemd-journald.config.form.unit")'
-							:items='unitOptions'
-						/>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|min:1'
-							:custom-messages='{
-								required: $t("service.systemd-journald.config.errors.count"),
-								integer: $t("service.systemd-journald.config.errors.countInvalid"),
-								min: $t("service.systemd-journald.config.errors.countInvalid"),
-							}'
-						>
-							<v-text-field
-								v-model.number='config.timeRotation.count'
-								type='number'
-								min='1'
-								:label='$t("service.systemd-journald.config.form.count")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<v-select
+									v-model='config.timeRotation.unit'
+									:label='$t("service.systemd-journald.config.form.unit")'
+									:items='unitOptions'
+								/>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|integer|min:1'
+									:custom-messages='{
+										required: $t("service.systemd-journald.config.errors.count"),
+										integer: $t("service.systemd-journald.config.errors.countInvalid"),
+										min: $t("service.systemd-journald.config.errors.countInvalid"),
+									}'
+								>
+									<v-text-field
+										v-model.number='config.timeRotation.count'
+										type='number'
+										min='1'
+										:label='$t("service.systemd-journald.config.form.count")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
 					</div>
 					<v-btn
 						color='primary'
