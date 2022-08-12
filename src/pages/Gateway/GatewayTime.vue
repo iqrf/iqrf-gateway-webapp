@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('gateway.datetime.title') }}</h1>
 		<v-card v-if='time !== null'>
 			<v-card-title>
-				<span class='form-section-title mr-2'>{{ $t("gateway.datetime.status") }}</span>
+				<span class='mr-2'>{{ $t("gateway.datetime.status") }}</span>
 				<v-btn
 					color='primary'
 					small
@@ -43,7 +43,7 @@ limitations under the License.
 				</v-row>
 				<ValidationObserver v-slot='{invalid}'>
 					<v-form>
-						<span class='form-section-title'>{{ $t('gateway.datetime.location.title') }}</span>
+						<h5>{{ $t('gateway.datetime.location.title') }}</h5>
 						<v-autocomplete
 							v-model='timezone'
 							item-text='text'
@@ -52,7 +52,7 @@ limitations under the License.
 							:items='timezoneOptions'
 							:return-object='true'
 						/>
-						<span class='form-section-title'>{{ $t('gateway.datetime.time.title') }}</span>
+						<h5>{{ $t('gateway.datetime.time.title') }}</h5>
 						<v-select
 							v-model='timeSet'
 							:label='$t("gateway.datetime.time.set")'
@@ -116,7 +116,7 @@ limitations under the License.
 							/>
 						</div>
 						<v-btn
-							class='mr-1'
+							class='mr-2'
 							color='primary'
 							:disabled='invalid'
 							@click='setTime'
@@ -125,6 +125,7 @@ limitations under the License.
 						</v-btn>
 						<v-btn
 							v-if='timeSet === TimeSetOptions.MANUAL'
+							class='mr-2'
 							color='primary'
 							@click='setFromBrowser'
 						>
@@ -256,7 +257,7 @@ export default class GatewayTime extends Vue {
 					}
 				} else {
 					this.timeSet = TimeSetOptions.MANUAL;
-				}				
+				}
 				this.timezone = {
 					text: this.time.formattedZone,
 					value: this.time.zoneName,

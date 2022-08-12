@@ -34,6 +34,8 @@ limitations under the License.
 							:label='$t("iqrfnet.trUpload.hexUpload.form.file")'
 							:error-messages='errors'
 							:success='valid'
+							:prepend-icon='null'
+							prepend-inner-icon='mdi-file-outline'
 							required
 						/>
 					</ValidationProvider>

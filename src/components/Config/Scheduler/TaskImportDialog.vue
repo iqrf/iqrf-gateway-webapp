@@ -56,6 +56,8 @@ limitations under the License.
 								:label='$t("config.daemon.scheduler.import.file")'
 								:error-messages='errors'
 								:success='valid'
+								:prepend-icon='null'
+								prepend-inner-icon='mdi-file-outline'
 								required
 							/>
 						</ValidationProvider>

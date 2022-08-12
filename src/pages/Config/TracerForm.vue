@@ -35,28 +35,30 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.misc.tracer.errors.filename"),
-							}'
-						>
-							<v-text-field
-								v-model='configuration.filename'
-								:label='$t("config.daemon.misc.tracer.form.filename")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
 						<v-row>
-							<v-col cols='12' md='6'>
+							<v-col cols='12' md='4'>
 								<v-text-field
 									v-model='configuration.path'
 									:label='$t("config.daemon.misc.tracer.form.path")'
 								/>
 							</v-col>
-							<v-col cols='12' md='6'>
+							<v-col cols='12' md='4'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.misc.tracer.errors.filename"),
+									}'
+								>
+									<v-text-field
+										v-model='configuration.filename'
+										:label='$t("config.daemon.misc.tracer.form.filename")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='4'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|required|min:1'

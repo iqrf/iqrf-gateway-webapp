@@ -219,7 +219,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 							</v-col>
-							<v-col md='6'>
+							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									:rules='"integer|min:" + configuration.MinReconnect'

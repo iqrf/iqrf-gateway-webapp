@@ -18,7 +18,6 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('network.ethernet.title') }}</h1>
 		<v-card>
-			<v-card-title>{{ $t('network.connection.title') }}</v-card-title>
 			<v-card-text>
 				<v-data-table
 					:headers='header'
