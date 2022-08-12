@@ -35,6 +35,7 @@ export interface NavigationItem {
 	icon?: string;
 	title: string;
 	children?: Array<NavigationItem>;
+	group?: string|RegExp;
 	to?: string;
 	href?: string;
 	target?: LinkTarget;
