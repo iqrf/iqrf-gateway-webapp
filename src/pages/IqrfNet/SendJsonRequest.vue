@@ -22,7 +22,7 @@ limitations under the License.
 				<v-btn
 					color='primary'
 					small
-					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
+					href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
