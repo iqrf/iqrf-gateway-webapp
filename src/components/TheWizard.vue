@@ -25,7 +25,7 @@ limitations under the License.
 					lg4
 				>
 					<div class='logo'>
-						<Logo :alt='title' />
+						<img :alt='title' :src='logo' />
 					</div>
 					<slot />
 				</v-flex>
@@ -38,16 +38,14 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import ThemeManager from '@/helpers/themeManager';
 
-@Component({
-	components: {
-		Logo: ThemeManager.getWizardLogo(),
-	},
-})
+@Component({})
 
 /**
  * Installation base page component
  */
 export default class TheWizard extends Vue {
+
+	private logo = ThemeManager.getWizardLogo();
 
 	/**
 	 * Returns the app title
@@ -64,7 +62,7 @@ export default class TheWizard extends Vue {
 .logo {
 	padding-bottom: 2rem;
 
-	svg {
+	img {
 		height: 32pt;
 		width: 100%;
 	}

@@ -26,8 +26,8 @@ limitations under the License.
 		<template #prepend>
 			<v-list-item class='corner-logo'>
 				<router-link to='/'>
-					<LogoSmall v-if='minimized' :alt='title' />
-					<LogoBig v-else :alt='title' />
+					<img v-if='minimized' :alt='title' :src='ThemeManager.getSidebarSmallLogo()' />
+					<img v-else :alt='title' :src='ThemeManager.getSidebarLogo()' />
 				</router-link>
 			</v-list-item>
 		</template>
@@ -65,6 +65,9 @@ import {LinkTarget} from '@/helpers/DisambiguationHelper';
 		SidebarItems,
 		SidebarIndication,
 	},
+	data: () => ({
+		ThemeManager,
+	}),
 })
 
 /**
