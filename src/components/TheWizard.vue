@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-content>
+	<v-main>
 		<v-container fluid fill-height>
 			<v-layout align-center justify-center>
 				<v-flex
@@ -31,7 +31,7 @@ limitations under the License.
 				</v-flex>
 			</v-layout>
 		</v-container>
-	</v-content>
+	</v-main>
 </template>
 
 <script lang='ts'>
