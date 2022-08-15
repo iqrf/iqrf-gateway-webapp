@@ -16,8 +16,7 @@ limitations under the License.
 -->
 <template>
 	<v-card>
-		<v-card-title>{{ $t('install.restore.title') }}</v-card-title>
-		<v-card-text><Restore /></v-card-text>
+		<Restore />
 	</v-card>
 </template>
 

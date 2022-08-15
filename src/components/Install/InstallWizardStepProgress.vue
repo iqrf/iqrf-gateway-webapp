@@ -1,107 +1,65 @@
 <template>
-	<VueStepProgressIndicator
-		:colors='colorConfig'
-		:steps='progressSteps'
-		:active-step='activeStep'
-	/>
+	<v-stepper
+		:alt-labels='$vuetify.breakpoint.smAndUp'
+		:vertical='$vuetify.breakpoint.xsAndDown'
+		:value='currentStep + 1'
+		flat
+	>
+		<v-stepper-header>
+			<v-stepper-step
+				v-for='(item, i) in steps'
+				:key='i'
+				:step='i+1'
+				:complete='currentStep > i'
+			>
+				{{ item.text }}
+			</v-stepper-step>
+		</v-stepper-header>
+	</v-stepper>
 </template>
 
 <script lang='ts'>
-import Color from 'color';
 import {Component, Vue} from 'vue-property-decorator';
-import VueStepProgressIndicator from 'vue-step-progress-indicator';
 
-import ThemeManager from '@/helpers/themeManager';
-
-@Component({
-	components: {
-		VueStepProgressIndicator,
-	},
-})
+interface InstallWizardStep {
+	id: string,
+	to: string,
+	text: string
+}
 
 /**
  * Step progress for installation wizard
  */
+@Component
 export default class InstallWizardStepProgress extends Vue {
-
 	/**
-	 * @type {number} Step number
+	 * @var {Array<InstallWizardStep>} steps Wizard steps
 	 */
-	private step = 0;
-
-	/**
-	 * @type {Array<string>} Array of install wizard steps
-	 */
-	private steps: Record<string, string> = {
-		'introduction': '/install/',
-		'webappUser': '/install/webapp-user/',
-		'smtp': '/install/smtp/',
-	};
-
-	/**
-	 * @type {Color} Color for the active step
-	 */
-	private activeColor = ThemeManager.getPrimaryColor();
-
-	/**
-	 * Vue step progress indicator color configuration
-	 */
-	private colorConfig = {
-		progress__bubble: {
-			active: {
-				backgroundColor: this.activeColor,
-				borderColor: this.activeColor,
-				color: '#fff',
-			},
-			completed: {
-				backgroundColor: InstallWizardStepProgress.getCompletedColor().hex(),
-				borderColor: InstallWizardStepProgress.getCompletedColor().hex(),
-				color: '#fff',
-			},
-			inactive: {
-				backgroundColor: InstallWizardStepProgress.getInactiveColor().hex(),
-				borderColor: InstallWizardStepProgress.getInactiveColor().hex(),
-				color: '#fff'
-			}
+	private steps: Array<InstallWizardStep> = [
+		{
+			id: 'introduction',
+			to: '/install/',
+			text: this.$t('install.steps.introduction').toString(),
 		},
-		progress__bridge: {
-			active: {
-				backgroundColor: this.activeColor,
-			},
-			completed: {
-				backgroundColor: InstallWizardStepProgress.getCompletedColor().hex(),
-			},
-			inactive: {
-				backgroundColor: InstallWizardStepProgress.getInactiveColor().hex(),
-			},
+		{
+			id: 'webappUser',
+			to: '/install/webapp-user/',
+			text: this.$t('install.steps.webappUser').toString(),
 		},
-		progress__label: {
-			active: {
-				color: this.activeColor,
-			},
-			completed: {
-				color: InstallWizardStepProgress.getCompletedColor().hex(),
-			},
-			inactive: {
-				color: InstallWizardStepProgress.getInactiveColor().hex(),
-			},
+		{
+			id: 'smtp',
+			to: '/install/smtp/',
+			text: this.$t('install.steps.smtp').toString(),
 		}
-	};
+	];
 
 	/**
-	 * Returns the active step index
-	 * @return {number} Index of the active step
+	 * @var {number} currentStep Current step
 	 */
-	get activeStep(): number {
-		return Object.values(this.steps).findIndex((url: string): boolean => (url === this.$route.path));
-	}
-
-	/**
-	 * Returns list of steps for the progress indicator
-	 * @return {Array<string>} List of steps
-	 */
-	get progressSteps(): Array<string> {
-		return Object.keys(this.steps).map((item: string) => this.$t(`install.steps.${item}`).toString());
+	get currentStep(): number {
+		return this.steps.findIndex((step: InstallWizardStep): boolean => {
+			return step.to === this.$route.path;
+		});
 	}
 
 	/**
@@ -109,39 +67,26 @@ export default class InstallWizardStepProgress extends Vue {
 	 */
 	created(): void {
 		if (this.$store.getters['features/isEnabled']('gatewayPass')) {
-			this.steps['gatewayUser'] = '/install/gateway-user/';
+			this.steps.push({
+				id: 'gatewayUser',
+				to: '/install/gateway-user/',
+				text: this.$t('install.steps.gatewayUser').toString(),
+			});
 		}
 		if (this.$store.getters['features/isEnabled']('ssh')) {
-			this.steps['sshKey'] = '/install/ssh-keys/';
-			this.steps['sshService'] = '/install/ssh-status/';
+			this.steps.push(
+				{
+					id: 'sshKey',
+					to: '/install/ssh-keys/',
+					text: this.$t('install.steps.sshKey').toString(),
+				},
+				{
+					id: 'sshService',
+					to: '/install/ssh-status/',
+					text: this.$t('install.steps.sshService').toString(),
+				},
+			);
 		}
 	}
-
-	/**
-	 * Returns color for the completed step
-	 * @private
-	 * @return {Color} Color for the completed step
-	 */
-	private static getCompletedColor(): Color {
-		const color: Color = Color(ThemeManager.getPrimaryColor());
-		return color.lighten(0.4).desaturate(0.2);
-	}
-
-	/**
-	 * Returns color for the inactive step
-	 * @private
-	 * @return {Color} Color for the inactive step
-	 */
-	private static getInactiveColor(): Color {
-		return InstallWizardStepProgress.getCompletedColor().grayscale();
-	}
-
-	/**
-	 * Advance the step progress indicator
-	 */
-	nextStep(): void {
-		this.step++;
-	}
-
 }
 </script>

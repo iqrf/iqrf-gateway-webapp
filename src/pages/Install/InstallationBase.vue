@@ -18,10 +18,10 @@ limitations under the License.
 	<TheWizard>
 		<v-card v-if='!stepBlacklist.includes($route.path)' class='mb-5'>
 			<v-card-text>
-				<InstallWizardStepProgress ref='progress' class='progress-position' />
+				<InstallWizardStepProgress />
 			</v-card-text>
 		</v-card>
-		<router-view @next-step='next' />
+		<router-view />
 	</TheWizard>
 </template>
 
@@ -52,20 +52,5 @@ export default class InstallationBase extends Vue {
 		'/install/error/missing-extension',
 		'/install/error/sudo-error',
 	];
-
-	/**
-	 * Advance the installation wizard
-	 */
-	private next(): void {
-		(this.$refs.progress as InstallWizardStepProgress).nextStep();
-	}
 }
 </script>
-
-<style lang='scss' scoped>
-.progress-position {
-	justify-content: center !important;
-	padding-left: 1rem;
-	padding-right: 1rem;
-}
-</style>
