@@ -2795,6 +2795,8 @@
 		"backup": {
 			"title": "Backup & Restore",
 			"description": "Gateway backup and restore management.",
+			"backupTitle": "Backup gateway",
+			"restoreTitle": "Restore gateway",
 			"headings": {
 				"software": "Software configuration",
 				"system": "System configuration"

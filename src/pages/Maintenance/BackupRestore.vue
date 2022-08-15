@@ -17,8 +17,11 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.backup.title') }}</h1>
-		<Backup class='mb-5' />
-		<Restore />
+		<v-card>
+			<Backup class='mb-5' />
+			<v-divider />
+			<Restore />
+		</v-card>
 	</div>
 </template>
 
