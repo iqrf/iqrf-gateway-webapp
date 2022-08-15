@@ -1736,7 +1736,7 @@
 					"hwpid": "Note: HWPID 65535 includes all devices."
 				},
 				"messages": {
-					"generalError": "An error has occured during OTA upload process: {error}",
+					"generalError": "An error has occurred during OTA upload process: {error}",
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
 					"invalidRequest": "OTA upload request is not valid: {error}",

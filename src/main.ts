@@ -16,7 +16,6 @@
  */
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import CoreuiVue from '@coreui/vue/src';
 import * as Sentry from '@sentry/vue';
 import {BrowserTracing} from '@sentry/tracing';
 import Vue from 'vue';
@@ -87,7 +86,6 @@ store.dispatch('monitor_initSocket', new ClientSocket(
 	store,
 ));
 
-Vue.use(CoreuiVue);
 Vue.use(VueMeta);
 Vue.use(VueToast,{
 	position: 'top',
@@ -143,6 +141,6 @@ const app = new Vue({
 	}
 }).$mount('#app');
 
-if (process.env.VUE_APP_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
+if (import.meta.env.VITE_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
 	window['app'] = app;
 }
