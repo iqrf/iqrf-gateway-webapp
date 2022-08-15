@@ -51,8 +51,8 @@ limitations under the License.
 							<JsonEditor
 								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>

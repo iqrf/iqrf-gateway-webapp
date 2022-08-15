@@ -33,7 +33,7 @@ export default class ThemeManager {
 	 * @return {string} Theme name
 	 */
 	static getName(): string {
-		const name = process.env.VUE_APP_THEME ?? 'generic';
+		const name = import.meta.env.VITE_THEME ?? 'generic';
 		const themes = ['generic', 'iqaros'];
 		return themes.includes(name) ? name : 'generic';
 	}
@@ -63,7 +63,7 @@ export default class ThemeManager {
 	 * Returns small logo for the sidebar
 	 * @return {any} Small logo for the sidebar
 	 */
-	static getSidebarSmallLogo(): any {
+	static getSidebarSmallLogo(): string {
 		switch (ThemeManager.getName()) {
 			case 'iqaros':
 				return IqarosSmallLogo;
@@ -76,7 +76,7 @@ export default class ThemeManager {
 	 * Returns logo for the sidebar
 	 * @return {any} Logo for the sidebar
 	 */
-	static getSidebarLogo(): any {
+	static getSidebarLogo(): string {
 		switch (ThemeManager.getName()) {
 			case 'iqaros':
 				return IqarosWhiteLogo;
@@ -89,7 +89,7 @@ export default class ThemeManager {
 	 * Returns logo for the wizard
 	 * @return {any} Logo for the wizard
 	 */
-	static getWizardLogo(): any {
+	static getWizardLogo(): string {
 		switch (ThemeManager.getName()) {
 			case 'iqaros':
 				return IqarosRedLogo;

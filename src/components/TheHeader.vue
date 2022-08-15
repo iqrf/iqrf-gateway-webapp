@@ -73,11 +73,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import ThemeManager from '@/helpers/themeManager';
 
-@Component({
-	components: {
-		Logo: ThemeManager.getSidebarLogo(),
-	}
-})
+@Component({})
 
 /**
  * Header component
