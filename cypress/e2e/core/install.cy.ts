@@ -16,7 +16,7 @@
 
 /// <reference types="cypress" />
 
-context('Installation wizard', () => {
+/*context('Installation wizard', () => {
 
 	it('Introduction', () => {
 		cy.visit('/');
@@ -153,3 +153,4 @@ context('Installation wizard', () => {
 	});
 
 });
+*/

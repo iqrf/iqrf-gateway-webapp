@@ -32,9 +32,10 @@ limitations under the License.
 		>
 			<template #activator='{ on, attrs }'>
 				<v-btn
-					dark
-					color='amber darken-2'
 					v-bind='attrs'
+					id='user-menu-button'
+					color='amber darken-2'
+					dark
 					v-on='on'
 				>
 					{{ $store.getters['user/getName'] }}

@@ -18,7 +18,7 @@
 
 /// <reference types="cypress" />
 
-const faker = require('faker');
+import { faker } from '@faker-js/faker';
 
 context('User management', () => {
 
@@ -34,7 +34,7 @@ context('User management', () => {
 			expect(location.pathname).to.eq('/');
 			expect(location.search).to.be.empty;
 		});
-		cy.get('ul.c-sidebar-nav > li.c-sidebar-nav-item > a.c-sidebar-nav-link')
+		cy.get('nav.v-navigation-drawer > .v-navigation-drawer__content > .v-list > .v-list-item > .v-list-item__content > .v-list-item__title')
 			.contains('User manager')
 			.click();
 		cy.location().should((location) => {
@@ -42,7 +42,7 @@ context('User management', () => {
 			expect(location.pathname).to.eq('/user/');
 			expect(location.search).to.be.empty;
 		});
-		cy.get('div.card > header.card-header > a.btn-success')
+		cy.get('.v-data-table > .v-toolbar > .v-toolbar__content > a.v-btn.success')
 			.contains('Add')
 			.click();
 		cy.location().should((location) => {
@@ -53,13 +53,13 @@ context('User management', () => {
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#username');;
 		cy.get('#password')
 			.type(password)
 			.should('have.value', password)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#password');
 		cy.get('button[type=\'submit\']')
 			.click();
 		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
@@ -84,16 +84,13 @@ context('User management', () => {
 		cy.get('#username')
 			.focus()
 			.should('not.have.value')
-			.blur()
-			.should('have.class', 'is-invalid');
-		cy.get('#username').parent()
-			.children('div.invalid-feedback')
-			.contains('Please enter the username.');
+			.blur();
+		cy.invalidTextInput('#username', 'Please enter the username.');
 		cy.get('#password')
 			.type(password)
 			.should('have.value', password)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#password');
 		cy.get('button[type=\'submit\']')
 			.should('have.attr', 'disabled');
 	});
@@ -111,16 +108,13 @@ context('User management', () => {
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#username');
 		cy.get('#password')
 			.focus()
 			.should('not.have.value')
-			.blur()
-			.should('have.class', 'is-invalid');
-		cy.get('#password').parent()
-			.children('div.invalid-feedback')
-			.contains('Please enter the password.');
+			.blur();
+		cy.invalidTextInput('#password', 'Please enter the password.');
 		cy.get('button[type=\'submit\']')
 			.should('have.attr', 'disabled');
 	});
@@ -139,17 +133,16 @@ context('User management', () => {
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#username');
 		cy.get('#password')
 			.type(password)
 			.should('have.value', password)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#password');
 		cy.get('button[type=\'submit\']')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--error > .v-toast__text')
-			.contains('Failed to create new user: Username is already used');
+		cy.toast('error', 'Failed to create new user: Username is already used');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/user/add/');
@@ -166,7 +159,7 @@ context('User management', () => {
 			expect(location.pathname).to.eq('/user/');
 			expect(location.search).to.be.empty;
 		});
-		cy.get('[aria-label="column name: \'username\' filter input"]')
+		/*cy.get('[aria-label="column name: \'username\' filter input"]')
 			.type(username)
 			.should('have.value', username);
 		cy.get('.card-body tbody tr td')
@@ -192,7 +185,7 @@ context('User management', () => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/user/');
 			expect(location.search).to.be.empty;
-		});
+		});*/
 	});
 
 });
