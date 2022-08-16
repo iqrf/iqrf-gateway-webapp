@@ -21,6 +21,21 @@ declare namespace Cypress {
 		 * Custom command to sign in
 		 * @example cy.signIn('username', 'password)
 		 */
-		signIn(username: string, password: string): Cypress.Chainable<any>
+		signIn(username: string, password: string): Chainable<any>
+
+		/**
+		 * Checks the toast message
+		 */
+		toast(type: string, message: string): Chainable<any>
+
+		/**
+		 * Checks if the text input is valid
+		 */
+		validTextInput(selector: string): Chainable<any>
+
+		/**
+		 * Checks if the text input is invalid
+		 */
+		invalidTextInput(selector: string, errorMessage: string): Chainable<any>
 	}
 }
