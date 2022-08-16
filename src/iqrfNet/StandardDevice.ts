@@ -16,7 +16,7 @@
  */
 import {IInfoSensorDetail} from '@/interfaces/iqrfInfo';
 import {IProduct} from '@/interfaces/repository';
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 
 /**
  * Standard device object

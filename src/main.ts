@@ -15,121 +15,29 @@
  * limitations under the License.
  */
 
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import * as Sentry from '@sentry/vue';
-import {BrowserTracing} from '@sentry/tracing';
 import Vue from 'vue';
-import VueMeta from 'vue-meta';
-import VueToast from 'vue-toast-notification';
-import Clipboard from 'v-clipboard';
 
-import store from './store';
-import router from './router';
-import i18n from './i18n';
-import UrlBuilder from './helpers/urlBuilder';
-import ThemeManager from './helpers/themeManager';
-import ClientSocket from './ws/ClientSocket';
+import store from '@/store';
+import router from '@/router';
+import ThemeManager from '@/helpers/themeManager';
 
-import App from './App.vue';
+import App from '@/App.vue';
 
-import './styles/themes/generic.scss';
-import './styles/app.scss';
-import 'vue-toast-notification/dist/theme-sugar.css';
+import '@/styles/app.scss';
 
-import * as version from '../version.json';
-import vuetify from './plugins/vuetify';
-
-let release = version.version;
-if (version.pipeline !== '') {
-	release += '~' + version.pipeline;
-}
-
-if (process.env.NODE_ENV === 'production') {
-	Sentry.init({
-		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
-		integrations: [
-			new BrowserTracing({
-				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-				tracingOrigins: ['localhost', window.location.hostname, /^\//],
-			}),
-		],
-		release: release,
-		tracesSampleRate: 1.0,
-		Vue,
-	});
-}
-
-Vue.prototype.$appName = i18n.t(ThemeManager.getTitleKey());
-
-const urlBuilder: UrlBuilder = new UrlBuilder();
-
-store.dispatch('daemon_initSocket', new ClientSocket(
-	{
-		url: urlBuilder.getWsApiUrl(),
-		prefix: 'daemonClient/',
-		autoConnect: true,
-		reconnect: true,
-		reconnectDelay: 5000,
-	},
-	store,
-));
-
-store.dispatch('monitor_initSocket', new ClientSocket(
-	{
-		url: urlBuilder.getWsMonitorUrl(),
-		prefix: 'monitorClient/',
-		autoConnect: true,
-		reconnect: true,
-		reconnectDelay: 5000,
-	},
-	store,
-));
-
-Vue.use(VueMeta);
-Vue.use(VueToast,{
-	position: 'top',
-	duration: 5000,
-});
-Vue.use(Clipboard);
-
-axios.defaults.baseURL = urlBuilder.getRestApiUrl();
-axios.defaults.timeout = 30000;
-
-// Enable sending cookie to the backend (to enable xdebug)
-if (process.env.NODE_ENV === 'development') {
-	axios.defaults.withCredentials = false;
-}
-
-axios.interceptors.response.use(
-	(response: AxiosResponse) => {
-		return response;
-	},
-	async (error: AxiosError) => {
-		if (error.response === undefined) {
-			// TODO: Add Network error toaster notification
-			return Promise.reject(error);
-		}
-		if (error.response.status === 401) {
-			if (!store.getters['user/get']) {
-				return;
-			}
-			await store.dispatch('user/signOut')
-				.then(async () => {
-					await router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
-					Vue.$toast.warning(
-						i18n.t('core.sign.out.expired').toString(),
-					);
-				});
-			return;
-		}
-		return Promise.reject(error);
-	}
-);
+import '@/plugins/axios';
+import '@/plugins/clipboard';
+import i18n from '@/plugins/i18n';
+import '@/plugins/meta';
+import '@/plugins/sentry';
+import '@/plugins/toast';
+import vuetify from '@/plugins/vuetify';
+import '@/plugins/webSocket';
 
 const app = new Vue({
 	router,
 	store,
-	i18n: i18n,
+	i18n,
 	render: h => h(App),
 	vuetify,
 	metaInfo: {
