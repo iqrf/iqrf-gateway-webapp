@@ -8,6 +8,7 @@ import svgLoader from 'vite-svg-loader';
 
 export default defineConfig(({command, mode}) => {
 	const env = loadEnv(mode, process.cwd(), '');
+	const theme = env.VITE_THEME || 'generic';
 	return {
 		base: env.VITE_BASE_URL,
 		build: {
@@ -17,6 +18,7 @@ export default defineConfig(({command, mode}) => {
 			preprocessorOptions: {
 				sass: {
 					additionalData: [
+						'@import "@/styles/themes/' + theme + '.scss"',
 						'@import "@/styles/variables.scss"',
 						'@import "vuetify/src/styles/settings/_variables"',
 						'',

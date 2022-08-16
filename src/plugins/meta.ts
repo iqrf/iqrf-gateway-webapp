@@ -14,17 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import VueMeta from 'vue-meta';
 
-import en from './locales/en.json';
-
-Vue.use(VueI18n);
-
-export default new VueI18n({
-	locale: 'en',
-	fallbackLocale: 'en',
-	messages: {
-		'en': en,
-	},
-});
+Vue.use(VueMeta);
