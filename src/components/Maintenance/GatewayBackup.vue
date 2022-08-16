@@ -1,6 +1,8 @@
 <template>
-	<v-card>
+	<v-card flat>
 		<v-card-title>
+			{{ $t('maintenance.backup.backupTitle') }}
+			<v-spacer />
 			<v-item-group>
 				<v-btn
 					color='primary'

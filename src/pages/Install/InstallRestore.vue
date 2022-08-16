@@ -16,18 +16,17 @@ limitations under the License.
 -->
 <template>
 	<v-card>
-		<v-card-title>{{ $t('install.restore.title') }}</v-card-title>
-		<v-card-text><Restore /></v-card-text>
+		<GatewayRestore />
 	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import Restore from '@/components/Maintenance/Restore.vue';
+import GatewayRestore from '@/components/Maintenance/GatewayRestore.vue';
 
 @Component({
 	components: {
-		Restore,
+		GatewayRestore,
 	},
 	metaInfo: {
 		title: 'install.restore.title',
