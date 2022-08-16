@@ -34,3 +34,21 @@ Cypress.Commands.add('signIn', (username: string, password: string): Cypress.Cha
 		]);
 	});
 });
+
+Cypress.Commands.add('toast', (type: string, message: string): Cypress.Chainable<any> => {
+	return cy.get(`.v-toast--top > .v-toast__item--${type} > .v-toast__text`)
+		.contains(message);
+});
+
+Cypress.Commands.add('validTextInput', (selector: string): Cypress.Chainable<any> => {
+	return cy.get(selector)
+		.should('have.class', 'is-valid');
+});
+
+Cypress.Commands.add('invalidTextInput', (selector: string, errorMessage: string): Cypress.Chainable<any> => {
+	return cy.get(selector)
+		.should('have.class', 'is-invalid')
+		.parent()
+		.children('div.invalid-feedback')
+		.contains(errorMessage);
+});

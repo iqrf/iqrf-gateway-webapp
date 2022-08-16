@@ -29,7 +29,7 @@ context('Installation wizard', () => {
 			.children('span.progress__block')
 			.children('span.progress__label')
 			.should('have.length', 3)
-			.each(((element, index, $list) => {
+			.each(((element, index, _list) => {
 				switch (index) {
 					case 0:
 						cy.wrap(element).contains('Introduction')
@@ -68,7 +68,7 @@ context('Installation wizard', () => {
 			.children('span.progress__block')
 			.children('span.progress__label')
 			.should('have.length', 3)
-			.each(((element, index, $list) => {
+			.each(((element, index, _list) => {
 				switch (index) {
 					case 0:
 						cy.wrap(element).contains('Introduction')
@@ -90,23 +90,22 @@ context('Installation wizard', () => {
 		cy.get('#username')
 			.type(username)
 			.should('have.value', username)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#username');
 		cy.get('#email')
 			.type(email)
 			.should('have.value', email)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#email');
 		cy.get('#password')
 			.type(password)
 			.should('have.value', password)
-			.blur()
-			.should('have.class', 'is-valid');
+			.blur();
+		cy.validTextInput('#password');
 		cy.get('.btn')
 			.contains('Create user')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
-			.contains('An email containing instructions to verify your account was sent to your address.');
+		// cy.toast('success', 'An email containing instructions to verify your account was sent to your address.');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/install/smtp/');
@@ -124,7 +123,7 @@ context('Installation wizard', () => {
 			.children('span.progress__block')
 			.children('span.progress__label')
 			.should('have.length', 3)
-			.each(((element, index, $list) => {
+			.each(((element, index, _list) => {
 				switch (index) {
 					case 0:
 						cy.wrap(element).contains('Introduction')
@@ -143,8 +142,7 @@ context('Installation wizard', () => {
 		cy.get('.btn')
 			.contains('Skip')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
-			.contains('Installation process successfully completed.');
+		cy.toast('success', 'Installation process successfully completed.');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/');

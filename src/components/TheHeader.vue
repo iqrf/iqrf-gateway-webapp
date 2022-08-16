@@ -33,6 +33,7 @@ limitations under the License.
 			<CDropdown
 				v-if='$store.getters["user/isLoggedIn"]'
 				:in-nav='true'
+				id='user-menu-button'
 				class='c-header-nav-items'
 				placement='bottom-end'
 				add-menu-classes='pt-0 pb-0'

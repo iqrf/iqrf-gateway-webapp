@@ -33,8 +33,7 @@ context('Sign in and sign out', () => {
 			.should('have.value', 'admin');
 		cy.get('button[type=\'submit\']')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--error > .v-toast__text')
-			.contains('The username or password you entered is incorrect.');
+		cy.toast('error', 'The username or password you entered is incorrect.');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/sign/in');
@@ -58,8 +57,7 @@ context('Sign in and sign out', () => {
 			.should('have.value', 'iqrf');
 		cy.get('button[type=\'submit\']')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
-			.contains('You have been signed in successfully.');
+		cy.toast('success', 'You have been signed in successfully.');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/');
@@ -75,13 +73,12 @@ context('Sign in and sign out', () => {
 			expect(location.pathname).to.eq('/');
 			expect(location.search).to.be.empty;
 		});
-		cy.get('.c-header-nav-link')
+		cy.get('#user-menu-button')
 			.click();
 		cy.get('a.dropdown-item')
 			.contains('Sign out')
 			.click();
-		cy.get('.v-toast--top > .v-toast__item--success > .v-toast__text')
-			.contains('You have been signed out.');
+		cy.toast('success', 'You have been signed out.');
 		cy.location().should((location) => {
 			expect(location.hash).to.be.empty;
 			expect(location.pathname).to.eq('/sign/in');
