@@ -7,6 +7,7 @@ composer.lock
 # NPM
 node_modules/
 package-lock.json
+pnpm-lock.yaml
 # Debian package
 debian/.debhelper/
 debian/debhelper-build-stamp
@@ -32,6 +33,8 @@ docs/build/
 .vscode/
 # Vue.js build
 www/dist/
+# Vite
+components.d.ts
 # Cypress
 cypress/videos
 cypress/screenshots
