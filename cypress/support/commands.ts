@@ -42,13 +42,14 @@ Cypress.Commands.add('toast', (type: string, message: string): Cypress.Chainable
 
 Cypress.Commands.add('validTextInput', (selector: string): Cypress.Chainable<any> => {
 	return cy.get(selector)
-		.should('have.class', 'is-valid');
+		.parents('.v-input')
+		.should('have.class', 'success--text');
 });
 
 Cypress.Commands.add('invalidTextInput', (selector: string, errorMessage: string): Cypress.Chainable<any> => {
 	return cy.get(selector)
-		.should('have.class', 'is-invalid')
-		.parent()
-		.children('div.invalid-feedback')
+		.parents('.v-input')
+		.should('have.class', 'error--text')
+		.find('.v-messages__message')
 		.contains(errorMessage);
 });

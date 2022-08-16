@@ -75,7 +75,7 @@ context('Sign in and sign out', () => {
 		});
 		cy.get('#user-menu-button')
 			.click();
-		cy.get('a.dropdown-item')
+		cy.get('.v-list-item__title')
 			.contains('Sign out')
 			.click();
 		cy.toast('success', 'You have been signed out.');
