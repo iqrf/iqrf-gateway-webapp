@@ -84,7 +84,7 @@ import {IOtaUpload} from '@/interfaces/iqmeshServices';
 /**
  * OtaUpload card for IqmeshServices component
  */
-export default class OtaUpload extends Vue {
+export default class OtaUploadConfig extends Vue {
 
 	/**
 	 * @constant {string} componentName name of daemon component

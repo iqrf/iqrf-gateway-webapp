@@ -66,7 +66,7 @@ import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
-import OtaUpload from '@/components/Config/Misc/OtaUpload.vue';
+import OtaUploadConfig from '@/components/Config/Misc/OtaUploadConfig.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
@@ -79,7 +79,7 @@ import {UserRole} from '@/services/AuthenticationService';
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
-		OtaUpload,
+		OtaUploadConfig,
 		TracerList,
 	},
 	metaInfo: {

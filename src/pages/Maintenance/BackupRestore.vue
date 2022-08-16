@@ -17,20 +17,23 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.backup.title') }}</h1>
-		<Backup class='mb-5' />
-		<Restore />
+		<v-card>
+			<GatewayBackup class='mb-5' />
+			<v-divider />
+			<GatewayRestore />
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import Backup from '@/components/Maintenance/Backup.vue';
-import Restore from '@/components/Maintenance/Restore.vue';
+import GatewayBackup from '@/components/Maintenance/GatewayBackup.vue';
+import GatewayRestore from '@/components/Maintenance/GatewayRestore.vue';
 
 @Component({
 	components: {
-		Backup,
-		Restore,
+		GatewayBackup,
+		GatewayRestore,
 	},
 	metaInfo: {
 		title: 'maintenance.backup.title',
