@@ -13,6 +13,17 @@ export default defineConfig(({command, mode}) => {
 		build: {
 			outDir: path.resolve(__dirname, './www/dist'),
 		},
+		css: {
+			preprocessorOptions: {
+				sass: {
+					additionalData: [
+						'@import "@/styles/variables.scss"',
+						'@import "vuetify/src/styles/settings/_variables"',
+						'',
+					].join('\n'),
+				},
+			},
+		},
 		plugins: [
 			ViteEjsPlugin({
 				theme: env.VITE_THEME,
