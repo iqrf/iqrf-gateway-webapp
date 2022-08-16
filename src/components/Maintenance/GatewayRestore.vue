@@ -15,7 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
+	<v-card flat>
+		<v-card-title>{{ $t('maintenance.backup.restoreTitle') }}</v-card-title>
 		<v-card-text>
 			<v-overlay
 				v-if='running'
@@ -77,7 +78,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 /**
  * Gateway restore component
  */
-export default class Restore extends Vue {
+export default class GatewayRestore extends Vue {
 
 	/**
 	 * @var {File|null} archive Archive to restore
