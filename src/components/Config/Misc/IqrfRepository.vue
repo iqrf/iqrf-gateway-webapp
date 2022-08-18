@@ -84,11 +84,18 @@ limitations under the License.
 						:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
 					/>
 					<v-btn
+						class='mr-1'
 						color='primary'
 						:disabled='invalid'
 						@click='saveConfig'
 					>
 						{{ $t('forms.save') }}
+					</v-btn>
+					<v-btn
+						color='primary'
+						@click='updateCache'
+					>
+						{{ $t('config.daemon.misc.iqrfRepository.cacheUpdate') }}
 					</v-btn>
 				</v-form>
 			</ValidationObserver>
@@ -100,26 +107,32 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {UserRole} from '@/services/AuthenticationService';
 
-import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+import ManagementService from '@/services/DaemonApi/ManagementService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfRepository} from '@/interfaces/Config/Misc';
+import {MutationPayload} from 'vuex';
 
+/**
+ * IQRF Repository component configuration
+ */
 @Component({
 	components: {
 		ValidationObserver,
 		ValidationProvider,
 	},
 })
-
-/**
- * IQRF Repository component configuration
- */
 export default class IqrfRepository extends Vue {
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
 
 	/**
 	 * @constant {string} name IQRF Repository component name, used for REST API communication
@@ -166,20 +179,47 @@ export default class IqrfRepository extends Vue {
 	}
 
 	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;};
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
+			if (mutation.payload.mType === 'mngDaemon_UpdateCache') {
+				this.handleUpdateCacheResponse(mutation.payload.data);
+			}
+		});
+
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves user role and iqrf repository configuration
 	 */
 	mounted(): void {
 		this.loading = true;
 		this.getConfig();
+	}
+
+	/**
+	 * Unregisters mutation handling
+	 */
+	beforeDestroy(): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+		this.unsubscribe();
 	}
 
 	/**
@@ -254,5 +294,36 @@ export default class IqrfRepository extends Vue {
 		extendedErrorToast(err, 'config.daemon.misc.iqrfRepository.messages.saveFailed');
 	}
 
+	/**
+	 * Sends cache update request
+	 */
+	private updateCache(): void {
+		const options = buildDaemonMessageOptions(60000, 'config.daemon.misc.iqrfRepository.messages.cacheUpdateTimeout', () => this.msgId = '');
+		this.$store.dispatch('spinner/show', {timeout: 60000});
+		ManagementService.updateCache(options)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles cache update response
+	 * @param response Response
+	 */
+	private handleUpdateCacheResponse(response): void {
+		if (response.status === 0) {
+			const updated: boolean = response.status.updated;
+			this.$toast.success(
+				this.$t(
+					'config.daemon.misc.iqrfRepository.messages.cacheUpdate' + (updated ? 'Success' : 'NotNeeded')
+				).toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t(
+					'config.daemon.misc.iqrfRepository.messages.cacheUpdateFailed',
+					{error: response.errorStr}
+				).toString()
+			);
+		}
+	}
 }
 </script>
