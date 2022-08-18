@@ -25,6 +25,12 @@
 	margin-bottom: 0 !important;
 }
 
+.v-input__prepend-outer {
+	.v-simple-checkbox {
+		pointer-events: initial;
+	}
+}
+
 .v-input--checkbox,
 .v-input--switch,
 .v-radio {

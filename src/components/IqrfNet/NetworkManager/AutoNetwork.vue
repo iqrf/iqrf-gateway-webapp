@@ -15,305 +15,382 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
-			<ValidationObserver v-slot='{invalid}'>
-				<v-form @submit.prevent='runAutonetwork'>
-					<fieldset>
-						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.general') }}</h5>
-						<v-checkbox
-							v-model='autoNetwork.discoveryBeforeStart'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
-							dense
-						/>
-						<v-checkbox
-							v-model='autoNetwork.skipDiscoveryEachWave'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
-							dense
-						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:0,7'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.discovery.errors.txPower"),
-								between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
-							}'
-						>
-							<v-text-field
-								v-model.number='autoNetwork.discoveryTxPower'
-								requred='true'
-								type='number'
-								min='0'
-								max='7'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<v-checkbox
-							v-model='autoNetwork.unbondUnrespondingNodes'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.unbondUnrespondingNodes")'
-							dense
-						/>
-						<v-checkbox
-							v-model='autoNetwork.skipPrebonding'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.skipPrebonding")'
-							dense
-						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:0,3'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
-							}'
-						>
-							<v-text-field
-								v-model.number='autoNetwork.actionRetries'
-								type='number'
-								min='0'
-								max='3'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-					</fieldset>
-					<fieldset>
-						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h5>
-						<v-checkbox
-							v-model='useOverlappingNetworks'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
-							dense
-						/>
-						<div v-if='useOverlappingNetworks'>
+	<div>
+		<v-card>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form>
+						<fieldset>
+							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.params.title') }}</h5>
 							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='integer|required|between:1,50'
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:0,3'
 								:custom-messages='{
-									integer: $t("forms.errors.integer"),
-									required: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
-									between: $t("iqrfnet.networkManager.messages.autoNetwork.networks"),
+									integer: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
+									required: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
+									between: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
 								}'
 							>
 								<v-text-field
-									v-model.number='overlappingNetworks.networks'
+									v-model.number='params.actionRetries'
 									type='number'
-									min='1'
-									max='50'
-									:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
+									min='0'
+									max='3'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.params.actionRetries")'
 									:success='touched ? valid : null'
 									:error-messages='errors'
-									:disabled='!useOverlappingNetworks'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='integer|required|between:1,50'
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: $t("forms.errors.integer"),
-									required: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
-									between: $t("iqrfnet.networkManager.messages.autoNetwork.network"),
+									integer: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
+									required: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
+									between: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
 								}'
 							>
 								<v-text-field
-									v-model.number='overlappingNetworks.network'
+									v-model.number='params.discoveryTxPower'
 									type='number'
-									min='1'
-									max='50'
-									:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
+									min='0'
+									max='7'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryTxPower")'
 									:success='touched ? valid : null'
 									:error-messages='errors'
-									:disabled='!useOverlappingNetworks'
+									requred='true'
 								/>
 							</ValidationProvider>
-						</div>
-					</fieldset>
-					<fieldset>
-						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h5>
-						<v-checkbox
-							v-model='useHwpidFiltering'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
-							dense
-							hide-details
-						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='hwpidFilter'
-							:custom-messages='{
-								hwpidFilter: $t("iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"),
-							}'
-						>
-							<v-text-field
-								v-model='hwpidFiltering'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpids")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:disabled='!useHwpidFiltering'
+							<v-checkbox
+								v-model='params.discoveryBeforeStart'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryBeforeStart")'
+								dense
 							/>
-						</ValidationProvider>
-					</fieldset>
-					<fieldset>
-						<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h5>
-						<v-checkbox
-							v-model='useWaves'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
-							dense
-							hide-details
-						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,127'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
-							}'
-						>
-							<v-text-field
-								v-model.number='stopConditions.waves'
-								type='number'
-								min='1'
-								max='127'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:disabled='!useWaves'
+							<v-checkbox
+								v-model='params.skipDiscoveryEachWave'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipDiscoveryEachWave")'
+								dense
 							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,127'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
-							}'
-						>
-							<v-text-field
-								v-model.number='stopConditions.emptyWaves'
-								type='number'
-								min='1'
-								max='127'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+							<v-checkbox
+								v-model='params.unbondUnrespondingNodes'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.unbondUnrespondingNodes")'
+								dense
 							/>
-						</ValidationProvider>
-						<v-checkbox
-							v-model='useNodes'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
-							dense
-							hide-details
-						/>
-						<v-select
-							v-model='nodeCondition'
-							:items='[
-								{value: "new", text: "New"},
-								{value: "total", text: "Total"}
-							]'
-							:disabled='!useNodes'
-						/>
-						<ValidationProvider
-							v-if='nodeCondition === "total"'
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,239'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.totalNodes"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.totalNodes"),
-							}'
-						>
-							<v-text-field
-								v-model.number='stopConditions.nodeCount'
-								type='number'
-								min='1'
-								max='239'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+							<v-checkbox
+								v-model='params.skipPrebonding'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipPrebonding")'
+								dense
+							/>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions.title') }}</h5>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:1,127'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
+									between: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
+								}'
+							>
+								<v-text-field
+									v-model.number='waves'
+									type='number'
+									min='1'
+									max='127'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.waves")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useWaves'
+								>
+									<template #prepend>
+										<v-simple-checkbox
+											v-model='useWaves'
+											color='primary'
+										/>
+									</template>
+								</v-text-field>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:1,127'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
+									between: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
+								}'
+							>
+								<v-text-field
+									v-model.number='emptyWaves'
+									type='number'
+									min='1'
+									max='127'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.emptyWaves")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useEmptyWaves'
+								>
+									<template #prepend>
+										<v-simple-checkbox
+											v-model='useEmptyWaves'
+											color='primary'
+										/>
+									</template>
+								</v-text-field>
+							</ValidationProvider>
+							<v-row align='center'>
+								<v-col cols='12' md='6'>
+									<v-select
+										v-model='nodeCondition'
+										:items='nodeOptions'
+										:disabled='!useNodes'
+									>
+										<template #prepend>
+											<v-simple-checkbox
+												v-model='useNodes'
+												color='primary'
+											/>
+										</template>
+									</v-select>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='integer|required|between:1,239'
+										:custom-messages='{
+											integer: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === NodeCondition.TOTAL ? "totalNodes" : "newNodes")),
+											required: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === NodeCondition.TOTAL ? "totalNodes" : "newNodes")),
+											between: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === NodeCondition.TOTAL ? "totalNodes" : "newNodes")),
+										}'
+									>
+										<v-text-field
+											v-model.number='nodeCount'
+											type='number'
+											min='1'
+											max='239'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:disabled='!useNodes'
+										/>
+									</ValidationProvider>
+								</v-col>
+							</v-row>
+							<v-checkbox
+								v-model='abortOnTooManyNodesFound'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.abortOnTooManyNodesFound")'
 								:disabled='!useNodes'
+								dense
 							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-if='nodeCondition === "new"'
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,239'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.messages.autoNetwork.newNodes"),
-								between: $t("iqrfnet.networkManager.messages.autoNetwork.newNodes"),
-							}'
-						>
-							<v-text-field
-								v-model.number='stopConditions.nodeCount'
-								type='number'
-								min='1'
-								max='239'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:disabled='!useNodes'
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl.title') }}</h5>
+							<v-checkbox
+								v-model='useAddressSpace'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.addressSpace.use")'
+								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.addressSpace")'
+								persistent-hint
+								dense
 							/>
-						</ValidationProvider>
-						<v-checkbox
-							v-model='stopConditions.abortOnTooManyNodesFound'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
-							:disabled='!useNodes'
-							dense
-						/>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								:rules='{
+									addressSpace: true,
+									required: useAddressSpace,
+								}'
+								:custom-messages='{
+									required: $t("iqrfnet.networkManager.autoNetwork.notes.addressSpaceFormat"),
+									addressSpace: $t("iqrfnet.networkManager.autoNetwork.notes.addressSpaceFormat"),
+								}'
+							>
+								<v-text-field
+									v-model='addressSpace'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.addressSpace.title")'
+									:hint='$t("iqrfnet.networkManager.autoNetwork.notes.addressSpaceFormat")'
+									persistent-hint
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useAddressSpace'
+									@change='simplifyAddressSpace'
+								>
+									<template #append-outer>
+										{{ addresses.length }}
+									</template>
+								</v-text-field>
+							</ValidationProvider>
+							<v-checkbox
+								v-model='useMid'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.use")'
+								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.midControl")'
+								persistent-hint
+								dense
+							/>
+							<v-file-input
+								v-model='file'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.file")'
+								accept='.csv,.txt'
+								:disabled='!useMid'
+								:prepend-icon='null'
+								prepend-inner-icon='mdi-file-outline'
+								@change='readFile($event)'
+							>
+								<template #append-outer>
+									<AutoNetworkMidListDialog
+										ref='midlist'
+										:activator-disabled='!useMid'
+										:list.sync='mid.midList'
+										:invalid.sync='midInvalid'
+									/>
+								</template>
+							</v-file-input>
+							<v-checkbox
+								v-model='mid.midFiltering'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.filter")'
+								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.midFilter")'
+								persistent-hint
+								:disabled='!useMid'
+								dense
+							/>
+							<v-checkbox
+								v-model='useOverlappingNetworks'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.use")'
+								dense
+							/>
+							<v-row>
+								<v-col cols='12' md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='integer|required|between:2,50'
+										:custom-messages='{
+											integer: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
+											required: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
+											between: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
+										}'
+									>
+										<v-text-field
+											v-model.number='overlappingNetworks.networks'
+											type='number'
+											min='2'
+											max='50'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.networks")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:disabled='!useOverlappingNetworks'
+										/>
+									</ValidationProvider>
+								</v-col>
+								<v-col cols='12' md='6'>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										rules='integer|required|between:1,50'
+										:custom-messages='{
+											integer: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
+											required: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
+											between: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
+										}'
+									>
+										<v-text-field
+											v-model.number='overlappingNetworks.network'
+											type='number'
+											min='1'
+											max='50'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.network")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											:disabled='!useOverlappingNetworks'
+										/>
+									</ValidationProvider>
+								</v-col>
+							</v-row>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.title') }}</h5>
+							<v-checkbox
+								v-model='useHwpid'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.use")'
+								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.hwpidFilter")'
+								persistent-hint
+								dense
+							/>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								:rules='{
+									hwpidFilter: true,
+									required: useHwpid,
+								}'
+								:custom-messages='{
+									hwpidFilter: $t("iqrfnet.networkManager.autoNetwork.errors.hwpidFilter"),
+									required: $t("iqrfnet.networkManager.autoNetwork.errors.hwpidFilter"),
+								}'
+							>
+								<v-text-field
+									v-model='hwpidList'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.list")'
+									:hint='$t("iqrfnet.networkManager.autoNetwork.notes.hwpidFilterFormat")'
+									persistent-hint
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='!useHwpid'
+								/>
+							</ValidationProvider>
+						</fieldset>
 						<v-btn
+							class='mt-3'
 							color='primary'
-							type='submit'
 							:disabled='invalid'
+							@click='startAutonetwork'
 						>
 							{{ $t('forms.runAutonetwork') }}
 						</v-btn>
-					</fieldset>
-				</v-form>
-			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+					</v-form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
+		<AutoNetworkResultDialog ref='result' @finished='updateDevices' />
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import AutoNetworkMidListDialog from './AutoNetworkMidListDialog.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {
-	AutoNetworkBase,
-	AutoNetworkOptions,
-	AutoNetworkOverlappingNetworks,
-	AutoNetworkStopConditions
-} from '@/interfaces/autonetwork';
+import {IAtnwParams, IAtnwOverlappingNetworks, IAtnwMid, IAtnwMidList, IAtnwMidErrorList} from '@/interfaces/IqrfNet/Autonetwork';
+import {IOption} from '@/interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import AutoNetworkResultDialog from './AutoNetworkResultDialog.vue';
 
-interface NodeMessages {
-	nodesNew: string
-	nodesTotal: string
+enum NodeCondition {
+	TOTAL = 'total',
+	NEW = 'new'
 }
-
-@Component({
-	components: {
-		ValidationObserver,
-		ValidationProvider
-	}
-})
 
 /**
  * AutoNetwork card for IqrfNet network manager
  */
+@Component({
+	components: {
+		AutoNetworkMidListDialog,
+		ValidationObserver,
+		ValidationProvider
+	},
+	data: () => ({
+		NodeCondition,
+	}),
+})
 export default class AutoNetwork extends Vue {
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
 
 	/**
-	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
+	 * @var {IAtnwParams} autoNetwork Basic AutoNetwork process configuration
 	 */
-	private autoNetwork: AutoNetworkBase = {
+	private params: IAtnwParams = {
 		actionRetries: 1,
 		discoveryBeforeStart: false,
 		discoveryTxPower: 7,
@@ -323,50 +400,29 @@ export default class AutoNetwork extends Vue {
 	};
 
 	/**
-	 * @var {string} hwpidFiltering String of HWPIDs to filter nodes by
+	 * @var {boolean} abortOnTooManyNodesFound Abort Autonetwork when enough nodes are found
 	 */
-	private hwpidFiltering = '';
+	private abortOnTooManyNodesFound = false;
 
 	/**
-	 * @var {NodeMessages} messages Messages used in displaying AutoNetwork progress when spinner is active, bonded nodes
+	 * @var {boolean} useWaves Use waves
 	 */
-	private messages: NodeMessages = {
-		nodesNew: '',
-		nodesTotal: ''
-	};
+	private useWaves = false;
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {number} waves Number of waves
 	 */
-	private msgId: string|null = null;
+	private waves = 10;
 
 	/**
-	 * @var {string} nodeCondition AutoNetwork stop condition type for new or total nodes found in network
+	 * @var {boolean} useEmptyWaves Use empty waves
 	 */
-	private nodeCondition = 'new';
+	private useEmptyWaves = true;
 
 	/**
-	 * @var {AutoNetworkOverlappingNetworks} overlappingNetworks AutoNetwork overlapping networks settings
+	 * @var {number} emptyWaves Number of empty waves
 	 */
-	private overlappingNetworks: AutoNetworkOverlappingNetworks = {
-		network: 1,
-		networks: 1
-	};
-
-	/**
-	 * @var {AutoNetworkStopConditions} stopConditions AutoNetwork process stop conditions configuration
-	 */
-	private stopConditions: AutoNetworkStopConditions = {
-		abortOnTooManyNodesFound: false,
-		emptyWaves: 2,
-		waves: 10,
-		nodeCount: 1
-	};
-
-	/**
-	 * @var {boolean} useHwpidFiltering Filter nodes by HWPIDs
-	 */
-	private useHwpidFiltering = false;
+	private emptyWaves = 2;
 
 	/**
 	 * @var {boolean} useNodes Use nodes found stop condition
@@ -374,24 +430,95 @@ export default class AutoNetwork extends Vue {
 	private useNodes = false;
 
 	/**
+	 * @var {NodeCondition} nodeCondition Node count stop condition
+	 */
+	private nodeCondition: NodeCondition = NodeCondition.TOTAL;
+
+	/**
+	 * @var {Array<IOption>} nodeOptions Node count stop condition options
+	 */
+	private nodeOptions: Array<IOption> = [
+		{
+			value: NodeCondition.TOTAL,
+			text: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.total').toString(),
+		},
+		{
+			value: NodeCondition.NEW,
+			text: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.new').toString(),
+		},
+	];
+
+	/**
+	 * @var {number} nodeCount
+	 */
+	private nodeCount = 239;
+
+	/**
 	 * @var {boolean} useOverlappingNetworks Use overlapping networks settings
 	 */
 	private useOverlappingNetworks = false;
 
 	/**
-	 * @var {boolean} useWaves Use maximum number of waves stop condition
+	 * @var {IAtnwOverlappingNetworks} overlappingNetworks AutoNetwork overlapping networks settings
 	 */
-	private useWaves = false;
+	private overlappingNetworks: IAtnwOverlappingNetworks = {
+		networks: 2,
+		network: 1,
+	};
+
+	/**
+	 * @var {boolean} useAddressSpace Use address space
+	 */
+	private useAddressSpace = false;
+
+	/**
+	 * @var {string} addressSpace Address space
+	 */
+	private addressSpace = '';
+
+	/**
+	 * @var {Array<number>} addresses Addresses in address space
+	 */
+	private addresses: Array<number> = [];
+
+	/**
+	 * @var {boolean} useMid Use MID filtering
+	 */
+	private useMid = false;
+
+	/**
+	 * @var {File|null} file MID list file to import
+	 */
+	private file: File|null = null;
+
+	/**
+	 * @var {IAtnwMid} mid MID control
+	 */
+	private mid: IAtnwMid = {
+		midList: [],
+		midFiltering: false,
+	};
+
+	/**
+	 * @var {Array<IAtnwMidErrorList>} midInvalid Invalid MID list records
+	 */
+	private midInvalid: Array<IAtnwMidErrorList> = [];
+
+	/**
+	 * @var {boolean} useHwpid Use HWPID filtering
+	 */
+	private useHwpid = false;
+
+	/**
+	 * @var {string} hwpidList String of HWPIDs to filter nodes by
+	 */
+	private hwpidList = '';
 
 	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
-	/**
-	 * Component unwatch function
-	 */
-	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Initializes validation rules and websocket mutation handling
@@ -404,121 +531,302 @@ export default class AutoNetwork extends Vue {
 			const regex = RegExp('^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])( (6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9]))*$');
 			return regex.test(val);
 		});
+		extend('addressSpace', (val: string) => {
+			const regex = RegExp('^(,?(([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d)|(<([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d);([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d)>)))+$');
+			const passed = regex.test(val);
+			if (!passed) {
+				return false;
+			}
+			const items: Array<string> = val.split(',');
+			const addresses: Set<number> = new Set<number>();
+			if (items.length === 0) {
+				this.addresses = [];
+				return true;
+			}
+			for (let i = 0; i < items.length; ++i) {
+				const item = items[i];
+				if (item.startsWith('<')) {
+					const range = item.substring(1, item.length -1).split(';').map((str: string) => {
+						return Number(str);
+					});
+					if (range[1] < range[0]) {
+						return false;
+					}
+					for (let j = range[0]; j <= range[1]; ++j) {
+						addresses.add(j);
+					}
+				} else {
+					addresses.add(Number(item));
+				}
+			}
+			this.addresses = Array.from(addresses).sort((a: number, b: number) => {return a - b;});
+			return true;
+		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONERROR' ||
-				mutation.type === 'daemonClient/SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
-				if (this.$store.getters['spinner/isEnabled']) {
-					this.$store.commit('spinner/HIDE');
-				}
+				mutation.type === 'daemonClient/SOCKET_ONCLOSE') {
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+				this.autoNetworkError(
+					'iqrfnet.networkManager.autoNetwork.resultModal.errorMessage',
+					'Lost connection to IQRF Gateway Daemon.'
+				);
 				return;
 			}
-			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
-				if (mutation.payload.data.msgId !== this.msgId) {
-					return;
-				}
-				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$store.commit('spinner/HIDE');
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.timeout')
-									.toString()
-							);
-							break;
-						case 0:
-							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
-							if (mutation.payload.data.rsp.lastWave) {
-								this.$store.commit('spinner/HIDE');
-								this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-								this.$emit('update-devices', {
-									message: this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString(),
-									type: 'success',
-								});
-							}
-							break;
-						default:
-							this.$store.commit('spinner/HIDE');
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure')
-									.toString()
-							);
-							break;
-					}
-				} else if (mutation.payload.mType === 'messageError') {
-					this.$store.commit('spinner/HIDE');
-					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-					this.$toast.error(
-						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
-					);
-				}
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+				this.handleAutonetwork(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+				this.autoNetworkError(
+					'iqrfnet.networkManager.autoNetwork.resultModal.errorMessage',
+					this.$t('iqrfnet.networkManager.autoNetwork.errors.messageError')
+				);
 			}
 		});
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Clears possible registered message IDs and unregisters mutation handling
 	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-		this.unwatch();
 		this.unsubscribe();
 	}
 
 	/**
-	 * Creates progress message for running AutoNetwork process, used in spinner
-	 * @param response Daemon api response
-	 * @returns {string} AutoNetwork progress message
+	 * Calculates address space ranges to simplify input and updates address space input
 	 */
-	private autoNetworkProgress(response): string {
-		let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave').toString() + response.rsp.wave;
-		if (this.useWaves) { // maximum number of waves used in request
-			message += '/ ' + this.stopConditions.waves;
+	private simplifyAddressSpace(): void {
+		if (this.addresses.length === 0) {
+			return;
 		}
-		message += '\n[' + response.rsp.progress + '%] ';
-		if (response.rsp.waveState) { // wave information exists
-			message += response.rsp.waveState;
+		let updatedAddressSpace = '';
+		let first = 0, last = 0;
+		for (let i = 0; i < this.addresses.length; ++i) {
+			first = last = this.addresses[i];
+			while ((this.addresses[i] + 1) === this.addresses[i + 1]) {
+				last = this.addresses[i + 1];
+				i++;
+			}
+			if (first === last) {
+				updatedAddressSpace += `${first},`;
+			} else {
+				updatedAddressSpace += `<${first};${last}>,`;
+			}
 		}
-		if (response.rsp.nodesNr !== undefined) { // collects number of nodes in network
-			this.messages.nodesTotal = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusTotalNodes').toString() + response.rsp.nodesNr;
+		this.addressSpace = updatedAddressSpace.slice(0, -1);
+	}
+
+	/**
+	 * Attempts to read file contents
+	 * @param {File} file File
+	 */
+	private readFile(file: File): void {
+		if (!file) {
+			return;
 		}
-		if (response.rsp.newNodesNr !== undefined) { // collects number of nodes added to network in last wave
-			this.messages.nodesNew = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusAddedNodes').toString() + response.rsp.newNodesNr;
+		this.$store.commit('spinner/SHOW');
+		file.text()
+			.then((content: string) => {
+				this.parseContent(content);
+			})
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.autoNetwork.messages.readFailed').toString()
+				);
+				this.file = null;
+			});
+	}
+
+	/**
+	 * Validates and parses file content
+	 * @param {string} content MID list file content
+	 */
+	private parseContent(content: string): void {
+		const lines = content.trim().split('\n');
+		if (lines.length === 0) {
+			return;
 		}
-		message += this.messages.nodesTotal + this.messages.nodesNew;
-		return message;
+		const midRegex = new RegExp(/^[0-9a-f]{8}$/, 'i');
+		const addrRegex = new RegExp(/^\d+$/);
+		const valid: Array<IAtnwMidList> = [];
+		const invalid: Array<IAtnwMidErrorList> = [];
+		for (let i = 0; i < lines.length; ++i) {
+			const line = lines[i].trim();
+			if (line.length === 0 || line.startsWith(',,') || line.startsWith(';;')) {
+				continue;
+			}
+			const tokens = line.split(/[;,]/);
+			if (!midRegex.test(tokens[0])) {
+				invalid.push({
+					line: i+1,
+					content: line,
+					error: this.$t('iqrfnet.networkManager.autoNetwork.midListErrors.midFormat').toString()
+				});
+				continue;
+			}
+			const mid = tokens[0];
+			const midIdx = valid.findIndex((item: IAtnwMidList) => item.deviceMID === mid);
+			if (midIdx !== -1) {
+				invalid.push({
+					line: i+1,
+					content: line,
+					error: this.$t('iqrfnet.networkManager.autoNetwork.midListErrors.midDuplicate', {line: midIdx + 1}).toString()
+				});
+				continue;
+			}
+			const entry: IAtnwMidList = {
+				deviceMID: mid,
+			};
+			if (tokens.length >= 2 && tokens[1].length > 0) {
+				if (!addrRegex.test(tokens[1])) {
+					invalid.push({
+						line: i+1,
+						content: line,
+						error: this.$t('iqrfnet.networkManager.autoNetwork.midListErrors.addrFormat').toString()
+					});
+					continue;
+				}
+				const addr = Number.parseInt(tokens[1]);
+				if (addr < 1 || addr > 239) {
+					invalid.push({
+						line: i+1,
+						content: line,
+						error: this.$t('iqrfnet.networkManager.autoNetwork.midListErrors.addrRange').toString()
+					});
+					continue;
+				}
+				const addrIdx = valid.findIndex((item: IAtnwMidList) => item.deviceAddr === addr);
+				if (addrIdx !== -1) {
+					invalid.push({
+						line: i+1,
+						content: line,
+						error: this.$t('iqrfnet.networkManager.autoNetwork.midListErrors.addrDuplicate', {line: midIdx + 1}).toString()
+					});
+					continue;
+				}
+				entry.deviceAddr = addr;
+			}
+			if (tokens.length >= 3) {
+				const notes = tokens.slice(2);
+				if (notes.length !== 0) {
+					entry.note = notes.join(', ');
+				}
+			}
+			valid.push(entry);
+		}
+		this.mid.midList = valid;
+		this.midInvalid = invalid;
+		this.$store.commit('spinner/HIDE');
+		(this.$refs.midlist as AutoNetworkMidListDialog).showDialog();
+	}
+
+	/**
+	 * Checks autonetwork params and builds autonetwork request parameters object
+	 */
+	private buildAutonetworkParams() {
+		const params = JSON.parse(JSON.stringify(this.params));
+		if (this.useOverlappingNetworks) {
+			Object.assign(params, {overlappingNetworks: this.overlappingNetworks});
+		}
+		if (this.useAddressSpace) {
+			Object.assign(params, {addressSpace: this.addresses});
+		}
+		if (this.useMid) {
+			Object.assign(params, {midList: this.mid.midList});
+			Object.assign(params, {midFiltering: this.mid.midFiltering});
+		}
+		if (this.useHwpid) {
+			Object.assign(params, {hwpidFiltering: this.hwpidList.split(',').map((i) => parseInt(i))});
+		}
+		const stopConditions = {
+			emptyWaves: this.emptyWaves,
+			abortOnTooManyNodesFound: this.abortOnTooManyNodesFound,
+		};
+		if (this.useNodes) {
+			Object.assign(stopConditions, this.nodeCondition === NodeCondition.TOTAL ? {numberOfTotalNodes: this.nodeCount} : {numberOfNewNodes: this.nodeCount});
+		}
+		if (this.useWaves) {
+			Object.assign(stopConditions, {waves: this.waves});
+		}
+		Object.assign(params, {stopConditions: stopConditions});
+		return params;
 	}
 
 	/**
 	 * Builds AutoNetwork configuration object and performs the AutoNetwork process
 	 */
-	private runAutonetwork(): void {
-		this.messages.nodesTotal = this.messages.nodesNew = '';
-		const submitData: AutoNetworkOptions = JSON.parse(JSON.stringify(this.autoNetwork));
-		const stopConditions: AutoNetworkStopConditions = {};
-		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
-		if (this.useWaves) { // maximum number of waves is enabled
-			stopConditions['waves'] = this.stopConditions.waves;
-		}
-		if (this.useNodes) { // node count stop conditions are used
-			stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
-			if (this.nodeCondition === 'total') {
-				stopConditions['numberOfTotalNodes'] = this.stopConditions.nodeCount;
-			} else {
-				stopConditions['numberOfNewNodes'] = this.stopConditions.nodeCount;
-			}
-		}
-		if (Object.keys(stopConditions).length > 0) { // local stop conditions are added to the request if they exist
-			submitData['stopConditions'] = stopConditions;
-		}
-		if (this.useOverlappingNetworks) { // overlapping networks is enabled
-			submitData['overlappingNetworks'] = this.overlappingNetworks;
-		}
-		if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) { // hwpid filtering is enabled, convert from string to array of integers
-			submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
-		}
-		this.$store.commit('spinner/SHOW');
-		IqrfNetService.autoNetwork(submitData, new DaemonMessageOptions(null))
+	private startAutonetwork(): void {
+		const autoNetworkParams = this.buildAutonetworkParams();
+		IqrfNetService.autoNetwork(autoNetworkParams, new DaemonMessageOptions(null))
 			.then((msgId: string) => this.msgId = msgId);
+		this.showResultDialog();
+	}
+
+	/**
+	 * Shows autonetwork result modal window
+	 */
+	private showResultDialog(): void {
+		const waves = this.useWaves ? this.waves : 0;
+		const result = (this.$refs.result as AutoNetworkResultDialog);
+		result.showDialog(waves, this.emptyWaves);
+	}
+
+	/**
+	 * Handles Autonetwork response
+	 * @param response Response
+	 */
+	private handleAutonetwork(response): void {
+		if (response.status === 0) {
+			this.autoNetworkProgress(response.rsp);
+			if (response.rsp.lastWave) {
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			}
+			return;
+		}
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+		this.autoNetworkError('iqrfnet.networkManager.autoNetwork.resultModal.errorMessage', response.statusStr);
+	}
+
+	/**
+	 * Creates progress message for running AutoNetwork process, used in spinner
+	 * @param response Response
+	 */
+	private autoNetworkProgress(response): void {
+		const result = (this.$refs.result as AutoNetworkResultDialog);
+		const code = response.waveStateCode;
+		if (code < 0) {
+			this.autoNetworkError('iqrfnet.networkManager.autoNetwork.resultModal.errorMessage', response.waveState);
+			return;
+		}
+		const progress = response.progress;
+		const totalNodes = response.nodesNr ?? null;
+		const newNodes = response.newNodesNr ?? null;
+		const lastWave = response.lastWave ?? false;
+		result.updateProgress(response.wave, lastWave, progress, response.waveState, totalNodes, newNodes);
+	}
+
+	/**
+	 * Stops autonetwork result progress updating and sets error message
+	 * @param message Error message
+	 */
+	private autoNetworkError(message, error): void {
+		const translation = this.$t(message, {message: error}).toString();
+		(this.$refs.result as AutoNetworkResultDialog).stopProgress(translation);
+	}
+
+	/**
+	 * Emits device update event
+	 */
+	private updateDevices(): void {
+		this.$emit('update-devices');
 	}
 }
 </script>
