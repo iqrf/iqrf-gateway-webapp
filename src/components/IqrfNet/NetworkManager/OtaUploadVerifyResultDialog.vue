@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<v-dialog
 		v-model='show'
-		width='auto'
+		width='50%'
 		persistent
 		no-click-animation
 	>

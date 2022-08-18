@@ -65,7 +65,7 @@ limitations under the License.
 		</v-card>
 		<v-dialog
 			v-model='showModal'
-			width='auto'
+			width='50%'
 			persistent
 			no-click-animation
 		>

@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<v-dialog
 		v-model='modalState'
-		width='auto'
+		width='50%'
 		persistent
 		no-click-animation
 	>

@@ -15,7 +15,7 @@
 		},
 		"email": {
 			"add": "Add e-mail address",
-			"messages":{
+			"messages": {
 				"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
 				"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
 			}
@@ -146,7 +146,7 @@
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
-			"clientId":"Client ID",
+			"clientId": "Client ID",
 			"requestTopic": "Topic for requests",
 			"responseTopic": "Topic for responses",
 			"instanceName": "Name of instance",
@@ -370,7 +370,7 @@
 						"saveSuccess": "UART interface configuration successfully saved."
 					}
 				},
-				"iqrfDpa":{
+				"iqrfDpa": {
 					"title": "IQRF DPA interface",
 					"form": {
 						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
@@ -1511,31 +1511,119 @@
 			"title": "Network manager",
 			"description": "Network manager.",
 			"iqmesh": "IQMESH",
-			
 			"autoNetwork": {
 				"title": "AutoNetwork",
 				"form": {
-					"general": "General settings",
-					"discoveryTxPower": "TX power to use in discovery process",
-					"discoveryBeforeStart": "Run discovery before start",
-					"skipDiscoveryEachWave": "Skip discovery in each wave",
-					"skipPrebonding": "Skip prebonding step",
-					"unbondUnrespondingNodes": "Unbond nodes that do not respond",
-					"actionRetries": "Number of retry DPA transactions",
-					"bondingControl": "Bonding control",
-					"overlappingNetworks": "Overlapping networks",
-					"networks": "Number of networks",
-					"network": "Network number",
-					"hwpidFiltering": "HWPID filtering conditions",
-					"hwpidEnable": "Enable HWPID filtering",
-					"hwpids": "HWPIDs",
-					"stopConditions": "Stop conditions",
-					"waves": "Maximum number of waves",
-					"emptyWaves": "Number of empty waves",
-					"nodes": "Node count conditions",
-					"numberOfTotalNodes": "Number of total nodes",
-					"numberOfNewNodes": "Number of new nodes",
-					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found"
+					"params": {
+						"title": "Parameters",
+						"actionRetries": "Action retries",
+						"discoveryTxPower": "Discovery TX power",
+						"discoveryBeforeStart": "Discovery before start",
+						"skipDiscoveryEachWave": "Skip discovery each wave",
+						"unbondUnrespondingNodes": "Unbond unresponsive nodes",
+						"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
+						"skipPrebonding": "Skip prebonding step"
+					},
+					"stopConditions": {
+						"title": "Stop Conditions",
+						"waves": "Maximum number of waves",
+						"emptyWaves": "Number of empty waves",
+						"use": "Enable node count",
+						"total": "Number of total nodes",
+						"new": "Number of new nodes"
+					},
+					"bondingControl": {
+						"title": "Bonding Control",
+						"addressSpace": {
+							"title": "Address space",
+							"use": "Enable address space"
+						},
+						"mid": {
+							"use": "Enable MID control",
+							"file": "MID list file",
+							"list": "MID list",
+							"filter": "MID filtering",
+							"manual": "Manage MIDs"
+						},
+						"overlappingNetworks": {
+							"title": "Overlapping networks",
+							"use": "Enable overlapping networks",
+							"networks": "Number of networks",
+							"network": "Network number"
+						}
+					},
+					"hwpidFiltering": {
+						"title": "HWPID Filtering Conditions",
+						"use": "Enable HWPID filtering",
+						"list": "HWPIDs"
+					}
+				},
+				"midModal": {
+					"title": "MID list",
+					"table": {
+						"deviceMID": "Device MID",
+						"deviceAddr": "Device address",
+						"note": "User note",
+						"unspecified": "Not specified",
+						"noItems": "No MIDs specified."
+					},
+					"invalid": {
+						"line": "Line number",
+						"content": "Content",
+						"error": "Detected error"
+					},
+					"add": "Add item",
+					"errors": {
+						"address": "Device address should be an integer between 1 and 239.",
+						"duplicateAddr": "This device address is already on the MID list.",
+						"mid": "Device MID should be a hexadecimal string 8 characters long.",
+						"duplicateMid": "This device MID is already on the MID list."
+					}
+				},
+				"resultModal": {
+					"title": "AutoNetwork progress",
+					"total": "Nodes in network:",
+					"new": "New nodes:",
+					"wave": "Waves:",
+					"empty": "Empty waves:",
+					"time": "Total time:",
+					"startMessage": "AutoNetwork process started.",
+					"endMessage": "AutoNetwork process concluded. {message}",
+					"errorMessage": "AutoNetwork process stopped. {message}"
+				},
+				"midListErrors": {
+					"midFormat": "Invalid MID string format.",
+					"midDuplicate": "MID already used on line {line}.",
+					"addrFormat": "Invalid node address format.",
+					"addrRange": "Node address not in range of 1 and 239.",
+					"addrDuplicate": "Address already used on line {line}."
+				},
+				"errors": {
+					"messageError": "Invalid request or response.",
+					"actionRetries": "Action retries should be an integer between 0 and 3.",
+					"discoveryTxPower": "Discovery TX power should be an integer between 0 and 7.",
+					"networks": "Number of networks should be an integer between 2 and 50.",
+					"network": "Network number should be an integer between 1 and 50.",
+					"waves": "Waves should be an integer between 1 and 127.",
+					"emptyWaves": "Empty waves should be an integer between 1 and 127.",
+					"totalNodes": "Number of total nodes should be an integer between 1 and 239.",
+					"newNodes": "Number of new nodes should be an integer between 1 and 239.",
+					"addressSpace": "Invalid address space format.",
+					"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a comma."
+				},
+				"messages": {
+					"readFailed": "Failed to read contents of MID list file."
+				},
+				"notes": {
+					"addressSpace": "If enabled, only specified adresses will be assigned to found nodes. If MID list is used, addresses specified in MID list but not in address space will not assigned.",
+					"addressSpaceFormat": "The valid format is an enumeration of device addresses (1 - 239) separated by comma or interval <from;to>. E.g. 1,2,4,<10;20>.",
+					"midControl": "If enabled, it is possible to bond nodes by their MIDs. Optionally, network address can be specified for each MID.",
+					"midRule1": "1. If MID is listed with address and the address is free, this address will be assigned.",
+					"midRule2": "2. If MID is listed without an address, the first free and not reserved address will be assigned.",
+					"midRule3": "3. If MID is not listed and MID filtering is disabled, the first free and not reserved address will be assigned.",
+					"midFilter": "If enabled, detected MIDs that are not listed will not be added to the network. This feature prevents bonding of unknown devices.",
+					"hwpidFilter": "If enabled, only devices with specified HWPIDs will be added to the network..",
+					"hwpidFilterFormat": "The format is an enumeration of HWPIDs (0-65535) separated by comma. E.g. 4117,4099."
 				}
 			},
 			"backupRestore": {
@@ -1968,29 +2056,8 @@
 			},
 			"messages": {
 				"submit": {
-					"autoNetwork": {
-						"success": "The AutoNetwork process has finished successfully.",
-						"failure": "An error occurred during the AutoNetwork process."
-					},
 					"invalidMessage": "Invalid request.",
 					"timeout": "Request timed out."
-				},
-				"invalid": {
-					"autoNetwork": {
-						"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a space."
-					}
-				},
-				"autoNetwork": {
-					"actionRetries": "Please enter an integer between 0 and 3 for number retry DPA transactions.",
-					"networks": "Please enter an integer between 1 and 50 for number of networks.",
-					"network": "Please enter an integer between 1 and 50 for network number.",
-					"waves": "Please enter an integer between 1 and 127 for maximum number of waves.",
-					"emptyWaves": "Please enter an integer between 1 and 127 for maximum number of consecutive empty waves.",
-					"totalNodes": "Please enter an integer between 1 and 239 for total number of nodes.",
-					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes.",
-					"statusTotalNodes": "Total number of nodes in network: ",
-					"statusAddedNodes": "Number of nodes added in last wave: ",
-					"statusWave": "Wave "
 				},
 				"versionInvalid": "Please upgrade to IQRF Gateway Daemon version 2.3.0 or higher to use this service.",
 				"versionMissing": "Could not retrieve version of IQRF Gateway Daemon.",
@@ -2089,7 +2156,7 @@
 				"response": "Copy response to the clipboard"
 			},
 			"copySuccess": {
-				"dpa":{
+				"dpa": {
 					"request": "DPA request has been copied to the clipboard.",
 					"response": "DPA response has been copied to the clipboard."
 				},
@@ -2455,7 +2522,7 @@
 			"hexUpload": {
 				"title": "Custom DPA handler",
 				"form": {
-					"file":"File to upload"
+					"file": "File to upload"
 				},
 				"errors": {
 					"file": "Please select the file to upload.",
