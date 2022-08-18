@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import {AutoNetworkOptions} from '@/interfaces/autonetwork';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {IOtaUploadParams} from '@/interfaces/IqrfNet/NetworkManager';
@@ -26,35 +24,18 @@ import {IOtaUploadParams} from '@/interfaces/IqrfNet/NetworkManager';
 class IqrfNetService {
 	/**
 	 * Performs AutoNetwork
-	 * @param {AutoNetworkBase} autoNetwork Object containing AutoNetwork parameters
+	 * @param params Object containing AutoNetwork parameters
 	 * @param {DaemonMessageOptions} options Daemon request options
 	 * @return {Promise<string>} Message ID
 	 */
-	autoNetwork(autoNetwork: AutoNetworkOptions, options: DaemonMessageOptions): Promise<string> {
-		const json = {
+	autoNetwork(params, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
-				'req': {
-					'discoveryTxPower': autoNetwork.discoveryTxPower,
-					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
-					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
-					'unbondUnrespondingNodes': autoNetwork.unbondUnrespondingNodes,
-					'skipPrebonding': autoNetwork.skipPrebonding,
-					'actionRetries': autoNetwork.actionRetries
-				},
+				'req': params,
 				'returnVerbose': true,
 			},
 		};
-		if (autoNetwork.stopConditions) {
-			Object.assign(json.data.req, {'stopConditions': autoNetwork.stopConditions});
-		}
-		if (autoNetwork.overlappingNetworks) {
-			Object.assign(json.data.req, {'overlappingNetworks': autoNetwork.overlappingNetworks});
-		}
-		if (autoNetwork.hwpidFiltering) {
-			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
-		}
-		options.request = json;
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
