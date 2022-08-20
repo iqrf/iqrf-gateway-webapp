@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
+
 import {AutoNetworkOptions} from '@/interfaces/autonetwork';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import { IOtaUploadParams } from '@/interfaces/IqrfNet/NetworkManager';
+import {IOtaUploadParams} from '@/interfaces/IqrfNet/NetworkManager';
 
 /**
  * IQRF Network service
@@ -360,6 +360,24 @@ class IqrfNetService {
 	}
 
 	/**
+	 * Performs IQMESH restart, nodes to restart can be filtered by HWPID
+	 * @param {number} hwpid HWPID filter
+	 * @param {DaemonMessageOptions} options WebSocket request options
+	 */
+	restart(hwpid: number, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_Restart',
+			'data': {
+				'req': {
+					'hwpId': hwpid,
+				},
+				'returnVerbose': true,
+			},
+		};
+		return store.dispatch('daemonClient/sendRequest', options);
+	}
+
+	/**
 	 * Performs IQMESH Restore
 	 * @param address Device address
 	 * @param restart Restart coordinator on restore
@@ -447,6 +465,27 @@ class IqrfNetService {
 				},
 				'returnVerbose': true
 			}
+		};
+		return store.dispatch('daemonClient/sendRequest', options);
+	}
+
+	/**
+	 * Sets FRC response time
+	 * @param {number} responseTime Response time
+	 * @param {DaemonMessageOptions} options Daemon message options
+	 * @return {Promise<string>} Message ID
+	 */
+	setFrcResponseTime(responseTime: number, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqrfEmbedFrc_SetParams',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {
+						'frcResponseTime': responseTime,
+					},
+				},
+			},
 		};
 		return store.dispatch('daemonClient/sendRequest', options);
 	}

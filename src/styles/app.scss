@@ -276,3 +276,15 @@ h6 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: 400;
 }
+
+.first-button {
+	border-radius: 4px 0 0 4px;
+}
+
+.middle-button {
+	border-radius: 0;
+}
+
+.last-button {
+	border-radius: 0 4px 4px 0;
+}
