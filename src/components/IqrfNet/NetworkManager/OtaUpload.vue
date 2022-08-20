@@ -33,19 +33,6 @@ limitations under the License.
 								:value='type.value'
 							/>
 						</v-radio-group>
-						<v-radio-group
-							v-model='fileType'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
-							row
-							dense
-						>
-							<v-radio
-								v-for='(type, idx) of fileTypeOptions'
-								:key='idx'
-								:label='type.text'
-								:value='type.value'
-							/>
-						</v-radio-group>
 						<v-select
 							v-model='fileType'
 							:items='fileTypeOptions'

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<v-card flat tile>
-		<v-card-title>{{ $t('iqrfnet.networkManager.restore.title') }}</v-card-title>
+		<v-card-title>{{ $t('iqrfnet.networkManager.backupRestore.restore.title') }}</v-card-title>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
 				<v-form @submit.prevent='restoreDevice'>
@@ -24,14 +24,14 @@ limitations under the License.
 						v-slot='{errors, valid}'
 						rules='required|file'
 						:custom-messages='{
-							required: $t("iqrfnet.networkManager.restore.form.errors.file"),
-							file: $t("iqrfnet.networkManager.restore.form.errors.invalidFile")
+							required: $t("iqrfnet.networkManager.backupRestore.restore.form.errors.file"),
+							file: $t("iqrfnet.networkManager.backupRestore.restore.form.errors.invalidFile")
 						}'
 					>
 						<v-file-input
 							v-model='file'
 							accept='.iqrfbkp'
-							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
+							:label='$t("iqrfnet.networkManager.backupRestore.restore.form.backupFile")'
 							:error-messages='errors'
 							:success='valid'
 							:prepend-icon='null'
@@ -41,7 +41,7 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<p>
-						<em>{{ $t('iqrfnet.networkManager.restore.messages.accessPasswordNote') }}</em>
+						<em>{{ $t('iqrfnet.networkManager.backupRestore.restore.messages.accessPasswordNote') }}</em>
 					</p>
 					<v-btn
 						type='submit'
@@ -173,7 +173,7 @@ export default class Restore extends Vue {
 		this.requestRecovery();
 		if (data.status === 0) {
 			this.$toast.success(
-				this.$t('iqrfnet.networkManager.restore.messages.coordinatorSuccess').toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.coordinatorSuccess').toString()
 			);
 			return;
 		}
@@ -185,7 +185,7 @@ export default class Restore extends Vue {
 				);
 			} else {
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.failedMessage', {message: data.statusStr}).toString()
+					this.$t('iqrfnet.networkManager.backupRestore.restore.messages.failedMessage', {message: data.statusStr}).toString()
 				);
 			}
 			return;
@@ -197,15 +197,15 @@ export default class Restore extends Vue {
 			);
 		} else if (data.status === 1004) { // backup data is too long or too short
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.invalidSize').toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.invalidSize').toString()
 			);
 		} else if (data.status === 1005) { // backup data checksum is incorrect
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.checksumMismatch').toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.checksumMismatch').toString()
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.failedMessage', {message: data.statusStr}).toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.failedMessage', {message: data.statusStr}).toString()
 			);
 		}
 	}
@@ -227,7 +227,7 @@ export default class Restore extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.networkManager.restore.messages.coordinatorRunning').toString()
+			this.$t('iqrfnet.networkManager.backupRestore.restore.messages.coordinatorRunning').toString()
 		);
 		const options = new DaemonMessageOptions(null);
 		IqrfNetService.restore(address, this.restartOnRestore, data, options)
@@ -245,7 +245,7 @@ export default class Restore extends Vue {
 			}
 		}
 		this.$toast.error(
-			this.$t('iqrfnet.networkManager.restore.messages.missingCoordinator').toString()
+			this.$t('iqrfnet.networkManager.backupRestore.restore.messages.missingCoordinator').toString()
 		);
 	}
 
@@ -274,7 +274,7 @@ export default class Restore extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.networkManager.restore.messages.parsingContent').toString()
+			this.$t('iqrfnet.networkManager.backupRestore.restore.messages.parsingContent').toString()
 		);
 		this.file?.text()
 			.then((fileContent: string) => {
@@ -282,7 +282,7 @@ export default class Restore extends Vue {
 			})
 			.catch(() => {
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.readFailed').toString()
+					this.$t('iqrfnet.networkManager.backupRestore.restore.messages.readFailed').toString()
 				);
 				this.clearInput();
 			});
@@ -298,7 +298,7 @@ export default class Restore extends Vue {
 	private checkForProp(obj: IRestoreData, property: string, key: string) {
 		if (!(property in obj)) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: property}).toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.missingProp', {item: key, property: property}).toString()
 			);
 			return false;
 		}
@@ -313,7 +313,7 @@ export default class Restore extends Vue {
 		const restoreData = ini.parse(content);
 		if (!('Backup' in restoreData)) {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()
+				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.invalidContent').toString()
 			);
 			this.clearInput();
 			return;
@@ -323,7 +323,7 @@ export default class Restore extends Vue {
 		for (const key of backupKeys) {
 			if (!RegExp(/^[0-9A-F]{8}$/i).test(key)) {
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.restore.messages.invalidContent').toString()
+					this.$t('iqrfnet.networkManager.backupRestore.restore.messages.invalidContent').toString()
 				);
 				this.clearInput();
 				return;
@@ -356,7 +356,7 @@ export default class Restore extends Vue {
 		if (device !== 'Coordinator' && device !== 'Node') { // Check device prop value
 			this.$toast.error(
 				this.$t(
-					'iqrfnet.networkManager.restore.messages.invalidDevice',
+					'iqrfnet.networkManager.backupRestore.restore.messages.invalidDevice',
 					{entry: key, device: device}
 				).toString()
 			);
@@ -366,7 +366,7 @@ export default class Restore extends Vue {
 		if (addr < 0 || addr > 239) { // Check address prop range
 			this.$toast.error(
 				this.$t(
-					'iqrfnet.networkManager.restore.messages.invalidAddr',
+					'iqrfnet.networkManager.backupRestore.restore.messages.invalidAddr',
 					{entry: key, address: addr}
 				).toString()
 			);
@@ -376,7 +376,7 @@ export default class Restore extends Vue {
 			if (addr !== 0) { // Check invalid coodinator address
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidCoordinatorAddr',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidCoordinatorAddr',
 						{entry: key, address: addr}
 					).toString()
 				);
@@ -385,7 +385,7 @@ export default class Restore extends Vue {
 			if (!entry.DataC) { // Check for missing coordinator data
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidCoordinatorDataC',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidCoordinatorDataC',
 						{entry: key}
 					).toString()
 				);
@@ -394,7 +394,7 @@ export default class Restore extends Vue {
 			if (!RegExp(/^[0-9A-F]+$/i).test(entry.DataC)) { // Check for invalid charset
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidDataContent',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidDataContent',
 						{entry: key, device: 'C'}
 					).toString()
 				);
@@ -403,7 +403,7 @@ export default class Restore extends Vue {
 			if (entry.DataN) { // Check for extra node data
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidCoordinatorDataN',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidCoordinatorDataN',
 						{entry: key}
 					).toString()
 				);
@@ -414,7 +414,7 @@ export default class Restore extends Vue {
 			if (addr === 0) { // Check invalid node address
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidNodeAddr',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidNodeAddr',
 						{entry: key, address: addr}
 					).toString()
 				);
@@ -423,7 +423,7 @@ export default class Restore extends Vue {
 			if (!entry.DataN) { // Check for missing node data
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidNodeDataN',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidNodeDataN',
 						{entry: key}
 					).toString()
 				);
@@ -432,7 +432,7 @@ export default class Restore extends Vue {
 			if (!RegExp(/^[0-9A-F]+$/i).test(entry.DataN)) { // Check for invalid charset
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidDataContent',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidDataContent',
 						{entry: key, device: 'N'}
 					).toString()
 				);
@@ -441,7 +441,7 @@ export default class Restore extends Vue {
 			if (entry.DataC) { // Check for extra coordinator data
 				this.$toast.error(
 					this.$t(
-						'iqrfnet.networkManager.restore.messages.invalidNodeDataC',
+						'iqrfnet.networkManager.backupRestore.restore.messages.invalidNodeDataC',
 						{entry: key}
 					).toString()
 				);
