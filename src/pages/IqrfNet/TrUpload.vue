@@ -116,7 +116,7 @@ export default class TrUpload extends Vue {
 			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerateCoordinator();
@@ -172,7 +172,7 @@ export default class TrUpload extends Vue {
 			this.$t('iqrfnet.trUpload.messages.postUpload').toString()
 		);
 		this.unwatch = this.$store.watch(
-			(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+			(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 			(newVal: boolean, oldVal: boolean) => {
 				if (!oldVal && newVal) {
 					setTimeout(() => this.enumerateCoordinator(), 5000);

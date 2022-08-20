@@ -25,26 +25,35 @@ limitations under the License.
 						:show-arrows='true'
 					>
 						<v-tab>
-							{{ $t("iqrfnet.networkManager.iqmesh") }}
+							{{ $t('iqrfnet.networkManager.iqmesh') }}
 						</v-tab>
 						<v-tab>
-							{{ $t("iqrfnet.networkManager.autoNetwork.title") }}
+							{{ $t('iqrfnet.networkManager.autoNetwork.title') }}
 						</v-tab>
 						<v-tab>
-							{{ $t("iqrfnet.networkManager.backupRestore") }}
+							{{ $t('iqrfnet.networkManager.dpaParams.title') }}
 						</v-tab>
 						<v-tab>
-							{{ $t("iqrfnet.networkManager.otaUpload.title") }}
+							{{ $t('iqrfnet.networkManager.backupRestore.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.otaUpload.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.maintenance.title') }}
 						</v-tab>
 					</v-tabs>
 					<v-tabs-items v-model='activeTab'>
 						<v-tab-item :transition='false'>
-							<BondingManager @update-devices='updateDevices' />
+							<BondingManager ref='bonding' @update-devices='updateDevices' />
 							<v-divider />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
+						</v-tab-item>
+						<v-tab-item :transition='false'>
+							<DpaParams />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
 							<Backup />
@@ -53,6 +62,9 @@ limitations under the License.
 						</v-tab-item>
 						<v-tab-item :transition='false'>
 							<OtaUpload />
+						</v-tab-item>
+						<v-tab-item :transition='false'>
+							<Maintenance ref='maintenance' />
 						</v-tab-item>
 					</v-tabs-items>
 				</v-card>
@@ -66,15 +78,26 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
-import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
-import BondingManager from '@/components/IqrfNet/NetworkManager/BondingManager.vue';
-import DevicesInfo from '@/components/IqrfNet/NetworkManager/DevicesInfo.vue';
-import DiscoveryManager from '@/components/IqrfNet/NetworkManager/DiscoveryManager.vue';
 import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork.vue';
+import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
+import BondingManager from '@/components/IqrfNet/NetworkManager/Iqmesh/BondingManager.vue';
+import DevicesInfo from '@/components/IqrfNet/NetworkManager/DevicesInfo.vue';
+import DiscoveryManager from '@/components/IqrfNet/NetworkManager/Iqmesh/DiscoveryManager.vue';
+import DpaParams from '@/components/IqrfNet/NetworkManager/DpaParams/DpaParams.vue';
+import Maintenance from '@/components/IqrfNet/NetworkManager/Maintenance/Maintenance.vue';
 import OtaUpload from '@/components/IqrfNet/NetworkManager/OtaUpload.vue';
+import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
+
+import compareVersions from 'compare-versions';
+
+import IqrfNetService from '@/services/IqrfNetService';
+
+import {MutationPayload} from 'vuex';
 import {ToastOptions} from 'vue-toast-notification';
 
+/**
+ * Network manager page component
+ */
 @Component({
 	components: {
 		AutoNetwork,
@@ -82,6 +105,8 @@ import {ToastOptions} from 'vue-toast-notification';
 		BondingManager,
 		DevicesInfo,
 		DiscoveryManager,
+		DpaParams,
+		Maintenance,
 		OtaUpload,
 		Restore,
 	},
@@ -89,15 +114,101 @@ import {ToastOptions} from 'vue-toast-notification';
 		title: 'iqrfnet.networkManager.title',
 	},
 })
-
-/**
- * Network manager page component
- */
 export default class NetworkManager extends Vue {
 	/**
-	 * @const {number} activeTab Default active tab
+	 * @var {number} activeTab Default active tab
 	 */
 	private activeTab = 0;
+
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
+	/**
+	 * Mutation handler
+	 */
+	private unsubscribe: CallableFunction = () => {return;};
+
+	/*
+	 * Watch handler
+	 */
+	private unwatch: CallableFunction = () => {return;};
+
+	/**
+	 * Registers mutation handling
+	 */
+	created(): void {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				this.handleEnumeration(mutation.payload.data);
+			}
+		});
+	}
+
+	/**
+	 * Enumerates coordinator device for additional form configuration
+	 */
+	mounted(): void {
+		if (this.$store.getters.isSocketConnected) {
+			this.enumerateCoordinator();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.enumerateCoordinator();
+						this.unwatch();
+					}
+				}
+			);
+		}
+	}
+
+	/**
+	 * Unregisters mutation handling
+	 */
+	beforeDestroy(): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+		this.unsubscribe();
+		this.unwatch();
+	}
+
+	/**
+	 * Enumerates coordinator device
+	 */
+	private enumerateCoordinator(): void {
+		IqrfNetService.enumerateDevice(0, 60000)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles enumeration Daemon API responses
+	 * @param response Response
+	 */
+	private handleEnumeration(response): void {
+		if (response.status !== 0) {
+			return;
+		}
+		const rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
+		this.setRfChannelRules(rfBand);
+		const os = response.rsp.osRead.osBuild;
+		if (parseInt(os, 16) < 0x08d7) {
+			return;
+		}
+		const dpa = response.rsp.peripheralEnumeration.dpaVer;
+		if (compareVersions.compare(dpa, '4.16', '<')) {
+			return;
+		}
+		this.enableBondNfc();
+	}
 
 	/**
 	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
@@ -105,6 +216,21 @@ export default class NetworkManager extends Vue {
 	 */
 	private updateDevices(message: ToastOptions): void {
 		(this.$refs.devs as DevicesInfo).getBondedDevices(message);
+	}
+
+	/**
+	 * Passes RF band to the RF Signal Test component
+	 * @param {number} rfBand RF Band
+	 */
+	private setRfChannelRules(rfBand: number): void {
+		(this.$refs.maintenance as Maintenance).setRfChannelRules(rfBand);
+	}
+
+	/**
+	 * Enables NFC bonding in bonding manager
+	 */
+	private enableBondNfc(): void {
+		(this.$refs.bonding as BondingManager).enableBondNfc();
 	}
 
 }
