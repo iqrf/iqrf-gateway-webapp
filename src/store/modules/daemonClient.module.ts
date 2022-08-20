@@ -57,6 +57,17 @@ const serviceModeWhitelist = [
 	'mngScheduler_RemoveTask',
 ];
 
+/**
+ * Build Daemon message options
+ * @param timeout Request timeout
+ * @param message Timeout toast message
+ * @param callback Callback to execute on request timeout
+ * @returns {DaemonMessageOptions} Daemon API request options
+ */
+export function buildDaemonMessageOptions(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): DaemonMessageOptions {
+	return new DaemonMessageOptions(null, timeout, message, callback);
+}
+
 const actions: ActionTree<DaemonClientState, any> = {
 	sendRequest(
 		{ state, dispatch },

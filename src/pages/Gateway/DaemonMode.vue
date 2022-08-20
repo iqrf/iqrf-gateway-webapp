@@ -123,9 +123,11 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
+import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
+import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import DaemonModeService, {DaemonModeEnum} from '@/services/DaemonModeService';
+import ManagementService from '@/services/DaemonApi/ManagementService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
@@ -183,9 +185,9 @@ export default class DaemonMode extends Vue {
 	};
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string} msgId Daemon api message id
 	 */
-	private msgId: string|null = null;
+	private msgId = '';
 
 	/**
 	 * Component unsubscribe function
@@ -208,7 +210,7 @@ export default class DaemonMode extends Vue {
 				}
 				if (mutation.payload.data.msgId === this.msgId) {
 					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-					this.handleResponse(mutation.payload);
+					this.handleModeResponse(mutation.payload);
 				}
 			}
 		});
@@ -247,24 +249,27 @@ export default class DaemonMode extends Vue {
 	 * Retrieves Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = null; this.loaded = true;})
+		const options = buildDaemonMessageOptions(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = ''; this.loaded = true;});
+		ManagementService.getMode(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Sets new Daemon mode
-	 * @param {DaemonModeEnum} newMode New Daemon mode to set
+	 * Sets Daemon mode
+	 * @param {DaemonModeEnum} mode Daemon mode to set
 	 */
-	private setMode(newMode: DaemonModeEnum): void {
-		DaemonModeService.set(newMode, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
+	private setMode(mode: DaemonModeEnum): void {
+		const options = buildDaemonMessageOptions(5000, 'gateway.mode.messages.setFailed', () => this.msgId = '');
+		ManagementService.setMode(mode, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Daemon api response handler
+	 * Handles Daemon API mode response
+	 * @param response Daemon API mode response
 	 */
-	private handleResponse(response): void {
-		this.mode = DaemonModeService.parse(response);
+	private handleModeResponse(response): void {
+		this.mode = ManagementService.parseModeResponse(response);
 		if (this.mode === DaemonModeEnum.unknown) {
 			let errorMessage: string;
 			if (this.loaded) {
