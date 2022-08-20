@@ -342,6 +342,11 @@ export default class StandardDevices extends Vue {
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
+	 * Watch handler
+	 */
+	private unwatch: CallableFunction = () => {return;};
+
+	/**
 	 * Subscribes a mutation handler to websocket store
 	 */
 	created(): void {
@@ -379,7 +384,19 @@ export default class StandardDevices extends Vue {
 	 * Starts request chain to build grid of devices implementing IQRF standards
 	 */
 	mounted(): void {
-		this.getDevices();
+		if (this.$store.getters.isSocketConnected) {
+			this.getDevices();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.getDevices();
+						this.unwatch();
+					}
+				}
+			);
+		}
 	}
 
 	/**
@@ -388,6 +405,7 @@ export default class StandardDevices extends Vue {
 	beforeDestroy(): void {
 		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
+		this.unwatch();
 	}
 
 	/**

@@ -19,7 +19,12 @@ limitations under the License.
 		:class='inputClasses'
 		v-bind='{errorMessages, focused, isValid, success, successMessages}'
 	>
-		<v-label absolute v-bind='{focused}' :color='validationStatus' :value='hasValue'>
+		<v-label
+			absolute
+			v-bind='{focused}'
+			:color='validationStatus'
+			:value='hasValue'
+		>
 			{{ label }}
 		</v-label>
 		<prism-editor

@@ -15,56 +15,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-main>
-		<v-container fluid fill-height>
-			<v-layout align-center justify-center>
-				<v-flex
-					xs12
-					sm8
-					md6
-					lg4
-				>
-					<div class='logo'>
-						<img :alt='title' :src='logo'>
-					</div>
-					<slot />
-				</v-flex>
-			</v-layout>
-		</v-container>
-	</v-main>
+	<div>
+		<FrcResponseTime />
+		<v-divider />
+		<RfSignalTest ref='rfSignal' />
+		<v-divider />
+		<NetworkIssues />
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import ThemeManager from '@/helpers/themeManager';
-
-@Component({})
+import FrcResponseTime from './FrcResponseTime.vue';
+import NetworkIssues from './NetworkIssues.vue';
+import RfSignalTest from './RfSignalTest.vue';
 
 /**
- * Installation base page component
+ * IQMESH Network maintenance card
  */
-export default class TheWizard extends Vue {
-
-	private logo = ThemeManager.getWizardLogo();
-
+@Component({
+	components: {
+		FrcResponseTime,
+		NetworkIssues,
+		RfSignalTest,
+	},
+})
+export default class Maintenance extends Vue {
 	/**
-	 * Returns the app title
-	 * @return {string} App title
+	 * Pass RF band to RF Signal Test component
+	 * @param {number} rfBand RF band
 	 */
-	get title(): string {
-		return this.$t(ThemeManager.getTitleKey()).toString();
+	public setRfChannelRules(rfBand: number): void {
+		(this.$refs.rfSignal as RfSignalTest).setRfChannelRulesMessages(rfBand);
 	}
-
 }
 </script>
-
-<style lang='scss' scoped>
-.logo {
-	padding-bottom: 2rem;
-
-	img {
-		height: 32pt;
-		width: 100%;
-	}
-}
-</style>
