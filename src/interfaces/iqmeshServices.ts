@@ -45,6 +45,11 @@ export interface IBackupData {
 	 * Is device online?
 	 */
 	online: boolean
+
+	/**
+	 * Backup error
+	 */
+	error?: string
 }
 
 /**

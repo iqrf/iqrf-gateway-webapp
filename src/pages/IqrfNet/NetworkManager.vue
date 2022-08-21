@@ -79,14 +79,14 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork.vue';
-import Backup from '@/components/IqrfNet/NetworkManager/Backup.vue';
+import Backup from '@/components/IqrfNet/NetworkManager/Backup/Backup.vue';
 import BondingManager from '@/components/IqrfNet/NetworkManager/Iqmesh/BondingManager.vue';
 import DevicesInfo from '@/components/IqrfNet/NetworkManager/DevicesInfo.vue';
 import DiscoveryManager from '@/components/IqrfNet/NetworkManager/Iqmesh/DiscoveryManager.vue';
 import DpaParams from '@/components/IqrfNet/NetworkManager/DpaParams/DpaParams.vue';
 import Maintenance from '@/components/IqrfNet/NetworkManager/Maintenance/Maintenance.vue';
 import OtaUpload from '@/components/IqrfNet/NetworkManager/OtaUpload.vue';
-import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
+import Restore from '@/components/IqrfNet/NetworkManager/Backup/Restore.vue';
 
 import compareVersions from 'compare-versions';
 
