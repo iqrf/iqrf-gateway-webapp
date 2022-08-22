@@ -124,11 +124,5 @@ export default class NetworkOperators extends Vue {
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.listFailed'));
 	}
 
-	/**
-	 *
-	 */
-	private handleCloseMenu(idx: number): void {
-		(this.$refs['menu']![idx] as any).isActive = false;
-	}
 }
 </script>

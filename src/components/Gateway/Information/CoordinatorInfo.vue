@@ -18,7 +18,6 @@ limitations under the License.
 	<span v-if='requestRunning'>
 		<v-progress-circular
 			color='info'
-			class='cinfo-spinner'
 			indeterminate
 		/>
 	</span>
@@ -179,10 +178,3 @@ export default class CoordinatorInfo extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.cinfo-spinner {
-	width: 2rem;
-	height: 2rem;
-}
-</style>

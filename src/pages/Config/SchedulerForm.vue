@@ -893,11 +893,3 @@ export default class SchedulerForm extends Vue {
 
 }
 </script>
-
-<style scoped>
-.messages-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-</style>

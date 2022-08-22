@@ -61,11 +61,9 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import TracerDeleteDialog from './TracerDeleteDialog.vue';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-
 import DaemonConfigurationService	from '@/services/DaemonConfigurationService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 
 /**
