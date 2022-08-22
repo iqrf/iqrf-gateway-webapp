@@ -26,7 +26,7 @@ limitations under the License.
 		<template #prepend>
 			<v-list-item class='logo'>
 				<router-link to='/'>
-					<img :alt='title' :src='logo' />
+					<img :alt='title' :src='logo'>
 				</router-link>
 			</v-list-item>
 		</template>

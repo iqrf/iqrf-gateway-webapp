@@ -26,7 +26,7 @@ class CloudService {
 	 * @param serviceName Cloud service name
 	 * @param data Cloud connection configuration
 	 */
-	create(serviceName: string, data: any): Promise<AxiosResponse> {
+	create(serviceName: string, data: Record<string, any>): Promise<AxiosResponse> {
 		return axios.post('clouds/' + serviceName, data, {headers: authorizationHeader()});
 	}
 

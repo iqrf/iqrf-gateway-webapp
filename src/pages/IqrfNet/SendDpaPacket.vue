@@ -592,10 +592,3 @@ export default class SendDpaPacket extends Vue {
 	}
 }
 </script>
-
-<style lang='scss'>
-.dpa-section {
-	float: left;
-	width: 25%;
-}
-</style>

@@ -18,7 +18,6 @@ limitations under the License.
 	<span v-if='requestRunning && mode === "unknown"'>
 		<v-progress-circular
 			color='info'
-			class='cinfo-spinner'
 			indeterminate
 		/>
 	</span>
@@ -136,10 +135,3 @@ export default class DaemonModeInfo extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.cinfo-spinner {
-	width: 2rem;
-	height: 2rem;
-}
-</style>
