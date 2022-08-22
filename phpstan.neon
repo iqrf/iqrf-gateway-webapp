@@ -46,6 +46,3 @@ parameters:
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
-		-
-			message: '#Parameter \#1 \$contents of static method Lcobucci\\JWT\\Signer\\Key\\InMemory::plainText\(\) expects non\-empty\-string, string given.#'
-			path: app/ApiModule/Version0/Models/JwtConfigurator.php
