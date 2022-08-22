@@ -55,6 +55,9 @@ class JwtConfigurator {
 		try {
 			$privateKey = $this->certificateManager->getPrivateKey()->getPEM();
 			$publicKey = $this->certificateManager->getPublicKey()->getPEM();
+			if ($privateKey === '' || $publicKey === '') {
+				return Configuration::forUnsecuredSigner();
+			}
 			$parsedKey = $this->certificateManager->getParsedPrivateKey();
 			switch ($parsedKey->getType()) {
 				case OPENSSL_KEYTYPE_RSA:
