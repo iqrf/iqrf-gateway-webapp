@@ -24,10 +24,9 @@ limitations under the License.
 		color='#3c4b64'
 	>
 		<template #prepend>
-			<v-list-item class='corner-logo'>
+			<v-list-item class='logo'>
 				<router-link to='/'>
-					<img v-if='minimized' :alt='title' :src='ThemeManager.getSidebarSmallLogo()'>
-					<img v-else :alt='title' :src='ThemeManager.getSidebarLogo()'>
+					<img :alt='title' :src='logo' />
 				</router-link>
 			</v-list-item>
 		</template>
@@ -74,6 +73,14 @@ import {LinkTarget} from '@/helpers/DisambiguationHelper';
  * Sidebar component
  */
 export default class TheSidebar extends Vue {
+
+	/**
+	 * Returns the logo URL
+	 * @returns {string} Log URL
+	 */
+	get logo(): string {
+		return this.minimized ? ThemeManager.getSidebarSmallLogo() : ThemeManager.getSidebarLogo();
+	}
 
 	/**
 	 * Computes sidebar show state
@@ -489,8 +496,14 @@ export default class TheSidebar extends Vue {
 }
 </script>
 
-<style scoped>
-.corner-logo {
+<style lang='scss'>
+.logo {
+	img {
+		max-width: 100%;
+		max-height: 100%;
+		vertical-align: middle;
+	}
+
 	height: 60px;
 	justify-content: center;
 }
