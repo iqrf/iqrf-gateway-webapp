@@ -60,7 +60,6 @@
 		"jwt-decode": "^3.1.2",
 		"luxon": "^3.0.4",
 		"maska": "^1.5.0",
-		"perfect-scrollbar": "^1.5.5",
 		"prismjs": "^1.29.0",
 		"punycode": "^2.1.1",
 		"semver": "^7.3.8",
@@ -130,10 +129,7 @@
 		"vue-cli-plugin-vuetify": "^2.5.8",
 		"vue-eslint-parser": "^9.1.0",
 		"vue-i18n-extract": "^2.0.7",
-		"vue-loader": "^17.0.1",
-		"vue-svg-loader": "^0.16.0",
 		"vue-template-compiler": "^2.7.13",
-		"vuetify-loader": "^1.9.2",
 		"webpack": "^5.74.0"
 	},
 	"browserslist": [
