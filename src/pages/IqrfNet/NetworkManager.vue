@@ -88,7 +88,7 @@ import Maintenance from '@/components/IqrfNet/NetworkManager/Maintenance/Mainten
 import OtaUpload from '@/components/IqrfNet/NetworkManager/OtaUpload.vue';
 import Restore from '@/components/IqrfNet/NetworkManager/Restore.vue';
 
-import compareVersions from 'compare-versions';
+import {compare} from 'compare-versions';
 
 import IqrfNetService from '@/services/IqrfNetService';
 
@@ -161,7 +161,7 @@ export default class NetworkManager extends Vue {
 			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
+				(_state, getter) => getter.isSocketConnected,
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
 						this.enumerateCoordinator();
@@ -204,7 +204,7 @@ export default class NetworkManager extends Vue {
 			return;
 		}
 		const dpa = response.rsp.peripheralEnumeration.dpaVer;
-		if (compareVersions.compare(dpa, '4.16', '<')) {
+		if (compare(dpa, '4.16', '<')) {
 			return;
 		}
 		this.enableBondNfc();
