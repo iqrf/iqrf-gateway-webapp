@@ -175,6 +175,9 @@ h6 {
 .log {
 	max-height: 75vh;
 	font-size: 87.5%;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-y: scroll;
 }
 
 .rf-mode-icon {
