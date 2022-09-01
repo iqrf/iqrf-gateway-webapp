@@ -32,6 +32,7 @@ use Grifart\Enum\Enum;
  * @method static InterfaceTypes GSM()
  * @method static InterfaceTypes IP_TUNNEL()
  * @method static InterfaceTypes LOOPBACK()
+ * @method static InterfaceTypes PPP()
  * @method static InterfaceTypes TUN()
  * @method static InterfaceTypes VLAN()
  * @method static InterfaceTypes WIFI()
@@ -76,6 +77,11 @@ final class InterfaceTypes extends Enum {
 	 * Loopback interface
 	 */
 	private const LOOPBACK = 'loopback';
+
+	/**
+	 * Point to Point interface
+	 */
+	private const PPP = 'ppp';
 
 	/**
 	 * TUN or TAP interface
