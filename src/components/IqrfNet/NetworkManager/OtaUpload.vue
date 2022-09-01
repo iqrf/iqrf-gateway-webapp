@@ -33,11 +33,6 @@ limitations under the License.
 								:value='type.value'
 							/>
 						</v-radio-group>
-						<v-select
-							v-model='fileType'
-							:items='fileTypeOptions'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
-						/>
 						<ValidationProvider
 							v-slot='{errors, valid}'
 							rules='required|selectedFile'
