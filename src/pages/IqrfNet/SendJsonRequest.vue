@@ -46,14 +46,21 @@ limitations under the License.
 								required: $t("iqrfnet.sendJson.messages.missing"),
 								json: $t("iqrfnet.sendJson.messages.invalid"),
 							}'
-							slim
 						>
-							<JsonEditor
+							<!--<JsonEditor
 								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json").toString()'
 								:success='touched ? valid : null'
 								:error-messages='errors'
 								@blur='$emit("blur", $event)'
+							/>-->
+							<v-textarea
+								v-model='json'
+								:label='$t("iqrfnet.sendJson.form.json").toString()'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								rows='1'
+								auto-grow
 							/>
 						</ValidationProvider>
 						<v-btn color='primary' type='submit' :disabled='invalid'>
