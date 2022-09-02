@@ -180,6 +180,7 @@ limitations under the License.
 									<v-alert
 										v-if='address === 0 && config.stdAndLpNetwork === false'
 										type='warning'
+										text
 									>
 										{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 									</v-alert>

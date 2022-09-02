@@ -2552,7 +2552,7 @@
 					"version": "Please select IQRF OS version to upload."
 				},
 				"messages": {
-					"newest": "Your device has the latest version of IQRF OS.",
+					"newest": "Your coordinator device has the latest version of IQRF OS.",
 					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
 					"gatewayUpload": "Downloading OS and DPA files to gateway...",
 					"gatewayUploadFailed": "Failed to download OS and DPA files to gateway: {error}",

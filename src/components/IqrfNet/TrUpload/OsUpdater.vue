@@ -62,7 +62,8 @@ limitations under the License.
 						</div>
 						<v-alert
 							v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
-							color='success'
+							type='success'
+							text
 						>
 							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
 						</v-alert>

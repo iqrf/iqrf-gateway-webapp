@@ -123,7 +123,11 @@ limitations under the License.
 						</tbody>
 					</v-simple-table>
 				</div>
-				<v-alert v-else color='error'>
+				<v-alert
+					v-else
+					type='error'
+					text
+				>
 					{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
 				</v-alert>
 			</v-card-text>

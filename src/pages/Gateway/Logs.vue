@@ -39,6 +39,7 @@ limitations under the License.
 		<v-alert
 			v-if='loaded && logs.length === 0'
 			type='error'
+			text
 		>
 			{{ $t('gateway.log.messages.noLogs') }}
 		</v-alert>
