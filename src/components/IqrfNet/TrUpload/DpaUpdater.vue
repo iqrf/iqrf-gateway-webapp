@@ -55,7 +55,8 @@ limitations under the License.
 						</div>
 						<v-alert
 							v-if='versions.length === 0 && currentDpa.length > 0'
-							color='info'
+							type='warning'
+							text
 						>
 							{{ $t('iqrfnet.trUpload.dpaUpload.messages.noUpgrades') }}
 						</v-alert>

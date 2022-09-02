@@ -229,6 +229,7 @@ limitations under the License.
 									<v-alert
 										v-if='!ipv4InSubnet'
 										type='error'
+										text
 									>
 										{{ $t('network.connection.ipv4.ipNotInSubnet') }}
 									</v-alert>
