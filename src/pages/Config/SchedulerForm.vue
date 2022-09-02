@@ -171,13 +171,20 @@ limitations under the License.
 											json: $t("iqrfnet.sendJson.messages.invalid"),
 											mType: $t("iqrfnet.sendJson.messages.mType"),
 										}'
-										slim
 									>
-										<JsonEditor
+										<!--<JsonEditor
 											v-model='tasks[i-1].message'
 											:label='$t("config.daemon.scheduler.form.messages.message")'
 											:success='touched ? valid : null'
 											:error-messages='errors'
+										/>-->
+										<v-textarea
+											v-model='tasks[i-1].message'
+											:label='$t("config.daemon.scheduler.form.messages.message")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											rows='1'
+											auto-grow
 										/>
 									</ValidationProvider>
 									<ValidationProvider
