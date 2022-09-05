@@ -17,7 +17,7 @@
 /**
  * Systemd journal storage methods
  */
-export enum StorageMethod {
+export enum JournalPersistence {
 	PERSISTENT = 'persistent',
 	VOLATILE = 'volatile'
 }
@@ -25,7 +25,7 @@ export enum StorageMethod {
 /**
  * Systemd journal time-based persistence units
  */
-export enum TimeUnit {
+export enum JournalTimeUnit {
 	SECONDS = 's',
 	MINUTES = 'm',
 	HOURS = 'h',

@@ -36,26 +36,61 @@ limitations under the License.
 				</v-btn>
 			</div>
 		</header>
-		<v-alert
-			v-if='loaded && logs.length === 0'
-			type='error'
-			text
-		>
-			{{ $t('gateway.log.messages.noLogs') }}
-		</v-alert>
-		<v-card v-else-if='loaded && logs.length > 0'>
+		<v-card>
 			<v-tabs v-model='tab' :show-arrows='true'>
-				<v-tab v-for='(item, i) in logs' :key='i'>
-					{{ $t(`gateway.log.services.${item.name}`) }}
+				<v-tab v-for='key in Object.keys(logs)' :key='key'>
+					{{ $t(`gateway.log.services.${key}`) }}
+				</v-tab>
+				<v-tab>
+					{{ $t('gateway.log.journal.title') }}
 				</v-tab>
 			</v-tabs>
+			<v-divider />
 			<v-tabs-items v-model='tab'>
 				<v-tab-item
 					v-for='(item, i) in logs'
 					:key='i'
 					:transition='false'
 				>
-					<LogTab v-if='item.loaded' :log.sync='item.log' />
+					<v-card
+						v-if='!item.available || !item.loaded || item.log.length === 0'
+						flat
+						tile
+					>
+						<v-card-text>
+							<v-alert
+								v-if='!item.available'
+								class='mb-0'
+								type='error'
+								text
+							>
+								{{ $t('gateway.log.messages.notAvailable') }}
+							</v-alert>
+							<v-alert
+								v-else-if='!item.loaded'
+								class='mb-0'
+								type='warning'
+								text
+							>
+								{{ $t('gateway.log.messages.notLoaded') }}
+							</v-alert>
+							<v-alert
+								v-else-if='item.log.length === 0'
+								class='mb-0'
+								type='info'
+								text
+							>
+								{{ $t('gateway.log.messages.noLogs') }}
+							</v-alert>
+						</v-card-text>
+					</v-card>
+					<LogTab v-else :log.sync='item.log' />
+				</v-tab-item>
+				<v-tab-item
+					key='journal'
+					:transition='false'
+				>
+					<JournalViewer />
 				</v-tab-item>
 			</v-tabs-items>
 		</v-card>
@@ -64,6 +99,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
+import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogTab from '@/components/Gateway/LogTab.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -72,11 +108,12 @@ import {fileDownloader} from '@/helpers/fileDownloader';
 import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IServiceLog} from '@/interfaces/log';
+import {ILog} from '@/interfaces/Logs';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
+		JournalViewer,
 		LogTab,
 	},
 	metaInfo(): MetaInfo {
@@ -99,12 +136,33 @@ export default class LogViewer extends Vue {
 	/**
 	 * Array of service logs
 	 */
-	private logs: Array<IServiceLog> = [];
-
-	/**
-	 * @var {boolean} loaded Indicates that logs have been loaded
-	 */
-	private loaded = false;
+	private logs: Record<string, ILog> = {
+		'iqrf-gateway-controller': {
+			available: false,
+			loaded: false,
+			log: '',
+		},
+		'iqrf-gateway-daemon': {
+			available: false,
+			loaded: false,
+			log: '',
+		},
+		'iqrf-gateway-setter': {
+			available: false,
+			loaded: false,
+			log: '',
+		},
+		'iqrf-gateway-translator': {
+			available: false,
+			loaded: false,
+			log: '',
+		},
+		'iqrf-gateway-uploader': {
+			available: false,
+			loaded: false,
+			log: '',
+		},
+	};
 
 	@Watch('tab')
 	private onTabChanged(): void {
@@ -122,45 +180,44 @@ export default class LogViewer extends Vue {
 	 * Retrieves a list of available logs
 	 */
 	private getAvailableLogs(): void {
-		if (this.loaded) {
-			this.loaded = false;
-		}
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getAvailableLogs()
 			.then((response: AxiosResponse) => {
-				const logs: Array<IServiceLog> = [];
-				response.data.forEach((item: string) => {
-					logs.push({
-						name: item,
-						log: null,
-						loaded: false,
-					});
-				});
-				if (logs.length === 0) {
+				if (response.data.length === 0) {
 					this.$store.commit('spinner/HIDE');
-				} else {
-					this.logs = logs;
-					this.getServiceLog();
+					return;
 				}
-				this.loaded = true;
+				response.data.forEach((item: string) => {
+					if (this.logs[item] === undefined) {
+						return;
+					}
+					this.logs[item].available = true;
+				});
+				this.$store.commit('spinner/HIDE');
+				this.getServiceLog();
 			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'gateway.log.messages.listFailed');
-				this.loaded = true;
-			});
+			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.log.messages.listFailed'));
 	}
 
 	/**
 	 * Retrieves service log
 	 */
 	private getServiceLog(): void {
+		const keys = Object.keys(this.logs);
+		if (this.tab > keys.length - 1) {
+			return;
+		}
+		const service = keys[this.tab];
+		if (!this.logs[service].available) {
+			return;
+		}
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		GatewayService.getServiceLog(this.logs[this.tab].name)
+		GatewayService.getServiceLog(service)
 			.then((response: AxiosResponse) => {
-				this.logs[this.tab].log = response.data;
-				this.logs[this.tab].loaded = true;
+				this.logs[service].log = response.data;
+				this.logs[service].loaded = true;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -169,7 +226,6 @@ export default class LogViewer extends Vue {
 				} else {
 					this.$store.commit('spinner/HIDE');
 				}
-				this.logs[this.tab].loaded = true;
 			});
 	}
 
