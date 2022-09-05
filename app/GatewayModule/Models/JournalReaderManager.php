@@ -20,31 +20,54 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use FFI;
+use App\CoreModule\Models\CommandManager;
+use App\GatewayModule\Exceptions\JournalReaderException;
+use Nette\Utils\Json;
 
 class JournalReaderManager {
 
 	/**
-	 * @var FFI|null FFI C code interface
+	 * Journal reader utility command
 	 */
-	private ?FFI $ffi = null;
+	private const READER = 'mini-journalreader';
 
 	/**
-	 * Contructor
+	 * @var CommandManager $commandManager Command manager
 	 */
-	public function __construct() {
-		$this->ffi = FFI::load(__DIR__ . '/journal.h');
+	private CommandManager $commandManager;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 */
+	public function __construct(CommandManager $commandManager) {
+		$this->commandManager = $commandManager;
 	}
 
 	/**
-	 * Returns number of last journal records or records before cursor if specified
-	 * @param int $last Number of records to retrieve
+	 * Gets number of journal records from end of journal or specified cursor
+	 * @param int $count Number of records to get
 	 * @param string|null $cursor Journal cursor
-	 * @return array<mixed> Journal records
+	 * @return array<string, string|array<int, string>> Journal records and cursors
 	 */
-	public function getRecords(int $last, ?string $cursor = null): array {
-		$this->ffi = $this->ffi;
-		return [];
+	public function getRecords(int $count, ?string $cursor = null): array {
+		$command = sprintf('%s -j -n %d', self::READER, $count);
+		if ($cursor !== null) {
+			$command = sprintf('%s -t "%s"', $command, $cursor);
+		}
+		$result = $this->commandManager->run($command, true);
+		if ($result->getExitCode() !== 0) {
+			throw new JournalReaderException($result->getStderr());
+		}
+		$output = Json::decode($result->getStdout(), Json::FORCE_ARRAY);
+		$records = $output['data'];
+		$startCursor = array_shift($records);
+		$endCursor = array_pop($records);
+		return [
+			'records' => $records,
+			'startCursor' => $startCursor,
+			'endCursor' => $endCursor,
+		];
 	}
 
 }

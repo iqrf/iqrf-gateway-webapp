@@ -34,7 +34,6 @@ use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use App\GatewayModule\Models\LogManager;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
 use ZipArchive;
 
@@ -44,13 +43,6 @@ require __DIR__ . '/../../../bootstrap.php';
  * Tests for Gateway info manager
  */
 final class LogManagerTest extends CommandTestCase {
-
-	/**
-	 * @var array<string, string> Command manager commands
-	 */
-	private const COMMANDS = [
-		'journal' => 'journalctl --utc -b --no-pager',
-	];
 
 	/**
 	 * @var FileManager Text file manager
@@ -117,19 +109,26 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	public function testGetAvailableServices(): void {
 		$expected = [
-			'iqrf-gateway-controller',
-			'iqrf-gateway-daemon',
-			'iqrf-gateway-uploader',
-			'systemd-journald',
+			LogManager::CONTROLLER,
+			LogManager::DAEMON,
+			LogManager::SETTER,
+			LogManager::TRANSLATOR,
+			LogManager::UPLOADER,
 		];
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-controller'])
+			->withArgs([LogManager::CONTROLLER])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['iqrfgd2'])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-uploader'])
+			->withArgs([LogManager::SETTER])
+			->andReturn(true);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::TRANSLATOR])
+			->andReturn(true);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::UPLOADER])
 			->andReturn(true);
 		Assert::same($expected, $this->managerMockCommand->getAvailableServices());
 	}
@@ -139,26 +138,26 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	public function testGetServiceLog(): void {
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-controller'])
+			->withArgs([LogManager::CONTROLLER])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['iqrfgd2'])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-uploader'])
+			->withArgs([LogManager::SETTER])
+			->andReturn(false);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::TRANSLATOR])
+			->andReturn(false);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::UPLOADER])
 			->andReturn(true);
 		$expected = $this->fileManager->read('iqrf-gateway-controller.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-controller'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog(LogManager::CONTROLLER));
 		$expected = $this->fileManager->read('daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-daemon'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog(LogManager::DAEMON));
 		$expected = $this->fileManager->read('iqrf-gateway-uploader.log');
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('iqrf-gateway-uploader'));
-		$expected = $this->fileManager->read('journal.log');
-		$command = new Command(self::COMMANDS['journal'], $expected, '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['journal'], true])
-			->andReturn($command);
-		Assert::same($expected, $this->managerMockCommand->getServiceLog('systemd-journald'));
+		Assert::same($expected, $this->managerMockCommand->getServiceLog(LogManager::UPLOADER));
 	}
 
 	/**
@@ -166,13 +165,19 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	public function testGetServiceLogNonexistent(): void {
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-controller'])
+			->withArgs([LogManager::CONTROLLER])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
 			->withArgs(['iqrfgd2'])
 			->andReturn(true);
 		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrf-gateway-uploader'])
+			->withArgs([LogManager::SETTER])
+			->andReturn(true);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::TRANSLATOR])
+			->andReturn(true);
+		$this->commandManager->shouldReceive('commandExist')
+			->withArgs([LogManager::UPLOADER])
 			->andReturn(true);
 		Assert::exception(function (): void {
 			$this->managerMockCommand->getServiceLog('nonexistent');

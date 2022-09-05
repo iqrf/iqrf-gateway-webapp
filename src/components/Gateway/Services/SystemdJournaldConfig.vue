@@ -173,15 +173,15 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
+import {JournalPersistence, JournalTimeUnit} from '@/enums/Gateway/Journal';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import GatewayService from '@/services/GatewayService';
+import JournalService from '@/services/JournalService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
-import {ISystemdJournal} from '@/interfaces/systemdJournal';
+import {IJournal} from '@/interfaces/Journal';
 
 @Component({
 	components: {
@@ -196,9 +196,9 @@ import {ISystemdJournal} from '@/interfaces/systemdJournal';
 export default class SystemdJournaldConfig extends Vue {
 
 	/**
-	 * @var {ISystemdJournal|null} config Systemd journal configuration
+	 * @var {IJournal|null} config Systemd journal configuration
 	 */
-	private config: ISystemdJournal|null = null;
+	private config: IJournal|null = null;
 
 	/**
 	 * @var {boolean} sizeRotation Use size based log rotation
@@ -216,11 +216,11 @@ export default class SystemdJournaldConfig extends Vue {
 	private storageOptions: Array<IOption> = [
 		{
 			text: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
-			value: StorageMethod.VOLATILE,
+			value: JournalPersistence.VOLATILE,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
-			value: StorageMethod.PERSISTENT,
+			value: JournalPersistence.PERSISTENT,
 		},
 	];
 
@@ -230,31 +230,31 @@ export default class SystemdJournaldConfig extends Vue {
 	private unitOptions: Array<IOption> = [
 		{
 			text: this.$t('service.systemd-journald.config.form.units.seconds').toString(),
-			value: TimeUnit.SECONDS,
+			value: JournalTimeUnit.SECONDS,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.minutes').toString(),
-			value: TimeUnit.MINUTES,
+			value: JournalTimeUnit.MINUTES,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.hours').toString(),
-			value: TimeUnit.HOURS,
+			value: JournalTimeUnit.HOURS,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.days').toString(),
-			value: TimeUnit.DAYS,
+			value: JournalTimeUnit.DAYS,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.weeks').toString(),
-			value: TimeUnit.WEEKS,
+			value: JournalTimeUnit.WEEKS,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.months').toString(),
-			value: TimeUnit.MONTHS,
+			value: JournalTimeUnit.MONTHS,
 		},
 		{
 			text: this.$t('service.systemd-journald.config.form.units.years').toString(),
-			value: TimeUnit.YEAR,
+			value: JournalTimeUnit.YEAR,
 		},
 	];
 
@@ -283,13 +283,13 @@ export default class SystemdJournaldConfig extends Vue {
 	 * Retrieves systemd journal configuration
 	 */
 	private getConfig(): Promise<void> {
-		return GatewayService.getSystemdJournalConfig()
+		return JournalService.getConfig()
 			.then((response: AxiosResponse) => {
-				const config: ISystemdJournal = response.data;
+				const config: IJournal = response.data;
 				if (config.sizeRotation.maxFileSize !== 0) {
 					this.sizeRotation = true;
 				}
-				if (config.timeRotation.unit !== TimeUnit.MONTHS ||
+				if (config.timeRotation.unit !== JournalTimeUnit.MONTHS ||
 					config.timeRotation.count !== 1) {
 					this.timeRotation = true;
 				}
@@ -308,16 +308,16 @@ export default class SystemdJournaldConfig extends Vue {
 		if (this.config === null) {
 			return;
 		}
-		const config: ISystemdJournal = JSON.parse(JSON.stringify(this.config));
+		const config: IJournal = JSON.parse(JSON.stringify(this.config));
 		if (!this.sizeRotation) {
 			config.sizeRotation.maxFileSize = 0;
 		}
 		if (!this.timeRotation) {
-			config.timeRotation.unit = TimeUnit.MONTHS;
+			config.timeRotation.unit = JournalTimeUnit.MONTHS;
 			config.timeRotation.count = 1;
 		}
 		this.$store.commit('spinner/SHOW');
-		GatewayService.saveSystemdJournalConfig(config)
+		JournalService.saveConfig(config)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

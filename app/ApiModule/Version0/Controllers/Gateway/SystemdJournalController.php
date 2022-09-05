@@ -32,6 +32,7 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use App\GatewayModule\Exceptions\JournalReaderException;
 use App\GatewayModule\Models\JournalConfigManager;
 use App\GatewayModule\Models\JournalReaderManager;
 
@@ -93,7 +94,7 @@ class SystemdJournalController extends GatewayController {
 		try {
 			return $response->writeJsonBody($this->configManager->getConfig());
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -127,7 +128,7 @@ class SystemdJournalController extends GatewayController {
 			$this->configManager->saveConfig($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -138,7 +139,7 @@ class SystemdJournalController extends GatewayController {
 	 *  summary: Returns journal records
 	 *  parameters:
 	 *      - in: query
-	 *        name: last
+	 *        name: count
 	 *        schema:
 	 *          type: integer
 	 *          minimum: 1
@@ -160,9 +161,13 @@ class SystemdJournalController extends GatewayController {
 	 * ")
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$last = $request->getQueryParam('last', 500);
+		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);
-		return $response->writeJsonBody($this->readerManager->getRecords($last, $cursor));
+		try {
+			return $response->writeJsonBody($this->readerManager->getRecords($count, $cursor));
+		} catch (JournalReaderException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
