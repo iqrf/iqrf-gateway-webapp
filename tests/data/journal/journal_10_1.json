@@ -1,0 +1,17 @@
+{
+	"data": [
+		"s=c898cdeb1833489094a2e5f158e28858;i=2098097;b=7c1ebb21607a46ed82039b58d5e4f4b3;m=48d069be;t=5e7fc84f8f984;x=e033f190643ea749",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentInstance.cpp:ComponentInstance():120 Property \u0022.RequiredInterfaces\u0022 not found",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] UdpMessaging.cpp:activate():98 \u000A******************************\u000AUdpMessaging instance activate\u000A******************************",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: iqrf::IUdpMessagingService",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] IdeCounterpart.cpp:activate():49 \u000A******************************\u000AIdeCounterpart instance activate\u000A******************************",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] IdeCounterpart.cpp:setMode():227 Set mode operational",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: iqrf::IUdpConnectorService",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::UdpMessaging\u0022 m_state=\u0022STARTED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::SchedulerMessaging\u0022 m_state=\u0022OPENED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::SchedulerMessaging\u0022 m_state=\u0022STARTING\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentInstance.cpp:ComponentInstance():120 Property \u0022.RequiredInterfaces\u0022 not found",
+		"s=c898cdeb1833489094a2e5f158e28858;i=20980a1;b=7c1ebb21607a46ed82039b58d5e4f4b3;m=48d06abf;t=5e7fc84f8fa85;x=41d1068a081450da"
+	],
+	"success": 1
+}

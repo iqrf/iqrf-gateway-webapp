@@ -1,0 +1,16 @@
+{
+	"records": [
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] MqttMessaging.cpp:start():221 daemon-MQTT-protocol started - trying to connect broker: tcp://127.0.0.1:1883",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: iqrf::IMessagingService",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::MqttMessaging\u0022 m_state=\u0022STARTED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::WebsocketMessaging\u0022 m_state=\u0022OPENED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::WebsocketMessaging\u0022 m_state=\u0022STARTING\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] WebsocketMessaging.cpp:activate():114 \u000A******************************\u000AWebsocketMessaging instance activate\u000A******************************",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: iqrf::IMessagingService",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::WebsocketMessaging\u0022 m_state=\u0022STARTED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::UdpMessaging\u0022 m_state=\u0022OPENED\u0022",
+		"Sep 06 08:43:52 Inspiron-15-5501 iqrfgd2[13810]: [INF] Component.cpp:setState():106 m_componentName=\u0022iqrf::UdpMessaging\u0022 m_state=\u0022STARTING\u0022"
+	],
+	"startCursor": "s=c898cdeb1833489094a2e5f158e28858;i=209808d;b=7c1ebb21607a46ed82039b58d5e4f4b3;m=48d06820;t=5e7fc84f8f7e6;x=7910be17404b8994",
+	"endCursor": "s=c898cdeb1833489094a2e5f158e28858;i=2098097;b=7c1ebb21607a46ed82039b58d5e4f4b3;m=48d069be;t=5e7fc84f8f984;x=e033f190643ea749"
+}

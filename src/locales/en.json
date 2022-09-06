@@ -1410,7 +1410,9 @@
 				"title": "Journal",
 				"notLoaded": "Journal records not loaded.",
 				"noRecords": "No Journal records available.",
-				"noOlderRecords": "No older Journal records available."
+				"noOlderRecords": "No older Journal records available.",
+				"loading": "Loading older Journal records...",
+				"failed": "Failed to load journal records: {error}"
 			}
 		},
 		"mode": {

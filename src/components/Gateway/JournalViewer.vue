@@ -18,6 +18,14 @@
 				{{ $t('gateway.log.journal.noRecords') }}
 			</v-alert>
 			<v-alert
+				v-else-if='loading'
+				class='mb-0'
+				type='info'
+				text
+			>
+				{{ $t('gateway.log.journal.loading') }}
+			</v-alert>
+			<v-alert
 				v-else-if='oldestRecords'
 				class='mb-0'
 				type='info'
@@ -35,10 +43,11 @@ import {Component, Vue} from 'vue-property-decorator';
 
 import JournalService from '@/services/JournalService';
 
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {IJournalData} from '@/interfaces/Journal';
 
 import {Scroll} from 'vuetify/lib/directives';
+import { extendedErrorToast } from '@/helpers/errorToast';
 
 /**
  * Journal viewer component
@@ -79,6 +88,8 @@ export default class JournalViewer extends Vue {
 	 */
 	private oldestRecords = false;
 
+	private loading = false;
+
 	/**
 	 * Retrieves initial journal records
 	 */
@@ -93,6 +104,7 @@ export default class JournalViewer extends Vue {
 	 */
 	private getJournalRecords(count: number, cursor: string|null = null): void {
 		this.allowUpdate = false;
+		this.loading = true;
 		JournalService.getRecords(count, cursor)
 			.then((rsp: AxiosResponse) => {
 				const journalData: IJournalData = rsp.data;
@@ -107,13 +119,16 @@ export default class JournalViewer extends Vue {
 				} else {
 					this.scrollToDisplay();
 				}
+				this.loading = false;
 				this.cursor = journalData.startCursor;
 				this.allowUpdate = true;
 			})
-			.catch(() => {
+			.catch((err: AxiosError) => {
+				extendedErrorToast(err, 'gateway.log.journal.failed');
 				if (this.cursor !== null) {
 					this.scrollToPrevious();
 				}
+				this.loading = false;
 				this.allowUpdate = true;
 			});
 	}
@@ -126,8 +141,7 @@ export default class JournalViewer extends Vue {
 			return;
 		} 
 		const el = (this.$refs.journal as Element);
-		const frac = el.scrollTop / el.scrollHeight;
-		if (frac < 0.15) {
+		if (el.scrollTop === 0) {
 			this.lastScrollHeight = el.scrollHeight;
 			this.lastScrollPos = el.scrollTop;
 			this.getJournalRecords(500, this.cursor);
