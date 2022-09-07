@@ -33,11 +33,11 @@ services:
 	- App\ApiModule\Version0\Controllers\FeatureController
 	- App\ApiModule\Version0\Controllers\Gateway\HostnameController
 	- App\ApiModule\Version0\Controllers\Gateway\InfoController
+	- App\ApiModule\Version0\Controllers\Gateway\JournalController
 	- App\ApiModule\Version0\Controllers\Gateway\LogController
 	- App\ApiModule\Version0\Controllers\Gateway\PasswordController
 	- App\ApiModule\Version0\Controllers\Gateway\PowerController
 	- App\ApiModule\Version0\Controllers\Gateway\SshController
-	- App\ApiModule\Version0\Controllers\Gateway\SystemdJournalController
 	- App\ApiModule\Version0\Controllers\Gateway\TimeController
 	- App\ApiModule\Version0\Controllers\InstallationController
 	- App\ApiModule\Version0\Controllers\Iqrf\InterfacesController

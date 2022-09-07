@@ -98,11 +98,11 @@ export default class GatewayDisambiguation extends Vue {
 			feature: 'unattendedUpgrades',
 		},
 		{
-			title: this.$t('service.systemd-journald.title').toString(),
-			description: this.$t('service.systemd-journald.description').toString(),
-			to: '/gateway/service/systemd-journald/',
+			title: this.$t('service.journald.title').toString(),
+			description: this.$t('service.journald.description').toString(),
+			to: '/gateway/service/journald/',
 			role: UserRoleIndex.ADMIN,
-			feature: 'systemdJournal',
+			feature: 'journal',
 		},
 		{
 			title: this.$t('gateway.power.title').toString(),

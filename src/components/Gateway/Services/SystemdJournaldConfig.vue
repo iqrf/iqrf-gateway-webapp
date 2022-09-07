@@ -191,12 +191,12 @@ import {IJournal} from '@/interfaces/Journal';
 })
 
 /**
- * Gateway systemd journal configuration component
+ * Gateway Journal configuration component
  */
-export default class SystemdJournaldConfig extends Vue {
+export default class JournaldConfig extends Vue {
 
 	/**
-	 * @var {IJournal|null} config Systemd journal configuration
+	 * @var {IJournal|null} config Journal configuration
 	 */
 	private config: IJournal|null = null;
 

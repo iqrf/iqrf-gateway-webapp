@@ -15,6 +15,9 @@ iqrfGatewayController:
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: false
+# Systemd journal configuration
+journal:
+	enabled: false
 # Device maintenance
 maintenance:
 	enabled: false
@@ -41,9 +44,6 @@ ssh:
 supervisord:
 	enabled: false
 	url: /supervisord/
-# Systemd journal configuration
-systemdJournal:
-	enabled: false
 # System updater
 updater:
 	enabled: false
