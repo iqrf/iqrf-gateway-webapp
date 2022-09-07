@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -41,23 +41,23 @@ mender:
+@@ -45,23 +45,23 @@ mender:
  	enabled: false
  # Monitoring service
  monit:
