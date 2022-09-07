@@ -89,7 +89,7 @@ limitations under the License.
 		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
-		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("systemdJournal")' />
+		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("journal")' />
 	</div>
 </template>
 
@@ -123,7 +123,7 @@ const features = {
 	'ssh': 'ssh',
 	'tempgw': 'iTemp',
 	'unattended-upgrades': 'unattendedUpgrades',
-	'systemd-journald': 'systemdJournal',
+	'systemd-journald': 'journal',
 };
 
 interface IService {

@@ -152,10 +152,10 @@ class LogManager {
 	}
 
 	/**
-	 * Returns Systemd Journal log
-	 * @return string Systemd Journal log
+	 * Returns Journal records
+	 * @return string Journal records
 	 */
-	public function getSystemdJournalLog(): string {
+	public function getJournal(): string {
 		$result = $this->commandManager->run('journalctl --utc -b --no-pager', true);
 		return $result->getStdout();
 	}
@@ -195,7 +195,7 @@ class LogManager {
 			}
 		}
 		$zipManager->addFolder($this->daemonLogDir, 'daemon');
-		$zipManager->addFileFromText('journal.log', $this->getSystemdJournalLog());
+		$zipManager->addFileFromText('journal.log', $this->getJournal());
 		$zipManager->close();
 		return $this->path;
 	}

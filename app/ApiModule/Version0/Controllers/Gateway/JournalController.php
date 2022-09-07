@@ -37,10 +37,10 @@ use App\GatewayModule\Models\JournalConfigManager;
 use App\GatewayModule\Models\JournalReaderManager;
 
 /**
- * System journald controller
+ * Journal controller
  * @Path("/journal")
  */
-class SystemdJournalController extends GatewayController {
+class JournalController extends GatewayController {
 
 	/**
 	 * @var FeatureManager Feature manager
@@ -74,14 +74,14 @@ class SystemdJournalController extends GatewayController {
 	 * @Path("/config")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns systemd journal configuration
+	 *  summary: Returns journal configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/SystemdJournal'
+	 *                      $ref: '#/components/schemas/Journal'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -102,13 +102,13 @@ class SystemdJournalController extends GatewayController {
 	 * @Path("/config")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Updates systemd journal configuration
+	 *  summary: Updates journal configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/SystemdJournal'
+	 *                  $ref: '#/components/schemas/Journal'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -123,7 +123,7 @@ class SystemdJournalController extends GatewayController {
 	 */
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
-		$this->validator->validateRequest('systemdJournal', $request);
+		$this->validator->validateRequest('journal', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
@@ -166,16 +166,16 @@ class SystemdJournalController extends GatewayController {
 		try {
 			return $response->writeJsonBody($this->readerManager->getRecords($count, $cursor));
 		} catch (JournalReaderException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	/**
-	 * Checks if systemd journal feature is enabled, and returns bad request if it is not
+	 * Checks if journal feature is enabled, and returns bad request if it is not
 	 */
 	private function featureEnabled(): void {
-		if (!$this->featureManager->isEnabled('systemdJournal')) {
-			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
+		if (!$this->featureManager->isEnabled('journal')) {
+			throw new ClientErrorException('Journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

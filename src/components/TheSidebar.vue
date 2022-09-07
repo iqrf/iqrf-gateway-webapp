@@ -182,7 +182,7 @@ export default class TheSidebar extends Vue {
 				{
 					title: this.$t('service.systemd-journald.title').toString(),
 					to: '/gateway/service/systemd-journald/',
-					feature: 'systemdJournal',
+					feature: 'journal',
 					role: UserRoleIndex.ADMIN,
 				},
 				{

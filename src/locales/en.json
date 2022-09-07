@@ -3316,7 +3316,7 @@
 				"restart": "Restart service",
 				"form": {
 					"forwardToSyslog": "Forward journal to syslog",
-					"storage": "Storage method",
+					"storage": "Persistence",
 					"storageMethods": {
 						"persistent": "Filesystem persistence",
 						"volatile": "In-memory persistence"

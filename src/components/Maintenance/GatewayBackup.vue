@@ -55,7 +55,7 @@
 							:label='$t("maintenance.backup.form.system.time")'
 						/>
 						<v-checkbox
-							v-if='$store.getters["features/isEnabled"]("systemdJournal")'
+							v-if='$store.getters["features/isEnabled"]("journal")'
 							v-model='migration.system.journal'
 							:label='$t("maintenance.backup.form.system.journal")'
 						/>
@@ -150,7 +150,7 @@ export default class Backup extends Vue {
 		if (!this.$store.getters['features/isEnabled']('networkManager')) {
 			params.system.network = false;
 		}
-		if (!this.$store.getters['features/isEnabled']('systemdJournal')) {
+		if (!this.$store.getters['features/isEnabled']('journal')) {
 			params.system.journal = false;
 		}
 		return params;
