@@ -23,8 +23,8 @@ namespace App\IqrfNetModule\Exceptions;
 use Exception;
 
 /**
- * Exception indicating that clibspi error has occured during upload
+ * Exception indicating that file specified by user does not exist or is invalid
  */
-class UploadUtilSpiException extends Exception {
+class UploaderFileException extends Exception {
 
 }
