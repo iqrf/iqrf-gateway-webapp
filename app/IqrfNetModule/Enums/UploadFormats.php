@@ -48,4 +48,12 @@ final class UploadFormats extends Enum {
 	 */
 	private const TRCNFG = 'trcnfg';
 
+	/**
+	 * Returns IQRF Gateway Uploader parameter
+	 * @return string IQRF Gateway Uploader parameter
+	 */
+	public function getUploaderParameter(): string {
+		return '--' . self::toScalar();
+	}
+
 }

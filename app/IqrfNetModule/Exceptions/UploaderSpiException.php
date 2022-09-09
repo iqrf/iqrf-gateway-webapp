@@ -23,8 +23,8 @@ namespace App\IqrfNetModule\Exceptions;
 use Exception;
 
 /**
- * Exception indicating that the IQRF Upload Utility is not installed
+ * Exception indicating that clibspi error has occured during upload
  */
-class UploadUtilMissingException extends Exception {
+class UploaderSpiException extends Exception {
 
 }

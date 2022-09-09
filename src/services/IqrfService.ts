@@ -80,6 +80,14 @@ class IqrfService {
 	}
 
 	/**
+	 * Uploads file via rest API
+	 * @param {FormData} data file data and metadata
+	 */
+	uploadFile(data: FormData): Promise<AxiosResponse> {
+		return axios.post('iqrf/upload', data, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Executes upload via IQRF Gateway Uploader
 	 * @param {Record<string, string>} data API request body
 	 */
