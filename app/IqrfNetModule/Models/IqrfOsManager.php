@@ -151,7 +151,7 @@ class IqrfOsManager {
 			'toBuild' => hexdec($request['toBuild']),
 			]);
 		return array_map(function (IqrfOsPatch $patch): string {
-			return __DIR__ . '/../../../iqrf/os/' . $patch->getFileName();
+			return $patch->getFileName();
 		}, $patches);
 	}
 
