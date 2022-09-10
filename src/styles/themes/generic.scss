@@ -14,63 +14,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* stylelint-disable no-descending-specificity */
 
 @import './colors/generic';
 
 ::-webkit-scrollbar {
-  width: 12px;
+	width: 12px;
 }
 
 html,
 .theme--light {
-  ::-webkit-scrollbar-track {
-	background: #e6e6e6;
-	border-left: 1px solid #dadada;
-  }
-
-  ::-webkit-scrollbar-thumb {
-	&:hover {
-	  background: black;
+	::-webkit-scrollbar-track {
+		background: #e6e6e6;
+		border-left: 1px solid #dadada;
 	}
 
-	background: #b0b0b0;
-	border: solid 3px #e6e6e6;
-	border-radius: 7px;
-  }
+	::-webkit-scrollbar-thumb {
+		&:hover {
+			background: black;
+		}
 
+		background: #b0b0b0;
+		border: solid 3px #e6e6e6;
+		border-radius: 7px;
+	}
 }
 
 .theme--dark {
-  ::-webkit-scrollbar-track {
-	background: #202020;
-	border-left: 1px solid #2c2c2c;
-  }
-
-  ::-webkit-scrollbar-thumb {
-	&:hover {
-	  background: white;
+	::-webkit-scrollbar-track {
+		background: #202020;
+		border-left: 1px solid #2c2c2c;
 	}
 
-	background: #3e3e3e;
-	border: solid 3px #202020;
-	border-radius: 7px;
-  }
+	::-webkit-scrollbar-thumb {
+		&:hover {
+			background: white;
+		}
 
+		background: #3e3e3e;
+		border: solid 3px #202020;
+		border-radius: 7px;
+	}
 }
 
 .v-navigation-drawer {
-  ::-webkit-scrollbar-track {
-	background: rgb(60, 75, 100);
-	border-left: 1px solid rgb(60, 75, 100);
-  }
+	::-webkit-scrollbar-track {
+		background: rgb(60 75 100);
+		border-left: 1px solid rgb(60 75 100);
+	}
 
-  ::-webkit-scrollbar-thumb {
-	background: #b0b0b0;
-	border: solid 3px rgb(60, 75, 100);
-	border-radius: 7px;
-  }
+	::-webkit-scrollbar-thumb {
+		background: #b0b0b0;
+		border: solid 3px rgb(60 75 100);
+		border-radius: 7px;
+	}
 
-  ::-webkit-scrollbar-thumb:hover {
-	background: white;
-  }
+	::-webkit-scrollbar-thumb:hover {
+		background: white;
+	}
 }
