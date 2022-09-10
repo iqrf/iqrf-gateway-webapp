@@ -45,9 +45,14 @@ class UploadManager {
 	private const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
+	 * Path to OS patch files
+	 */
+	private const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+
+	/**
 	 * @var string Path to the directory for uploaded files
 	 */
-	private string $path = '/var/cache/iqrf-gateway-daemon/upload';
+	private string $path = '/var/cache/iqrf-gateway-daemon/upload/';
 
 	/**
 	 * @var CommandManager Command manager
@@ -75,9 +80,12 @@ class UploadManager {
 			if (!isset($uploadDir) || $uploadDir === '') {
 				$uploadDir = 'upload';
 			}
-			$this->path = $cacheDir . Strings::trim($uploadDir, '/');
+			if (!Strings::endsWith($uploadDir, '/')) {
+				$uploadDir .= '/';
+			}
+			$this->path = $cacheDir . $uploadDir;
 		} catch (JsonException | NonexistentJsonSchemaException $e) {
-			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
+			$this->path = '/var/cache/iqrf-gateway-daemon/upload/';
 		}
 	}
 
@@ -93,26 +101,28 @@ class UploadManager {
 			$format = $this->recognizeFormat($fileName);
 		}
 		FileSystem::createDir($this->path);
-		FileSystem::write($this->path . '/' . $fileName, $fileContent);
+		FileSystem::write($this->path . $fileName, $fileContent);
 		return ['fileName' => $fileName, 'format' => $format->toScalar()];
 	}
 
 	/**
 	 * Uploads plugin to transceiver via IQRF Gateway Uploader
 	 * @param string $fileName File name
+	 * @param bool $os Indicates upload of OS file
 	 * @param UploadFormats|null $format File format
 	 * @throws UploaderFileException
 	 * @throws UploaderMissingException
 	 * @throws UploaderSpiException
 	 */
-	public function uploadToTr(string $fileName, ?UploadFormats $format = null): void {
+	public function uploadToTr(string $fileName, bool $os = false, ?UploadFormats $format = null): void {
 		if (!$this->commandManager->commandExist(self::UPLOADER)) {
 			throw new UploaderMissingException('IQRF Gateway Uploader is not installed.');
 		}
 		if ($format === null) {
 			$format = $this->recognizeFormat($fileName);
 		}
-		$result = $this->commandManager->run(self::UPLOADER . ' ' . $format->getUploaderParameter() . ' \'' . $this->path . '/' . $fileName . '\'', true);
+		$command = sprintf('%s %s "%s"', self::UPLOADER, $format->getUploaderParameter(), ($os ? self::OS_PATH : $this->path) . $fileName);
+		$result = $this->commandManager->run($command, true);
 		if ($result->getExitCode() !== 0) {
 			$this->handleError($result);
 		}
@@ -125,13 +135,12 @@ class UploadManager {
 	 * @throws UploaderSpiException
 	 */
 	private function handleError(ICommand $result): void {
-		$command = $result->getCommand();
 		$exitCode = $result->getExitCode();
 		$errorMsg = $result->getStderr();
 		if ($exitCode >= 1 && $exitCode <= 5) {
-			throw new UploaderFileException($errorMsg . ' Command executed: ' . $command);
+			throw new UploaderFileException($errorMsg);
 		}
-		throw new UploaderSpiException($errorMsg . ' Command executed: ' . $command);
+		throw new UploaderSpiException($errorMsg);
 	}
 
 	/**
