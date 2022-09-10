@@ -47,7 +47,7 @@ class UploadManager {
 	/**
 	 * Path to OS patch files
 	 */
-	private const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+	public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
 	 * @var string Path to the directory for uploaded files
@@ -83,7 +83,7 @@ class UploadManager {
 			if (!Strings::endsWith($uploadDir, '/')) {
 				$uploadDir .= '/';
 			}
-			$this->path = $cacheDir . $uploadDir;
+			$this->path = Strings::replace($cacheDir . $uploadDir, '~/+~', '/');
 		} catch (JsonException | NonexistentJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload/';
 		}
@@ -121,7 +121,7 @@ class UploadManager {
 		if ($format === null) {
 			$format = $this->recognizeFormat($fileName);
 		}
-		$command = sprintf('%s %s "%s"', self::UPLOADER, $format->getUploaderParameter(), ($os ? self::OS_PATH : $this->path) . $fileName);
+		$command = sprintf('%s %s \'%s\'', self::UPLOADER, $format->getUploaderParameter(), ($os ? self::OS_PATH : $this->path) . $fileName);
 		$result = $this->commandManager->run($command, true);
 		if ($result->getExitCode() !== 0) {
 			$this->handleError($result);

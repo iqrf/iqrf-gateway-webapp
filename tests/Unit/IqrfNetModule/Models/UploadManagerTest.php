@@ -59,7 +59,7 @@ final class UploadManagerTest extends CommandTestCase {
 	/**
 	 * @var string Upload directory pathUpload directory name
 	 */
-	private const UPLOAD_DIR = '/upload';
+	private const UPLOAD_DIR = '/upload/';
 
 	/**
 	 * @var string Upload directory path
@@ -88,17 +88,17 @@ final class UploadManagerTest extends CommandTestCase {
 		$fileContent = FileSystem::read(self::DATA_PATH . '/' . self::FILENAMES[$format]);
 		$actual = $this->manager->uploadToFs(self::FILENAMES[$format], $fileContent);
 		Assert::equal($expected, $actual);
-		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . '/' . self::FILENAMES[$format]));
+		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES[$format]));
 	}
 
 	/**
 	 * Returns file name and format
-	 * @return array<array<string|UploadFormats>> File name and format
+	 * @return array<array<string|UploadFormats|bool>> File name and format
 	 */
 	public function getUploadToTrData(): array {
 		return [
-			['ChangeOS-TR7xD-405(08D7)-406(08D8).iqrf', UploadFormats::IQRF()],
-			['0402_0002_DDC-SE+RE.hex', UploadFormats::HEX()],
+			['ChangeOS-TR7xD-405(08D7)-406(08D8).iqrf', UploadFormats::IQRF(), true],
+			['0402_0002_DDC-SE+RE.hex', UploadFormats::HEX(), false],
 		];
 	}
 
@@ -107,12 +107,14 @@ final class UploadManagerTest extends CommandTestCase {
 	 * @dataProvider getUploadToTrData
 	 * @param string $fileName File name
 	 * @param UploadFormats $format File format
+	 * @param bool $os Uploaded file is OS patch
 	 */
-	public function testUploadToTr(string $fileName, UploadFormats $format): void {
+	public function testUploadToTr(string $fileName, UploadFormats $format, bool $os): void {
 		$this->receiveCommandExist('iqrf-gateway-uploader', true);
-		$this->receiveCommand('iqrf-gateway-uploader ' . $format->getUploaderParameter() . ' \'' . self::UPLOAD_PATH . '/' . $fileName . '\'', true);
-		Assert::noError(function () use ($fileName, $format): void {
-			$this->manager->uploadToTr($fileName, $format);
+		$command = sprintf('iqrf-gateway-uploader %s \'%s\'', $format->getUploaderParameter(), ($os ? UploadManager::OS_PATH : self::UPLOAD_PATH) . $fileName);
+		$this->receiveCommand($command, true);
+		Assert::noError(function () use ($fileName, $os, $format): void {
+			$this->manager->uploadToTr($fileName, $os, $format);
 		});
 	}
 
