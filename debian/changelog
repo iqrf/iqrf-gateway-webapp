@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.4.12~alpha~1.gbp809be4) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.12) stable; urgency=medium
 
-  ** SNAPSHOT build @809be41ed6465eb1edfb2741cb553a2f7d2ec514 **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.12-alpha
+  * NetworkModule: added PPP interface type
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 21 Aug 2022 14:53:35 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 12 Sep 2022 14:06:48 +0200
 
 iqrf-gateway-webapp (2.4.11) stable; urgency=medium
 
