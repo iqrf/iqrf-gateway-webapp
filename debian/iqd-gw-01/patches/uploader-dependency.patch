@@ -7,6 +7,6 @@ Adds dependency on IQRF Gateway Uploader
  Architecture: all
 -Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl,
 +Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-gateway-uploader, openssl,
-  php7.4-common, php7.4-cli, php7.4-fpm, php7.4-curl, php7.4-json,
-  php7.4-mbstring, php7.4-sqlite3, php7.4-xml, php7.4-zip,
-  nginx | apache2, sudo, wireguard-tools
+  php7.4-common | php8.0-common | php8.1-common,
+  php7.4-cli | php8.0-cli | php8.1-cli,
+  php7.4-fpm | php8.0-fpm | php8.1-fpm,
