@@ -14,7 +14,9 @@
 # limitations under the License.
 
 upstream backend {
-	server unix:/run/php/php7.4-fpm.sock weight=4;
+	server unix:/run/php/php8.1-fpm.sock weight=4;
+	server unix:/run/php/php8.0-fpm.sock weight=2;
+	server unix:/run/php/php7.4-fpm.sock;
 }
 
 server {
@@ -27,8 +29,8 @@ server {
 	index index.php index.html index.htm index.nginx-debian.html;
 
 	# Logging
-	access_log  /var/log/nginx/iqrf-gateway-webapp.access.log;
-	error_log  /var/log/nginx/iqrf-gateway-webapp.error.log;
+	access_log /var/log/nginx/iqrf-gateway-webapp.access.log;
+	error_log /var/log/nginx/iqrf-gateway-webapp.error.log;
 
 	server_name _;
 
