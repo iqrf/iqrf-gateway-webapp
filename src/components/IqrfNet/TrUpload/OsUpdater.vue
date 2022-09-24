@@ -84,8 +84,8 @@ import IqrfService from '@/services/IqrfService';
 import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IAvailableOsUpgrade, IOsUpgradeParams} from '@/interfaces/trUpload';
 import {IOption} from '@/interfaces/coreui';
-import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '@/interfaces/trUpload';
 
 @Component({
 	components: {
@@ -129,9 +129,9 @@ export default class OsUpdater extends Vue {
 	private trMcuType = 0;
 
 	/**
-	 * @var {Array<IqrfOsUpgrade>} upgrades Array of possible IQRF OS upgrades
+	 * @var {Array<IAvailableOsUpgrade>} upgrades Array of possible IQRF OS upgrades
 	 */
-	private upgrades: Array<IqrfOsUpgrade> = [];
+	private upgrades: Array<IAvailableOsUpgrade> = [];
 
 	/**
 	 * @var {boolean} uploadError Indicates whether an upload error has occurred
@@ -192,7 +192,7 @@ export default class OsUpdater extends Vue {
 	private updateVersions(): void {
 		const versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
-			const upgrade: IqrfOsUpgrade = this.upgrades[i];
+			const upgrade: IAvailableOsUpgrade = this.upgrades[i];
 			let text = upgrade.os.version + ' (' + upgrade.os.build;
 			if (upgrade.os.attributes.beta) {
 				text += ', Beta version';
@@ -245,7 +245,7 @@ export default class OsUpdater extends Vue {
 		}
 		const upgrade = this.upgrades[this.osVersion];
 		const dpaRaw = upgrade.dpa.version.split('.').join('').padStart(4, '0');
-		const data = {
+		const data: IOsUpgradeParams = {
 			fromBuild: this.currentOsBuild,
 			toBuild: upgrade.os.build,
 			dpa: dpaRaw,
@@ -256,59 +256,19 @@ export default class OsUpdater extends Vue {
 			Object.assign(data, {rfMode: upgrade.dpa.rfMode});
 		}
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.trUpload.osUpload.messages.gatewayUpload').toString()
-		);
-		IqrfService.getUpgradeFiles(data)
-			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/UPDATE_TEXT',
-					this.$t('iqrfnet.trUpload.osUpload.messages.gatewayUploadSuccess').toString()
-				);
-				this.upload(response.data);
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.osUpload.messages.gatewayUploadFailed'));
-	}
-
-	/**
-	 * Creates REST API request body to upgrade IQRF OS and executes upgrade.
-	 * @param {IqrfOsUpgradeFiles} responseFiles Files needed to upgrade IQRF OS
-	 */
-	private upload(responseFiles: IqrfOsUpgradeFiles): void {
-		const files: Array<UploadUtilFile> = [];
-		for (const file of responseFiles.os.sort()) {
-			files.push({name: file, type: 'OS'});
-		}
-		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
-			for (const file of files) {
-				let message: string;
-				if (file.type === 'OS') {
-					message = this.$t('iqrfnet.trUpload.osUpload.messages.trUpload').toString();
-				} else {
-					message = this.$t('iqrfnet.trUpload.dpaUpload.messages.trUpload').toString();
-				}
-				this.$store.commit('spinner/UPDATE_TEXT', message);
-				await IqrfService.uploader(file)
-					.then(() => {
-						let successMessage: string;
-						if (file.type === 'OS') {
-							successMessage = this.$t('iqrfnet.trUpload.osUpload.messages.trUploadSuccess').toString();
-						} else {
-							successMessage = this.$t('iqrfnet.trUpload.dpaUpload.messages.trUploadSuccess').toString();
-						}
-						this.$store.commit('spinner/UPDATE_TEXT', successMessage);
-					})
-					.catch((error: AxiosError) => {
-						extendedErrorToast(error, 'iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUploadFailed');
-						this.uploadError = true;
-					});
-				if (this.uploadError) {
-					break;
-				}
-			}
-			if (!this.uploadError) {
-				this.startDaemon();
-			}
+			this.$store.commit(
+				'spinner/UPDATE_TEXT',
+				this.$t('iqrfnet.trUpload.osUpload.messages.upgrade').toString()
+			);
+			IqrfService.upgradeOs(data)
+				.then(async () => {
+					await this.startDaemon();
+					this.$toast.success(
+						this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
+					);
+				})
+				.catch((error: AxiosError) => extendedErrorToast(error, 'iqrfnet.trUpload.osUpload.messages.upgradeFailed'));
 		});
 	}
 

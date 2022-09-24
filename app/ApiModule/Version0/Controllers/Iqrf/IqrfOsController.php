@@ -31,6 +31,9 @@ use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\IqrfNetModule\Exceptions\DpaFileNotFoundException;
 use App\IqrfNetModule\Exceptions\DpaRfMissingException;
+use App\IqrfNetModule\Exceptions\UploaderFileException;
+use App\IqrfNetModule\Exceptions\UploaderMissingException;
+use App\IqrfNetModule\Exceptions\UploaderSpiException;
 use App\IqrfNetModule\Models\IqrfOsManager;
 use GuzzleHttp\Exception\ClientException;
 use Nette\IOException;
@@ -117,10 +120,10 @@ class IqrfOsController extends IqrfController {
 	}
 
 	/**
-	 * @Path("/osUpgradeFiles")
+	 * @Path("/upgradeOs")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Retrieves IQRF OS and DPA upgrade file names
+	 *  summary: Upgrades OS and DPA
 	 *  requestBody:
 	 *      required: true
 	 *      content:
@@ -130,10 +133,6 @@ class IqrfOsController extends IqrfController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfOsUpgradeFiles'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '403':
@@ -143,24 +142,23 @@ class IqrfOsController extends IqrfController {
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
 	 */
-	public function osUpgradeFiles(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
-			$files = $this->iqrfOsManager->getUpgradeFiles((array) $request->getJsonBody(false));
-			return $response->writeJsonBody($files);
-		} catch (DpaRfMissingException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (DpaFileNotFoundException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			$this->iqrfOsManager->upgradeOs($request->getJsonBody(false));
+			return $response->writeBody('Workaround');
+		} catch (DpaRfMissingException | DpaFileNotFoundException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (UploaderFileException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (UploaderMissingException | UploaderSpiException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (ClientException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Failed to download upgrade file', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
