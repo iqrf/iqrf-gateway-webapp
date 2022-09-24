@@ -19,11 +19,11 @@ import {RFMode} from '../services/IqrfRepository/OsDpaService';
 /**
  * IQRF OS upgrade metadata interface
  */
-export interface IqrfOsUpgrade {
+export interface IAvailableOsUpgrade {
 	/**
 	 * IQRF OS build
 	 */
-	os: IIqrfOsUpgradeOs
+	os: IAvailableOsUpgradeOs
 
 	/**
 	 * IQRF OS version
@@ -33,7 +33,7 @@ export interface IqrfOsUpgrade {
 	/**
 	 * DPA pretty version
 	 */
-	dpa: IIqrfOsUpgradeDpa
+	dpa: IAvailableOsUpgradeDpa
 
 	/**
 	 * IQRF OS notes
@@ -45,7 +45,7 @@ export interface IqrfOsUpgrade {
  * IQRF OS upgrade OS metadata interface
  */
 
-export interface IIqrfOsUpgradeOs {
+export interface IAvailableOsUpgradeOs {
 	/**
 	 * OS build
 	 */
@@ -70,7 +70,7 @@ export interface IIqrfOsUpgradeOs {
 /**
  * IQRF OS upgrade DPA metadata interface
  */
-export interface IIqrfOsUpgradeDpa {
+export interface IAvailableOsUpgradeDpa {
 	/**
 	 * DPA version
 	 */
@@ -150,4 +150,39 @@ export interface FileUpload {
 	 * File format
 	 */
 	format: string
+}
+
+/**
+ * OS and DPA upgrade parameters interface
+ */
+export interface IOsUpgradeParams {
+	/**
+	 * Target DPA version
+	 */
+	dpa: string
+
+	/**
+	 * Current OS build
+	 */
+	fromBuild: string
+
+	/**
+	 * Target OS build
+	 */
+	toBuild: string
+
+	/**
+	 * Used IQRF interface
+	 */
+	interface: string
+
+	/**
+	 * TR and MCU type
+	 */
+	trMcuType: number
+
+	/**
+	 * RF mode
+	 */
+	rfMode?: string
 }

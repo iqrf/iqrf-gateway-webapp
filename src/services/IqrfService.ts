@@ -72,11 +72,11 @@ class IqrfService {
 	}
 
 	/**
-	 * Retrieves IQRF OS and DPA upgrade file names
-	 * @param {Record<string, number|string>} data API request body
+	 * Upgrades OS and DPA
+	 * @param data Upgrade request parameters
 	 */
-	getUpgradeFiles(data: Record<string, number|string>): Promise<AxiosResponse> {
-		return axios.post('iqrf/osUpgradeFiles', data, {headers: authorizationHeader()});
+	upgradeOs(data): Promise<AxiosResponse> {
+		return axios.post('iqrf/upgradeOs', data, {headers: authorizationHeader()});
 	}
 
 	/**
