@@ -356,17 +356,22 @@ export default class DevicesInfo extends Vue {
 	 * @param response Response
 	 */
 	private handlePing(response): void {
-		if (response.status !== 0) {
+		if (response.status === 0) {
+			response.rsp.pingResult.forEach((device) => {
+				this.devices[device.address].online = device.result;
+			});
+			if (this.toastMessage !== null) {
+				this.$toast.open(this.toastMessage);
+				this.toastMessage = null;
+			}
+		} else if (response.status === 1003) {
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
+			);
+		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.devicesInfo.messages.pingFailed').toString()
 			);
-		}
-		response.rsp.pingResult.forEach((device) => {
-			this.devices[device.address].online = device.result;
-		});
-		if (this.toastMessage !== null) {
-			this.$toast.open(this.toastMessage);
-			this.toastMessage = null;
 		}
 	}
 
@@ -421,10 +426,15 @@ export default class DevicesInfo extends Vue {
 				);
 			}
 			return;
+		} else if (response.status === 1003) {
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.devicesInfo.messages.restartFailed').toString()
+			);
 		}
-		this.$toast.error(
-			this.$t('iqrfnet.networkManager.devicesInfo.messages.restartFailed').toString()
-		);
 	}
 
 	/**

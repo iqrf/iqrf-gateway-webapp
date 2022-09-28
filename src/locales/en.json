@@ -226,7 +226,8 @@
 			"fetchFail": "Failed to retrieve component or instance configuration.",
 			"deviceOffline": "Device at address {address} is offline.",
 			"noDevice": "No device is bonded at address {address}.",
-			"coordinatorOffline": "Coordinator device is offline."
+			"coordinatorOffline": "Coordinator device is offline.",
+			"noBondedNodes": "There are no bonded nodes in network."
 		}
 	},
 	"config": {
@@ -2038,6 +2039,7 @@
 					},
 					"messages": {
 						"progress": "Testing RF Signal...\nThis process may take several minutes for large networks.",
+						"noNodes": "RF Signal test failed, no bonded nodes in network.",
 						"failed": "RF Signal test failed."
 					}
 				},
