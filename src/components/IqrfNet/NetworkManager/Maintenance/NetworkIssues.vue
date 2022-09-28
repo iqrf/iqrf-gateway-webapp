@@ -161,10 +161,12 @@ export default class NetworkIssues extends Vue {
 	 * @param response Response
 	 */
 	private handleInconsistentMids(response): void {
-		if (response.status !== 0) {
-			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.inconsistentMidsFailed');
-		} else {
+		if (response.status === 0) {
 			this.handleSuccess('iqrfnet.networkManager.maintenance.networkIssues.messages.inconsistentMidsSuccess');
+		} else if (response.status === 1003) {
+			this.handleInfo('forms.messages.noBondedNodes');
+		} else {
+			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.inconsistentMidsFailed');
 		}
 	}
 
@@ -186,10 +188,12 @@ export default class NetworkIssues extends Vue {
 	 * @param response Response
 	 */
 	private handleDuplicatedAddresses(response): void {
-		if (response.status !== 0) {
-			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.duplicatedAddressesFailed');
-		} else {
+		if (response.status === 0) {
 			this.handleSuccess('iqrfnet.networkManager.maintenance.networkIssues.messages.duplicatedAddressesSuccess');
+		} else if (response.status === 1003) {
+			this.handleInfo('forms.messages.noBondedNodes');
+		} else {
+			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.duplicatedAddressesFailed');
 		}
 	}
 
@@ -211,10 +215,12 @@ export default class NetworkIssues extends Vue {
 	 * @param response Response
 	 */
 	private handlePrebondedNodes(response): void {
-		if (response.status !== 0) {
-			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.prebondedNodesFailed');
-		} else {
+		if (response.status === 0) {
 			this.handleSuccess('iqrfnet.networkManager.maintenance.networkIssues.messages.prebondedNodesSuccess');
+		} else if (response.status === 1003) {
+			this.handleInfo('forms.messages.noBondedNodes');
+		} else {
+			this.handleFailure('iqrfnet.networkManager.maintenance.networkIssues.messages.prebondedNodesFailed');
 		}
 	}
 
@@ -234,6 +240,14 @@ export default class NetworkIssues extends Vue {
 	private handleFailure(message: string): void {
 		this.$store.dispatch('spinner/hide');
 		this.$toast.error(this.$t(message).toString());
+	}
+
+	/**
+	 * Hides spinner and shows info toast
+	 */
+	private handleInfo(message: string): void {
+		this.$store.dispatch('spinner/hide');
+		this.$toast.info(this.$t(message).toString());
 	}
 }
 </script>
