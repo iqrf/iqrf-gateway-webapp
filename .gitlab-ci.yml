@@ -31,6 +31,19 @@ cache:
   paths:
     - temp/composer/cache
 
+.coding-style_template: &coding-style_template
+  stage: coding-style
+  needs: []
+
+.npm_template: &npm_template
+  before_script:
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .pnpm-store
+
 .test_template: &test_template
   stage: test
   needs: []
@@ -126,17 +139,10 @@ coverage:
   <<: *test_template
 
 coverage:jest:
-  image: node:lts
-  before_script:
-    - npm install --legacy-peer-deps
   script:
-    - npm run coverage:unit-ci
+    - pnpm run coverage:unit-ci
   allow_failure: true
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .npm/
   artifacts:
     paths:
       - 'coverage/'
@@ -146,64 +152,49 @@ coverage:jest:
       junit:
         - junit.xml
   <<: *test_template
+  <<: *npm_template
 
 coding-style:
-  stage: coding-style
-  needs: []
   script:
     - make cc
+  <<: *coding-style_template
 
 doctrine_mapping:
-  stage: coding-style
-  needs: []
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
     - bin/manager orm:validate-schema --skip-sync
+  <<: *coding-style_template
 
 phpstan:
-  stage: coding-style
-  needs: []
   retry: 2
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
     - make phpstan
+  <<: *coding-style_template
 
 eslint:
-  stage: coding-style
-  needs: []
-  before_script:
-    - npm install --legacy-peer-deps
   script:
-    - npm run lint
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .npm/
+    - pnpm run lint
+  <<: *coding-style_template
+  <<: *npm_template
 
 stylelint:
-  stage: coding-style
-  needs: []
-  before_script:
-    - npm install --legacy-peer-deps
   script:
-    - npm run lint:css
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .npm/
+    - pnpm run lint:css
+  <<: *coding-style_template
+  <<: *npm_template
 
 qa:
-  stage: coding-style
-  needs: []
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
   script:
     - make qa
+  <<: *coding-style_template
 
 build-package:
   stage: build-package
