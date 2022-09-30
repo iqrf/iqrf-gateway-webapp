@@ -378,17 +378,11 @@ export default class StandardDevices extends Vue {
 				this.handlePingDevices(mutation.payload.data);
 			}
 		});
-	}
-
-	/**
-	 * Starts request chain to build grid of devices implementing IQRF standards
-	 */
-	mounted(): void {
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.getDevices();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
+				(state, getter) => getter['daemonClient/isConnected'],
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
 						this.getDevices();
