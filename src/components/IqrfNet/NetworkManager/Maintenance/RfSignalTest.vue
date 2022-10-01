@@ -270,8 +270,8 @@ export default class RfSignalTest extends Vue {
 			this.results = response.rsp.testRfResult;
 			this.showResults();
 		} else if (response.status === 1003) {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.maintenance.rfSignal.messages.noNodes').toString()
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
 			);
 		} else {
 			this.$toast.error(
