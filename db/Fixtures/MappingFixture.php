@@ -41,6 +41,8 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 		$records = [
 			new Mapping(Mapping::TYPE_SPI, 'Unipi Iris Zulu', '/dev/spidev1.0', -1, 510, 511, null, 509, 508, 505),
 			new Mapping(Mapping::TYPE_UART, 'Unipi Iris Zulu', '/dev/ttymxc3', -1, 510, 511, Mapping::BAUD_RATE_DEFAULT, 509, 508, 505),
+			new Mapping(Mapping::TYPE_SPI, 'IQD-GW-04', '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
+			new Mapping(Mapping::TYPE_UART, 'IQD-GW-04', '/dev/ttyAMA1', -1, 22, 23, Mapping::BAUD_RATE_DEFAULT, 18, 7, 6),
 		];
 
 		foreach ($records as $record) {
