@@ -86,7 +86,7 @@ class IqmeshNetworkService {
 	 * @param {number|null} responseTime FRC response time
 	 * @param {boolean|null} offlineFrc Offline FRC
 	 * @param {DaemonMessageOptions} options Daemon message options
-	 * @returns {Promise<string>} Message ID 
+	 * @returns {Promise<string>} Message ID
 	 */
 	frcParams(action: DpaParamAction, responseTime: number | null = null, offlineFrc: boolean | null = null, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
@@ -182,7 +182,7 @@ class IqmeshNetworkService {
 
 	/**
 	 * IQMESH Network Maintenance Useless Prebonded Nodes request
-	 * @param {WebSocketOptions} options Daemon message options
+	 * @param {DaemonMessageOptions} options Daemon message options
 	 * @returns {Promise<string>} Message ID
 	 */
 	maintenanceUselessPrebondedNodes(options: DaemonMessageOptions): Promise<string> {

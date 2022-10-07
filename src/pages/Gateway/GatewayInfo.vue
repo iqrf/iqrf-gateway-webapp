@@ -247,12 +247,6 @@ export default class GatewayInfo extends Vue {
 		).catch(() => (this.$store.commit('spinner/HIDE')));
 	}
 
-	/**
-	 * Show hostname change modal
-	 */
-	private showHostnameModal(): void {
-		(this.$refs.hostname as HostnameChange).show();
-	}
 }
 </script>
 

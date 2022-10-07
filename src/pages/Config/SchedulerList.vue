@@ -304,7 +304,7 @@ export default class SchedulerList extends Vue {
 	 */
 	private handleGetTask(response): void {
 		if (response.status === 0) {
-			if (this.tasks === null) {
+			if (this.tasks.length === 0) {
 				return;
 			}
 			this.tasks.push(response.rsp);

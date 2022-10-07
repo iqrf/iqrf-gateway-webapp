@@ -96,7 +96,7 @@ limitations under the License.
 						>
 							<JsonMessage
 								v-for='rsp of activeMessagePair.response'
-								:key='i = activeMessagePair.response.indexOf(rsp)'
+								:key='activeMessagePair.response.indexOf(rsp)'
 								:message='rsp'
 								type='response'
 								source='sendJson'

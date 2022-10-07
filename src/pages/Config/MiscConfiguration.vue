@@ -108,11 +108,6 @@ export default class MiscConfiguration extends Vue {
 	];
 
 	/**
-	 * @var {Array<string>} failed Children components config fetch failed
-	 */
-	private failed: Array<string> = [];
-
-	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */

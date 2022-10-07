@@ -134,11 +134,6 @@ export default class OsUpdater extends Vue {
 	private upgrades: Array<IAvailableOsUpgrade> = [];
 
 	/**
-	 * @var {boolean} uploadError Indicates whether an upload error has occurred
-	 */
-	private uploadError = false;
-
-	/**
 	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
 	private loadFailed = false;

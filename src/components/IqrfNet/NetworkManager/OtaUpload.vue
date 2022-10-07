@@ -155,7 +155,7 @@ limitations under the License.
 									<v-btn
 										color='primary'
 										:disabled='invalid'
-										@click='uploadFile(false)'
+										@click='uploadFile()'
 									>
 										{{ $t('forms.upload') }}
 										<v-icon

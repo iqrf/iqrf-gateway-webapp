@@ -82,8 +82,6 @@ export default class WireguardTunnelDeleteDialog extends DialogBase {
 
 	/**
 	 * Removes an existing WireGuard tunnel
-	 * @param {number} id WireGuard tunnel ID
-	 * @param {string} name WireGuard tunnel name
 	 */
 	private deleteTunnel(): void {
 		this.closeDialog();

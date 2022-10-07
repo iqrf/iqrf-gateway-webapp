@@ -171,7 +171,7 @@ limitations under the License.
 					<v-btn
 						color='primary'
 						type='submit'
-						:disabled='invalid || (uploadCert && inputEmpty)'
+						:disabled='invalid || uploadCert'
 					>
 						{{ $t('forms.save') }}
 					</v-btn>

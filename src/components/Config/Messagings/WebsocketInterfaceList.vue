@@ -347,7 +347,7 @@ export default class WebsocketInterfaceList extends Vue {
 
 	/**
 	 * Updates accepting asynchronous messages setting of Websocket messaging component instance
-	 * @param {WsMessaging} instance Websocket messaging instance
+	 * @param {IWsMessaging} instance Websocket messaging instance
 	 * @param {boolean} setting new setting
 	 */
 	private changeAcceptAsyncMsg(instance: IWsMessaging, setting: boolean): void {

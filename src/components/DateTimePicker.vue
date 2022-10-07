@@ -189,12 +189,5 @@ export default class DateTimePicker extends Vue {
 		this.time = datetime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
 	}
 
-	/**
-	 * Resets values of textfields
-	 */
-	public resetInputs(): void {
-		this.date = '';
-		this.time = '';
-	}
 }
 </script>

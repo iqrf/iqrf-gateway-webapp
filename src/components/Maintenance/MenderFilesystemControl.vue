@@ -10,13 +10,13 @@
 			</v-btn> <v-btn
 				v-if='$store.getters["features/isEnabled"]("remount")'
 				color='primary'
-				@click='remount(false)'
+				@click='remount("ro")'
 			>
 				{{ $t('maintenance.mender.update.remountRo') }}
 			</v-btn> <v-btn
 				v-if='$store.getters["features/isEnabled"]("remount")'
 				color='primary'
-				@click='remount(true)'
+				@click='remount("rw")'
 			>
 				{{ $t('maintenance.mender.update.remountRw') }}
 			</v-btn>

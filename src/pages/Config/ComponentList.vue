@@ -160,9 +160,9 @@ export default class ComponentList extends Vue {
 	private role: UserRole = UserRole.NORMAL;
 
 	/**
-	 * @constant {Array<DataTableHeader>} fields Array of CoreUI data table columns
+	 * @constant {Array<DataTableHeader>} headers Array of CoreUI data table columns
 	 */
-	private fields: Array<DataTableHeader> = [
+	private headers: Array<DataTableHeader> = [
 		{
 			value: 'name',
 			text: this.$t('config.daemon.components.form.name').toString(),

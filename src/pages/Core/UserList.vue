@@ -313,7 +313,7 @@ export default class UserList extends Vue {
 			}
 			return;
 		}
-		this.getUsers();
+		await this.getUsers();
 	}
 
 	/**

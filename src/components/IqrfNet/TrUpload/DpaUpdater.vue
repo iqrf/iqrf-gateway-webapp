@@ -321,7 +321,7 @@ export default class DpaUpdater extends Vue {
 	 * Retrieves DPA file to upload
 	 */
 	private getDpaFile(): void {
-		if (this.version === null) {
+		if (this.version === '') {
 			return;
 		}
 

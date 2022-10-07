@@ -69,14 +69,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {VChip} from 'vuetify/lib';
 
 import {mapGetters} from 'vuex';
 
 @Component({
-	components: {
-		VChip,
-	},
 	computed: {
 		...mapGetters({
 			daemonMode: 'monitorClient/getMode',

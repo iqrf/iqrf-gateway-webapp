@@ -238,6 +238,7 @@ class IqrfNetService {
 	/**
 	 * Sends request to execute OTA upload action
 	 * @param {IOtaUploadParams} params OTA upload parameters
+	 * @param {DaemonMessageOptions} options Daemon request options
 	 * @return {Promise<string>} Message ID
 	 */
 	otaUpload(params: IOtaUploadParams, options: DaemonMessageOptions): Promise<string> {

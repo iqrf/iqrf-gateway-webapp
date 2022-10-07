@@ -352,6 +352,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import AutoNetworkMidListDialog from './AutoNetworkMidListDialog.vue';
+import AutoNetworkResultDialog from './AutoNetworkResultDialog.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -361,7 +362,6 @@ import {IAtnwParams, IAtnwOverlappingNetworks, IAtnwMid, IAtnwMidList, IAtnwMidE
 import {IOption} from '@/interfaces/coreui';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import AutoNetworkResultDialog from './AutoNetworkResultDialog.vue';
 
 enum NodeCondition {
 	TOTAL = 'total',
@@ -374,6 +374,7 @@ enum NodeCondition {
 @Component({
 	components: {
 		AutoNetworkMidListDialog,
+		AutoNetworkResultDialog,
 		ValidationObserver,
 		ValidationProvider
 	},

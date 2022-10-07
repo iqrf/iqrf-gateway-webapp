@@ -130,13 +130,6 @@ export default class ApiKeyForm extends Vue {
 	}
 
 	/**
-	 * Returns input icon color depending on expiration required
-	 */
-	get inputIconColor(): string {
-		return this.useExpiration ? 'primary' : 'muted';
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {

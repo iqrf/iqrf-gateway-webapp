@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {RFMode} from '../services/IqrfRepository/OsDpaService';
+import {RFMode} from '@/services/IqrfRepository/OsDpaService';
 
 /**
  * IQRF OS upgrade metadata interface

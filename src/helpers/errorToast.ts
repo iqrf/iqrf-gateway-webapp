@@ -25,7 +25,7 @@ import {ErrorResponse} from '@/types';
  * Shows error toast with assignable parameters
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
- * @param {Dict<string|number>|undefined} params Partial translations for message placeholders
+ * @param {Record<string|number>|undefined} params Partial translations for message placeholders
  */
 export function extendedErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
 	const translations = {
@@ -42,7 +42,7 @@ export function extendedErrorToast(error: AxiosError, message: string, params: R
  * Calls extended error toast with IQRF Gateway Controller argument
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
+ * @param {Record<string>|undefined} params Partial translations for message placeholders
  */
 export function controllerErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {
@@ -57,7 +57,7 @@ export function controllerErrorToast(error: AxiosError, message: string, params:
  * Calls extended error toast with IQRF Gateway Daemon argument
  * @param {AxiosError} error Axios error
  * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
+ * @param {Record<string>|undefined} params Partial translations for message placeholders
  */
 export function daemonErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
 	if (params === undefined) {

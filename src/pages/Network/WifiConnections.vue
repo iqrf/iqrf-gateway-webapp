@@ -513,7 +513,7 @@ export default class WifiConnections extends Vue {
 	 * Attempts a REST API request to check if web interface is available
 	 * @param {AxiosError} triggerError Axios error from previous request
 	 * @param {string} name Connection name
-	 * @param {string} message Toast message from previous request
+	 * @param {string} errorMessage Toast error message from previous request
 	 */
 	private tryRest(triggerError: AxiosError, name: string, errorMessage: string, divMessage: string): void {
 		VersionService.getWebappVersionRest()
