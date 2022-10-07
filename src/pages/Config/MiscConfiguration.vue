@@ -45,7 +45,7 @@ limitations under the License.
 					<IqrfInfo />
 				</v-tab-item>
 				<v-tab-item v-if='isAdmin' :transition='false'>
-					<OtaUpload />
+					<OtaUploadConfig />
 				</v-tab-item>
 				<v-tab-item :transition='false'>
 					<MonitorList />
