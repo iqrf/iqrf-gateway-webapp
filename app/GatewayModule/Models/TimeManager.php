@@ -22,10 +22,15 @@ namespace App\GatewayModule\Models;
 
 use App\ConfigModule\Utils\ConfParser;
 use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\PrivilegedFileManager;
+use App\GatewayModule\Exceptions\ConfNotFoundException;
+use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 use Throwable;
 
 /**
@@ -34,44 +39,94 @@ use Throwable;
 class TimeManager {
 
 	/**
+	 * @var array<string, array<string, string|int>> Default timesyncd configuration
+	 */
+	private const TIMESYNCD_DEFAULT = [
+		'Time' => [
+			'NTP' => '',
+			'FallbackNTP' => '',
+			'RootDistanceMaxSec' => 5,
+			'PollIntervalMinSec' => 32,
+			'PollIntervalMaxSec' => 2048,
+		],
+	];
+
+	/**
+	 * @var string Timesyncd configuration file name
+	 */
+	private string $confFile;
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private CommandManager $commandManager;
 
 	/**
+	 * @var PrivilegedFileManager $fileManager Privileged file manager
+	 */
+	private PrivilegedFileManager $fileManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, string $timesyndPath) {
 		$this->commandManager = $commandManager;
+		$this->confFile = basename($timesyndPath);
+		$this->fileManager = new PrivilegedFileManager(dirname($timesyndPath), $commandManager);
 	}
 
 	/**
-	 * Retrieves current time and timezone
-	 * @return array{timestamp: int, ntpSynchronized: string, name: string, code: string, offset: string} Time and timezone
-	 * @throws TimeDateException
+	 * Returns gateway date, time, timezone and NTP configuration
+	 * @return array<string, int|string|bool|array<string>> Time configuration
 	 */
-	public function currentTime(): array {
-		$timestamp = $this->getTimestamp();
+	public function getTime(): array {
+		$timezone = Strings::trim(FileSystem::read('/etc/timezone'));
+		$date = new DateTime('now', new DateTimeZone($timezone));
 		$status = $this->getStatus();
-		$timezone = $this->timezoneInfo($status['Timezone']);
-		return array_merge([
-			'timestamp' => $timestamp,
-			'ntpSynchronized' => $status['NTPSynchronized'],
-			], $timezone);
+		$timesyncConf = $this->readTimesyncd();
+		$tokens = explode(';', $date->format('e;T;O;Z;U;Y-m-d H:i:s'));
+		$array = [
+			'zoneName' => $tokens[0],
+			'abbrevation' => $tokens[1],
+			'gmtOffset' => $tokens[2],
+			'gmtOffsetSec' => intval($tokens[3]),
+			'formattedZone' => sprintf('%s (%s, %s)', $tokens[0], $tokens[1], $tokens[2]),
+			'utcTimestamp' => intval($tokens[4]),
+			'localTimestamp' => intval($tokens[4]) + intval($tokens[3]),
+			'formattedTime' => $tokens[5],
+		];
+		$array['ntpSync'] = $status['NTP'];
+		$array['ntpServers'] = strlen($timesyncConf['Time']['NTP']) === 0 ? [] : explode(' ', $timesyncConf['Time']['NTP']);
+		return $array;
 	}
 
 	/**
-	 * Returns the current timestamp
-	 * @return int Timestamp
-	 * @throws TimeDateException
+	 * Sets gateway date, time, timezone and NTP configuration
+	 * @param array<string, bool|string|array<string>> $time Time configuration
 	 */
-	public function getTimestamp(): int {
-		$command = $this->commandManager->run('date +%s');
+	public function setTime(array $time): void {
+		if (array_key_exists('zoneName', $time)) {
+			$this->setTimezone($time['zoneName']);
+		}
+		if ($time['ntpSync']) {
+			$this->storeTimesyncd($time['ntpServers']);
+			$this->setNtp(true);
+		} else {
+			$this->setNtp(false);
+			$this->setDateTime($time['datetime']);
+		}
+	}
+
+	/**
+	 * Sets date and time
+	 * @param string $datetime ISO8601 datetime string
+	 */
+	private function setDateTime(string $datetime): void {
+		$command = $this->commandManager->run(sprintf('date --set="%s"', $datetime), false, 0);
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
-		return (int) $command->getStdout();
 	}
 
 	/**
@@ -130,6 +185,47 @@ class TimeManager {
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentTimezoneException($command->getStderr());
 		}
+	}
+
+	/**
+	 * Sets NTP synchronization
+	 * @param bool $enabled NTP sync status
+	 */
+	public function setNtp(bool $enabled): void {
+		$command = $this->commandManager->run('timedatectl set-ntp ' . ($enabled ? 'true' : 'false'), true);
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Parses and returns NTP configuration from timesyncd service
+	 * @return array<string, array<string, mixed>> NTP configuration
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
+	 */
+	private function readTimesyncd(): array {
+		if (!$this->fileManager->exists($this->confFile)) {
+			throw new ConfNotFoundException('Timesyncd configuration file not found.');
+		}
+		$config = ConfParser::toArray($this->fileManager->read($this->confFile));
+		if ($config === null) {
+			throw new InvalidConfFormatException('Invalid configuration file format.');
+		}
+		return array_replace_recursive(self::TIMESYNCD_DEFAULT, $config);
+	}
+
+	/**
+	 * Converts and stores NTP configuration for timesyncd service
+	 * @param array<string> $servers NTP servers
+	 * @throws ConfNotFoundException
+	 * @throws InvalidConfFormatException
+	 */
+	private function storeTimesyncd(array $servers): void {
+		$current = $this->readTimesyncd();
+		$serverList = implode(' ', $servers);
+		$current['Time']['NTP'] = $serverList === '' ? null : $serverList;
+		$this->fileManager->write($this->confFile, ConfParser::toConf($current));
 	}
 
 }

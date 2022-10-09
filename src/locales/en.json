@@ -1360,44 +1360,33 @@
 			"diagnostics": "Download diagnostics"
 		},
 		"datetime": {
-			"title": "Date & Time",
-			"description": "Gateway date and time settings.",
-			"currentTime": "Current gateway time",
-			"currentTimezone": "Current gateway timezone",
-			"clockFormat": "Use 12-hour clock format",
-			"ntpSync": "System clock synchronized",
+			"title": "Location & Time",
+			"status": "Gateway date and time",
 			"form": {
-				"timezone": "Change timezone"
+				"title": "Location & Time settings",
+				"zone": "Timezone",
+				"set": "Set time",
+				"setOptions": {
+					"manual": "Manually",
+					"ntp": "Using NTP protocol"
+				},
+				"datetime": "Date and time",
+				"defaultServers": "Use system default NTP servers",
+				"browserTime": "Set from browser",
+				"server": "NTP server address"
 			},
 			"errors": {
-				"timezone": "Please select a timezone."
-			},
-			"messages": {
-				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
-				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
-				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
-				"timezoneSetFailed": "Failed to change timezone: {error}."
-			}
-		},
-		"ntp": {
-			"title": "NTP configuration",
-			"form": {
-				"setServer": "Set NTP servers manually",
-				"server": "Server address",
-				"add": "Add another server",
-				"remove": "Remove server"
-			},
-			"errors": {
+				"timezone": "Please select a timezone.",
 				"serverInvalid": "Server should be either IP address or fully qualified domain name.",
 				"serverMissing": "Please enter a server."
 			},
 			"messages": {
-				"syncProgress": "Attempting to synchronize network time.",
-				"syncSuccess": "Network time hase been successfully synchronized.",
-				"syncFailed": "Failed to synchronize system clock: {error}",
-				"fetchFailed": "Failed to retrieve NTP configuration: {error}",
-				"saveFailed": "Failed to NTP configuration: {error}",
-				"saveSuccess": "NTP configuration has been successfully saved."
+				"timeGetFailed": "Failed to retrieve gateway date and time: {error}",
+				"timeSetFailed": "Failed to update gateway time configuration: {error}",
+				"timeSetSuccess": "Gateway time configuration has been successfully updated.",
+				"timezoneGetFailed": "Failed to retrieve of list of timezones.",
+				"timezoneSetSuccess": "Gateway timezone has been successfully changed.",
+				"timezoneSetFailed": "Failed to change timezone: {error}."
 			}
 		},
 		"log": {

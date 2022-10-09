@@ -113,29 +113,6 @@ class GatewayService {
 	}
 
 	/**
-	 * Retrieves NTP configuration
-	 */
-	getNtp(): Promise<Array<string>> {
-		return axios.get('gateway/ntp', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as Array<string>));
-	}
-
-	/**
-	 * Saves NTP configuration
-	 * @param config NTP configuration
-	 */
-	setNtp(config: Array<string>): Promise<AxiosResponse> {
-		return axios.put('gateway/ntp', config, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Attempts to synchronize system clock
-	 */
-	ntpSync(): Promise<AxiosResponse> {
-		return axios.post('gateway/ntp/sync', null, {headers: authorizationHeader(), timeout: 60000});
-	}
-
-	/**
 	 * Saves SSH keys
 	 * @param {Array<string>} keys SSh keys
 	 */

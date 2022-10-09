@@ -16,6 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
+import {ITimeSet} from '@/interfaces/GatewayTime';
 
 /**
  * Time management service
@@ -32,11 +33,11 @@ class TimeService {
 
 	/**
 	 * Sets new time
-	 * @param {Record<string, boolean|number} data Timestamp
+	 * @param {ITimeSet} data Time data
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
-	setTime(data: Record<string, boolean|number>): Promise<AxiosResponse> {
-		return axios.put('gateway/time', data, {headers: authorizationHeader()});
+	setTime(data: ITimeSet): Promise<AxiosResponse> {
+		return axios.post('gateway/time', data, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -45,15 +46,6 @@ class TimeService {
 	 */
 	getTimezones(): Promise<AxiosResponse> {
 		return axios.get('gateway/time/timezones', {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Sets new timezone
-	 * @param {Record<string, string>} data Timezone name
-	 * @returns {Promise<AxiosResponse>} REST API response promise
-	 */
-	setTimezone(data: Record<string, string>): Promise<AxiosResponse> {
-		return axios.put('gateway/time/timezone/', data, {headers: authorizationHeader()});
 	}
 }
 

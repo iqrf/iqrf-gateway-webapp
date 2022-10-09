@@ -14,37 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Timezone information interface
- */
-export interface ITimezone {
-	/**
-	 * Timezone name
-	 */
-	name: string
-
-	/**
-	 * Timezone code
-	 */
-	code: string
-
-	/**
-	 * Timezone offset
-	 */
-	offset: string
-}
 
 /**
- * Gateway time information interface
+ * Time set options
  */
-export interface ITime extends ITimezone {
-	/**
-	 * Timestamp in seconds
-	 */
-	timestamp: number
-
-	/**
-	 * Indicates whether system clock is synchronized
-	 */
-	ntpSynchronized: boolean
+export enum TimeSetOptions {
+	MANUAL = 'manual',
+	NTP = 'ntp'
 }
