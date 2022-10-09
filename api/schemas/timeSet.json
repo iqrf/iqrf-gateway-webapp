@@ -1,0 +1,85 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeGet.json",
+	"type": "object",
+	"title": "Gateway time information",
+	"examples": [
+		{
+			"ntpSync": false,
+			"date-time": "2022-08-01T10:00:00+02:00"
+		},
+		{
+			"ntpSync": true,
+			"ntpServers": [],
+			"zoneName": "Europe/Prague"
+		}
+	],
+	"additionalProperties": false,
+	"properties": {
+		"ntpSync": {
+			"$id": "#/properties/ntp",
+			"title": "NTP enabled",
+			"description": "NTP time synchronization.",
+			"type": "boolean",
+			"example": true
+		},
+		"ntpServers": {
+			"$id": "#/properties/ntpServers",
+			"title": "NTP servers",
+			"description": "Servers to use as authoritative servers when synchronizing time.",
+			"type": "array",
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/ntpServers/items",
+				"title": "NTP server",
+				"description": "Server IP address or hostname.",
+				"anyOf": [
+					{
+						"type": "string",
+						"format": "hostname"
+					},
+					{
+						"type": "string",
+						"format": "ipv4"
+					}
+				]
+			}
+		},
+		"datetime": {
+			"#id": "#/properties/datetime",
+			"title": "Datetime",
+			"description": "ISO 8601 datetime string.",
+			"type": "string",
+			"format": "date-time",
+			"example": ""
+		},
+		"zoneName": {
+			"$id": "#/properties/zoneName",
+			"title": "Timezone name",
+			"description": "Timezone to set.",
+			"type": "string",
+			"example": "Europe/Prague"
+		}
+	},
+	"if": {
+		"properties": {
+			"ntpSync": {
+				"const": true
+			}
+		}
+	},
+	"then": {
+		"required": [
+			"ntpSync",
+			"ntpServers"
+		],
+		"not": {"required": ["datetime"]}
+	},
+	"else": {
+		"required": [
+			"ntpSync",
+			"datetime"
+		],
+		"not": {"required": ["ntpServers"]}
+	}
+}

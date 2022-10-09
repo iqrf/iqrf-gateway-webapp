@@ -80,10 +80,6 @@ class FeatureManager {
 			'enabled' => false,
 			'url' => '/node-red/',
 		],
-		'ntp' => [
-			'enabled' => false,
-			'path' => '/etc/systemd/timesyncd.conf',
-		],
 		'remount' => [
 			'enabled' => false,
 		],

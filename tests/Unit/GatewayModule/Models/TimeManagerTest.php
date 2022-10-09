@@ -29,7 +29,6 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
-use Mockery;
 use Tester\Assert;
 use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -50,6 +49,7 @@ final class TimeManagerTest extends CommandTestCase {
 		'listTimezones' => 'timedatectl list-timezones',
 		'setTimezone' => 'timedatectl set-timezone UTC',
 		'setTimezoneNonexistent' => 'timedatectl set-timezone Nonexistent/Nonexistent',
+		'setNtp' => 'timedatectl set-ntp true',
 	];
 
 	/**
@@ -62,63 +62,8 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new TimeManager($this->commandManager);
-	}
-
-	/**
-	 * Tests the function to get current time
-	 */
-	public function testCurrentTime(): void {
-		$expected = [
-			'timestamp' => 1_613_756_375,
-			'ntpSynchronized' => true,
-			'name' => 'UTC',
-			'code' => 'UTC',
-			'offset' => '+0000',
-		];
-		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
-		$statusCommand = new Command(self::COMMANDS['status'], 'Timezone=UTC' . PHP_EOL . 'NTPSynchronized=yes', '', 0);
-		$manager = Mockery::mock(TimeManager::class, [$this->commandManager])->makePartial();
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['timestamp']])
-			->andReturn($timestampCommand);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['status']])
-			->andReturn($statusCommand);
-		$manager->shouldReceive('getTimestamp')
-			->andReturn($expected['timestamp']);
-		$manager->shouldReceive('getStatus')
-			->andReturn(['Timezone' => $expected['code'], 'NTPSynchronized' => $expected['ntpSynchronized']]);
-		$manager->shouldReceive('timezoneInfo')
-			->withArgs([$expected['code']])
-			->andReturn(['name' => 'UTC', 'code' => 'UTC', 'offset' => '+0000']);
-		Assert::same($expected, $manager->currentTime());
-	}
-
-	/**
-	 * Tests the function to get current timestamp
-	 */
-	public function testGetTimestamp(): void {
-		$timestamp = 1_613_756_375;
-		$timestampCommand = new Command(self::COMMANDS['timestamp'], '1613756375', '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['timestamp']])
-			->andReturn($timestampCommand);
-		Assert::same($timestamp, $this->manager->getTimestamp());
-	}
-
-
-	/**
-	 * Tests the function to get current timestamp with exceptions thrown
-	 */
-	public function testGetTimestampException(): void {
-		$command = new Command(self::COMMANDS['timestamp'], '', '', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['timestamp']])
-			->andReturn($command);
-		Assert::throws(function (): void {
-			$this->manager->getTimestamp();
-		}, TimeDateException::class);
+		$path = __DIR__ . '../../data/systemd/conf/timesyncd.conf';
+		$this->manager = new TimeManager($this->commandManager, $path);
 	}
 
 	/**
@@ -203,6 +148,19 @@ final class TimeManagerTest extends CommandTestCase {
 		Assert::throws(function (): void {
 			$this->manager->setTimezone('Nonexistent/Nonexistent');
 		}, NonexistentTimezoneException::class);
+	}
+
+	/**
+	 * Tests the function to set ntp synchronization
+	 */
+	public function testSetNtp(): void {
+		$command = new Command(self::COMMANDS['setNtp'], '', '', 0);
+		$this->commandManager->shouldReceive('run')
+			->withArgs([self::COMMANDS['setNtp'], true])
+			->andReturn($command);
+		Assert::noError(function (): void {
+			$this->manager->setNtp(true);
+		});
 	}
 
 }
