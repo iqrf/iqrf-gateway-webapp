@@ -31,7 +31,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -61,7 +61,7 @@
+@@ -58,7 +58,7 @@
  	enabled: false
  # SSH daemon manager
  ssh:
@@ -40,7 +40,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -72,13 +72,13 @@
+@@ -69,13 +69,13 @@
  	path: /etc/systemd/journald.conf
  # IQRF TR native upload
  trUpload:

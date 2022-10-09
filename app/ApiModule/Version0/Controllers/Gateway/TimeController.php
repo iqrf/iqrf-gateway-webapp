@@ -58,7 +58,7 @@ class TimeController extends GatewayController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: 'Returns current gateway date, time and timezone'
+	 *  summary: 'Returns current gateway date, time, timezone and ntp configuration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -75,10 +75,38 @@ class TimeController extends GatewayController {
 	 */
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$time = $this->manager->currentTime();
+			$time = $this->manager->getTime();
 			return $response->writeJsonBody($time);
 		} catch (TimeDateException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: 'Sets date, time, timezone and ntp configuration'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('timeSet', $request);
+		try {
+			$time = $request->getJsonBody(true);
+			$this->manager->setTime($time);
+			return $response->writeBody('Workaround');
+		} catch (NonexistentTimezoneException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
@@ -102,42 +130,6 @@ class TimeController extends GatewayController {
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		return $response->writeJsonBody($timezones);
-	}
-
-	/**
-	 * @Path("/timezone")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Sets new gateway timezone
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                 $ref: '#/components/schemas/TimezoneSet'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimezoneSet'
-	 *      '400':
-	 *          description: Not found
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function setTimezone(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('timezoneSet', $request);
-		try {
-			$body = $request->getJsonBody();
-			$this->manager->setTimezone($body['timezone']);
-			return $response->writeBody('Workaround');
-		} catch (NonexistentTimezoneException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
-		}
 	}
 
 }

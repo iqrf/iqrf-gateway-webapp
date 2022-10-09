@@ -56,12 +56,11 @@ services:
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
-	- App\GatewayModule\Models\NtpManager(@commandManager)
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SshManager
 	- App\GatewayModule\Models\SystemdJournalManager
-	- App\GatewayModule\Models\TimeManager
+	- App\GatewayModule\Models\TimeManager(@commandManager, %timesyncd.path%)
 	- App\GatewayModule\Models\UpdaterManager
 	etc.jsonFileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/')

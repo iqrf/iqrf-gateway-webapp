@@ -3,44 +3,118 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeGet.json",
 	"type": "object",
 	"title": "Gateway time information",
+	"example": {
+		"zoneName": "Europe/Prague",
+		"abbrevation": "CEST",
+		"gmtOffset": "+0200",
+		"gmtOffsetSec": 7200,
+		"formattedZone": "Europe/Prague (CEST, +0200)",
+		"utcTimestamp": 1659265941,
+		"localTimestamp": 1659273141,
+		"formattedTime": "2022-07-31 13:12:21",
+		"ntp": true,
+		"ntpServers": []
+	},
 	"required": [
-		"timestamp",
-		"ntpSynchronized",
-		"name",
-		"code",
-		"offset"
+		"zoneName",
+		"abbrevation",
+		"gmtOffset",
+		"gmtOffsetSec",
+		"formattedZone",
+		"utcTimestamp",
+		"localTimestamp",
+		"formattedTime",
+		"ntpSync",
+		"ntpServers"
 	],
 	"additionalProperties": false,
 	"properties": {
-		"timestamp": {
-			"$id": "#/properties/timestamp",
-			"type": "integer",
-			"title": "Timestamp",
-			"example": 1609506000
-		},
-		"ntpSynchronized": {
-			"$id": "#/properties/ntpSynchronized",
-			"type": "boolean",
-			"title": "System clock synchronized",
-			"example": true
-		},
-		"name": {
-			"$id": "#/properties/name",
-			"type": "string",
+		"zoneName": {
+			"$id": "#/properties/zoneName",
 			"title": "Timezone name",
+			"description": "Timezone identifier",
+			"type": "string",
 			"example": "Europe/Prague"
 		},
-		"code": {
-			"$id": "#/properties/code",
+		"abbrevation": {
+			"$id": "#/properties/abbrevation",
+			"title": "Timezone abbreviation",
+			"description": "Abbreviation (code) if available, otherwise GMT offset is used.",
 			"type": "string",
-			"title": "Timezone code",
-			"example": "CET"
+			"example": "CEST"
 		},
-		"offset": {
-			"$id": "#/properties/offset",
+		"gmtOffset": {
+			"$id": "#/properties/gmtOffset",
+			"title": "GMT offset",
+			"description": "Difference to GMT.",
 			"type": "string",
-			"title": "Timezone offset",
-			"example": "+0100"
+			"example": "+0200"
+		},
+		"gmtOffsetSec": {
+			"$id": "#/properties/gmtOffset",
+			"title": "GMT offset in seconds",
+			"description": "Timezone offset in seconds. Subtract from local to get UTC.",
+			"type": "integer",
+			"minimum": -43200,
+			"maximum": 50400,
+			"example": 7200
+		},
+		"formattedZone": {
+			"$id": "#/properties/formattedZone",
+			"title": "Formatted timezone",
+			"description": "Timezone string with abbreviation and offset.",
+			"type": "string",
+			"example": "Europe/Prague (CEST, +0200)"
+		},
+		"utcTimestamp": {
+			"$id": "#/properties/utcTimestamp",
+			"title": "UTC timestamp",
+			"description": "Seconds since Unix Epoch UTC",
+			"type": "integer",
+			"example": 1659265941
+		},
+		"localTimestamp": {
+			"$id": "#/properties/localTimestamp",
+			"title": "Local timestamp",
+			"description": "Local time in Unix time.",
+			"type": "integer",
+			"example": 1659273141
+		},
+		"formattedTime": {
+			"$id": "#/properties/formattedTime",
+			"title": "Formatted time",
+			"description": "Human readable local date and time string.",
+			"type": "string",
+			"example": "2022-07-31 13:12:21"
+		},
+		"ntpSync": {
+			"$id": "#/properties/ntp",
+			"title": "NTP enabled",
+			"description": "NTP time synchronization.",
+			"type": "boolean",
+			"example": true
+		},
+		"ntpServers": {
+			"$id": "#/properties/ntpServers",
+			"title": "NTP servers",
+			"description": "Servers to use as authoritative servers when synchronizing time.",
+			"type": "array",
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/ntpServers/items",
+				"title": "NTP server",
+				"description": "Server IP address or hostname.",
+				"anyOf": [
+					{
+						"type": "string",
+						"format": "hostname"
+					},
+					{
+						"type": "string",
+						"format": "ipv4"
+					}
+				]
+			}
 		}
 	}
 }
