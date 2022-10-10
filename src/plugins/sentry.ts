@@ -14,17 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as Sentry from '@sentry/vue';
+import {BrowserTracing} from '@sentry/tracing';
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
 
-const messages = {
-	'en': require('./locales/en.json')
-};
+import * as version from '@/../version.json';
+import router from '@/router';
 
-Vue.use(VueI18n);
+let release = version.version;
+if (version.pipeline !== '') {
+	release += '~' + version.pipeline;
+}
 
-export default new VueI18n({
-	locale: 'en',
-	fallbackLocale: 'en',
-	messages: messages
-});
+if (process.env.NODE_ENV === 'production') {
+	Sentry.init({
+		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
+		integrations: [
+			new BrowserTracing({
+				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+				tracingOrigins: ['localhost', window.location.hostname, /^\//],
+			}),
+		],
+		release: release,
+		tracesSampleRate: 1.0,
+		Vue,
+	});
+}

@@ -115,7 +115,7 @@ const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/page
 const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderUpdate.vue');
 const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MonitControl.vue');
 
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 import store from '@/store';
 
 Vue.use(VueRouter);
