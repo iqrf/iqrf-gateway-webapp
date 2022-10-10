@@ -778,6 +778,7 @@
 				"iqrfRepository": {
 					"title": "IQRF Repository",
 					"description": "Manage IQRF Repository's settings.",
+					"cacheUpdate": "Update cache",
 					"form": {
 						"urlRepo": "IQRF Repository URL",
 						"enableCheck": "Check for updates periodically",
@@ -790,6 +791,10 @@
 						"checkPeriod": "Please enter an integer greater or equal to 0."
 					},
 					"messages": {
+						"cacheUpdateFailed": "Failed to update cache: {error}",
+						"cacheUpdateNotNeeded": "Cache is already up to date.",
+						"cacheUpdateSuccess": "Cache successfully updated.",
+						"cacheUpdateTimeout": "Cache update request timed out.",
 						"saveFailed": "Failed to save IQRF repository configuration: {error}.",
 						"saveSuccess": "IQRF repository configuration successfully saved."
 					}
