@@ -18,69 +18,66 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
-			<div class='form-group'>
-				<CRow style='margin-bottom: 1.25rem;'>
-					<CCol>
-						<strong>
-							{{ $t('gateway.info.gwMode') }}
-						</strong>
-					</CCol>
-					<CCol>
-						{{ $t(mode !== 'unknown' ? `gateway.mode.modes.${mode}`: 'gateway.mode.messages.getFailed') }}
-					</CCol>
-				</CRow>
-				<div v-if='mode !== "unknown"'>
-					<CButton
+			<CRow align-vertical='center'>
+				<CCol md='2'>
+					<strong>{{ $t('gateway.info.gwMode') }}</strong>
+				</CCol>
+				<CCol>
+					<CDropdown
 						color='primary'
-						@click='setMode(modes.operational)'
+						:toggler-text='$t(`gateway.mode.modes.${mode}`)'
+						placement='bottom'
 					>
-						{{ $t('gateway.mode.modes.operational') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setMode(modes.service)'
-					>
-						{{ $t('gateway.mode.modes.service') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setMode(modes.forwarding)'
-					>
-						{{ $t('gateway.mode.modes.forwarding') }}
-					</CButton>
-				</div>
-			</div>
-			<div
+						<CDropdownItem
+							@click='setMode(modes.operational)'
+						>
+							{{ $t('gateway.mode.modes.operational') }}
+						</CDropdownItem>
+						<CDropdownItem
+							@click='setMode(modes.service)'
+						>
+							{{ $t('gateway.mode.modes.service') }}
+						</CDropdownItem>
+						<CDropdownItem
+							@click='setMode(modes.forwarding)'
+						>
+							{{ $t('gateway.mode.modes.forwarding') }}
+						</CDropdownItem>
+					</CDropdown>
+				</CCol>
+			</CRow>
+			<CRow
 				v-if='ideConfiguration !== null'
-				class='form-group'
+				class='mt-4'
+				align-vertical='center'
 			>
-				<CRow style='margin-bottom: 1.25rem;'>
-					<CCol>
-						<strong>
-							{{ $t('gateway.mode.startupMode') }}
-						</strong>
-					</CCol>
-					<CCol>
-						{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
-					</CCol>
-				</CRow>
-				<div v-if='ideConfiguration.operMode !== "unknown"'>
-					<CButton
+				<CCol md='2'>
+					<strong>{{ $t('gateway.mode.startupMode') }}</strong>
+				</CCol>
+				<CCol>
+					<CDropdown
 						color='primary'
-						@click='setStartupMode(modes.operational)'
+						:toggler-text='$t(`gateway.mode.modes.${ideConfiguration.operMode}`)'
+						placement='bottom'
 					>
-						{{ $t('gateway.mode.modes.operational') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setStartupMode(modes.service)'
-					>
-						{{ $t('gateway.mode.modes.service') }}
-					</CButton> <CButton
-						color='primary'
-						@click='setStartupMode(modes.forwarding)'
-					>
-						{{ $t('gateway.mode.modes.forwarding') }}
-					</CButton>
-				</div>
-			</div>
+						<CDropdownItem
+							@click='setStartupMode(modes.operational)'
+						>
+							{{ $t('gateway.mode.modes.operational') }}
+						</CDropdownItem>
+						<CDropdownItem
+							@click='setStartupMode(modes.service)'
+						>
+							{{ $t('gateway.mode.modes.service') }}
+						</CDropdownItem>
+						<CDropdownItem
+							@click='setStartupMode(modes.forwarding)'
+						>
+							{{ $t('gateway.mode.modes.forwarding') }}
+						</CDropdownItem>
+					</CDropdown>
+				</CCol>
+			</CRow>
 		</CCard>
 	</div>
 </template>
@@ -89,9 +86,11 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
+import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
+import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import DaemonModeService, {DaemonModeEnum} from '@/services/DaemonModeService';
+import ManagementService from '@/services/DaemonApi/ManagementService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
@@ -105,6 +104,9 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 		CDropdown,
 		CDropdownItem
 	},
+	data: () => ({
+		DaemonModeEnum,
+	}),
 	metaInfo: {
 		title: 'gateway.mode.title',
 	}
@@ -152,9 +154,9 @@ export default class DaemonMode extends Vue {
 	};
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string} msgId Daemon api message id
 	 */
-	private msgId: string|null = null;
+	private msgId = '';
 
 	/**
 	 * Component unsubscribe function
@@ -177,7 +179,7 @@ export default class DaemonMode extends Vue {
 				}
 				if (mutation.payload.data.msgId === this.msgId) {
 					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-					this.handleResponse(mutation.payload);
+					this.handleModeResponse(mutation.payload);
 				}
 			}
 		});
@@ -216,24 +218,27 @@ export default class DaemonMode extends Vue {
 	 * Retrieves Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = null; this.loaded = true;})
+		const options = buildDaemonMessageOptions(5000, 'gateway.mode.messages.getFailed', () => {this.msgId = ''; this.loaded = true;});
+		ManagementService.getMode(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Sets new Daemon mode
-	 * @param {DaemonModeEnum} newMode New Daemon mode to set
+	 * Sets Daemon mode
+	 * @param {DaemonModeEnum} mode Daemon mode to set
 	 */
-	private setMode(newMode: DaemonModeEnum): void {
-		DaemonModeService.set(newMode, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
+	private setMode(mode: DaemonModeEnum): void {
+		const options = buildDaemonMessageOptions(5000, 'gateway.mode.messages.setFailed', () => this.msgId = '');
+		ManagementService.setMode(mode, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Daemon api response handler
+	 * Handles Daemon API mode response
+	 * @param response Daemon API mode response
 	 */
-	private handleResponse(response): void {
-		this.mode = DaemonModeService.parse(response);
+	private handleModeResponse(response): void {
+		this.mode = ManagementService.parseModeResponse(response);
 		if (this.mode === DaemonModeEnum.unknown) {
 			let errorMessage: string;
 			if (this.loaded) {
@@ -291,5 +296,6 @@ export default class DaemonMode extends Vue {
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'gateway.mode.messages.startupSaveFailed'));
 	}
+
 }
 </script>

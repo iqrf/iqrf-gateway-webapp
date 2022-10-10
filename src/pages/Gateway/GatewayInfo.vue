@@ -139,7 +139,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 import ResourceUsage from '@/components/Gateway/ResourceUsage.vue';
 import GatewayService from '@/services/GatewayService';
 import HostnameChange from '@/components/Gateway/HostnameChange.vue';

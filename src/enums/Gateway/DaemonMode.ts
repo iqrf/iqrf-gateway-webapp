@@ -14,27 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {authorizationHeader} from '@/helpers/authorizationHeader';
-import axios, {AxiosResponse} from 'axios';
 
 /**
- * Version service
+ * Daemon modes
  */
-class VersionService {
-	/**
-	 * Retrieves IQRF Gateway Daemon version via the REST API
-	 */
-	getDaemonVersionRest(): Promise<AxiosResponse> {
-		return axios.get('/version/daemon', {headers: authorizationHeader()});
-	}
-
-
-	/**
-	 * Retrieves IQRF Gateway Webapp version via the REST API
-	 */
-	getWebappVersionRest(): Promise <AxiosResponse> {
-		return axios.get('version/webapp', {headers: authorizationHeader()});
-	}
+export enum DaemonModeEnum {
+	getMode = '',
+	forwarding = 'forwarding',
+	operational = 'operational',
+	service = 'service',
+	unknown = 'unknown',
 }
-
-export default new VersionService();
