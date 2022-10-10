@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 import store from '@/store';
 
 /**
