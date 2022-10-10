@@ -53,7 +53,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import IqrfInfo from '@/components/Config/IqrfInfo.vue';
-import IqrfRepository from '@/components/Config/IqrfRepository.vue';
+import IqrfRepository from '@/components/Config/Misc/IqrfRepository.vue';
 import JsonApi from '@/components/Config/JsonApi.vue';
 import JsonRawApi from '@/components/Config/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/JsonSplitter.vue';

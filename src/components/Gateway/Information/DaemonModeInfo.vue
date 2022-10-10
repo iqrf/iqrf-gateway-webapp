@@ -22,16 +22,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
-import DaemonModeService, {DaemonModeEnum} from '@/services/DaemonModeService';
-import {DaemonClientState} from '@/interfaces/wsClient';
 
-@Component({})
+import {Component, Vue} from 'vue-property-decorator';
+
+import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
+import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
+
+import ManagementService from '@/services/DaemonApi/ManagementService';
+
+import {DaemonClientState} from '@/interfaces/wsClient';
+import {MutationPayload} from 'vuex';
 
 /**
  * Daemon mode information component for gateway information
  */
+@Component
 export default class DaemonModeInfo extends Vue {
 	/**
 	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
@@ -79,7 +84,7 @@ export default class DaemonModeInfo extends Vue {
 				this.requestRunning = false;
 				if (response.data.msgId === this.msgId) {
 					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-					this.mode = DaemonModeService.parse(response);
+					this.mode = ManagementService.parseModeResponse(response);
 					this.$emit('notify-cinfo');
 				}
 			}
@@ -88,7 +93,7 @@ export default class DaemonModeInfo extends Vue {
 			this.getMode();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getMode();
@@ -112,7 +117,8 @@ export default class DaemonModeInfo extends Vue {
 	 * Retrieves current Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.timedOut())
+		const options = buildDaemonMessageOptions(5000, 'gateway.mode.messages.getFailed', () => this.timedOut());
+		ManagementService.getMode(options)
 			.then((msgId: string) => this.msgId = msgId);
 		this.requestRunning = true;
 	}

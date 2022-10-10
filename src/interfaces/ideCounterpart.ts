@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {DaemonModeEnum} from '@/services/DaemonModeService';
 
+import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
 import {RequiredInterface} from './requiredInterfaces';
 
 /**

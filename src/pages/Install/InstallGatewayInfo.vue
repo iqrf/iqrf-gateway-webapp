@@ -95,7 +95,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
-import DaemonModeInfo from '@/components/Gateway/DaemonModeInfo.vue';
+import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 import GatewayService from '@/services/GatewayService';
 import {fileDownloader} from '@/helpers/fileDownloader';
 import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/gatewayInfo';
