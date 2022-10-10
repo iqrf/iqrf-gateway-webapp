@@ -16,7 +16,7 @@
  */
 
 import {ErrorObject} from 'ajv';
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 import validate20 from '@/schemas/functions/genericDaemonRequest.js';
 
 /**

@@ -16,7 +16,7 @@
  */
 import store from '@/store';
 import Vue from 'vue';
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 
 import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
@@ -25,8 +25,6 @@ import DaemonMessage from '@/ws/DaemonMessage';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {DaemonClientState} from '@/interfaces/wsClient';
-
-import {TranslateResult} from 'vue-i18n';
 
 /**
  * Daemon client state
@@ -58,6 +56,17 @@ const serviceModeWhitelist = [
 	'mngScheduler_RemoveAll',
 	'mngScheduler_RemoveTask',
 ];
+
+/**
+ * Build Daemon message options
+ * @param timeout Request timeout
+ * @param message Timeout toast message
+ * @param callback Callback to execute on request timeout
+ * @returns {DaemonMessageOptions} Daemon API request options
+ */
+export function buildDaemonMessageOptions(timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}): DaemonMessageOptions {
+	return new DaemonMessageOptions(null, timeout, message, callback);
+}
 
 const actions: ActionTree<DaemonClientState, any> = {
 	sendRequest(
