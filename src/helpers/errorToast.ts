@@ -97,18 +97,3 @@ export function monitErrorToast(error: AxiosError, message: string, params: Reco
 	}
 	extendedErrorToast(error, message, params);
 }
-
-/**
- * Calls extended error toast with Pixla argument
- * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
- */
-export function pixlaErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
-	if (params === undefined) {
-		params = {service: 'PIXLA'};
-	} else {
-		Object.assign(params, {service: 'PIXLA'});
-	}
-	extendedErrorToast(error, message, params);
-}

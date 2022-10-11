@@ -453,13 +453,6 @@ export default class TheSidebar extends Vue {
 								role: UserRole.ADMIN,
 							},
 							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('maintenance.pixla.title'),
-								to: '/maintenance/pixla/',
-								feature: 'pixla',
-								role: UserRole.ADMIN,
-							},
-							{
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('maintenance.mender.title'),
 								to: '/maintenance/mender/',

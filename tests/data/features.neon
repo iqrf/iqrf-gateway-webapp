@@ -31,9 +31,6 @@ networkManager:
 nodeRed:
 	enabled: false
 	url: /node-red/
-# PIXLA mamagement system
-pixla:
-	enabled: false
 # SSH daemon manager
 ssh:
 	enabled: false

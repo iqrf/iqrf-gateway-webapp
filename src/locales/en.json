@@ -1351,7 +1351,6 @@
 			"board": "Board",
 			"gwId": "IQRF Gateway ID",
 			"gwImage": "IQRF Gateway image",
-			"gwmonId": "PIXLA token",
 			"version": {
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
@@ -2817,25 +2816,6 @@
 		"title": "Maintenance",
 		"description": "Tools for gateway management, updates and monitoring.",
 		"disabled": "No maintenance feature enabled.",
-		"pixla": {
-			"title": "PIXLA management",
-			"description": "Manages PIXLA client service.",
-			"dashboard": "Visit dashboard",
-			"form": {
-				"token": "Token"
-			},
-			"messages": {
-				"fetchFailed": "Failed to retrieve PIXLA token: {error}",
-				"disabled": "PIXLA manager is disabled.",
-				"failure": "Failed to change PIXLA token: {error}.",
-				"success": "New PIXLA token has been successfully saved.",
-				"serviceStatusError": "Failed to retrieve PIXLA service status: {error}",
-				"serviceError": "Failed to change PIXLA service state: {error}"
-			},
-			"errors": {
-				"token": "Please enter PIXLA platform token."
-			}
-		},
 		"backup": {
 			"title": "Backup & Restore",
 			"description": "Gateway backup and restore management.",
@@ -2847,8 +2827,7 @@
 				"software": {
 					"iqrf": "IQRF Gateway Software",
 					"mender": "Mender client",
-					"monit": "Monit client",
-					"pixla": "PIXLA client"
+					"monit": "Monit client"
 				},
 				"system": {
 					"hostname": "Hostname",
@@ -3022,17 +3001,6 @@
 				"start": "IQRF Gateway Translator has been started.",
 				"stop": "IQRF Gateway Translator has been stopped.",
 				"restart": "IQRF Gateway Translator has been restarted."
-			}
-		},
-		"gwman-client": {
-			"title": "PIXLA service",
-			"messages": {
-				"disabled": "PIXLA service is disabled.",
-				"disable": "PIXLA client service has been disabled.",
-				"enable": "PIXLA client service has been enabled.",
-				"start": "PIXLA client service has been started.",
-				"stop": "PIXLA client service has been stopped.",
-				"restart": "PIXLA client service has been restarted."
 			}
 		},
 		"mender-client": {

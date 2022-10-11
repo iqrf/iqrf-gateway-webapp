@@ -26,7 +26,6 @@ features:
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	ntp: NTP server configuration
-	pixla: PIXLA device management
 	remount: Filesystem remount
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu

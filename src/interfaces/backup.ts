@@ -49,10 +49,6 @@ export interface IBackupSoftware {
 	 */
 	monit: boolean
 
-	/**
-	 * Pixla
-	 */
-	pixla: boolean
 }
 
 /**

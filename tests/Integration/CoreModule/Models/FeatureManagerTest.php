@@ -163,8 +163,8 @@ final class FeatureManagerTest extends TestCase {
 		$this->copy();
 		$expected = ['docs'];
 		Assert::same($expected, $this->managerTemp->listEnabled());
-		$this->managerTemp->setEnabled(['pixla', 'ssh'], true);
-		$expected = ['docs', 'pixla', 'ssh'];
+		$this->managerTemp->setEnabled(['ssh'], true);
+		$expected = ['docs', 'ssh'];
 		Assert::same($expected, $this->managerTemp->listEnabled());
 	}
 

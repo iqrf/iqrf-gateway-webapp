@@ -7,7 +7,6 @@
 	"required": [
 		"board",
 		"gwId",
-		"pixla",
 		"versions",
 		"hostname",
 		"uptime",
@@ -28,19 +27,6 @@
 			"type": "string",
 			"title": "IQRF Gateway ID",
 			"example": "02424D1D2D2E7580"
-		},
-		"pixla": {
-			"$id": "#/properties/pixla",
-			"oneOf": [
-				{
-					"type": "string"
-				},
-				{
-					"type": "null"
-				}
-			],
-			"title": "PIXLA token",
-			"example": null
 		},
 		"versions": {
 			"$id": "#/properties/versions",

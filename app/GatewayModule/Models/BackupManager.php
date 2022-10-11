@@ -64,7 +64,6 @@ class BackupManager {
 	 * Services to include in backup
 	 */
 	private const SERVICES = [
-		'gwman-client',
 		'ssh',
 	];
 
@@ -234,7 +233,6 @@ class BackupManager {
 			'monit/',
 			'nm/',
 			'nm/system-connections/',
-			'pixla/',
 			'services/',
 			'time/',
 			'timesyncd/',

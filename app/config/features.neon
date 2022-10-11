@@ -53,9 +53,6 @@ ntp:
 	enabled: false
 	utility: timesyncd
 	path: /etc/systemd/timesyncd.conf
-# PIXLA management system
-pixla:
-	enabled: false
 # Remount endpoints
 remount:
 	enabled: false

@@ -162,8 +162,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordRecovery.json
 		PasswordRecoveryRequest:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordRecoveryRequest.json
-		PixlaToken:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaToken.json
 		PowerControl:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
 		Remount:

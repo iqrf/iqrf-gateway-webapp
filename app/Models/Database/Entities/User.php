@@ -258,7 +258,6 @@ class User implements JsonSerializable {
 				'maintenance:backup',
 				'maintenance:mender',
 				'maintenance:monit',
-				'maintenance:pixla',
 				'network',
 				'users:admin',
 				'sshKeys',

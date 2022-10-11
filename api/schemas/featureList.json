@@ -8,7 +8,6 @@
 		"grafana",
 		"networkManager",
 		"nodeRed",
-		"pixla",
 		"ssh",
 		"supervisord",
 		"trUpload",
@@ -32,9 +31,6 @@
 		},
 		"nodeRed": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
-		},
-		"pixla": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/pixla.json"
 		},
 		"ssh": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ssh.json"

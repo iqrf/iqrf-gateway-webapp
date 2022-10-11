@@ -24,7 +24,6 @@ use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
-use App\MaintenanceModule\Models\PixlaManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -53,11 +52,6 @@ class InfoManager {
 	private $networkManager;
 
 	/**
-	 * @var PixlaManager PIXLA manager
-	 */
-	private $pixlaManager;
-
-	/**
 	 * @var VersionManager Version manager
 	 */
 	private $versionManager;
@@ -66,13 +60,11 @@ class InfoManager {
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param NetworkManager $networkManager Network manager
-	 * @param PixlaManager $pixlaManager PIXLA manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, NetworkManager $networkManager, PixlaManager $pixlaManager, VersionManager $versionManager) {
+	public function __construct(CommandManager $commandManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
 		$this->networkManager = $networkManager;
-		$this->pixlaManager = $pixlaManager;
 		$this->versionManager = $versionManager;
 	}
 
@@ -86,7 +78,6 @@ class InfoManager {
 			'board' => $this->getBoard(),
 			'gwId' => $this->getId(),
 			'gwImage' => $this->getImage(),
-			'pixla' => $this->pixlaManager->getToken(),
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),

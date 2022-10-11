@@ -29,7 +29,6 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
-use App\MaintenanceModule\Models\PixlaManager;
 use Mockery;
 use Mockery\MockInterface;
 use Tester\Assert;
@@ -51,11 +50,6 @@ final class InfoManagerTest extends CommandTestCase {
 	 * @var InfoManager Gateway Info manager with mocked command manager
 	 */
 	private $manager;
-
-	/**
-	 * @var MockInterface|PixlaManager Mocked PIXLA manager
-	 */
-	private $pixlaManager;
 
 	/**
 	 * @var MockInterface|VersionManager Mocked version manager
@@ -82,7 +76,6 @@ final class InfoManagerTest extends CommandTestCase {
 		'board' => 'MICRORISC s.r.o. IQD-GW-01',
 		'gwId' => '0242fc1e6f85b296',
 		'gwImage' => 'gw v1.0.0',
-		'pixla' => null,
 		'versions' => [
 			'controller' => 'v1.0.0',
 			'daemon' => 'v2.3.0',
@@ -298,15 +291,13 @@ final class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGet(): void {
 		$verbose = false;
-		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->pixlaManager, $this->versionManager])->makePartial();
+		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
 			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
 			->andReturn(self::EXPECTED['gwId']);
 		$manager->shouldReceive('getImage')
 			->andReturn(self::EXPECTED['gwImage']);
-		$this->pixlaManager->shouldReceive('getToken')
-			->andReturn(self::EXPECTED['pixla']);
 		$this->versionManager->shouldReceive('getController')
 			->andReturn(self::EXPECTED['versions']['controller']);
 		$this->versionManager->shouldReceive('getDaemon')
@@ -340,9 +331,8 @@ final class InfoManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->networkManager = Mockery::mock(NetworkManager::class);
-		$this->pixlaManager = Mockery::mock(PixlaManager::class);
 		$this->versionManager = Mockery::mock(VersionManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->networkManager, $this->pixlaManager, $this->versionManager);
+		$this->manager = new InfoManager($this->commandManager, $this->networkManager, $this->versionManager);
 	}
 
 }

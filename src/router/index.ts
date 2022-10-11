@@ -111,7 +111,6 @@ const WireguardTunnel = () => import(/* webpackChunkName: "network" */ '@/pages/
 
 const MaintenanceDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MaintenanceDisambiguation.vue');
 const BackupRestore = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/BackupRestore.vue');
-const PixlaControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/PixlaControl.vue');
 const MenderDisambiguation = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderDisambiguation.vue');
 const MenderControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderControl.vue');
 const MenderUpdate = () => import(/* webpackChunkName: "maintenance" */ '@/pages/Maintenance/MenderUpdate.vue');
@@ -996,13 +995,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: BackupRestore,
 						path: 'backup-restore',
-						meta: {
-							role: UserRole.ADMIN,
-						},
-					},
-					{
-						component: PixlaControl,
-						path: 'pixla',
 						meta: {
 							role: UserRole.ADMIN,
 						},

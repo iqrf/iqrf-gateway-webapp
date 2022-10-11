@@ -95,7 +95,6 @@ export interface IGatewayInfo {
 	hostname: string
 	interfaces: Array<NetworkInterface>
 	memoryUsage: MemoryInfo
-	pixla: string
 	swapUsage: SwapInfo
 	versions: VersionsInfo
 }
