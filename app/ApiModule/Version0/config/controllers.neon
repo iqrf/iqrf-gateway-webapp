@@ -55,7 +55,6 @@ services:
 	- App\ApiModule\Version0\Controllers\Network\WifiController
 	- App\ApiModule\Version0\Controllers\Network\WireguardController
 	- App\ApiModule\Version0\Controllers\OpenApiController
-	- App\ApiModule\Version0\Controllers\PixlaController
 	- App\ApiModule\Version0\Controllers\SchedulerController
 	- App\ApiModule\Version0\Controllers\ServicesController
 	- App\ApiModule\Version0\Controllers\UserController

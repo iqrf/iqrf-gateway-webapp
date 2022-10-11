@@ -82,9 +82,6 @@ class FeatureManager {
 			'utility' => 'timesyncd',
 			'path' => '/etc/systemd/timesyncd.conf',
 		],
-		'pixla' => [
-			'enabled' => false,
-		],
 		'remount' => [
 			'enabled' => false,
 		],

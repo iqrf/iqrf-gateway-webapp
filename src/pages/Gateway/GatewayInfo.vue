@@ -33,14 +33,6 @@ limitations under the License.
 							<th>{{ $t('gateway.info.gwImage') }}</th>
 							<td>{{ info.gwImage }}</td>
 						</tr>
-						<tr v-if='info.pixla'>
-							<th>
-								<a href='https://www.pixla.online/'>
-									{{ $t('gateway.info.gwmonId') }}
-								</a>
-							</th>
-							<td>{{ info.pixla }}</td>
-						</tr>
 						<tr v-if='info.versions.controller'>
 							<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
 							<td>{{ info.versions.controller }}</td>

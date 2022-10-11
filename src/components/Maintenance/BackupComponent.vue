@@ -32,11 +32,6 @@
 					:checked.sync='migration.software.monit'
 					:label='$t("maintenance.backup.form.software.monit")'
 				/>
-				<CInputCheckbox
-					v-if='$store.getters["features/isEnabled"]("pixla")'
-					:checked.sync='migration.software.pixla'
-					:label='$t("maintenance.backup.form.software.pixla")'
-				/>
 			</CCol>
 			<CCol>
 				<h3>{{ $t('maintenance.backup.headings.system') }}</h3>
@@ -104,7 +99,6 @@ export default class BackupComponent extends Vue {
 			iqrf: false,
 			monit: false,
 			mender: false,
-			pixla: false,
 		},
 		system: {
 			hostname: false,
@@ -153,9 +147,6 @@ export default class BackupComponent extends Vue {
 		}
 		if (!this.$store.getters['features/isEnabled']('mender')) {
 			params.software.mender = false;
-		}
-		if (!this.$store.getters['features/isEnabled']('pixla')) {
-			params.software.pixla = false;
 		}
 		if (!this.$store.getters['features/isEnabled']('networkManager')) {
 			params.system.network = false;

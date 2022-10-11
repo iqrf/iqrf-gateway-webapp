@@ -18,9 +18,6 @@
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/pixla.json"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ssh.json"
 		},
 		{

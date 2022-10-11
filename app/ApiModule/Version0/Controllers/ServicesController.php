@@ -58,7 +58,6 @@ class ServicesController extends BaseController {
 	 * @var array<string, string|null> Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
-		'gwman-client' => 'pixla',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',

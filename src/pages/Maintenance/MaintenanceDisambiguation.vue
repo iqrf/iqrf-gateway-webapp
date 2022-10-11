@@ -31,17 +31,6 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("pixla") && roleIdx <= roles.admin'
-					to='/maintenance/pixla/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('maintenance.pixla.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('maintenance.pixla.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
 					v-if='$store.getters["features/isEnabled"]("mender") && roleIdx <= roles.admin'
 					to='/maintenance/mender/'
 				>

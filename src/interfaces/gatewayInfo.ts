@@ -94,7 +94,6 @@ export interface IGatewayInfo {
 	board: string
 	gwId: string|null
 	gwImage: string|null
-	pixla: string
 	versions: VersionsInfo
 	hostname: string
 	interfaces: Array<NetworkInterface>
