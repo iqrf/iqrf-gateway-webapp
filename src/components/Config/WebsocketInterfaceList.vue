@@ -258,7 +258,7 @@ export default class WebsocketInterfaceList extends Vue {
 				const instances: Array<WsInterface> = [];
 				for (const messaging of messagings) {
 					if (messaging.RequiredInterfaces === undefined ||
-							messaging.RequiredInterfaces === [] ||
+							messaging.RequiredInterfaces.length === 0 ||
 							messaging.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
 							messaging.RequiredInterfaces[0].target.instance === undefined) {
 						continue;
