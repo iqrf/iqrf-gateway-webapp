@@ -27,18 +27,21 @@ declare(strict_types = 1);
 namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\MainManager;
+use App\IqrfNetModule\Enums\UploadFormats;
+use App\IqrfNetModule\Exceptions\UploaderMissingException;
 use App\IqrfNetModule\Models\UploadManager;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\WebSocketTestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Test for IQRF TR upload manager
  */
-final class UploadManagerTest extends WebSocketTestCase {
+final class UploadManagerTest extends CommandTestCase {
 
 	/**
 	 * @var string Data dir path
@@ -54,9 +57,14 @@ final class UploadManagerTest extends WebSocketTestCase {
 	];
 
 	/**
+	 * @var string Upload directory pathUpload directory name
+	 */
+	private const UPLOAD_DIR = '/upload/';
+
+	/**
 	 * @var string Upload directory path
 	 */
-	private const UPLOAD_PATH = TMP_DIR . '/upload/';
+	private const UPLOAD_PATH = TMP_DIR . self::UPLOAD_DIR;
 
 	/**
 	 * @var UploadManager IQRF TR upload manager
@@ -64,37 +72,77 @@ final class UploadManagerTest extends WebSocketTestCase {
 	private UploadManager $manager;
 
 	/**
-	 * Tests the function to upload the file into IQRF TR module (HEX file format)
+	 * Returns file formats
+	 * @return array<array<string>> File formats
 	 */
-	public function testUploadFileHex(): void {
-		$expected = ['fileName' => self::FILENAMES['hex'], 'format' => 'hex'];
-		$fileContent = FileSystem::read(self::DATA_PATH . self::FILENAMES['hex']);
-		$actual = $this->manager->uploadFile(self::FILENAMES['hex'], $fileContent);
-		Assert::equal($expected, $actual);
-		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES['hex']));
+	public function getUploadFileFormats(): array {
+		return [['hex'], ['iqrf']];
 	}
 
 	/**
-	 * Tests the function to upload the file into IQRF TR module (IQRF file format)
+	 * Tests the function to upload the file into IQRF TR module (HEX file format)
+	 * @dataProvider getUploadFileFormats
 	 */
-	public function testUploadFileIqrf(): void {
-		$expected = ['fileName' => self::FILENAMES['iqrf'], 'format' => 'iqrf'];
-		$fileContent = FileSystem::read(self::DATA_PATH . self::FILENAMES['iqrf']);
-		$actual = $this->manager->uploadFile(self::FILENAMES['iqrf'], $fileContent);
+	public function testUploadFile(string $format): void {
+		$expected = ['fileName' => self::FILENAMES[$format], 'format' => $format];
+		$fileContent = FileSystem::read(self::DATA_PATH . '/' . self::FILENAMES[$format]);
+		$actual = $this->manager->uploadToFs(self::FILENAMES[$format], $fileContent);
 		Assert::equal($expected, $actual);
-		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES['iqrf']));
+		Assert::equal($fileContent, FileSystem::read(self::UPLOAD_PATH . self::FILENAMES[$format]));
 	}
+
+	/**
+	 * Returns file name and format
+	 * @return array<array<string|UploadFormats|bool>> File name and format
+	 */
+	public function getUploadToTrData(): array {
+		return [
+			['ChangeOS-TR7xD-405(08D7)-406(08D8).iqrf', UploadFormats::IQRF(), true],
+			['0402_0002_DDC-SE+RE.hex', UploadFormats::HEX(), false],
+		];
+	}
+
+	/**
+	 * Tests the function to upload the file into the transceiver
+	 * @dataProvider getUploadToTrData
+	 * @param string $fileName File name
+	 * @param UploadFormats $format File format
+	 * @param bool $os Uploaded file is OS patch
+	 */
+	public function testUploadToTr(string $fileName, UploadFormats $format, bool $os): void {
+		$this->receiveCommandExist('iqrf-gateway-uploader', true);
+		$command = sprintf('iqrf-gateway-uploader %s \'%s\'', $format->getUploaderParameter(), ($os ? UploadManager::OS_PATH : self::UPLOAD_PATH) . $fileName);
+		$this->receiveCommand($command, true);
+		Assert::noError(function () use ($fileName, $os, $format): void {
+			$this->manager->uploadToTr($fileName, $os, $format);
+		});
+	}
+
+	/**
+	 * Tests the function to upload the file into the transceiver (missing IQRF Gateway Uploader)
+	 */
+	public function testUploadToTrWithoutUploader(): void {
+		$this->receiveCommandExist('iqrf-gateway-uploader', false);
+		Assert::exception(function (): void {
+			$this->manager->uploadToTr('test.iqrf');
+		}, UploaderMissingException::class, 'IQRF Gateway Uploader is not installed.');
+	}
+
 
 	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		parent::setUp();
+		$mainManager = Mockery::mock(MainManager::class);
+		$mainManager->shouldReceive('getCacheDir')
+			->andReturn(TMP_DIR);
 		$configManager = Mockery::mock(GenericManager::class);
 		$configManager->shouldReceive('setComponent')
-			->with('iqrf::NativeUploadService');
+			->with('iqrf::OtaUploadService');
 		$configManager->shouldReceive('list')
-			->andReturn([['uploadPath' => self::UPLOAD_PATH]]);
-		$this->manager = new UploadManager($configManager);
+			->andReturn([['uploadPathSuffix' => self::UPLOAD_DIR]]);
+		$this->manager = new UploadManager($this->commandManager, $configManager, $mainManager);
 	}
 
 }

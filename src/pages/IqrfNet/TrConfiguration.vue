@@ -529,7 +529,7 @@ import {
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import ProductModal from '@/components/IqrfNet/ProductModal.vue';
+import ProductModal from '@/components/IqrfNet/TrConfiguration/ProductModal.vue';
 
 import {
 	between,
@@ -999,7 +999,7 @@ export default class TrConfiguration extends Vue {
 	 * Parses device enumeration response
 	 * @param response Daemon API response
 	 */
-	private parseResponse(response: any): void {
+	private parseResponse(response): void {
 		const rsp = response.data.rsp;
 		this.config = {...this.config, ...rsp.trConfiguration};
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
@@ -1178,7 +1178,7 @@ export default class TrConfiguration extends Vue {
 	 * Renders product modal
 	 */
 	private showProductModal(): void {
-		(this.$refs.productModal as ProductModal).show();
+		(this.$refs.productModal as ProductModal).showModal();
 	}
 
 	/**
@@ -1187,7 +1187,8 @@ export default class TrConfiguration extends Vue {
 	 */
 	private setSelectedProduct(product: IProduct): void {
 		this.hwpid = product.hwpid;
-		(this.$refs.productModal as ProductModal).hide();
+		(this.$refs.productModal as ProductModal).hideModal();
 	}
 }
+
 </script>

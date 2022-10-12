@@ -39,13 +39,15 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<CButton
+						class='mr-1'
 						color='primary'
 						:disabled='invalid'
 						@click.prevent='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						color='primary'
 						:disabeld='invalid'
 						@click.prevent='submitReadAll'
 					>
@@ -54,7 +56,7 @@ limitations under the License.
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
-		<CCardFooter v-if='responseType != null'>
+		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
 			<table class='table d-block overflow-auto text-nowrap'>
 				<thead>
 					{{ $t('iqrfnet.standard.sensor.sensors') }}
@@ -66,13 +68,13 @@ limitations under the License.
 							{{ sensors[i-1].type }}
 						</td>
 					</tr>
-					<tr v-if='responseType === "enum"'>
+					<tr v-if='responseType === StandardResponses.ENUMERATE'>
 						<th>{{ $t('iqrfnet.standard.sensor.unit') }}</th>
 						<td v-for='j of sensors.length' :key='j'>
 							{{ sensors[j-1].unit }}
 						</td>
 					</tr>
-					<tr v-else-if='responseType === "read"'>
+					<tr v-else-if='responseType === StandardResponses.READ'>
 						<th>{{ $t('iqrfnet.standard.sensor.value') }}</th>
 						<td v-for='k of sensors.length' :key='k'>
 							{{ sensors[k-1].value + ' ' + sensors[k-1].unit }}
@@ -90,12 +92,14 @@ import {CButton, CCard, CCardBody, CCardFooter, CForm, CInput} from '@coreui/vue
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {StandardResponses} from '@/enums/IqrfNet/Standard';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardSensorService from '@/services/DaemonApi/StandardSensorService';
 
 import {ISensor, IStandardSensor} from '@/interfaces/standard';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
 
 @Component({
 	components: {
@@ -107,7 +111,10 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CInput,
 		ValidationObserver,
 		ValidationProvider
-	}
+	},
+	data: () => ({
+		StandardResponses
+	}),
 })
 
 /**
@@ -115,19 +122,19 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
  */
 export default class SensorManager extends Vue {
 	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
+	/**
 	 * @var {number} address Address of device implementing the Sensor standard
 	 */
 	private address = 1;
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {StandardResponses} responseType Type of Sensor standard message
 	 */
-	private msgId: string|null = null;
-
-	/**
-	 * @var {string|null} responseType Type of Sensor standard message
-	 */
-	private responseType: string|null = null;
+	private responseType: StandardResponses = StandardResponses.NONE;
 
 	/**
 	 * @var {Array<ISensor>} sensors Array of Sensor standard objects
@@ -140,13 +147,17 @@ export default class SensorManager extends Vue {
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules and registers mutation handling
 	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
+				this.responseType = StandardResponses.NONE;
+				return;
+			}
 			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
@@ -160,14 +171,14 @@ export default class SensorManager extends Vue {
 				} else if (mutation.payload.mType === 'iqrfSensor_Enumerate') {
 					this.handleEnumerateResponse(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfSensor_ReadSensorsWithTypes') {
-					this.handleReadSensors(mutation.payload);
+					this.handleReadResponse(mutation.payload);
 				}
 			}
 		});
 	}
 
 	/**
-	 * Vue lifecycle hook beforeDestroy
+	 * Unregisters mutation handling
 	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
@@ -207,38 +218,13 @@ export default class SensorManager extends Vue {
 	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
 	private buildOptions(): DaemonMessageOptions {
-		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
-	}
-
-	/**
-	 * Reads information from all sensors implemented by a device
-	 */
-	private submitReadAll(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardSensorService.readAll(this.address, this.buildOptions())
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles Read Sensors response
-	 * @param response Daemon API response
-	 */
-	private handleReadSensors(response): void {
-		if (response.data.status === 0) {
-			this.parseReadAll(response.data.rsp.result.sensors);
-			this.responseType = 'read';
-			this.$toast.success(
-				this.$t('iqrfnet.standard.sensor.messages.success').toString()
-			);
-		} else {
-			this.handleError(response);
-		}
+		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = '');
 	}
 
 	/**
 	 * Enumerates all sensors implemented by a device
 	 */
-	private submitEnumerate(): void {
+	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardSensorService.enumerate(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -251,10 +237,35 @@ export default class SensorManager extends Vue {
 	private handleEnumerateResponse(response): void {
 		if (response.data.status === 0) {
 			this.parseEnumerate(response.data.rsp.result.sensors);
-			this.responseType = 'enum';
 			this.$toast.success(
 				this.$t('iqrfnet.standard.sensor.messages.success').toString()
 			);
+			this.responseType = StandardResponses.ENUMERATE;
+		} else {
+			this.handleError(response);
+		}
+	}
+
+	/**
+	 * Reads information from all sensors implemented by a device
+	 */
+	private read(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardSensorService.readAll(this.address, this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Read Sensors response
+	 * @param response Daemon API response
+	 */
+	private handleReadResponse(response): void {
+		if (response.data.status === 0) {
+			this.parseReadAll(response.data.rsp.result.sensors);
+			this.$toast.success(
+				this.$t('iqrfnet.standard.sensor.messages.success').toString()
+			);
+			this.responseType = StandardResponses.READ;
 		} else {
 			this.handleError(response);
 		}

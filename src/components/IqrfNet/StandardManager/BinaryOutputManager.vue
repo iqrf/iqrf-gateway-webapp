@@ -72,44 +72,43 @@ limitations under the License.
 						/>
 					</div>
 					<CButton
+						class='mr-1'
 						color='primary'
 						:disabled='invalid'
-						@click='submitEnumerate'
+						@click='enumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='primary'
 						:disabled='invalid'
-						@click='submitGetStates'
+						@click='getStates'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						color='primary'
 						:disabled='invalid'
-						@click='submitSetState'
+						@click='setState'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
-		<CCardFooter v-if='responseType !== null'>
+		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
 			<table v-if='responseType === "enum"' class='table'>
 				<thead>
-					{{ $t('iqrfnet.standard.binaryOutput.enum') }}
+					{{ $t(`iqrfnet.standard.binaryOutput.${responseType === StandardResponses.ENUMERATE ? 'enum' : 'prev'}`) }}
 				</thead>
-				<tbody>
+				<tbody v-if='responseType === StandardResponses.ENUMERATE'>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.outputs') }}</th>
 						<td>{{ numOutputs }}</td>
 					</tr>
 				</tbody>
-			</table>
-			<table v-if='responseType === "set"' class='table scroll-table'>
-				<thead>
-					{{ $t('iqrfnet.standard.binaryOutput.prev') }}
-				</thead>
-				<tbody>
+				<tbody v-else>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.index') }}</th>
 						<td v-for='col of Array(32).keys()' :key='col'>
@@ -122,12 +121,12 @@ limitations under the License.
 							<CIcon
 								v-if='states[ind] === true'
 								class='text-success'
-								:content='icons.on'
+								:content='cilCheckAlt'
 							/>
 							<CIcon
 								v-if='states[ind] === false'
 								class='text-danger'
-								:content='icons.off'
+								:content='cilX'
 							/>
 						</td>
 					</tr>
@@ -144,11 +143,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {cilCheckAlt, cilX} from '@coreui/icons';
+import {StandardResponses} from '@/enums/IqrfNet/Standard';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardBinaryOutputService, {StandardBinaryOutput} from '@/services/DaemonApi/StandardBinaryOutputService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -162,7 +162,12 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CSwitch,
 		ValidationObserver,
 		ValidationProvider
-	}
+	},
+	data: () => ({
+		cilCheckAlt,
+		cilX,
+		StandardResponses,
+	}),
 })
 
 /**
@@ -170,17 +175,14 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
  */
 export default class BinaryOutputManager extends Vue {
 	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
+	/**
 	 * @var {number} address Address of device implementing BinaryOutput standard
 	 */
 	private address = 1;
-
-	/**
-	 * @constant {Record<string, Array<string>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		on: cilCheckAlt,
-		off: cilX
-	};
 
 	/**
 	 * @var {number} index Index of binary output
@@ -188,19 +190,14 @@ export default class BinaryOutputManager extends Vue {
 	private index = 0;
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
-	 */
-	private msgId: string|null = null;
-
-	/**
 	 * @var {number} numOutputs Number of binary outputs implemented by the device
 	 */
 	private numOutputs = 0;
 
 	/**
-	 * @var {string|null} responseType BinaryOutput response type
+	 * @var {StandardResponses} responseType BinaryOutput response type
 	 */
-	private responseType: string|null = null;
+	private responseType: StandardResponses = StandardResponses.NONE;
 
 	/**
 	 * @var {boolean} state Sets state of binary output specified by index
@@ -226,7 +223,7 @@ export default class BinaryOutputManager extends Vue {
 		extend('between', between);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
-				this.responseType = null;
+				this.responseType = StandardResponses.NONE;
 				return;
 			}
 			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
@@ -278,13 +275,13 @@ export default class BinaryOutputManager extends Vue {
 	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
 	private buildOptions(): DaemonMessageOptions {
-		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.binaryOutput.messages.timeout', () => this.msgId = null);
+		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.binaryOutput.messages.timeout', () => this.msgId = '');
 	}
 
 	/**
 	 * Performs enumeration of binary outputs
 	 */
-	private submitEnumerate(): void {
+	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardBinaryOutputService.enumerate(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -297,10 +294,10 @@ export default class BinaryOutputManager extends Vue {
 	private handleEnumerateResponse(response): void {
 		if (response.data.status === 0) {
 			this.numOutputs = response.data.rsp.result.binOuts;
-			this.responseType = 'enum';
 			this.$toast.success(
 				this.$t('iqrfnet.standard.binaryOutput.messages.success').toString()
 			);
+			this.responseType = StandardResponses.ENUMERATE;
 		} else {
 			this.handleError(response);
 		}
@@ -309,7 +306,7 @@ export default class BinaryOutputManager extends Vue {
 	/**
 	 * Retrieves states of binary outputs
 	 */
-	private submitGetStates(): void {
+	private getStates(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardBinaryOutputService.getOutputs(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -318,7 +315,7 @@ export default class BinaryOutputManager extends Vue {
 	/**
 	 * Sets a new binary output state and retrieves previous states
 	 */
-	private submitSetState(): void {
+	private setState(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		const output = new StandardBinaryOutput(this.index, this.state);
 		StandardBinaryOutputService.setOutputs(this.address, [output], this.buildOptions())
@@ -332,10 +329,10 @@ export default class BinaryOutputManager extends Vue {
 	private handleSetOutputResponse(response): void {
 		if (response.data.status === 0) {
 			this.parseSetOutput(response.data.rsp.result.prevVals);
-			this.responseType = 'set';
 			this.$toast.success(
 				this.$t('iqrfnet.standard.binaryOutput.messages.success').toString()
 			);
+			this.responseType = StandardResponses.READ;
 		} else {
 			this.handleError(response);
 		}

@@ -1,6 +1,6 @@
 <template>
 	<CModal
-		:show.sync='render'
+		:show.sync='show'
 		color='primary'
 		size='xl'
 	>
@@ -28,7 +28,7 @@
 						size='sm'
 						@click='selectProduct(item)'
 					>
-						<CIcon :content='icon' size='sm' />
+						<CIcon :content='cilCheckAlt' size='sm' />
 					</CButton>
 				</td>
 			</template>
@@ -36,7 +36,7 @@
 		<template #footer>
 			<CButton
 				color='secondary'
-				@click='hide'
+				@click='closeModal'
 			>
 				{{ $t('forms.close') }}
 			</CButton>
@@ -45,8 +45,9 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
+
 import {cilCheckAlt} from '@coreui/icons';
 
 import ProductService from '@/services/IqrfRepository/ProductService';
@@ -54,6 +55,7 @@ import ProductService from '@/services/IqrfRepository/ProductService';
 import {AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
 import {IProduct} from '@/interfaces/repository';
+import ModalBase from '@/components/ModalBase.vue';
 
 @Component({
 	components: {
@@ -62,18 +64,15 @@ import {IProduct} from '@/interfaces/repository';
 		CIcon,
 		CModal,
 	},
+	data: () => ({
+		cilCheckAlt,
+	}),
 })
 
 /**
  * Product modal component
  */
-export default class ProductModal extends Vue {
-
-	/**
-	 * @var {boolean} show Controls whether or not the product modal is rendered
-	 */
-	private render = false;
-
+export default class ProductModal extends ModalBase {
 	/**
 	 * @var {Array<IProduct>} products Array of products from repository
 	 */
@@ -104,11 +103,6 @@ export default class ProductModal extends Vue {
 	];
 
 	/**
-	 * @constant {Array<string>} icon Check icon for select button
-	 */
-	private icon: Array<string> = cilCheckAlt;
-
-	/**
 	 * Retrieves products from repository
 	 */
 	private getProducts(): void {
@@ -125,14 +119,15 @@ export default class ProductModal extends Vue {
 	 * Selects product from table and emits data to the parent component
 	 */
 	private selectProduct(product: IProduct): void {
+		this.closeModal();
 		this.$emit('selected-product', product);
 	}
 
 	/**
 	 * Shows modal window
 	 */
-	public show(): void {
-		this.render = true;
+	public showModal(): void {
+		this.openModal();
 		if (this.products.length === 0) {
 			this.getProducts();
 		}
@@ -141,8 +136,8 @@ export default class ProductModal extends Vue {
 	/**
 	 * Hides modal window
 	 */
-	public hide(): void {
-		this.render = false;
+	public hideModal(): void {
+		this.closeModal();
 	}
 }
 </script>

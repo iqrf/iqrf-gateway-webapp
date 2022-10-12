@@ -30,7 +30,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'vue2-datepicker/index.css';
 
 import {config, library} from '@fortawesome/fontawesome-svg-core';
-import {faEye, faEyeSlash, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
+import {faEye, faEyeSlash, faSquarePlus, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import '@/plugins/axios';
@@ -47,6 +47,7 @@ library.add(
 	faEye,
 	faEyeSlash,
 	faPlus,
+	faSquarePlus,
 	faTrashAlt
 );
 

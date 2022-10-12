@@ -28,9 +28,9 @@ import {Component, Vue} from 'vue-property-decorator';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import DpaUpdater from '@/components/IqrfNet/DpaUpdater.vue';
-import HexUpload from '@/components/IqrfNet/HexUpload.vue';
-import OsUpdater from '@/components/IqrfNet/OsUpdater.vue';
+import DpaUpdater from '@/components/IqrfNet/TrUpload/DpaUpdater.vue';
+import HexUpload from '@/components/IqrfNet/TrUpload/HexUpload.vue';
+import OsUpdater from '@/components/IqrfNet/TrUpload/OsUpdater.vue';
 import {IConfigFetch} from '@/interfaces/daemonComponent';
 import IqrfNetService from '@/services/IqrfNetService';
 

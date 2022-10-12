@@ -2290,12 +2290,9 @@
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
-					"gatewayUpload": "Downloading OS and DPA files to gateway...",
-					"gatewayUploadFailed": "Failed to download OS and DPA files to gateway: {error}",
-					"gatewayUploadSuccess": "OS and DPA files successfully downloaded to gateway.",
-					"trUpload": "Uploading OS file to TR...",
-					"trUploadFailed": "Failed to upload OS file to TR: {error}",
-					"trUploadSuccess": "OS file successfully uploaded to TR."
+					"upgrade": "Upgrading OS and DPA...",
+					"upgradeFailed": "Failed to upgrade OS and DPA: {error}",
+					"upgradeSuccess": "OS and DPA successfully upgraded."
 				}
 			},
 			"messages": {

@@ -218,9 +218,10 @@ export default class MonitorList extends Vue {
 				const instances: Array<IMonitorWsInstance> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
-							monitor.RequiredInterfaces === [] ||
-							monitor.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
-							monitor.RequiredInterfaces[0].target.instance === undefined) {
+						monitor.RequiredInterfaces.length === 0 ||
+						monitor.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
+						monitor.RequiredInterfaces[0].target.instance === undefined
+					) {
 						continue;
 					}
 					const webSocketInstance = monitor.RequiredInterfaces[0].target.instance;

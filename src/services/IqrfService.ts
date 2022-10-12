@@ -17,11 +17,26 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {UploadUtilFile} from '@/interfaces/trUpload';
-
+ 
 interface IqrfInterfacePorts {
 	cdc: Array<string>;
 	spi: Array<string>;
 	uart: Array<string>;
+}
+
+export interface DpaMacro {
+	confirmation: boolean
+	enabled: boolean
+	name: string
+	note: string
+	request: string
+}
+
+export interface DpaMacroGroup {
+	enabled: boolean
+	id: number
+	macros: Array<DpaMacro>
+	name: string
 }
 
 /**
@@ -43,8 +58,9 @@ class IqrfService {
 	/**
 	 * Retrieves IQRF IDE Macros
 	 */
-	getMacros(): Promise<AxiosResponse> {
-		return axios.get('iqrf/macros/', {headers: authorizationHeader()});
+	getMacros(): Promise<Array<DpaMacroGroup>> {
+		return axios.get('iqrf/macros/', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => response.data as Array<DpaMacroGroup>);
 	}
 
 	/**
@@ -56,11 +72,19 @@ class IqrfService {
 	}
 
 	/**
-	 * Retrieves IQRF OS and DPA upgrade file names
-	 * @param {Record<string, number|string>} data API request body
+	 * Upgrades OS and DPA
+	 * @param data Upgrade request parameters
 	 */
-	getUpgradeFiles(data: Record<string, number|string>): Promise<AxiosResponse> {
-		return axios.post('iqrf/osUpgradeFiles', data, {headers: authorizationHeader()});
+	upgradeOs(data): Promise<AxiosResponse> {
+		return axios.post('iqrf/upgradeOs', data, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Uploads file via rest API
+	 * @param {FormData} data file data and metadata
+	 */
+	uploadFile(data: FormData): Promise<AxiosResponse> {
+		return axios.post('iqrf/upload', data, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -74,3 +98,4 @@ class IqrfService {
 }
 
 export default new IqrfService();
+ 
