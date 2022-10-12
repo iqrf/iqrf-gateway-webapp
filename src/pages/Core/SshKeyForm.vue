@@ -40,55 +40,65 @@ limitations under the License.
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
-						<div
+						<CRow
 							v-for='(key, idx) of keys'
 							:key='idx'
-							class='form-group'
+							form
 						>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("core.security.ssh.errors.descriptionMissing")
-								}'
-							>
-								<CInput
-									v-model='key.description'
-									:label='$t("core.security.ssh.form.description")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|ssh'
-								:custom-messages='{
-									required: $t("core.security.ssh.errors.keyMissing"),
-									ssh: $t("core.security.ssh.errors.keyInvalid"),
-								}'
-							>
-								<CInput
-									v-model='key.key'
-									:label='$t("core.security.ssh.form.key")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									@change='updateDescription(idx)'
-								/>
-							</ValidationProvider>
-							<CButton
-								v-if='keys.length > 1'
-								color='danger'
-								@click='removeKey(idx)'
-							>
-								{{ $t('core.security.ssh.form.remove') }}
-							</CButton> <CButton
-								v-if='idx === (keys.length - 1)'
-								color='success'
-								@click='addKey()'
-							>
-								{{ $t('core.security.ssh.form.add') }}
-							</CButton>
-						</div>
+							<CCol sm='12' md='3'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("core.security.ssh.errors.descriptionMissing")
+									}'
+								>
+									<CInput
+										v-model='key.description'
+										:label='$t("core.security.ssh.form.description")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+							<CCol sm='12' md='9'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|ssh'
+									:custom-messages='{
+										required: $t("core.security.ssh.errors.keyMissing"),
+										ssh: $t("core.security.ssh.errors.keyInvalid"),
+									}'
+								>
+									<CInput
+										v-model='key.key'
+										:label='$t("core.security.ssh.form.key")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+										@change='updateDescription(idx)'
+									>
+										<template #prepend-content>
+											<span
+												class='text-success'
+												@click='addKey()'
+											>
+												<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+											</span>
+										</template>
+										<template #append-content>
+											<span
+												v-if='keys.length > 1'
+												class='text-danger'
+												@click='removeKey(idx)'
+											>
+												<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
+											</span>
+										</template>
+									</CInput>
+								</ValidationProvider>
+							</CCol>
+							<hr>
+						</CRow>
 						<CButton
 							color='primary'
 							:disabled='invalid'
@@ -114,6 +124,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {cilPlus} from '@coreui/icons';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
@@ -131,10 +143,14 @@ import {ISshInput} from '@/interfaces/ssh';
 		CCardHeader,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		cilPlus,
+	}),
 	metaInfo: {
 		title: 'core.security.ssh.add',
 	},
