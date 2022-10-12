@@ -18,7 +18,7 @@ limitations under the License.
 	<CCard>
 		<CCardHeader>{{ $t('iqrfnet.trUpload.hexUpload.title') }}</CCardHeader>
 		<CCardBody>
-			<CForm @submit.prevent='gatewayUpload'>
+			<CForm>
 				<div class='form-group'>
 					<CInputFile
 						ref='fileUpload'
@@ -32,9 +32,9 @@ limitations under the License.
 					</p>
 				</div>
 				<CButton
-					type='submit'
 					color='primary'
 					:disabled='fileEmpty'
+					@click='gatewayUpload'
 				>
 					{{ $t('forms.upload') }}
 				</CButton>
@@ -72,7 +72,6 @@ import {FileUpload} from '@/interfaces/trUpload';
  * Custom DPA handler upload card for TrUpload component
  */
 export default class HexUpload extends Vue {
-
 	/**
 	 * @var {boolean} fileEmpty Indicates that the form file input is empty
 	 */

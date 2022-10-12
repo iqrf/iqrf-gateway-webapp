@@ -43,25 +43,13 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosResponse} from 'axios';
 import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
-import IqrfService from '@/services/IqrfService';
 
-interface IDpaMacro {
-	confirmation: boolean
-	enabled: boolean
-	name: string
-	note: string
-	request: string
-}
+import IqrfService, {DpaMacro, DpaMacroGroup} from '@/services/IqrfService';
 
-interface IDpaMacros {
-	enabled: boolean
-	id: number
-	macros: Array<IDpaMacro>
-	name: string
-}
-
+/**
+ * Raw DPA message macros for SendDpaPacket component
+ */
 @Component({
 	components: {
 		CButtonGroup,
@@ -72,15 +60,11 @@ interface IDpaMacros {
 		CDropdownItem,
 	}
 })
-
-/**
- * Raw DPA message macros for SendDpaPacket component
- */
 export default class DpaMacros extends Vue {
 	/**
 	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
 	 */
-	private macros: Array<IDpaMacros> = [];
+	private macros: Array<DpaMacroGroup> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -88,17 +72,13 @@ export default class DpaMacros extends Vue {
 	 */
 	created(): void {
 		IqrfService.getMacros()
-			.then((response: AxiosResponse) => {
-				this.macros = response.data.filter((group: IDpaMacros) => {
+			.then((response: Array<DpaMacroGroup>) => {
+				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {
-						return null;
+						return false;
 					}
-					group.macros = group.macros.filter((packet: IDpaMacro) => {
-						if (packet.enabled) {
-							return packet;
-						}
-					});
-					return group;
+					group.macros = group.macros.filter((packet: DpaMacro): boolean => packet.enabled);
+					return true;
 				});
 			});
 	}

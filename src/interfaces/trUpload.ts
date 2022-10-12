@@ -14,14 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {RFMode} from '@/services/IqrfRepository/OsDpaService';
+
 /**
  * IQRF OS upgrade metadata interface
  */
-export interface IqrfOsUpgrade {
+export interface IAvailableOsUpgrade {
 	/**
 	 * IQRF OS build
 	 */
-	os: IIqrfOsUpgradeOs
+	os: IAvailableOsUpgradeOs
 
 	/**
 	 * IQRF OS version
@@ -31,7 +34,7 @@ export interface IqrfOsUpgrade {
 	/**
 	 * DPA pretty version
 	 */
-	dpa: IIqrfOsUpgradeDpa
+	dpa: IAvailableOsUpgradeDpa
 
 	/**
 	 * IQRF OS notes
@@ -43,7 +46,7 @@ export interface IqrfOsUpgrade {
  * IQRF OS upgrade OS metadata interface
  */
 
-export interface IIqrfOsUpgradeOs {
+export interface IAvailableOsUpgradeOs {
 	/**
 	 * OS build
 	 */
@@ -68,7 +71,7 @@ export interface IIqrfOsUpgradeOs {
 /**
  * IQRF OS upgrade DPA metadata interface
  */
-export interface IIqrfOsUpgradeDpa {
+export interface IAvailableOsUpgradeDpa {
 	/**
 	 * DPA version
 	 */
@@ -83,6 +86,11 @@ export interface IIqrfOsUpgradeDpa {
 	 * Download path
 	 */
 	downloadPath: string
+
+	/**
+	 * RF mode
+	 */
+	rfMode?: RFMode;
 }
 
 /**
@@ -123,7 +131,7 @@ export interface UploadUtilFile {
 	 * File name
 	 */
 	name: string
-	
+
 	/**
 	 * File type
 	 */
@@ -144,3 +152,39 @@ export interface FileUpload {
 	 */
 	format: string
 }
+
+/**
+ * OS and DPA upgrade parameters interface
+ */
+export interface IOsUpgradeParams {
+	/**
+	 * Target DPA version
+	 */
+	dpa: string
+
+	/**
+	 * Current OS build
+	 */
+	fromBuild: string
+
+	/**
+	 * Target OS build
+	 */
+	toBuild: string
+
+	/**
+	 * Used IQRF interface
+	 */
+	interface: string
+
+	/**
+	 * TR and MCU type
+	 */
+	trMcuType: number
+
+	/**
+	 * RF mode
+	 */
+	rfMode?: string
+}
+ 

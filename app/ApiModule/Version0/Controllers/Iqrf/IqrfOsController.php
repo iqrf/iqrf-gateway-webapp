@@ -31,11 +31,10 @@ use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\IqrfNetModule\Exceptions\DpaFileNotFoundException;
 use App\IqrfNetModule\Exceptions\DpaRfMissingException;
-use App\IqrfNetModule\Exceptions\UploadUtilFileException;
-use App\IqrfNetModule\Exceptions\UploadUtilMissingException;
-use App\IqrfNetModule\Exceptions\UploadUtilSpiException;
+use App\IqrfNetModule\Exceptions\UploaderFileException;
+use App\IqrfNetModule\Exceptions\UploaderMissingException;
+use App\IqrfNetModule\Exceptions\UploaderSpiException;
 use App\IqrfNetModule\Models\IqrfOsManager;
-use App\IqrfNetModule\Models\UploadUtilManager;
 use GuzzleHttp\Exception\ClientException;
 use Nette\IOException;
 
@@ -51,19 +50,12 @@ class IqrfOsController extends IqrfController {
 	private IqrfOsManager $iqrfOsManager;
 
 	/**
-	 * @var UploadUtilManager IQRF Upload Utility manager
-	 */
-	private UploadUtilManager $uploadUtilManager;
-
-	/**
 	 * Constructor
 	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
-	 * @param UploadUtilManager $uploadUtilManager IQRF Upload Utility manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfOsManager $iqrfOsManager, UploadUtilManager $uploadUtilManager, RestApiSchemaValidator $validator) {
+	public function __construct(IqrfOsManager $iqrfOsManager, RestApiSchemaValidator $validator) {
 		$this->iqrfOsManager = $iqrfOsManager;
-		$this->uploadUtilManager = $uploadUtilManager;
 		parent::__construct($validator);
 	}
 
@@ -123,15 +115,15 @@ class IqrfOsController extends IqrfController {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
 		$data = $request->getJsonBody(false);
-		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->version, $data->build, $data->mcuType);
+		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->build, $data->mcuType);
 		return $response->writeJsonBody($upgrades);
 	}
 
 	/**
-	 * @Path("/osUpgradeFiles")
+	 * @Path("/upgradeOs")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Retrieves IQRF OS and DPA upgrade file names
+	 *  summary: Upgrades OS and DPA
 	 *  requestBody:
 	 *      required: true
 	 *      content:
@@ -141,10 +133,6 @@ class IqrfOsController extends IqrfController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfOsUpgradeFiles'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '403':
@@ -154,65 +142,23 @@ class IqrfOsController extends IqrfController {
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
 	 */
-	public function osUpgradeFiles(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
-			$files = $this->iqrfOsManager->getUpgradeFiles((array) $request->getJsonBody(false));
-			return $response->writeJsonBody($files);
-		} catch (DpaRfMissingException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (DpaFileNotFoundException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
-		} catch (IOException $e) {
-			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (ClientException $e) {
-			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
-	/**
-	 * @Path("/uploader")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Executes upload using the IQRF Gateway Uploader
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UploaderFile'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('uploaderFile', $request);
-		try {
-			$data = $request->getJsonBody(false);
-			$this->uploadUtilManager->executeUpload($data->name, $data->type);
+			$this->iqrfOsManager->upgradeOs($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
-		} catch (UploadUtilFileException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (UploadUtilMissingException | UploadUtilSpiException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (DpaRfMissingException | DpaFileNotFoundException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (UploaderFileException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (UploaderMissingException | UploaderSpiException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (ClientException $e) {
+			throw new ServerErrorException('Failed to download upgrade file', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 

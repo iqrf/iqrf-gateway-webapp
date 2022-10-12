@@ -27,7 +27,7 @@ limitations under the License.
 					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFailure') }}
 				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='compareUploadedVersion'>
+					<CForm>
 						<fieldset :disabled='loadFailed'>
 							<div v-if='versions.length > 0'>
 								<ValidationProvider
@@ -46,13 +46,17 @@ limitations under the License.
 										:options='versions'
 									/>
 								</ValidationProvider>
-								<CButton type='submit' color='primary' :disabled='invalid'>
+								<CButton
+									color='primary'
+									:disabled='invalid'
+									@click='compareUploadedVersion'
+								>
 									{{ $t('forms.upload') }}
 								</CButton>
 							</div>
 							<CAlert
-								v-if='versions.length === 0 && currentDpa !== null'
-								color='info'
+								v-if='versions.length === 0 && currentDpa.length > 0'
+								color='warning'
 							>
 								{{ $t('iqrfnet.trUpload.dpaUpload.messages.noUpgrades') }}
 							</CAlert>
@@ -62,9 +66,11 @@ limitations under the License.
 			</CCardBody>
 		</CCard>
 		<CModal
-			v-if='currentDpa !== null'
-			color='warning'
 			:show.sync='showModal'
+			color='warning'
+			size='lg'
+			:close-on-backdrop='false'
+			:fade='false'
 		>
 			<template #header>
 				<h5 class='modal-title'>
@@ -74,15 +80,17 @@ limitations under the License.
 			{{ $t('iqrfnet.trUpload.dpaUpload.modal.prompt', {version: prettyVersion(currentDpa)}) }}
 			<template #footer>
 				<CButton
-					color='warning'
-					@click='uploadDpa'
-				>
-					{{ $t('forms.upload') }}
-				</CButton> <CButton
+					class='mr-1'
 					color='secondary'
 					@click='showModal = false'
 				>
 					{{ $t('forms.cancel') }}
+				</CButton>
+				<CButton
+					color='warning'
+					@click='uploadDpa'
+				>
+					{{ $t('forms.upload') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -134,9 +142,9 @@ export default class DpaUpdater extends Vue {
 	private address = 0;
 
 	/**
-	 * @var {string|null} currentDpa Current version of DPA
+	 * @var {string} currentDpa Current version of DPA
 	 */
-	private currentDpa: string|null = null;
+	private currentDpa = '';
 
 	/**
 	 * @var {string|null} interfaceType Active IQRF communication interface
@@ -169,9 +177,9 @@ export default class DpaUpdater extends Vue {
 	private showModal = false;
 
 	/**
-	 * @var {string|null} version Currently selected version of DPA
+	 * @var {string} version Currently selected version of DPA
 	 */
-	private version: string|null = null;
+	private version = '';
 
 	/**
 	 * @var {Array<DpaVersions>} versions Array of available DPA versions to update to
@@ -221,6 +229,9 @@ export default class DpaUpdater extends Vue {
 	 * @returns {string} DPA version pretty string
 	 */
 	prettyVersion(version: string): string {
+		if (version.length === 0) {
+			return version;
+		}
 		if (version.startsWith('0')) {
 			return version.charAt(1) + '.' + version.substring(2, 4);
 		}
@@ -298,7 +309,7 @@ export default class DpaUpdater extends Vue {
 	 * Displays a modal window if new version is the same as current version, otherwise executes upload
 	 */
 	private compareUploadedVersion(): void {
-		if (this.version === null) {
+		if (this.version.length === 0) {
 			return;
 		}
 		if (this.currentDpa === this.version) {
@@ -320,10 +331,9 @@ export default class DpaUpdater extends Vue {
 	 * Retrieves DPA file to upload
 	 */
 	private getDpaFile(): void {
-		if (this.version === null) {
+		if (this.version === '') {
 			return;
 		}
-
 		const request = {
 			'interfaceType': this.interfaceType,
 			'osBuild': this.osBuild,

@@ -38,45 +38,50 @@ limitations under the License.
 							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-					<div v-for='i of commands.length' :key='i' class='form-group'>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='integer|required|between:0,65535'
-							:custom-messages='{
-								between: $t("iqrfnet.standard.dali.form.messages.command"),
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.standard.dali.form.messages.command"),
-							}'
+					<ValidationProvider
+						v-for='i of commands.length'
+						:key='i'
+						v-slot='{errors, touched, valid}'
+						rules='integer|required|between:0,65535'
+						:custom-messages='{
+							between: $t("iqrfnet.standard.dali.form.messages.command"),
+							integer: $t("forms.errors.integer"),
+							required: $t("iqrfnet.standard.dali.form.messages.command"),
+						}'
+					>
+						<CInput
+							v-model.number='commands[i-1]'
+							type='number'
+							min='0'
+							max='65535'
+							:label='$t("iqrfnet.standard.dali.form.command")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						>
-							<CInput
-								v-model.number='commands[i-1]'
-								type='number'
-								min='0'
-								max='65535'
-								:label='$t("iqrfnet.standard.dali.form.command")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<CButton
-							v-if='commands.length > 1'
-							color='danger'
-							@click.prevent='removeDaliCommand(i-1)'
-						>
-							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
-						</CButton> <CButton
-							v-if='i === commands.length'
-							color='success'
-							:disabled='invalid'
-							@click.prevent='addDaliCommand'
-						>
-							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
-						</CButton>
-					</div>
+							<template #prepend-content>
+								<span
+									v-if='i === commands.length'
+									class='text-success'
+									@click='addDaliCommand'
+								>
+									<FontAwesomeIcon :icon='["far", "square-plus"]' size='xl' />
+								</span>
+							</template>
+							<template #append-content>
+								<span
+									v-if='commands.length > 1'
+									class='text-danger'
+									@click='removeDaliCommand(i-1)'
+								>
+									<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
+								</span>
+							</template>
+						</CInput>
+					</ValidationProvider>
 					<CButton
 						color='primary'
 						:disabled='invalid'
-						@click.prevent='sendDali'
+						@click='sendDali'
 					>
 						{{ $t('iqrfnet.standard.dali.form.sendCommand') }}
 					</CButton>
@@ -105,17 +110,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
 import {between, integer, required} from 'vee-validate/dist/rules';
-import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-interface DaliAnswer {
-	status: number
-	value: number
-}
+import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
+
+import {IDaliAnswer} from '@/interfaces/standard';
+import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
@@ -126,6 +131,7 @@ interface DaliAnswer {
 		CCardHeader,
 		CForm,
 		CInput,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -136,24 +142,24 @@ interface DaliAnswer {
  */
 export default class DaliManager extends Vue {
 	/**
+	 * @var {string} msgId Daemon API msg ID
+	 */
+	private msgId = '';
+
+	/**
 	 * @var {number} address Address of device implementing DALI standard
 	 */
 	private address = 1;
 
 	/**
-	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
+	 * @var {Array<IDaliAnswer>} answers Array of DALI standard answers
 	 */
-	private answers: Array<DaliAnswer> = [];
+	private answers: Array<IDaliAnswer> = [];
 
 	/**
 	 * @var {Array<number>} commands Array of DALI commands to be sent
 	 */
 	private commands: Array<number> = [0];
-
-	/**
-	 * @var {string|null} msgId Daemon api msg id
-	 */
-	private msgId: string|null = null;
 
 	/**
 	 * Component unsubscribe functin
@@ -168,6 +174,10 @@ export default class DaliManager extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
+				this.answers = [];
+				return;
+			}
 			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
@@ -212,7 +222,7 @@ export default class DaliManager extends Vue {
 	 */
 	private sendDali(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardDaliService.send(this.address, this.commands, new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
+		StandardDaliService.send(this.address, this.commands, new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = ''))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

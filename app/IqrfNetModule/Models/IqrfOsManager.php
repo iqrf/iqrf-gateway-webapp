@@ -26,9 +26,11 @@ use App\IqrfNetModule\Enums\RfModes;
 use App\IqrfNetModule\Enums\TrSeries;
 use App\IqrfNetModule\Exceptions\DpaFileNotFoundException;
 use App\IqrfNetModule\Exceptions\DpaRfMissingException;
+use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use Iqrf\Repository\Models\OsAndDpaManager;
+use stdClass;
 
 /**
  * IQRF OS manager
@@ -41,23 +43,32 @@ class IqrfOsManager {
 	private DpaManager $dpaManager;
 
 	/**
-	 * @var OsAndDpaManager IQRF OS and DPA manager
-	 */
-	private OsAndDpaManager $osDpaManager;
-
-	/**
 	 * @var IqrfOsPatchRepository IQRF OS patch database repository
 	 */
 	private IqrfOsPatchRepository $repository;
 
 	/**
-	 * Constructor
-	 * @param EntityManager $entityManager Entity manager
+	 * @var OsAndDpaManager IQRF OS and DPA manager
 	 */
-	public function __construct(DpaManager $dpaManager, OsAndDpaManager $osDpaManager, EntityManager $entityManager) {
+	private OsAndDpaManager $osDpaManager;
+
+	/**
+	 * @var UploadManager Upload manager
+	 */
+	private UploadManager $uploadManager;
+
+	/**
+	 * Constructor
+	 * @param DpaManager $dpaManager DPA manager
+	 * @param EntityManager $entityManager Entity manager
+	 * @param OsAndDpaManager $osDpaManager IQRF OS and DPA manager
+	 * @param UploadManager $uploadManager Upload manager
+	 */
+	public function __construct(DpaManager $dpaManager, EntityManager $entityManager, OsAndDpaManager $osDpaManager, UploadManager $uploadManager) {
 		$this->dpaManager = $dpaManager;
-		$this->osDpaManager = $osDpaManager;
 		$this->repository = $entityManager->getIqrfOsPatchRepository();
+		$this->osDpaManager = $osDpaManager;
+		$this->uploadManager = $uploadManager;
 	}
 
 	/**
@@ -74,30 +85,29 @@ class IqrfOsManager {
 
 	/**
 	 * Lists available IQRF OS upgrades
-	 * @param string $currentVersion Current version of IQRF OS
-	 * @param string $currentBuild Current build of IQRF OS
+	 * @param string $build Current build of IQRF OS
 	 * @param int $mcuType Module MCU type
 	 * @return array<int, array<string, int|string>> Available IQRF OS upgrades
 	 */
-	public function listOsUpgrades(string $currentVersion, string $currentBuild, int $mcuType): array {
+	public function listOsUpgrades(string $build, int $mcuType): array {
 		$versions = [];
 		if ($mcuType !== 4) {
 			return $versions;
 		}
-		$patches = $this->repository->findBy(['fromBuild' => hexdec($currentBuild), 'part' => 1]);
+		$currentBuild = hexdec($build);
+		$patches = $this->repository->findBy(['fromBuild' => $currentBuild, 'part' => 1]);
 		foreach ($patches as $patch) {
-			$toBuild = str_pad(dechex($patch->getToBuild()), 4, '0', STR_PAD_LEFT);
-			$toVersion = strval($patch->getToVersion());
-			if ($toVersion <= $currentVersion || $toBuild <= $currentBuild) {
+			$toBuild = $patch->getToBuild();
+			if ($toBuild <= $currentBuild) {
 				continue;
 			}
-			foreach ($this->osDpaManager->get($toBuild) as $dpa) {
+			foreach ($this->osDpaManager->get(str_pad(dechex($toBuild), 4, '0', STR_PAD_LEFT)) as $dpa) {
 				$upgrade = $dpa->jsonSerialize();
-				$upgrade['osVersion'] = $toVersion;
 				if (hexdec($dpa->getDpa()->getVersion()) < 0x400) {
-					$upgrade['dpa'] = $dpa->getDpa()->getVersion(true) . ', LP';
+					$upgrade['dpa'] = $dpa->getDpa()->jsonSerialize();
+					$upgrade['dpa']['rfMode'] = 'LP';
 					$versions[] = $upgrade;
-					$upgrade['dpa'] = $dpa->getDpa()->getVersion(true) . ', STD';
+					$upgrade['dpa']['rfMode'] = 'STD';
 				}
 				$versions[] = $upgrade;
 			}
@@ -106,56 +116,58 @@ class IqrfOsManager {
 	}
 
 	/**
-	 * Retrieves names of files to be used in IQRF OS upgrade
-	 * @param array<string, int|string> $request API request body
-	 * @return array{dpa: string, os: array<string>} Array containing names of files to be used in upgrade
-	 * @throws DpaFileNotFoundException
-	 * @throws DpaRfMissingException
+	 * Finds OS and DPA upgrade files and executes upgrade utilizing the IQRF Gateway Uploader utility
+	 * @param stdClass $params OS and DPA upgrade parameters
 	 */
-	public function getUpgradeFiles(array $request): array {
-		$dpaFile = $this->getDpaFileName($request);
-		$osFiles = $this->getOsFileNames($request);
-		return ['dpa' => $dpaFile, 'os' => $osFiles];
+	public function upgradeOs(stdClass $params): void {
+		$files = [
+			'os' => $this->getOsUpgrade($params),
+			'dpa' => $this->getDpaUpgrade($params),
+		];
+		foreach ($files['os'] as $file) {
+			$this->uploadManager->uploadToTr($file, true);
+			sleep(5);
+		}
+		$this->uploadManager->uploadToTr($files['dpa']);
+	}
+
+	/**
+	 * Retrieves OS upgrade files
+	 * @param stdClass $params OS upgrade parameters
+	 * @return array<int, string> OS upgrade file(s)
+	 */
+	private function getOsUpgrade(stdClass $params): array {
+		$patches = $this->repository->findBy([
+			'fromBuild' => hexdec($params->fromBuild),
+			'toBuild' => hexdec($params->toBuild),
+		]);
+		$osUpgrades = array_map(function (IqrfOsPatch $patch): string {
+			return $patch->getFileName();
+		}, $patches);
+		sort($osUpgrades);
+		return $osUpgrades;
 	}
 
 	/**
 	 * Retrieves DPA file name for upgrade
-	 * @param array<string, int|string> $request API request body
-	 * @return string Name of DPA file
+	 * @param stdClass $params DPA upgrade parameters
+	 * @return string DPA upgrade file name
 	 * @throws DpaFileNotFoundException
 	 * @throws DpaRfMissingException
 	 */
-	private function getDpaFileName(array $request): string {
-		$iface = DpaInterfaces::fromScalar($request['interface']);
-		$trSeries = TrSeries::fromTrMcuType($request['trMcuType']);
-		$rfMode = isset($request['rfMode']) ? RfModes::fromScalar($request['rfMode']) : null;
-		$dpa = new Dpa($request['dpa'], $iface, $trSeries, $rfMode);
+	private function getDpaUpgrade(stdClass $params): string {
+		$iface = DpaInterfaces::fromScalar($params->interface);
+		$trSeries = TrSeries::fromTrMcuType($params->trMcuType);
+		$rfMode = isset($params->rfMode) ? RfModes::fromScalar($params->rfMode) : null;
+		$dpa = new Dpa($params->dpa, $iface, $trSeries, $rfMode);
 		if (hexdec($dpa->getVersion()) < 0x400 && $rfMode === null) {
 			throw new DpaRfMissingException('Missing RF mode for DPA version older than 4.00');
 		}
-		$fileName = $this->dpaManager->getFile($request['toBuild'], $dpa);
+		$fileName = $this->dpaManager->getFile($params->toBuild, $dpa);
 		if ($fileName === null) {
 			throw new DpaFileNotFoundException('No DPA file matched the metadata');
 		}
 		return $fileName;
-	}
-
-	/**
-	 * Retrieves OS file names for upgrade
-	 * @param array<string, int|string> $request API request body
-	 * @return array<int, string> Name of DPA file
-	 */
-	private function getOsFileNames(array $request): array {
-		$files = [];
-		$oldVersion = (int) $request['fromVersion'];
-		$newVersion = (int) $request['toVersion'];
-		$oldBuild = hexdec($request['fromBuild']);
-		$newBuild = hexdec($request['toBuild']);
-		$patches = $this->repository->findBy(['fromVersion' => $oldVersion, 'toVersion' => $newVersion, 'fromBuild' => $oldBuild, 'toBuild' => $newBuild]);
-		foreach ($patches as $patch) {
-			$files[] = __DIR__ . '/../../../iqrf/os/' . $patch->getFileName();
-		}
-		return $files;
 	}
 
 }
