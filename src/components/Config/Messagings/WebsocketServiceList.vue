@@ -27,7 +27,7 @@ limitations under the License.
 					class='float-right'
 					to='/config/daemon/messagings/websocket/add-service'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -39,7 +39,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
@@ -79,66 +79,43 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/messagings/websocket/edit-service/" + item.instance'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteService = item.instance'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<WebsocketDeleteModal
+								:component-type='WebsocketTypes.SERVICE'
+								:instance='item'
+								@deleted='getConfig'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteService !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.service.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.messagings.websocket.service.modal.prompt', {service: deleteService}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeService'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteService = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import WebsocketDeleteModal from '@/components/Config/Messagings/WebsocketDeleteModal.vue';
 
-import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {cilPencil, cilPlus} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '@/helpers/versionChecker';
+import {WebsocketTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
-import {IWsService} from '@/interfaces/messagingInterfaces';
+import {IWsService} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -151,12 +128,18 @@ import {IWsService} from '@/interfaces/messagingInterfaces';
 		CDropdownItem,
 		CIcon,
 		CModal,
+		WebsocketDeleteModal
 	},
 	computed: {
 		...mapGetters({
 			daemonVersion: 'daemonClient/getVersion',
 		}),
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		WebsocketTypes,
+	}),
 })
 
 /**
@@ -167,11 +150,6 @@ export default class WebsocketServiceList extends Vue {
 	 * @constant {string} componentName Websocket service component name
 	 */
 	private componentName = 'shape::WebsocketCppService';
-
-	/**
-	 * @var {string|null} deleteService Websocket service instance used in remove modal
-	 */
-	private deleteService: string|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -196,15 +174,6 @@ export default class WebsocketServiceList extends Vue {
 			sorter: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
 
 	/**
 	 * @var {Array<WsService>} instances Array of Websocket service instances
@@ -295,35 +264,5 @@ export default class WebsocketServiceList extends Vue {
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.updateFailed', {service: settings.instance});
 			});
 	}
-
-	/**
-	 * Removes an existing instance of Websocket service component
-	 */
-	private removeService(): void {
-		if (this.deleteService === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const service = this.deleteService;
-		this.deleteService = null;
-		DaemonConfigurationService.deleteInstance(this.componentName, service)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.service.messages.deleteSuccess', {service: service})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.deleteFailed', {service: service});
-			});
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

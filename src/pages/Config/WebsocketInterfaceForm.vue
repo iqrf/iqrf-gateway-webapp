@@ -164,7 +164,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {WsMessaging, ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
+import {IWsMessaging, ModalInstance, IWsService} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -209,7 +209,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @var {WsMessging} messaging WebSocket messaging component instance
 	 */
-	private messaging: WsMessaging = {
+	private messaging: IWsMessaging = {
 		component: '',
 		instance: '',
 		acceptAsyncMsg: false,

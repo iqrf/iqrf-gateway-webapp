@@ -24,7 +24,7 @@ limitations under the License.
 					class='float-right'
 					to='/config/daemon/misc/monitor/add'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -41,11 +41,26 @@ limitations under the License.
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
 					</template>
+					<template #instance='{item}'>
+						<td>
+							{{ item.monitor.instance }}
+						</td>
+					</template>
+					<template #reportPeriod='{item}'>
+						<td>
+							{{ item.monitor.reportPeriod }}
+						</td>
+					</template>
+					<template #port='{item}'>
+						<td>
+							{{ item.webSocket.WebsocketPort }}
+						</td>
+					</template>
 					<template #acceptOnlyLocalhost='{item}'>
 						<td>
 							<CDropdown
-								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t(`states.${item.acceptOnlyLocalhost ? "enabled" : "disabled"}`)'
+								:color='item.webSocket.acceptOnlyLocalhost ? "success": "danger"'
+								:toggler-text='$t(`states.${item.webSocket.acceptOnlyLocalhost ? "enabled" : "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
@@ -60,8 +75,8 @@ limitations under the License.
 					<template #tlsEnabled='{item}'>
 						<td>
 							<CDropdown
-								:color='item.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t(`states.${(item.tlsEnabled ?? false) ? "enabled" : "disabled"}`)'
+								:color='item.webSocket.tlsEnabled ? "success": "danger"'
+								:toggler-text='$t(`states.${(item.webSocket.tlsEnabled ?? false) ? "enabled" : "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTls(item.webSocket, true)'>
@@ -76,65 +91,40 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/misc/monitor/edit/" + item.monitor.instance'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = {monitor: item.monitor.instance, webSocket: item.webSocket.instance}'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<MonitorDeleteModal
+								:instance='item'
+								@deleted='getConfig'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.monitor.modal.title') }}
-				</h5>
-			</template>
-			<div v-if='deleteInstance !== null'>
-				{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: deleteInstance.monitor}) }}
-			</div>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInterface()'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import MonitorDeleteModal from '@/components/Config/Misc/MonitorDeleteModal.vue';
 
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {cilPencil, cilPlus} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
+import {IMonitorWsInstance} from '@/interfaces/Config/Misc';
+import {IWsService} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -147,7 +137,12 @@ import {IField} from '@/interfaces/coreui';
 		CDropdownItem,
 		CIcon,
 		CModal,
+		MonitorDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+	}),
 })
 
 /**
@@ -163,9 +158,9 @@ export default class MonitorList extends Vue {
 	};
 
 	/**
-	 * @var {Record<string, string>|null} deleteInstance Monitor component instance object used in remove modal
+	 * @var {Array<IMonitorWsInstance>} instances Array of monitoring component instances
 	 */
-	private deleteInstance: Record<string, string>|null = null;
+	private instances: Array<IMonitorWsInstance> = [];
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -202,20 +197,6 @@ export default class MonitorList extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-	};
-
-	/**
-	 * @var {Array<unknown>} instances Array of monitoring component instances
-	 */
-	private instances: Array<unknown> = [];
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	mounted(): void {
@@ -234,10 +215,10 @@ export default class MonitorList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const monitors = responses[0].data.instances;
 				const webSockets = responses[1].data.instances;
-				const instances: Array<unknown> = [];
+				const instances: Array<IMonitorWsInstance> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
-							monitor.RequiredInterfaces.length === 0 ||
+							monitor.RequiredInterfaces === [] ||
 							monitor.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
 							monitor.RequiredInterfaces[0].target.instance === undefined) {
 						continue;
@@ -250,12 +231,6 @@ export default class MonitorList extends Vue {
 						instances.push({
 							monitor: monitor,
 							webSocket: webSocket,
-							instance: monitor.instance,
-							reportPeriod: monitor.reportPeriod,
-							acceptAsyncMsg: monitor.acceptAsyncMsg,
-							port: webSocket.WebsocketPort,
-							acceptOnlyLocalhost: webSocket.acceptOnlyLocalhost,
-							tlsEnabled: webSocket.tlsEnabled
 						});
 					}
 				}
@@ -269,37 +244,40 @@ export default class MonitorList extends Vue {
 
 	/**
 	 * Updates websocket service message accepting setting
-	 * @param service WebSocket service instance
-	 * @param {boolean} setting Message accepting setting
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {boolean} acceptOnlyLocalhost Message accepting setting
 	 */
-	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
-		if (service.acceptOnlyLocalhost === setting) {
+	private changeAcceptOnlyLocalhost(service: IWsService, acceptOnlyLocalhost: boolean): void {
+		if (service.acceptOnlyLocalhost === acceptOnlyLocalhost) {
 			return;
 		}
-		service.acceptOnlyLocalhost = setting;
-		this.changeServiceSetting(service);
+		this.changeServiceSetting(service, {acceptOnlyLocalhost: acceptOnlyLocalhost});
 	}
 
 	/**
 	 * Updates websocket service TLS setting
-	 * @param service WebSocket service instance
-	 * @param {boolean} setting TLS setting
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {boolean} tlsEnabled TLS setting
 	 */
-	private changeTls(service, setting: boolean): void {
-		if (service.tlsEnabled === setting) {
+	private changeTls(service: IWsService, tlsEnabled: boolean): void {
+		if (service.tlsEnabled === tlsEnabled) {
 			return;
 		}
-		service.tlsEnabled = setting;
-		this.changeServiceSetting(service);
+		this.changeServiceSetting(service, {tlsEnabled: tlsEnabled});
 	}
 
 	/**
 	 * Updates configuration of websocket service
-	 * @param service WebSocket service instance
+	 * @param {IWsService} service WebSocket service instance
+	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
-	private changeServiceSetting(service): void {
+	private changeServiceSetting(service: IWsService, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
+		const settings = {
+			...service,
+			...newSettings,
+		};
+		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, settings)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
@@ -308,45 +286,10 @@ export default class MonitorList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.monitor.messages.editFailed',
-				{instance: service.instance}
-			));
-	}
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.misc.monitor.messages.editFailed', {instance: service.instance});
+			});
 
-	/**
-	 * Removes instance of the monitoring component
-	 */
-	private removeInterface(): void {
-		if (this.deleteInstance === null) {
-			return;
-		}
-		const deleteInstance = this.deleteInstance;
-		this.deleteInstance = null;
-		this.$store.commit('spinner/SHOW');
-		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.componentNames.monitor, deleteInstance.monitor),
-			DaemonConfigurationService.deleteInstance(this.componentNames.webSocket, deleteInstance.webSocket),
-		])
-			.then(() => {
-				this.getConfig()
-					.then(() => this.$toast.success(
-						this.$t('config.daemon.misc.monitor.messages.deleteSuccess', {instance: deleteInstance.monitor})
-							.toString())
-					);
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.monitor.messages.deleteFailed',
-				{instance: deleteInstance.monitor}
-			));
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

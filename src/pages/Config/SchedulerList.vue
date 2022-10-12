@@ -22,35 +22,36 @@ limitations under the License.
 		<CCard>
 			<CCardHeader class='border-0'>
 				<div class='float-right'>
-					<CButton
-						color='success'
-						size='sm'
-						to='/config/daemon/scheduler/add'
-					>
-						<CIcon :content='icons.add' size='sm' />
-						{{ $t('table.actions.add') }}
-					</CButton> <CButton
-						color='primary'
-						size='sm'
-						@click='showImportModal = true'
-					>
-						<CIcon :content='icons.import' size='sm' />
-						{{ $t('forms.import') }}
-					</CButton> <CButton
-						color='secondary'
-						size='sm'
-						@click='exportScheduler'
-					>
-						<CIcon :content='icons.export' size='sm' />
-						{{ $t('forms.export') }}
-					</CButton> <CButton
-						color='danger'
-						size='sm'
-						@click='showDeleteAllModal = true'
-					>
-						<CIcon :content='icons.remove' size='sm' />
-						{{ $t('table.actions.deleteAll') }}
-					</CButton>
+					<CButtonToolbar>
+						<CButton
+							class='mr-1'
+							color='success'
+							size='sm'
+							to='/config/daemon/scheduler/add'
+						>
+							<CIcon :content='cilPlus' size='sm' />
+							{{ $t('table.actions.add') }}
+						</CButton>
+						<TaskImportModal
+							class='mr-1'
+							@imported='refreshTasks'
+						/>
+						<CButton
+							class='mr-1'
+							color='secondary'
+							size='sm'
+							@click='exportScheduler'
+						>
+							<CIcon
+								:content='cilArrowBottom'
+								size='sm'
+							/>
+							{{ $t('forms.export') }}
+						</CButton>
+						<TasksDeleteModal
+							@deleted='refreshTasks'
+						/>
+					</CButtonToolbar>
 				</div>
 			</CCardHeader>
 			<CCardBody>
@@ -92,121 +93,38 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteTask = retrieved === "daemon" ? item.taskId : item.id'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<TaskDeleteModal
+								:task-id='retrieved === "daemon" ? item.taskId : item.id'
+								@deleted='refreshTasks'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			:show.sync='showImportModal'
-			color='primary'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.import.title') }}
-				</h5>
-			</template>
-			<CForm>
-				<div class='form-group'>
-					<CInputFile
-						ref='schedulerImport'
-						accept='application/json,.zip'
-						:label='$t("config.daemon.scheduler.import.file")'
-						@input='fileImportEmpty'
-						@click='fileImportEmpty'
-					/>
-				</div>
-			</CForm>
-			<template #footer>
-				<CButton
-					color='primary'
-					:disabled='importEmpty'
-					@click='importScheduler'
-				>
-					{{ $t('forms.import') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showImportModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-		<CModal
-			color='danger'
-			:show='deleteTask !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: deleteTask}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeTask'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteTask = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
-		<CModal
-			color='danger'
-			:show.sync='showDeleteAllModal'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeAllTasks'
-				>
-					{{ $t('table.actions.deleteAll') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showDeleteAllModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
+import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
+import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
+import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
 
+import {cilArrowBottom, cilPencil, cilPlus} from '@coreui/icons';
 import {DateTime, Duration} from 'luxon';
-import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
-import ServiceService from '@/services/ServiceService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -225,7 +143,15 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CIcon,
 		CInputFile,
 		CModal,
+		TaskDeleteModal,
+		TasksDeleteModal,
+		TaskImportModal,
 	},
+	data: () => ({
+		cilArrowBottom,
+		cilPencil,
+		cilPlus,
+	}),
 	metaInfo: {
 		title: 'config.daemon.scheduler.title',
 	}
@@ -248,11 +174,6 @@ export default class SchedulerList extends Vue {
 		minute: 'numeric',
 		second: 'numeric',
 	};
-
-	/**
-	 * @var {number|null} deleteTask Id of scheduler task used in remove modal
-	 */
-	private deleteTask: number|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -285,17 +206,6 @@ export default class SchedulerList extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		import: cilArrowTop,
-		export: cilArrowBottom,
-	};
-
-	/**
 	 * @var {Array<string>} msgIds Array of message ids used for response handling
 	 */
 	private msgIds: Array<string> = [];
@@ -319,21 +229,6 @@ export default class SchedulerList extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
-
-	/**
-	 * @var {boolean} showDeleteAllModal Controls delete all modal rendering
-	 */
-	private showDeleteAllModal = false;
-
-	/**
-	 * @var {boolean} showImportModal Controls import modal rendering
-	 */
-	private showImportModal = false;
-
-	/**
-	 * @var {boolean} importEmpty Indicates whether file input is empty or not
-	 */
-	private importEmpty = true;
 
 	/**
 	 * @var {boolean} fetchTasks Indicates whether tasks should be fetched
@@ -367,10 +262,6 @@ export default class SchedulerList extends Vue {
 					this.handleList(mutation.payload.data);
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					this.handleGetTask(mutation.payload.data);
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
-					this.handleRemoveTask(mutation.payload.data);
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveAll') {
-					this.handleRemoveAll(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.handleMessageError(mutation.payload.data);
 				}
@@ -391,6 +282,14 @@ export default class SchedulerList extends Vue {
 	beforeDestroy(): void {
 		this.msgIds.forEach((item) => this.$store.dispatch('daemonClient/removeMessage', item));
 		this.unsubscribe();
+	}
+
+	/**
+	 * Queues task refresh
+	 */
+	private refreshTasks(): void {
+		this.fetchTasks = true;
+		this.getTasks();
 	}
 
 	/**
@@ -427,6 +326,9 @@ export default class SchedulerList extends Vue {
 	private handleList(response): void {
 		if (response.status === 0) {
 			this.taskIds = response.rsp.tasks;
+			if (this.taskIds.length === 0) {
+				this.tasks = [];
+			}
 			this.taskIds.forEach(item => {
 				this.getTask(item);
 			});
@@ -457,93 +359,6 @@ export default class SchedulerList extends Vue {
 				return;
 			}
 			this.tasks.push(response.rsp);
-		}
-	}
-
-	/**
-	 * Removes a scheduler task
-	 */
-	private removeTask(): void {
-		if (this.deleteTask === null) {
-			return;
-		}
-		const task = this.deleteTask;
-		this.deleteTask = null;
-		if (this.$store.getters['daemonClient/isConnected']) {
-			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeTask(task, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
-				.then((msgId: string) => this.storeId(msgId));
-		} else {
-			this.$store.commit('spinner/SHOW');
-			SchedulerService.removeTaskREST(task)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
-					);
-					this.fetchTasks = true;
-					this.getTasks();
-				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: task}));
-		}
-	}
-
-	/**
-	 * Handles Daemon API RemoveTask response
-	 * @param response Daemon API response
-	 */
-	private handleRemoveTask(response): void {
-		if (response.status === 0) {
-			this.$toast.success(
-				this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
-			);
-			this.fetchTasks = true;
-			this.getTasks();
-		} else {
-			this.$toast.error(
-				this.$t('config.daemon.scheduler.messages.deleteFail').toString()
-			);
-		}
-	}
-
-	/**
-	 * Removes all scheduler tasks
-	 */
-	private removeAllTasks(): void {
-		this.showDeleteAllModal = false;
-		if (this.$store.getters['daemonClient/isConnected']) {
-			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeAll(new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteAllFailed'))
-				.then((msgId: string) => this.storeId(msgId));
-		} else {
-			this.$store.commit('spinner/SHOW');
-			SchedulerService.removeAllRest()
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
-					);
-					this.tasks = [];
-				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteAllFailedRest'));
-		}
-	}
-
-	/**
-	 * Handles Daemon API RemoveAll response
-	 * @param response Daemon API response
-	 */
-	private handleRemoveAll(response): void {
-		this.$store.dispatch('spinner/hide');
-		if (response.status === 0) {
-			this.$toast.success(
-				this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
-			);
-			this.tasks = [];
-		} else {
-			this.$toast.error(
-				this.$t('config.daemon.scheduler.messages.deleteAllFailed').toString()
-			);
 		}
 	}
 
@@ -597,49 +412,6 @@ export default class SchedulerList extends Vue {
 					);
 				}
 			});
-	}
-
-	/**
-	 * Extracts files from import modal file input
-	 * @returns {FileList} List of uploaded files
-	 */
-	private getFile(): FileList {
-		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
-		return (input.files as FileList);
-	}
-
-	/**
-	 * Checks if file input is empty
-	 */
-	private fileImportEmpty(): void {
-		this.importEmpty = this.getFile().length === 0;
-	}
-
-	/**
-	 * Imports scheduler tasks from zip file
-	 */
-	private importScheduler(): void {
-		this.showImportModal = false;
-		this.$store.commit('spinner/SHOW');
-		const files = this.getFile();
-		SchedulerService.importConfig(files[0])
-			.then(() => {
-				this.$toast.success(
-					this.$t('config.daemon.scheduler.messages.importSuccess').toString()
-				);
-				ServiceService.restart('iqrf-gateway-daemon')
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.info(
-							this.$t('service.iqrf-gateway-daemon.messages.restart')
-								.toString()
-						);
-						this.fetchTasks = true;
-						this.getTasks();
-					})
-					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
 	}
 
 	/**
@@ -700,10 +472,3 @@ export default class SchedulerList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-
-</style>

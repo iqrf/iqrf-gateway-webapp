@@ -52,7 +52,7 @@ limitations under the License.
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
-		<ControllerPinConfigDeleteConfirmation ref='deleteModal' @delete-profile='deletePinConfigProfile' />
+		<ControllerPinConfigDeleteModal ref='deleteModal' @delete-profile='deletePinConfigProfile' />
 		<ControllerPinConfigForm ref='formModal' @save-profile='savePinConfigProfile' />
 	</div>
 </template>
@@ -60,7 +60,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
-import ControllerPinConfigDeleteConfirmation from './ControllerPinConfigDeleteConfirmation.vue';
+import ControllerPinConfigDeleteModal from './ControllerPinConfigDeleteModal.vue';
 import ControllerPinConfigForm from './ControllerPinConfigForm.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
@@ -78,7 +78,7 @@ import {IControllerPinConfig} from '@/interfaces/controller';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		ControllerPinConfigDeleteConfirmation,
+		ControllerPinConfigDeleteModal,
 		ControllerPinConfigForm,
 	},
 })
@@ -198,7 +198,7 @@ export default class ControllerPinConfigs extends Vue {
 	 * @param {string} name Profile name
 	 */
 	private showDeleteModal(idx: number, name: string): void {
-		(this.$refs.deleteModal as ControllerPinConfigDeleteConfirmation).activateModal(idx, name);
+		(this.$refs.deleteModal as ControllerPinConfigDeleteModal).activateModal(idx, name);
 	}
 
 	/**

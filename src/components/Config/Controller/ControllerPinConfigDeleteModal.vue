@@ -24,21 +24,23 @@ limitations under the License.
 	>
 		<template #header>
 			<h5 class='modal-title'>
-				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.title') }}
+				{{ $t('config.controller.deleteModal.title') }}
 			</h5>
 		</template>
-		{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: name}) }}
+		{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}
 		<template #footer>
 			<CButton
-				color='danger'
-				@click='deleteMapping'
-			>
-				{{ $t('forms.delete') }}
-			</CButton> <CButton
+				class='mr-1'
 				color='secondary'
 				@click='deactivateModal'
 			>
 				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='deleteProfile'
+			>
+				{{ $t('forms.delete') }}
 			</CButton>
 		</template>
 	</CModal>
@@ -56,26 +58,28 @@ import {CButton, CModal} from '@coreui/vue/src';
 })
 
 /**
- * Mapping delete confirmation modal window component
+ * Controller pin configuration delete modal window component
  */
-export default class MappingDeleteConfirmation extends Vue {
+export default class ControllerPinConfigDeleteModal extends Vue {
 	/**
 	 * @var {boolean} show Controls whether modal window is rendered
 	 */
 	private show = false;
 
 	/**
-	 * @var {number} idx Mapping index
+	 * @var {number} idx Controller pin configuration profile index
 	 */
 	private idx = 0;
 
 	/**
-	 * @var {string} name Mapping name
+	 * @var {string} name Controller pin configuration profile name
 	 */
 	private name = '';
 
 	/**
-	 * Stores mapping metadata and renders the modal window
+	 * Stores controller pin configuration profile metadata and renders the modal window
+	 * @param {number} idx Profile index
+	 * @param {string} name Profile name
 	 */
 	public activateModal(idx: number, name: string): void {
 		this.idx = idx;
@@ -84,15 +88,15 @@ export default class MappingDeleteConfirmation extends Vue {
 	}
 
 	/**
-	 * Emits event to delete mapping
+	 * Emits event to delete controller pin configuration profile
 	 */
-	private deleteMapping(): void {
+	private deleteProfile(): void {
 		this.deactivateModal();
-		this.$emit('delete-mapping', this.idx);
+		this.$emit('delete-profile', this.idx);
 	}
 
 	/**
-	 * Clears mapping metadata and closes the modal window
+	 * Clears controller pin configuration profile metadata and closes the modal window
 	 */
 	private deactivateModal(): void {
 		this.show = false;

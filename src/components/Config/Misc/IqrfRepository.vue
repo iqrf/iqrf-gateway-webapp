@@ -126,7 +126,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import ManagementService from '@/services/DaemonApi/ManagementService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfRepository} from '@/interfaces/iqrfRepository';
+import {IIqrfRepository} from '@/interfaces/Config/Misc';
 import {MutationPayload} from 'vuex';
 
 /**

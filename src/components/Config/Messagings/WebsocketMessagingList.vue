@@ -27,7 +27,7 @@ limitations under the License.
 					class='float-right'
 					to='/config/daemon/messagings/websocket/add-messaging'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -39,7 +39,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
@@ -68,64 +68,41 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/messagings/websocket/edit-messaging/" + item.instance'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = item.instance'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<WebsocketDeleteModal
+								:component-type='WebsocketTypes.MESSAGING'
+								:instance='item'
+								@deleted='getConfig'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.messaging.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.messagings.websocket.messaging.modal.prompt', {messaging: deleteInstance}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInstance'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import WebsocketDeleteModal from '@/components/Config/Messagings/WebsocketDeleteModal.vue';
 
-import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {cilPencil, cilPlus} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {WebsocketTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
-import {WsMessaging} from '@/interfaces/messagingInterfaces';
+import {IWsMessaging} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -138,7 +115,13 @@ import {WsMessaging} from '@/interfaces/messagingInterfaces';
 		CDropdownItem,
 		CIcon,
 		CModal,
+		WebsocketDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		WebsocketTypes,
+	}),
 })
 
 /**
@@ -149,11 +132,6 @@ export default class WebsocketMessagingList extends Vue {
 	 * @constant {string} componentName Websocket messaging component name
 	 */
 	private componentName = 'iqrf::WebsocketMessaging';
-
-	/**
-	 * @var {string|null} deleteInstance Websocket messaging instance used in remove modal
-	 */
-	private deleteInstance: string|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -180,18 +158,9 @@ export default class WebsocketMessagingList extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
+	 * @var {Array<IWsMessaging>} instances Array of Websocket messaging instances
 	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
-
-	/**
-	 * @var {Array<WsMessaging>} instances Array of Websocket messaging instances
-	 */
-	private instances: Array<WsMessaging> = [];
+	private instances: Array<IWsMessaging> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -217,10 +186,10 @@ export default class WebsocketMessagingList extends Vue {
 
 	/**
 	 * Updates accepting asynchronous messages setting of Websocket messaging component instance
-	 * @param {WsMessaging} instance Websocket messaging instance
+	 * @param {IWsMessaging} instance Websocket messaging instance
 	 * @param {boolean} setting new setting
 	 */
-	private changeAccept(instance: WsMessaging, setting: boolean): void {
+	private changeAccept(instance: IWsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg !== setting) {
 			const conf = {
 				...instance,
@@ -240,35 +209,5 @@ export default class WebsocketMessagingList extends Vue {
 				});
 		}
 	}
-
-	/**
-	 * Removes an existing instance of Websocket messaging component
-	 */
-	private removeInstance(): void {
-		if (this.deleteInstance === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = null;
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.messaging.messages.deleteSuccess', {messaging: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.deleteFailed', {messaging: instance});
-			});
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

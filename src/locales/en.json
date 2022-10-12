@@ -425,6 +425,12 @@
 				"tlsTitle": "TLS",
 				"title": "Messagings",
 				"description": "Configuration of messagings.",
+				"deleteDialog": {
+					"title": "{messaging} messaging instance delete confirmation",
+					"prompt": "Are you sure you want to delete {messaging} messaging instance {instance}?",
+					"success": "{messaging} messaging instance {instance} has been deleted.",
+					"failed": "Failed to delete {messaging} messaging instance {instance}: {error}"
+				},
 				"mqtt": {
 					"title": "MQTT messaging",
 					"description": "MQTT messaging settings.",
@@ -517,18 +523,22 @@
 							"instance": "Required WebSocket service"
 						}
 					},
+					"removeDialog": {
+						"title": "WebSocket {type} delete confirmation",
+						"prompt": "Are you sure you want to delete WebSocket {type} instance {instance}?",
+						"deleteFailed": "Failed to delete WebSocket {type} instance {instance}: {error}",
+						"deleteSuccess": "WebSocket {type} instance {instance} has been successfully deleted.",
+						"interfaceTitle": "WebSocket interface delete confirmation",
+						"interfacePrompt": "Are you sure you want to delete WebSocket interface instance {instance}?",
+						"interfaceDeleteFailed": "Failed to delete WebSocket interface instance {instance}: {error}",
+						"interfaceDeleteSuccess": "WebSocket interface instance {instance} has been successfully deleted."
+					},
 					"interface": {
 						"title": "WebSocket interfaces",
 						"legend": "WebSocket interface instance",
 						"add": "Add WebSocket interface",
 						"edit": "Edit WebSocket interface",
-						"modal": {
-							"title": "WebSocket interface instance delete confirmation",
-							"prompt": "Are you sure you want to delete WebSocket interface instance {instance}?"
-						},
 						"messages": {
-							"deleteFailed": "Failed to delete WebSocket interface {interface}: {error}",
-							"deleteSuccess": "WebSocket interface instance {instance} has been deleted.",
 							"getFailed": "Failed to retrieve WebSocket interface {interface} configuration: {error}.",
 							"listFailed": "Failed to retrieve list of WebSocket interfaces: {error}",
 							"saveFailed": "Failed to save WebSocket interface {interface} configuration: {error}.",
@@ -541,13 +551,7 @@
 						"title": "WebSocket messagings",
 						"add": "Add WebSocket messaging",
 						"edit": "Edit WebSocket messaging",
-						"modal": {
-							"title": "WebSocket messaging instance delete confirmation",
-							"prompt": "Are you sure you want to delete WebSocket messaging instance {messaging}?"
-						},
 						"messages": {
-							"deleteFailed": "Failed to delete WebSocket messaging {messaging}: {error}.",
-							"deleteSuccess": "Configuration of WebSocket messaging {messaging} has been successfully deleted.",
 							"getFailed": "Failed to retrieve WebSocket messaging {messaging} configuration: {error}.",
 							"listFailed": "Failed to retrieve WebSocket messaging configuration: {error}.",
 							"saveFailed": "Failed to save WebSocket messaging {messaging} configuration: {error}.",
@@ -561,13 +565,7 @@
 						"legend": "WebSocket service instance",
 						"add": "Add WebSocket service",
 						"edit": "Edit WebSocket service",
-						"modal": {
-							"title": "WebSocket service instance delete confirmation",
-							"prompt": "Are you sure you want to delete WebSocket service instance {service}?"
-						},
 						"messages": {
-							"deleteFailed": "Failed to delete WebSocket service {service} configuration: {error}.",
-							"deleteSuccess": "Configuration of WebSocket service {service} has been successfully deleted.",
 							"getFailed": "Failed to retrieve WebSocket service {service} configuration: {error}.",
 							"listFailed": "Failed to retrieve WebSocket service configuration: {error}.",
 							"saveFailed": "Failed to save WebSocket service {service} configuration: {error}.",
