@@ -149,7 +149,6 @@ import vSelect from 'vue-select';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import DatePicker from 'vue2-datepicker';
-import 'vue2-datepicker/index.css';
 
 import {cilPlus, cilReload, cilTrash} from '@coreui/icons';
 
