@@ -36,53 +36,57 @@ limitations under the License.
 						:checked.sync='config.forwardToSyslog'
 						:label='$t("service.systemd-journald.config.form.forwardToSyslog").toString()'
 					/>
-					<CSelect
-						:value.sync='config.persistence'
-						:label='$t("service.systemd-journald.config.form.storage").toString()'
-						:options='storageOptions'
-					/>
-					<div class='form-group'>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|min:0'
-							:custom-messages='{
-								required: $t("service.systemd-journald.config.errors.maxDisk"),
-								integer: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
-								min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
-							}'
-						>
-							<CInput
-								v-model.number='config.maxDiskSize'
-								type='number'
-								min='0'
-								:label='$t("service.systemd-journald.config.form.maxDisk").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+					<CRow form>
+						<CCol sm='12' lg='4'>
+							<CSelect
+								:value.sync='config.persistence'
+								:label='$t("service.systemd-journald.config.form.storage").toString()'
+								:options='storageOptions'
 							/>
-						</ValidationProvider>
-						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
-					</div>
-					<div class='form-group'>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|min:1'
-							:custom-messages='{
-								required: $t("service.systemd-journald.config.errors.maxFiles"),
-								integer: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
-								min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
-							}'
-						>
-							<CInput
-								v-model.number='config.maxFiles'
-								type='number'
-								min='1'
-								:label='$t("service.systemd-journald.config.form.maxFiles").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
-							/>
-						</ValidationProvider>
-						<em>{{ $t('service.systemd-journald.config.form.maxFilesNote') }}</em>
-					</div>
+						</CCol>
+						<CCol sm='12' lg='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:0'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.maxDisk"),
+									integer: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
+									min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
+								}'
+							>
+								<CInput
+									v-model.number='config.maxDiskSize'
+									type='number'
+									min='0'
+									:label='$t("service.systemd-journald.config.form.maxDisk").toString()'
+									:description='$t("service.systemd-journald.config.form.defaultNote")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ").toString()'
+								/>
+							</ValidationProvider>
+						</CCol>
+						<CCol sm='12' lg='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:1'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.maxFiles"),
+									integer: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
+									min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
+								}'
+							>
+								<CInput
+									v-model.number='config.maxFiles'
+									type='number'
+									min='1'
+									:label='$t("service.systemd-journald.config.form.maxFiles").toString()'
+									:description='$t("service.systemd-journald.config.form.maxFilesNote")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ").toString()'
+								/>
+							</ValidationProvider>
+						</CCol>
+					</CRow>
 					<div class='form-group'>
 						<label>
 							<strong>{{ $t('service.systemd-journald.config.form.sizeRotation') }}</strong>
@@ -96,30 +100,29 @@ limitations under the License.
 							label-off='OFF'
 						/>
 					</div>
-					<div
-						v-if='sizeRotation'
-						class='form-group'
-					>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|min:0'
-							:custom-messages='{
-								required: $t("service.systemd-journald.config.errors.maxFileSize"),
-								integer: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
-								min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
-							}'
-						>
-							<CInput
-								v-model.number='config.sizeRotation.maxFileSize'
-								type='number'
-								min='0'
-								:label='$t("service.systemd-journald.config.form.maxFileSize").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
-							/>
-						</ValidationProvider>
-						<em>{{ $t('service.systemd-journald.config.form.defaultNote') }}</em>
-					</div>
+					<CRow v-if='sizeRotation'>
+						<CCol sm='12' lg='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:0'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.maxFileSize"),
+									integer: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
+									min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
+								}'
+							>
+								<CInput
+									v-model.number='config.sizeRotation.maxFileSize'
+									type='number'
+									min='0'
+									:label='$t("service.systemd-journald.config.form.maxFileSize").toString()'
+									:description='$t("service.systemd-journald.config.form.defaultNote")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ").toString()'
+								/>
+							</ValidationProvider>
+						</CCol>
+					</CRow>
 					<div class='form-group'>
 						<label>
 							<strong>{{ $t('service.systemd-journald.config.form.timeRotation') }}</strong>
@@ -133,34 +136,35 @@ limitations under the License.
 							label-off='OFF'
 						/>
 					</div>
-					<div
-						v-if='timeRotation'
-						class='form-group'
-					>
-						<CSelect
-							:value.sync='config.timeRotation.unit'
-							:label='$t("service.systemd-journald.config.form.unit").toString()'
-							:options='unitOptions'
-						/>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|integer|min:1'
-							:custom-messages='{
-								required: $t("service.systemd-journald.config.errors.count"),
-								integer: $t("service.systemd-journald.config.errors.countInvalid"),
-								min: $t("service.systemd-journald.config.errors.countInvalid"),
-							}'
-						>
-							<CInput
-								v-model.number='config.timeRotation.count'
-								type='number'
-								min='1'
-								:label='$t("service.systemd-journald.config.form.count").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ").toString()'
+					<CRow v-if='timeRotation'>
+						<CCol sm='12' lg='4'>
+							<CSelect
+								:value.sync='config.timeRotation.unit'
+								:label='$t("service.systemd-journald.config.form.unit").toString()'
+								:options='unitOptions'
 							/>
-						</ValidationProvider>
-					</div>
+						</CCol>
+						<CCol sm='12' lg='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|integer|min:1'
+								:custom-messages='{
+									required: $t("service.systemd-journald.config.errors.count"),
+									integer: $t("service.systemd-journald.config.errors.countInvalid"),
+									min: $t("service.systemd-journald.config.errors.countInvalid"),
+								}'
+							>
+								<CInput
+									v-model.number='config.timeRotation.count'
+									type='number'
+									min='1'
+									:label='$t("service.systemd-journald.config.form.count").toString()'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ").toString()'
+								/>
+							</ValidationProvider>
+						</CCol>
+					</CRow>
 					<CButton
 						color='primary'
 						type='submit'

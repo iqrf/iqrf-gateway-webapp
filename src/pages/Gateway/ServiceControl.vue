@@ -85,9 +85,9 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import AptConfig from '@/components/Gateway/AptConfig.vue';
-import GatewayUserPassword from '@/components/Gateway/GatewayUserPassword.vue';
-import SystemdJournaldConfig from '@/components/Gateway/SystemdJournaldConfig.vue';
+import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
+import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
+import SystemdJournaldConfig from '@/components/Gateway/Services/SystemdJournaldConfig.vue';
 
 import AptService from '@/services/AptService';
 import ServiceService from '@/services/ServiceService';
