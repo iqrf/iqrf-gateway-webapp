@@ -50,38 +50,40 @@ limitations under the License.
 								label-off='OFF'
 							/>
 						</div>
-						<div
-							v-if='credentials'
-						>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("forms.errors.username"),
-								}'
-							>
-								<CInput
-									v-model='config.credentials.username'
-									:label='$t("forms.fields.username")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("forms.errors.password"),
-								}'
-							>
-								<CInput
-									v-model='config.credentials.password'
-									:label='$t("forms.fields.password")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-						</div>
+						<CRow v-if='credentials'>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("forms.errors.username"),
+									}'
+								>
+									<CInput
+										v-model='config.credentials.username'
+										:label='$t("forms.fields.username")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("forms.errors.password"),
+									}'
+								>
+									<CInput
+										v-model='config.credentials.password'
+										:label='$t("forms.fields.password")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
 						<CButton
 							color='primary'
 							:disabled='invalid'
@@ -108,7 +110,7 @@ import {required} from 'vee-validate/dist/rules';
 import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
 
 import {AxiosError} from 'axios';
-import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {
@@ -168,6 +170,11 @@ export default class IqrfRepositoryConfig extends Vue {
 	 * Retrieves IQRF repository config on load
 	 */
 	mounted(): void {
+		const repositoryConfig = this.$store.getters['repository/configuration'];
+		if (repositoryConfig) {
+			this.storeConfig(repositoryConfig);
+			return;
+		}
 		this.getConfig();
 	}
 
@@ -178,13 +185,20 @@ export default class IqrfRepositoryConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		return RepositoryConfigService.get()
 			.then((config: IIqrfRepositoryConfig) => {
-				this.config = {...this.config, ...config};
-				this.credentials = config.credentials.username !== null;
+				this.storeConfig(config);
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.repository.messages.fetchFailed');
 			});
+	}
+
+	/**
+	 * Parses and stores repository configuration
+	 */
+	private storeConfig(config: IIqrfRepositoryConfig): void {
+		this.config = {...this.config, ...config};
+		this.credentials = config.credentials.username !== null;
 	}
 
 	/**
@@ -198,6 +212,7 @@ export default class IqrfRepositoryConfig extends Vue {
 		}
 		RepositoryConfigService.save(config)
 			.then(() => {
+				this.$store.commit('repository/SET', config);
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(

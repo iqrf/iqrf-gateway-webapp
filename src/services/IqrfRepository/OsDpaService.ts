@@ -16,8 +16,9 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
+import store from '@/store';
 
 /**
  * OS & DPA version entity
@@ -174,14 +175,19 @@ class OsDpaService {
 	public async getVersions(osBuild: string): Promise<OsDpaVersion[]> {
 		let baseUrl = 'https://repository.iqrfalliance.org/api';
 		const params = {params: {os: osBuild}};
-		await IqrfRepositoryConfigService.get()
-			.then((config: IIqrfRepositoryConfig) => {
-				baseUrl = config.apiEndpoint;
-				if (config.credentials.username === null) {
-					params.params['dpaBeta'] = false;
-				}
-			});
-
+		let config = store.getters['repository/configuration'];
+		if (!config) {
+			await IqrfRepositoryConfigService.get()
+				.then((repositoryConfig: IIqrfRepositoryConfig) => {
+					config = repositoryConfig;
+				});
+		}
+		if (!config) {
+			baseUrl = config.apiEndpoint;
+			if (config.credentials.username === null) {
+				params.params['dpaBeta'] = false;
+			}
+		}
 		return axios.get(baseUrl + '/osdpa/', params)
 			.then((response: AxiosResponse) => {
 				const versions: OsDpaVersion[] = [];

@@ -28,9 +28,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import WebsocketInterfaceList from '@/components/Config/WebsocketInterfaceList.vue';
-import WebsocketMessagingList from '@/components/Config/WebsocketMessagingList.vue';
-import WebsocketServiceList from '@/components/Config/WebsocketServiceList.vue';
+import WebsocketInterfaceList from '@/components/Config/Messagings/WebsocketInterfaceList.vue';
+import WebsocketMessagingList from '@/components/Config/Messagings/WebsocketMessagingList.vue';
+import WebsocketServiceList from '@/components/Config/Messagings/WebsocketServiceList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
 

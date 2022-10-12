@@ -26,6 +26,7 @@ import spinner from './modules/spinner.module';
 import user from './modules/user.module';
 import daemonClient from './modules/daemonClient.module';
 import monitorClient from './modules/monitorClient.module';
+import repository from './modules/repository.module';
 import webSocket from './modules/webSocket.module';
 
 Vue.use(Vuex);
@@ -41,10 +42,12 @@ const store: Store<any> = new Vuex.Store({
 		webSocket,
 		daemonClient,
 		monitorClient,
+		repository,
 	},
 	plugins: [createPersistentState({
 		paths: [
 			'features',
+			'repository',
 			'user',
 		]
 	})]

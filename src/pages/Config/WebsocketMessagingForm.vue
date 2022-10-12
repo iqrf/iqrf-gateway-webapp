@@ -123,7 +123,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
-import {ModalInstance, IWsService} from '@/interfaces/messagingInterfaces';
+import {ModalInstance, IWsService} from '@/interfaces/Config/Messaging';
 import {RequiredInterface} from '@/interfaces/requiredInterfaces';
 
 interface ServiceInstance {

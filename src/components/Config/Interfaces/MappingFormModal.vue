@@ -229,7 +229,7 @@ import {IOption} from '@/interfaces/coreui';
 /**
  * Modal form to add or edit mapping
  */
-export default class MappingForm extends Vue {
+export default class MappingFormModal extends Vue {
 	/**
 	 * @var {boolean} show Controls whether modal mapping form is shown
 	 */

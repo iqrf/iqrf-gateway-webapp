@@ -24,7 +24,7 @@ limitations under the License.
 					to='/config/daemon/misc/tracer/add'
 					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -44,60 +44,37 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/misc/tracer/edit/" + item.instance'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = item.instance'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<TracerDeleteModal
+								:instance='item'
+								@deleted='getConfig'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.tracer.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.misc.tracer.modal.prompt', {instance: deleteInstance}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInstance'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import TracerDeleteModal from './TracerDeleteModal.vue';
+
+import {cilPencil, cilPlus} from '@coreui/icons';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+
+import {AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
-import { extendedErrorToast } from '@/helpers/errorToast';
 
 @Component({
 	components: {
@@ -108,7 +85,12 @@ import { extendedErrorToast } from '@/helpers/errorToast';
 		CDataTable,
 		CIcon,
 		CModal,
-	}
+		TracerDeleteModal,
+	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+	}),
 })
 
 /**
@@ -145,23 +127,9 @@ export default class TracerList extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
-
-	/**
 	 * @var {Array<unknown>} instances Array of logging service component instances
 	 */
 	private instances: Array<unknown> = [];
-
-	/**
-	 * @var {string} deleteInstance Name of logging service component instance used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * Vue lifecycle hook created
@@ -183,34 +151,5 @@ export default class TracerList extends Vue {
 				this.$emit('fetched', {name: 'tracer', success: false});
 			});
 	}
-
-	/**
-	 * Removes instance of logging service component
-	 */
-	private removeInstance(): void {
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.misc.tracer.messages.deleteFailed',
-				{instance: instance}
-			));
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

@@ -17,7 +17,7 @@
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
 import axios, {AxiosResponse} from 'axios';
-import {IIqrfRepositoryConfig} from '@/interfaces/iqrfRepository';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 
 /**
  * IQRF Repository configuration service

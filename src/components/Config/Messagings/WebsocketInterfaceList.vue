@@ -27,7 +27,7 @@ limitations under the License.
 					class='float-right'
 					to='/config/daemon/messagings/websocket/add'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -39,7 +39,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
@@ -47,8 +47,8 @@ limitations under the License.
 					<template #acceptAsyncMsg='{item}'>
 						<td>
 							<CDropdown
-								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
+								:color='item.messaging.acceptAsyncMsg ? "success": "danger"'
+								:toggler-text='$t(`states.${item.messaging.acceptAsyncMsg ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, true)'>
@@ -60,11 +60,21 @@ limitations under the License.
 							</CDropdown>
 						</td>
 					</template>
+					<template #instanceMessaging='{item}'>
+						<td>
+							{{ item.messaging.instance }}
+						</td>
+					</template>
+					<template #port='{item}'>
+						<td>
+							{{ item.service.WebsocketPort }}
+						</td>
+					</template>
 					<template #acceptOnlyLocalhost='{item}'>
 						<td>
 							<CDropdown
-								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t(`states.${item.acceptOnlyLocalhost ? "enabled": "disabled"}`)'
+								:color='item.service.acceptOnlyLocalhost ? "success": "danger"'
+								:toggler-text='$t(`states.${item.service.acceptOnlyLocalhost ? "enabled": "disabled"}`)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, true)'>
@@ -95,66 +105,39 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/config/daemon/messagings/websocket/edit/" + item.instanceMessaging'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='deleteInstance = {messaging: item.messaging.instance, service: item.service.instance}'
-							>
-								<CIcon :content='icons.remove' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<WebsocketInterfaceDeleteModal
+								:instance='item'
+								@deleted='getConfig'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.interface.modal.title') }}
-				</h5>
-			</template>
-			<div v-if='deleteInstance !== null'>
-				{{ $t('config.daemon.messagings.websocket.interface.modal.prompt', {instance: deleteInstance.messaging}) }}
-			</div>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeInterface()'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import WebsocketInterfaceDeleteModal from '@/components/Config/Messagings/WebsocketInterfaceDeleteModal.vue';
 
-import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
+import {cilPlus, cilPencil} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IWsInterface, IWsMessaging, IWsService, ModalInstance} from '@/interfaces/Config/Messaging';
 import {IField} from '@/interfaces/coreui';
-import {WsInterface, ModalInstance, IWsService, WsMessaging} from '@/interfaces/messagingInterfaces';
 
 @Component({
 	components: {
@@ -167,7 +150,12 @@ import {WsInterface, ModalInstance, IWsService, WsMessaging} from '@/interfaces/
 		CDropdownItem,
 		CIcon,
 		CModal,
+		WebsocketInterfaceDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+	}),
 })
 
 /**
@@ -181,11 +169,6 @@ export default class WebsocketInterfaceList extends Vue {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	};
-
-	/**
-	 * @var {ModalInstance|null} deleteInstance Websocket interface instance used in remove modal
-	 */
-	private deleteInstance: ModalInstance|null = null;
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -223,18 +206,9 @@ export default class WebsocketInterfaceList extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
+	 * @var {Array<IWsInterface>} instances Array of websocket interface instances
 	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
-
-	/**
-	 * @var {Array<WsInterface>} instances Array of websocket interface instances
-	 */
-	private instances: Array<WsInterface> = [];
+	private instances: Array<IWsInterface> = [];
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -255,7 +229,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const messagings = responses[0].data.instances;
 				const services = responses[1].data.instances;
-				const instances: Array<WsInterface> = [];
+				const instances: Array<IWsInterface> = [];
 				for (const messaging of messagings) {
 					if (messaging.RequiredInterfaces === undefined ||
 							messaging.RequiredInterfaces.length === 0 ||
@@ -271,18 +245,15 @@ export default class WebsocketInterfaceList extends Vue {
 						instances.push({
 							messaging: messaging,
 							service: service,
-							instanceMessaging: messaging.instance,
-							instanceService: service.instance,
-							acceptAsyncMsg: messaging.acceptAsyncMsg,
-							port: service.WebsocketPort,
-							acceptOnlyLocalhost: service.acceptOnlyLocalhost,
 						});
 					}
 				}
 				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.websocket.interface.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.interface.messages.listFailed');
+			});
 	}
 
 	/**
@@ -338,10 +309,10 @@ export default class WebsocketInterfaceList extends Vue {
 
 	/**
 	 * Updates accepting asynchronous messages setting of Websocket messaging component instance
-	 * @param {WsMessaging} instance Websocket messaging instance
+	 * @param {IWsMessaging} instance Websocket messaging instance
 	 * @param {boolean} setting new setting
 	 */
-	private changeAcceptAsyncMsg(instance: WsMessaging, setting: boolean): void {
+	private changeAcceptAsyncMsg(instance: IWsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg === setting) {
 			return;
 		}
@@ -362,42 +333,5 @@ export default class WebsocketInterfaceList extends Vue {
 				{interface: instance.instance}
 			));
 	}
-
-	/**
-	 * Removes an existing instance of Websocket interface component
-	 */
-	private removeInterface(): void {
-		if (this.deleteInstance === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.componentNames.messaging, this.deleteInstance.messaging),
-			DaemonConfigurationService.deleteInstance(this.componentNames.service, this.deleteInstance.service),
-		])
-			.then(() => {
-				this.getConfig().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.websocket.interface.messages.deleteSuccess', {instance: this.deleteInstance?.messaging})
-							.toString()
-					);
-				});
-				this.deleteInstance = null;
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(
-					error,
-					'config.daemon.messagings.websocket.interface.messages.deleteFailed',
-					{interface: this.deleteInstance!.messaging}
-				);
-				this.deleteInstance = null;
-			});
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>
