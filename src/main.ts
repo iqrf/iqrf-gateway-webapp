@@ -27,6 +27,7 @@ import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'vue2-datepicker/index.css';
 
 import {config, library} from '@fortawesome/fontawesome-svg-core';
 import {faEye, faEyeSlash, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
