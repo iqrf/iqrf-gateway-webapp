@@ -23,33 +23,30 @@ limitations under the License.
 				</div>
 				<div>
 					<CButton
+						class='mr-1'
 						color='primary'
 						size='sm'
 						@click='enumerateNetwork'
 					>
-						<CIcon :content='icons.enumerate' size='sm' />
+						<CIcon :content='cilSpreadsheet' size='sm' />
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
 						</span>
-					</CButton> <CButton
+					</CButton>
+					<CButton
+						class='mr-1'
 						color='primary'
 						size='sm'
 						@click='getDevices'
 					>
-						<CIcon :content='icons.refresh' size='sm' />
+						<CIcon :content='cilSync' size='sm' />
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.refresh') }}
 						</span>
-					</CButton> <CButton
-						color='danger'
-						size='sm'
-						@click='showModal = true'
-					>
-						<CIcon :content='icons.reset' size='sm' />
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.reset') }}
-						</span>
 					</CButton>
+					<DatabaseResetModal
+						@reset='devices = []; getDevices()'
+					/>
 				</div>
 			</CCardHeader>
 			<CCardBody>
@@ -57,7 +54,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-info'
-							:content='icons.details'
+							:content='cilInfo'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.standard.table.info') }}
@@ -65,7 +62,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-info'
-							:content='icons.coordinator'
+							:content='cilHome'
 							size='lg'
 						/>
 						{{ $t('forms.fields.coordinator') }}
@@ -73,7 +70,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-info'
-							:content='icons.bonded'
+							:content='cilCheckAlt'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
@@ -81,7 +78,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-info'
-							:content='icons.discovered'
+							:content='cilSignalCellular4'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
@@ -89,7 +86,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-success'
-							:content='icons.bonded'
+							:content='cilCheckAlt'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
@@ -97,7 +94,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-success'
-							:content='icons.discovered'
+							:content='cilSignalCellular4'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
@@ -105,7 +102,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-success'
-							:content='icons.supported'
+							:content='cilCheckCircle'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.standard.table.supported') }}
@@ -113,7 +110,7 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-danger'
-							:content='icons.unsupported'
+							:content='cilXCircle'
 							size='lg'
 						/>
 						{{ $t('iqrfnet.standard.table.unsupported') }}
@@ -146,7 +143,7 @@ limitations under the License.
 							>
 								<CIcon
 									class='text-info'
-									:content='icons.details'
+									:content='cilInfo'
 									size='xl'
 								/>
 							</span>
@@ -176,7 +173,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasSensor() ? "text-success" : "text-danger"'
-								:content='item.hasSensor() ? icons.supported : icons.unsupported'
+								:content='item.hasSensor() ? cilCheckCircle : cilXCircle'
 							/>
 						</td>
 					</template>
@@ -185,7 +182,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasBinout() ? "text-success" : "text-danger"'
-								:content='item.hasBinout() ? icons.supported : icons.unsupported'
+								:content='item.hasBinout() ? cilCheckCircle : cilXCircle'
 							/>
 						</td>
 					</template>
@@ -194,7 +191,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasLight() ? "text-success" : "text-danger"'
-								:content='item.hasLight() ? icons.supported : icons.unsupported'
+								:content='item.hasLight() ? cilCheckCircle : cilXCircle'
 							/>
 						</td>
 					</template>
@@ -203,7 +200,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasDali() ? "text-success" : "text-danger"'
-								:content='item.hasDali() ? icons.supported : icons.unsupported'
+								:content='item.hasDali() ? cilCheckCircle : cilXCircle'
 							/>
 						</td>
 					</template>
@@ -290,38 +287,15 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show.sync='showModal'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.standard.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.standard.modal.prompt') }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='resetDb'
-				>
-					{{ $t('iqrfnet.standard.table.actions.reset') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
+import DatabaseResetModal from '@/components/IqrfNet/StandardManager/DatabaseResetModal.vue';
 
-import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
+import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -346,7 +320,18 @@ import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 		CDataTable,
 		CIcon,
 		CMedia,
+		DatabaseResetModal,
 	},
+	data: () => ({
+		cilCheckAlt,
+		cilCheckCircle,
+		cilHome,
+		cilInfo,
+		cilSignalCellular4,
+		cilSpreadsheet,
+		cilSync,
+		cilXCircle,
+	}),
 })
 
 /**
@@ -367,26 +352,6 @@ export default class StandardDevices extends Vue {
 	 * @var {string|null} msgId Daemon API message ID
 	 */
 	private msgId: string|null = null;
-
-	/**
-	 * @var {boolean} showModal Controls rendering of database reset modal
-	 */
-	private showModal = false;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		coordinator: cilHome,
-		bonded: cilCheckAlt,
-		discovered: cilSignalCellular4,
-		supported: cilCheckCircle,
-		unsupported: cilXCircle,
-		details: cilInfo,
-		enumerate: cilSpreadsheet,
-		refresh: cilSync,
-		reset: cilReload,
-	};
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table fields
@@ -475,8 +440,6 @@ export default class StandardDevices extends Vue {
 				this.handleGetSensors(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedFrc_SendSelective') {
 				this.handlePingDevices(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_Reset') {
-				this.handleReset(mutation.payload.data);
 			}
 		});
 	}
@@ -805,36 +768,6 @@ export default class StandardDevices extends Vue {
 			}
 		});
 		this.$store.dispatch('spinner/hide');
-	}
-
-	/**
-	 * Resets the IqrfInfo database
-	 */
-	private resetDb(): void {
-		this.showModal = false;
-		this.$store.dispatch('spinner/show', {timeout: 10000});
-		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles Reset Daemon API response
-	 * @param response Daemon API response
-	 */
-	private handleReset(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-		this.$store.dispatch('spinner/hide');
-		if (response.status !== 0) {
-			this.$toast.error(
-				this.$t('iqrfnet.standard.table.messages.resetFailed', {error: response.rsp.errorStr}).toString()
-			);
-			return;
-		}
-		this.devices = [];
-		this.$toast.success(
-			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
-		);
-		this.getDevices();
 	}
 
 	/**

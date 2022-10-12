@@ -88,3 +88,11 @@ export interface IStandardSensor {
 	 */
 	value: number
 }
+
+/**
+ * DALI standard answer object
+ */
+export interface IDaliAnswer {
+	status: number
+	value: number
+}

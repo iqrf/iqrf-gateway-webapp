@@ -77,48 +77,53 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<CButton
+						class='mr-1'
 						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitEnumerate'
+						@click.prevent='enumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitGetPower'
+						@click.prevent='getPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.getPower') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitSetPower'
+						@click.prevent='setPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.setPower') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitIncrementPower'
+						@click.prevent='incrementPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.increment') }}
-					</CButton> <CButton
-						color='secondary'
+					</CButton>
+					<CButton
+						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitDecrementPower'
+						@click.prevent='decrementPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.decrement') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
-		<CCardFooter v-if='responseType !== null'>
+		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
 			<table class='table'>
-				<thead v-if='responseType === "enum"'>
-					{{ $t('iqrfnet.standard.light.enum') }}
+				<thead>
+					{{ $t(`iqrfnet.standard.light.${responseType === StandardResponses.ENUMERATE ? 'enum' : 'powerInfo'}`) }}
 				</thead>
-				<thead v-else>
-					{{ $t('iqrfnet.standard.light.powerInfo') }}
-				</thead>
-				<tbody v-if='responseType === "enum"'>
+				<tbody v-if='responseType === StandardResponses.ENUMERATE'>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.lights') }}</th>
 						<td>{{ numLights }}</td>
@@ -145,11 +150,12 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {StandardResponses} from '@/enums/IqrfNet/Standard';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardLightService, {StandardLight} from '@/services/DaemonApi/StandardLightService';
 
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -162,13 +168,21 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CInput,
 		ValidationObserver,
 		ValidationProvider
-	}
+	},
+	data: () =>  ({
+		StandardResponses,
+	}),
 })
 
 /**
  * Light manager card for Standard Manager
  */
 export default class LightManager extends Vue {
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
 	/**
 	 * @var {number} address Address of device implementing the light standard
 	 */
@@ -183,11 +197,6 @@ export default class LightManager extends Vue {
 	 * @var {number} responseIndex Index of light in responses
 	 */
 	private responseIndex = 0;
-
-	/**
-	 * @var {string|null} msgId Daemon api message id
-	 */
-	private msgId: string|null = null;
 
 	/**
 	 * @var {number} numLights Number of lights implemented by the device
@@ -205,9 +214,9 @@ export default class LightManager extends Vue {
 	private prevPower = 0;
 
 	/**
-	 * @var {string|null} responseType Type of Light standard message
+	 * @var {StandardResponses} responseType Type of Light standard message
 	 */
-	private responseType: string|null = null;
+	private responseType: StandardResponses = StandardResponses.NONE;
 
 	/**
 	 * Component unsubscribe function
@@ -223,6 +232,7 @@ export default class LightManager extends Vue {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
+				this.responseType = StandardResponses.NONE;
 				this.responseIndex = this.index;
 				return;
 			}
@@ -238,9 +248,7 @@ export default class LightManager extends Vue {
 					);
 				} else if (mutation.payload.mType === 'iqrfLight_Enumerate') {
 					this.handleEnumerateResponse(mutation.payload);
-				} else if (mutation.payload.mType === 'iqrfLight_SetPower' ||
-					mutation.payload.mType === 'iqrfLight_IncrementPower' ||
-					mutation.payload.mType === 'iqrfLight_DecrementPower') {
+				} else if (['iqrfLight_SetPower', 'iqrfLight_IncrementPower', 'iqrfLight_DecrementPower'].includes(mutation.payload.mType)) {
 					this.handlePowerResponse(mutation.payload);
 				}
 			}
@@ -260,13 +268,13 @@ export default class LightManager extends Vue {
 	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
 	private buildOptions(): DaemonMessageOptions {
-		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = null);
+		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = '');
 	}
 
 	/**
 	 * Performs Light standard enumeration on a device
 	 */
-	private submitEnumerate(): void {
+	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.enumerate(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -279,10 +287,10 @@ export default class LightManager extends Vue {
 	private handleEnumerateResponse(response): void {
 		if (response.data.status === 0) {
 			this.numLights = response.data.rsp.result.lights;
-			this.responseType = 'enum';
 			this.$toast.success(
 				this.$t('iqrfnet.standard.light.messages.success').toString()
 			);
+			this.responseType = StandardResponses.ENUMERATE;
 		} else {
 			this.handleError(response);
 		}
@@ -291,7 +299,7 @@ export default class LightManager extends Vue {
 	/**
 	 * Retrieves power setting of a light
 	 */
-	private submitGetPower(): void {
+	private getPower(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.getPower(this.address, this.index, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -300,7 +308,7 @@ export default class LightManager extends Vue {
 	/**
 	 * Changes power setting of a light to a specific value
 	 */
-	private submitSetPower(): void {
+	private setPower(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -309,7 +317,7 @@ export default class LightManager extends Vue {
 	/**
 	 * Increments light power according to the Light standard
 	 */
-	private submitIncrementPower(): void {
+	private incrementPower(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -318,7 +326,7 @@ export default class LightManager extends Vue {
 	/**
 	 * Decrements light power according to the Light standard
 	 */
-	private submitDecrementPower(): void {
+	private decrementPower(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
@@ -331,10 +339,10 @@ export default class LightManager extends Vue {
 	private handlePowerResponse(response): void {
 		if (response.data.status === 0) {
 			this.prevPower = response.data.rsp.result.prevVals[0];
-			this.responseType = 'power';
 			this.$toast.success(
 				this.$t('iqrfnet.standard.light.messages.success').toString()
 			);
+			this.responseType = StandardResponses.READ;
 		} else {
 			this.handleError(response);
 		}

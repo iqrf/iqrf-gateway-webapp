@@ -36,6 +36,9 @@ use App\IqrfNetModule\Enums\DpaInterfaces;
 use App\IqrfNetModule\Enums\RfModes;
 use App\IqrfNetModule\Enums\TrSeries;
 use App\IqrfNetModule\Enums\UploadFormats;
+use App\IqrfNetModule\Exceptions\UploaderFileException;
+use App\IqrfNetModule\Exceptions\UploaderMissingException;
+use App\IqrfNetModule\Exceptions\UploaderSpiException;
 use App\IqrfNetModule\Models\DpaManager;
 use App\IqrfNetModule\Models\UploadManager;
 use GuzzleHttp\Exception\ClientException;
@@ -113,7 +116,7 @@ class UploadController extends IqrfController {
 				$format = UploadFormats::fromScalar($format);
 			}
 			$file = $request->getUploadedFiles()[0];
-			return $response->writeJsonBody($this->uploadManager->uploadFile($file->getClientFilename(), $file->getStream()->getContents(), $format));
+			return $response->writeJsonBody($this->uploadManager->uploadToFs($file->getClientFilename(), $file->getStream()->getContents(), $format));
 		} catch (UnknownFileFormatExceptions $e) {
 			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
@@ -178,6 +181,47 @@ class UploadController extends IqrfController {
 			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (ClientException $e) {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/uploader")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Executes upload using the IQRF Gateway Uploader
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UploaderFile'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['iqrf:upload']);
+		$this->validator->validateRequest('uploaderFile', $request);
+		try {
+			$data = $request->getJsonBody(false);
+			$this->uploadManager->uploadToTr($data->name, $data->type === 'OS');
+			return $response->writeBody('Workaround');
+		} catch (UploaderFileException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (UploaderMissingException | UploaderSpiException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
