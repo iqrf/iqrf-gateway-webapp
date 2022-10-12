@@ -22,62 +22,76 @@ limitations under the License.
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='updateConfig'>
-					<ValidationProvider
-						v-if='isAdmin'
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
-							required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
-						}'
-					>
-						<CInput
-							v-model='config["APT::Periodic::Update-Package-Lists"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.upgradeInterval"),
-							required: $t("service.unattended-upgrades.errors.upgradeInterval"),
-						}'
-					>
-						<CInput
-							v-model='config["APT::Periodic::Unattended-Upgrade"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.upgradeInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-if='isAdmin'
-						v-slot='{errors, touched, valid}'
-						rules='integer|min:0|required'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("service.unattended-upgrades.errors.removeInterval"),
-							required: $t("service.unattended-upgrades.errors.removeInterval"),
-						}'
-					>
-						<CInput
-							v-model='config["APT::Periodic::AutocleanInterval"]'
-							type='number'
-							min='0'
-							:label='$t("service.unattended-upgrades.form.removeInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
+					<CRow form>
+						<CCol
+							v-if='isAdmin'
+							sm='12'
+							lg='4'
+						>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.listUpdateInterval"),
+									required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
+								}'
+							>
+								<CInput
+									v-model='config["APT::Periodic::Update-Package-Lists"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+						</CCol>
+						<CCol sm='12' lg='4'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.upgradeInterval"),
+									required: $t("service.unattended-upgrades.errors.upgradeInterval"),
+								}'
+							>
+								<CInput
+									v-model='config["APT::Periodic::Unattended-Upgrade"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.upgradeInterval")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+						</CCol>
+						<CCol
+							v-if='isAdmin'
+							sm='12'
+							lg='4'
+						>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|min:0|required'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									min: $t("service.unattended-upgrades.errors.removeInterval"),
+									required: $t("service.unattended-upgrades.errors.removeInterval"),
+								}'
+							>
+								<CInput
+									v-model='config["APT::Periodic::AutocleanInterval"]'
+									type='number'
+									min='0'
+									:label='$t("service.unattended-upgrades.form.removeInterval")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+						</CCol>
+					</CRow>
 					<CInputCheckbox
 						:value.sync='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'

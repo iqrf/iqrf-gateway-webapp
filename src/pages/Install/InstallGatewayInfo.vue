@@ -94,7 +94,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
-import CoordinatorInfo from '@/components/Gateway/CoordinatorInfo.vue';
+import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 import GatewayService from '@/services/GatewayService';
 import {fileDownloader} from '@/helpers/fileDownloader';
