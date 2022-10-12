@@ -52,7 +52,7 @@ limitations under the License.
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
-		<MappingForm ref='formModal' @update-mappings='getMappings' />
+		<MappingFormModal ref='formModal' @update-mappings='getMappings' />
 		<MappingDeleteConfirmation ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
@@ -60,8 +60,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
-import MappingDeleteConfirmation from '@/components/Config/MappingDeleteConfirmation.vue';
-import MappingForm from '@/components/Config/MappingForm.vue';
+import MappingDeleteModal from '@/components/Config/Interfaces/MappingDeleteModal.vue';
+import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -79,8 +79,8 @@ import {IMapping, MappingType} from '@/interfaces/mappings';
 		CDropdownItem,
 		CIcon,
 		CModal,
-		MappingDeleteConfirmation,
-		MappingForm,
+		MappingDeleteModal,
+		MappingFormModal,
 	},
 })
 
@@ -155,7 +155,7 @@ export default class InterfaceMappings extends Vue {
 	 * @param {IMapping|null} mapping Mapping
 	 */
 	private showFormModal(mapping: IMapping|null = null): void {
-		(this.$refs.formModal as MappingForm).activateModal(mapping);
+		(this.$refs.formModal as MappingFormModal).activateModal(mapping);
 	}
 
 	/**
@@ -164,7 +164,7 @@ export default class InterfaceMappings extends Vue {
 	 * @param {string} name Mapping name
 	 */
 	private showDeleteModal(idx: number, name: string): void {
-		(this.$refs.deleteModal as MappingDeleteConfirmation).activateModal(idx, name);
+		(this.$refs.deleteModal as MappingDeleteModal).activateModal(idx, name);
 	}
 
 	/**

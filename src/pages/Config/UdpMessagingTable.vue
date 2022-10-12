@@ -22,13 +22,12 @@ limitations under the License.
 		<CCard>
 			<CCardHeader class='border-0'>
 				<CButton
-					v-if='instances.length < 1'
 					color='success'
 					to='/config/daemon/messagings/udp/add'
 					size='sm'
 					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -48,69 +47,41 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								:to='"/config/daemon/messagings/udp/edit/" + item.instance'
 								size='sm'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='confirmDelete(item)'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<MessagingDeleteModal
+								:messaging-type='MessagingTypes.UDP'
+								:instance='item.instance'
+								@deleted='getInstances'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.udp.modal.title') }}
-				</h5>
-				<CButtonClose
-					class='text-white'
-					@click='deleteInstance = ""'
-				/>
-			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.udp.modal.prompt', {instance: deleteInstance}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
+import {cilPencil, cilPlus} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {MessagingTypes} from '@/enums/Config/Messagings';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
-import {IUdpInstance} from '@/interfaces/messagingInterfaces';
+import {IUdpInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -122,7 +93,13 @@ import {IUdpInstance} from '@/interfaces/messagingInterfaces';
 		CDataTable,
 		CIcon,
 		CModal,
+		MessagingDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		MessagingTypes,
+	}),
 	metaInfo: {
 		title: 'config.daemon.messagings.udp.title'
 	}
@@ -136,11 +113,6 @@ export default class UdpMessagingTable extends Vue {
 	 * @constant {string} componentName UDP messaging component name
 	 */
 	private componentName = 'iqrf::UdpMessaging';
-
-	/**
-	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -167,39 +139,16 @@ export default class UdpMessagingTable extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
-
-	/**
 	 * @var {Array<IUdpInstance>} instances Array of UDP messaging component instances
 	 */
 	private instances: Array<IUdpInstance> = [];
 
 	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		this.$store.commit('spinner/SHOW');
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.$store.commit('spinner/SHOW');
 		this.getInstances();
-	}
-
-	/**
-	 * Assigns name of UDP messaging instances selected to remove to the remove modal
-	 * @param {IUdpInstance} instance UDP messaging instance
-	 */
-	private confirmDelete(instance: IUdpInstance): void {
-		this.deleteInstance = instance.instance;
 	}
 
 	/**
@@ -214,31 +163,5 @@ export default class UdpMessagingTable extends Vue {
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.listFailed'));
 	}
-
-	/**
-	 * Removes instance of UDP messaging component
-	 */
-	private performDelete(): void {
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.udp.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.udp.messages.deleteFailed', {instance: instance}));
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-
-</style>

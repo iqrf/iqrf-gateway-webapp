@@ -138,16 +138,17 @@ limitations under the License.
 			</CForm>
 			<template #footer>
 				<CButton
+					color='secondary'
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+				<CButton
 					:color='modalColor'
 					:disabled='invalid'
 					@click='saveProfile'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -194,9 +195,9 @@ export default class ControllerPinConfigForm extends Vue {
 	private useI2c = false;
 
 	/**
-	 * @var {IControllerPinConfig} profile Controller pin configuration profile
+	 * @var {IControllerPinConfig} defaultProfile Default Controller pin configuration profile
 	 */
-	private profile: IControllerPinConfig = {
+	private defaultProfile: IControllerPinConfig = {
 		name: '',
 		greenLed: 0,
 		redLed: 0,
@@ -204,6 +205,11 @@ export default class ControllerPinConfigForm extends Vue {
 		sck: 0,
 		sda: 0,
 	};
+
+	/**
+	 * @var {IControllerPinConfig} profile Controller pin configuration profile
+	 */
+	private profile: IControllerPinConfig = this.defaultProfile;
 
 	/**
 	 * Initializes validation rules
@@ -264,14 +270,7 @@ export default class ControllerPinConfigForm extends Vue {
 		this.show = false;
 		this.useI2c = false;
 		this.id = -1;
-		this.profile = {
-			name: '',
-			greenLed: 0,
-			redLed: 0,
-			button: 0,
-			sck: 0,
-			sda: 0,
-		};
+		this.profile = this.defaultProfile;
 	}
 }
 </script>

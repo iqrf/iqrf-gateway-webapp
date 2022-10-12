@@ -246,8 +246,8 @@ import {
 	CRow,
 	CSelect,
 } from '@coreui/vue/src';
-import InterfaceMappings from '@/components/Config/InterfaceMappings.vue';
-import InterfacePorts from '@/components/Config/InterfacePorts.vue';
+import InterfaceMappings from '@/components/Config/Interfaces/InterfaceMappings.vue';
+import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';

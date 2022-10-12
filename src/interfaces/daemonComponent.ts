@@ -115,3 +115,18 @@ export interface IMainConfig {
 	 */
 	userDir: string
 }
+
+/**
+ * Component instance configuration base
+ */
+export interface ComponentInstanceBase {
+	/**
+	 * Component name
+	 */
+	component: string
+
+	/**
+	 * Instance name
+	 */
+	instance: string
+}

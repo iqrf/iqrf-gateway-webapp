@@ -171,7 +171,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
-import {IWsService} from '@/interfaces/messagingInterfaces';
+import {IWsService} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

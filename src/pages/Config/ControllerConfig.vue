@@ -452,7 +452,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import ControllerPinConfigs from '@/components/Config/ControllerPinConfigs.vue';
+import ControllerPinConfigs from '@/components/Config/Controller/ControllerPinConfigs.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {controllerErrorToast, extendedErrorToast} from '@/helpers/errorToast';

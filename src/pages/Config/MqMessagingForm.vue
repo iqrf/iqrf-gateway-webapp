@@ -93,7 +93,7 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMqInstance} from '@/interfaces/messagingInterfaces';
+import {IMqInstance} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
 
 

@@ -49,10 +49,10 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
-import IqrfSpi from '@/components/Config/IqrfSpi.vue';
-import IqrfCdc from '@/components/Config/IqrfCdc.vue';
-import IqrfUart from '@/components/Config/IqrfUart.vue';
-import IqrfDpa from '@/components/Config/IqrfDpa.vue';
+import IqrfSpi from '@/components/Config/Interfaces/IqrfSpi.vue';
+import IqrfCdc from '@/components/Config/Interfaces/IqrfCdc.vue';
+import IqrfUart from '@/components/Config/Interfaces/IqrfUart.vue';
+import IqrfDpa from '@/components/Config/Interfaces/IqrfDpa.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 

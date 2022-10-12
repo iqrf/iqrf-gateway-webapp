@@ -27,7 +27,7 @@ limitations under the License.
 					size='sm'
 					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -39,7 +39,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
@@ -64,52 +64,24 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								:to='"/config/daemon/messagings/mq/edit/" + item.instance'
 								size='sm'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								color='danger'
-								size='sm'
-								@click='confirmDelete(item)'
-							>
-								<CIcon :content='icons.delete' size='sm' />
-								{{ $t('table.actions.delete') }}
 							</CButton>
+							<MessagingDeleteModal
+								:messaging-type='MessagingTypes.MQ'
+								:instance='item.instance'
+								@deleted='getInstances'
+							/>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteInstance !== ""'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.mq.modal.title') }}
-				</h5>
-				<CButtonClose class='text-white' @click='deleteInstance = ""' />
-			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.daemon.messagings.mq.modal.prompt', {instance: deleteInstance}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteInstance = ""'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
 	</div>
 </template>
 
@@ -127,14 +99,17 @@ import {
 	CIcon,
 	CModal
 } from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
+import {cilPencil, cilPlus} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {MessagingTypes} from '@/enums/Config/Messagings';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/coreui';
-import {IMqInstance} from '@/interfaces/messagingInterfaces';
+import {IMqInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
@@ -148,7 +123,13 @@ import {IMqInstance} from '@/interfaces/messagingInterfaces';
 		CDropdownItem,
 		CIcon,
 		CModal,
+		MessagingDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		MessagingTypes,
+	}),
 	metaInfo: {
 		title: 'config.daemon.messagings.mq.title'
 	}
@@ -162,11 +143,6 @@ export default class MqMessagingTable extends Vue {
 	 * @constant {string} componentName MQ messaging component name
 	 */
 	private componentName = 'iqrf::MqMessaging';
-
-	/**
-	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
-	 */
-	private deleteInstance = '';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -198,15 +174,6 @@ export default class MqMessagingTable extends Vue {
 	];
 
 	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-	};
-
-	/**
 	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances
 	 */
 	private instances: Array<IMqInstance> = [];
@@ -217,14 +184,6 @@ export default class MqMessagingTable extends Vue {
 	mounted(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
-	}
-
-	/**
-	 * Assigns name of MQ messaging instance selected to remove to the remove modal
-	 * @param {IMqInstance} instance MQ messaging instance
-	 */
-	private confirmDelete(instance: IMqInstance): void {
-		this.deleteInstance = instance.instance;
 	}
 
 	/**
@@ -265,30 +224,5 @@ export default class MqMessagingTable extends Vue {
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed'));
 	}
-
-	/**
-	 * Removes instance of MQ messaging component
-	 */
-	private performDelete(): void {
-		this.$store.commit('spinner/SHOW');
-		const instance = this.deleteInstance;
-		this.deleteInstance = '';
-		DaemonConfigurationService.deleteInstance(this.componentName, instance)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.mq.messages.deleteSuccess', {instance: instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.deleteFailed', {instance: instance}));
-	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-</style>

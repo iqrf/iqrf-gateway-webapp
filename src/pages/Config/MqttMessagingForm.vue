@@ -327,7 +327,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/coreui';
 import {MetaInfo} from 'vue-meta';
-import {IMqttInstance} from '@/interfaces/messagingInterfaces';
+import {IMqttInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
