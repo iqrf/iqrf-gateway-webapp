@@ -221,7 +221,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {cilCheckCircle} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '@/services/IqrfNetService';
-import NativeUploadService from '@/services/NativeUploadService';
+import IqrfService from '@/services/IqrfService';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {FileFormat} from '@/iqrfNet/fileFormat';
@@ -472,7 +472,7 @@ export default class OtaUpload extends Vue {
 		formData.append('format', this.fileType);
 		formData.append('file', file);
 		this.$store.commit('spinner/SHOW');
-		NativeUploadService.uploadREST(formData)
+		IqrfService.uploadFile(formData)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.fileName = response.data.fileName;

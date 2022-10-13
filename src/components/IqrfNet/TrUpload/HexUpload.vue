@@ -50,7 +50,6 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {FileFormat} from '@/iqrfNet/fileFormat';
 import IqrfService from '@/services/IqrfService';
-import NativeUploadService from '@/services/NativeUploadService';
 import ServiceService from '@/services/ServiceService';
 
 import {AxiosResponse, AxiosError} from 'axios';
@@ -111,7 +110,7 @@ export default class HexUpload extends Vue {
 		this.$store.commit('spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUpload').toString()
 		);
-		NativeUploadService.uploadREST(formData)
+		IqrfService.uploadFile(formData)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUploadSuccess').toString()
