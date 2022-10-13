@@ -181,6 +181,7 @@
 		"delete": "Delete",
 		"indicateCoordinator": "Indicate coordinator",
 		"pingNodes": "Ping nodes",
+		"restartNodes": "Restart nodes",
 		"no": "No",
 		"refresh": "Refresh",
 		"read": "Read",
@@ -208,6 +209,9 @@
 		"clipboardCopy": "Copy to clipboard",
 		"changePassword": "Change password",
 		"downloadBackup": "Download backup",
+		"get": "Get",
+		"set": "Set",
+		"unknown": "Unknown",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -218,7 +222,8 @@
 			"fetchFail": "Failed to retrieve component or instance configuration.",
 			"deviceOffline": "Device at address {address} is offline.",
 			"noDevice": "No device is bonded at address {address}.",
-			"coordinatorOffline": "Coordinator device is offline."
+			"coordinatorOffline": "Coordinator device is offline.",
+			"noBondedNodes": "There are no bonded nodes in network."
 		}
 	},
 	"config": {
@@ -1520,87 +1525,177 @@
 			"title": "Network manager",
 			"description": "Network manager.",
 			"iqmesh": "IQMESH",
-			"backupRestore": "Backup/Restore",
 			"autoNetwork": {
 				"title": "AutoNetwork",
 				"form": {
-					"general": "General settings",
-					"discoveryTxPower": "TX power to use in discovery process",
-					"discoveryBeforeStart": "Run discovery before start",
-					"skipDiscoveryEachWave": "Skip discovery in each wave",
-					"skipPrebonding": "Skip prebonding step",
-					"unbondUnrespondingNodes": "Unbond nodes that do not respond",
-					"actionRetries": "Number of retry DPA transactions",
-					"bondingControl": "Bonding control",
-					"overlappingNetworks": "Overlapping networks",
-					"networks": "Number of networks",
-					"network": "Network number",
-					"hwpidFiltering": "HWPID filtering conditions",
-					"hwpidEnable": "Enable HWPID filtering",
-					"hwpids": "HWPIDs",
-					"stopConditions": "Stop conditions",
-					"waves": "Maximum number of waves",
-					"emptyWaves": "Number of empty waves",
-					"nodes": "Node count conditions",
-					"numberOfTotalNodes": "Number of total nodes",
-					"numberOfNewNodes": "Number of new nodes",
-					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found"
-				}
-			},
-			"backup": {
-				"title": "Network backup",
-				"form": {
-					"target": "Backup target",
-					"node": "Node",
-					"network": "Whole network",
-					"messages": {
-						"select": "Please select backup target.",
-						"address": "Please enter a node address integer between 1 and 239."
+					"params": {
+						"title": "Parameters",
+						"actionRetries": "Action retries",
+						"discoveryTxPower": "Discovery TX power",
+						"discoveryBeforeStart": "Discovery before start",
+						"skipDiscoveryEachWave": "Skip discovery each wave",
+						"unbondUnrespondingNodes": "Unbond unresponsive nodes",
+						"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
+						"skipPrebonding": "Skip prebonding step"
+					},
+					"stopConditions": {
+						"title": "Stop Conditions",
+						"waves": "Maximum number of waves",
+						"emptyWaves": "Number of empty waves",
+						"use": "Enable node count",
+						"total": "Number of total nodes",
+						"new": "Number of new nodes"
+					},
+					"bondingControl": {
+						"title": "Bonding Control",
+						"addressSpace": {
+							"title": "Address space",
+							"use": "Enable address space"
+						},
+						"mid": {
+							"use": "Enable MID control",
+							"file": "MID list file",
+							"list": "MID list",
+							"filter": "MID filtering",
+							"manual": "Manage MIDs"
+						},
+						"overlappingNetworks": {
+							"title": "Overlapping networks",
+							"use": "Enable overlapping networks",
+							"networks": "Number of networks",
+							"network": "Network number"
+						}
+					},
+					"hwpidFiltering": {
+						"title": "HWPID Filtering Conditions",
+						"use": "Enable HWPID filtering",
+						"list": "HWPIDs"
 					}
 				},
-				"messages": {
-					"coordinatorRunning": "Backing up coordinator device...",
-					"coordinatorSuccess": "Backup of coordinator device completed.",
-					"nodeRunning": "Backing up node device {deviceAddr}...",
-					"nodeSuccess": "Backup of node device {deviceAddr} completed.",
-					"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
-					"networkRunning": "Backing up network [{progress} %]",
-					"networkSuccess": "Network backup has been successfully completed.",
-					"networkPartialSuccess": "All online devices have been successfully backed up. Offline devices: {devices}.",
-					"timeout": "The backup process request timed out."
-				}
-			},
-			"restore": {
-				"title": "Coordinator restore",
-				"form": {
-					"backupFile": "Backup file",
-					"restartOnRestore": "Restart Coordinator on restore",
-					"messages": {
-						"backupFile": "Please insert a TR backup file.",
-						"address": "Please enter integer between 1 and 239 to restore a node device."
+				"midModal": {
+					"title": "MID list",
+					"table": {
+						"deviceMID": "Device MID",
+						"deviceAddr": "Device address",
+						"note": "User note",
+						"unspecified": "Not specified",
+						"noItems": "No MIDs specified."
+					},
+					"invalid": {
+						"line": "Line number",
+						"content": "Content",
+						"error": "Detected error"
+					},
+					"add": "Add item",
+					"errors": {
+						"address": "Device address should be an integer between 1 and 239.",
+						"duplicateAddr": "This device address is already on the MID list.",
+						"mid": "Device MID should be a hexadecimal string 8 characters long.",
+						"duplicateMid": "This device MID is already on the MID list."
 					}
 				},
+				"resultModal": {
+					"title": "AutoNetwork progress",
+					"total": "Nodes in network:",
+					"new": "New nodes:",
+					"wave": "Waves:",
+					"empty": "Empty waves:",
+					"time": "Total time:",
+					"startMessage": "AutoNetwork process started.",
+					"endMessage": "AutoNetwork process concluded. {message}",
+					"errorMessage": "AutoNetwork process stopped. {message}"
+				},
+				"midListErrors": {
+					"midFormat": "Invalid MID string format.",
+					"midDuplicate": "MID already used on line {line}.",
+					"addrFormat": "Invalid node address format.",
+					"addrRange": "Node address not in range of 1 and 239.",
+					"addrDuplicate": "Address already used on line {line}."
+				},
+				"errors": {
+					"messageError": "Invalid request or response.",
+					"actionRetries": "Action retries should be an integer between 0 and 3.",
+					"discoveryTxPower": "Discovery TX power should be an integer between 0 and 7.",
+					"networks": "Number of networks should be an integer between 2 and 50.",
+					"network": "Network number should be an integer between 1 and 50.",
+					"waves": "Waves should be an integer between 1 and 127.",
+					"emptyWaves": "Empty waves should be an integer between 1 and 127.",
+					"totalNodes": "Number of total nodes should be an integer between 1 and 239.",
+					"newNodes": "Number of new nodes should be an integer between 1 and 239.",
+					"addressSpace": "Invalid address space format.",
+					"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a comma."
+				},
 				"messages": {
-					"accessPasswordNote": "Note: The access password of backed up and restored TR module must be the same for the restore process to finish successfully. Access password can be changed in TR configuration.",
-					"invalidDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
-					"invalidAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",
-					"invalidCoordinatorAddr": "Device property of entry {entry} is Coordinator, but address is not 0. Address: {address}.",
-					"invalidCoordinatorDataC": "Device property of entry {entry} is Coordinator, but DataC entry is missing.",
-					"invalidCoordinatorDataN": "Device property of entry {entry} is Coordinator, but entry contains property DataN.",
-					"invalidNodeAddr": "Device property of entry {entry} is Node, but address is 0.",
-					"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
-					"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
-					"invalidDataContent": "Data{device} property of entry {entry} contains non-hexadecimal characters.",
-					"coordinatorRunning": "Restoring coordinator device...",
-					"coordinatorSuccess": "Coordinator device has been successfully restored.",
-					"readFailed": "Failed to read contents of selected file.",
-					"parsingContent": "Reading and parsing content of selected file.",
-					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
-					"missingProp": "Entry {item} does not contain property {property}.",
-					"missingCoordinator": "Selected file does not contain coordinator device backup data entry.",
-					"invalidSize": "Invalid coordinator backup data size.",
-					"checksumMismatch": "Incorrect coordinator backup data checksum.",
-					"failedMessage": "Restore process not started: {message}"
+					"readFailed": "Failed to read contents of MID list file."
+				},
+				"notes": {
+					"addressSpace": "If enabled, only specified adresses will be assigned to found nodes. If MID list is used, addresses specified in MID list but not in address space will not assigned.",
+					"addressSpaceFormat": "The valid format is an enumeration of device addresses (1 - 239) separated by comma or interval <from;to>. E.g. 1,2,4,<10;20>.",
+					"midControl": "If enabled, it is possible to bond nodes by their MIDs. Optionally, network address can be specified for each MID.",
+					"midRule1": "1. If MID is listed with address and the address is free, this address will be assigned.",
+					"midRule2": "2. If MID is listed without an address, the first free and not reserved address will be assigned.",
+					"midRule3": "3. If MID is not listed and MID filtering is disabled, the first free and not reserved address will be assigned.",
+					"midFilter": "If enabled, detected MIDs that are not listed will not be added to the network. This feature prevents bonding of unknown devices.",
+					"hwpidFilter": "If enabled, only devices with specified HWPIDs will be added to the network..",
+					"hwpidFilterFormat": "The format is an enumeration of HWPIDs (0-65535) separated by comma. E.g. 4117,4099."
+				}
+			},
+			"backupRestore": {
+				"title": "Backup/Restore",
+				"backup": {
+					"title": "Network backup",
+					"form": {
+						"target": "Backup target",
+						"node": "Node",
+						"network": "Whole network",
+						"messages": {
+							"select": "Please select backup target.",
+							"address": "Please enter a node address integer between 1 and 239."
+						}
+					},
+					"messages": {
+						"coordinatorRunning": "Backing up coordinator device...",
+						"coordinatorSuccess": "Backup of coordinator device completed.",
+						"nodeRunning": "Backing up node device {deviceAddr}...",
+						"nodeSuccess": "Backup of node device {deviceAddr} completed.",
+						"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
+						"networkRunning": "Backing up network [{progress} %]",
+						"networkSuccess": "Network backup has been successfully completed.",
+						"networkPartialSuccess": "All online devices have been successfully backed up. Offline devices: {devices}.",
+						"timeout": "The backup process request timed out."
+					}
+				},
+				"restore": {
+					"title": "Coordinator restore",
+					"form": {
+						"backupFile": "Backup file",
+						"errors": {
+							"file": "Please select a backup file.",
+							"invalidFile": "Selected file should be a .iqrfbkp file."
+						}
+					},
+					"messages": {
+						"accessPasswordNote": "Note: The access password of backed up and restored TR module must be the same for the restore process to finish successfully. Access password can be changed in TR configuration.",
+						"invalidDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
+						"invalidAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",
+						"invalidCoordinatorAddr": "Device property of entry {entry} is Coordinator, but address is not 0. Address: {address}.",
+						"invalidCoordinatorDataC": "Device property of entry {entry} is Coordinator, but DataC entry is missing.",
+						"invalidCoordinatorDataN": "Device property of entry {entry} is Coordinator, but entry contains property DataN.",
+						"invalidNodeAddr": "Device property of entry {entry} is Node, but address is 0.",
+						"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
+						"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
+						"invalidDataContent": "Data{device} property of entry {entry} contains non-hexadecimal characters.",
+						"coordinatorRunning": "Restoring coordinator device...",
+						"coordinatorSuccess": "Coordinator device has been successfully restored.",
+						"readFailed": "Failed to read contents of selected file.",
+						"parsingContent": "Reading and parsing content of selected file.",
+						"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
+						"missingProp": "Entry {item} does not contain property {property}.",
+						"missingCoordinator": "Selected file does not contain coordinator device backup data entry.",
+						"invalidSize": "Invalid coordinator backup data size.",
+						"checksumMismatch": "Incorrect coordinator backup data checksum.",
+						"failedMessage": "Restore process not started: {message}"
+					}
 				}
 			},
 			"bondingManager": {
@@ -1670,6 +1765,10 @@
 					"discoveredOnline": "Online discovered device",
 					"unbonded": "Unbonded device"
 				},
+				"restart": {
+					"title": "Restart result",
+					"prompt": "The following node devices could not be restarted:"
+				},
 				"messages": {
 					"clickEnumerate": "Click device icon to enumerate device.",
 					"empty": "No response from IQRF Network",
@@ -1680,7 +1779,9 @@
 					"discoveredFailed": "Failed to retrieve list of discovered devices.",
 					"pingFailed": "Failed to retrieve status of devices.",
 					"indicateFailed": "Failed to indicate coordinator device.",
-					"indicateSuccess": "Coordinator indication request successfully sent."
+					"indicateSuccess": "Coordinator indication request successfully sent.",
+					"restartFailed": "Failed to restart node devices in network.",
+					"restartSuccess": "All node devices in network were successfully restarted."
 				}
 			},
 			"discovery": {
@@ -1700,6 +1801,87 @@
 					"timeout": "The Discovery request has timed out."
 				}
 			},
+			"dpaParams": {
+				"title": "DPA params",
+				"dpaValue": {
+					"title": "DPA Value",
+					"type": "Value type",
+					"types": {
+						"rssi": "RSSI",
+						"voltage": "Supply voltage",
+						"system": "System",
+						"user": "User-specified"
+					},
+					"messages": {
+						"get": "Retrieving current DPA value type...",
+						"getFailed": "Failed to get current DPA value type: {error}",
+						"getSuccess": "Current DPA value type successfully retrieved.",
+						"set": "Setting DPA value type...",
+						"setFailed": "Failed to set DPA value type: {error}",
+						"setSuccess": "DPA value type successfully set.",
+						"timeout": "DPA value request timed out.",
+						"genericError": "DPA value request failed: {error}"
+					},
+					"notes": {
+						"value": "Specifies which type of DPA Value is returned in every DPA request or DPA confirmation message."
+					}
+				},
+				"dpaHops": {
+					"title": "DPA Hops",
+					"requestHops": "Request hops",
+					"responseHops": "Response hops",
+					"optimizeDom": "Optimize DOM",
+					"optimizeDrm": "Optimize DRM",
+					"errors": {
+						"requestHops": "Request hops should be an integer between 1 and 239.",
+						"responseHops": "Response hops should be an integer between 1 and 239."
+					},
+					"messages": {
+						"get": "Retrieving DPA hops...",
+						"getFailed": "Failed to retrieve DPA hops: {error}",
+						"getSuccess": "DPA hops successfully retrieved.",
+						"set": "Setting DPA hops...",
+						"setFailed": "Failed to set DPA hops: {error}",
+						"setSuccess": "DPA hops successfully set.",
+						"timeout": "DPA hops request timed out.",
+						"genericError": "DPA hops request failed: {error}"
+					},
+					"notes": {
+						"hops": "Specifies fixed number of hops used to send a DPA request or response, or an optimization algorithm to compute number of hops.",
+						"dom": "Discovered Optimized Mesh.",
+						"drm": "Discovered Reduced Mesh."
+					}
+				},
+				"frcParams": {
+					"title": "FRC params",
+					"responseTime": "FRC response time",
+					"offlineFrc": "Offline FRC",
+					"responseTimes": {
+						"0": "40 ms",
+						"16": "360 ms",
+						"32": "680 ms",
+						"48": "1320 ms",
+						"64": "2600 ms",
+						"80": "5160 ms",
+						"96": "10280 ms",
+						"112": "20620 ms"
+					},
+					"messages": {
+						"get": "Retrieving FRC params...",
+						"getFailed": "Failed to retrieve FRC params: {error}",
+						"getSuccess": "FRC params successfully retrieved.",
+						"set": "Setting FRC params...",
+						"setFailed": "Failed to set FRC params: {error}",
+						"setSuccess": "FRC params successfully set.",
+						"timeout": "FRC Params request timed out.",
+						"genericError": "FRC params request failed: {error}"
+					},
+					"notes": {
+						"responseTime": "Specifies FRC response time i.e. a maximum time reserved for preparing return FRC value.",
+						"offlineFrc": "Offline FRC takes less time. Enable this feature only for downloading data from Beaming sensors (in Offline mode)."
+					}
+				}
+			},
 			"otaUpload": {
 				"title": "OTA upload",
 				"form": {
@@ -1715,26 +1897,37 @@
 						"node": "Node",
 						"network": "Network"
 					},
-					"hwpidFilter": "Filter nodes by HWPID *",
+					"hwpidFilter": "Filter nodes by HWPID",
 					"nodeAddress": "Node address",
 					"eeepromAddress": "External EEPROM address",
 					"uploadEeprom": "Upload EEPROM data",
 					"uploadEeeprom": "Upload EEEPROM data",
-					"manualUpload": "Manual upload",
-					"automaticUpload": "Automatic upload",
 					"uploadSteps": {
 						"uploadEeeprom": "Step 1: Upload to external EEPROM",
 						"verifyEeeprom": "Step 2: Verify data in external EEPROM",
 						"loadFlash": "Step 3: Load from to external EEPROM to Flash"
 					}
 				},
+				"resultModal": {
+					"verifyTitle": "Verify step results",
+					"loadTitle": "Load step results",
+					"address": "Device address",
+					"success": "Success"
+				},
 				"errors": {
 					"file": "Please select a file to upload.",
+					"notHexFile": "Selected file is not HEX file.",
+					"notIqrfFile": "Selected file is not IQRF plugin file.",
 					"nodeAddress": "Please enter an integer between 1 and 239 for target node address.",
 					"hwpid": "Please enter an integer between 0 and 65535 for device HWPID.",
 					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
+				"notes": {
+					"network": "Note: Network upload does not include Coordinator device. Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version.",
+					"hwpid": "Note: HWPID 65535 includes all devices."
+				},
 				"messages": {
+					"generalError": "An error has occured during OTA upload process: {error}",
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
 					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
@@ -1745,66 +1938,129 @@
 					"invalidFile": "Invalid OTA upload file: {error}",
 					"invalidContent": "An error has occurred during file content parsing: {error}",
 					"invalidMemory": "Invalid memory operation: {error}",
+					"compatibilityError": "Compatibility error: {error}",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",
 					"coordinator": {
-						"uploadStepSuccess": "Upload step has been successfully completed for coordinator.",
-						"verifyStepSuccess": "Verification step has been successfully completed for coordinator.",
-						"loadStepSuccess": "Flash load step has been successfully completed for coordinator.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for coordinator."
+						"uploadStepSuccess": "Data successfully uploaded to coordinator device.",
+						"verifyStepSuccess": "Data successfully verified in coordinator device.",
+						"loadStepSuccess": "Data successfully loaded to flash in coordinator device."
 					},
 					"node": {
-						"uploadStepSuccess": "Upload step has been successfully completed for node at address {address}.",
-						"verifyStepSuccess": "Verification step has been successfully completed for node at address {address}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for node at address {address}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed node at address {address}."
+						"uploadStepSuccess": "Data successfully uploaded to device at address {address}.",
+						"verifyStepSuccess": "Data successfully verified on device at address {address}.",
+						"loadStepSuccess": "Data successfully loaded to flash on device at address {address}."
 					},
 					"network": {
-						"uploadStepSuccess": "Upload step has been successfully completed.",
-						"verifyStepSuccess": "Verification step has been successfully completed for all devices.",
-						"verifyStepHwpidSuccess": "Verification step has been successfully completed for all devices with HWPID {hwpid}.",
-						"verifyStepHwpidPartialSuccess": "Verification has been completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"verifyStepPartialSuccess": "Verification step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"loadStepSuccess": "Flash load step has been successfully completed for all devices.",
-						"loadStepHwpidSuccess": "Flash load step has been successfully completed for all devices with HWPID {hwpid}.",
-						"loadStepHwpidPartialSuccess": "Flash load step has been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"loadStepPartialSuccess": "Flash load step has been successfully completed for all online devices. Offline devices: {devices}.",
-						"runAllSuccess": "All OTA upload steps have been successfully completed for all devices.",
-						"runAllHwpidSuccess": "All OTA upload steps have been successfully completed for all devices with HWPID {hwpid}.",
-						"runAllHwpidPartialSuccess": "All OTA upload steps have been successfully completed for all online devices with HWPID {hwpid}. Offline devices: {devices}.",
-						"runAllPartialSuccess": "All OTA upload steps have been successfully completed for all online devices. Offline devices: {devices}."
+						"uploadStepSuccess": "Data successfully uploaded to network devices.",
+						"verifyStepSuccess": "Data successfully verified in network devices.",
+						"loadStepSuccess": "Data successfully loaded to flash of network devices."
 					},
 					"uploadStepFail": "An error has occurred during the upload step.",
 					"verifyStepFail": "An error has occurred during the verification step.",
 					"loadStepFail": "An error has occurred during the flash load step."
 				}
 			},
-			"messages": {
-				"submit": {
-					"autoNetwork": {
-						"success": "The AutoNetwork process has finished successfully.",
-						"failure": "An error occurred during the AutoNetwork process."
+			"maintenance": {
+				"title": "Maintenance",
+				"frcResponseTime": {
+					"title": "FRC Response Time",
+					"command": "FRC Command",
+					"commands": {
+						"iqrf2bits": "IQRF Standard 2-bits FRC",
+						"iqrf1byte": "IQRF Standard 1-byte FRC",
+						"iqrf2byte": "IQRF Standard 2-byte FRC",
+						"iqrf4byte": "IQRF Standard 4-byte FRC",
+						"user2bits": "User 2-bits FRC",
+						"user1byte": "User 1-byte FRC",
+						"user2byte": "User 2-byte FRC",
+						"user4byte": "User 4-byte FRC"
 					},
-					"invalidMessage": "Invalid request.",
-					"timeout": "Request timed out."
-				},
-				"invalid": {
-					"autoNetwork": {
-						"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a space."
+					"showResult": "Show last result",
+					"modal": {
+						"title": "FRC Response Time Result",
+						"prompt": "Do you wish to set recommended FRC response time?",
+						"command": "FRC command:",
+						"inaccessibleNodes": "Inaccessible nodes:",
+						"unhandledNodes": "Nodes ignored event:",
+						"current": "Current FRC response time (ms):",
+						"recommended": "Recommended FRC response time (ms):",
+						"fields": {
+							"address": "Node address",
+							"responded": "Responded",
+							"handled": "Event handled",
+							"responseTime": "FRC response time (ms)"
+						},
+						"notAvailable": "N/A"
+					},
+					"messages": {
+						"setProgress": "Setting FRC response time...",
+						"setTimeout": "Set FRC response time request timed out.",
+						"setFailed": "Failed to set FRC response time.",
+						"setSuccess": "FRC response time successfully set.",
+						"progress": "Checking FRC response time...\nThis process may take several minutes for large networks.",
+						"timeout": "Request to determine best FRC response time timed out.",
+						"failed": "Failed to determine best FRC response time: {error}"
 					}
 				},
-				"autoNetwork": {
-					"actionRetries": "Please enter an integer between 0 and 3 for number retry DPA transactions.",
-					"networks": "Please enter an integer between 1 and 50 for number of networks.",
-					"network": "Please enter an integer between 1 and 50 for network number.",
-					"waves": "Please enter an integer between 1 and 127 for maximum number of waves.",
-					"emptyWaves": "Please enter an integer between 1 and 127 for maximum number of consecutive empty waves.",
-					"totalNodes": "Please enter an integer between 1 and 239 for total number of nodes.",
-					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes.",
-					"statusTotalNodes": "Total number of nodes in network: ",
-					"statusAddedNodes": "Number of nodes added in last wave: ",
-					"statusWave": "Wave "
+				"rfSignal": {
+					"title": "RF Signal",
+					"options": {
+						"coordinator": "Coordinator",
+						"allNodes": "All nodes"
+					},
+					"rfChannel": "RF channel",
+					"rxFilter": "RX filter",
+					"timeLabel": "Measurement time",
+					"time": "{time} ms",
+					"test": "Test",
+					"showResults": "Show last results",
+					"errors": {
+						"rxFilter": "RX Filter has to be in range from 0 to 64."
+					},
+					"modal": {
+						"title": "RF Signal Test Results",
+						"address": "Device address",
+						"online": "Online",
+						"counter": "Count"
+					},
+					"messages": {
+						"progress": "Testing RF Signal...\nThis process may take several minutes for large networks.",
+						"noNodes": "RF Signal test failed, no bonded nodes in network.",
+						"failed": "RF Signal test failed."
+					}
+				},
+				"networkIssues": {
+					"title": "Network Issues",
+					"options": {
+						"inconsistentMidsInCoordinator": "Inconsistent MIDs in Coordinator",
+						"duplicatedAddresses": "Duplicated addresses",
+						"uselessPrebondedNodes": "Useless prebonded nodes"
+					},
+					"resolve": "Resolve",
+					"messages": {
+						"inconsistentMids": "Resolving inconsistent MIDs in coordinator...\nThis process may take several minutes for large networks.",
+						"inconsistentMidsFailed": "Failed to resolve inconsistent MIDs in coordinator.",
+						"inconsistentMidsSuccess": "Inconsistent MIDs in coordinator successfully resolved.",
+						"duplicatedAddresses": "Resolving duplicated addresses...\nThis process may take several minutes for large networks.",
+						"duplicatedAddressesFailed": "Failed to resolve duplicated addresses.",
+						"duplicatedAddressesSuccess": "Duplicated addresses successfully resolved.",
+						"prebondedNodes": "Resolving useless prebonded nodes...",
+						"prebondedNodesFailed": "Failed to resolve useless prebonded nodes.",
+						"prebondedNodesSuccess": "Useless prebonded nodes successfully resolved."
+					},
+					"help": {
+						"inconsistentMidsInCoordinator": "Sets MIDs in coordinator to MIDs of the bonded nodes. This may occur during upgrade of OS or DPA.",
+						"duplicatedAddresses": "Unbonds nodes with MIDs that mismatch MIDs in coordinator memory. This may occur in some situations during Autonetwork.",
+						"uselessPrebondedNodes": "Unbonds ramaining nodes with the universal address used in prebonding, from the network. This may occur during Autonetwork when creating overlapping network."
+					}
+				}
+			},
+			"messages": {
+				"submit": {
+					"invalidMessage": "Invalid request.",
+					"timeout": "Request timed out."
 				},
 				"versionInvalid": "Please upgrade to IQRF Gateway Daemon version 2.3.0 or higher to use this service.",
 				"versionMissing": "Could not retrieve version of IQRF Gateway Daemon.",

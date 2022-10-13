@@ -14,26 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Bonding methods
+ * DPA value action
  */
-export enum BondingMethod {
-	LOCAL = 'local',
-	SMARTCONNECT = 'smartconnect',
-	NFC = 'nfc'
+export enum DpaParamAction {
+	GET = 'get',
+	SET = 'set'
 }
 
 /**
- * Bonding targers
+ * DPA value type
  */
-export enum BondingTarget {
-	DEVICE = 'device',
-	SERVICETOOL = 'service'
+export enum DpaValueType {
+	RSSI = 0,
+	SUPPLY_VOLTAGE = 1,
+	SYSTEM = 2,
+	USER = 3
 }
 
 /**
- * Bonding tools
+ * FRC response time
  */
-export enum Tool {
-	NFC = 'nfc'
+export enum FrcResponseTime {
+	MS40 = 0,
+	MS360 = 16,
+	MS680 = 32,
+	MS1320 = 48,
+	MS2600 = 64,
+	MS5160 = 80,
+	MS10280 = 96,
+	MS20620 = 112
 }

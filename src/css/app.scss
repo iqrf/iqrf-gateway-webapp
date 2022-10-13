@@ -180,3 +180,11 @@
 .vdatetime-year-picker__item--selected {
 	color: var(--primary) !important;
 }
+
+.modal-table {
+	width: 100%;
+	table-layout: fixed;
+	td {
+		text-align: right;
+	}
+}

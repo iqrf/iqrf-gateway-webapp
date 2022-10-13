@@ -14,32 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import VueI18n from 'vue-i18n';
-import {FileFormat} from '@/iqrfNet/fileFormat';
-import {SecurityFormat} from '@/iqrfNet/securityFormat';
 
 /**
- * Coreui DataTable field interface
+ * Bonding methods
  */
-export interface IField {
-	key: string
-	label: VueI18n.TranslateResult
-	filter?: boolean
-	sorter?: boolean
+export enum BondingMethod {
+	LOCAL = 'local',
+	SMARTCONNECT = 'smartconnect',
+	NFC = 'nfc',
 }
 
 /**
- * Coreui select component option interface
+ * Bonding targers
  */
-export interface IOption {
-	value: FileFormat|SecurityFormat|string|number|boolean|null
-	label: VueI18n.TranslateResult|string
-	props?: IProps
+export enum BondingTarget {
+	DEVICE = 'device',
+	SERVICETOOL = 'service',
 }
 
 /**
- * Coreui shared properties
+ * Bonding tools
  */
-export interface IProps {
-	description: string
+export enum BondingTool {
+	NFC = 'nfc',
 }

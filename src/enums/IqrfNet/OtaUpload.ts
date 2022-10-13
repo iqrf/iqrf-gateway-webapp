@@ -14,32 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import VueI18n from 'vue-i18n';
-import {FileFormat} from '@/iqrfNet/fileFormat';
-import {SecurityFormat} from '@/iqrfNet/securityFormat';
 
 /**
- * Coreui DataTable field interface
+ * IQMESH OTA upload actions enum
  */
-export interface IField {
-	key: string
-	label: VueI18n.TranslateResult
-	filter?: boolean
-	sorter?: boolean
-}
-
-/**
- * Coreui select component option interface
- */
-export interface IOption {
-	value: FileFormat|SecurityFormat|string|number|boolean|null
-	label: VueI18n.TranslateResult|string
-	props?: IProps
-}
-
-/**
- * Coreui shared properties
- */
-export interface IProps {
-	description: string
+export enum OtaUploadAction {
+	LOAD = 'Load',
+	UPLOAD = 'Upload',
+	VERIFY = 'Verify',
 }
