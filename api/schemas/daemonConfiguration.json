@@ -74,10 +74,6 @@
 			"title": "iqrf::JsonSplitter"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__LegacyApiSupport.json",
-			"title": "iqrf::LegacyApiSupport"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MonitorService.json",
 			"title": "iqrf::MonitorService"
 		},
@@ -88,10 +84,6 @@
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MqttMessaging.json",
 			"title": "iqrf::MqttMessaging"
-		},
-		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__NativeUploadService.json",
-			"title": "iqrf::NativeUploadService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__OtaUploadService.json",

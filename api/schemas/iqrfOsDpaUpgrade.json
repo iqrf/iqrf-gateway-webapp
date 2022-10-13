@@ -8,9 +8,7 @@
 		"dpa",
 		"interface",
 		"fromBuild",
-		"fromVersion",
 		"toBuild",
-		"toVersion",
 		"trMcuType"
 	],
 	"properties": {
@@ -36,23 +34,11 @@
 			"title": "Current IQRF OS build",
 			"example": "08C8"
 		},
-		"fromVersion": {
-			"$id": "#/properties/fromVersion",
-			"type": "string",
-			"title": "Current IQRF OS version",
-			"example": "403"
-		},
 		"toBuild": {
 			"$id": "#/properties/toBuild",
 			"type": "string",
 			"title": "Target IQRF OS build",
 			"example": "08D5"
-		},
-		"toVersion": {
-			"$id": "#/properties/toVersion",
-			"type": "string",
-			"title": "Target IQRF OS version",
-			"example": "404"
 		},
 		"trMcuType": {
 			"$id": "#/properties/trMcuType",

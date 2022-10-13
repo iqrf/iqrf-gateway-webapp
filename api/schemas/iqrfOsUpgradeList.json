@@ -3,14 +3,6 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json",
 	"type": "array",
 	"additionalItems": false,
-	"example": [{
-		"osBuild": "08D5",
-		"dpa": "4.15",
-		"dpaRaw": "0415",
-		"notes": "IQRF OS 4.04D, DPA 4.15",
-		"downloadPath": "https://repository.iqrfalliance.org/download/dpa/4.15",
-		"osVersion": "404"
-	}],
 	"items": [
 		{
 			"$id": "#/items",
@@ -18,49 +10,121 @@
 			"title": "OS Upgrade",
 			"required": [
 				"dpa",
-				"dpaRaw",
-				"osBuild",
-				"osVersion",
-				"notes",
-				"downloadPath"
+				"os",
+				"notes"
 			],
 			"additionalProperties": false,
 			"properties": {
 				"dpa": {
 					"$id": "#/items/properties/dpa",
-					"type": "string",
-					"title": "DPA version",
-					"example": "4.15"
+					"type": "object",
+					"title": "DPA",
+					"required": [
+						"version",
+						"attributes",
+						"downloadPath"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"attributes": {
+							"$id": "#/items/properties/dpa/properties/attributes",
+							"type": "object",
+							"title": "DPA version attributes",
+							"required": [
+								"beta",
+								"obsolete"
+							],
+							"additionalProperties": false,
+							"properties": {
+								"beta": {
+									"$id": "#/items/properties/dpa/properties/attributes/properties/beta",
+									"type": "boolean",
+									"title": "DPA beta version",
+									"example": true
+								},
+								"obsolete": {
+									"$id": "#/items/properties/dpa/properties/attributes/properties/obsolete",
+									"type": "boolean",
+									"title": "DPA obsolete version",
+									"example": false
+								}
+							}
+						},
+						"downloadPath": {
+							"$id": "#/items/properties/downloadPath",
+							"type": "string",
+							"title": "Download URL",
+							"example": "https://repository.iqrfalliance.org/download/dpa/4.16"
+						},
+						"version": {
+							"$id": "#/items/properties/dpa/properties/version",
+							"type": "string",
+							"title": "DPA version",
+							"example": "4.16"
+						}
+					}
 				},
-				"dpaRaw": {
-					"$id": "#/items/properties/dpaRaw",
-					"type": "string",
-					"title": "DPA raw version",
-					"example": "0415"
-				},
-				"osBuild": {
-					"$id": "#/items/properties/osBuild",
-					"type": "string",
-					"title": "OS build",
-					"example": "08D5"
-				},
-				"osVersion": {
-					"$id": "#/items/properties/osVersion",
-					"type": "string",
-					"title": "OS version",
-					"example": "404"
+				"os": {
+					"$id": "#/items/properties/os",
+					"type": "object",
+					"title": "IQRF OS",
+					"required": [
+						"attributes",
+						"downloadPath",
+						"build",
+						"version"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"attributes": {
+							"$id": "#/items/properties/os/properties/attributes",
+							"type": "object",
+							"title": "IQRF OS version attributes",
+							"required": [
+								"beta",
+								"obsolete"
+							],
+							"additionalProperties": false,
+							"properties": {
+								"beta": {
+									"$id": "#/items/properties/os/properties/attributes/properties/beta",
+									"type": "boolean",
+									"title": "IQRF OS beta version",
+									"example": true
+								},
+								"obsolete": {
+									"$id": "#/items/properties/os/properties/attributes/properties/obsolete",
+									"type": "boolean",
+									"title": "IQRF OS obsolete version",
+									"example": false
+								}
+							}
+						},
+						"build": {
+							"$id": "#/items/properties/os/properties/build",
+							"type": "string",
+							"title": "IQRF OS build",
+							"example": "08D7"
+						},
+						"downloadPath": {
+							"$id": "#/items/properties/os/properties/downloadPath",
+							"type": "string",
+							"title": "Download URL",
+							"example": "https://repository.iqrfalliance.org/download/iqrfos/08D7"
+						},
+						"version": {
+							"$id": "#/items/properties/os/properties/version",
+							"type": "string",
+							"title": "IQRF OS version",
+							"example": "4.05D"
+						}
+					}
 				},
 				"notes": {
 					"$id": "#/items/properties/notes",
 					"type": "string",
 					"title": "Upgrade notes",
-					"example": "IQRF OS 4.04D, DPA 4.15"
-				},
-				"downloadPath": {
-					"$id": "#/items/properties/downloadPath",
-					"type": "string",
-					"title": "Download URL",
-					"example": "downloadPath: https://repository.iqrfalliance.org/download/dpa/4.15"
+					"example": "IQRF OS 4.05D, DPA 4.16"
 				}
 			}
 		}
