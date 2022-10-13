@@ -28,12 +28,18 @@ limitations under the License.
 						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.backupRestore")'>
+						<CTab :title='$t("iqrfnet.networkManager.dpaParams.title")'>
+							<DpaParams />
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.backupRestore.title")'>
 							<Backup />
 							<Restore />
 						</CTab>
-						<CTab v-if='daemon236' :title='$t("iqrfnet.networkManager.otaUpload.title")'>
+						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
 							<OtaUpload />
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.maintenance.title")'>
+							<Maintenance ref='maintenance' />
 						</CTab>
 					</CTabs>
 				</CCard>
@@ -46,19 +52,29 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
-import {mapGetters} from 'vuex';
-import {versionHigherEqual} from '@/helpers/versionChecker';
-import Backup from '@/components/IqrfNet/Backup.vue';
-import Restore from '@/components/IqrfNet/Restore.vue';
-import BondingManager from '@/components/IqrfNet/BondingManager.vue';
-import DevicesInfo from '@/components/IqrfNet/DevicesInfo.vue';
-import DiscoveryManager from '@/components/IqrfNet/DiscoveryManager.vue';
-import AutoNetwork from '@/components/IqrfNet/AutoNetwork.vue';
-import OtaUpload from '@/components/IqrfNet/OtaUpload.vue';
+
+import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork/AutoNetwork.vue';
+import Backup from '@/components/IqrfNet/NetworkManager/Backup/Backup.vue';
+import BondingManager from '@/components/IqrfNet/NetworkManager/Iqmesh/BondingManager.vue';
+import DevicesInfo from '@/components/IqrfNet/NetworkManager/Devices/DevicesInfo.vue';
+import DiscoveryManager from '@/components/IqrfNet/NetworkManager/Iqmesh/DiscoveryManager.vue';
+import DpaParams from '@/components/IqrfNet/NetworkManager/DpaParams/DpaParams.vue';
+import Maintenance from '@/components/IqrfNet/NetworkManager/Maintenance/Maintenance.vue';
+import OtaUpload from '@/components/IqrfNet/NetworkManager/OtaUpload/OtaUpload.vue';
+import Restore from '@/components/IqrfNet/NetworkManager/Backup/Restore.vue';
+
+import {compare} from 'compare-versions';
+
+import IqrfNetService from '@/services/IqrfNetService';
+
+import {MutationPayload} from 'vuex';
 import {ToastOptions} from 'vue-toast-notification';
 
+/**
+ * Network manager page component
+ */
 @Component({
 	components: {
 		CCard,
@@ -69,48 +85,109 @@ import {ToastOptions} from 'vue-toast-notification';
 		BondingManager,
 		DevicesInfo,
 		DiscoveryManager,
+		DpaParams,
+		Maintenance,
 		OtaUpload,
 		Restore,
-	},
-	computed: {
-		...mapGetters({
-			daemonVersion: 'daemonClient/getVersion',
-		}),
 	},
 	metaInfo: {
 		title: 'iqrfnet.networkManager.title',
 	},
 })
-
-/**
- * Network manager page component
- */
 export default class NetworkManager extends Vue {
 	/**
-	 * @const {number} activeTab Default active tab
+	 * @var {number} activeTab Default active tab
 	 */
 	private activeTab = 0;
 
 	/**
-	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
+	 * @var {string} msgId Daemon API message ID
 	 */
-	private daemon236 = false;
+	private msgId = '';
 
 	/**
-	 * Daemon version computed property watcher to re-render elements dependent on version
+	 * Mutation handler
 	 */
-	@Watch('daemonVersion')
-	private updateDaemonVersion(): void {
-		if (versionHigherEqual('2.3.6')) {
-			this.daemon236 = true;
+	private unsubscribe: CallableFunction = () => {return;};
+
+	/*
+	 * Watch handler
+	 */
+	private unwatch: CallableFunction = () => {return;};
+
+	/**
+	 * Registers mutation handling
+	 */
+	created(): void {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				this.handleEnumeration(mutation.payload.data);
+			}
+		});
+	}
+
+	/**
+	 * Enumerates coordinator device for additional form configuration
+	 */
+	mounted(): void {
+		if (this.$store.getters.isSocketConnected) {
+			this.enumerateCoordinator();
+		} else {
+			this.unwatch = this.$store.watch(
+				(_state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.enumerateCoordinator();
+						this.unwatch();
+					}
+				}
+			);
 		}
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Unregisters mutation handling
 	 */
-	mounted(): void {
-		this.updateDaemonVersion();
+	beforeDestroy(): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+		this.unsubscribe();
+		this.unwatch();
+	}
+
+	/**
+	 * Enumerates coordinator device
+	 */
+	private enumerateCoordinator(): void {
+		IqrfNetService.enumerateDevice(0, 60000)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles enumeration Daemon API responses
+	 * @param response Response
+	 */
+	private handleEnumeration(response): void {
+		if (response.status !== 0) {
+			return;
+		}
+		const rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
+		this.setRfChannelRules(rfBand);
+		const os = response.rsp.osRead.osBuild;
+		if (parseInt(os, 16) < 0x08d7) {
+			return;
+		}
+		const dpa = response.rsp.peripheralEnumeration.dpaVer;
+		if (compare(dpa, '4.16', '<')) {
+			return;
+		}
+		this.enableBondNfc();
 	}
 
 	/**
@@ -121,5 +198,19 @@ export default class NetworkManager extends Vue {
 		(this.$refs.devs as DevicesInfo).getBondedDevices(message);
 	}
 
+	/**
+	 * Passes RF band to the RF Signal Test component
+	 * @param {number} rfBand RF Band
+	 */
+	private setRfChannelRules(rfBand: number): void {
+		(this.$refs.maintenance as Maintenance).setRfChannelRules(rfBand);
+	}
+
+	/**
+	 * Enables NFC bonding in bonding manager
+	 */
+	private enableBondNfc(): void {
+		(this.$refs.bonding as BondingManager).enableBondNfc();
+	}
 }
 </script>

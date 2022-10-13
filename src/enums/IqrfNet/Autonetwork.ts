@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * IQMESH OTA upload actions enum
+ * Autonetwork stop conditions node type enum
  */
-export enum OtaUploadAction {
-	LOAD = 'Load',
-	UPLOAD = 'Upload',
-	VERIFY = 'Verify',
+export enum StopConditionNode {
+	TOTAL = 'total',
+	NEW = 'new',
 }

@@ -22,31 +22,31 @@ limitations under the License.
 				<tbody>
 					<tr>
 						<td class='table-toprow'>
-							<CIcon class='text-info' :content='icons.coordinator' />
+							<CIcon class='text-info' :content='cilHome' />
 							{{ $t('forms.fields.coordinator') }}
 						</td>
 						<td class='table-toprow'>
-							<CIcon class='text-danger' :content='icons.unbonded' />
+							<CIcon class='text-danger' :content='cilX' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-info' :content='icons.bonded' />
+							<CIcon class='text-info' :content='cilCheckAlt' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 						</td>
 						<td>
-							<CIcon class='text-info' :content='icons.discovered' />
+							<CIcon class='text-info' :content='cilSignalCellular4' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-success' :content='icons.bonded' />
+							<CIcon class='text-success' :content='cilCheckAlt' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 						</td>
 						<td>
-							<CIcon class='text-success' :content='icons.discovered' />
+							<CIcon class='text-success' :content='cilSignalCellular4' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 						</td>
 					</tr>
@@ -59,12 +59,20 @@ limitations under the License.
 					@click='indicateCoordinator'
 				>
 					{{ $t('forms.indicateCoordinator') }}
-				</CButton> <CButton
+				</CButton>
+				<CButton
 					class='w-100'
 					color='primary'
-					@click='frcPing'
+					@click='ping'
 				>
 					{{ $t('forms.pingNodes') }}
+				</CButton>
+				<CButton
+					class='w-100'
+					color='danger'
+					@click='restart'
+				>
+					{{ $t('forms.restartNodes') }}
 				</CButton>
 			</CButtonGroup>
 			<div v-if='devices.length !== 0' class='table-responsive'>
@@ -90,22 +98,28 @@ limitations under the License.
 					</tbody>
 				</table>
 			</div>
-			<CAlert v-else color='danger'>
+			<CAlert
+				v-else
+				color='danger'
+			>
 				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
 			</CAlert>
 		</CCardBody>
+		<RestartErrorModal ref='restart' />
 	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
-import DeviceIcon from './DeviceIcon.vue';
+import DeviceIcon from '@/components/IqrfNet/NetworkManager/Devices/DeviceIcon.vue';
+import RestartErrorModal from '@/components/IqrfNet/NetworkManager/Devices/RestartErrorModal.vue';
 
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {ToastOptions} from 'vue-toast-notification';
 
 import Device from '@/helpers/Device';
+import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import IqrfNetService from '@/services/IqrfNetService';
 
 import {MutationPayload} from 'vuex';
@@ -120,28 +134,24 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CCardHeader,
 		CIcon,
 		DeviceIcon,
-	}
+		RestartErrorModal,
+	},
+	data: () => ({
+		cilCheckAlt,
+		cilHome,
+		cilSignalCellular4,
+		cilX,
+	}),
 })
 
 /**
  * Card of devices in network for Network Manager
  */
 export default class DevicesInfo extends Vue {
-
 	/**
 	 * @var {Array<Device>} devices Array of devices in network
 	 */
 	private devices: Array<Device> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		coordinator: cilHome,
-		bonded: cilCheckAlt,
-		discovered: cilSignalCellular4,
-		unbonded: cilX
-	};
 
 	/**
 	 * @var {boolean} manual Manual FRC ping request
@@ -184,8 +194,10 @@ export default class DevicesInfo extends Vue {
 					this.parseBondedDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
 					this.parseDiscoveredDevices(mutation.payload);
-				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
-					this.parseFrcPing(mutation.payload);
+				} else if (mutation.payload.mType === 'iqmeshNetwork_Ping') {
+					this.handlePing(mutation.payload.data);
+				} else if (mutation.payload.mType === 'iqmeshNetwork_Restart') {
+					this.handleRestart(mutation.payload.data);
 				} else if (mutation.payload.mType === 'iqrfRaw') {
 					this.handleIndicate(mutation.payload);
 				} else if (mutation.payload.mType === 'messageError') {
@@ -264,30 +276,10 @@ export default class DevicesInfo extends Vue {
 	}
 
 	/**
-	 * Performs DiscoveredDevices api call
-	 */
-	private getDiscoveredDevices(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getDiscovered').toString());
-		IqrfNetService.getDiscovered(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.discoveredFailed'))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Performs FRC ping
-	 */
-	private frcPing(): void {
-		this.$store.dispatch('spinner/show', {timeout: 90000});
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getOnline').toString());
-		IqrfNetService.ping(this.buildOptions(90000, 'iqrfnet.networkManager.devicesInfo.messages.pingFailed'))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
 	 * Handles BondedDevices api call response
 	 * @param {any} response Daemon api response
 	 */
-	private parseBondedDevices(response: any): void {
+	private parseBondedDevices(response): void {
 		switch (response.data.status) {
 			case 0: {
 				this.devices.forEach((item: Device) => {
@@ -318,10 +310,20 @@ export default class DevicesInfo extends Vue {
 	}
 
 	/**
-	 * Handles DiscoveredDevices api call response
-	 * @param {any} response Daemon api response
+	 * Performs DiscoveredDevices api call
 	 */
-	private parseDiscoveredDevices(response: any): void {
+	private getDiscoveredDevices(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getDiscovered').toString());
+		IqrfNetService.getDiscovered(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.discoveredFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles DiscoveredDevices api call response
+	 * @param response Daemon api response
+	 */
+	private parseDiscoveredDevices(response): void {
 		switch (response.data.status) {
 			case 0: {
 				this.devices.forEach((item: Device) => {
@@ -331,7 +333,7 @@ export default class DevicesInfo extends Vue {
 				discovered.forEach((item: number) => {
 					this.devices[item].discovered = true;
 				});
-				this.frcPing();
+				this.ping();
 				break;
 			}
 			default:
@@ -343,37 +345,38 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
+
 	/**
-	 * Handles FRC ping api call response
-	 * @param {any} response Daemon api response
+	 * Performs Ping API call
 	 */
-	private parseFrcPing(response: any): void {
-		switch(response.data.status) {
-			case 0: {
-				const online = response.data.rsp.result.frcData.slice(0, 30);
-				let k = 0;
-				online.forEach((item: number) => {
-					for (let i = 0; i < 8; ++i) {
-						const device = (item & (1 << i)) >> i;
-						this.devices[k++].online = (device === 1);
-					}
-				});
-				if (this.manual) {
-					this.manual = false;
-					this.$forceUpdate();
-				}
-				if (this.toastMessage !== null) {
-					this.$toast.open(this.toastMessage);
-					this.toastMessage = null;
-				}
-				break;
+	private ping(): void {
+		this.$store.dispatch('spinner/show', {timeout: 90000});
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.devicesInfo.messages.getOnline').toString());
+		IqmeshNetworkService.ping(this.buildOptions(90000, 'iqrfnet.networkManager.devicesInfo.messages.pingFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles IQMESH Ping API call response
+	 * @param response Response
+	 */
+	private handlePing(response): void {
+		if (response.status === 0) {
+			response.rsp.pingResult.forEach((device) => {
+				this.devices[device.address].online = device.result;
+			});
+			if (this.toastMessage !== null) {
+				this.$toast.open(this.toastMessage);
+				this.toastMessage = null;
 			}
-			default:
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.devicesInfo.messages.pingFailed')
-						.toString()
-				);
-				break;
+		} else if (response.status === 1003) {
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.devicesInfo.messages.pingFailed').toString()
+			);
 		}
 	}
 
@@ -381,7 +384,7 @@ export default class DevicesInfo extends Vue {
 	 * Indicates coordinator
 	 */
 	private indicateCoordinator(): void {
-		this.$store.dispatch('spinner/show', 5000);
+		this.$store.dispatch('spinner/show', {timeout: 5000});
 		IqrfNetService.indicateCoordinator(this.buildOptions(5000, 'iqrfnet.networkManager.devicesInfo.messages.indicateFailed'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -390,7 +393,7 @@ export default class DevicesInfo extends Vue {
 	 * Handles indicate request response
 	 * @param response Daemon API response
 	 */
-	private handleIndicate(response: any): void {
+	private handleIndicate(response): void {
 		if (response.data.status === 0) {
 			this.$toast.success(
 				this.$t('iqrfnet.networkManager.devicesInfo.messages.indicateSuccess').toString()
@@ -398,6 +401,43 @@ export default class DevicesInfo extends Vue {
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.networkManager.devicesInfo.messages.indicateFailed').toString()
+			);
+		}
+	}
+
+	/**
+	 * Restarts nodes in network
+	 */
+	private restart(): void {
+		this.$store.dispatch('spinner/show', {timeout: 90000});
+		IqrfNetService.restart(0xFFFF, this.buildOptions(90000, 'iqrfnet.networkManager.devicesInfo.messages.restartFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles restart request response
+	 * @param response Daemon API response
+	 */
+	private handleRestart(response): void {
+		if (response.status === 0) {
+			if (response.rsp.inaccessibleNodesNr > 0) {
+				const nodes: Array<number> = response.rsp.restartResult
+					.filter(e => !e.result)
+					.map(n => {return n.address;});
+				(this.$refs.restart as RestartErrorModal).showModal(nodes);
+			} else {
+				this.$toast.success(
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.restartSuccess').toString()
+				);
+			}
+			return;
+		} else if (response.status === 1003) {
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.devicesInfo.messages.restartFailed').toString()
 			);
 		}
 	}
