@@ -17,23 +17,23 @@ limitations under the License.
 <template>
 	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
 		<CCardBody>
-			<h4>{{ $t('iqrfnet.networkManager.backup.title') }}</h4><br>
+			<h4>{{ $t('iqrfnet.networkManager.backupRestore.backup.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='backupDevice'>
+				<CForm>
 					<CSelect
 						:value.sync='target'
-						:label='$t("iqrfnet.networkManager.backup.form.target")'
+						:label='$t("iqrfnet.networkManager.backupRestore.backup.form.target")'
 						:options='selectOptions'
-						:placeholder='$t("iqrfnet.networkManager.backup.form.messages.select")'
+						:placeholder='$t("iqrfnet.networkManager.backupRestore.backup.form.messages.select")'
 					/>
 					<ValidationProvider
-						v-if='target === "node"'
+						v-if='target === NetworkTarget.NODE'
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
-							integer: $t("iqrfnet.networkManager.backup.form.messages.address"),
-							between: $t("iqrfnet.networkManager.backup.form.messages.address"),
-							required: $t("iqrfnet.networkManager.backup.form.messages.address"),
+							integer: $t("iqrfnet.networkManager.backupRestore.backup.form.messages.address"),
+							between: $t("iqrfnet.networkManager.backupRestore.backup.form.messages.address"),
+							required: $t("iqrfnet.networkManager.backupRestore.backup.form.messages.address"),
 						}'
 					>
 						<CInput
@@ -47,9 +47,9 @@ limitations under the License.
 						/>
 					</ValidationProvider>
 					<CButton
-						type='submit'
 						color='primary'
 						:disabled='invalid'
+						@click='backupDevice'
 					>
 						{{ $t('forms.backup') }}
 					</CButton>
@@ -67,15 +67,15 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '@/enums/IqrfNet/network';
 import {saveAs} from 'file-saver';
-import {versionHigherEqual} from '@/helpers/versionChecker';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqrfNetService from '@/services/IqrfNetService';
 import VersionService from '@/services/VersionService';
 
 import {AxiosResponse} from 'axios';
 import {IBackupData} from '@/interfaces/iqmeshServices';
+import {IOption} from '@/interfaces/coreui';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
@@ -87,12 +87,20 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		NetworkTarget,
+	}),
 })
 
 /**
  * IQMESH Backup component card
  */
 export default class Backup extends Vue {
+	/**
+	 * @var {string} msgId Daemon api message id
+	 */
+	private msgId = '';
+
 	/**
 	 * @var {number} address Address of device to backup
 	 */
@@ -104,11 +112,6 @@ export default class Backup extends Vue {
 	private deviceData: Array<IBackupData> = [];
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
-	 */
-	private msgId: string|null = null;
-
-	/**
 	 * @var {Array<number>} offlineDevices Array of devices offline during the backup process
 	 */
 	private offlineDevices: Array<number> = [];
@@ -116,18 +119,18 @@ export default class Backup extends Vue {
 	/**
 	 * @var {Array<unknown>} selectOptions CoreUI form select options
 	 */
-	private selectOptions: Array<unknown> = [
+	private selectOptions: Array<IOption> = [
 		{
 			value: NetworkTarget.COORDINATOR,
-			label: this.$t('forms.fields.coordinator'),
+			label: this.$t('forms.fields.coordinator').toString(),
 		},
 		{
 			value: NetworkTarget.NODE,
-			label: this.$t('iqrfnet.networkManager.backup.form.node'),
+			label: this.$t('iqrfnet.networkManager.backupRestore.backup.form.node').toString(),
 		},
 		{
 			value: NetworkTarget.NETWORK,
-			label: this.$t('iqrfnet.networkManager.backup.form.network'),
+			label: this.$t('iqrfnet.networkManager.backupRestore.backup.form.network').toString(),
 		}
 	];
 
@@ -135,11 +138,6 @@ export default class Backup extends Vue {
 	 * @var {string} target Backup target type
 	 */
 	private target = NetworkTarget.COORDINATOR;
-
-	/**
-	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
-	 */
-	private daemon236 = false;
 
 	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
@@ -188,7 +186,6 @@ export default class Backup extends Vue {
 		VersionService.getWebappVersionRest()
 			.then((response: AxiosResponse) => this.webappVersion = response.data.version)
 			.catch(() => this.webappVersion = '');
-		this.daemon236 = versionHigherEqual('2.3.6');
 	}
 
 	/**
@@ -216,16 +213,16 @@ export default class Backup extends Vue {
 		if (this.offlineDevices.length === 0) {
 			let message: string;
 			if (this.target === NetworkTarget.COORDINATOR) {
-				message = this.$t('iqrfnet.networkManager.backup.messages.coordinatorSuccess').toString();
+				message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.coordinatorSuccess').toString();
 			} else if (this.target === NetworkTarget.NODE) {
-				message = this.$t('iqrfnet.networkManager.backup.messages.nodeSuccess', {deviceAddr: this.address}).toString();
+				message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.nodeSuccess', {deviceAddr: this.address}).toString();
 			} else {
-				message = this.$t('iqrfnet.networkManager.backup.messages.networkSuccess').toString();
+				message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.networkSuccess').toString();
 			}
 			this.$toast.success(message);
 		} else {
 			this.$toast.info(
-				this.$t('iqrfnet.networkManager.backup.messages.networkPartialSuccess', {devices: this.offlineDevices.join(', ')}).toString()
+				this.$t('iqrfnet.networkManager.backupRestore.backup.messages.networkPartialSuccess', {devices: this.offlineDevices.join(', ')}).toString()
 			);
 		}
 	}
@@ -288,11 +285,11 @@ export default class Backup extends Vue {
 		const options = new DaemonMessageOptions(null);
 		let message: string;
 		if (this.target === NetworkTarget.COORDINATOR) {
-			message = this.$t('iqrfnet.networkManager.backup.messages.coordinatorRunning').toString();
+			message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.coordinatorRunning').toString();
 		} else if (this.target === NetworkTarget.NODE) {
-			message = this.$t('iqrfnet.networkManager.backup.messages.nodeRunning', {deviceAddr: this.address}).toString();
+			message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.nodeRunning', {deviceAddr: this.address}).toString();
 		} else {
-			message = this.$t('iqrfnet.networkManager.backup.messages.networkRunning', {progress: 0}).toString();
+			message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.networkRunning', {progress: 0}).toString();
 		}
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', message);
@@ -306,16 +303,16 @@ export default class Backup extends Vue {
 	 * @returns {string} Backup progress message
 	 */
 	private backupProgress(response): string {
-		let message = this.$t('iqrfnet.networkManager.backup.messages.networkRunning', {progress: response.rsp.progress}).toString();
+		let message = this.$t('iqrfnet.networkManager.backupRestore.backup.messages.networkRunning', {progress: response.rsp.progress}).toString();
 		const deviceAddr = response.rsp.devices[0].deviceAddr;
 		if (response.status === 0) {
 			if (deviceAddr === 0) {
-				message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.coordinatorSuccess', {deviceAddr: deviceAddr}).toString();
+				message += '\n' + this.$t('iqrfnet.networkManager.backupRestore.backup.messages.coordinatorSuccess', {deviceAddr: deviceAddr}).toString();
 			} else {
-				message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.nodeSuccess', {deviceAddr: deviceAddr}).toString();
+				message += '\n' + this.$t('iqrfnet.networkManager.backupRestore.backup.messages.nodeSuccess', {deviceAddr: deviceAddr}).toString();
 			}
 		} else {
-			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.nodeFailed', {deviceAddr: deviceAddr}).toString();
+			message += '\n' + this.$t('iqrfnet.networkManager.backupRestore.backup.messages.nodeFailed', {deviceAddr: deviceAddr}).toString();
 		}
 		return message;
 	}

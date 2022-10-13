@@ -108,25 +108,23 @@ limitations under the License.
 							:checked.sync='unbondCoordinatorOnly'
 							:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
 						/>
-						<CButton
-							color='primary'
-							:disabled='invalid'
-							@click.prevent='bond'
-						>
-							{{ $t('forms.bond') }}
-						</CButton> <CButton
-							color='secondary'
-							:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
-							@click='modalUnbond = true'
-						>
-							{{ $t('forms.unbond') }}
-						</CButton> <CButton
-							color='secondary'
-							type='button'
-							@click='modalClear = true'
-						>
-							{{ $t('forms.clearBonds') }}
-						</CButton>
+						<CButtonToolbar>
+							<CButton
+								class='mr-1'
+								color='primary'
+								:disabled='invalid'
+								@click='bond'
+							>
+								{{ $t('forms.bond') }}
+							</CButton>
+							<UnbondModal
+								class='mr-1'
+								:address='address'
+								:auto-address='autoAddress'
+								@unbond='unbond'
+							/>
+							<ClearAllModal @clear='clearAll' />
+						</CButtonToolbar>
 					</div>
 					<div v-else>
 						<CSelect
@@ -142,54 +140,6 @@ limitations under the License.
 							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
 						</CButton>
 					</div>
-					<CModal
-						color='danger'
-						:show.sync='modalClear'
-					>
-						<template #header>
-							<h5 class='modal-title'>
-								{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
-							</h5>
-						</template>
-						{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
-						<template #footer>
-							<CButton
-								color='danger'
-								@click='clearAll'
-							>
-								{{ $t('forms.clearBonds') }}
-							</CButton> <CButton
-								color='secondary'
-								@click='modalClear = false'
-							>
-								{{ $t('forms.cancel') }}
-							</CButton>
-						</template>
-					</CModal>
-					<CModal
-						color='danger'
-						:show.sync='modalUnbond'
-					>
-						<template #header>
-							<h5 class='modal-title'>
-								{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
-							</h5>
-						</template>
-						{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
-						<template #footer>
-							<CButton
-								color='danger'
-								@click='unbond'
-							>
-								{{ $t('forms.unbond') }}
-							</CButton> <CButton
-								color='secondary'
-								@click='modalUnbond = false'
-							>
-								{{ $t('forms.cancel') }}
-							</CButton>
-						</template>
-					</CModal>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
@@ -200,12 +150,13 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import ClearAllModal from '@/components/IqrfNet/NetworkManager/Iqmesh/ClearAllModal.vue';
+import UnbondModal from '@/components/IqrfNet/NetworkManager/Iqmesh/UnbondModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {versionHigherEqual} from '@/helpers/versionChecker';
-import {compare} from 'compare-versions';
 
-import {BondingMethod, BondingTarget, Tool} from '@/enums/IqrfNet/bonding';
+import {BondingMethod, BondingTarget, BondingTool} from '@/enums/IqrfNet/Bonding';
 import IqrfNetService from '@/services/IqrfNetService';
 
 import {IOption} from '@/interfaces/coreui';
@@ -222,15 +173,22 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CInputCheckbox,
 		CModal,
 		CSelect,
+		ClearAllModal,
+		UnbondModal,
 		ValidationObserver,
-		ValidationProvider
-	}
+		ValidationProvider,
+	},
 })
 
 /**
  * Bonding manager card for Network Manager
  */
 export default class BondingManager extends Vue {
+	/**
+	 * @var {string} msgId Daemon api message id
+	 */
+	private msgId = '';
+
 	/**
 	 * @var {number} address Address to assign a newly bonded node
 	 */
@@ -252,11 +210,11 @@ export default class BondingManager extends Vue {
 	private bondMethodOptions: Array<IOption> = [
 		{
 			value: BondingMethod.LOCAL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local')
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local').toString(),
 		},
 		{
 			value: BondingMethod.SMARTCONNECT,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart')
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart').toString(),
 		}
 	];
 
@@ -276,26 +234,26 @@ export default class BondingManager extends Vue {
 	private bondTargetOptions: Array<IOption> = [
 		{
 			value: BondingTarget.DEVICE,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device')
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device').toString(),
 		},
 		{
 			value: BondingTarget.SERVICETOOL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service')
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service').toString(),
 		}
 	];
 
 	/**
-	 * @var {Tool} tool Bond tool
+	 * @var {BondingTool} tool Bond tool
 	 */
-	private bondTool = Tool.NFC;
+	private bondTool = BondingTool.NFC;
 
 	/**
 	 * @constant {Array<IOption>} toolOptions Tool options for coreui select
 	 */
 	private bondToolOptions: Array<IOption> = [
 		{
-			value: Tool.NFC,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc')
+			value: BondingTool.NFC,
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc').toString(),
 		}
 	];
 
@@ -303,21 +261,6 @@ export default class BondingManager extends Vue {
 	 * @var {number} bondingRetries Number of bonding attempts
 	 */
 	private bondingRetries = 1;
-
-	/**
-	 * @var {boolean} modalClear Show modal for clearing all bonds
-	 */
-	private modalClear = false;
-
-	/**
-	 * @var {boolean} modalUnbond Show modal for node unbonding
-	 */
-	private modalUnbond = false;
-
-	/**
-	 * @var {string|null} msgId Daemon api message id
-	 */
-	private msgId: string|null = null;
 
 	/**
 	 * @var {string} scCode SmartConnect code
@@ -330,17 +273,17 @@ export default class BondingManager extends Vue {
 	private unbondCoordinatorOnly = false;
 
 	/**
-	 * Component unsubscribe function
-	 */
-	private unsubscribe: CallableFunction = () => {return;};
-
-	/**
 	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
 	 */
 	private daemon236 = false;
 
 	/**
-	 * Vue lifecycle hook created
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;};
+
+	/**
+	 * Initializes validation rules and mutation handling
 	 */
 	created(): void {
 		extend('between', between);
@@ -351,31 +294,29 @@ export default class BondingManager extends Vue {
 			return regex.test(code);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
-				if (mutation.payload.data.msgId !== this.msgId) {
-					return;
-				}
-				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-				if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
-					this.handleEnumerationResponse(mutation.payload.data);
-					return;
-				}
-				this.$store.dispatch('spinner/hide');
-				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal') {
-					this.handleBondResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
-					this.handleSmartConnectResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
-					mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
-					this.handleRemoveResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'iqrfRaw') {
-					this.handleBondNfcResponse(mutation.payload.data);
-				} else if (mutation.payload.mType === 'messageError') {
-					this.$toast.error(
-						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
-					);
-				}
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
 			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
+			if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal') {
+				this.handleBondResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
+				this.handleSmartConnectResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
+				mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
+				this.handleRemoveResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'iqrfRaw') {
+				this.handleBondNfcResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$toast.error(
+					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+				);
+			}
+
 		});
 	}
 
@@ -384,7 +325,6 @@ export default class BondingManager extends Vue {
 	 */
 	mounted(): void {
 		this.daemon236 = versionHigherEqual('2.3.6');
-		this.enumerateCoordinator();
 	}
 
 	/**
@@ -396,39 +336,20 @@ export default class BondingManager extends Vue {
 	}
 
 	/**
+	 * Enables bonding target selection
+	 */
+	public enableBondNfc(): void {
+		this.bondTargetAvailable = true;
+	}
+
+	/**
 	 * Creates WebSocket request options object
 	 * @param {number} timeout Request timeout in milliseconds
 	 * @param {string} message Request timeout message
 	 * @returns {DaemonMessageOptions} WebSocket request options
 	 */
 	private buildOptions(timeout: number, message: string): DaemonMessageOptions {
-		return new DaemonMessageOptions(null, timeout, message, () => this.msgId = null);
-	}
-
-	/**
-	 * Enumerates coordinator device
-	 */
-	private enumerateCoordinator(): void {
-		IqrfNetService.enumerateDevice(0, 60000)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles enumeration Daemon API responses
-	 */
-	private handleEnumerationResponse(response): void {
-		if (response.status !== 0) {
-			return;
-		}
-		const os = response.rsp.osRead.osBuild;
-		if (parseInt(os, 16) < 0x08d7) {
-			return;
-		}
-		const dpa = response.rsp.peripheralEnumeration.dpaVer;
-		if (compare(dpa, '4.16', '<')) {
-			return;
-		}
-		this.bondTargetAvailable = true;
+		return new DaemonMessageOptions(null, timeout, message, () => this.msgId = '');
 	}
 
 	/**
@@ -437,7 +358,7 @@ export default class BondingManager extends Vue {
 	private bond(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		const address = this.autoAddress ? 0 : this.address;
-		if (this.bondMethod === 'local') {
+		if (this.bondMethod === BondingMethod.LOCAL) {
 			IqrfNetService.bondLocal(address, this.bondingRetries, this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.bondTimeout'))
 				.then((msgId: string) => this.msgId = msgId);
 			this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.bondingManager.messages.bondLocalAction').toString());
@@ -508,7 +429,7 @@ export default class BondingManager extends Vue {
 	 */
 	private bondNfc(): void {
 		this.$store.dispatch('spinner/show', {timeout: 12000});
-		IqrfNetService.bondNfc(new DaemonMessageOptions(null, 12000,'iqrfnet.networkManager.bondingManager.messages.bondTimeout', () => this.msgId = null))
+		IqrfNetService.bondNfc(new DaemonMessageOptions(null, 12000,'iqrfnet.networkManager.bondingManager.messages.bondTimeout', () => this.msgId = ''))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -531,7 +452,6 @@ export default class BondingManager extends Vue {
 	 * Unbonds a bonded node
 	 */
 	private unbond(): void {
-		this.modalUnbond = false;
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.removeBond(this.address, this.unbondCoordinatorOnly, this.buildOptions(30000, 'iqrfnet.networkManager.bondingManager.messages.unbondTimeout'))
 			.then((msgId: string) => this.msgId = msgId);
@@ -541,7 +461,6 @@ export default class BondingManager extends Vue {
 	 * Clears all bonds
 	 */
 	private clearAll(): void {
-		this.modalClear = false;
 		this.$store.dispatch('spinner/show', {timeout: 120000});
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t(
 			`iqrfnet.networkManager.bondingManager.messages.clearAll${this.unbondCoordinatorOnly ? 'CStatus' : 'Status'}`

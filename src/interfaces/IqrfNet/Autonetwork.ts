@@ -16,16 +16,16 @@
  */
 
 /**
- * AutoNetwork base interface
+ * Autonetwork parameters interface
  */
-export interface AutoNetworkBase {
+export interface IAtnwParams {
 	/**
 	 * Number of DPA retry transactions if the original transaction fails
 	 */
 	actionRetries: number
 
 	/**
-	 * Run discovery before starting the AutoNetwork process
+	 * Run discovery before starting the autonetwork process
 	 */
 	discoveryBeforeStart: boolean
 
@@ -51,45 +51,24 @@ export interface AutoNetworkBase {
 }
 
 /**
- * AutoNetwork request options
+ * Autonetwork overlapping networks interface
  */
-export interface AutoNetworkOptions extends AutoNetworkBase {
-
-	/**
-	 * HWPID filtering
-	 */
-	hwpidFiltering: Array<number>
-
-	/**
-	 * Overlapping networks
-	 */
-	overlappingNetworks: AutoNetworkOverlappingNetworks
-
-	/**
-	 * Stop conditions
-	 */
-	stopConditions: AutoNetworkStopConditions
-}
-
-/**
- * AutoNetwork overlapping networks interface
- */
-export interface AutoNetworkOverlappingNetworks {
-	/**
-	 * Network number
-	 */
-	network: number
-
+export interface IAtnwOverlappingNetworks {
 	/**
 	 * Number of networks
 	 */
 	networks: number
+
+	/**
+	 * Network number
+	 */
+	network: number
 }
 
 /**
- * AutoNetwork stop conditions interface
+ * Autonetwork stop conditions interface
  */
-export interface AutoNetworkStopConditions {
+export interface IAtnwStopConditions {
 	/**
 	 * Abort if too many nodes are found
 	 */
@@ -98,7 +77,7 @@ export interface AutoNetworkStopConditions {
 	/**
 	 * Abort after number of consecutive waves where no nodes are found
 	 */
-	emptyWaves?: number
+	emptyWaves: number
 
 	/**
 	 * Abort after number of nodes is found
@@ -111,3 +90,59 @@ export interface AutoNetworkStopConditions {
 	waves?: number
 }
 
+/**
+ * Autonetwork mid list interface
+ */
+export interface IAtnwMid {
+	/**
+	 * MID list
+	 */
+	midList: Array<IAtnwMidList>
+
+	/**
+	 * MID filtering
+	 */
+	midFiltering: boolean
+}
+
+/**
+ * Autonetwork mid list item interface
+ */
+export interface IAtnwMidList {
+	/**
+	 * Device MID
+	 */
+	deviceMID: string
+
+	/**
+	 * Device address
+	 */
+	deviceAddr?: number
+
+	/**
+	 * User note
+	 */
+	note?: string
+
+	/**
+	 * Controls edit collapse
+	 */
+	showEdit?: boolean
+}
+
+export interface IAtnwMidErrorList {
+	/**
+	 * Line number
+	 */
+	line: number
+
+	/**
+	 * Text content
+	 */
+	content: string
+
+	/**
+	 * Error string
+	 */
+	error: string
+}

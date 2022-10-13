@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
-import {AutoNetworkOptions} from '@/interfaces/autonetwork';
+
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {IOtaUploadParams} from '@/interfaces/OtaUpload';
 
 /**
  * IQRF Network service
@@ -25,35 +25,18 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 class IqrfNetService {
 	/**
 	 * Performs AutoNetwork
-	 * @param {AutoNetworkBase} autoNetwork Object containing AutoNetwork parameters
+	 * @param params Object containing AutoNetwork parameters
 	 * @param {DaemonMessageOptions} options Daemon request options
 	 * @return {Promise<string>} Message ID
 	 */
-	autoNetwork(autoNetwork: AutoNetworkOptions, options: DaemonMessageOptions): Promise<string> {
-		const json = {
+	autoNetwork(params, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
-				'req': {
-					'discoveryTxPower': autoNetwork.discoveryTxPower,
-					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
-					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
-					'unbondUnrespondingNodes': autoNetwork.unbondUnrespondingNodes,
-					'skipPrebonding': autoNetwork.skipPrebonding,
-					'actionRetries': autoNetwork.actionRetries
-				},
+				'req': params,
 				'returnVerbose': true,
 			},
 		};
-		if (autoNetwork.stopConditions) {
-			Object.assign(json.data.req, {'stopConditions': autoNetwork.stopConditions});
-		}
-		if (autoNetwork.overlappingNetworks) {
-			Object.assign(json.data.req, {'overlappingNetworks': autoNetwork.overlappingNetworks});
-		}
-		if (autoNetwork.hwpidFiltering) {
-			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
-		}
-		options.request = json;
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
@@ -255,29 +238,23 @@ class IqrfNetService {
 
 	/**
 	 * Sends request to execute OTA upload action
-	 * @param {number} deviceAddr Target device address
-	 * @param {number} hwpid HWPID filter
-	 * @param {string} file Full name of file to upload
-	 * @param {number} eepromAddr External EEPROM address
-	 * @param {boolean} uploadEeprom Upload to EEPROM?
-	 * @param {boolean} uploadEeeprom Upload to EEEPROM?
-	 * @param {OtaUploadAction} action OTA upload action
+	 * @param {IOtaUploadParams} params OTA upload parameters
 	 * @param {DaemonMessageOptions} options Daemon request options
 	 * @return {Promise<string>} Message ID
 	 */
-	otaUpload(deviceAddr: number, hwpid: number, file: string, eepromAddr: number, uploadEeprom: boolean, uploadEeeprom: boolean, action: OtaUploadAction, options: DaemonMessageOptions): Promise<string> {
+	otaUpload(params: IOtaUploadParams, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_OtaUpload',
 			'data': {
 				'repeat': 1,
 				'req': {
-					'deviceAddr': deviceAddr,
-					'hwpId': hwpid,
-					'fileName': file,
-					'startMemAddr': eepromAddr,
-					'loadingAction': action,
-					'uploadEepromData': uploadEeprom,
-					'uploadEeepromData': uploadEeeprom,
+					'deviceAddr': params.address,
+					'hwpId': params.hwpid,
+					'fileName': params.file,
+					'startMemAddr': params.startMemAddr,
+					'loadingAction': params.loadingAction,
+					'uploadEepromData': params.uploadEeprom,
+					'uploadEeepromData': params.uploadEeeprom,
 				},
 				'returnVerbose': true,
 			},
@@ -362,6 +339,24 @@ class IqrfNetService {
 				},
 			};
 		}
+		return store.dispatch('daemonClient/sendRequest', options);
+	}
+
+	/**
+	 * Performs IQMESH restart, nodes to restart can be filtered by HWPID
+	 * @param {number} hwpid HWPID filter
+	 * @param {DaemonMessageOptions} options WebSocket request options
+	 */
+	restart(hwpid: number, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_Restart',
+			'data': {
+				'req': {
+					'hwpId': hwpid,
+				},
+				'returnVerbose': true,
+			},
+		};
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
@@ -456,6 +451,28 @@ class IqrfNetService {
 		};
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
+
+	/**
+	 * Sets FRC response time
+	 * @param {number} responseTime Response time
+	 * @param {DaemonMessageOptions} options Daemon message options
+	 * @return {Promise<string>} Message ID
+	 */
+	setFrcResponseTime(responseTime: number, options: DaemonMessageOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqrfEmbedFrc_SetParams',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {
+						'frcResponseTime': responseTime,
+					},
+				},
+			},
+		};
+		return store.dispatch('daemonClient/sendRequest', options);
+	}
 }
 
 export default new IqrfNetService();
+ 
