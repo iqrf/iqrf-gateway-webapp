@@ -9,7 +9,7 @@
  # Default gateway user password change
  gatewayPass:
  	enabled: false
-@@ -26,7 +26,7 @@
+@@ -26,7 +26,7 @@ grafana:
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -41,10 +41,10 @@
+@@ -41,10 +41,10 @@ mender:
  	enabled: false
  # Monitoring service
  monit:
@@ -31,7 +31,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -58,7 +58,7 @@
+@@ -54,7 +54,7 @@ remount:
  	enabled: false
  # SSH daemon manager
  ssh:
@@ -40,7 +40,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -72,10 +72,10 @@
+@@ -68,10 +68,10 @@ updater:
  	enabled: false
  # IQRF TR native upload
  trUpload:
