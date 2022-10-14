@@ -147,6 +147,15 @@
 	margin-top: -1px;
 }
 
+.modal-table {
+	width: 100%;
+	table-layout: fixed;
+
+	td {
+		text-align: right;
+	}
+}
+
 .datatable-collapse {
 	display: flex;
 	align-items: flex-start;
@@ -179,12 +188,4 @@
 .vdatetime-time-picker__item--selected,
 .vdatetime-year-picker__item--selected {
 	color: var(--primary) !important;
-}
-
-.modal-table {
-	width: 100%;
-	table-layout: fixed;
-	td {
-		text-align: right;
-	}
 }
