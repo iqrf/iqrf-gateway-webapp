@@ -68,8 +68,29 @@ final class MainManagerTest extends JsonConfigTestCase {
 	 * Tests the function to get cache directory (success)
 	 */
 	public function testGetCacheDirSuccess(): void {
-		$expected = '/var/cache/iqrf-gateway-daemon';
+		$expected = '/var/cache/iqrf-gateway-daemon/';
 		Assert::same($expected, $this->manager->getCacheDir());
+	}
+
+	/**
+	 * Tests the function to get data directory (failure)
+	 */
+	public function testGetDataDirFailure(): void {
+		$fileManager = Mockery::mock(JsonFileManager::class);
+		$fileManager->shouldReceive('read')
+			->withArgs([self::FILE_NAME])
+			->andThrows(IOException::class);
+		$manager = new MainManager($fileManager);
+		$expected = '/usr/share/iqrf-gateway-daemon/';
+		Assert::same($expected, $manager->getDataDir());
+	}
+
+	/**
+	 * Tests the function to get data directory (success)
+	 */
+	public function testGetDataDirSuccess(): void {
+		$expected = '/usr/share/iqrf-gateway-daemon/';
+		Assert::same($expected, $this->manager->getDataDir());
 	}
 
 	/**

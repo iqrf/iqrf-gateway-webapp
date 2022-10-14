@@ -23,6 +23,7 @@ namespace App\ConfigModule\Models;
 use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Main configuration form factory
@@ -53,7 +54,8 @@ class MainManager {
 	 */
 	public function getCacheDir(): string {
 		try {
-			return $this->load()['cacheDir'];
+			$dir = $this->load()['cacheDir'];
+			return Strings::endsWith($dir, '/') ? $dir : $dir . '/';
 		} catch (IOException | JsonException $e) {
 			return '/var/cache/iqrf-gateway-daemon/';
 		}
@@ -65,7 +67,8 @@ class MainManager {
 	 */
 	public function getDataDir(): string {
 		try {
-			return $this->load()['dataDir'];
+			$dir = $this->load()['dataDir'];
+			return Strings::endsWith($dir, '/') ? $dir : $dir . '/';
 		} catch (IOException | JsonException $e) {
 			return '/usr/share/iqrf-gateway-daemon/';
 		}

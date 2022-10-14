@@ -129,21 +129,21 @@ class DiagnosticsManager {
 	 * Adds IQRF Gateway Daemon database and scripts
 	 */
 	public function addDatabase(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'DB');
+		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . 'DB', 'DB');
 	}
 
 	/**
 	 * Adds IQRF Gateway Daemon's metadata
 	 */
 	public function addMetadata(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/metaData', 'metaData');
+		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . 'metaData', 'metaData');
 	}
 
 	/**
 	 * Adds a configuration of IQRF Gateway Daemon's scheduler
 	 */
 	public function addScheduler(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'scheduler');
+		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . 'scheduler', 'scheduler');
 		if ($this->zipManager->exist('scheduler/schema/')) {
 			$this->zipManager->deleteDirectory('scheduler/schema');
 		}

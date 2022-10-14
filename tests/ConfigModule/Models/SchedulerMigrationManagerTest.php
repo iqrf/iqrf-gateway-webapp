@@ -128,7 +128,7 @@ final class SchedulerMigrationManagerTest extends TestCase {
 		$this->fileManager = new FileManager(self::CONFIG_PATH, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')
-			->andReturn(self::CONFIG_TEMP_PATH . '/..');
+			->andReturn(self::CONFIG_TEMP_PATH . '/../');
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schemaManager->shouldReceive('validate')
 			->andReturn(true);

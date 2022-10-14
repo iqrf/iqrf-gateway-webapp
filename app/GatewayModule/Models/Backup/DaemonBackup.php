@@ -91,11 +91,11 @@ class DaemonBackup implements IBackupManager {
 				$zipManager->addFileFromText('daemon/' . $name, $this->fileManager->read($name));
 			}
 		}
-		$zipManager->addFolder($this->daemonDirectories->getCacheDir() . '/scheduler', 'daemon/scheduler');
+		$zipManager->addFolder($this->daemonDirectories->getCacheDir() . 'scheduler', 'daemon/scheduler');
 		if ($zipManager->exist('daemon/scheduler/schema/')) {
 			$zipManager->deleteDirectory('daemon/scheduler/schema');
 		}
-		$zipManager->addFolder($this->daemonDirectories->getDataDir() . '/DB', 'daemon/DB');
+		$zipManager->addFolder($this->daemonDirectories->getDataDir() . 'DB', 'daemon/DB');
 	}
 
 	/**
@@ -109,7 +109,7 @@ class DaemonBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring IQRF Gateway Daemon configuration, scheduler and database.');
 		BackupUtil::recreateDirectories([
 			$this->daemonDirectories->getConfigurationDir(),
-			$this->daemonDirectories->getDataDir() . '/DB/',
+			$this->daemonDirectories->getDataDir() . 'DB/',
 		]);
 		$user = posix_getpwuid(posix_geteuid());
 		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
@@ -118,15 +118,15 @@ class DaemonBackup implements IBackupManager {
 			if (Strings::startsWith($file, 'daemon/scheduler/')) {
 				$zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
 			} elseif (Strings::startsWith($file, 'daemon/DB/')) {
-				$zipManager->extract($this->daemonDirectories->getDataDir() . '/DB/', $file);
+				$zipManager->extract($this->daemonDirectories->getDataDir() . 'DB/', $file);
 			} elseif (Strings::startsWith($file, 'daemon/')) {
 				$zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . '/DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . '/DB', true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . '/DB/daemon', true);
-		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . '/daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . '/scheduler', true);
-		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . '/daemon', true);
+		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getDataDir() . 'DB/daemon/DB/* ' . $this->daemonDirectories->getDataDir() . 'DB', true);
+		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getDataDir() . 'DB/daemon', true);
+		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getCacheDir() . 'daemon/scheduler/* ' . $this->daemonDirectories->getCacheDir() . 'scheduler', true);
+		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getCacheDir() . 'daemon', true);
 		$this->commandManager->run('cp -rfp ' . $this->daemonDirectories->getConfigurationDir() . 'daemon/* ' . $this->daemonDirectories->getConfigurationDir(), true);
 		$this->commandManager->run('rm -rf ' . $this->daemonDirectories->getConfigurationDir() . 'daemon', true);
 		$this->fixPrivileges();

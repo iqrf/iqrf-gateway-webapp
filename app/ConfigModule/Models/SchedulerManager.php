@@ -64,7 +64,7 @@ class SchedulerManager {
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
 			$commandManager->run('chmod 777 ' . $cacheDir, true);
 		}
-		$path = $cacheDir . '/scheduler/';
+		$path = $cacheDir . 'scheduler/';
 		$this->fileManager = new JsonFileManager($path, $commandManager);
 		$this->schemaManager = $schemaManager;
 	}
