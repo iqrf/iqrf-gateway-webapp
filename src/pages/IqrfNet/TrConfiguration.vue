@@ -48,9 +48,7 @@ limitations under the License.
 										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-								<div
-									v-if='target === "network"'
-								>
+								<div v-if='target === "network"'>
 									<CButton
 										style='float: right;'
 										color='primary'
@@ -136,7 +134,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
+									v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -152,7 +150,7 @@ limitations under the License.
 									/>
 								</ValidationProvider>
 								<ValidationProvider
-									v-if='dpaVersion !== null && (compareVersions(dpaVersion, "3.03", "=") || compareVersions(dpaVersion, "3.04", "="))'
+									v-if='compareDpaVersion("3.03", "=") || compareDpaVersion("3.04", "=")'
 									v-slot='{valid, touched, errors}'
 									:rules='rfChannelRules.rule'
 									:custom-messages='rfChannelValidatorMessages'
@@ -383,7 +381,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.embPers.spi'
 									:label='$t("iqrfnet.trConfiguration.form.embPers.spi")'
-									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+									:disabled='isCoordinator || compareDpaVersion("4.14", ">")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.embPers.io'
@@ -407,7 +405,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.dpaPeerToPeer'
 									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
-									:disabled='(isCoordinator) || (dpaVersion !== null && compareVersions(dpaVersion, "4.10", "<"))'
+									:disabled='isCoordinator || compareDpaVersion("4.10", "<")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.peerToPeer'
@@ -416,7 +414,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.localFrcReception'
 									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
-									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "4.15", "<"))'
+									:disabled='isCoordinator || compareDpaVersion("4.15", "<")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.ioSetup'
@@ -425,7 +423,7 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.dpaAutoexec'
 									:label='$t("iqrfnet.trConfiguration.form.dpaAutoexec")'
-									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.14", ">"))'
+									:disabled='compareDpaVersion("4.14", ">")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.routingOff'
@@ -435,12 +433,12 @@ limitations under the License.
 								<CInputCheckbox
 									:checked.sync='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
-									:disabled='isCoordinator || (dpaVersion !== null && compareVersions(dpaVersion, "3.03", "<"))'
+									:disabled='isCoordinator || compareDpaVersion("3.03", "<")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.nodeDpaInterface'
 									:label='$t("iqrfnet.trConfiguration.form.nodeDpaInterface")'
-									:disabled='(dpaVersion !== null && compareVersions(dpaVersion, "4.00", ">="))'
+									:disabled='compareDpaVersion("4.00", ">=")'
 								/>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
@@ -521,9 +519,13 @@ import {
 	CCard,
 	CCardBody,
 	CCardHeader,
+	CCol,
 	CForm,
 	CInput,
-	CModal
+	CInputCheckbox,
+	CModal,
+	CRow,
+	CSelect,
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -539,7 +541,7 @@ import {
 } from 'vee-validate/dist/rules';
 import {NetworkTarget} from '@/enums/IqrfNet/network';
 
-import compareVersions, {compare} from 'compare-versions';
+import {compare, CompareOperator} from 'compare-versions';
 import IqrfNetService from '@/services/IqrfNetService';
 import OsService from '@/services/DaemonApi/OsService';
 
@@ -556,21 +558,22 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCol,
 		CForm,
 		CInput,
+		CInputCheckbox,
 		CModal,
+		CRow,
+		CSelect,
 		FontAwesomeIcon,
 		ProductModal,
 		ValidationObserver,
 		ValidationProvider,
 	},
-	methods: {
-		compareVersions: compareVersions.compare,
-	},
 })
 
 /**
- * Transciever configuration page component
+ * Transceiver configuration page component
  */
 export default class TrConfiguration extends Vue {
 	/**
@@ -591,7 +594,7 @@ export default class TrConfiguration extends Vue {
 	///// TR config /////
 
 	/**
-	 * @var {ITrConfiguration} config Device transciever configuration object
+	 * @var {ITrConfiguration} config Transceiver configuration object
 	 */
 	private config: ITrConfiguration = {
 		rfBand: '868', // OS RF
@@ -892,6 +895,15 @@ export default class TrConfiguration extends Vue {
 	}
 
 	/**
+	 * Compare DPA current version with supported version
+	 * @param version DPA version
+	 * @param operator Comparison operator
+	 */
+	private compareDpaVersion(version: string, operator: CompareOperator): boolean {
+		return this.dpaVersion !== null && compare(this.dpaVersion, version, operator);
+	}
+
+	/**
 	 * Retrieves OS information
 	 */
 	private readOs(): void {
@@ -958,22 +970,27 @@ export default class TrConfiguration extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleEnumerationResponse(response): void {
-		if (response.data.status === 0) {
-			this.parseResponse(response);
-			return;
-		}
-		if (response.data.status === -1 || response.data.status === 1005) {
-			this.$toast.error(
-				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
-			);
-		} else if (response.data.status === 8 || response.data.status === 1001) {
-			this.$toast.error(
-				this.$t('forms.messages.noDevice', {address: this.address}).toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.readFailure').toString()
-			);
+		switch (response.data.status) {
+			case 0:
+				this.parseResponse(response);
+				return;
+			case -1:
+			case 1005:
+				this.$toast.error(
+					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+				);
+				break;
+			case 8:
+			case 1001:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.readFailure').toString()
+				);
+				break;
 		}
 		this.loaded = false;
 	}
@@ -1034,25 +1051,25 @@ export default class TrConfiguration extends Vue {
 			delete config.embPers.os;
 		}
 		if (this.dpaVersion !== null) {
-			const dpa = this.dpaVersion;
-			if (!compare(dpa, '3.03', '=') && !compare(dpa, '3.04', '=')) {
+			if (!this.compareDpaVersion('3.03', '=') &&
+					!this.compareDpaVersion('3.04', '=')) {
 				delete config.rfSubChannelA;
 				delete config.rfSubChannelB;
 			}
-			if (compare(dpa, '3.03', '<')) {
+			if (this.compareDpaVersion('3.03', '<')) {
 				delete config.neverSleep;
 			}
-			if (compare(dpa, '4.00', '>=')) {
+			if (this.compareDpaVersion('4.00', '>=')) {
 				delete config.nodeDpaInterface;
 			}
-			if (compare(dpa, '4.10', '<')) {
+			if (this.compareDpaVersion('4.10', '<')) {
 				delete config.dpaPeerToPeer;
 			}
-			if (compare(dpa, '4.14', '>')) {
+			if (this.compareDpaVersion('4.14', '>')) {
 				delete config.dpaAutoexec;
 				delete config.embPers.spi;
 			}
-			if (compare(dpa, '4.15', '<')) {
+			if (this.compareDpaVersion('4.15', '<')) {
 				delete config.localFrcReception;
 			}
 		}
@@ -1073,46 +1090,52 @@ export default class TrConfiguration extends Vue {
 	 */
 	private handleWriteResponse(response): void {
 		const address = response.rsp.deviceAddr;
-		if (response.status === 0) {
-			if (this.target === NetworkTarget.NETWORK) {
-				if (response.rsp.notRespondedNodes !== undefined) {
-					this.message.push(this.$t(
-						'iqrfnet.trConfiguration.messages.notResponded',
-						{nodes: response.rsp.notRespondedNodes.join(', ')}
-					).toString());
-				}
-				if (response.rsp.notMatchedNodes !== undefined) {
-					this.message.push(this.$t(
-						'iqrfnet.trConfiguration.messages.notMatched',
-						{nodes: response.rsp.notMatchedNodes.join(', ')}
-					).toString());
-				}
-			}
-			if (response.rsp.restartNeeded) {
-				this.restartDevice(address, (address === 255) ? this.hwpid : null);
-			} else {
+		switch (response.status) {
+			case 0:
 				if (this.target === NetworkTarget.NETWORK) {
-					this.message.unshift(this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString());
+					if (response.rsp.notRespondedNodes !== undefined) {
+						this.message.push(this.$t(
+							'iqrfnet.trConfiguration.messages.notResponded',
+							{nodes: response.rsp.notRespondedNodes.join(', ')}
+						).toString());
+					}
+					if (response.rsp.notMatchedNodes !== undefined) {
+						this.message.push(this.$t(
+							'iqrfnet.trConfiguration.messages.notMatched',
+							{nodes: response.rsp.notMatchedNodes.join(', ')}
+						).toString());
+					}
+				}
+				if (response.rsp.restartNeeded) {
+					this.restartDevice(address, (address === 255) ? this.hwpid : null);
+					return;
+				}
+				if (this.target === NetworkTarget.NETWORK) {
+					this.message.unshift(
+						this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
+					);
 					this.$toast.info(this.message.join(' '));
 				} else {
-					this.$toast.info(this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString());
+					this.$toast.info(
+						this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
+					);
 				}
-			}
-			return;
-		}
-
-		if (response.status === -1) {
-			this.$toast.error(
-				this.$t('forms.messages.deviceOffline', {address: address}).toString()
-			);
-		} else if (response.status === 8) {
-			this.$toast.error(
-				this.$t('forms.messages.noDevice', {address: address}).toString()
-			);
-		} else {
-			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
-			);
+				return;
+			case -1:
+				this.$toast.error(
+					this.$t('forms.messages.deviceOffline', {address: address}).toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
+				);
+				break;
 		}
 	}
 
@@ -1131,23 +1154,23 @@ export default class TrConfiguration extends Vue {
 	 * Handles restart response
 	 */
 	private handleRestartResponse(response): void {
-		if (response.status === 0) {
-			this.message.unshift(this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString());
-			if (response.rsp.nAdr === 0) {
-				this.expectingReset = true;
-				this.timeout = window.setTimeout(() => {
-					this.expectingReset = false;
-					this.$store.dispatch('spinner/hide');
-					this.$toast.error('iqrfnet.trConfiguration.messages.restartFailure').toString();
-				}, 3000);
-			} else {
-				this.$store.dispatch('spinner/hide');
-				this.$toast.info(this.message.join(' '));
-			}
-		} else {
+		if (response.status !== 0) {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
 			);
+			return;
+		}
+		this.message.unshift(this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString());
+		if (response.rsp.nAdr === 0) {
+			this.expectingReset = true;
+			this.timeout = window.setTimeout(() => {
+				this.expectingReset = false;
+				this.$store.dispatch('spinner/hide');
+				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString());
+			}, 3000);
+		} else {
+			this.$store.dispatch('spinner/hide');
+			this.$toast.info(this.message.join(' '));
 		}
 	}
 

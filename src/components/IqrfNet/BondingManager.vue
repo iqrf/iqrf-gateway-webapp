@@ -203,7 +203,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {versionHigherEqual} from '@/helpers/versionChecker';
-import compareVersions from 'compare-versions';
+import {compare} from 'compare-versions';
 
 import {BondingMethod, BondingTarget, Tool} from '@/enums/IqrfNet/bonding';
 import IqrfNetService from '@/services/IqrfNetService';
@@ -425,7 +425,7 @@ export default class BondingManager extends Vue {
 			return;
 		}
 		const dpa = response.rsp.peripheralEnumeration.dpaVer;
-		if (compareVersions.compare(dpa, '4.16', '<')) {
+		if (compare(dpa, '4.16', '<')) {
 			return;
 		}
 		this.bondTargetAvailable = true;
