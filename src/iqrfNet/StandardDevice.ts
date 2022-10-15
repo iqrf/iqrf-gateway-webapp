@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {cilCheckAlt, cilHome, cilSignalCellular4} from '@coreui/icons';
+import {cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle} from '@coreui/icons';
 import {IInfoSensorDetail} from '@/interfaces/iqrfInfo';
 import {IProduct} from '@/interfaces/repository';
 import i18n from '@/plugins/i18n';
@@ -97,6 +97,16 @@ class StandardDevice {
 	 * Product details
 	 */
 	private product: IProduct;
+
+	/**
+	 * Standard supported icon
+	 */
+	private readonly standardSupported = cilCheckCircle;
+
+	/**
+	 * Standard unsupported icon
+	 */
+	private readonly standardUnsupported = cilXCircle;
 
 	/**
 	 * Constructor
@@ -184,7 +194,7 @@ class StandardDevice {
 	getDpa(): string {
 		const major = (this.dpa >> 8).toString(16);
 		const minor = (this.dpa & 0xff).toString(16).padStart(2, '0');
-		return major + '.' + minor;
+		return `${major}.${minor}`;
 	}
 
 	/**
@@ -209,10 +219,10 @@ class StandardDevice {
 	 */
 	getOs(): string {
 		const build = this.getOsBuild();
-		if (this.osVersion === '') {
-			return build;
+		if (!this.osVersion || this.osVersion === '') {
+			return `${i18n.t('forms.unknown').toString()} (${build})`;
 		}
-		return this.osVersion + ' (' + build + ')';
+		return `${this.osVersion} (${build})`;
 	}
 
 	/**
@@ -307,56 +317,11 @@ class StandardDevice {
 	}
 
 	/**
-	 * Returns device icon
-	 * @returns Icon to render
+	 * Returns implemented sensors
+	 * @returns Implemented sensors
 	 */
-	getIcon(): Array<string> {
-		if (this.address === 0) {
-			return cilHome;
-		}
-		if (this.discovered) {
-			return cilSignalCellular4;
-		}
-		return cilCheckAlt;
-	}
-
-	/**
-	 * Returns the icon color
-	 * @returns Icon color
-	 */
-	getIconColor(): string {
-		if (this.address === 0) {
-			return 'text-info';
-		}
-		if (this.online) {
-			return 'text-success';
-		}
-		return 'text-info';
-	}
-
-	/**
-	 * Returns breakdown of implemented sensors
-	 * @returns Implemented sensors details
-	 */
-	getSensorDetails(): string {
-		if (this.sensors.length > 0) {
-			let message = '';
-			this.sensors.forEach((sensor: IInfoSensorDetail) => {
-				message += '\n\n' + i18n.t(
-					'iqrfnet.standard.table.messages.sensor.detail',
-					{
-						name: sensor.name,
-						short: sensor.shortName,
-						type: sensor.type,
-						unit: sensor.unit === '?' ? 'N/A' : sensor.unit,
-						commands: sensor.frcs.join(', '),
-					},
-				).toString();
-			});
-			return message.trim();
-		} else {
-			return i18n.t('iqrfnet.standard.table.messages.sensor.notImplemented').toString();
-		}
+	getSensors(): Array<IInfoSensorDetail> {
+		return this.sensors;
 	}
 
 	/**
@@ -405,6 +370,75 @@ class StandardDevice {
 	 */
 	hasStandard(): boolean {
 		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
+	}
+
+	/**
+	 * Returns device icon
+	 * @returns Device MDI
+	 */
+	getIcon(): Array<string> {
+		if (this.address === 0) {
+			return cilHome;
+		}
+		if (this.discovered) {
+			return cilSignalCellular4;
+		}
+		return cilCheckAlt;
+	}
+
+	/**
+	 * Returns device icon color
+	 * @return Device MDI color
+	 */
+	getIconColor(): string {
+		if (this.online) {
+			return 'text-success';
+		}
+		return 'text-info';
+	}
+
+	/**
+	 * Returns binout icon
+	 * @returns Binout icon
+	 */
+	getBinoutIcon(): Array<string> {
+		if (this.hasBinout()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns dali icon
+	 * @returns Dali icon
+	 */
+	getDaliIcon(): Array<string> {
+		if (this.hasDali()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns light icon
+	 * @returns Light icon
+	 */
+	getLightIcon(): Array<string> {
+		if (this.hasLight()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
+	}
+
+	/**
+	 * Returns sensor icon
+	 * @returns Sensor icon
+	 */
+	getSensorIcon(): Array<string> {
+		if (this.hasSensor()) {
+			return this.standardSupported;
+		}
+		return this.standardUnsupported;
 	}
 }
 

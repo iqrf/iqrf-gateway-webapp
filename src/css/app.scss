@@ -147,12 +147,49 @@
 	margin-top: -1px;
 }
 
+.datatable-legend {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-bottom: 1.25em;
+}
+
 .modal-table {
 	width: 100%;
 	table-layout: fixed;
 
 	td {
 		text-align: right;
+	}
+}
+
+.datatable-expansion-table {
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+
+	table {
+		margin-left: 1em;
+		margin-right: 1em;
+		text-align: left;
+		border-collapse: collapse;
+
+		caption {
+			caption-side: top;
+			color: #3c4b64;
+			text-align: left;
+		}
+
+		tr {
+			border-top: 1px solid #d8dbe0;
+		}
+
+		th,
+		td {
+			padding: 0.75rem 0.75rem 0.75rem 0;
+			vertical-align: top;
+		}
 	}
 }
 

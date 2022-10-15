@@ -2296,6 +2296,12 @@
 					"dali": "DALI",
 					"noDevices": "No devices implementing standards detected."
 				},
+				"sensor": {
+					"title": "Sensors",
+					"name": "Name",
+					"index": "Index",
+					"type": "Type"
+				},
 				"messages": {
 					"device": {
 						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
