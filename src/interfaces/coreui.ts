@@ -24,6 +24,7 @@ import {SecurityFormat} from '@/iqrfNet/securityFormat';
 export interface IField {
 	key: string
 	label: VueI18n.TranslateResult
+	_style?: string|Array<string>|object
 	filter?: boolean
 	sorter?: boolean
 }
