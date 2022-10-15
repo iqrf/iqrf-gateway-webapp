@@ -54,14 +54,6 @@ limitations under the License.
 					<div>
 						<CIcon
 							class='text-info'
-							:content='cilInfo'
-							size='lg'
-						/>
-						{{ $t('iqrfnet.standard.table.info') }}
-					</div>
-					<div>
-						<CIcon
-							class='text-info'
 							:content='cilHome'
 							size='lg'
 						/>
@@ -135,18 +127,8 @@ limitations under the License.
 						</td>
 					</template>
 					<template #product='{item}'>
-						<td class='datatable-details'>
+						<td>
 							{{ item.getProductName() }}
-							<span
-								style='cursor: pointer;'
-								@click='item.showDetails = !item.showDetails'
-							>
-								<CIcon
-									class='text-info'
-									:content='cilInfo'
-									size='xl'
-								/>
-							</span>
 						</td>
 					</template>
 					<template #os='{item}'>
@@ -173,7 +155,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasSensor() ? "text-success" : "text-danger"'
-								:content='item.hasSensor() ? cilCheckCircle : cilXCircle'
+								:content='item.getSensorIcon()'
 							/>
 						</td>
 					</template>
@@ -182,7 +164,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasBinout() ? "text-success" : "text-danger"'
-								:content='item.hasBinout() ? cilCheckCircle : cilXCircle'
+								:content='item.getBinoutIcon()'
 							/>
 						</td>
 					</template>
@@ -191,7 +173,7 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasLight() ? "text-success" : "text-danger"'
-								:content='item.hasLight() ? cilCheckCircle : cilXCircle'
+								:content='item.getLightIcon()'
 							/>
 						</td>
 					</template>
@@ -200,27 +182,41 @@ limitations under the License.
 							<CIcon
 								size='xl'
 								:class='item.hasDali() ? "text-success" : "text-danger"'
-								:content='item.hasDali() ? cilCheckCircle : cilXCircle'
+								:content='item.getDaliIcon()'
 							/>
+						</td>
+					</template>
+					<template #show_details='{item}'>
+						<td class='py-2'>
+							<CButton
+								color='info'
+								size='sm'
+								@click='item.showDetails = !item.showDetails'
+							>
+								<CIcon :content='cilInfo' />
+							</CButton>
 						</td>
 					</template>
 					<template #details='{item}'>
 						<CCollapse :show='item.showDetails'>
 							<CCardBody>
-								<CMedia
-									v-if='item.showDetails'
-									:aside-image-props='{
-										src: item.getImg(),
-										block: true,
-										width: `150px`,
-										height: `150px`,
-									}'
-								>
-									<div
-										class='details-table'
-									>
-										<table>
-											<tbody>
+								<CRow align-vertical='center'>
+									<CCol sm='auto'>
+										<CMedia
+											:aside-image-props='{
+												src: item.getImg(),
+												block: true,
+												width: `150px`,
+												height: `150px`,
+											}'
+										/>
+									</CCol>
+									<CCol>
+										<div class='datatable-expansion-table'>
+											<table>
+												<caption>
+													<strong>{{ $t('iqrfnet.standard.table.info') }}</strong>
+												</caption>
 												<tr>
 													<th>
 														{{ $t('iqrfnet.standard.table.fields.manufacturer') }}
@@ -249,38 +245,25 @@ limitations under the License.
 														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
 													</td>
 												</tr>
-											</tbody>
-										</table>
-										<table>
-											<tbody>
-												<tr v-if='item.hasBinout()'>
-													<th>
-														{{ $t('iqrfnet.standard.binaryOutput.title') }}
-													</th>
-													<td>
-														{{ item.getBinouts() }}
-													</td>
+											</table>
+											<table v-if='item.hasSensor()'>
+												<caption class='sensor-caption'>
+													<b>{{ $t('iqrfnet.standard.table.sensor.title') }}</b>
+												</caption>
+												<tr>
+													<th>{{ $t('iqrfnet.standard.table.sensor.name') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.type') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.index') }}</th>
 												</tr>
-												<tr v-if='item.hasLight()'>
-													<th>
-														{{ $t('iqrfnet.standard.light.title') }}
-													</th>
-													<td>
-														{{ item.getLights() }}
-													</td>
+												<tr v-for='(sensor, i) of item.getSensors()' :key='i'>
+													<td>{{ sensor.name }}</td>
+													<td>{{ sensor.type }}</td>
+													<td>{{ sensor.idx }}</td>
 												</tr>
-												<tr v-if='item.hasSensor()'>
-													<th>
-														{{ $t('iqrfnet.standard.sensor.title') }}
-													</th>
-													<td style='white-space: pre-line;'>
-														{{ item.getSensorDetails() }}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</CMedia>
+											</table>
+										</div>
+									</CCol>
+								</CRow>
 							</CCardBody>
 						</CCollapse>
 					</template>
@@ -403,6 +386,13 @@ export default class StandardDevices extends Vue {
 			filter: false,
 			sorter: false,
 		},
+		{
+			key: 'show_details',
+			label: '',
+			_style: 'width: 1%',
+			sorter: false,
+			filter: false,
+		}
 	];
 
 	/**
@@ -790,49 +780,5 @@ export default class StandardDevices extends Vue {
 	private getDeviceIndex(address: number): number {
 		return this.auxDevices.findIndex((device: StandardDevice) => address === device.getAddress());
 	}
-
 }
 </script>
-
-<style scoped lang='scss'>
-.datatable-header {
-	display: flex;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.datatable-legend {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-evenly;
-	margin-bottom: 1.25em;
-}
-
-.datatable-details {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: -1px;
-}
-
-.details-table {
-	display: flex;
-	align-items: flex-start;
-	justify-content: left;
-}
-
-.details-table > table {
-	margin-left: 1em;
-	margin-right: 1em;
-}
-
-.table {
-	th,
-	td {
-		vertical-align: top;
-		border: 0;
-	}
-}
-</style>
