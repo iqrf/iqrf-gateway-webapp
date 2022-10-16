@@ -15,155 +15,155 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver v-slot='{invalid}'>
-		<hr>
-		<CForm @submit.prevent='processSubmit'>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.mender.service.errors.server"),
-				}'
-			>
+	<CCard body-wrapper>
+		<ValidationObserver v-slot='{invalid}'>
+			<CForm @submit.prevent='processSubmit'>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("maintenance.mender.service.errors.server"),
+					}'
+				>
+					<CInput
+						v-model='configuration.ServerURL'
+						:label='$t("maintenance.mender.service.form.server")'
+						:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
 				<CInput
-					v-model='configuration.ServerURL'
-					:label='$t("maintenance.mender.service.form.server")'
-					:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					v-model='configuration.ServerCertificate'
+					:label='$t("maintenance.mender.service.form.cert")'
+					:disabled='uploadCert'
 				/>
-			</ValidationProvider>
-			<CInput
-				v-model='configuration.ServerCertificate'
-				:label='$t("maintenance.mender.service.form.cert")'
-				:disabled='uploadCert'
-			/>
-			<div class='form-group'>
-				<label for='uploadSwitch'>
-					{{ $t('maintenance.mender.service.form.uploadCert') }}
-				</label><br>
-				<CSwitch
-					ref='uploadSwitch'
+				<div class='form-group'>
+					<label for='uploadSwitch'>
+						{{ $t('maintenance.mender.service.form.uploadCert') }}
+					</label><br>
+					<CSwitch
+						ref='uploadSwitch'
+						color='primary'
+						size='lg'
+						shape='pill'
+						label-on='ON'
+						label-off='OFF'
+						:checked.sync='uploadCert'
+					/>
+				</div>
+				<CInputFile
+					v-if='uploadCert'
+					ref='formCert'
+					accept='.crt'
+					:label='$t("maintenance.mender.service.form.newCert")'
+					@input='checkInput'
+					@click='checkInput'
+				/>
+				<CSelect
+					:value.sync='configuration.ClientProtocol'
+					:label='$t("maintenance.mender.service.form.protocol")'
+					:options='protocolOptions'
+				/>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("maintenance.mender.service.errors.tenantToken"),
+					}'
+				>
+					<CInput
+						v-model='configuration.TenantToken'
+						:label='$t("maintenance.mender.service.form.tenantToken")'
+						:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+						required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+					}'
+				>
+					<CInput
+						id='inventoryPoll'
+						v-model.number='configuration.InventoryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.inventoryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ inventoryPollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.retryPollInterval"),
+						required: $t("maintenance.mender.service.errors.retryPollInterval"),
+					}'
+				>
+					<CInput
+						id='retryPoll'
+						v-model.number='configuration.RetryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.retryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ retryPollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.updatePollInterval"),
+						required: $t("maintenance.mender.service.errors.updatePollInterval"),
+					}'
+				>
+					<CInput
+						v-model.number='configuration.UpdatePollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.updatePollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ updatePollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<CButton
 					color='primary'
-					size='lg'
-					shape='pill'
-					label-on='ON'
-					label-off='OFF'
-					:checked.sync='uploadCert'
-				/>
-			</div>
-			<CInputFile
-				v-if='uploadCert'
-				ref='formCert'
-				accept='.crt'
-				:label='$t("maintenance.mender.service.form.newCert")'
-				@input='checkInput'
-				@click='checkInput'
-			/>
-			<CSelect
-				:value.sync='configuration.ClientProtocol'
-				:label='$t("maintenance.mender.service.form.protocol")'
-				:options='protocolOptions'
-			/>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.mender.service.errors.tenantToken"),
-				}'
-			>
-				<CInput
-					v-model='configuration.TenantToken'
-					:label='$t("maintenance.mender.service.form.tenantToken")'
-					:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-					required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-				}'
-			>
-				<strong>
-					<label for='inventoryPoll'>
-						{{ $t('maintenance.mender.service.form.inventoryPollInterval') }}
-					</label>
-				</strong> <CBadge color='info'>
-					{{ inventoryPollTime }}
-				</CBadge>
-				<CInput
-					id='inventoryPoll'
-					v-model.number='configuration.InventoryPollIntervalSeconds'
-					type='number'
-					min='0'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.retryPollInterval"),
-					required: $t("maintenance.mender.service.errors.retryPollInterval"),
-				}'
-			>
-				<strong>
-					<label for='retryPoll'>
-						{{ $t('maintenance.mender.service.form.retryPollInterval') }}
-					</label>
-				</strong> <CBadge color='info'>
-					{{ retryPollTime }}
-				</CBadge>
-				<CInput
-					id='retryPoll'
-					v-model.number='configuration.RetryPollIntervalSeconds'
-					type='number'
-					min='0'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='min:0|required|integer'
-				:custom-messages='{
-					integer: $t("forms.errors.integer"),
-					min: $t("maintenance.mender.service.errors.updatePollInterval"),
-					required: $t("maintenance.mender.service.errors.updatePollInterval"),
-				}'
-			>
-				<strong>
-					<label for='retryPoll'>
-						{{ $t('maintenance.mender.service.form.updatePollInterval') }}
-					</label>
-				</strong> <CBadge color='info'>
-					{{ updatePollTime }}
-				</CBadge>
-				<CInput
-					id='updatePoll'
-					v-model.number='configuration.UpdatePollIntervalSeconds'
-					type='number'
-					min='0'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<CButton
-				color='primary'
-				type='submit'
-				:disabled='invalid || (uploadCert && inputEmpty)'
-			>
-				{{ $t('forms.save') }}
-			</CButton>
-		</CForm>
-	</ValidationObserver>
+					type='submit'
+					:disabled='invalid || (uploadCert && inputEmpty)'
+				>
+					{{ $t('forms.save') }}
+				</CButton>
+			</CForm>
+		</ValidationObserver>
+	</CCard>
 </template>
 
 <script lang='ts'>
