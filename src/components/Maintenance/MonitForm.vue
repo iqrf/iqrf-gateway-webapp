@@ -15,65 +15,67 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver
-		v-if='configuration !== null'
-		v-slot='{invalid}'
-	>
-		<hr>
-		<CForm @submit.prevent='saveConfig'>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.endpoint"),
-				}'
-			>
-				<CInput
-					v-model='configuration.endpoint'
-					:label='$t("maintenance.monit.form.endpoint")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required|userpass'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.username"),
-					userpass: $t("maintenance.monit.errors.usernameInvalid"),
-				}'
-			>
-				<CInput
-					v-model='configuration.username'
-					:label='$t("maintenance.monit.form.username")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<ValidationProvider
-				v-slot='{errors, touched, valid}'
-				rules='required|userpass'
-				:custom-messages='{
-					required: $t("maintenance.monit.errors.password"),
-					userpass: $t("maintenance.monit.errors.passwordInvalid"),
-				}'
-			>
-				<CInput
-					v-model='configuration.password'
-					:label='$t("maintenance.monit.form.password")'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
-				/>
-			</ValidationProvider>
-			<CButton
-				color='primary'
-				type='submit'
-				:disabled='invalid'
-			>
-				{{ $t('forms.save') }}
-			</CButton>
-		</CForm>
-	</ValidationObserver>
+	<CCard body-wrapper>
+		<ValidationObserver
+			v-if='configuration !== null'
+			v-slot='{invalid}'
+		>
+			<hr>
+			<CForm @submit.prevent='saveConfig'>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("maintenance.monit.errors.endpoint"),
+					}'
+				>
+					<CInput
+						v-model='configuration.endpoint'
+						:label='$t("maintenance.monit.form.endpoint")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required|userpass'
+					:custom-messages='{
+						required: $t("maintenance.monit.errors.username"),
+						userpass: $t("maintenance.monit.errors.usernameInvalid"),
+					}'
+				>
+					<CInput
+						v-model='configuration.username'
+						:label='$t("maintenance.monit.form.username")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required|userpass'
+					:custom-messages='{
+						required: $t("maintenance.monit.errors.password"),
+						userpass: $t("maintenance.monit.errors.passwordInvalid"),
+					}'
+				>
+					<CInput
+						v-model='configuration.password'
+						:label='$t("maintenance.monit.form.password")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<CButton
+					color='primary'
+					type='submit'
+					:disabled='invalid'
+				>
+					{{ $t('forms.save') }}
+				</CButton>
+			</CForm>
+		</ValidationObserver>
+	</CCard>
 </template>
 
 <script lang='ts'>

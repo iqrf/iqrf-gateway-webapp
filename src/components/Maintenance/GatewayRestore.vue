@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
+	<CCard>
 		<CElementCover
 			v-if='running'
 			:opacity='0.75'
@@ -23,8 +23,9 @@ limitations under the License.
 		>
 			<CSpinner color='primary' />
 		</CElementCover>
-		<CForm>
-			<div class='form-group'>
+		<CCardBody>
+			<CCardTitle>{{ $t('maintenance.backup.restoreTitle') }}</CCardTitle>
+			<CForm>
 				<CInputFile
 					ref='backupArchive'
 					accept='.zip'
@@ -39,10 +40,9 @@ limitations under the License.
 				>
 					{{ $t('maintenance.backup.form.restore') }}
 				</CButton>
-			</div>
-			<em>{{ $t('maintenance.backup.messages.restoreNote') }}</em>
-		</CForm>
-	</div>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -66,7 +66,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 /**
  * Gateway restore component
  */
-export default class RestoreComponent extends Vue {
+export default class GatewayRestore extends Vue {
 
 	/**
 	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
