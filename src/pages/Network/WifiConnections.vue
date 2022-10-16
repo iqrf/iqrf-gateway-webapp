@@ -32,7 +32,7 @@ limitations under the License.
 						size='sm'
 						@click='getAccessPoints'
 					>
-						<CIcon :content='icons.refresh' size='sm' />
+						<CIcon :content='cilReload' size='sm' />
 						{{ $t('forms.refresh') }}
 					</CButton>
 				</CCardHeader>
@@ -59,16 +59,6 @@ limitations under the License.
 									</CBadge>
 									{{ item.ssid }}
 								</div>
-								<span
-									style='cursor: pointer; align-content: right;'
-									@click='item.aps[0].showDetails = !item.aps[0].showDetails'
-								>
-									<CIcon
-										class='text-info'
-										size='xl'
-										:content='icons.details'
-									/>
-								</span>
 							</td>
 						</template>
 						<template #security='{item}'>
@@ -98,7 +88,7 @@ limitations under the License.
 										item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
 										addConnection(item.aps[0])'
 								>
-									<CIcon :content='item.aps[0].inUse ? icons.disconnect : icons.connect' size='sm' />
+									<CIcon :content='item.aps[0].inUse ? cilLinkBroken : cilLink' size='sm' />
 									{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
 								</CButton> <CButton
 									v-if='item.aps[0].uuid'
@@ -106,7 +96,7 @@ limitations under the License.
 									color='primary'
 									:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
 								>
-									<CIcon :content='icons.edit' size='sm' />
+									<CIcon :content='cilPencil' size='sm' />
 									{{ $t('table.actions.edit') }}
 								</CButton> <CButton
 									v-if='item.aps[0].uuid'
@@ -114,42 +104,54 @@ limitations under the License.
 									color='danger'
 									@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
 								>
-									<CIcon :content='icons.remove' size='sm' />
+									<CIcon :content='cilTrash' size='sm' />
 									{{ $t('table.actions.delete') }}
+								</CButton>
+							</td>
+						</template>
+						<template #show_details='{item}'>
+							<td class='py-2'>
+								<CButton
+									color='info'
+									size='sm'
+									@click='item.aps[0].showDetails = !item.aps[0].showDetails'
+								>
+									<CIcon :content='cilInfo' />
 								</CButton>
 							</td>
 						</template>
 						<template #details='{item}'>
 							<CCollapse :show='item.aps[0].showDetails'>
 								<CCardBody>
-									<div class='table-details'>
+									<div class='datatable-expansion-table'>
 										<table>
-											<tbody>
-												<tr>
-													<th>BSSID</th>
-													<td>
-														{{ item.aps[0].bssid }}
-													</td>
-												</tr>
-												<tr>
-													<th>Mode</th>
-													<td>
-														{{ item.aps[0].mode }}
-													</td>
-												</tr>
-												<tr>
-													<th>Channel</th>
-													<td>
-														{{ item.aps[0].channel }}
-													</td>
-												</tr>
-												<tr>
-													<th>Rate</th>
-													<td>
-														{{ item.aps[0].rate }}
-													</td>
-												</tr>
-											</tbody>
+											<caption>
+												<b>{{ $t('network.wireless.table.details') }}</b>
+											</caption>
+											<tr>
+												<th>{{ $t('network.wireless.table.bssid') }}</th>
+												<td>
+													{{ item.aps[0].bssid }}
+												</td>
+											</tr>
+											<tr>
+												<th>{{ $t('network.wireless.table.mode') }}</th>
+												<td>
+													{{ item.aps[0].mode }}
+												</td>
+											</tr>
+											<tr>
+												<th>{{ $t('network.wireless.table.channel') }}</th>
+												<td>
+													{{ item.aps[0].channel }}
+												</td>
+											</tr>
+											<tr>
+												<th>{{ $t('network.wireless.table.rate') }}</th>
+												<td>
+													{{ item.aps[0].rate }}
+												</td>
+											</tr>
 										</table>
 									</div>
 								</CCardBody>
@@ -216,8 +218,9 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
 
-import {cilInfo, cilPencil, cilLink, cilLinkBroken, cilReload, cilTrash} from '@coreui/icons';
+import {cilInfo, cilLink, cilLinkBroken, cilPencil, cilReload, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
 import VersionService from '@/services/VersionService';
@@ -238,6 +241,14 @@ import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} fr
 		CProgress,
 		CSelect,
 	},
+	data: () => ({
+		cilInfo,
+		cilLink,
+		cilLinkBroken,
+		cilPencil,
+		cilReload,
+		cilTrash,
+	}),
 	metaInfo: {
 		title: 'network.wireless.title'
 	}
@@ -262,18 +273,6 @@ export default class WifiConnections extends Vue {
 	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
 	 */
 	private interfacesLoaded = false;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		details: cilInfo,
-		connect: cilLink,
-		disconnect: cilLinkBroken,
-		edit: cilPencil,
-		refresh: cilReload,
-		remove: cilTrash,
-	};
 
 	/**
 	 * @constant {Array<IField>} tableFields Array of CoreUI data table columns
@@ -305,6 +304,13 @@ export default class WifiConnections extends Vue {
 			label: this.$t('table.actions.title'),
 			filter: false,
 			sorter: false,
+		},
+		{
+			key: 'show_details',
+			label: '',
+			_style: 'width: 1%',
+			sorter: false,
+			filter: false,
 		},
 	];
 
@@ -603,30 +609,3 @@ export default class WifiConnections extends Vue {
 	}
 }
 </script>
-
-<style lang='scss' scoped>
-.table-ssid {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: -1px;
-}
-
-.table-details {
-	display: flex;
-	align-items: flex-start;
-	justify-content: left;
-}
-
-.table-details > table {
-	margin-left: 1em;
-	margin-right: 1em;
-}
-
-.table {
-	th,
-	td {
-		border: 0;
-	}
-}
-</style>
