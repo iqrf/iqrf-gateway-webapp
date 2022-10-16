@@ -94,7 +94,7 @@ limitations under the License.
 										/>
 									</ValidationProvider>
 									<CSelect
-										v-if='connection.wifi.security.wep.type === "key"'
+										v-if='connection.wifi.security.wep.type === WepKeyType.KEY'
 										:value.sync='wepLen'
 										:options='wepLenOptions'
 										:label='$t("network.wireless.form.wep.length")'
@@ -123,9 +123,11 @@ limitations under the License.
 										v-for='(key, index) of connection.wifi.security.wep.keys'
 										:key='index'
 										v-slot='{errors, touched, valid}'
-										:rules='connection.wifi.security.wep.type === "key" ? "wepKey" : ""'
+										:rules='{
+											wepKey: connection.wifi.security.wep.type === WepKeyType.KEY,
+										}'
 										:custom-messages='{
-											wepKey: (wepLen === "64bit" ?
+											wepKey: (wepLen === WepKeyLen.BIT64 ?
 												$t("network.wireless.errors.wepKey64Invalid") :
 												$t("network.wireless.errors.wepKey128Invalid")),
 										}'
@@ -236,7 +238,7 @@ limitations under the License.
 										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-								<div v-if='connection.ipv4.method === "manual"'>
+								<div v-if='connection.ipv4.method === ConfigurationMethod.MANUAL'>
 									<hr>
 									<CAlert
 										v-if='!ipv4InSubnet'
@@ -246,7 +248,10 @@ limitations under the License.
 									</CAlert>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+										:rules='{
+											required: connection.ipv4.method === ConfigurationMethod.MANUAL,
+											ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.address"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -261,7 +266,11 @@ limitations under the License.
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4|netmask" : ""'
+										:rules='{
+											required: connection.ipv4.method === ConfigurationMethod.MANUAL,
+											ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+											netmask: connection.ipv4.method === ConfigurationMethod.MANUAL,
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.mask"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -277,7 +286,10 @@ limitations under the License.
 									</ValidationProvider>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+										:rules='{
+											required: connection.ipv4.method === ConfigurationMethod.MANUAL,
+											ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv4.errors.gateway"),
 											ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -297,7 +309,10 @@ limitations under the License.
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv4.method === "manual" ? "required|ipv4" : ""'
+											:rules='{
+												required: connection.ipv4.method === ConfigurationMethod.MANUAL,
+												ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+											}'
 											:custom-messages='{
 												required: $t("network.connection.ipv4.errors.dns"),
 												ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
@@ -308,23 +323,26 @@ limitations under the License.
 												:label='$t("network.connection.ipv4.dns.address")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
-											/>
+											>
+												<template #prepend-content>
+													<span
+														class='text-success'
+														@click='addIpv4Dns'
+													>
+														<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+													</span>
+												</template>
+												<template #append-content>
+													<span
+														v-if='connection.ipv4.dns.length > 1'
+														class='text-danger'
+														@click='deleteIpv4Dns(index)'
+													>
+														<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+													</span>
+												</template>
+											</CInput>
 										</ValidationProvider>
-										<div class='form-group'>
-											<CButton
-												v-if='connection.ipv4.dns.length > 1'
-												color='danger'
-												@click='deleteIpv4Dns(index)'
-											>
-												{{ $t('network.connection.ipv4.dns.remove') }}
-											</CButton> <CButton
-												v-if='index === (connection.ipv4.dns.length - 1)'
-												color='success'
-												@click='addIpv4Dns'
-											>
-												{{ $t('network.connection.ipv4.dns.add') }}
-											</CButton>
-										</div>
 									</div>
 								</div>
 							</CCol>
@@ -346,64 +364,85 @@ limitations under the License.
 										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-								<div v-if='connection.ipv6.method === "manual"'>
-									<div
+								<div v-if='connection.ipv6.method === ConfigurationMethod.MANUAL'>
+									<hr>
+									<CRow
 										v-for='(address, index) in connection.ipv6.addresses'
 										:key='index'
+										form
 									>
-										<hr>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
-											:custom-messages='{
-												required: $t("network.connection.ipv6.errors.address"),
-												ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
-											}'
-										>
-											<CInput
-												v-model='address.address'
-												:label='$t("network.connection.ipv6.address")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
-											/>
-										</ValidationProvider>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|between:48,128":""'
-											:custom-messages='{
-												required: $t("network.connection.ipv6.errors.prefix"),
-												between: $t("network.connection.ipv6.errors.prefixInvalid"),
-											}'
-										>
-											<CInput
-												v-model.number='address.prefix'
-												type='number'
-												min='48'
-												max='128'
-												:label='$t("network.connection.ipv6.prefix")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
-											/>
-										</ValidationProvider>
-										<div class='form-group'>
-											<CButton
-												v-if='connection.ipv6.addresses.length > 1'
-												color='danger'
-												@click='deleteIpv6Address(index)'
+										<CCol sm='12' lg='8'>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												:rules='{
+													required: connection.ipv6.method === ConfigurationMethod.MANUAL,
+													ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+												}'
+												:custom-messages='{
+													required: $t("network.connection.ipv6.errors.address"),
+													ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
+												}'
 											>
-												{{ $t('network.connection.ipv6.addresses.remove') }}
-											</CButton> <CButton
-												v-if='index === (connection.ipv6.addresses.length - 1)'
-												color='success'
-												@click='addIpv6Address'
+												<CInput
+													v-model='address.address'
+													:label='$t("network.connection.ipv6.address")'
+													:is-valid='touched ? valid : null'
+													:invalid-feedback='errors.join(", ")'
+												>
+													<template #prepend-content>
+														<span
+															class='text-success'
+															@click='addIpv6Address'
+														>
+															<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+														</span>
+													</template>
+													<template #append-content>
+														<span
+															v-if='connection.ipv6.addresses.length > 1'
+															class='text-danger'
+															@click='deleteIpv6Address(index)'
+														>
+															<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+														</span>
+													</template>
+												</CInput>
+											</ValidationProvider>
+										</CCol>
+										<CCol sm='12' lg='4'>
+											<ValidationProvider
+												v-slot='{errors, touched, valid}'
+												:rules='{
+													required: connection.ipv6.method === ConfigurationMethod.MANUAL,
+													between: {
+														enabled: connection.ipv6.method === ConfigurationMethod.MANUAL,
+														min: 48,
+														max: 128,
+													}
+												}'
+												:custom-messages='{
+													required: $t("network.connection.ipv6.errors.prefix"),
+													between: $t("network.connection.ipv6.errors.prefixInvalid"),
+												}'
 											>
-												{{ $t('network.connection.ipv6.addresses.add') }}
-											</CButton>
-										</div>
-									</div><hr>
+												<CInput
+													v-model.number='address.prefix'
+													type='number'
+													min='48'
+													max='128'
+													:label='$t("network.connection.ipv6.prefix")'
+													:is-valid='touched ? valid : null'
+													:invalid-feedback='errors.join(", ")'
+												/>
+											</ValidationProvider>
+										</CCol>
+									</CRow>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
-										:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
+										:rules='{
+											required: connection.ipv6.method === ConfigurationMethod.MANUAL,
+											ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+										}'
 										:custom-messages='{
 											required: $t("network.connection.ipv6.errors.gateway"),
 											ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
@@ -422,7 +461,10 @@ limitations under the License.
 									>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
-											:rules='connection.ipv6.method === "manual" ? "required|ipv6":""'
+											:rules='{
+												required: connection.ipv6.method === ConfigurationMethod.MANUAL,
+												ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+											}'
 											:custom-messages='{
 												required: $t("network.connection.ipv6.errors.dns"),
 												ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
@@ -433,23 +475,26 @@ limitations under the License.
 												:label='$t("network.connection.ipv6.dns.address")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
-											/>
+											>
+												<template #prepend-content>
+													<span
+														class='text-success'
+														@click='addIpv6Dns'
+													>
+														<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+													</span>
+												</template>
+												<template #append-content>
+													<span
+														v-if='connection.ipv6.dns.length > 1'
+														class='text-danger'
+														@click='deleteIpv6Dns(index)'
+													>
+														<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+													</span>
+												</template>
+											</CInput>
 										</ValidationProvider>
-										<div class='form-group'>
-											<CButton
-												v-if='connection.ipv6.dns.length > 1'
-												color='danger'
-												@click='deleteIpv6Dns(index)'
-											>
-												{{ $t('network.connection.ipv6.dns.remove') }}
-											</CButton> <CButton
-												v-if='index === (connection.ipv6.dns.length - 1)'
-												color='success'
-												@click='addIpv6Dns'
-											>
-												{{ $t('network.connection.ipv6.dns.add') }}
-											</CButton>
-										</div>
 									</div>
 								</div>
 							</CCol>
@@ -512,13 +557,15 @@ import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CModal, CSelect} from 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {sleep} from '@/helpers/sleep';
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {ConfigurationMethod} from '@/enums/Network/Ip';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {sleep} from '@/helpers/sleep';
 import {v4 as uuidv4} from 'uuid';
 import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
-
 import ip from 'ip-regex';
+import UrlBuilder from '@/helpers/urlBuilder';
+
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
 import VersionService from '@/services/VersionService';
@@ -526,7 +573,6 @@ import VersionService from '@/services/VersionService';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {IConnection, IConnectionModal, NetworkInterface} from '@/interfaces/network';
 import {IOption} from '@/interfaces/coreui';
-import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -542,6 +588,11 @@ import UrlBuilder from '@/helpers/urlBuilder';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		ConfigurationMethod,
+		WepKeyLen,
+		WepKeyType,
+	}),
 	metaInfo: {
 		title: 'network.connection.edit',
 	}
@@ -564,13 +615,13 @@ export default class ConnectionForm extends Vue {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: 'auto',
+			method: ConfigurationMethod.AUTO,
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: 'auto',
+			method: ConfigurationMethod.AUTO,
 		}
 	};
 
@@ -643,11 +694,11 @@ export default class ConnectionForm extends Vue {
 	private pskVisible = false;
 
 	/**
-	 * @var {Record<string, string>} originalIPv4 IPv4 address and method before change
+	 * @var {Record<string, string|ConfigurationMethod>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
 		address: '',
-		method: 'auto',
+		method: ConfigurationMethod.AUTO,
 	};
 
 	/**

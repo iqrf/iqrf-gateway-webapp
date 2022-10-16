@@ -2664,7 +2664,12 @@
 				"noAccessPoints": "No available access points.",
 				"ssid": "Name",
 				"signal": "Signal strength",
-				"security": "Network security"
+				"security": "Network security",
+				"details": "Access point details",
+				"bssid": "BSSID",
+				"mode": "Mode",
+				"channel": "Channel",
+				"rate": "Rate"
 			},
 			"multipleInterfaces": "Multiple Wi-Fi interfaces detected, select interface to use.",
 			"modal": {

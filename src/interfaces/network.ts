@@ -14,6 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {EapPhaseOneMethod, EapPhaseTwoMethod} from '@/enums/Network/WifiSecurity';
+
 /**
  * Network connection interface
  */
@@ -70,7 +74,7 @@ export interface IConnectionIPv4 {
 	addresses: Array<IConnectionIPv4Addrs>
 	dns: Array<IConnectionIPDns>
 	gateway: string|null
-	method: string
+	method: ConfigurationMethod
 	current?: IConnectionIPv4
 }
 
@@ -78,7 +82,7 @@ export interface IConnectionIPv6 {
 	addresses: Array<IConnectionIPv6Addrs>
 	dns: Array<IConnectionIPDns>
 	gateway: string|null
-	method: string
+	method: ConfigurationMethod
 	current?: IConnectionIPv6
 }
 
@@ -135,28 +139,6 @@ export interface IWifiSecurity {
 	leap: IWifiLeap
 	wep: IWifiWep
 	eap: IWifiEap
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase one authentication method enum
- */
-export enum EapPhaseOneMethod {
-	FAST = 'fast',
-	LEAP = 'leap',
-	MD5 = 'md5',
-	PEAP = 'peap',
-	PWD = 'pwd',
-	TLS = 'tls',
-	TTLS = 'ttls',
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase two authentication method enum
- */
-export enum EapPhaseTwoMethod {
-	GTC = 'gtc',
-	MD5 = 'md5',
-	MSCHAPV2 = 'mschapv2',
 }
 
 /**

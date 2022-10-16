@@ -151,6 +151,7 @@ import {CButton, CCard, CCardBody, CForm, CInput, CSelect, CSwitch} from '@coreu
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
+import {ConfigurationMethod} from '@/enums/Network/Ip';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import {v4 as uuidv4} from 'uuid';
@@ -177,6 +178,9 @@ import NetworkOperator from '@/entities/NetworkOperator';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		ConfigurationMethod,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as MobileConnectionForm).pageTitle
@@ -205,13 +209,13 @@ export default class MobileConnectionForm extends Vue {
 			addresses: [],
 			dns: [],
 			gateway: null,
-			method: 'auto',
+			method: ConfigurationMethod.AUTO,
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: null,
-			method: 'ignore',
+			method: ConfigurationMethod.IGNORE,
 		},
 		gsm: {
 			apn: '',
