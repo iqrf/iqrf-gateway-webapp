@@ -16,40 +16,10 @@
  */
 
 /**
- * WEP key length
+ * Wireguard IP stack
  */
-export enum WepKeyLen {
-	BIT64 = '64bit',
-	BIT128 = '128bit',
-}
-
-/**
- * WEP key type
- */
-export enum WepKeyType {
-	KEY = 'key',
-	PASSPHRASE = 'passphrase',
-	UNKNOWN = 'unknown',
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase one authentication method enum
- */
-export enum EapPhaseOneMethod {
-	FAST = 'fast',
-	LEAP = 'leap',
-	MD5 = 'md5',
-	PEAP = 'peap',
-	PWD = 'pwd',
-	TLS = 'tls',
-	TTLS = 'ttls',
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase two authentication method enum
- */
-export enum EapPhaseTwoMethod {
-	GTC = 'gtc',
-	MD5 = 'md5',
-	MSCHAPV2 = 'mschapv2',
+export enum WireguardStack {
+	IPV4 = 'ipv4',
+	IPV6 = 'ipv6',
+	DUAL = 'both',
 }

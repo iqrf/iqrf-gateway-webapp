@@ -30,8 +30,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'vue2-datepicker/index.css';
 
 import {config, library} from '@fortawesome/fontawesome-svg-core';
-import {faEye, faEyeSlash, faSquarePlus, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faClipboard, faEye, faEyeSlash, faSquarePlus, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
+import {faKey, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import '@/plugins/axios';
 import '@/plugins/clipboard';
@@ -44,8 +44,10 @@ import '@/plugins/webSocket';
 
 config.autoAddCss = true;
 library.add(
+	faClipboard,
 	faEye,
 	faEyeSlash,
+	faKey,
 	faPlus,
 	faSquarePlus,
 	faTrashAlt

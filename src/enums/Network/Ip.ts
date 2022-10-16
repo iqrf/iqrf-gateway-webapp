@@ -16,40 +16,14 @@
  */
 
 /**
- * WEP key length
+ * IP configuration method enum
  */
-export enum WepKeyLen {
-	BIT64 = '64bit',
-	BIT128 = '128bit',
-}
-
-/**
- * WEP key type
- */
-export enum WepKeyType {
-	KEY = 'key',
-	PASSPHRASE = 'passphrase',
-	UNKNOWN = 'unknown',
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase one authentication method enum
- */
-export enum EapPhaseOneMethod {
-	FAST = 'fast',
-	LEAP = 'leap',
-	MD5 = 'md5',
-	PEAP = 'peap',
-	PWD = 'pwd',
-	TLS = 'tls',
-	TTLS = 'ttls',
-}
-
-/**
- * EAP (Extensible Authentication Protocol) phase two authentication method enum
- */
-export enum EapPhaseTwoMethod {
-	GTC = 'gtc',
-	MD5 = 'md5',
-	MSCHAPV2 = 'mschapv2',
+export enum ConfigurationMethod {
+	AUTO = 'auto', //both
+	DHCP = 'dhcp', //v6
+	LINK_LOCAL = 'link-local', //both
+	SHARED = 'shared', //both
+	MANUAL = 'manual', //both
+	IGNORE = 'ignore', //v6
+	DISABLED = 'disabled', //both
 }
