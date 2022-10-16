@@ -1,67 +1,77 @@
 <template>
-	<CForm @submit.prevent='backup'>
-		<div class='form-group'>
-			<CButton
-				color='primary'
-				size='sm'
-				@click='setAll(true)'
-			>
-				{{ $t('maintenance.backup.form.selectAll') }}
-			</CButton> <CButton
-				color='secondary'
-				size='sm'
-				@click='setAll(false)'
-			>
-				{{ $t('maintenance.backup.form.deselectAll') }}
-			</CButton>
-		</div>
-		<CRow>
-			<CCol>
-				<h3>{{ $t('maintenance.backup.headings.software') }}</h3>
-				<CInputCheckbox
-					:checked.sync='migration.software.iqrf'
-					:label='$t("maintenance.backup.form.software.iqrf")'
-				/>
-				<CInputCheckbox
-					v-if='$store.getters["features/isEnabled"]("mender")'
-					:checked.sync='migration.software.mender'
-					:label='$t("maintenance.backup.form.software.mender")'
-				/>
-				<CInputCheckbox
-					v-if='$store.getters["features/isEnabled"]("monit")'
-					:checked.sync='migration.software.monit'
-					:label='$t("maintenance.backup.form.software.monit")'
-				/>
-			</CCol>
-			<CCol>
-				<h3>{{ $t('maintenance.backup.headings.system') }}</h3>
-				<CInputCheckbox
-					:checked.sync='migration.system.hostname'
-					:label='$t("maintenance.backup.form.system.hostname")'
-				/>
-				<CInputCheckbox
-					v-if='$store.getters["features/isEnabled"]("networkManager")'
-					:checked.sync='migration.system.network'
-					:label='$t("maintenance.backup.form.system.network")'
-				/>
-				<CInputCheckbox
-					:checked.sync='migration.system.time'
-					:label='$t("maintenance.backup.form.system.time")'
-				/>
-				<CInputCheckbox
-					v-if='$store.getters["features/isEnabled"]("systemdJournal")'
-					:checked.sync='migration.system.journal'
-					:label='$t("maintenance.backup.form.system.journal")'
-				/>
-			</CCol>
-		</CRow>
-		<CButton
-			color='primary'
-			type='submit'
-		>
-			{{ $t('maintenance.backup.form.backup') }}
-		</CButton>
-	</CForm>
+	<div>
+		<CCard>
+			<CCardBody>
+				<div style='display: flex; justify-content: space-between; align-items: center;'>
+					<CCardTitle>{{ $t('maintenance.backup.backupTitle') }}</CCardTitle>
+					<CButtonToolbar>
+						<CButton
+							class='mr-1'
+							color='primary'
+							size='sm'
+							@click='setAll(true)'
+						>
+							{{ $t('maintenance.backup.form.selectAll') }}
+						</CButton> <CButton
+							color='secondary'
+							size='sm'
+							@click='setAll(false)'
+						>
+							{{ $t('maintenance.backup.form.deselectAll') }}
+						</CButton>
+					</CButtonToolbar>
+				</div>
+				<CForm>
+					<CRow>
+						<CCol>
+							<h5>{{ $t('maintenance.backup.headings.software') }}</h5>
+							<CInputCheckbox
+								:checked.sync='migration.software.iqrf'
+								:label='$t("maintenance.backup.form.software.iqrf")'
+							/>
+							<CInputCheckbox
+								v-if='$store.getters["features/isEnabled"]("mender")'
+								:checked.sync='migration.software.mender'
+								:label='$t("maintenance.backup.form.software.mender")'
+							/>
+							<CInputCheckbox
+								v-if='$store.getters["features/isEnabled"]("monit")'
+								:checked.sync='migration.software.monit'
+								:label='$t("maintenance.backup.form.software.monit")'
+							/>
+						</CCol>
+						<CCol>
+							<h5>{{ $t('maintenance.backup.headings.system') }}</h5>
+							<CInputCheckbox
+								:checked.sync='migration.system.hostname'
+								:label='$t("maintenance.backup.form.system.hostname")'
+							/>
+							<CInputCheckbox
+								v-if='$store.getters["features/isEnabled"]("networkManager")'
+								:checked.sync='migration.system.network'
+								:label='$t("maintenance.backup.form.system.network")'
+							/>
+							<CInputCheckbox
+								:checked.sync='migration.system.time'
+								:label='$t("maintenance.backup.form.system.time")'
+							/>
+							<CInputCheckbox
+								v-if='$store.getters["features/isEnabled"]("systemdJournal")'
+								:checked.sync='migration.system.journal'
+								:label='$t("maintenance.backup.form.system.journal")'
+							/>
+						</CCol>
+					</CRow>
+					<CButton
+						color='primary'
+						@click='backup'
+					>
+						{{ $t('maintenance.backup.form.backup') }}
+					</CButton>
+				</CForm>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>
@@ -89,8 +99,7 @@ import {IBackup} from '@/interfaces/backup';
 /**
  * Gateway backup component
  */
-export default class BackupComponent extends Vue {
-
+export default class GatewayBackup extends Vue {
 	/**
 	 * @var {IBackup} migration Gateway migration request
 	 */

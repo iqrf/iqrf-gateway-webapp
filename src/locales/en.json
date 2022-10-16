@@ -3030,6 +3030,8 @@
 		"backup": {
 			"title": "Backup & Restore",
 			"description": "Gateway backup and restore management.",
+			"backupTitle": "Backup gateway",
+			"restoreTitle": "Restore gateway",
 			"headings": {
 				"software": "Software configuration",
 				"system": "System configuration"
@@ -3050,15 +3052,17 @@
 				"deselectAll": "Deselect all",
 				"archive": "Archive to restore from",
 				"backup": "Backup",
-				"restore": "Restore"
+				"restore": "Restore & Restart"
 			},
 			"messages": {
 				"backup": "Gateway backup in progress.",
 				"restore": "Restoring gateway configuration from backup archive.",
-				"restoreNote": "Gateway will be restarted at the end of the restore process.",
 				"backupFailed": "Failed to create gateway backup archive: {error}",
 				"restoreFailed": "Failed to restore gateway: {error}",
 				"restoreSuccess": "Gateway successfully restored from backup archive and will reboot at {time}."
+			},
+			"errors": {
+				"restoreArchive": "Please select backup archive to restore from."
 			}
 		},
 		"mender": {
@@ -3121,6 +3125,10 @@
 					"install": "Install artifact",
 					"commit": "Commit update",
 					"rollback": "Rollback update"
+				},
+				"errors": {
+					"missingArtifact": "Please select a Mender artifact file.",
+					"invalidArtifact": "Selected file is not a Mender artifact file."
 				},
 				"messages": {
 					"update": "Uploading and installing Mender artifact, this may take up to 30 minutes.",
