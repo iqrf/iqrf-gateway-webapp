@@ -28,6 +28,7 @@ use Nette\Utils\Strings;
 /**
  * IQRF TR series enum
  * @method static TrSeries TR_7XD();
+ * @method static TrSeries TR_7XG();
  */
 final class TrSeries extends Enum {
 
@@ -39,15 +40,34 @@ final class TrSeries extends Enum {
 	private const TR_7XD = '7xD';
 
 	/**
+	 * @var string IQRF (DC)TR-7xG
+	 */
+	private const TR_7XG = '7xG';
+
+	/**
 	 * Creates IQRF TR series enum from the IQRF TR type
 	 * @param string $trType IQRF TR type
 	 * @return TrSeries IQRF TR series enum
 	 */
 	public static function fromTrType(string $trType): self {
-		if (Strings::match($trType, '#(\(DC\))?TR-7\dDx#') !== null) {
-			return self::TR_7XD();
+		$matches = Strings::match($trType, '#(\(DC\))?TR-(?P<series>[78])\d(?P<module>[DG])x#');
+		if ($matches === null) {
+			throw new DomainException();
 		}
-		throw new DomainException();
+		$series = intval($matches['series']);
+		$module = $matches['module'];
+		if ($series === 7) {
+			switch ($module) {
+				case 'D':
+					return self::TR_7XD();
+				case 'G':
+					return self::TR_7XG();
+				default:
+					throw new DomainException();
+			}
+		} else {
+			throw new DomainException();
+		}
 	}
 
 	/**
@@ -56,15 +76,30 @@ final class TrSeries extends Enum {
 	 * @return TrSeries IQRF TR series enum
 	 */
 	public static function fromTrMcuType(int $trMcuType): self {
-		switch ($trMcuType >> 4) {
-			case 2:
-			case 4:
-			case 11:
-			case 12:
-			case 13:
-				return self::TR_7XD();
-			default:
-				throw new DomainException();
+		$mcuType = $trMcuType & 0x07;
+		$trType = $trMcuType >> 4;
+		if ($mcuType === 4) {
+			switch ($trType) {
+				case 2:
+				case 4:
+				case 11:
+				case 12:
+				case 13:
+					return self::TR_7XD();
+				default:
+					throw new DomainException();
+			}
+		} elseif ($mcuType === 5) {
+			switch ($trType) {
+				case 2:
+				case 11:
+				case 13:
+					return self::TR_7XG();
+				default:
+					throw new DomainException();
+			}
+		} else {
+			throw new DomainException();
 		}
 	}
 
@@ -76,9 +111,12 @@ final class TrSeries extends Enum {
 	public static function fromIqrfOsFileName(string $trSeries): self {
 		switch ($trSeries) {
 			case 'TR7x':
+			case 'TR7xD':
 				return self::TR_7XD();
+			case 'TR7xG':
+				return self::TR_7XG();
 			default:
-				throw new DomainException();
+				throw new DomainException('Unknown or unsupported TR series ' . $trSeries);
 		}
 	}
 
