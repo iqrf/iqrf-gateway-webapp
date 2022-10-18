@@ -39,15 +39,52 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TrSeriesTest extends TestCase {
 
 	/**
-	 * Tests the function to create IQRF TR series enum from the IQRF TR type - (DC)TR-76D
+	 * Returns TR series strings and corresponding TrSeries enum value
+	 * @return array<array<string|TrSeries>> TR series strings and values
 	 */
-	public function testFromTrTypeTr7xD(): void {
-		$expected = TrSeries::TR_7XD();
-		Assert::same($expected, TrSeries::fromTrType('(DC)TR-76Dx'));
+	public function getTrSeriesStringData(): array {
+		return [
+			['(DC)TR-76Dx', TrSeries::TR_7XD()],
+			['TR-76Dx', TrSeries::TR_7XD()],
+			['(DC)TR-72Gx', TrSeries::TR_7XG()],
+		];
 	}
 
 	/**
-	 * Tests the function to create IQRF TR series enum from the IQRF TR type - unknown type
+	 * Returns TR/MCU value and corresponding TrSeries enum value
+	 * @return array<array<int|TrSeries>> TR/MCU numerical and enum values
+	 */
+	public function getTrMcuNumericalData(): array {
+		return [
+			[36, TrSeries::TR_7XD()],
+			[37, TrSeries::TR_7XG()],
+		];
+	}
+
+	/**
+	 * Returns OS file name TR series value and corresponding TrSeries enum value
+	 * @return array<array<string|TrSeries>> OS file TR series and enum values
+	 */
+	public function getOsFileTrData(): array {
+		return [
+			['TR7x', TrSeries::TR_7XD()],
+			['TR7xD', TrSeries::TR_7XD()],
+			['TR7xG', TrSeries::TR_7XG()],
+		];
+	}
+
+	/**
+	 * Tests the function to create IQRF TR series enum from the IQRF TR type string
+	 * @dataProvider getTrSeriesStringData
+	 * @param string $trSeries TR series string
+	 * @param TrSeries $enumValue TR Series enum value
+	 */
+	public function testFromTrType(string $trSeries, TrSeries $enumValue): void {
+		Assert::same($enumValue, TrSeries::fromTrType($trSeries));
+	}
+
+	/**
+	 * Tests the function to create IQRF TR series enum from unknown IQRF TR type string
 	 */
 	public function testFromTrTypeUnknown(): void {
 		Assert::exception(function (): void {
@@ -56,15 +93,17 @@ final class TrSeriesTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create IQRF TR series enum from the IQRF TR type - (DC)TR-72D
+	 * Tests the function to create IQRF TR series enum from the IQRF TR type numerical value
+	 * @dataProvider getTrMcuNumericalData
+	 * @param int $trMcuType TR/MCU type numerical value
+	 * @param TrSeries $enumValue TR Series enum value
 	 */
-	public function testFromTrMcuTypeTr72D(): void {
-		$expected = TrSeries::TR_7XD();
-		Assert::same($expected, TrSeries::fromTrMcuType(36));
+	public function testFromTrMcuType(int $trMcuType, TrSeries $enumValue): void {
+		Assert::same($enumValue, TrSeries::fromTrMcuType($trMcuType));
 	}
 
 	/**
-	 * Tests the function to create IQRF TR series enum from the IQRF TR type - unknown type
+	 * Tests the function to create IQRF TR series enum from the IQRF TR type unknown value
 	 */
 	public function testFromTrMcuTypeUnknown(): void {
 		Assert::exception(function (): void {
@@ -73,11 +112,13 @@ final class TrSeriesTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create IQRF TR series enum from IQRF OS diff file name - (DC)TR-76D
+	 * Tests the function to create IQRF TR series enum from IQRF OS diff file name
+	 * @dataProvider getOsFileTrData
+	 * @param string $trSeries OS file TR series value
+	 * @param TrSeries $enumValue TR Series enum value
 	 */
-	public function testFromIqrfOsFileName7xD(): void {
-		$expected = TrSeries::TR_7XD();
-		Assert::same($expected, TrSeries::fromIqrfOsFileName('TR7x'));
+	public function testFromIqrfOsFileName(string $trSeries, TrSeries $enumValue): void {
+		Assert::same($enumValue, TrSeries::fromIqrfOsFileName($trSeries));
 	}
 
 	/**

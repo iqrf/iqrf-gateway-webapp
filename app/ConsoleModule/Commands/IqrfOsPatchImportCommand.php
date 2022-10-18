@@ -20,8 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\IqrfNetModule\Enums\TrSeries;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\EntityManager;
+use DomainException;
 use Nette\Utils\Finder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,7 +90,7 @@ class IqrfOsPatchImportCommand extends Command {
 				$output->writeln('IQRF OS patch ' . $file->getFilename() . ' has been already imported.');
 				continue;
 			}
-			$output->writeln('Importing IQRF OS patch ' . $file->getFilename());
+			$output->writeln('Processing IQRF OS patch ' . $file->getFilename());
 			$array = explode('-', $file->getBasename('.iqrf'));
 			[$fromVersion, $fromBuild] = sscanf($array[2], '%3d(%4x)');
 			[$toVersion, $toBuild] = sscanf($array[3], '%3d(%4x)');
@@ -99,7 +101,14 @@ class IqrfOsPatchImportCommand extends Command {
 			} else {
 				$parts = $part = 1;
 			}
+			try {
+				TrSeries::fromIqrfOsFileName($array[1]);
+			} catch (DomainException $e) {
+				$output->writeln(sprintf('Failed to import IQRF OS patch %s: %s', $file->getFilename(), $e->getMessage()));
+				continue;
+			}
 			$patch = new IqrfOsPatch($array[1], $fromVersion, $fromBuild, $toVersion, $toBuild, $part, $parts, $fileName);
+			$output->writeln('Importing IQRF OS patch ' . $file->getFilename());
 			$this->entityManager->persist($patch);
 			$this->entityManager->flush();
 		}
