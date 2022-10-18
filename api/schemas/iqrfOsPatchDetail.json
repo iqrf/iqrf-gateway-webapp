@@ -74,7 +74,7 @@
 			"$id": "#/properties/fileName",
 			"type": "string",
 			"title": "Patch file name",
-			"example": "ChangeOS-TR7x-307(0870)-400(08B1)-1of2.iqrf"
+			"example": "ChangeOS-TR7xD-307(0870)-400(08B1)-1of2.iqrf"
 		}
 	}
 }

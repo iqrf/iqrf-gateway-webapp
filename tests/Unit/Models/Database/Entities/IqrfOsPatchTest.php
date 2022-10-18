@@ -80,7 +80,7 @@ class IqrfOsPatchTest extends TestCase {
 	/**
 	 * @var string File name
 	 */
-	private const FILE_NAME = 'OS-TR7x-307(2160)-400(2225).iqrf';
+	private const FILE_NAME = 'OS-TR7xD-307(2160)-400(2225).iqrf';
 
 	/**
 	 * Sets up testing environment
