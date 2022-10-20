@@ -44,11 +44,11 @@ limitations under the License.
 					</CHeaderNavLink>
 				</template>
 				<CDropdownItem to='/profile'>
-					<CIcon :content='icons.profile' />
+					<CIcon :content='cilUser' />
 					{{ $t('core.profile.title') }}
 				</CDropdownItem>
 				<CDropdownItem @click='signOut'>
-					<CIcon :content='icons.logout' />
+					<CIcon :content='cilLockLocked' />
 					{{ $t('core.sign.out.title') }}
 				</CDropdownItem>
 			</CDropdown>
@@ -82,21 +82,17 @@ import ThemeManager from '@/helpers/themeManager';
 		CIcon,
 		CToggler,
 		Logo: ThemeManager.getSidebarLogo(),
-	}
+	},
+	data: () => ({
+		cilLockLocked,
+		cilUser,
+	}),
 })
 
 /**
  * Header component
  */
 export default class TheHeader extends Vue {
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		logout: cilLockLocked,
-		profile: cilUser,
-	};
-
 	/**
 	 * Returns the app title
 	 * @return {string} App title

@@ -40,7 +40,7 @@ limitations under the License.
 								:invalid-feedback='errors.join(", ")'
 							>
 								<template #prepend-content>
-									<CIcon :content='icons.user' />
+									<CIcon :content='cilUser' />
 								</template>
 							</CInput>
 						</ValidationProvider>
@@ -62,7 +62,7 @@ limitations under the License.
 								:invalid-feedback='errors.join(", ")'
 							>
 								<template #prepend-content>
-									<CIcon :content='icons.lock' />
+									<CIcon :content='cilLockLocked' />
 								</template>
 							</CInput>
 						</ValidationProvider>
@@ -108,6 +108,10 @@ import TheWizard from '@/components/TheWizard.vue';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		cilLockLocked,
+		cilUser,
+	}),
 	metaInfo: {
 		title: 'core.sign.in.title',
 	},
@@ -117,14 +121,6 @@ import TheWizard from '@/components/TheWizard.vue';
  * Sign in page component
  */
 export default class SignIn extends Vue {
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		user: cilUser,
-		lock: cilLockLocked,
-	};
-
 	/**
 	 * @var {string} password User password
 	 */
