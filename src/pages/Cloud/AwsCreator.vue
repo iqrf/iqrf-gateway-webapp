@@ -24,12 +24,14 @@ limitations under the License.
 					size='sm'
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
 				>
+					<CIcon :content='cilFile' size='sm' />
 					{{ $t('cloud.guides.pdf') }}
 				</CButton> <CButton
 					color='danger'
 					size='sm'
 					href='https://youtu.be/Z9R2vdaw3KA'
 				>
+					<CIcon :content='cibYoutube' size='sm' />
 					{{ $t('cloud.guides.video') }}
 				</CButton>
 			</CCardHeader>
@@ -90,9 +92,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CInputFile} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
@@ -107,11 +110,16 @@ import {AxiosError} from 'axios';
 		CCardBody,
 		CCardHeader,
 		CForm,
+		CIcon,
 		CInput,
 		CInputFile,
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		cibYoutube,
+		cilFile,
+	}),
 	metaInfo: {
 		title: 'cloud.amazonAws.form.title',
 	},

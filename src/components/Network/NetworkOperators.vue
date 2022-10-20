@@ -23,7 +23,7 @@ limitations under the License.
 				size='sm'
 				@click='addOperator'
 			>
-				<CIcon :content='icons.add' />
+				<CIcon :content='cilPlus' />
 			</CButton>
 			<CDropdown
 				v-for='(operator, i) of operators'
@@ -36,19 +36,19 @@ limitations under the License.
 					v-if='$route.path.includes("network/mobile/add") || $route.path.includes("network/mobile/edit")'
 					@click='$emit("apply", operator)'
 				>
-					<CIcon :content='icons.apply' />
+					<CIcon :content='cilCopy' />
 					{{ $t('network.operators.apply') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='editOperator(i)'
 				>
-					<CIcon :content='icons.edit' />
+					<CIcon :content='cilPencil' />
 					{{ $t('network.operators.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='deleteOperator(i)'
 				>
-					<CIcon :content='icons.delete' />
+					<CIcon :content='cilTrash' />
 					{{ $t('network.operators.delete') }}
 				</CDropdownItem>
 			</CDropdown>
@@ -93,6 +93,12 @@ import {IOperator} from '@/interfaces/network';
 		NetworkOperatorDeleteModal,
 		NetworkOperatorForm,
 	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -104,16 +110,6 @@ export default class NetworkOperators extends Vue {
 	 * @var {Array<IOperator>} operators Array of network operators
 	 */
 	private operators: Array<NetworkOperator> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		delete: cilTrash,
-		apply: cilCopy,
-	};
 
 	/**
 	 * Retrieves operators

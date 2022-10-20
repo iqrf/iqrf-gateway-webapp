@@ -26,7 +26,7 @@ limitations under the License.
 					size='sm'
 					to='/ip-network/vpn/add'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('forms.add') }}
 				</CButton>
 			</CCardHeader>
@@ -59,7 +59,7 @@ limitations under the License.
 								@click='changeActiveState(item.id, item.name, !item.active)'
 							>
 								<CIcon
-									:content='item.active ? icons.deactivate : icons.activate'
+									:content='item.active ? cilLinkBroken : cilLink'
 									size='sm'
 								/>
 								{{ $t(`network.wireguard.tunnels.table.action.${item.active ? 'deactivate' : 'activate'}`) }}
@@ -69,7 +69,7 @@ limitations under the License.
 								@click='changeEnabledState(item.id, item.name, !item.enabled)'
 							>
 								<CIcon
-									:content='item.enabled ? icons.disable : icons.enable'
+									:content='item.enabled ? cilXCircle : cilCheckCircle'
 									size='sm'
 								/>
 								{{ $t(`table.actions.${item.enabled ? 'disable' : 'enable'}`) }}
@@ -78,14 +78,14 @@ limitations under the License.
 								color='primary'
 								:to='"/ip-network/vpn/edit/" + item.id'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								size='sm'
 								color='danger'
 								@click='tunnelToDelete = item'
 							>
-								<CIcon :content='icons.remove' size='sm' />
+								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -152,6 +152,15 @@ import {IWG} from '@/interfaces/network';
 		CIcon,
 		CInput,
 	},
+	data: () => ({
+		cilCheckCircle,
+		cilLink,
+		cilLinkBroken,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+		cilXCircle,
+	}),
 	metaInfo: {
 		title: 'network.wireguard.title'
 	}
@@ -161,20 +170,6 @@ import {IWG} from '@/interfaces/network';
  * WireGuard connections component
  */
 export default class WireguardTunnels extends Vue {
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		activate: cilLink,
-		deactivate: cilLinkBroken,
-		enable: cilCheckCircle,
-		disable: cilXCircle,
-	};
-
 	/**
 	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */

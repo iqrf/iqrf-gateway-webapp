@@ -22,13 +22,13 @@ limitations under the License.
 				color='danger'
 				@click='powerOff()'
 			>
-				<CIcon :content='icons.off' />
+				<CIcon :content='cilPowerStandby' />
 				{{ $t('gateway.power.powerOff') }}
 			</CButton> <CButton
 				color='primary'
 				@click='reboot()'
 			>
-				<CIcon :content='icons.reboot' />
+				<CIcon :content='cilReload' />
 				{{ $t('gateway.power.reboot') }}
 			</CButton>
 		</CCard>
@@ -53,6 +53,10 @@ import {MetaInfo} from 'vue-meta';
 		CCard,
 		CIcon,
 	},
+	data: () => ({
+		cilPowerStandby,
+		cilReload,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: 'gateway.power.title',
@@ -64,14 +68,6 @@ import {MetaInfo} from 'vue-meta';
  * Power control component
  */
 export default class PowerControl extends Vue {
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		off: cilPowerStandby,
-		reboot: cilReload
-	};
-
 	/**
 	 * Performs power off
 	 */

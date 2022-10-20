@@ -23,7 +23,7 @@ limitations under the License.
 				size='sm'
 				@click='showFormModal()'
 			>
-				<CIcon :content='icons.add' />
+				<CIcon :content='cilPlus' />
 			</CButton>
 			<CDropdown
 				v-for='(mapping, i) of mappings'
@@ -35,19 +35,19 @@ limitations under the License.
 				<CDropdownItem
 					@click='setMapping(i)'
 				>
-					<CIcon :content='icons.set' />
+					<CIcon :content='cilCopy' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='showFormModal(mapping)'
 				>
-					<CIcon :content='icons.edit' />
+					<CIcon :content='cilPencil' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='showDeleteModal(i, mapping.name)'
 				>
-					<CIcon :content='icons.remove' />
+					<CIcon :content='cilTrash' />
 					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
 				</CDropdownItem>
 			</CDropdown>
@@ -82,6 +82,12 @@ import {IMapping, MappingType} from '@/interfaces/mappings';
 		MappingDeleteModal,
 		MappingFormModal,
 	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -97,16 +103,6 @@ export default class InterfaceMappings extends Vue {
 	 * @property {MappingType} interfaceType Communication interface type
 	 */
 	@Prop({required: true}) interfaceType!: MappingType;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		set: cilCopy,
-	};
 
 	/**
 	 * Vue lifecycle hook mounted

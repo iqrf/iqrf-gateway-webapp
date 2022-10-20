@@ -24,12 +24,14 @@ limitations under the License.
 					size='sm'
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'
 				>
+					<CIcon :content='cilFile' size='sm' />
 					{{ $t('cloud.guides.pdf') }}
 				</CButton> <CButton
 					color='danger'
 					size='sm'
 					href='https://youtu.be/xoAReOyrkZ4'
 				>
+					<CIcon :content='cibYoutube' size='sm' />
 					{{ $t('cloud.guides.video') }}
 				</CButton>
 			</CCardHeader>
@@ -131,6 +133,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
@@ -150,6 +153,10 @@ import {IIbmCloud} from '@/interfaces/clouds';
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		cibYoutube,
+		cilFile,
+	}),
 	metaInfo: {
 		title: 'cloud.ibmCloud.form.title',
 	},

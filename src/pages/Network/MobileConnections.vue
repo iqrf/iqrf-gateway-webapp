@@ -31,7 +31,7 @@ limitations under the License.
 						size='sm'
 						to='/ip-network/mobile/add'
 					>
-						<CIcon :content='icons.add' size='sm' />
+						<CIcon :content='cilPlus' size='sm' />
 						Add connection
 					</CButton>
 				</CCardHeader>
@@ -73,21 +73,21 @@ limitations under the License.
 									:color='item.interfaceName === null ? "success" : "danger"'
 									@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
 								>
-									<CIcon :content='item.interfaceName === null ? icons.connect : icons.disconnect' size='sm' />
+									<CIcon :content='item.interfaceName === null ? cilLink : cilLinkBroken' size='sm' />
 									{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
 								</CButton> <CButton
 									size='sm'
 									color='primary'
 									:to='"/ip-network/mobile/edit/" + item.uuid'
 								>
-									<CIcon :content='icons.edit' size='sm' />
+									<CIcon :content='cilPencil' size='sm' />
 									{{ $t('table.actions.edit') }}
 								</CButton> <CButton
 									size='sm'
 									color='danger'
 									@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
 								>
-									<CIcon :content='icons.remove' size='sm' />
+									<CIcon :content='cilTrash' size='sm' />
 									{{ $t('table.actions.delete') }}
 								</CButton>
 							</td>
@@ -127,6 +127,13 @@ import {IModem, NetworkConnection} from '@/interfaces/network';
 		CProgress,
 		NetworkOperators,
 	},
+	data: () => ({
+		cilLink,
+		cilLinkBroken,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 	metaInfo: {
 		title: 'network.mobile.title',
 	},
@@ -156,17 +163,6 @@ export default class MobileConnections extends Vue {
 	 * @var {Array<IModem>} modems Available modems
 	 */
 	private modems: Array<IModem> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Table icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-		connect: cilLink,
-		disconnect: cilLinkBroken,
-	};
 
 	/**
 	 * @constant {Array<IField>} fields GSM connections table fields
