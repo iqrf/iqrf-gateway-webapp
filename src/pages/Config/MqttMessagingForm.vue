@@ -25,7 +25,7 @@ limitations under the License.
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='saveConfig'>
+					<CForm>
 						<legend>{{ $t('config.daemon.messagings.mqtt.legend') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -130,12 +130,12 @@ limitations under the License.
 									<CSelect
 										:value.sync='configuration.Qos'
 										:label='$t("config.daemon.messagings.mqtt.form.QoS")'
+										:description='$t(`config.daemon.messagings.mqtt.messages.qos.${configuration.Qos}`)'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='errors.join(", ")'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.QoS")'
 										:options='qosOptions'
 									/>
-									<p>{{ $t(`config.daemon.messagings.mqtt.messages.qos.${configuration.Qos}`) }}</p>
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
@@ -149,12 +149,12 @@ limitations under the License.
 									<CSelect
 										:value.sync='configuration.Persistence'
 										:label='$t("config.daemon.messagings.mqtt.form.Persistence")'
+										:description='$t(`config.daemon.messagings.mqtt.messages.persistence.${configuration.Persistence}`)'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='errors.join(", ")'
 										:placeholder='$t("config.daemon.messagings.mqtt.form.Persistence")'
 										:options='persistenceOptions'
 									/>
-									<p>{{ $t(`config.daemon.messagings.mqtt.messages.persistence.${configuration.Persistence}`) }}</p>
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
@@ -241,22 +241,19 @@ limitations under the License.
 								/>
 							</CCol>
 						</CRow>
-						<CRow>
-							<CCol>
-								<label style='font-size: 1.5rem;'>
-									{{ $t('config.daemon.messagings.tlsTitle') }}
-								</label>
-								<CSwitch
-									color='primary'
-									size='lg'
-									shape='pill'
-									label-on='ON'
-									label-off='OFF'
-									:checked.sync='configuration.EnabledSSL'
-									style='float: right;'
-								/>
-							</CCol>
-						</CRow>
+						<div class='form-group'>
+							<legend>
+								{{ $t('config.daemon.messagings.tlsTitle') }}
+							</legend>
+							<CSwitch
+								color='primary'
+								size='lg'
+								shape='pill'
+								label-on='ON'
+								label-off='OFF'
+								:checked.sync='configuration.EnabledSSL'
+							/>
+						</div>
 						<CRow v-if='configuration.EnabledSSL'>
 							<CCol md='6'>
 								<CInput
@@ -304,7 +301,12 @@ limitations under the License.
 								/>
 							</CCol>
 						</CRow>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<CButton
+							type='submit'
+							color='primary'
+							:disabled='invalid'
+							@click='saveConfig'
+						>
 							{{ submitButton }}
 						</CButton>
 					</CForm>
