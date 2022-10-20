@@ -27,7 +27,7 @@ limitations under the License.
 					class='float-right'
 					to='/config/daemon/component/add'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -67,14 +67,14 @@ limitations under the License.
 								size='sm'
 								:to='"/config/daemon/component/edit/" + item.name'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='component = item.name'
 							>
-								<CIcon :content='icons.remove' size='sm' />
+								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -131,6 +131,11 @@ import {MetaInfo} from 'vue-meta';
 		CIcon,
 		CModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as unknown as ComponentList).pageTitle
@@ -189,15 +194,6 @@ export default class ComponentList extends Vue {
 			sorter: false,
 		}
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
 
 	/**
 	 * Computes page title depending on the user role

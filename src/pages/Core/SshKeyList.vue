@@ -28,7 +28,7 @@ limitations under the License.
 						to='/security/ssh-key/add/'
 						size='sm'
 					>
-						<CIcon :content='icons.add' size='sm' />
+						<CIcon :content='cilPlus' size='sm' />
 						<span class='d-none d-lg-inline'>
 							{{ $t('core.security.ssh.table.add') }}
 						</span>
@@ -59,7 +59,7 @@ limitations under the License.
 								size='sm'
 								@click='item.showDetails = !item.showDetails'
 							>
-								<CIcon :content='icons.info' size='sm' />
+								<CIcon :content='cilInfo' size='sm' />
 								<span class='d-none d-lg-inline'>
 									{{ $t('table.actions.details') }}
 								</span>
@@ -68,7 +68,7 @@ limitations under the License.
 								size='sm'
 								@click='keyToDelete = item'
 							>
-								<CIcon :content='icons.delete' size='sm' />
+								<CIcon :content='cilTrash' size='sm' />
 								<span class='d-none d-lg-inline'>
 									{{ $t('table.actions.delete') }}
 								</span>
@@ -96,7 +96,7 @@ limitations under the License.
 													color='primary'
 													size='sm'
 												>
-													<CIcon :content='icons.copy' size='sm' />
+													<CIcon :content='cilClipboard' size='sm' />
 													<span class='d-none d-lg-inline'>
 														{{ $t('forms.clipboardCopy') }}
 													</span>
@@ -117,7 +117,7 @@ limitations under the License.
 													color='primary'
 													size='sm'
 												>
-													<CIcon :content='icons.copy' size='sm' />
+													<CIcon :content='cilClipboard' size='sm' />
 													<span class='d-none d-lg-inline'>
 														{{ $t('forms.clipboardCopy') }}
 													</span>
@@ -185,6 +185,12 @@ import {ISshKey} from '@/interfaces/ssh';
 		CIcon,
 		CModal,
 	},
+	data: () => ({
+		cilClipboard,
+		cilInfo,
+		cilPlus,
+		cilTrash,
+	}),
 	metaInfo: {
 		title: 'core.security.ssh.title',
 	},
@@ -204,16 +210,6 @@ export default class SshKeyList extends Vue {
 	 * @var {ISshKey|null} keyToDelete
 	 */
 	private keyToDelete: ISshKey|null = null;
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		copy: cilClipboard,
-		delete: cilTrash,
-		info: cilInfo,
-	};
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns

@@ -63,7 +63,7 @@ limitations under the License.
 									size='sm'
 									@click='connect(item)'
 								>
-									<CIcon :content='icons.connect' size='sm' />
+									<CIcon :content='cilLink' size='sm' />
 									{{ $t('network.table.connect') }}
 								</CButton>
 								<CButton
@@ -72,14 +72,14 @@ limitations under the License.
 									size='sm'
 									@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
 								>
-									<CIcon :content='icons.disconnect' size='sm' />
+									<CIcon :content='cilLinkBroken' size='sm' />
 									{{ $t('network.table.disconnect') }}
 								</CButton> <CButton
 									color='primary'
 									:to='"/ip-network/ethernet/edit/" + item.uuid'
 									size='sm'
 								>
-									<CIcon :content='icons.edit' size='sm' />
+									<CIcon :content='cilPencil' size='sm' />
 									{{ $t('table.actions.edit') }}
 								</CButton>
 							</td>
@@ -119,9 +119,8 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CBadge, CCard, CCardBody, CCardHeader, CIcon, CModal} from '@coreui/vue/src';
-import EthernetConnection from '@/components/Network/EthernetConnection.vue';
 
-import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {cilLink, cilLinkBroken, cilPencil} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '@/services/NetworkInterfaceService';
@@ -139,8 +138,12 @@ import {NetworkConnection, NetworkInterface} from '@/interfaces/network';
 		CCardHeader,
 		CIcon,
 		CModal,
-		EthernetConnection
 	},
+	data: () => ({
+		cilLink,
+		cilLinkBroken,
+		cilPencil,
+	}),
 	metaInfo: {
 		title: 'network.ethernet.title',
 	},
@@ -194,17 +197,6 @@ export default class EthernetConnections extends Vue {
 			sorter: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Array fo CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		connect: cilLink,
-		delete: cilTrash,
-		disconnect: cilLinkBroken,
-		edit: cilPencil,
-	};
 
 	/**
 	 * @var {string} hostname Window hostname

@@ -23,7 +23,7 @@ limitations under the License.
 				size='sm'
 				@click='showFormModal()'
 			>
-				<CIcon :content='icons.add' />
+				<CIcon :content='cilPlus' />
 			</CButton>
 			<CDropdown
 				v-for='(profile, i) of profiles'
@@ -35,19 +35,19 @@ limitations under the License.
 				<CDropdownItem
 					@click='setPinConfigProfile(i)'
 				>
-					<CIcon :content='icons.set' />
+					<CIcon :content='cilCopy' />
 					{{ $t('config.controller.pins.actions.set') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='showFormModal(profile)'
 				>
-					<CIcon :content='icons.edit' />
+					<CIcon :content='cilPencil' />
 					{{ $t('config.controller.pins.actions.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
 					@click='showDeleteModal(i, profile.name)'
 				>
-					<CIcon :content='icons.delete' />
+					<CIcon :content='cilTrash' />
 					{{ $t('config.controller.pins.actions.delete') }}
 				</CDropdownItem>
 			</CDropdown>
@@ -81,6 +81,12 @@ import {IControllerPinConfig} from '@/interfaces/controller';
 		ControllerPinConfigDeleteModal,
 		ControllerPinConfigForm,
 	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -91,16 +97,6 @@ export default class ControllerPinConfigs extends Vue {
 	 * @var {Array<IControllerPinConfig>} profiles Controller pin configuration profiles
 	 */
 	private profiles: Array<IControllerPinConfig> = [];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		delete: cilTrash,
-		set: cilCopy,
-	};
 
 	/**
 	 * Initializes pin configurations component

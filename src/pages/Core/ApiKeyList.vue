@@ -25,7 +25,7 @@ limitations under the License.
 					class='float-right'
 					to='/security/api-key/add'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -57,14 +57,14 @@ limitations under the License.
 								size='sm'
 								:to='"/security/api-key/edit/" + item.id'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='deleteKey = item.id'
 							>
-								<CIcon :content='icons.remove' size='sm' />
+								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -127,6 +127,11 @@ interface ApiKey {
 		CDataTable,
 		CIcon
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 	metaInfo: {
 		title: 'core.security.apiKey.title'
 	}
@@ -136,19 +141,6 @@ interface ApiKey {
  * List of existing API keys
  */
 export default class ApiKeyList extends Vue {
-	/**
-	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
-	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
-
 	/**
 	 * @var {number|null} deletekey API key id used in remove modal
 	 */
@@ -177,15 +169,6 @@ export default class ApiKeyList extends Vue {
 			sorter: false,
 		},
 	];
-
-	/**
-	 * @constant {Record<string, Array<string>>} icons Dictionary of CoreUI Icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash
-	};
 
 	/**
 	 * @var {Array<ApiKey>} keys List of API key objects

@@ -25,7 +25,7 @@ limitations under the License.
 					size='sm'
 					class='float-right'
 				>
-					<CIcon :content='icons.add' size='sm' />
+					<CIcon :content='cilPlus' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -51,7 +51,7 @@ limitations under the License.
 								v-else
 								class='text-danger'
 								size='xl'
-								:content='icons.noEmail'
+								:content='cilXCircle'
 							/>
 						</td>
 					</template>
@@ -93,21 +93,21 @@ limitations under the License.
 								size='sm'
 								@click='resendVerification(item.id)'
 							>
-								<CIcon :content='icons.resend' size='sm' />
+								<CIcon :content='cilReload' size='sm' />
 								{{ $t('core.user.resendVerification') }}
 							</CButton> <CButton
 								color='info'
 								:to='"/user/edit/" + item.id'
 								size='sm'
 							>
-								<CIcon :content='icons.edit' size='sm' />
+								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='confirmDelete(item)'
 							>
-								<CIcon :content='icons.delete' size='sm' />
+								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -182,6 +182,13 @@ import punycode from 'punycode/';
 		CIcon,
 		CModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		cilReload,
+		cilTrash,
+		cilXCircle,
+	}),
 	metaInfo: {
 		title: 'core.user.title',
 	},
@@ -195,17 +202,6 @@ export default class UserList extends Vue {
 	 * @var {IUser|null} deleteUser User object used in remove modal
 	 */
 	private deleteUser: IUser|null = null;
-
-	/**
-	 * @var {Record<string, Array<string>>} icons Dictionary of CoreUI icons
-	 */
-	private icons: Record<string, Array<string>> = {
-		add: cilPlus,
-		delete: cilTrash,
-		edit: cilPencil,
-		resend: cilReload,
-		noEmail: cilXCircle,
-	};
 
 	/**
 	 * @var {Array<IField>} fields Array of CoreUI data table columns
