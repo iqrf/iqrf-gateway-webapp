@@ -31,6 +31,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='keys'
 					:striped='true'
@@ -43,11 +44,8 @@ limitations under the License.
 						{{ $t('table.messages.noRecords') }}
 					</template>
 					<template #expiration='{item}'>
-						<td v-if='item.expiration !== null'>
-							{{ timeString(item) }}
-						</td>
-						<td v-else>
-							never
+						<td>
+							{{ item.expiration === null ? $t('core.security.apiKey.noExpiration') : timeString(item) }}
 						</td>
 					</template>
 					<template #actions='{item}'>
@@ -62,7 +60,7 @@ limitations under the License.
 							</CButton> <CButton
 								color='danger'
 								size='sm'
-								@click='deleteKey = item.id'
+								@click='showDeleteModal(item)'
 							>
 								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -72,36 +70,14 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteKey !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('core.security.apiKey.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('core.security.apiKey.modal.prompt', {key: deleteKey}) }}
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeKey'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteKey = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+		<ApiKeyDeleteModal ref='deleteModal' @deleted='getKeys' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
+import ApiKeyDeleteModal from '@/components/Core/ApiKeyDeleteModal.vue';
 
 import ApiKeyService from '@/services/ApiKeyService';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
@@ -109,14 +85,8 @@ import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IApiKey} from '@/interfaces/ApiKey';
 import {IField} from '@/interfaces/coreui';
-
-
-interface ApiKey {
-	description: string
-	expiration: string
-	id: number
-}
 
 @Component({
 	components: {
@@ -125,7 +95,8 @@ interface ApiKey {
 		CCardBody,
 		CCardHeader,
 		CDataTable,
-		CIcon
+		CIcon,
+		ApiKeyDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
@@ -142,9 +113,9 @@ interface ApiKey {
  */
 export default class ApiKeyList extends Vue {
 	/**
-	 * @var {number|null} deletekey API key id used in remove modal
+	 * @var {boolean} loading Indicates that request is in progress
 	 */
-	private deleteKey: number|null = null;
+	private loading = false;
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -171,9 +142,9 @@ export default class ApiKeyList extends Vue {
 	];
 
 	/**
-	 * @var {Array<ApiKey>} keys List of API key objects
+	 * @var {Array<IApiKey>} keys List of API key objects
 	 */
-	private keys: Array<ApiKey> = [];
+	private keys: Array<IApiKey> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -186,50 +157,32 @@ export default class ApiKeyList extends Vue {
 	 * Retrieves list of existing API keys
 	 */
 	private getKeys(): Promise<void> {
-		if (!this.$store.getters['spinner/isEnabled']) {
-			this.$store.commit('spinner/SHOW');
-		}
+		this.loading = true;
 		return ApiKeyService.getApiKeys()
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.keys = response.data;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.listFetchFailed'));
-	}
-
-	/**
-	 * Removes an existing API key
-	 */
-	private removeKey(): void  {
-		if (this.deleteKey === null) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		const key = this.deleteKey;
-		this.deleteKey = null;
-		ApiKeyService.deleteApiKey(key)
-			.then(() => {
-				this.getKeys().then(() => {
-					this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: key}).toString());
-				});
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: key}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'core.security.apiKey.messages.listFetchFailed');
+			});
 	}
 
 	/**
 	 * Converts expiration date and time from UTC to locale string
 	 * @returns {string} Expiration date and time in locale format
 	 */
-	private timeString(item: ApiKey): string {
+	private timeString(item: IApiKey): string {
 		return DateTime.fromISO(item.expiration).toLocaleString(DateTime.DATETIME_FULL);
 	}
 
+	/**
+	 * Opens delete modal with API key
+	 * @param {IApiKey} key API key
+	 */
+	private showDeleteModal(key: IApiKey) {
+		(this.$refs.deleteModal as ApiKeyDeleteModal).showModal(key);
+	}
 }
 </script>
-
-<style scoped>
-.card-header {
-	padding-bottom: 0;
-}
-
-</style>

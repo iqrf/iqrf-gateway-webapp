@@ -1151,6 +1151,7 @@
 				"description": "Manage API keys.",
 				"add": "Add API key",
 				"edit": "Edit API key",
+				"noExpiration": "Never",
 				"form": {
 					"id": "ID",
 					"description": "Description",
