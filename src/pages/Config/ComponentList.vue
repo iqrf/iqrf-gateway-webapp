@@ -115,8 +115,8 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IComponent} from '@/interfaces/daemonComponent';
-import {IField} from '@/interfaces/coreui';
+import {IComponent} from '@/interfaces/Config/Daemon';
+import {IField} from '@/interfaces/Coreui';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

@@ -133,7 +133,7 @@ import {required} from 'vee-validate/dist/rules';
 import SshService from '@/services/SshService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ISshInput} from '@/interfaces/ssh';
+import {ISshInput} from '@/interfaces/Core/SshKey';
 
 @Component({
 	components: {

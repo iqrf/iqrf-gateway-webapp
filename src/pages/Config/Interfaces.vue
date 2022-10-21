@@ -59,8 +59,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IChangeComponent, IComponent, IConfigFetch} from '@/interfaces/daemonComponent';
-import {IOption} from '@/interfaces/coreui';
+import {IChangeComponent, IComponent, IConfigFetch} from '@/interfaces/Config/Daemon';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

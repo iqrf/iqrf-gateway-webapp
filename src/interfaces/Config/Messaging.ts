@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {ComponentInstanceBase} from '../daemonComponent';
-import {RequiredInterface} from '../requiredInterfaces';
+import {ComponentInstanceBase} from './Daemon';
+import {RequiredInterface} from './RequiredInterfaces';
 
 /**
  * MqMessaging instance interface

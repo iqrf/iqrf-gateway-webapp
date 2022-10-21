@@ -545,9 +545,9 @@ import {compare, CompareOperator} from 'compare-versions';
 import IqrfNetService from '@/services/IqrfNetService';
 import OsService from '@/services/DaemonApi/OsService';
 
-import {ITrConfiguration} from '@/interfaces/dpa';
-import {IOption} from '@/interfaces/coreui';
-import {IProduct} from '@/interfaces/repository';
+import {ITrConfiguration} from '@/interfaces/DaemonApi/Dpa';
+import {IOption} from '@/interfaces/Coreui';
+import {IProduct} from '@/interfaces/Repository';
 import {MutationPayload} from 'vuex';
 import {DaemonClientState} from '@/interfaces/wsClient';
 

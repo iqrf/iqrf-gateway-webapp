@@ -32,38 +32,17 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-/**
- * Resource usage data
- */
-export interface UsageData {
-
-	/**
-	 * Usage as percentage
-	 */
-	usage: string;
-
-	/**
-	 * Used size
-	 */
-	used: string;
-
-	/**
-	 * Total size
-	 */
-	size: string;
-
-}
-
-@Component({})
+import {IUsageData} from '@/interfaces/Gateway/Information';
 
 /**
  * Resource usage component for gateway information
  */
+@Component({})
 export default class ResourceUsage extends Vue {
 	/**
 	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
 	 */
-	@Prop({ required: true }) usage!: UsageData;
+	@Prop({ required: true }) usage!: IUsageData;
 
 	/**
 	 * Returns CSS classes for the progress bar

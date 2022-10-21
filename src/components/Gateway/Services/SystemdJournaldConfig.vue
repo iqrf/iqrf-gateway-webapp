@@ -190,8 +190,8 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
-import {ISystemdJournal} from '@/interfaces/systemdJournal';
+import {IOption} from '@/interfaces/Coreui';
+import {ISystemdJournal} from '@/interfaces/Gateway/Journal';
 
 @Component({
 	components: {

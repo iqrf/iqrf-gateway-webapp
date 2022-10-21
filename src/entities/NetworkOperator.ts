@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {IOperator} from '@/interfaces/network';
+import {IOperator} from '@/interfaces/Network/Mobile';
 
 /**
  * Network operator object

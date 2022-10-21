@@ -119,7 +119,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
 
-import {IDaliAnswer} from '@/interfaces/standard';
+import {IDaliAnswer} from '@/interfaces/DaemonApi/Standard';
 import {MutationPayload} from 'vuex';
 
 @Component({

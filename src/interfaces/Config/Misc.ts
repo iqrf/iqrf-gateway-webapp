@@ -15,12 +15,27 @@
  * limitations under the License.
  */
 
-import {ComponentInstanceBase} from '../daemonComponent';
+import {ComponentInstanceBase} from './Daemon';
 import {IWsService} from './Messaging';
-import {RequiredInterface} from '../requiredInterfaces';
+import {RequiredInterface} from './RequiredInterfaces';
 
 /**
- * Monitor service component instance
+ * Monitor websocket service component interface
+ */
+export interface IMonitorComponent {
+	/**
+	 * Monitor instance
+	 */
+	monitor: IMonitorInstance;
+
+	/**
+	 * Websocket service interface
+	 */
+	webSocket: IWsService;
+}
+
+/**
+ * Monitor service component instance inteface
  */
 export interface IMonitorInstance extends ComponentInstanceBase {
 	/**
@@ -35,73 +50,43 @@ export interface IMonitorInstance extends ComponentInstanceBase {
 }
 
 /**
- * Monitor websocket service component interface
+ * Monitor service websocket interface
  */
-export interface IMonitorWsInstance {
+export interface IMonitorWs {
 	/**
-	 * Monitor instance
+	 * Instance name
 	 */
-	monitor: IMonitorInstance;
+	instance: string
 
 	/**
-	 * Websocket service interface
+	 * Port
 	 */
-	webSocket: IWsService;
-}
-
-/**
- * Daemon API monitor message
- */
-export interface IMonitorMsg {
-	/**
-	 * Message type
-	 */
-	mType: string;
+	WebsocketPort: number
 
 	/**
-	 * Message data
+	 * Accept only requests from localhost
 	 */
-	data: IMonitorMsgData;
-}
-
-/**
- * Monitor message data
- */
-interface IMonitorMsgData {
-	/**
-	 * Message number
-	 */
-	num: number;
+	acceptOnlyLocalhost: boolean
 
 	/**
-	 * UNIX timestamp
+	 * Use TLS
 	 */
-	timestamp: number;
+	tlsEnabled?: boolean
 
 	/**
-	 * DPA queue length
+	 * TLS mode
 	 */
-	dpaQueueLen: number;
+	tlsMode?: string
 
 	/**
-	 * IQRF channel state
+	 * Path to certificate file
 	 */
-	iqrfChannelState: string;
+	certificate?: string
 
 	/**
-	 * DPA channel state
+	 * Path to private key file
 	 */
-	dpaChannelState: string;
-
-	/**
-	 * Message queue length
-	 */
-	msgQueueLen: number;
-
-	/**
-	 * Operation mode
-	 */
-	operMode: string;
+	privateKey?: string
 }
 
 /**
@@ -207,4 +192,64 @@ export interface ITraceVerbosityLevel {
 	 * Verbosity severity
 	 */
 	level: string
+}
+
+/**
+ * OTA upload configuration instance interface
+ */
+export interface IOtaUploadConfig {
+	/**
+	 * Component name
+	 */
+	component: string
+	
+	/**
+	 * Component instance name
+	 */
+	instance: string
+
+	/**
+	 * Upload path
+	 */
+	uploadPath: string
+
+	/**
+	 * Upload suffix
+	 */
+	uploadPathSuffix: string
+}
+
+/**
+ * IQRF Info component instance interface
+ */
+export interface IIqrfInfo {
+	/**
+	 * Component name
+	 */
+	component: string
+	
+	/**
+	 * Component instance name
+	 */
+	instance: string
+	
+	/**
+	 * Enumerate network after startup?
+	 */
+	enumAtStartUp: boolean
+	
+	/**
+	 * Enumeration period in minutes
+	 */
+	enumPeriod: number
+	
+	/**
+	 * Uniform DPA version and OS build according to coordinator?
+	 */
+	enumUniformDpaVer: boolean
+
+	/**
+	 * Include metadata in messages?
+	 */
+	metaDataToMessages?: boolean
 }

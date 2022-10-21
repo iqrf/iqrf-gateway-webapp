@@ -171,8 +171,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import SshService from '@/services/SshService';
 
 import {AxiosResponse, AxiosError} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {ISshKey} from '@/interfaces/ssh';
+import {IField} from '@/interfaces/Coreui';
+import {ISshKey} from '@/interfaces/Core/SshKey';
 
 @Component({
 	components: {

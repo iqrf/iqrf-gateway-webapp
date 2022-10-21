@@ -73,8 +73,8 @@ import IqrfNetService from '@/services/IqrfNetService';
 import VersionService from '@/services/VersionService';
 
 import {AxiosResponse} from 'axios';
-import {IBackupData} from '@/interfaces/iqmeshServices';
-import {IOption} from '@/interfaces/coreui';
+import {IBackupData} from '@/interfaces/DaemonApi/Iqmesh/Backup';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 @Component({

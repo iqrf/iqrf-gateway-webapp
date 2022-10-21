@@ -71,7 +71,7 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IJsonRaw, IJsonSplitter} from '@/interfaces/jsonApi';
+import {IJsonRaw, IJsonSplitter} from '@/interfaces/Config/JsonApi';
 
 
 @Component({

@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IChangeComponent} from '@/interfaces/daemonComponent';
+import {IChangeComponent} from '@/interfaces/Config/Daemon';
 
 /**
  * Daemon configuration service

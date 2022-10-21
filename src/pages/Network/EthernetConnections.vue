@@ -127,8 +127,8 @@ import NetworkInterfaceService, {InterfaceState, InterfaceType} from '@/services
 import VersionService from '@/services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField, IOption} from '@/interfaces/coreui';
-import {NetworkConnection, NetworkInterface} from '@/interfaces/network';
+import {IField, IOption} from '@/interfaces/Coreui';
+import {NetworkConnection, NetworkInterface} from '@/interfaces/Network/Connection';
 
 @Component({
 	components: {

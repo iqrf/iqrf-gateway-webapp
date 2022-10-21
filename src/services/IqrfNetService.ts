@@ -17,7 +17,7 @@
 
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import {IOtaUploadParams} from '@/interfaces/OtaUpload';
+import {IOtaUploadParams} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
 
 /**
  * IQRF Network service

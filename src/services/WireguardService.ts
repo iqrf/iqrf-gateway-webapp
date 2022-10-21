@@ -17,7 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IWGTunnel} from '@/interfaces/network';
+import {IWGTunnel} from '@/interfaces/Network/Wireguard';
 
 /**
  * Wireguard VPN service

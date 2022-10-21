@@ -14,56 +14,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
-import {RequiredInterface} from './requiredInterfaces';
+import {MenderProtocols, MountModes} from '@/enums/Maintenance/Mender';
 
 /**
- * Daemon IDE countepart component configuration interface
+ * Mender configuration interface
  */
-export interface IIdeCounterpart {
+export interface IMenderConfig {
 	/**
-	 * Component name
+	 * Inventory poll interval in seconds
 	 */
-	component: string
+	InventoryPollIntervalSeconds: number
 
 	/**
-	 * Component instance
+	 * Retry poll interval in seconds
 	 */
-	instance: string
+	RetryPollIntervalSeconds: number
 
 	/**
-	 * Gateway identification mode byte
+	 * Server
 	 */
-	gwIdentModeByte: number
+	ServerURL: string
 
 	/**
-	 * Gateway identification name
+	 * Path to server certificate
 	 */
-	gwIdentName: string
+	ServerCertificate?: string
 
 	/**
-	 * Gateway identification ip stack
+	 * Tenant token
 	 */
-	gwIdentIpStack: string
+	TenantToken: string
 
 	/**
-	 * Gateway identification net bios
+	 * Update poll interval in seconds
 	 */
-	gwIdentNetBios: string
+	UpdatePollIntervalSeconds: number
 
 	/**
-	 * Gateway identification public ip
+	 * Client protocol
 	 */
-	gwIdentPublicIp: string
+	ClientProtocol: MenderProtocols
+}
 
+/**
+ * Filesystem remount interface
+ */
+export interface IRemount {
 	/**
-	 * Daemon startup mode
+	 * Mode to remount filesystem with
 	 */
-	operMode?: DaemonModeEnum
-
-	/**
-	 * Component required interfaces
-	 */
-	RequiredInterfaces: Array<RequiredInterface>
+	mode: MountModes
 }

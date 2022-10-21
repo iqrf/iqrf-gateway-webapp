@@ -84,7 +84,7 @@ import {fileDownloader} from '@/helpers/fileDownloader';
 import BackupService from '@/services/BackupService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IBackup} from '@/interfaces/backup';
+import {IBackup} from '@/interfaces/Maintenance/Backup';
 
 @Component({
 	components: {

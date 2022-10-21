@@ -179,8 +179,8 @@ import {MenderProtocols} from '@/enums/Maintenance/Mender';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMenderConfig} from '@/interfaces/maintenance';
-import {IOption} from '@/interfaces/coreui';
+import {IMenderConfig} from '@/interfaces/Maintenance/Mender';
+import {IOption} from '@/interfaces/Coreui';
 import MenderService from '@/services/MenderService';
 
 @Component({

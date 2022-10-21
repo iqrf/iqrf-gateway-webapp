@@ -282,14 +282,14 @@ import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilSignalCellular4, cilSp
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import StandardDevice from '@/iqrfNet/StandardDevice';
+import StandardDevice from '@/entities/StandardDevice';
 import InfoService from '@/services/DaemonApi/InfoService';
 import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/iqrfInfo';
+import {IField} from '@/interfaces/Coreui';
+import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 

@@ -159,7 +159,7 @@ import {versionHigherEqual} from '@/helpers/versionChecker';
 import {BondingMethod, BondingTarget, BondingTool} from '@/enums/IqrfNet/Bonding';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 

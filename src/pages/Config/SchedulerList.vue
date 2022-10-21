@@ -128,8 +128,8 @@ import {fileDownloader} from '@/helpers/fileDownloader';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {ITaskRest, ITaskTimeSpec} from '@/interfaces/scheduler';
+import {IField} from '@/interfaces/Coreui';
+import {ITaskRest, ITaskTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 

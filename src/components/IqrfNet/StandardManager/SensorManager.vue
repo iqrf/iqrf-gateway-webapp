@@ -97,7 +97,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardSensorService from '@/services/DaemonApi/StandardSensorService';
 
-import {ISensor, IStandardSensor} from '@/interfaces/standard';
+import {ISensor, IStandardSensor} from '@/interfaces/DaemonApi/Standard';
 import {MutationPayload} from 'vuex';
 
 

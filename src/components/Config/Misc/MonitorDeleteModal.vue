@@ -70,7 +70,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError} from 'axios';
-import {IMonitorWsInstance} from '@/interfaces/Config/Misc';
+import {IMonitorComponent} from '@/interfaces/Config/Misc';
 
 /**
  * Monitor delete modal component
@@ -86,9 +86,9 @@ import {IMonitorWsInstance} from '@/interfaces/Config/Misc';
 })
 export default class MonitorDeleteModal extends ModalBase {
 	/**
-	 * @property {IMonitorWsInstance} instance Monitor websocket instance
+	 * @property {IMonitorComponent} instance Monitor websocket instance
 	 */
-	@Prop({required: true}) instance!: IMonitorWsInstance;
+	@Prop({required: true}) instance!: IMonitorComponent;
 
 	/**
 	 * Removes instance of the monitoring component

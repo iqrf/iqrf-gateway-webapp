@@ -39,22 +39,9 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
+
+import {IMonitorMsg} from '@/interfaces/DaemonApi/Monitor';
 import {mapGetters, MutationPayload} from 'vuex';
-
-interface IMonitorMsgData {
-	num: number
-	timestamp: number
-	dpaQueueLen: number
-	iqrfChannelState: string
-	dpaChannelState: string
-	msgQueueLen: number
-	operMode: string
-}
-
-interface IMonitorMsg {
-	mType: string
-	data: IMonitorMsgData
-}
 
 @Component({
 	components: {

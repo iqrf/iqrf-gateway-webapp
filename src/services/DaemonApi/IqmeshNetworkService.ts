@@ -21,7 +21,7 @@ import DaemonMessageOptions from '../../ws/DaemonMessageOptions';
 import {DpaParamAction, DpaValueType} from '@/enums/IqrfNet/DpaParams';
 import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
 
-import {IMaintenanceRfSignalTestParams} from '@/interfaces/iqmeshServices';
+import {IRfSignalTestParams} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
 
 /**
  * IQMESH Network service
@@ -133,11 +133,11 @@ class IqmeshNetworkService {
 
 	/**
 	 * IQMESH Network Maintenance Test RF Signal request
-	 * @param {IMaintenanceRfSignalTestParams} params Request parameters
+	 * @param {IRfSignalTestParams} params Request parameters
 	 * @param {DaemonMessageOptions} options Daemon message options
 	 * @returns {Promise<string>} Message ID
 	 */
-	maintenanceTestRfSignal(params: IMaintenanceRfSignalTestParams, options: DaemonMessageOptions): Promise<string> {
+	maintenanceTestRfSignal(params: IRfSignalTestParams, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_MaintenanceTestRF',
 			'data': {

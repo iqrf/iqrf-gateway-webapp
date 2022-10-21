@@ -48,7 +48,7 @@ import {MutationPayload} from 'vuex';
 import IqrfNetService from '@/services/IqrfNetService';
 import {CSpinner} from '@coreui/vue/src';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/dpa';
+import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/DaemonApi/Dpa';
 
 @Component({
 	components: {

@@ -226,8 +226,9 @@ import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfac
 import VersionService from '@/services/VersionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField, IOption} from '@/interfaces/coreui';
-import {IAccessPoint, IAccessPointArray, NetworkConnection, NetworkInterface} from '@/interfaces/network';
+import {IField, IOption} from '@/interfaces/Coreui';
+import {IAccessPoint, IAccessPointArray} from '@/interfaces/Network/Wifi';
+import {NetworkConnection, NetworkInterface} from '@/interfaces/Network/Connection';
 
 @Component({
 	components: {

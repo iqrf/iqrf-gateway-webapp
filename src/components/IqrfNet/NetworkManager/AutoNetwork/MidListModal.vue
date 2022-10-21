@@ -183,8 +183,8 @@ import ModalBase from '@/components/ModalBase.vue';
 import {cilTrash} from '@coreui/icons';
 import {between, integer, regex, required} from 'vee-validate/dist/rules';
 
-import {IAtnwMidErrorList, IAtnwMidList} from '@/interfaces/IqrfNet/Autonetwork';
-import {IField} from '@/interfaces/coreui';
+import {IAtnwMidErrorList, IAtnwMidList} from '@/interfaces/DaemonApi/Iqmesh/Autonetwork';
+import {IField} from '@/interfaces/Coreui';
 
 /**
  * Autonetwork MID list modal window component

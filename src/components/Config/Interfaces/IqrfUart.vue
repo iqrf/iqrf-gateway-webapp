@@ -257,9 +257,9 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfUart} from '@/interfaces/iqrfInterfaces';
-import {IMapping} from '@/interfaces/mappings';
-import {IOption} from '@/interfaces/coreui';
+import {IIqrfUart} from '@/interfaces/Config/IqrfInterfaces';
+import {IMapping} from '@/interfaces/Config/Mapping';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

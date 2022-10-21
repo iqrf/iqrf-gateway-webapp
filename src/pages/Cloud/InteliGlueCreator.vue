@@ -123,7 +123,7 @@ import CloudService from '@/services/CloudService';
 import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {IInteliGlueCloud} from '@/interfaces/clouds';
+import {IInteliGlueCloud} from '@/interfaces/Clouds';
 
 @Component({
 	components: {
