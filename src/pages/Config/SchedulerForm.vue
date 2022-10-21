@@ -244,8 +244,8 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
-import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '@/interfaces/scheduler';
+import {IOption} from '@/interfaces/Coreui';
+import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';

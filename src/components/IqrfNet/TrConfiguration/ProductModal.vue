@@ -53,8 +53,8 @@ import {cilCheckAlt} from '@coreui/icons';
 import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {IProduct} from '@/interfaces/repository';
+import {IField} from '@/interfaces/Coreui';
+import {IProduct} from '@/interfaces/Repository';
 import ModalBase from '@/components/ModalBase.vue';
 
 @Component({

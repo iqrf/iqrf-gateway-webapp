@@ -114,8 +114,8 @@ import {v4 as uuidv4} from 'uuid';
 
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IMessagePairRequest} from '@/interfaces/iqrfnet';
-import {IOption} from '@/interfaces/coreui';
+import {IMessagePairRequest} from '@/interfaces/DaemonApi/Api';
+import {IOption} from '@/interfaces/Coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import DaemonApiValidator from '@/helpers/DaemonApiValidator';

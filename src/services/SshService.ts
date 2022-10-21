@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {ISshInput} from '@/interfaces/ssh';
+import {ISshInput} from '@/interfaces/Core/SshKey';
 
 /**
  * SSH service

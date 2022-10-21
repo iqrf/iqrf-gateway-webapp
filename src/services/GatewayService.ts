@@ -17,8 +17,8 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IHostname} from '@/interfaces/gatewayInfo';
-import {ISystemdJournal} from '@/interfaces/systemdJournal';
+import {IHostname} from '@/interfaces/Gateway/Information';
+import {ISystemdJournal} from '@/interfaces/Gateway/Journal';
 
 /**
  * Root password interface

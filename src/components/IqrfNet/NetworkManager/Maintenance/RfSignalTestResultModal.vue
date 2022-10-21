@@ -68,8 +68,8 @@ import ModalBase from '@/components/ModalBase.vue';
 
 import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 
-import {IField} from '@/interfaces/coreui';
-import {IMaintenanceRfSignalTestResult} from '@/interfaces/iqmeshServices';
+import {IField} from '@/interfaces/Coreui';
+import {IRfSignalTestResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
 
 @Component({
 	components: {
@@ -89,9 +89,9 @@ import {IMaintenanceRfSignalTestResult} from '@/interfaces/iqmeshServices';
  */
 export default class RfSignalTestResult extends ModalBase {
 	/**
-	 * @var {IMaintenanceRfSignalTestResult} results RF Signal Test results
+	 * @var {IRfSignalTestResult} results RF Signal Test results
 	 */
-	private results: Array<IMaintenanceRfSignalTestResult> = [];
+	private results: Array<IRfSignalTestResult> = [];
 
 	/**
 	 * @constant {Array<IField>} fields RF Signal Test results table fields
@@ -113,9 +113,9 @@ export default class RfSignalTestResult extends ModalBase {
 
 	/**
 	 * Stores RF Signal Test results and renders the modal window
-	 * @param {IMaintenanceRfSignalTestResult} results RF Signal Test results
+	 * @param {IRfSignalTestResult} results RF Signal Test results
 	 */
-	public activateModal(results: Array<IMaintenanceRfSignalTestResult>): void {
+	public activateModal(results: Array<IRfSignalTestResult>): void {
 		this.results = results;
 		this.openModal();
 	}

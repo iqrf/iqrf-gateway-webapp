@@ -92,7 +92,7 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfCdc} from '@/interfaces/iqrfInterfaces';
+import {IIqrfCdc} from '@/interfaces/Config/IqrfInterfaces';
 
 @Component({
 	components: {

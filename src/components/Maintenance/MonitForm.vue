@@ -89,7 +89,7 @@ import {required} from 'vee-validate/dist/rules';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMonitConfig} from '@/interfaces/maintenance';
+import {IMonitConfig} from '@/interfaces/Maintenance/Monit';
 
 @Component({
 	components: {

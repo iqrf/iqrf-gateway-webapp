@@ -74,7 +74,7 @@ import {cilPencil, cilPlus} from '@coreui/icons';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {IField} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

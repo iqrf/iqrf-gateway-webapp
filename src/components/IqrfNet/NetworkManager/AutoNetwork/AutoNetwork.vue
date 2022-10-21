@@ -349,8 +349,8 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import {StopConditionNode} from '@/enums/IqrfNet/Autonetwork';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IAtnwParams, IAtnwOverlappingNetworks, IAtnwMid, IAtnwMidList, IAtnwMidErrorList} from '@/interfaces/IqrfNet/Autonetwork';
-import {IOption} from '@/interfaces/coreui';
+import {IAtnwParams, IAtnwOverlappingNetworks, IAtnwMid, IAtnwMidList, IAtnwMidErrorList} from '@/interfaces/DaemonApi/Iqmesh/Autonetwork';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 

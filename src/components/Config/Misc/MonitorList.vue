@@ -122,8 +122,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {IMonitorWsInstance} from '@/interfaces/Config/Misc';
+import {IField} from '@/interfaces/Coreui';
+import {IMonitorComponent} from '@/interfaces/Config/Misc';
 import {IWsService} from '@/interfaces/Config/Messaging';
 
 @Component({
@@ -158,9 +158,9 @@ export default class MonitorList extends Vue {
 	};
 
 	/**
-	 * @var {Array<IMonitorWsInstance>} instances Array of monitoring component instances
+	 * @var {Array<IMonitorComponent>} instances Array of monitoring component instances
 	 */
-	private instances: Array<IMonitorWsInstance> = [];
+	private instances: Array<IMonitorComponent> = [];
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -215,7 +215,7 @@ export default class MonitorList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const monitors = responses[0].data.instances;
 				const webSockets = responses[1].data.instances;
-				const instances: Array<IMonitorWsInstance> = [];
+				const instances: Array<IMonitorComponent> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
 						monitor.RequiredInterfaces.length === 0 ||

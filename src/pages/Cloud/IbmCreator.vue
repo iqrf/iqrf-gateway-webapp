@@ -140,7 +140,7 @@ import CloudService from '@/services/CloudService';
 import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {IIbmCloud} from '@/interfaces/clouds';
+import {IIbmCloud} from '@/interfaces/Clouds';
 
 @Component({
 	components: {

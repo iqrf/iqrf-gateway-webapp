@@ -228,10 +228,10 @@ import {between, integer, min_value, required, min, max} from 'vee-validate/dist
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import Packet from '@/iqrfNet/sendPacket';
 
-import {IMessagePairPacket} from '@/interfaces/iqrfnet';
-import {IOption} from '@/interfaces/coreui';
+import {IMessagePairPacket} from '@/interfaces/DaemonApi/Api';
+import {IOption} from '@/interfaces/Coreui';
 import {mapGetters, MutationPayload} from 'vuex';
-import {RawMessage} from '@/interfaces/dpa';
+import {RawMessage} from '@/interfaces/DaemonApi/Dpa';
 
 @Component({
 	components: {

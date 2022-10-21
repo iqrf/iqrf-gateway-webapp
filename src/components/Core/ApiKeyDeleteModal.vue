@@ -56,7 +56,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import ApiKeyService from '@/services/ApiKeyService';
 
 import {AxiosError} from 'axios';
-import {IApiKey} from '@/interfaces/ApiKey';
+import {IApiKey} from '@/interfaces/Core/ApiKey';
 
 @Component({
 	components: {

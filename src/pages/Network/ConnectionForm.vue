@@ -571,8 +571,8 @@ import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfac
 import VersionService from '@/services/VersionService';
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, IConnectionModal, NetworkInterface} from '@/interfaces/network';
-import {IOption} from '@/interfaces/coreui';
+import {IConnection, IConnectionModal, NetworkInterface} from '@/interfaces/Network/Connection';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

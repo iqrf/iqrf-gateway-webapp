@@ -168,8 +168,8 @@ import {SmtpSecurity} from '@/enums/Config/Smtp';
 
 import MailerService from '@/services/MailerService';
 
-import {IOption} from '@/interfaces/coreui';
-import {ISmtp} from '@/interfaces/smtp';
+import {IOption} from '@/interfaces/Coreui';
+import {ISmtp} from '@/interfaces/Config/Smtp';
 
 @Component({
 	components: {

@@ -16,7 +16,7 @@
  */
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import axios, {AxiosResponse} from 'axios';
-import {ISmtp} from '@/interfaces/smtp';
+import {ISmtp} from '@/interfaces/Config/Smtp';
 
 /**
  * SMTP server service

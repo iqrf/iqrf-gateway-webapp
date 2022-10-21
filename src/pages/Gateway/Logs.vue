@@ -61,7 +61,7 @@ import {fileDownloader} from '@/helpers/fileDownloader';
 import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IServiceLog} from '@/interfaces/log';
+import {IServiceLog} from '@/interfaces/Gateway/Log';
 import {MetaInfo} from 'vue-meta';
 
 @Component({

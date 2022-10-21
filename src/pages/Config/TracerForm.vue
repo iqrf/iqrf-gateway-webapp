@@ -209,8 +209,8 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
-import {ITracerFile} from '@/interfaces/tracerFile';
+import {IOption} from '@/interfaces/Coreui';
+import {ITraceService} from '@/interfaces/Config/Misc';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
@@ -242,9 +242,9 @@ export default class TracerForm extends Vue {
 	private componentName = 'shape::TraceFileService';
 
 	/**
-	 * @var {ITracerFile|null} configuration TraceFile component configuration
+	 * @var {ITraceService|null} configuration TraceFile component configuration
 	 */
-	private configuration: ITracerFile = {
+	private configuration: ITraceService = {
 		component: '',
 		instance: '',
 		filename: '',

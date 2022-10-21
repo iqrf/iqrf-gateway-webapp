@@ -63,7 +63,7 @@ import TracerList from '@/components/Config/Misc/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
 
-import {IConfigFetch} from '@/interfaces/daemonComponent';
+import {IConfigFetch} from '@/interfaces/Config/Daemon';
 
 @Component({
 	components: {

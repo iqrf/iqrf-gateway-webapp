@@ -259,7 +259,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ITranslator} from '@/interfaces/translator';
+import {ITranslator} from '@/interfaces/Config/Translator';
 import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({

@@ -98,8 +98,8 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
-import {IMaintenanceRfSignalTestParams, IMaintenanceRfSignalTestResult} from '@/interfaces/iqmeshServices';
-import {IOption} from '@/interfaces/coreui';
+import {IRfSignalTestParams, IRfSignalTestResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 @Component({
@@ -128,9 +128,9 @@ export default class RfSignalTest extends Vue {
 	private msgId = '';
 
 	/**
-	 * @var {IMaintenanceRfSignalTestParams} params RF signal test parameters
+	 * @var {IRfSignalTestParams} params RF signal test parameters
 	 */
-	private params: IMaintenanceRfSignalTestParams = {
+	private params: IRfSignalTestParams = {
 		deviceAddr: 0,
 		rfChannel: 52,
 		rxFilter: 0,
@@ -175,9 +175,9 @@ export default class RfSignalTest extends Vue {
 	];
 
 	/**
-	 * @var {Array<IMaintenanceRfSignalTestResult>} results RF Signal Test results
+	 * @var {Array<IRfSignalTestResult>} results RF Signal Test results
 	 */
-	private results: Array<IMaintenanceRfSignalTestResult> = [];
+	private results: Array<IRfSignalTestResult> = [];
 
 	/**
 	 * Component unsubscribe function

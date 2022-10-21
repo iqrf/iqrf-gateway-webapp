@@ -103,15 +103,8 @@ import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IComponent} from '@/interfaces/Config/Daemon';
 import {MetaInfo} from 'vue-meta/types/vue-meta';
-
-interface ComponentFormConfig {
-	name: string
-	libraryPath: string
-	libraryName: string
-	enabled: boolean
-	startlevel: number
-}
 
 @Component({
 	components: {
@@ -137,9 +130,9 @@ interface ComponentFormConfig {
  */
 export default class ComponentForm extends Vue {
 	/**
-	 * @var {ComponentFormConfig} configuration Daemon component configuration
+	 * @var {IComponent} configuration Daemon component configuration
 	 */
-	private configuration: ComponentFormConfig = {
+	private configuration: IComponent = {
 		name: '',
 		libraryPath: '',
 		libraryName: '',

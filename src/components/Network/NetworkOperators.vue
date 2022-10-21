@@ -79,7 +79,7 @@ import NetworkOperator from '@/entities/NetworkOperator';
 import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOperator} from '@/interfaces/network';
+import {IOperator} from '@/interfaces/Network/Mobile';
 
 
 @Component({

@@ -58,8 +58,8 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IMaintenanceFrcResponseTimeResult} from '@/interfaces/iqmeshServices';
-import {IOption} from '@/interfaces/coreui';
+import {IFrcResponseTimeResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 /**
@@ -108,9 +108,9 @@ export default class FrcResponseTime extends Vue {
 	}
 
 	/**
-	 * @var {IMaintenanceFrcResponseTimeResult|null} result FRC Response Time result
+	 * @var {IFrcResponseTimeResult|null} result FRC Response Time result
 	 */
-	private result: IMaintenanceFrcResponseTimeResult|null = null;
+	private result: IFrcResponseTimeResult|null = null;
 
 	/**
 	 * Registers mutation handling

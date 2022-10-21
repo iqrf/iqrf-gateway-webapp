@@ -54,7 +54,7 @@ import {versionHigherEqual} from '@/helpers/versionChecker';
 import ini from 'ini';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IRestoreData} from '@/interfaces/iqmeshServices';
+import {IRestoreData} from '@/interfaces/DaemonApi/Iqmesh/Backup';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 

@@ -31,7 +31,7 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 import DpaUpdater from '@/components/IqrfNet/TrUpload/DpaUpdater.vue';
 import HexUpload from '@/components/IqrfNet/TrUpload/HexUpload.vue';
 import OsUpdater from '@/components/IqrfNet/TrUpload/OsUpdater.vue';
-import {IConfigFetch} from '@/interfaces/daemonComponent';
+import {IConfigFetch} from '@/interfaces/Config/Daemon';
 import IqrfNetService from '@/services/IqrfNetService';
 
 @Component({

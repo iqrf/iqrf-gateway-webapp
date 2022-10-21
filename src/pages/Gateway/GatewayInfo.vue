@@ -148,7 +148,7 @@ import {cilPencil} from '@coreui/icons';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
 import {AxiosResponse} from 'axios';
-import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/gatewayInfo';
+import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
 
 @Component({
 	components: {

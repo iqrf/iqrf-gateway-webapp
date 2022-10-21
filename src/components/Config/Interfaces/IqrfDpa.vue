@@ -82,7 +82,7 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfDpa} from '@/interfaces/iqrfInterfaces';
+import {IIqrfDpa} from '@/interfaces/Config/IqrfInterfaces';
 
 @Component({
 	components: {

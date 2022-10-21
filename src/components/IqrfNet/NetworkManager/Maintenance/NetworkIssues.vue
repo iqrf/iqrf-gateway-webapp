@@ -43,7 +43,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 /**

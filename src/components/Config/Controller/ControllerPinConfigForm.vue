@@ -162,7 +162,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {integer, required} from 'vee-validate/dist/rules';
 
-import {IControllerPinConfig} from '@/interfaces/controller';
+import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 @Component({
 	components: {

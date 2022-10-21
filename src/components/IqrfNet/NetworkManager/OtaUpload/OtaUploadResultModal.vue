@@ -63,8 +63,8 @@ import ModalBase from '@/components/ModalBase.vue';
 import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 import {OtaUploadAction} from '@/enums/IqrfNet/OtaUpload';
 
-import {IField} from '@/interfaces/coreui';
-import {IOtaUploadResult} from '@/interfaces/OtaUpload';
+import {IField} from '@/interfaces/Coreui';
+import {IOtaUploadResult} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
 
 /**
  * OTA upload result modal component

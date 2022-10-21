@@ -118,7 +118,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import NetworkOperatorService from '@/services/NetworkOperatorService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOperator} from '@/interfaces/network';
+import {IOperator} from '@/interfaces/Network/Mobile';
 
 @Component({
 	components: {

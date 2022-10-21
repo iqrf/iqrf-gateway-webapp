@@ -240,8 +240,8 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfSpi} from '@/interfaces/iqrfInterfaces';
-import {IMapping} from '@/interfaces/mappings';
+import {IIqrfSpi} from '@/interfaces/Config/IqrfInterfaces';
+import {IMapping} from '@/interfaces/Config/Mapping';
 
 @Component({
 	components: {

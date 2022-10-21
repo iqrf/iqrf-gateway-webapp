@@ -98,7 +98,7 @@ import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vu
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 import GatewayService from '@/services/GatewayService';
 import {fileDownloader} from '@/helpers/fileDownloader';
-import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/gatewayInfo';
+import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/Gateway/Information';
 import { AxiosResponse } from 'axios';
 
 @Component({

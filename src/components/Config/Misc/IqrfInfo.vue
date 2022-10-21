@@ -116,7 +116,7 @@ import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfInfo} from '@/interfaces/iqrfInfo';
+import {IIqrfInfo} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {

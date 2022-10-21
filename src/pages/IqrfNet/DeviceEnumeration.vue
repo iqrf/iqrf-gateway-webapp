@@ -125,7 +125,7 @@ import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
 import RfModeStd from '@/assets/std-black.svg';
 import {AxiosError, AxiosResponse} from 'axios';
-import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/dpa';
+import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
 
 interface Product {

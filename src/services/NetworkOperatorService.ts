@@ -17,7 +17,7 @@
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
 import axios, {AxiosResponse} from 'axios';
-import {IOperator} from '@/interfaces/network';
+import {IOperator} from '@/interfaces/Network/Mobile';
 
 /**
  * Network operator service

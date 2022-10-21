@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import {cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle} from '@coreui/icons';
-import {IInfoSensorDetail} from '@/interfaces/iqrfInfo';
-import {IProduct} from '@/interfaces/repository';
+import {IInfoSensorDetail} from '@/interfaces/DaemonApi/IqrfInfo';
+import {IProduct} from '@/interfaces/Repository';
 import i18n from '@/plugins/i18n';
 
 /**

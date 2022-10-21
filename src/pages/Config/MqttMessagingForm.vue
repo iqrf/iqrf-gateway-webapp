@@ -327,7 +327,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 import {MetaInfo} from 'vue-meta';
 import {IMqttInstance} from '@/interfaces/Config/Messaging';
 

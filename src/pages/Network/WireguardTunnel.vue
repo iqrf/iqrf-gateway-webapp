@@ -484,9 +484,9 @@ import ip from 'ip-regex';
 import WireguardService from '@/services/WireguardService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '@/interfaces/Coreui';
+import {IWGTunnel} from '@/interfaces/Network/Wireguard';
 import {MetaInfo} from 'vue-meta';
-import {IWGTunnel} from '@/interfaces/network';
-import {IOption} from '@/interfaces/coreui';
 
 @Component({
 	components: {

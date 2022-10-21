@@ -18,94 +18,9 @@
 import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
 
 /**
- * Device backup data interface
- */
-export interface IBackupData {
-	/**
-	 * Backup data
-	 */
-	data: string
-
-	/**
-	 * Device address
-	 */
-	deviceAddr: number
-
-	/**
-	 * DPA version
-	 */
-	dpaVer: number
-
-	/**
-	 * Module ID
-	 */
-	mid: number
-
-	/**
-	 * Is device online?
-	 */
-	online: boolean
-}
-
-/**
- * Device restore data interface
- */
-export interface IRestoreData {
-	/**
-	 * Device address
-	 */
-	Address: string
-	
-	/**
-	 * Coordinator data
-	 */
-	DataC?: string
-
-	/**
-	 * Node data
-	 */
-	DataN?: string
-
-	/**
-	 * Device type
-	 */
-	Device: string
-
-	/**
-	 * DPA version
-	 */
-	Version: string
-}
-
-/**
- * OTA upload configuration instance interface
- */
-export interface IOtaUpload {
-	/**
-	 * Component name
-	 */
-	component: string
-	
-	/**
-	 * Component instance name
-	 */
-	instance: string
-
-	/**
-	 * Upload path
-	 */
-	uploadPath: string
-
-	/**
-	 * Upload suffix
-	 */
-	uploadPathSuffix: string
-}
-
-/**
  * Maintenance FRC Response Time result interface
  */
-export interface IMaintenanceFrcResponseTimeResult {
+export interface IFrcResponseTimeResult {
 	/**
 	 * FRC command
 	 */
@@ -114,7 +29,7 @@ export interface IMaintenanceFrcResponseTimeResult {
 	/**
 	 * FRC response time node results
 	 */
-	nodes: Array<IMaintenanceFrcNodes>
+	nodes: Array<IFrcResponseTimeResultNodes>
 
 	/**
 	 * Number of nodes that did not respond
@@ -140,7 +55,7 @@ export interface IMaintenanceFrcResponseTimeResult {
 /**
  * Maintenance FRC Response Time nodes results interface
  */
-export interface IMaintenanceFrcNodes {
+export interface IFrcResponseTimeResultNodes {
 	/**
 	 * Device address
 	 */
@@ -165,7 +80,7 @@ export interface IMaintenanceFrcNodes {
 /**
  * Maintenance RF Signal Test parameters interface
  */
-export interface IMaintenanceRfSignalTestParams {
+export interface IRfSignalTestParams {
 	/**
 	 * Device address
 	 */
@@ -190,7 +105,7 @@ export interface IMaintenanceRfSignalTestParams {
 /**
  * Maintenance RF Signal Test result interface
  */
-export interface IMaintenanceRfSignalTestResult {
+export interface IRfSignalTestResult {
 	/**
 	 * Device address
 	 */
@@ -201,4 +116,3 @@ export interface IMaintenanceRfSignalTestResult {
 	 */
 	online: boolean
 }
- 

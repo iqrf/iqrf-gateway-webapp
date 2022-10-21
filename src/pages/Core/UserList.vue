@@ -165,8 +165,8 @@ import UserService from '@/services/UserService';
 import {UserRole} from '@/services/AuthenticationService';
 
 import {AxiosError} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {IUser} from '@/interfaces/user';
+import {IField} from '@/interfaces/Coreui';
+import {IUser} from '@/interfaces/Core/User';
 
 import punycode from 'punycode/';
 

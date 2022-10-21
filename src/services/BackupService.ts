@@ -17,7 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IBackup} from '@/interfaces/backup';
+import {IBackup} from '@/interfaces/Maintenance/Backup';
 
 class BackupService {
 
