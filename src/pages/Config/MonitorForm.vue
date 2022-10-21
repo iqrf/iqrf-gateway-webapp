@@ -174,31 +174,9 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
+import {IMonitorInstance, IMonitorWs} from '@/interfaces/Config/Misc';
+import {IOption} from '@/interfaces/Coreui';
 import {MetaInfo} from 'vue-meta';
-import {RequiredInterface} from '@/interfaces/requiredInterfaces';
-
-interface MonitorComponents {
-	monitor: string
-	webSocket: string
-}
-
-interface MonitorInstance {
-	component: string
-	instance: string
-	reportPeriod: number
-	RequiredInterfaces: Array<RequiredInterface>
-}
-
-interface MonitorWebSocket {
-	instance: string
-	WebsocketPort: number
-	acceptOnlyLocalhost: boolean
-	tlsEnabled?: boolean
-	tlsMode?: string
-	certificate?: string
-	privateKey?: string
-}
 
 @Component({
 	components: {
@@ -224,25 +202,25 @@ interface MonitorWebSocket {
  */
 export default class MonitorForm extends Vue {
 	/**
-	 * @constant {MonitorComponents} componentNames Names of components required for the monitoring service
+	 * @constant {Record<string, string>} componentNames Names of components required for the monitoring service
 	 */
-	private componentNames: MonitorComponents = {
+	private componentNames: Record<string, string> = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService',
 	};
 
 	/**
-	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
+	 * @var {Record<string, string>} instances Names of component instances required for the monitoring service
 	 */
-	private instances: MonitorComponents = {
+	private instances: Record<string, string> = {
 		monitor: '',
 		webSocket: '',
 	};
 
 	/**
-	 * @var {MonitorInstance} monitor Daemon monitoring instance configuration
+	 * @var {IMonitorInstance} monitor Daemon monitoring instance configuration
 	 */
-	private monitor: MonitorInstance = {
+	private monitor: IMonitorInstance = {
 		component: '',
 		instance: '',
 		reportPeriod: 10,
@@ -250,9 +228,9 @@ export default class MonitorForm extends Vue {
 	};
 
 	/**
-	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
+	 * @var {IMonitorWs} webSocket Daemon websocket instance configuration
 	 */
-	private webSocket: MonitorWebSocket = {
+	private webSocket: IMonitorWs = {
 		instance: '',
 		WebsocketPort: 1438,
 		acceptOnlyLocalhost: false,

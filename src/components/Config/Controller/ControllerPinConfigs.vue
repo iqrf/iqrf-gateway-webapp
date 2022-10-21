@@ -69,7 +69,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import ControllerPinConfigService from '@/services/ControllerPinConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IControllerPinConfig} from '@/interfaces/controller';
+import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 @Component({
 	components: {

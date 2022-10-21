@@ -137,7 +137,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IWsInterface, IWsMessaging, IWsService, ModalInstance} from '@/interfaces/Config/Messaging';
-import {IField} from '@/interfaces/coreui';
+import {IField} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

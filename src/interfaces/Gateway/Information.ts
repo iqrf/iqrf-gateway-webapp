@@ -63,6 +63,26 @@ export interface MemoryInfo {
 }
 
 /**
+ * Resource usage data
+ */
+export interface IUsageData {
+	/**
+	 * Usage as percentage
+	 */
+	usage: string;
+
+	/**
+	 * Used size
+	 */
+	used: string;
+
+	/**
+	 * Total size
+	 */
+	size: string;
+}
+
+/**
  * GatewayInfo swap information interface
  */
 export interface SwapInfo {

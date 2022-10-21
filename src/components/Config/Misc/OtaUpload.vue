@@ -73,7 +73,7 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOtaUpload} from '@/interfaces/iqmeshServices';
+import {IOtaUploadConfig} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {
@@ -105,9 +105,9 @@ export default class OtaUpload extends Vue {
 	private instance = '';
 
 	/**
-	 * @var {IOtaUpload} configuration OtaUpload instance configuration
+	 * @var {IOtaUploadConfig} configuration OtaUpload instance configuration
 	 */
-	private configuration: IOtaUpload = {
+	private configuration: IOtaUploadConfig = {
 		component: '',
 		instance: '',
 		uploadPath: '',

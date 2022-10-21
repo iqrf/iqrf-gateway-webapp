@@ -114,7 +114,7 @@ import {WebsocketTypes} from '@/enums/Config/Messagings';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
+import {IField} from '@/interfaces/Coreui';
 import {IWsService} from '@/interfaces/Config/Messaging';
 
 @Component({

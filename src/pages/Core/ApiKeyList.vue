@@ -85,8 +85,8 @@ import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IApiKey} from '@/interfaces/ApiKey';
-import {IField} from '@/interfaces/coreui';
+import {IApiKey} from '@/interfaces/Core/ApiKey';
+import {IField} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

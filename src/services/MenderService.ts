@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IRemount} from '@/interfaces/maintenance';
+import {IRemount} from '@/interfaces/Maintenance/Mender';
 
 /**
  * Mender update service

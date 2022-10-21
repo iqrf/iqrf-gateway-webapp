@@ -159,10 +159,10 @@ import NetworkConnectionService from '@/services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IConnection} from '@/interfaces/network';
-import {IOption} from '@/interfaces/coreui';
+import {IConnection} from '@/interfaces/Network/Connection';
+import {IOption} from '@/interfaces/Coreui';
 import {MetaInfo} from 'vue-meta';
-import {NetworkInterface} from '@/interfaces/gatewayInfo';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
 import NetworkOperator from '@/entities/NetworkOperator';
 
 @Component({

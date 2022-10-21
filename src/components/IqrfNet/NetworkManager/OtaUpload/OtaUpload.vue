@@ -208,8 +208,8 @@ import IqrfNetService from '@/services/IqrfNetService';
 import IqrfService from '@/services/IqrfService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
-import {IOtaUploadParams, IOtaUploadResult} from '@/interfaces/OtaUpload';
+import {IOption} from '@/interfaces/Coreui';
+import {IOtaUploadParams, IOtaUploadResult} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
 import {MutationPayload} from 'vuex';
 
 /**

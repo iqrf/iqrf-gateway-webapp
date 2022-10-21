@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IControllerPinConfig} from '@/interfaces/controller';
+import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 /**
  * Controller pin configuration service

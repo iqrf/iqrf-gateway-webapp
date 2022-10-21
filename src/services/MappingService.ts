@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IMapping, MappingType} from '@/interfaces/mappings';
+import {MappingType} from '@/enums/Config/Mapping';
+
+import axios, {AxiosResponse} from 'axios';
+import {IMapping} from '@/interfaces/Config/Mapping';
 
 /**
  * Mapping service

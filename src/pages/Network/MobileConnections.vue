@@ -113,8 +113,9 @@ import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnec
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/coreui';
-import {IModem, NetworkConnection} from '@/interfaces/network';
+import {IField} from '@/interfaces/Coreui';
+import {IModem} from '@/interfaces/Network/Mobile';
+import {NetworkConnection} from '@/interfaces/Network/Connection';
 
 @Component({
 	components: {

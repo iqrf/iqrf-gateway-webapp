@@ -18,7 +18,7 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import UrlBuilder from '@/helpers/urlBuilder';
 import {User, UserInfo} from './AuthenticationService';
-import {IUser} from '@/interfaces/user';
+import {IUser} from '@/interfaces/Core/User';
 
 /**
  * User service

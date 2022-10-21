@@ -114,8 +114,8 @@ import {CButton, CModal} from '@coreui/vue/src';
 import {cilCheckCircle, cilXCircle} from '@coreui/icons';
 import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
 
-import {IMaintenanceFrcResponseTimeResult} from '@/interfaces/iqmeshServices';
-import {IField} from '@/interfaces/coreui';
+import {IFrcResponseTimeResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
+import {IField} from '@/interfaces/Coreui';
 import ModalBase from '@/components/ModalBase.vue';
 
 @Component({
@@ -133,11 +133,10 @@ import ModalBase from '@/components/ModalBase.vue';
  * Maintenance FRC Response Time result component
  */
 export default class FrcResponseTimeResultModal extends ModalBase {
-
 	/**
-	 * @var {IMaintenanceFrcResponseTimeResult} result Maintenance FRC Response Time result
+	 * @var {IFrcResponseTimeResult} result Maintenance FRC Response Time result
 	 */
-	private result: IMaintenanceFrcResponseTimeResult = {
+	private result: IFrcResponseTimeResult = {
 		command: FrcCommands.IQRF1BYTE,
 		inaccessibleNodes: 0,
 		unhandledNodes: 0,
@@ -184,9 +183,9 @@ export default class FrcResponseTimeResultModal extends ModalBase {
 
 	/**
 	 * Stores FRC Response Time result and renders the modal window
-	 * @param {IMaintenanceFrcResponseTimeResult}
+	 * @param {IFrcResponseTimeResult} result FRC response time result
 	 */
-	public activateModal(result: IMaintenanceFrcResponseTimeResult): void {
+	public activateModal(result: IFrcResponseTimeResult): void {
 		this.result = result;
 		this.commandLabel = FrcCommands[result.command].toLowerCase();
 		this.show = true;

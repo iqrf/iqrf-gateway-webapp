@@ -92,7 +92,7 @@ import UserService from '@/services/UserService';
 // Interfaces
 import {AxiosError} from 'axios';
 import {IUserBase, UserLanguage, UserRole} from '@/services/AuthenticationService';
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

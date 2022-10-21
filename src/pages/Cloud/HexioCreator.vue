@@ -132,7 +132,7 @@ import CloudService from '@/services/CloudService';
 import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {IHexioCloud} from '@/interfaces/clouds';
+import {IHexioCloud} from '@/interfaces/Clouds';
 
 @Component({
 	components: {

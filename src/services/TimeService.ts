@@ -16,7 +16,7 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {ITimeSet} from '@/interfaces/GatewayTime';
+import {ITimeSet} from '@/interfaces/Gateway/Time';
 
 /**
  * Time management service

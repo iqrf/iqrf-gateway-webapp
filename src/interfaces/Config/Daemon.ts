@@ -42,7 +42,7 @@ export interface IComponent {
 	/**
 	 * Component startup priority
 	 */
-	startLevel: number
+	startlevel: number
 }
 
 /**

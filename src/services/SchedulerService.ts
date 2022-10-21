@@ -18,7 +18,7 @@ import store from '@/store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import {ITaskTimeSpec} from '@/interfaces/scheduler';
+import {ITaskTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 
 /**
  * Scheduler service

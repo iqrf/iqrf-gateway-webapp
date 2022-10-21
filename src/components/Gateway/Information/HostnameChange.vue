@@ -55,7 +55,7 @@ import {max, required} from 'vee-validate/dist/rules';
 
 import GatewayService from '@/services/GatewayService';
 
-import {IHostname} from '@/interfaces/gatewayInfo';
+import {IHostname} from '@/interfaces/Gateway/Information';
 import {AxiosError} from 'axios';
 
 

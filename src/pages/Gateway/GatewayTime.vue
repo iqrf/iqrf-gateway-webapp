@@ -162,8 +162,8 @@ import {TimeSetOptions} from '@/enums/Gateway/Time';
 import TimeService from '@/services/TimeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
-import {ITime, ITimezone, ITimeSet} from '@/interfaces/GatewayTime';
+import {IOption} from '@/interfaces/Coreui';
+import {ITime, ITimezone, ITimeSet} from '@/interfaces/Gateway/Time';
 
 @Component({
 	components: {

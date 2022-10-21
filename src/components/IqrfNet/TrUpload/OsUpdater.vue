@@ -87,7 +87,7 @@ import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IAvailableOsUpgrade, IOsUpgradeParams} from '@/interfaces/trUpload';
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

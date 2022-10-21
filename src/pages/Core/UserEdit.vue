@@ -110,7 +110,7 @@ import {UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/coreui';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

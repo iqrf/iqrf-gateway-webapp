@@ -207,12 +207,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
+import {MappingType} from '@/enums/Config/Mapping';
 
 import MappingService from '@/services/MappingService';
 
 import {AxiosError} from 'axios';
-import {IMapping, MappingType} from '@/interfaces/mappings';
-import {IOption} from '@/interfaces/coreui';
+import {IMapping} from '@/interfaces/Config/Mapping';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {

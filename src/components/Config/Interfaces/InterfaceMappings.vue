@@ -65,11 +65,12 @@ import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vu
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {MappingType} from '@/enums/Config/Mapping';
 
 import MappingService from '@/services/MappingService';
 
 import {AxiosError} from 'axios';
-import {IMapping, MappingType} from '@/interfaces/mappings';
+import {IMapping} from '@/interfaces/Config/Mapping';
 
 @Component({
 	components: {

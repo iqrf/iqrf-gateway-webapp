@@ -15,13 +15,7 @@
  * limitations under the License.
  */
 
-/**
- * Mapping interface type
- */
-export enum MappingType {
-	SPI = 'spi',
-	UART = 'uart',
-}
+import {MappingType} from '@/enums/Config/Mapping';
 
 /**
  * Mapping interface

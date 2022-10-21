@@ -94,7 +94,7 @@ import ManagementService from '@/services/DaemonApi/ManagementService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
-import {IIdeCounterpart} from '@/interfaces/ideCounterpart';
+import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
 import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({

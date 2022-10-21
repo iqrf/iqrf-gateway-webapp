@@ -63,7 +63,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMainConfig} from '@/interfaces/daemonComponent';
+import {IMainConfig} from '@/interfaces/Config/Daemon';
 
 @Component({
 	components: {
