@@ -42,7 +42,15 @@ limitations under the License.
 						<CCol sm='12' lg='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required|integer|between:0,65535'
+								:rules='{
+									required: optionalPort,
+									integer: true,
+									between: {
+										enabled: true,
+										min: 0,
+										max: 65535
+									}
+								}'
 								:custom-messages='{
 									required: $t("network.wireguard.tunnels.errors.portIface"),
 									integer: $t("network.wireguard.tunnels.errors.portInvalid"),
@@ -55,9 +63,16 @@ limitations under the License.
 									min='0'
 									max='65535'
 									:label='$t("network.wireguard.tunnels.form.port")'
+									:disabled='!optionalPort'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
-								/>
+								>
+									<template #prepend-content>
+										<CInputCheckbox
+											:checked.sync='optionalPort'
+										/>
+									</template>
+								</CInput>
 							</ValidationProvider>
 						</CCol>
 					</CRow>
