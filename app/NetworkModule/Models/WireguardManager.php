@@ -33,6 +33,7 @@ use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\Models\Database\Repositories\WireguardPeerRepository;
 use App\NetworkModule\Entities\MultiAddress;
+use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
@@ -140,6 +141,9 @@ class WireguardManager {
 	 * @param stdClass $values New WireGuard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
+		if ($this->wireguardInterfaceRepository->findInterfaceByName($values->name) !== null) {
+			throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
+		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
 			$ipv4 = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory($values->ipv4->address), $values->ipv4->prefix), $interface);
@@ -163,6 +167,12 @@ class WireguardManager {
 	 */
 	public function editInterface(int $id, stdClass $values): void {
 		$interface = $this->getInterface($id);
+		$tunnels = $this->wireguardInterfaceRepository->findBy(['name' => $values->name]);
+		foreach ($tunnels as $tunnel) {
+			if ($tunnel !== $interface) {
+				throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
+			}
+		}
 		$interface->setName($values->name);
 		$interface->setPrivateKey($values->privateKey);
 		$interface->setPort($values->port ?? null);

@@ -124,7 +124,7 @@ class WireguardController extends NetworkController {
 			$tunnel['publicKey'] = $this->wireguardManager->generatePublicKey($tunnel['privateKey']);
 			return $response->writeJsonBody($tunnel);
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -163,7 +163,7 @@ class WireguardController extends NetworkController {
 			$this->wireguardManager->createInterface($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -206,9 +206,9 @@ class WireguardController extends NetworkController {
 			$this->wireguardManager->editInterface($id, $request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
-		} catch (WireguardInvalidEndpointException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -248,10 +248,10 @@ class WireguardController extends NetworkController {
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -284,11 +284,11 @@ class WireguardController extends NetworkController {
 			$this->serviceManager->start($this->tunnelService($tunnel));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -321,11 +321,11 @@ class WireguardController extends NetworkController {
 			$this->serviceManager->stop($this->tunnelService($tunnel));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -358,11 +358,11 @@ class WireguardController extends NetworkController {
 			$this->serviceManager->enable($this->tunnelService($tunnel));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
@@ -395,11 +395,11 @@ class WireguardController extends NetworkController {
 			$this->serviceManager->disable($this->tunnelService($tunnel));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NonexistentServiceException $e) {
+			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (NonexistentServiceException $e) {
-			throw new ClientErrorException('Wireguard tunnel not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 
