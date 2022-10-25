@@ -39,12 +39,47 @@ class LogManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * @var string IQRF Gateway Controller log file name
+	 * @var string IQRF Gateway Controller name
+	 */
+	public const CONTROLLER = 'iqrf-gateway-controller';
+
+	/**
+	 * @var string IQRF Gateway Daemon name
+	 */
+	public const DAEMON = 'iqrf-gateway-daemon';
+
+	/**
+	 * @var string IQRF Gateway Setter name
+	 */
+	public const SETTER = 'iqrf-gateway-setter';
+
+	/**
+	 * @var string IQRF Gateway Translator name
+	 */
+	public const TRANSLATOR = 'iqrf-gateway-translator';
+
+	/**
+	 * @var string IQRF Gateway Uploader name
+	 */
+	public const UPLOADER = 'iqrf-gateway-uploader';
+
+	/**
+	 * @ string IQRF Gateway Controller log file
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * @var string IQRF Gateway Uploader log file name
+	 * @var string IQRF Gateway Setter log file
+	 */
+	private const SETTER_LOG = 'iqrf-gateway-setter.log';
+
+	/**
+	 * @var string IQRF Gateway Translator log file
+	 */
+	private const TRANSLATOR_LOG = 'iqrf-gateway-translator.log';
+
+	/**
+	 * @var string IQRF Gateway Uploader log file
 	 */
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
@@ -117,10 +152,10 @@ class LogManager {
 	}
 
 	/**
-	 * Returns Systemd Journal log
-	 * @return string Systemd Journal log
+	 * Returns Journal records
+	 * @return string Journal records
 	 */
-	public function getSystemdJournalLog(): string {
+	public function getJournal(): string {
 		$result = $this->commandManager->run('journalctl --utc -b --no-pager', true);
 		return $result->getStdout();
 	}
@@ -131,22 +166,36 @@ class LogManager {
 	 */
 	public function createArchive(): string {
 		$zipManager = new ZipArchiveManager($this->path);
-		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
+		if ($this->commandManager->commandExist(self::CONTROLLER)) {
 			try {
-				$zipManager->addFileFromText('iqrf-gateway-controller.log', $this->getLogFromPath(self::CONTROLLER_LOG));
+				$zipManager->addFileFromText(self::CONTROLLER_LOG, $this->getLogFromPath(self::CONTROLLER_LOG));
 			} catch (LogNotFoundException $e) {
 				// not found, do not add
 			}
 		}
-		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
+		if ($this->commandManager->commandExist(self::SETTER)) {
 			try {
-				$zipManager->addFileFromText('iqrf-gateway-uploader.log', $this->getLogFromPath(self::UPLOADER_LOG));
+				$zipManager->addFileFromText(self::SETTER_LOG, $this->getLogFromPath(self::SETTER_LOG));
+			} catch (LogNotFoundException $e) {
+				// not found, do not add
+			}
+		}
+		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
+			try {
+				$zipManager->addFileFromText(self::TRANSLATOR_LOG, $this->getLogFromPath(self::TRANSLATOR_LOG));
+			} catch (LogNotFoundException $e) {
+				// not found, do not add
+			}
+		}
+		if ($this->commandManager->commandExist(self::UPLOADER)) {
+			try {
+				$zipManager->addFileFromText(self::UPLOADER_LOG, $this->getLogFromPath(self::UPLOADER_LOG));
 			} catch (LogNotFoundException $e) {
 				// not found, do not add
 			}
 		}
 		$zipManager->addFolder($this->daemonLogDir, 'daemon');
-		$zipManager->addFileFromText('journal.log', $this->getSystemdJournalLog());
+		$zipManager->addFileFromText('journal.log', $this->getJournal());
 		$zipManager->close();
 		return $this->path;
 	}
@@ -157,16 +206,21 @@ class LogManager {
 	 */
 	public function getAvailableServices(): array {
 		$services = [];
-		if ($this->commandManager->commandExist('iqrf-gateway-controller')) {
-			$services[] = 'iqrf-gateway-controller';
+		if ($this->commandManager->commandExist(self::CONTROLLER)) {
+			$services[] = self::CONTROLLER;
 		}
 		if ($this->commandManager->commandExist('iqrfgd2')) {
-			$services[] = 'iqrf-gateway-daemon';
+			$services[] = self::DAEMON;
 		}
-		if ($this->commandManager->commandExist('iqrf-gateway-uploader')) {
-			$services[] = 'iqrf-gateway-uploader';
+		if ($this->commandManager->commandExist(self::SETTER)) {
+			$services[] = self::SETTER;
 		}
-		$services[] = 'systemd-journald';
+		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
+			$services[] = self::TRANSLATOR;
+		}
+		if ($this->commandManager->commandExist(self::UPLOADER)) {
+			$services[] = self::UPLOADER;
+		}
 		return $services;
 	}
 
@@ -180,16 +234,19 @@ class LogManager {
 		if (!in_array($service, $services, true)) {
 			throw new ServiceLogNotAvailableException('Service not found');
 		}
-		if ($service === 'iqrf-gateway-controller') {
+		if ($service === self::CONTROLLER) {
 			return $this->getLogFromPath(self::CONTROLLER_LOG);
 		}
-		if ($service === 'iqrf-gateway-daemon') {
+		if ($service === self::DAEMON) {
 			return $this->getLatestDaemonLog();
 		}
-		if ($service === 'iqrf-gateway-uploader') {
-			return $this->getLogFromPath(self::UPLOADER_LOG);
+		if ($service === self::SETTER) {
+			return $this->getLogFromPath(self::SETTER_LOG);
 		}
-		return $this->getSystemdJournalLog();
+		if ($service === self::TRANSLATOR) {
+			return $this->getLogFromPath(self::TRANSLATOR_LOG);
+		}
+		return $this->getLogFromPath(self::UPLOADER_LOG);
 	}
 
 }

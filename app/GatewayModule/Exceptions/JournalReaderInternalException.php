@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
@@ -14,23 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+declare(strict_types = 1);
+
+namespace App\GatewayModule\Exceptions;
+
+use Exception;
 
 /**
- * Gateway log entry
+ * Exception indicating journal reading error
  */
-export interface ILog {
-	/**
-	 * Service log available
-	 */
-	available: boolean
+class JournalReaderInternalException extends Exception {
 
-	/**
-	 * Service log loadded
-	 */
-	loaded: boolean
-
-	/**
-	 * Log contents
-	 */
-	log: string
 }

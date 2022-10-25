@@ -120,6 +120,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfRepositoryConfig.json
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
+		Journal:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/Journal.json
 		LogServices:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
 		MaolerConfiguration:
@@ -174,8 +176,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeysAdd.json
 		SshKeyTypes:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyTypes.json
-		SystemdJournal:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdJournal.json
 		Task:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
 		TaskList:

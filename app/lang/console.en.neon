@@ -22,6 +22,7 @@ features:
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
 	iqrfRepository: IQRF Repository extension configuration
 	iTemp: iTemp
+	journal: Systemd Journald configuration
 	mender: Mender
 	monit: Monit
 	networkManager: Network manager
@@ -30,7 +31,6 @@ features:
 	remount: Filesystem remount
 	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
-	systemdJournal: Systemd Journald configuration
 	trUpload: IQRF TR native upload
 	updater: System updater
 	unattendedUpgrades: Unattended upgrades

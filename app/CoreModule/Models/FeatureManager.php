@@ -67,6 +67,10 @@ class FeatureManager {
 		'iTemp' => [
 			'enabled' => false,
 		],
+		'journal' => [
+			'enabled' => false,
+			'path' => '/etc/systemd/journald.conf',
+		],
 		'mender' => [
 			'enabled' => false,
 		],
@@ -89,10 +93,6 @@ class FeatureManager {
 		'supervisord' => [
 			'enabled' => false,
 			'url' => 'supervisord/',
-		],
-		'systemdJournal' => [
-			'enabled' => false,
-			'path' => '/etc/systemd/journald.conf',
 		],
 		'trUpload' => [
 			'enabled' => false,
