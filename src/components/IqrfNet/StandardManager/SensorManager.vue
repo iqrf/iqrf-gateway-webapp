@@ -42,14 +42,14 @@ limitations under the License.
 						class='mr-1'
 						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitEnumerate'
+						@click.prevent='enumerate'
 					>
 						{{ $t('forms.enumerate') }}
 					</CButton>
 					<CButton
 						color='primary'
 						:disabeld='invalid'
-						@click.prevent='submitReadAll'
+						@click.prevent='read'
 					>
 						{{ $t('iqrfnet.standard.sensor.readAll') }}
 					</CButton>
