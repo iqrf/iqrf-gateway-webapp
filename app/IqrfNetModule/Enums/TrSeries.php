@@ -65,9 +65,8 @@ final class TrSeries extends Enum {
 				default:
 					throw new DomainException();
 			}
-		} else {
-			throw new DomainException();
 		}
+		throw new DomainException();
 	}
 
 	/**
@@ -98,9 +97,8 @@ final class TrSeries extends Enum {
 				default:
 					throw new DomainException();
 			}
-		} else {
-			throw new DomainException();
 		}
+		throw new DomainException();
 	}
 
 	/**
