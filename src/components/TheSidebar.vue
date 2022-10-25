@@ -227,7 +227,7 @@ export default class TheSidebar extends Vue {
 								_name: 'CSidebarNavItem',
 								name: this.$t('service.systemd-journald.title'),
 								to: '/gateway/service/systemd-journald/',
-								feature: 'systemdJournal',
+								feature: 'journal',
 								role: UserRole.ADMIN,
 							},
 							{

@@ -17,7 +17,7 @@
 /**
  * Systemd journal storage methods
  */
-export enum StorageMethod {
+export enum Persistence {
 	PERSISTENT = 'persistent',
 	VOLATILE = 'volatile'
 }

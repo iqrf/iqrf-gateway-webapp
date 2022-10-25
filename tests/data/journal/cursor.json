@@ -1,0 +1,86 @@
+{
+	"firstCursor": "s=c898cdeb1833489094a2e5f158e28858;i=39782b2;b=e38555478f2e49389c854801d0aa15c5;m=14854ff7;t=5ebca2f015984;x=501098f205790863",
+	"lastCursor": "s=c898cdeb1833489094a2e5f158e28858;i=39782bb;b=e38555478f2e49389c854801d0aa15c5;m=1485512d;t=5ebca2f015aba;x=d8c7c0e9746518c3",
+	"records": [
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: shape::IWebsocketService",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentInstance.cpp:ComponentInstance():120 Property \".RequiredInterfaces\" not found",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] WebsocketCppService.cpp:activate():412 \n******************************\nWebsocketCppService instance activate\n******************************",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[WAR] WebsocketCppService.cpp:activate():438 AutoStart not specified => used default: m_autoStart=\"1\"",
+			"pid": 7652,
+			"priority": 4,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] WebsocketCppService.cpp:activate():491 m_port=\"1438\" m_autoStart=\"1\" m_acceptOnlyLocalhost=\"0\" m_tlsEnabled=\"0\" m_cert=\"/etc/iqrf-gateway-daemon/certs/core/cert.pem\" m_key=\"/etc/iqrf-gateway-daemon/certs/core/privkey.pem\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: shape::IWebsocketService",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"shape::WebsocketCppService\" m_state=\"STARTED\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"iqrf::IqrfCdc\" m_state=\"OPENED\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"iqrf::IqrfCdc\" m_state=\"STARTING\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentInstance.cpp:ComponentInstance():120 Property \".RequiredInterfaces\" not found",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		}
+	]
+}

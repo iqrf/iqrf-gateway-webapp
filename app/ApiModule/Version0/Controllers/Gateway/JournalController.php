@@ -32,13 +32,16 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
-use App\GatewayModule\Models\SystemdJournalManager;
+use App\GatewayModule\Exceptions\JournalReaderArgumentException;
+use App\GatewayModule\Exceptions\JournalReaderInternalException;
+use App\GatewayModule\Models\JournalConfigManager;
+use App\GatewayModule\Models\JournalReaderManager;
 
 /**
- * System journald controller
+ * Journal controller
  * @Path("/journal")
  */
-class SystemdJournalController extends GatewayController {
+class JournalController extends GatewayController {
 
 	/**
 	 * @var FeatureManager Feature manager
@@ -46,19 +49,26 @@ class SystemdJournalController extends GatewayController {
 	private FeatureManager $featureManager;
 
 	/**
-	 * @var SystemdJournalManager Systemd journal manager
+	 * @var JournalConfigManager Journal config manager
 	 */
-	private SystemdJournalManager $manager;
+	private JournalConfigManager $configManager;
+
+	/**
+	 * @var JournalReaderManager Journal reader manager
+	 */
+	private JournalReaderManager $readerManager;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
-	 * @param SystemdJournalManager $manager Systemd journal manager
+	 * @param JournalConfigManager $configManager Journal config manager
+	 * @param JournalReaderManager $readerManager Journal reader manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, SystemdJournalManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(FeatureManager $featureManager, JournalConfigManager $configManager, JournalReaderManager $readerManager, RestApiSchemaValidator $validator) {
 		$this->featureManager = $featureManager;
-		$this->manager = $manager;
+		$this->configManager = $configManager;
+		$this->readerManager = $readerManager;
 		parent::__construct($validator);
 	}
 
@@ -66,14 +76,14 @@ class SystemdJournalController extends GatewayController {
 	 * @Path("/config")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns systemd journal configuration
+	 *  summary: Returns journal configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/SystemdJournal'
+	 *                      $ref: '#/components/schemas/Journal'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -84,7 +94,7 @@ class SystemdJournalController extends GatewayController {
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
 		try {
-			return $response->writeJsonBody($this->manager->getConfig());
+			return $response->writeJsonBody($this->configManager->getConfig());
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -94,13 +104,13 @@ class SystemdJournalController extends GatewayController {
 	 * @Path("/config")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Updates systemd journal configuration
+	 *  summary: Updates journal configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/SystemdJournal'
+	 *                  $ref: '#/components/schemas/Journal'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -115,9 +125,9 @@ class SystemdJournalController extends GatewayController {
 	 */
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
-		$this->validator->validateRequest('systemdJournal', $request);
+		$this->validator->validateRequest('journal', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody(false));
+			$this->configManager->saveConfig($request->getJsonBody(false));
 			return $response->writeBody('Workaround');
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -125,11 +135,54 @@ class SystemdJournalController extends GatewayController {
 	}
 
 	/**
-	 * Checks if systemd journal feature is enabled, and returns bad request if it is not
+	 * @Path("/")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns journal records
+	 *  parameters:
+	 *      - in: query
+	 *        name: count
+	 *        schema:
+	 *          type: integer
+	 *          minimum: 1
+	 *          maximum: 1000
+	 *          default: 500
+	 *        required: false
+	 *        description: Number of last records to retrieve
+	 *      - in: query
+	 *        name: cursor
+	 *        schema:
+	 *          type: string
+	 *        required: false
+	 *        description: Specifies a record cursor to start from
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$count = (int) $request->getQueryParam('count', 500);
+		$cursor = $request->getQueryParam('cursor', null);
+		try {
+			return $response->writeJsonBody($this->readerManager->getRecords($count, $cursor));
+		} catch (JournalReaderArgumentException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (JournalReaderInternalException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * Checks if journal feature is enabled, and returns bad request if it is not
 	 */
 	private function featureEnabled(): void {
-		if (!$this->featureManager->isEnabled('systemdJournal')) {
-			throw new ClientErrorException('Systemd journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
+		if (!$this->featureManager->isEnabled('journal')) {
+			throw new ClientErrorException('Journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

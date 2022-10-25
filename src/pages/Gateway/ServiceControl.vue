@@ -78,7 +78,7 @@ limitations under the License.
 		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
-		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("systemdJournal")' />
+		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("journal")' />
 	</div>
 </template>
 
@@ -87,7 +87,7 @@ import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
-import SystemdJournaldConfig from '@/components/Gateway/Services/SystemdJournaldConfig.vue';
+import SystemdJournaldConfig from '@/components/Gateway/Services/JournalConfig.vue';
 
 import AptService from '@/services/AptService';
 import ServiceService from '@/services/ServiceService';
@@ -113,7 +113,7 @@ const features = {
 	'ssh': 'ssh',
 	'tempgw': 'iTemp',
 	'unattended-upgrades': 'unattendedUpgrades',
-	'systemd-journald': 'systemdJournal',
+	'systemd-journald': 'journal',
 };
 
 interface IService {

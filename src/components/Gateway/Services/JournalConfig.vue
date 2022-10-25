@@ -183,15 +183,15 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
+import {Persistence, TimeUnit} from '@/enums/Gateway/Journal';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import GatewayService from '@/services/GatewayService';
+import JournalService from '@/services/JournalService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/Coreui';
-import {ISystemdJournal} from '@/interfaces/Gateway/Journal';
+import {IJournal} from '@/interfaces/Gateway/Journal';
 
 @Component({
 	components: {
@@ -213,12 +213,12 @@ import {ISystemdJournal} from '@/interfaces/Gateway/Journal';
 /**
  * Gateway systemd journal configuration component
  */
-export default class SystemdJournaldConfig extends Vue {
+export default class JournaldConfig extends Vue {
 
 	/**
-	 * @var {ISystemdJournal|null} config Systemd journal configuration
+	 * @var {IJournal|null} config Systemd journal configuration
 	 */
-	private config: ISystemdJournal|null = null;
+	private config: IJournal|null = null;
 
 	/**
 	 * @var {boolean} sizeRotation Use size based log rotation
@@ -236,11 +236,11 @@ export default class SystemdJournaldConfig extends Vue {
 	private storageOptions: Array<IOption> = [
 		{
 			label: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
-			value: StorageMethod.VOLATILE,
+			value: Persistence.VOLATILE,
 		},
 		{
 			label: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
-			value: StorageMethod.PERSISTENT,
+			value: Persistence.PERSISTENT,
 		},
 	];
 
@@ -303,9 +303,9 @@ export default class SystemdJournaldConfig extends Vue {
 	 * Retrieves systemd journal configuration
 	 */
 	private getConfig(): Promise<void> {
-		return GatewayService.getSystemdJournalConfig()
+		return JournalService.getConfig()
 			.then((response: AxiosResponse) => {
-				const config: ISystemdJournal = response.data;
+				const config: IJournal = response.data;
 				if (config.sizeRotation.maxFileSize !== 0) {
 					this.sizeRotation = true;
 				}
@@ -328,7 +328,7 @@ export default class SystemdJournaldConfig extends Vue {
 		if (this.config === null) {
 			return;
 		}
-		const config: ISystemdJournal = JSON.parse(JSON.stringify(this.config));
+		const config: IJournal = JSON.parse(JSON.stringify(this.config));
 		if (!this.sizeRotation) {
 			config.sizeRotation.maxFileSize = 0;
 		}
@@ -337,7 +337,7 @@ export default class SystemdJournaldConfig extends Vue {
 			config.timeRotation.count = 1;
 		}
 		this.$store.commit('spinner/SHOW');
-		GatewayService.saveSystemdJournalConfig(config)
+		JournalService.saveConfig(config)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
