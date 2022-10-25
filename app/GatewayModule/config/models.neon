@@ -54,12 +54,13 @@ services:
 		autowired: false
 	- App\GatewayModule\Models\HostnameManager(@commandManager, @etc.fileManager)
 	- App\GatewayModule\Models\InfoManager
+	- App\GatewayModule\Models\JournalConfigManager
+	- App\GatewayModule\Models\JournalReaderManager
 	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SshManager
-	- App\GatewayModule\Models\SystemdJournalManager
 	- App\GatewayModule\Models\TimeManager(@commandManager, %timesyncd.path%)
 	- App\GatewayModule\Models\UpdaterManager
 	etc.jsonFileManager:

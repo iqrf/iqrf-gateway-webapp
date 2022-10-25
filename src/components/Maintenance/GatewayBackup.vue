@@ -56,7 +56,7 @@
 								:label='$t("maintenance.backup.form.system.time")'
 							/>
 							<CInputCheckbox
-								v-if='$store.getters["features/isEnabled"]("systemdJournal")'
+								v-if='$store.getters["features/isEnabled"]("journal")'
 								:checked.sync='migration.system.journal'
 								:label='$t("maintenance.backup.form.system.journal")'
 							/>
@@ -160,7 +160,7 @@ export default class GatewayBackup extends Vue {
 		if (!this.$store.getters['features/isEnabled']('networkManager')) {
 			params.system.network = false;
 		}
-		if (!this.$store.getters['features/isEnabled']('systemdJournal')) {
+		if (!this.$store.getters['features/isEnabled']('journal')) {
 			params.system.journal = false;
 		}
 		return params;

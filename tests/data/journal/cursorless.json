@@ -1,0 +1,86 @@
+{
+	"firstCursor": "s=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6",
+	"lastCursor": "s=c898cdeb1833489094a2e5f158e28858;i=39782c5;b=e38555478f2e49389c854801d0aa15c5;m=14855269;t=5ebca2f015bf7;x=973be0837f4732f2",
+	"records": [
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] IqrfCdc.cpp:activate():344 \n******************************\nIqrfCdc instance activate\n******************************",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] IqrfCdc.cpp:modify():382 m_interfaceName=\"/dev/ttyACM0\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentManager.cpp:addProvidedInterface():305 Add provided interface: iqrf::IIqrfChannelService",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"iqrf::IqrfCdc\" m_state=\"STARTED\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"iqrf::IqrfDpa\" m_state=\"OPENED\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] Component.cpp:setState():106 m_componentName=\"iqrf::IqrfDpa\" m_state=\"STARTING\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] ComponentInstance.cpp:ComponentInstance():120 Property \".RequiredInterfaces\" not found",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] IqrfDpa.cpp:activate():440 \n******************************\nIqrfDpa instance activate\n******************************",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[WAR] IqrfCdc.cpp:startListen():275 Caught CDCImplException: /home/khanak/microrisc/iqrf-gateway-daemon/libraries/clibcdc/src/CDCImpl_Lin.cpp 214Port handle creation failed with error 2\nCDC Test failed: CDCImplException: /home/khanak/microrisc/iqrf-gateway-daemon/libraries/clibcdc/src/CDCImpl_Lin.cpp 214Port handle creation failed with error 2",
+			"pid": 7652,
+			"priority": 4,
+			"timestamp": "Oct 24 18:21:28"
+		},
+		{
+			"hostname": "Inspiron-15-5501",
+			"identifier": "iqrfgd2",
+			"message": "[INF] IqrfDpa.cpp:getIqrfNetworkParams():340 Waiting for TR reset result [ms]: wtime=\"3000\"",
+			"pid": 7652,
+			"priority": 6,
+			"timestamp": "Oct 24 18:21:28"
+		}
+	]
+}

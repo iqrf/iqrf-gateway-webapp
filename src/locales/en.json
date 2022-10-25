@@ -1403,19 +1403,27 @@
 			"description": "Shows gateway logs.",
 			"download": "Download",
 			"uploader": "Uploader",
-			"journal": "Journal",
 			"services": {
 				"iqrf-gateway-controller": "Controller",
 				"iqrf-gateway-daemon": "Daemon",
-				"iqrf-gateway-uploader": "Uploader",
-				"systemd-journald": "Journal"
+				"iqrf-gateway-setter": "Setter",
+				"iqrf-gateway-translator": "Translator",
+				"iqrf-gateway-uploader": "Uploader"
 			},
 			"messages": {
-				"noLogs": "No available service logs.",
+				"notAvailable": "Service not available.",
+				"notLoaded": "Service logs not loaded.",
+				"noLogs": "No log records available.",
 				"listFailed": "Failed to retrieve list of available logs: {error}",
-				"fetchFailed": "Failed to retrieve service log: {error}",
-				"logEmpty": "Log file is empty.",
-				"logNotFound": "Log file does not exist."
+				"fetchFailed": "Failed to retrieve service log: {error}"
+			},
+			"journal": {
+				"title": "Journal",
+				"notLoaded": "Journal records not loaded.",
+				"noRecords": "No Journal records available.",
+				"noOlderRecords": "No older Journal records available.",
+				"loading": "Loading older Journal records...",
+				"failed": "Failed to load journal records: {error}"
 			}
 		},
 		"mode": {

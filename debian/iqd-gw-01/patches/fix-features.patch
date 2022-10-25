@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -45,10 +45,10 @@
+@@ -49,10 +49,10 @@
  	enabled: false
  # Monitoring service
  monit:
@@ -31,7 +31,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -58,7 +58,7 @@
+@@ -62,20 +62,20 @@
  	enabled: false
  # SSH daemon manager
  ssh:
@@ -40,8 +40,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -69,13 +69,13 @@
- 	path: /etc/systemd/journald.conf
+ 	url: /supervisord/
  # IQRF TR native upload
  trUpload:
 -	enabled: false

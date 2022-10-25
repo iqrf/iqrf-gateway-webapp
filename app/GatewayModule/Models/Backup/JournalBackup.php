@@ -42,7 +42,7 @@ class JournalBackup implements IBackupManager {
 	 * @var array<string> Service name
 	 */
 	public const SERVICES = [
-		'systemd-timesyncd',
+		'systemd-journald',
 	];
 
 	/**
@@ -84,7 +84,7 @@ class JournalBackup implements IBackupManager {
 	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->restoreLogger = $restoreLogger;
-		$feature = $featureManager->get('systemdJournal');
+		$feature = $featureManager->get('journal');
 		$this->path = dirname($feature['path']);
 		$this->file = basename($feature['path']);
 		$this->featureEnabled = $feature['enabled'];

@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {StorageMethod, TimeUnit} from '@/enums/Gateway/SystemdJournal';
+import {Persistence, TimeUnit} from '@/enums/Gateway/Journal';
 
 /**
  * Systemd journal configuration interface
  */
-export interface ISystemdJournal {
+export interface IJournal {
 
 	/**
 	 * Forward systemd journal to syslog
@@ -29,7 +29,7 @@ export interface ISystemdJournal {
 	/**
 	 * Journal storage method
 	 */
-	persistence: StorageMethod
+	persistence: Persistence
 
 	/**
 	 * Maximum disk space usable by journal
@@ -44,18 +44,18 @@ export interface ISystemdJournal {
 	/**
 	 * Size-based log rotation
 	 */
-	sizeRotation: ISystemdJournalSizeRotation
+	sizeRotation: IJournalSizeRotation
 
 	/**
 	 * Time-based log rotation
 	 */
-	timeRotation: ISystemdJournalTimeRotation
+	timeRotation: IJournalTimeRotation
 }
 
 /**
  * Size-base log rotation systemd journal configuration option interface
  */
-export interface ISystemdJournalSizeRotation {
+export interface IJournalSizeRotation {
 
 	/**
 	 * Maximum number of rotated log files to keep
@@ -71,7 +71,7 @@ export interface ISystemdJournalSizeRotation {
 /**
  * Time-based log rotation systemd journal configuration option interface
  */
-export interface ISystemdJournalTimeRotation {
+export interface IJournalTimeRotation {
 
 	/**
 	 * Time unit
@@ -83,3 +83,24 @@ export interface ISystemdJournalTimeRotation {
 	 */
 	count: number
 }
+
+/**
+ * Journal data interface
+ */
+export interface IJournalData {
+	/**
+	 * Journal records
+	 */
+	records: Array<string>
+
+	/**
+	 * Cursor of the first record
+	 */
+	startCursor: string
+	
+	/**
+	 * Cursor of the last record
+	 */
+	endCursor: string
+}
+

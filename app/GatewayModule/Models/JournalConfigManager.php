@@ -29,9 +29,9 @@ use Nette\Utils\Strings;
 use stdClass;
 
 /**
- * Systemd journal manager
+ * Journal manager
  */
-class SystemdJournalManager {
+class JournalConfigManager {
 
 	/**
 	 * @var array<string, string> Journal configuration
@@ -61,15 +61,15 @@ class SystemdJournalManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
-		$feature = $featureManager->get('systemdJournal');
+		$feature = $featureManager->get('journal');
 		$path = $feature['path'];
 		$this->confFile = basename($path);
 		$this->fileManager = new PrivilegedFileManager(dirname($path), $commandManager);
 	}
 
 	/**
-	 * Retrieves systemd journal configuration
-	 * @return array{forwardToSyslog: bool, persistence: string, maxDiskSize: int, maxFiles: int, sizeRotation: array<string, int>, timeRotation: array<int|string>} Systemd journal configuration
+	 * Retrieves journal configuration
+	 * @return array{forwardToSyslog: bool, persistence: string, maxDiskSize: int, maxFiles: int, sizeRotation: array<string, int>, timeRotation: array<int|string>} Journal configuration
 	 * @throws ConfNotFoundException
 	 * @throws InvalidConfFormatException
 	 */
@@ -91,7 +91,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses Storage option
-	 * @param array<string, string> $conf Systemd journal configuration
+	 * @param array<string, string> $conf Journal configuration
 	 * @return string Journal storage option method
 	 */
 	public function getStorage(array $conf): string {
@@ -101,8 +101,8 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log file size in megabytes
-	 * @param array<string, string> $conf Systemd journal configuration
-	 * @return int Maximum systemd journal disk size
+	 * @param array<string, string> $conf Journal configuration
+	 * @return int Maximum Journal disk size
 	 */
 	public function getMaxDiskSize(array $conf): int {
 		$size = $this->getPropertyDefault('SystemMaxUse', $conf);
@@ -115,7 +115,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log files option
-	 * @param array<string, string> $conf Systemd journal configuration
+	 * @param array<string, string> $conf Journal configuration
 	 * @return int Maximum system log files
 	 */
 	public function getMaxFiles(array $conf): int {
@@ -125,7 +125,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses maximum system log file size in megabytes
-	 * @param array<string, string> $conf Systemd journal configuration
+	 * @param array<string, string> $conf Journal configuration
 	 * @return array{maxFileSize: int} Maximum system log file size
 	 */
 	public function getSizeRotation(array $conf): array {
@@ -139,7 +139,7 @@ class SystemdJournalManager {
 
 	/**
 	 * Parses log file duration before rotation
-	 * @param array<string, string> $conf Systemd journal configuration
+	 * @param array<string, string> $conf Journal configuration
 	 * @return array{unit: mixed, count: int} Log file duration
 	 */
 	public function getTimeRotation(array $conf): array {
@@ -154,7 +154,7 @@ class SystemdJournalManager {
 	/**
 	 * Returns key value if it exists, or default value otherwise
 	 * @param string $key Configuration option
-	 * @param array<string, string> $conf Systemd journal configuration
+	 * @param array<string, string> $conf Journal configuration
 	 * @return string Property value
 	 */
 	private function getPropertyDefault(string $key, array $conf): string {
@@ -165,8 +165,8 @@ class SystemdJournalManager {
 	}
 
 	/**
-	 * Stores new systemd journal configuration
-	 * @param stdClass $newConf New systemd journal configuration
+	 * Stores new Journal configuration
+	 * @param stdClass $newConf New Journal configuration
 	 * @throws ConfNotFoundException
 	 */
 	public function saveConfig(stdClass $newConf): void {
@@ -189,8 +189,8 @@ class SystemdJournalManager {
 	}
 
 	/**
-	 * Reads systemd journal configuration
-	 * @return array<string, array<string, mixed>> Systemd journal configuration
+	 * Reads Journal configuration
+	 * @return array<string, array<string, mixed>> Journal configuration
 	 * @throws ConfNotFoundException
 	 * @throws InvalidConfFormatException
 	 */

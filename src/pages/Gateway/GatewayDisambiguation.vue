@@ -101,7 +101,7 @@ export default class GatewayDisambiguation extends Vue {
 			description: this.$t('service.systemd-journald.description').toString(),
 			to: '/gateway/service/systemd-journald/',
 			role: UserRoleIndex.ADMIN,
-			feature: 'systemdJournal',
+			feature: 'journal',
 		},
 		{
 			title: this.$t('service.apcupsd.title').toString(),

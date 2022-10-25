@@ -1,8 +1,8 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/systemdJournal.json",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journal.json",
 	"type": "object",
-	"title": "Systemd log configuration",
+	"title": "Journal configuration",
 	"example": {
 		"enabled": false
 	},
@@ -18,13 +18,13 @@
 	"properties": {
 		"forwardToSyslog": {
 			"$id": "#/properties/forwardToSyslog",
-			"title": "Forward journal logs to syslog",
+			"title": "Forward Journal logs to syslog",
 			"type": "boolean",
 			"example": false
 		},
 		"persistence": {
 			"$id": "#/properties/persistence",
-			"title": "Log storage method",
+			"title": "Journal persistence",
 			"type": "string",
 			"enum": [
 				"persistent",
@@ -35,7 +35,7 @@
 		"maxDiskSize": {
 			"$id": "#/properties/maxDiskSize",
 			"title": "Maximum disk space in MB that journal can use",
-			"description": "Setting 0 uses systemd default",
+			"description": "Setting 0 uses Journal default",
 			"type": "integer",
 			"min": 0,
 			"example": 0
@@ -59,7 +59,7 @@
 				"maxFileSize": {
 					"$id": "#/properties/maxFileSize",
 					"title": "Maximum log file size in MB",
-					"description": "Setting 0 uses systemd default",
+					"description": "Setting 0 uses Journal default",
 					"type": "integer",
 					"min": 0,
 					"example": 0
