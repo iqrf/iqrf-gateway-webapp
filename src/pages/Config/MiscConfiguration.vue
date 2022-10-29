@@ -35,9 +35,6 @@ limitations under the License.
 				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
 					<IqrfInfo @fetched='configFetch' />
 				</CTab>
-				<CTab v-if='isAdmin' :title='$t("config.daemon.misc.iqmesh")'>
-					<OtaUpload @fetched='configFetch' />
-				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
 					<MonitorList @fetched='configFetch' />
 				</CTab>
@@ -58,7 +55,6 @@ import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
-import OtaUpload from '@/components/Config/Misc/OtaUpload.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
@@ -78,7 +74,6 @@ import {IConfigFetch} from '@/interfaces/Config/Daemon';
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
-		OtaUpload,
 		TracerList,
 	},
 	metaInfo: {
