@@ -43,6 +43,11 @@ export interface DiskInfo {
 	used: string
 }
 
+export interface OsInfo {
+	name: string|null
+	homePage: string|null
+}
+
 /**
  * GatewayInfo memory information interface
  */
@@ -94,6 +99,7 @@ export interface IGatewayInfo {
 	board: string
 	gwId: string|null
 	gwImage: string|null
+	os: OsInfo
 	versions: VersionsInfo
 	hostname: string
 	interfaces: Array<NetworkInterface>

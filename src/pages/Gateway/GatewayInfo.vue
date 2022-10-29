@@ -25,6 +25,10 @@ limitations under the License.
 							<th>{{ $t('gateway.info.board') }}</th>
 							<td>{{ info.board }}</td>
 						</tr>
+						<tr>
+							<th>{{ $t('gateway.info.os') }}</th>
+							<td><a :href='info.os.homePage'>{{ info.os.name }}</a></td>
+						</tr>
 						<tr v-if='info.gwId'>
 							<th>{{ $t('gateway.info.gwId') }}</th>
 							<td>{{ info.gwId }}</td>

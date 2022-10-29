@@ -26,6 +26,7 @@ use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Tool for getting information about this gateway
@@ -78,6 +79,7 @@ class InfoManager {
 			'board' => $this->getBoard(),
 			'gwId' => $this->getId(),
 			'gwImage' => $this->getImage(),
+			'os' => $this->getOs(),
 			'versions' => [
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
@@ -138,6 +140,26 @@ class InfoManager {
 	 */
 	public function getImage(): ?string {
 		return $this->readGatewayFile()['gwImage'] ?? null;
+	}
+
+	/**
+	 * Returns OS information
+	 * @return array{name: string|null, homePage: string|null} OS information
+	 */
+	public function getOs(): array {
+		$command = 'cat /etc/os-release';
+		$output = $this->commandManager->run($command)->getStdout();
+		$osInfo = [];
+		foreach (explode(PHP_EOL, $output) as $line) {
+			if (strpos($line, '=') !== false) {
+				$line = explode('=', $line);
+				$osInfo[$line[0]] = Strings::trim($line[1], '"');
+			}
+		}
+		return [
+			'name' => $osInfo['PRETTY_NAME'] ?? $osInfo['NAME'] ?? null,
+			'homePage' => $osInfo['HOME_URL'] ?? null,
+		];
 	}
 
 	/**

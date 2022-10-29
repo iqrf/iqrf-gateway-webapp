@@ -1322,6 +1322,7 @@
 			"title": "Information",
 			"description": "Show information about this gateway.",
 			"board": "Board",
+			"os": "Operating system",
 			"gwId": "IQRF Gateway ID",
 			"gwImage": "IQRF Gateway image",
 			"version": {

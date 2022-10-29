@@ -31,6 +31,7 @@ use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
 use Mockery;
 use Mockery\MockInterface;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -66,6 +67,7 @@ final class InfoManagerTest extends CommandTestCase {
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
 		'gw' => 'cat /etc/iqrf-gateway.json',
 		'gitBranches' => 'git branch -v --no-abbrev',
+		'osInfo' => 'cat /etc/os-release',
 		'uptime' => 'uptime -p',
 	];
 
@@ -76,6 +78,10 @@ final class InfoManagerTest extends CommandTestCase {
 		'board' => 'MICRORISC s.r.o. IQD-GW-01',
 		'gwId' => '0242fc1e6f85b296',
 		'gwImage' => 'gw v1.0.0',
+		'os' => [
+			'name' => 'Armbian 21.11.0-trunk Buster',
+			'homePage' => 'https://www.debian.org/',
+		],
 		'versions' => [
 			'controller' => 'v1.0.0',
 			'daemon' => 'v2.3.0',
@@ -201,6 +207,14 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get information about the operating system
+	 */
+	public function testGetOs(): void {
+		$this->receiveCommand(self::COMMANDS['osInfo'], null, FileSystem::read(TESTER_DIR . '/data/os-release'));
+		Assert::same(self::EXPECTED['os'], $this->manager->getOs());
+	}
+
+	/**
 	 * Tests the function to read the gateway file (missing file)
 	 */
 	public function testReadGatewayFileMissingFle(): void {
@@ -298,6 +312,8 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['gwId']);
 		$manager->shouldReceive('getImage')
 			->andReturn(self::EXPECTED['gwImage']);
+		$manager->shouldReceive('getOs')
+			->andReturn(self::EXPECTED['os']);
 		$this->versionManager->shouldReceive('getController')
 			->andReturn(self::EXPECTED['versions']['controller']);
 		$this->versionManager->shouldReceive('getDaemon')
