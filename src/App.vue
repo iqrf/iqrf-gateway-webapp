@@ -88,7 +88,9 @@ export default class App extends Vue {
 				} else if (check.hasUsers && installUrl) {
 					this.$router.push('/sign/in/');
 				}
-				this.$store.dispatch('repository/get');
+				if (this.$store.getters['user/isLoggedIn']) {
+					this.$store.dispatch('repository/get');
+				}
 			})
 			.catch((error: AxiosError) => {
 				console.error(error);
