@@ -31,12 +31,19 @@ limitations under the License.
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
 						<fieldset :disabled='loadFailed'>
-							<p>
+							<div class='form-group'>
 								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
 									<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
 								</span>
-							</p>
-							<div v-if='selectVersions.length > 0'>
+							</div>
+							<CAlert
+								v-if='!loadFailed && selectVersions.length === 0'
+								color='success'
+								class='mb-0'
+							>
+								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
+							</CAlert>
+							<div v-else-if='!loadFailed && selectVersions.length > 0'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -61,12 +68,6 @@ limitations under the License.
 									{{ $t('forms.upload') }}
 								</CButton>
 							</div>
-							<CAlert
-								v-if='selectVersions.length === 0 && currentOsVersion !== "" && currentOsBuild !== ""'
-								color='success'
-							>
-								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-							</CAlert>
 						</fieldset>
 					</CForm>
 				</ValidationObserver>
@@ -187,7 +188,6 @@ export default class OsUpdater extends Vue {
 			})
 			.catch(() => {
 				this.loadFailed = true;
-				this.$emit('loaded', {name: 'OS', success: false});
 			});
 	}
 
@@ -228,7 +228,6 @@ export default class OsUpdater extends Vue {
 		versions.sort();
 		versions.reverse();
 		this.selectVersions = versions;
-		this.$emit('loaded', {name: 'OS', success: true});
 	}
 
 	/**

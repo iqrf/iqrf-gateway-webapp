@@ -286,7 +286,7 @@ export default class DpaUpdater extends Vue {
 				this.getDeviceEnumeration();
 			})
 			.catch(() => {
-				this.$emit('loaded', {name: 'DPA', success: false});
+				this.loadFailed = true;
 			});
 	}
 

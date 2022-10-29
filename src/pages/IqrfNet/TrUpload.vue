@@ -17,22 +17,42 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
-		<HexUpload />
-		<DpaUpdater ref='dpaUpdater' @loaded='osDpaLoaded' />
-		<OsUpdater ref='osUpdater' @loaded='osDpaLoaded' @os-upload='osInfoUpload' />
+		<CAlert
+			v-if='loaded && failed'
+			color='danger'
+			class='d-flex justify-content-between align-items-center'
+		>
+			{{ $t('iqrfnet.trUpload.messages.coordinatorFailed') }} {{ $t('iqrfnet.trUpload.messages.notAvailable') }}
+			<CButton
+				color='primary'
+				size='sm'
+				@click='enumerateCoordinator'
+			>
+				<CIcon :content='cilReload' />
+				{{ $t('forms.retry') }}
+			</CButton>
+		</CAlert>
+		<div v-show='loaded && !failed'>
+			<HexUpload />
+			<DpaUpdater ref='dpaUpdater' />
+			<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />
+		</div>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router';
-import {MutationPayload} from 'vuex';
-import {DaemonClientState} from '@/interfaces/wsClient';
 import DpaUpdater from '@/components/IqrfNet/TrUpload/DpaUpdater.vue';
 import HexUpload from '@/components/IqrfNet/TrUpload/HexUpload.vue';
 import OsUpdater from '@/components/IqrfNet/TrUpload/OsUpdater.vue';
-import {IConfigFetch} from '@/interfaces/Config/Daemon';
+
+import {cilReload} from '@coreui/icons';
+
 import IqrfNetService from '@/services/IqrfNetService';
+
+import {DaemonClientState} from '@/interfaces/wsClient';
+import {MutationPayload} from 'vuex';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
@@ -50,6 +70,9 @@ import IqrfNetService from '@/services/IqrfNetService';
 			}
 		});
 	},
+	data: () => ({
+		cilReload,
+	}),
 	metaInfo: {
 		title: 'iqrfnet.trUpload.title'
 	}
@@ -65,16 +88,19 @@ export default class TrUpload extends Vue {
 	private address = 0;
 
 	/**
-	 * @var {string|null} msgId Daemon api message id
+	 * @var {string} msgId Daemon api message id
 	 */
-	private msgId: string|null = null;
+	private msgId = '';
 
-	private loading: Array<string> = [
-		'DPA',
-		'OS'
-	];
+	/**
+	 * @var {bool} loaded Finished loading information
+	 */
+	private loaded = false;
 
-	private failed: Array<string> = [];
+	/**
+	 * @var {bool} failed Information loading failed
+	 */
+	private failed = false;
 
 	/**
 	 * Component unsubscribe function
@@ -106,7 +132,7 @@ export default class TrUpload extends Vue {
 				this.$toast.error(
 					this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
 				);
-				this.$router.push('/iqrfnet');
+				this.loaded = this.failed = true;
 			}
 		});
 
@@ -138,8 +164,9 @@ export default class TrUpload extends Vue {
 	 * Sends a Daemon API request to retrieve OS information
 	 */
 	private enumerateCoordinator(): void {
+		this.loaded = this.failed = false;
 		this.$store.commit('spinner/SHOW');
-		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trUpload.messages.coordinatorFailed', () => this.msgId = '')
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -148,16 +175,17 @@ export default class TrUpload extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleEnumResponse(response): void {
+		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
 			(this.$refs.dpaUpdater as DpaUpdater).handleEnumResponse(response.data.rsp);
 			(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
 		} else {
-			this.$store.commit('spinner/HIDE');
+			this.failed = true;
 			this.$toast.error(
-				this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
+				this.$t('iqrfnet.trUpload.messages.coordinatorFailed').toString()
 			);
-			this.$router.push('/iqrfnet');
 		}
+		this.loaded = true;
 	}
 
 	/**
@@ -179,32 +207,5 @@ export default class TrUpload extends Vue {
 			}
 		);
 	}
-
-	/**
-	 * Handles DPA and OS upgrade fetch events
-	 */
-	private osDpaLoaded(data: IConfigFetch): void {
-		if (this.loading.includes(data.name)) {
-			this.loading = this.loading.filter((item: string) => item !== data.name);
-		}
-		if (!data.success) {
-			this.failed.push(data.name);
-		}
-		if (this.loading.length > 0) {
-			return;
-		}
-		this.$store.commit('spinner/HIDE');
-		if (this.failed.length === 0) {
-			return;
-		}
-		this.$toast.error(
-			this.$t(
-				'iqrfnet.trUpload.messages.fetchFail',
-				{children: this.failed.sort().join(', ')},
-			).toString()
-		);
-		this.failed = [];
-	}
-
 }
 </script>

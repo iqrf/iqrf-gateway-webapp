@@ -212,6 +212,7 @@
 		"get": "Get",
 		"set": "Set",
 		"unknown": "Unknown",
+		"retry": "Retry",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -2567,6 +2568,8 @@
 				}
 			},
 			"messages": {
+				"coordinatorFailed": "Failed to retrieve coordinator device information.",
+				"notAvailable": "Coordinator upload service not available.",
 				"disabled": "TR upload is disabled.",
 				"info": "These actions can take tens of seconds.",
 				"failure": "An error occurred during the file upload.",
