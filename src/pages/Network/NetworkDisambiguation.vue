@@ -17,68 +17,19 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.title') }}</h1>
-		<CCard body-wrapper>
-			<CListGroup>
-				<CListGroupItem
-					v-if='roleIdx <= roles.admin'
-					to='/ip-network/ethernet'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('network.ethernet.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('network.ethernet.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.admin'
-					to='/ip-network/wireless'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('network.wireless.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('network.wireless.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.admin'
-					to='/ip-network/mobile'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('network.mobile.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('network.mobile.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.admin'
-					to='/ip-network/vpn'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('network.wireguard.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('network.wireguard.description') }}
-					</p>
-				</CListGroupItem>
-			</CListGroup>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
-
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'network.title',
@@ -89,27 +40,36 @@ import {getRoleIndex} from '@/helpers/user';
  * Network disambiguation menu component
  */
 export default class NetworkDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * @var {Link[]} links Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('network.ethernet.title').toString(),
+			description: this.$t('network.ethernet.description').toString(),
+			to: '/ip-network/ethernet',
+			role: UserRoleIndex.ADMIN,
+		},
+		{
+			title: this.$t('network.wireless.title').toString(),
+			description: this.$t('network.wireless.description').toString(),
+			to: '/ip-network/wireless',
+			role: UserRoleIndex.ADMIN,
+		},
+		{
+			title: this.$t('network.mobile.title').toString(),
+			description: this.$t('network.mobile.description').toString(),
+			to: '/ip-network/mobile',
+			role: UserRoleIndex.ADMIN,
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
+		}, {
+			title: this.$t('network.wireguard.title').toString(),
+			description: this.$t('network.wireguard.description').toString(),
+			to: '/ip-network/vpn',
+			role: UserRoleIndex.ADMIN,
+		},
+	];
+
 }
 </script>

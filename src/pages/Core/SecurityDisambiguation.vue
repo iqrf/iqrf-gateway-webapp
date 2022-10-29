@@ -17,48 +17,20 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<CListGroup>
-					<CListGroupItem
-						v-if='roleIdx <= roles.admin'
-						to='/security/api-key/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.security.apiKey.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.security.apiKey.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("ssh") && roleIdx <= roles.admin'
-						to='/security/ssh-key/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('core.security.ssh.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('core.security.ssh.description') }}
-						</p>
-					</CListGroupItem>
-				</CListGroup>
-			</CCardBody>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'core.security.title',
@@ -66,30 +38,28 @@ import {getRoleIndex} from '@/helpers/user';
 })
 
 /**
- * Main disambiguation menu component
+ * Security disambiguation menu component
  */
-export default class MainDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
+export default class SecurityDisambiguation extends Vue {
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * @var {Link[]} links Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('core.security.apiKey.title').toString(),
+			description: this.$t('core.security.apiKey.description').toString(),
+			to: '/security/api-key/',
+			role: UserRoleIndex.ADMIN,
+		},
+		{
+			title: this.$t('core.security.ssh.title').toString(),
+			description: this.$t('core.security.ssh.description').toString(),
+			to: '/security/ssh-key/',
+			role: UserRoleIndex.ADMIN,
+			feature: 'ssh',
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

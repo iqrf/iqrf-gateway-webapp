@@ -17,57 +17,20 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('service.iqrf.title') }}</h1>
-		<CCard body-wrapper>
-			<CListGroup>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/gateway/service/iqrf-gateway-daemon/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('service.iqrf-gateway-daemon.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('service.iqrf-gateway-daemon.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("iqrfGatewayController") && roleIdx <= roles.normal'
-					to='/gateway/service/iqrf-gateway-controller/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('service.iqrf-gateway-controller.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('service.iqrf-gateway-controller.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator") && roleIdx <= roles.normal'
-					to='/gateway/service/iqrf-gateway-translator/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('service.iqrf-gateway-translator.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('service.iqrf-gateway-translator.description') }}
-					</p>
-				</CListGroupItem>
-			</CListGroup>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'service.iqrf.title',
@@ -78,27 +41,32 @@ import {getRoleIndex} from '@/helpers/user';
  * Iqrf services menu component
  */
 export default class IqrfServiceDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * @var {Link[]} links Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('service.iqrf-gateway-daemon.title').toString(),
+			description: this.$t('service.iqrf-gateway-daemon.description').toString(),
+			to: '/gateway/service/iqrf-gateway-daemon/',
+			role: UserRoleIndex.NORMAL,
+		},
+		{
+			title: this.$t('service.iqrf-gateway-controller.title').toString(),
+			description: this.$t('service.iqrf-gateway-controller.description').toString(),
+			to: '/gateway/service/iqrf-gateway-controller/',
+			role: UserRoleIndex.NORMAL,
+			feature: 'iqrfGatewayController',
+		},
+		{
+			title: this.$t('service.iqrf-gateway-translator.title').toString(),
+			description: this.$t('service.iqrf-gateway-translator.description').toString(),
+			to: '/gateway/service/iqrf-gateway-translator/',
+			role: UserRoleIndex.NORMAL,
+			feature: 'iqrfGatewayTranslator',
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

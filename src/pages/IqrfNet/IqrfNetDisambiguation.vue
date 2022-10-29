@@ -17,90 +17,19 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.title') }}</h1>
-		<CCard body-wrapper>
-			<CListGroup>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/iqrfnet/send-raw/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.sendPacket.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.sendPacket.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/iqrfnet/send-json/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.sendJson.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.sendJson.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='$store.getters["features/isEnabled"]("trUpload") && roleIdx <= roles.admin'
-					to='/iqrfnet/tr-upload/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.trUpload.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.trUpload.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/iqrfnet/tr-config/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.trConfiguration.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.trConfiguration.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/iqrfnet/network/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.networkManager.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.networkManager.description') }}
-					</p>
-				</CListGroupItem>
-				<CListGroupItem
-					v-if='roleIdx <= roles.normal'
-					to='/iqrfnet/standard/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('iqrfnet.standard.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('iqrfnet.standard.description') }}
-					</p>
-				</CListGroupItem>
-			</CListGroup>
-		</CCard>
+		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
-
-import {getRoleIndex} from '@/helpers/user';
+import Disambiguation from '@/components/Disambiguation.vue';
+import {Link} from '@/helpers/DisambiguationHelper';
+import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		CCard,
-		CListGroup,
-		CListGroupItem
+		Disambiguation,
 	},
 	metaInfo: {
 		title: 'iqrfnet.title',
@@ -111,27 +40,49 @@ import {getRoleIndex} from '@/helpers/user';
  * IqrfNet disambiguation menu component
  */
 export default class IqrfNetDisambiguation extends Vue {
-	/**
-	 * @var {number} roleIdx Index of role in user role enum
-	 */
-	private roleIdx = 0;
 
 	/**
-	 * @constant {Record<string, number>} roles Dictionary of role indices
+	 * @var {Link[]} links Links for disambiguation menu
 	 */
-	private roles: Record<string, number> = {
-		admin: 0,
-		normal: 1,
-		basicadmin: 2,
-		basic: 3,
-	};
+	private links: Array<Link> = [
+		{
+			title: this.$t('iqrfnet.sendPacket.title').toString(),
+			description: this.$t('iqrfnet.sendPacket.description').toString(),
+			to: '/iqrfnet/send-raw/',
+			role: UserRoleIndex.NORMAL,
+		},
+		{
+			title: this.$t('iqrfnet.sendJson.title').toString(),
+			description: this.$t('iqrfnet.sendJson.description').toString(),
+			to: '/iqrfnet/send-json/',
+			role: UserRoleIndex.NORMAL,
+		},
+		{
+			title: this.$t('iqrfnet.trUpload.title').toString(),
+			description: this.$t('iqrfnet.trUpload.description').toString(),
+			to: '/iqrfnet/tr-upload/',
+			role: UserRoleIndex.ADMIN,
+			feature: 'trUpload',
+		},
+		{
+			title: this.$t('iqrfnet.trConfiguration.title').toString(),
+			description: this.$t('iqrfnet.trConfiguration.description').toString(),
+			to: '/iqrfnet/tr-config/',
+			role: UserRoleIndex.NORMAL,
+		},
+		{
+			title: this.$t('iqrfnet.networkManager.title').toString(),
+			description: this.$t('iqrfnet.networkManager.description').toString(),
+			to: '/iqrfnet/network/',
+			role: UserRoleIndex.NORMAL,
+		},
+		{
+			title: this.$t('iqrfnet.standard.title').toString(),
+			description: this.$t('iqrfnet.standard.description').toString(),
+			to: '/iqrfnet/standard/',
+			role: UserRoleIndex.NORMAL,
+		},
+	];
 
-	/**
-	 * Retrieves user role and calculates the role index
-	 */
-	protected created(): void {
-		const roleVal = this.$store.getters['user/getRole'];
-		this.roleIdx = getRoleIndex(roleVal);
-	}
 }
 </script>

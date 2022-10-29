@@ -19,7 +19,8 @@ import AuthenticationService, {
 	IUserBase,
 	User,
 	UserInfo,
-	UserRole
+	UserRole,
+	UserRoleIndex,
 } from '@/services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {AxiosError} from 'axios';
@@ -134,6 +135,12 @@ const getters: GetterTree<UserState, any> = {
 			return null;
 		}
 		return state.user.role;
+	},
+	getRoleIndex(state: UserState): UserRoleIndex|null {
+		if (state.user === null) {
+			return null;
+		}
+		return Object.values(UserRole).indexOf(state.user.role) as UserRoleIndex;
 	},
 	getToken(state: UserState) {
 		if (state.user === null) {
