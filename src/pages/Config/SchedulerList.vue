@@ -34,7 +34,7 @@ limitations under the License.
 						</CButton>
 						<TaskImportModal
 							class='mr-1'
-							@imported='refreshTasks'
+							@imported='getTasks'
 						/>
 						<CButton
 							class='mr-1'
@@ -49,15 +49,16 @@ limitations under the License.
 							{{ $t('forms.export') }}
 						</CButton>
 						<TasksDeleteModal
-							@deleted='refreshTasks'
+							@deleted='getTasks'
 						/>
 					</CButtonToolbar>
 				</div>
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
-					:items='tasks'
+					:items.sync='tasks'
 					:column-filter='true'
 					:items-per-page='20'
 					:pagination='true'
@@ -67,14 +68,13 @@ limitations under the License.
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
 					</template>
-					<template v-if='retrieved === "rest"' #taskId='{item}'>
+					<template #active='{item}'>
 						<td>
-							{{ item.id }}
-						</td>
-					</template>
-					<template v-if='retrieved === "rest"' #clientId='{item}'>
-						<td>
-							{{ item.service }}
+							<CIcon
+								:class='item.active ? "text-success" : "text-danger"'
+								:content='item.active ? cilCheckCircle : cilXCircle'
+								size='xl'
+							/>
 						</td>
 					</template>
 					<template #timeSpec='{item}'>
@@ -82,28 +82,29 @@ limitations under the License.
 							{{ timeString(item.timeSpec) }}
 						</td>
 					</template>
-					<template #task='{item}'>
-						<td v-if='retrieved === "daemon"'>
-							{{ displayMTypes(item.task) }}
-						</td>
-						<td v-else>
-							{{ displayMTypes(item.mTypes) }}
-						</td>
-					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
 								class='mr-1'
+								:color='item.active ? "danger" : "success"'
+								size='sm'
+								@click='item.active ? stopTask(item.taskId) : startTask(item.taskId)'
+							>
+								<CIcon :content='item.active ? cilXCircle : cilCheckCircle' size='sm' />
+								{{ $t(item.active ? 'forms.stop' : 'forms.start') }}
+							</CButton>
+							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
-								:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
+								:to='"/config/daemon/scheduler/edit/" + item.taskId'
 							>
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<TaskDeleteModal
-								:task-id='retrieved === "daemon" ? item.taskId : item.id'
-								@deleted='refreshTasks'
+								:task-id='item.taskId'
+								@deleted='getTasks'
 							/>
 						</td>
 					</template>
@@ -120,7 +121,7 @@ import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
 
-import {cilArrowBottom, cilPencil, cilPlus} from '@coreui/icons';
+import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilXCircle} from '@coreui/icons';
 import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
@@ -129,7 +130,7 @@ import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/Coreui';
-import {ITaskRest, ITaskTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
+import {ISchedulerRecord, ISchedulerRecordTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -148,8 +149,10 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 	},
 	data: () => ({
 		cilArrowBottom,
+		cilCheckCircle,
 		cilPencil,
 		cilPlus,
+		cilXCircle,
 	}),
 	metaInfo: {
 		title: 'config.daemon.scheduler.title',
@@ -160,6 +163,20 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
  * List of Daemon scheduler tasks
  */
 export default class SchedulerList extends Vue {
+	/**
+	 * @var {boolean} loading Indicates whether scheduler task data is loading
+	 */
+	private loading = false;
+
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
+	/**
+	 * @var {Array<ITask>} tasks Array of scheduler tasks
+	 */
+	private tasks: Array<ISchedulerRecord> = [];
 
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
@@ -183,18 +200,22 @@ export default class SchedulerList extends Vue {
 			label: this.$t('config.daemon.scheduler.form.task.taskId'),
 		},
 		{
+			key: 'description',
+			label: this.$t('config.daemon.scheduler.form.task.description'),
+			filter: false,
+			sorter: false,
+		},
+		{
 			key: 'timeSpec',
 			label: this.$t('config.daemon.scheduler.table.time'),
 			filter: false,
 			sorter: false,
 		},
 		{
-			key: 'clientId',
-			label: this.$t('config.daemon.scheduler.table.service'),
-		},
-		{
-			key: 'task',
-			label: this.$t('config.daemon.scheduler.table.mType'),
+			key: 'active',
+			label: this.$t('config.daemon.scheduler.table.active'),
+			filter: false,
+			sorter: false,
 		},
 		{
 			key: 'actions',
@@ -205,62 +226,29 @@ export default class SchedulerList extends Vue {
 	];
 
 	/**
-	 * @var {Array<string>} msgIds Array of message ids used for response handling
-	 */
-	private msgIds: Array<string> = [];
-
-	/**
-	 * @var {string|null} retrieved Specifies where the message was retrieved from
-	 */
-	private retrieved: string|null = null;
-
-	/**
-	 * @var {Array<number>} taskIds Array of scheduler task ids
-	 */
-	private taskIds: Array<number> = [];
-
-	/**
-	 * @var {Array<Task>} tasks Array of scheduler tasks
-	 */
-	private tasks: Array<ITaskRest>|null = null;
-
-	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * @var {boolean} fetchTasks Indicates whether tasks should be fetched
-	 */
-	private fetchTasks = true;
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') { // websocket connection with daemon established
 				this.getTasks();
-			} else if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' ||
-				mutation.type === 'daemonClient/SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
-			} else if (mutation.type === 'daemonClient/SOCKET_ONSEND') { // cleanup before tasks are retrieved
-				if (mutation.payload.mType === 'mngScheduler_List') {
-					if (this.taskIds.length === 0) {
-						this.taskIds = [];
-						this.tasks = [];
-					}
-				}
 			} else if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
-				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
+				if (mutation.payload.data.msgId != this.msgId) {
 					return;
 				}
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('daemonClient/removeMessage', mutation.payload.data.msgId);
+				this.loading = false;
+				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					this.handleList(mutation.payload.data);
-				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
-					this.handleGetTask(mutation.payload.data);
+				} else if (mutation.payload.mType === 'mngScheduler_StartTask') {
+					this.handleStartTask(mutation.payload.data);
+				} else if (mutation.payload.mType === 'mngScheduler_StopTask') {
+					this.handleStopTask(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.handleMessageError(mutation.payload.data);
 				}
@@ -279,43 +267,32 @@ export default class SchedulerList extends Vue {
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.msgIds.forEach((item) => this.$store.dispatch('daemonClient/removeMessage', item));
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
-	}
-
-	/**
-	 * Queues task refresh
-	 */
-	private refreshTasks(): void {
-		this.fetchTasks = true;
-		this.getTasks();
 	}
 
 	/**
 	 * Retrieves list of scheduler tasks
 	 */
 	private getTasks(): void {
-		if (!this.fetchTasks) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		this.fetchTasks = false;
+		this.loading = true;
 		setTimeout(() => {
 			if (this.$store.getters['daemonClient/isConnected']) {
-				this.$store.dispatch('spinner/show', 30000);
-				SchedulerService.listTasks(new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
-					.then((msgId: string) => this.storeId(msgId));
+				SchedulerService.listTasks(true, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
+					.then((msgId: string) => this.msgId = msgId);
 			} else {
-				this.$store.commit('spinner/SHOW');
 				SchedulerService.listTasksREST()
 					.then((response: AxiosResponse) => {
-						this.$store.commit('spinner/HIDE');
 						this.tasks = response.data;
-						this.retrieved = 'rest';
+						this.loading = false;
 					})
-					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest'));
+					.catch((error: AxiosError) => {
+						extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest');
+						this.loading = false;
+					});
 			}
 		}, 1000);
+
 	}
 
 	/**
@@ -324,40 +301,11 @@ export default class SchedulerList extends Vue {
 	 */
 	private handleList(response): void {
 		if (response.status === 0) {
-			this.taskIds = response.rsp.tasks;
-			if (this.taskIds.length === 0) {
-				this.tasks = [];
-			}
-			this.taskIds.forEach(item => {
-				this.getTask(item);
-			});
-			this.retrieved = 'daemon';
+			this.tasks = response.rsp.tasks;
 		} else {
 			this.$toast.error(
 				this.$t('config.daemon.scheduler.messages.listFailed').toString()
 			);
-		}
-	}
-
-	/**
-	 * Retrieves a scheduler task specified by task id
-	 * @param {number} taskId Scheduler task id
-	 */
-	private getTask(taskId: number): void {
-		SchedulerService.getTask(taskId, new DaemonMessageOptions(null, 30000))
-			.then((msgId: string) => this.storeId(msgId));
-	}
-
-	/**
-	 * Handles Daemon API GetTask response
-	 * @param response Daemon API response
-	 */
-	private handleGetTask(response): void {
-		if (response.status === 0) {
-			if (this.tasks === null) {
-				return;
-			}
-			this.tasks.push(response.rsp);
 		}
 	}
 
@@ -378,15 +326,57 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Stores a daemon api message id for response handling
+	 * Starts task
+	 * @param {string} taskId Task ID
 	 */
-	private storeId(msgId: string): void {
-		this.msgIds.push(msgId);
-		setTimeout(() => {
-			if (this.msgIds.includes(msgId)) {
-				this.msgIds.splice(this.msgIds.indexOf(msgId), 1);
-			}
-		}, 30000);
+	private startTask(taskId: string): void {
+		this.loading = true;
+		SchedulerService.startTask(taskId, new DaemonMessageOptions(null, 10000, 'config.daemon.scheduler.messages.startTimeout'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles StartTask Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleStartTask(response): void {
+		if (response.status === 0) {
+			this.$toast.success(
+				this.$t('config.daemon.scheduler.messages.startSuccess', {task: response.rsp.taskId}).toString()
+			);
+			this.getTasks();
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.startFailed').toString()
+			);
+		}
+	}
+
+	/**
+	 * Stops task
+	 * @param {string} taskId Task ID
+	 */
+	private stopTask(taskId: string): void {
+		this.loading = true;
+		SchedulerService.stopTask(taskId, new DaemonMessageOptions(null, 10000, 'config.daemon.scheduler.messages.stopTimeout'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles StopTask Daemon API response
+	 * @param response Daemon API response
+	 */
+	private handleStopTask(response): void {
+		if (response.status === 0) {
+			this.$toast.success(
+				this.$t('config.daemon.scheduler.messages.stopSuccess', {task: response.rsp.taskId}).toString()
+			);
+			this.getTasks();
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.stopFailed').toString()
+			);
+		}
 	}
 
 	/**
@@ -414,35 +404,11 @@ export default class SchedulerList extends Vue {
 	}
 
 	/**
-	 * Creates a string of daemon api message types displayed in scheduler task table
-	 * @param item Task message or task message object
-	 * @returns {string} Task daemon api message types
-	 */
-	private displayMTypes(item): string {
-		try {
-			if (this.retrieved === 'rest') { // task retrieved from REST API, message types is array of strings or a string
-				return Array.isArray(item) ? item.join(', ') : item;
-			}
-			if (Array.isArray(item)) { // task retrieved from daemon API and has multiple messages
-				let message = '';
-				item.forEach(item => {
-					message += item.message.mType + ', ';
-				});
-				return message.slice(0, -2);
-			} else { // task retrieved from daemon API and has only one message
-				return item.message.mType;
-			}
-		} catch(err) {
-			return '';
-		}
-	}
-
-	/**
 	 * Creates time string used in scheduler task data table from task time specification
-	 * @param {ITaskTimeSpec} item Scheduler task time specification
+	 * @param {ISchedulerRecordTimeSpec} item Scheduler task time specification
 	 * @returns {string} Human readable time message
 	 */
-	private timeString(item: ITaskTimeSpec): string|undefined {
+	private timeString(item: ISchedulerRecordTimeSpec): string|undefined {
 		try {
 			if (item.exactTime) {
 				return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(this.dateFormat) + ')';

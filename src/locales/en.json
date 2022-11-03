@@ -214,6 +214,8 @@
 		"set": "Set",
 		"unknown": "Unknown",
 		"retry": "Retry",
+		"start": "Start",
+		"stop": "Stop",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -661,6 +663,7 @@
 				"add": "Add task",
 				"edit": "Edit task",
 				"table": {
+					"active": "Active",
 					"time": "Time",
 					"service": "Service",
 					"mType": "Message types"
@@ -668,6 +671,7 @@
 				"form": {
 					"task": {
 						"taskId": "Task ID",
+						"description": "Description",
 						"timeSpec": "Start time type",
 						"timeSpecTypes": {
 							"exact": "Oneshot - execute task once at specified time",
@@ -676,7 +680,9 @@
 						},
 						"cronTime": "Time in cron format",
 						"period": "Period in seconds",
-						"startTime": "Start time"
+						"startTime": "Start time",
+						"persistent": "Persistent task",
+						"autoStart": "Start task automatically"
 					},
 					"messages": {
 						"title": "Messages",
@@ -692,7 +698,8 @@
 					}
 				},
 				"errors": {
-					"nums": "Please enter a valid integer",
+					"taskIdMissing": "Please enter task ID.",
+					"taskIdInvalid": "Task ID should be UUID v4.",
 					"service": "Please select service.",
 					"messaging": "Please select messaging.",
 					"message": "Please enter a message.",
@@ -729,6 +736,12 @@
 					"addSuccess": "Scheduler task has been successfully added.",
 					"editFailedRest": "Failed to edit scheduler task: {error}",
 					"editSuccess": "Scheduler task {task} has been successfully edited.",
+					"startFailed": "Failed to start scheduler task.",
+					"startSuccess": "Scheduler task {task} has been successfully started.",
+					"startTimeout": "Scheduler task start request timed out.",
+					"stopFailed": "Failed to stop scheduler task.",
+					"stopSuccess": "Scheduler task {task} has been successfully stopped.",
+					"stopTimeout": "Scheduler task stop request timed out.",
 					"processError": "An error has occurred while processing Daemon API request.",
 					"messagingFailed": "Failed to retrieve messaging services: {error}",
 					"rest": {

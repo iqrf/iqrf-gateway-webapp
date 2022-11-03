@@ -80,9 +80,9 @@ import {MutationPayload} from 'vuex';
 })
 export default class TaskDeleteModal extends ModalBase {
 	/**
-	 * @property {number} syncTaskId Task ID
+	 * @property {string} syncTaskId Task ID
 	 */
-	@PropSync('taskId') syncTaskId!: number;
+	@PropSync('taskId') syncTaskId!: string;
 
 	/**
 	 * @var {string} msgId Daemon API message ID

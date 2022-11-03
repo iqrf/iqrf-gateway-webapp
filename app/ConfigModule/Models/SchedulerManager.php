@@ -134,15 +134,7 @@ class SchedulerManager {
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$fileName = $file->getBasename('.json');
 			try {
-				$data = $this->readFile($fileName);
-				$task = [
-					'id' => $data->taskId,
-					'timeSpec' => $data->timeSpec,
-					'service' => $data->clientId,
-					'messagings' => $this->getTaskMessagings($data->task),
-					'mTypes' => $this->getTaskMessageTypes($data->task),
-				];
-				$tasks[] = $task;
+				$tasks[] = $this->readFile($fileName);
 			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException $e) {
 				// Do nothing
 			}
@@ -154,31 +146,6 @@ class SchedulerManager {
 			return ($a['id'] < $b['id']) ? -1 : 1;
 		});
 		return $tasks;
-	}
-
-	/**
-	 * Returns messagings used in tasks
-	 * @param array<mixed> $tasks Tasks
-	 * @return string Messagings used in tasks
-	 */
-	private function getTaskMessagings(array $tasks): string {
-		$messagings = array_map(function (stdClass $task): string {
-			if (is_array($task->messaging)) {
-				return implode(', ', $task->messaging);
-			}
-			return $task->messaging;
-		}, $tasks);
-		return implode(', ', $messagings);
-	}
-
-	/**
-	 * Returns message types used in tasks
-	 * @param array<mixed> $tasks Tasks
-	 * @return string Message types used in tasks
-	 */
-	private function getTaskMessageTypes(array $tasks): string {
-		$mTypes = array_map(fn (stdClass $task): string => $task->message->mType, $tasks);
-		return implode(', ', $mTypes);
 	}
 
 	/**
@@ -197,16 +164,6 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Fixes the task specification
-	 * @param stdClass $config Scheduler task
-	 */
-	private function fixTasks(stdClass &$config): void {
-		if (!is_array($config->task) && isset($config->task->message)) {
-			$config->task = [$config->task];
-		}
-	}
-
-	/**
 	 * Reads a task
 	 * @param string $fileName Task file name
 	 * @return stdClass Task configuration
@@ -219,8 +176,6 @@ class SchedulerManager {
 	private function readFile(string $fileName): stdClass {
 		$config = $this->fileManager->read($fileName, false);
 		$this->schemaManager->validate($config);
-		$this->timeManager->cronToString($config);
-		$this->fixTasks($config);
 		return $config;
 	}
 
@@ -239,6 +194,9 @@ class SchedulerManager {
 			if (!isset($task->message->data->timeout)) {
 				unset($task->message->data->timeout);
 			}
+		}
+		if (!isset($config->description)) {
+			$config->description = '';
 		}
 		$this->timeManager->cronToArray($config);
 		if (!isset($config->timeSpec->period)) {

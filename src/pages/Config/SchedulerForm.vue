@@ -16,57 +16,37 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/scheduler/add"'>
-			{{ $t('config.daemon.scheduler.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.daemon.scheduler.edit') }}
-		</h1>
+		<h1>{{ $t(pageTitle) }}</h1>
 		<CCard>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveTask'>
+				<ValidationObserver v-slot='{invalid}'>
+					<CForm>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='integer|required'
+							rules='required|uuidv4'
 							:custom-messages='{
-								required: $t("config.daemon.scheduler.errors.nums"),
-								integer: $t("config.daemon.scheduler.errors.nums"),
+								required: $t("config.daemon.scheduler.errors.taskIdMissing"),
+								uuidv4: $t("config.daemon.scheduler.errors.taskIdInvalid"),
 							}'
 						>
 							<CInput
-								v-model.number='taskId'
-								type='number'
+								v-model='record.taskId'
 								:label='$t("config.daemon.scheduler.form.task.taskId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.scheduler.errors.service"),
-							}'
-						>
-							<CSelect
-								:value.sync='clientId'
-								:label='$t("config.daemon.scheduler.table.service")'
-								:options='[
-									{value: "SchedulerMessaging", label: "SchedulerMessaging"}
-								]'
-								placeholder='Select service'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
+						<CInput
+							v-model='record.description'
+							:label='$t("config.daemon.scheduler.form.task.description")'
+						/>
 						<CSelect
 							:value.sync='timeSpecSelected'
 							:label='$t("config.daemon.scheduler.form.task.timeSpec")'
 							:options='timeSpecOptions'
 						/>
 						<div
-							v-if='timeSpecSelected === "cron"'
+							v-if='timeSpecSelected === TimeSpecTypes.CRON'
 							class='form-group'
 						>
 							<ValidationProvider
@@ -79,12 +59,16 @@ limitations under the License.
 							>
 								<label for='cronTime'>
 									<strong>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</strong>
-								</label> <CBadge v-if='cronMessage !== null' :color='valid ? "info" : "danger"'>
+								</label>
+								<CBadge
+									v-if='cronMessage !== null'
+									:color='valid ? "info" : "danger"'
+								>
 									{{ cronMessage }}
 								</CBadge>
 								<CInput
 									id='cronTime'
-									v-model='timeSpec.cronTime'
+									v-model='record.timeSpec.cronTime'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
 									@input='cronMessage = null'
@@ -92,7 +76,7 @@ limitations under the License.
 							</ValidationProvider>
 						</div>
 						<ValidationProvider
-							v-if='timeSpecSelected === "periodic"'
+							v-if='timeSpecSelected === TimeSpecTypes.PERIODIC'
 							v-slot='{errors, touched, valid}'
 							rules='integer|required|min:0'
 							:custom-messages='{
@@ -102,7 +86,7 @@ limitations under the License.
 							}'
 						>
 							<CInput
-								v-model.number='timeSpec.period'
+								v-model.number='record.timeSpec.period'
 								type='number'
 								min='0'
 								:label='$t("config.daemon.scheduler.form.task.period")'
@@ -111,7 +95,7 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<div
-							v-if='timeSpecSelected === "exact"'
+							v-if='timeSpecSelected === TimeSpecTypes.EXACT'
 							class='form-group'
 						>
 							<label for='exactTime'>
@@ -119,13 +103,22 @@ limitations under the License.
 							</label>
 							<Datetime
 								id='exactTime'
-								v-model='timeSpec.startTime'
+								v-model='record.timeSpec.startTime'
 								type='datetime'
 								:format='dateFormat'
 								:min-datetime='new Date().toISOString()'
 								input-class='form-control'
 							/>
-						</div><hr>
+						</div>
+						<CInputCheckbox
+							:checked.sync='record.persist'
+							:label='$t("config.daemon.scheduler.form.task.persistent")'
+						/>
+						<CInputCheckbox
+							:checked.sync='record.autoStart'
+							:label='$t("config.daemon.scheduler.form.task.autoStart")'
+						/>
+						<hr>
 						<div class='messages-header'>
 							<h3>
 								{{ $t('config.daemon.scheduler.form.messages.title') }}
@@ -139,7 +132,11 @@ limitations under the License.
 								{{ $t("iqrfnet.sendJson.documentation") }}
 							</CButton>
 						</div>
-						<div v-for='i of tasks.length' :key='i' class='form-group'>
+						<div
+							v-for='i of record.task.length'
+							:key='i'
+							class='form-group'
+						>
 							<hr v-if='i > 1'>
 							<CRow>
 								<CCol>
@@ -159,20 +156,22 @@ limitations under the License.
 										slim
 									>
 										<JsonEditor
-											v-model='tasks[i-1].message'
+											v-model='record.task[i-1].message'
 											:label='$t("config.daemon.scheduler.form.messages.label").toString()'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='errors.join(", ").toString()'
 										/>
 									</ValidationProvider>
 									<CButton
-										v-if='tasks.length > 1'
+										v-if='record.task.length > 1'
+										class='mr-1'
 										color='danger'
 										@click='removeMessage(i-1)'
 									>
 										{{ $t('config.daemon.scheduler.form.messages.remove') }}
-									</CButton> <CButton
-										v-if='i === tasks.length'
+									</CButton>
+									<CButton
+										v-if='i === record.task.length'
 										color='success'
 										@click='addMessage'
 									>
@@ -181,7 +180,7 @@ limitations under the License.
 								</CCol>
 								<CCol md='6'>
 									<div
-										v-for='(messaging, j) of tasks[i-1].messaging'
+										v-for='(messaging, j) of record.task[i-1].messaging'
 										:key='j'
 										class='form-group'
 									>
@@ -193,7 +192,7 @@ limitations under the License.
 											}'
 										>
 											<CSelect
-												:value.sync='tasks[i-1].messaging[j]'
+												:value.sync='record.task[i-1].messaging[j]'
 												:label='$t("config.daemon.scheduler.form.messages.messaging")'
 												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 												:options='messagings'
@@ -202,13 +201,15 @@ limitations under the License.
 											/>
 										</ValidationProvider>
 										<CButton
-											v-if='tasks[i-1].messaging.length > 1'
+											v-if='record.task[i-1].messaging.length > 1'
+											class='mr-1'
 											color='danger'
 											@click='removeTaskMessaging(i-1, j)'
 										>
 											{{ $t('config.daemon.scheduler.form.messagings.remove') }}
-										</CButton> <CButton
-											v-if='j === (tasks[i-1].messaging.length - 1)'
+										</CButton>
+										<CButton
+											v-if='j === (record.task[i-1].messaging.length - 1)'
 											color='success'
 											@click='addTaskMessaging(i-1)'
 										>
@@ -218,7 +219,11 @@ limitations under the License.
 								</CCol>
 							</CRow>
 						</div>
-						<CButton type='submit' color='primary' :disabled='invalid || (timeSpecSelected === "exact" && timeSpec.startTime === "")'>
+						<CButton
+							color='primary'
+							:disabled='invalid || (timeSpecSelected === "exact" && record.timeSpec.startTime === "")'
+							@click='saveTask'
+						>
 							{{ $t('forms.save') }}
 						</CButton>
 					</CForm>
@@ -231,34 +236,30 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required, min_value} from 'vee-validate/dist/rules';
+import JsonEditor from '@/components/Config/JsonEditor.vue';
+import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 import {Datetime} from 'vue-datetime';
-
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
-import {extendedErrorToast} from '@/helpers/errorToast';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import cron from 'cron-validate';
 import cronstrue from 'cronstrue';
+import DaemonApiValidator from '@/helpers/DaemonApiValidator';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {integer, required, min_value} from 'vee-validate/dist/rules';
+import {v4 as uuidv4} from 'uuid';
+import SchedulerRecord from '@/helpers/SchedulerRecord';
+import {TimeSpecTypes} from '@/enums/Config/Scheduler';
+
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/Coreui';
-import {ITaskRest, ITaskDaemon, ITaskMessage, ITaskMessaging, ITaskTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
+import {ISchedulerRecord, ISchedulerRecordTask} from '@/interfaces/DaemonApi/Scheduler';
+import {IWsMessaging} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import {IWsMessaging} from '@/interfaces/Config/Messaging';
-
-import JsonEditor from '@/components/Config/JsonEditor.vue';
-import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
-
-enum TimeSpecTypes {
-	CRON = 'cron',
-	EXACT = 'exact',
-	PERIODIC = 'periodic'
-}
 
 @Component({
 	components: {
@@ -278,6 +279,9 @@ enum TimeSpecTypes {
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		TimeSpecTypes,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: (this as unknown as SchedulerForm).pageTitle
@@ -290,82 +294,52 @@ enum TimeSpecTypes {
  */
 export default class SchedulerForm extends Vue {
 	/**
+	 * @property {string} taskId Id of existing scheduler task
+	 */
+	@Prop({required: false, default: null}) taskId!: string;
+
+	/**
+	 * @var {string} msgId Daemon API message ID
+	 */
+	private msgId = '';
+
+	/**
 	 * @var {string} clientId Scheduler task client ID
 	 */
 	private clientId = 'SchedulerMessaging';
 
 	/**
-	 * @constant {Record<string, string>} components Names of messaging components
+	 * @var {string} record Scheduler record
 	 */
-	private components: Record<string, string> = {
-		mq: 'iqrf::MqMessaging',
-		mqtt: 'iqrf::MqttMessaging',
-		websocket: 'iqrf::WebsocketMessaging'
+	private record: ISchedulerRecord = {
+		clientId: this.clientId.slice(),
+		taskId: uuidv4(),
+		newTaskId: '',
+		description: '',
+		task: [{
+			message: '',
+			messaging: [''],
+		}],
+		timeSpec: {
+			cronTime: '',
+			exactTime: false,
+			startTime: '',
+			periodic: false,
+			period: 1
+		},
+		persist: true,
+		autoStart: true,
 	};
 
 	/**
-	 * @var {string|null} cronMessage Converted message from time setting in cron format
+	 * @var {string} cronMessage CRON string conversion message
 	 */
-	private cronMessage: string|null = null;
-
-	/**
-	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
-	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
+	private cronMessage = '';
 
 	/**
 	 * @var {Array<IOption>} messagings Array of available messaging component instances
 	 */
 	private messagings: Array<IOption> = [];
-
-	/**
-	 * @var {Array<string>} msgIds Array of daemon api message ids
-	 */
-	private msgIds: Array<string> = [];
-
-	/**
-	 * @var {DaemonApiValidator} validator JSON schema validator function
-	 */
-	private validator: DaemonApiValidator;
-
-	/**
-	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
-	 */
-	private validatorErrors: Array<Array<string>> = [[]];
-
-	/**
-	 * @constant {number} taskId Scheduler task id in epoch seconds
-	 */
-	private taskId = Math.floor(Date.now() / 1000);
-
-	/**
-	 * @var {Array<ILocalTask>} tasks Array of scheduler task messages
-	 */
-	private tasks: Array<ITaskMessaging> = [
-		{
-			message: '',
-			messaging: [''],
-		},
-	];
-
-	/**
-	 * @var {ITaskTimeSpec} timeSpec Scheduler task time specification
-	 */
-	private timeSpec: ITaskTimeSpec = {
-		cronTime: '',
-		periodic: false,
-		period: 1,
-		exactTime: false,
-		startTime: ''
-	};
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
@@ -396,14 +370,31 @@ export default class SchedulerForm extends Vue {
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
-	 */
-	private untouched = true;
-
-	/**
 	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler task props
 	 */
 	private useRest = true;
+
+	/**
+	 * @constant {Record<string, string>} components Names of messaging components
+	 */
+	private components: Record<string, string> = {
+		mq: 'iqrf::MqMessaging',
+		mqtt: 'iqrf::MqttMessaging',
+		websocket: 'iqrf::WebsocketMessaging'
+	};
+
+	/**
+	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
+	 */
+	private dateFormat: Record<string, string|boolean> = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour12: false,
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	};
 
 	/**
 	 * @constant cronPreset Cron validate presets
@@ -446,23 +437,14 @@ export default class SchedulerForm extends Vue {
 	};
 
 	/**
-	 * @constant {Array<string>} dayAliases Array of day aliases for day of week range 0-6
+	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
-	private dayAliases = [
-		'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
-	];
+	private validator: DaemonApiValidator;
 
 	/**
-	 * @constant {Array<string>} monthAliases Array of month aliases for month range 1-12
+	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
 	 */
-	private monthAliases = [
-		'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
-	];
-
-	/**
-	 * @property {number} id Id of existing scheduler task
-	 */
-	@Prop({required: false, default: null}) id!: number;
+	private validatorErrors: Array<Array<string>> = [[]];
 
 	/**
 	 * Constructor
@@ -479,9 +461,13 @@ export default class SchedulerForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		extend('json', (json) => {
 			return this.validator.validate(json, (errorMessages) => {
-				const index = this.tasks.findIndex((task) => task.message === json);
+				const index = this.record.task.findIndex((task) => task.message === json);
 				this.validatorErrors[index] = errorMessages;
 			});
+		});
+		extend('uuidv4', (id: string) => {
+			const re = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+			return re.test(id);
 		});
 		extend('integer', integer);
 		extend('min', min_value);
@@ -492,12 +478,12 @@ export default class SchedulerForm extends Vue {
 		});
 		extend('cron', (cronstring: string) => {
 			if (cronstring[0] === '@') {
-				const cronAlias = this.getCronAlias(cronstring);
+				const cronAlias = SchedulerRecord.resolveExpressionAlias(cronstring);
 				if (cronAlias !== undefined) {
 					this.cronMessage = cronstrue.toString(cronAlias);
 					return true;
 				}
-				this.cronMessage = null;
+				this.cronMessage = '';
 				return false;
 			}
 			const cronResult = cron(cronstring, {preset: this.cronPreset});
@@ -510,26 +496,19 @@ export default class SchedulerForm extends Vue {
 			}
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') {
-				this.useRest = false;
-				if (this.id && this.untouched) {
-					this.getTask(this.id);
-				}
-			} else if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' ||
+			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' ||
 				mutation.type === 'daemonClient/SOCKET_ONERROR') {
 				this.useRest = true;
 			} else if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
-				if (!this.msgIds.includes(mutation.payload.data.msgId)) {
+				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('daemonClient/removeMessage', mutation.payload.data.msgId);
 				if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					this.handleGetTask(mutation.payload.data);
-				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
-					this.handleAddTask(mutation.payload.data);
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
-					this.handleRemoveTask(mutation.payload.data);
+				} else if (['mngScheduler_AddTask', 'mngScheduler_EditTask'].includes(mutation.payload.mType)) {
+					this.handleSaveTask(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
 						this.$t('config.daemon.scheduler.messages.processError').toString()
@@ -544,21 +523,19 @@ export default class SchedulerForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		setTimeout(() => {
-			if (this.$store.getters['daemonClient/isConnected']) {
-				this.useRest = false;
-			}
-			if (this.id && this.untouched) {
-				this.getTask(this.id);
-			}
-		}, 1000);
+		if (this.$store.getters['daemonClient/isConnected']) {
+			this.useRest = false;
+		}
+		if (this.taskId) {
+			this.getTask(this.taskId);
+		}
 	}
 
 	/**
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
-		this.msgIds.forEach((item: string) => this.$store.dispatch('daemonClient/removeMessage', item));
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
@@ -568,167 +545,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/scheduler/add' ?
-			this.$t('config.daemon.scheduler.add').toString() : this.$t('config.daemon.scheduler.edit').toString();
-	}
-
-	/**
-	 * Converts cron time expression into a human readable message
-	 * @param {string} cronExpression Cron time expression
-	 */
-	private calculateCron(cronExpression: string): void {
-		const cronTime = cronExpression.trim().split(' ');
-		const len = cronTime.length;
-		if (len === 1) {
-			const alias = this.getCronAlias((this.timeSpec.cronTime as string));
-			if (alias !== undefined) {
-				this.cronMessage = cronstrue.toString(alias);
-			} else {
-				this.cronMessage = null;
-			}
-		} else if (len > 4 && len < 8) {
-			this.cronMessage = cronstrue.toString((this.timeSpec.cronTime as string));
-		} else {
-			this.cronMessage = null;
-		}
-	}
-
-	/**
-	 * Adds another scheduler task message object
-	 */
-	private addMessage(): void {
-		this.tasks.push({message: '', messaging: ['']});
-		this.validatorErrors.push([]);
-	}
-
-	/**
-	 * Adds another scheduler task messaging
-	 * @param {number} index Task index
-	 */
-	private addTaskMessaging(index: number): void {
-		this.tasks[index].messaging.push('');
-	}
-
-	/**
-	 * Removes a scheduler task message object specified by index
-	 * @param {number} index Index of scheduler task message
-	 */
-	private removeMessage(index: number): void {
-		this.tasks.splice(index, 1);
-		this.validatorErrors.splice(index, 1);
-	}
-
-	/**
-	 * Removes a scheduler task messaging specified
-	 * @param {number} tIndex Task index
-	 * @param {number} mIndex Messaging index
-	 */
-	private removeTaskMessaging(tIndex: number, mIndex: number): void {
-		this.tasks[tIndex].messaging.splice(mIndex, 1);
-	}
-
-	/**
-	 * Retrieves task specified by passed id
-	 * @param {number} taskId Scheduler task id
-	 */
-	private getTask(taskId: number): void {
-		this.untouched = false;
-		this.$store.commit('spinner/SHOW');
-		if (this.useRest) {
-			SchedulerService.getTaskREST(taskId)
-				.then((response: AxiosResponse) => {
-					this.handleGetTaskRest(response.data);
-					this.$store.commit('spinner/HIDE');
-				})
-				.catch((error: AxiosError) => {
-					extendedErrorToast(error, 'config.daemon.scheduler.messages.getFail', {task: this.id});
-					this.$router.push('/config/daemon/scheduler/');
-				});
-		} else {
-			SchedulerService.getTask(taskId, new DaemonMessageOptions(null, 30000, null, () => this.$router.push('/config/daemon/scheduler/')))
-				.then((msgId: string) => this.storeId(msgId));
-		}
-	}
-
-	/**
-	 * Handles GetTask response from Daemon API
-	 * @param response Task retrieved from Daemon API
-	 */
-	private handleGetTask(response): void {
-		if (response.status !== 0) {
-			this.$router.push('/config/daemon/scheduler/');
-			this.$toast.error(
-				this.$t('config.daemon.scheduler.messages.getFail', {task: this.id})
-					.toString()
-			);
-			return;
-		}
-		const taskDaemon: ITaskDaemon = response.rsp;
-		if (Array.isArray(taskDaemon.timeSpec.cronTime)) {
-			taskDaemon.timeSpec.cronTime = taskDaemon.timeSpec.cronTime.join(' ').trim();
-		}
-		this.taskId = taskDaemon.taskId;
-		this.clientId = taskDaemon.clientId;
-		if (!taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.CRON;
-		} else if (taskDaemon.timeSpec.exactTime && !taskDaemon.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.EXACT;
-		} else {
-			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
-		}
-		this.timeSpec = taskDaemon.timeSpec;
-		if (Array.isArray(taskDaemon.task)) {
-			this.tasks = taskDaemon.task.map((item: ITaskMessage) => ({
-				messaging: Array.isArray(item.messaging) ? item.messaging : item.messaging.split('&'),
-				message: JSON.stringify(item.message, null, 2),
-			}));
-		} else {
-			this.tasks = [
-				{
-					messaging: Array.isArray(taskDaemon.task.messaging) ? taskDaemon.task.messaging : taskDaemon.task.messaging.split('&'),
-					message: JSON.stringify(taskDaemon.task.message, null, 2),
-				}
-			];
-		}
-		for (let i = 0; i < this.tasks.length; ++i) {
-			this.validatorErrors.push([]);
-		}
-	}
-
-	/**
-	 * Handles GetTask response from REST API
-	 * @param {ITaskRest} taskRest Task retrieved from REST API
-	 */
-	private handleGetTaskRest(taskRest: ITaskRest): void {
-		this.taskId = taskRest.taskId;
-		this.clientId = taskRest.clientId;
-		if (!taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.CRON;
-		} else if (taskRest.timeSpec.exactTime && !taskRest.timeSpec.periodic) {
-			this.timeSpecSelected = TimeSpecTypes.EXACT;
-		} else {
-			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
-		}
-		this.timeSpec = taskRest.timeSpec;
-		this.tasks = taskRest.task.map((item: ITaskMessage) => ({
-			messaging: Array.isArray(item.messaging) ? item.messaging : item.messaging.split('&'),
-			message: JSON.stringify(item.message, null, 2),
-		}));
-		for (let i = 0; i < this.tasks.length; ++i) {
-			this.validatorErrors.push([]);
-		}
-	}
-
-	/**
-	 * Stores message id for later response handling
-	 * @param {string} msgId Daemon api message id
-	 */
-	private storeId(msgId: string): void {
-		this.msgIds.push(msgId);
-		setTimeout(() => {
-			if (this.msgIds.includes(msgId)) {
-				this.msgIds.splice(this.msgIds.indexOf(msgId), 1);
-			}
-		}, 30000);
+			'config.daemon.scheduler.add' : 'config.daemon.scheduler.edit';
 	}
 
 	/**
@@ -760,45 +577,72 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
-	 * Prepares task time specification before submitting
-	 * @returns {ITaskTimeSpec} Submission ready time specification object
+	 * Retrieves task specified by passed id
+	 * @param {string} taskId Scheduler task id
 	 */
-	private prepareTaskToSubmit(): ITaskTimeSpec {
-		const timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
-		if (this.timeSpecSelected === TimeSpecTypes.EXACT) { // exact time, reset others
-			timeSpec.cronTime = Array(7).fill('');
-			timeSpec.exactTime = true;
-			timeSpec.periodic = false;
-			timeSpec.period = 0;
-			const date = new Date(timeSpec.startTime);
-			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-			timeSpec.startTime = date.toISOString().split('.')[0];
-		} else if (this.timeSpecSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
-			timeSpec.cronTime = Array(7).fill('');
-			timeSpec.exactTime = false;
-			timeSpec.periodic = true;
-			timeSpec.startTime = '';
-		} else { // cron time, reset others
-			timeSpec.cronTime = timeSpec.cronTime.replace('?', '*').split(' ');
-			if (timeSpec.cronTime.length === 1) { // potentially using alias
-				const alias = this.getCronAlias(timeSpec.cronTime[0]);
-				if (alias !== undefined) {
-					timeSpec.cronTime = alias.split(' ');
-				} else {
-					timeSpec.cronTime = Array(7).fill('');
-				}
-			}
-			if (this.dayAliases.includes(timeSpec.cronTime[5])) { // day alias translation
-				timeSpec.cronTime[5] = this.dayAliases.indexOf(timeSpec.cronTime[5]).toString();
-			}
-			if (this.monthAliases.includes(timeSpec.cronTime[4])) {
-				timeSpec.cronTime[4] = (this.monthAliases.indexOf(timeSpec.cronTime[4]) + 1).toString();
-			}
-			timeSpec.exactTime = timeSpec.periodic = false;
-			timeSpec.period = 0;
-			timeSpec.startTime = '';
+	private getTask(taskId: string): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.useRest) {
+			SchedulerService.getTaskREST(taskId)
+				.then((response: AxiosResponse) => {
+					this.parseRecord(response.data);
+					this.$store.commit('spinner/HIDE');
+				})
+				.catch((error: AxiosError) => {
+					extendedErrorToast(error, 'config.daemon.scheduler.messages.getFail', {task: this.taskId});
+					this.$router.push('/config/daemon/scheduler/');
+				});
+		} else {
+			SchedulerService.getTask(taskId, new DaemonMessageOptions(null, 30000, null, () => {
+				this.msgId = '';
+				this.$router.push('/config/daemon/scheduler/');
+			}))
+				.then((msgId: string) => this.msgId = msgId);
 		}
-		return timeSpec;
+	}
+
+	/**
+	 * Handles GetTask response from Daemon API
+	 * @param response Task retrieved from Daemon API
+	 */
+	private handleGetTask(response): void {
+		if (response.status !== 0) {
+			this.$router.push('/config/daemon/scheduler/');
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.messages.getFail', {task: this.taskId}).toString()
+			);
+			return;
+		}
+		this.parseRecord(response.rsp);
+	}
+
+	/**
+	 * Parses record from response
+	 * @param {ISchedulerRecord} record Scheduler record
+	 */
+	private parseRecord(record: ISchedulerRecord): void {
+		if (!Array.isArray(record.task)) {
+			record.task = [record.task];
+		}
+		record.task = record.task.map((task: ISchedulerRecordTask) => ({
+			message: JSON.stringify(task.message, null, 2),
+			messaging: Array.isArray(task.messaging) ? task.messaging : task.messaging.split('&'),
+		}));
+		if (Array.isArray(record.timeSpec.cronTime)) {
+			record.timeSpec.cronTime = record.timeSpec.cronTime.join(' ').trim();
+		}
+		if (!record.timeSpec.exactTime && !record.timeSpec.periodic) {
+			this.timeSpecSelected = TimeSpecTypes.CRON;
+		} else if (record.timeSpec.exactTime && !record.timeSpec.periodic) {
+			this.timeSpecSelected = TimeSpecTypes.EXACT;
+		} else {
+			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
+		}
+		delete record.active;
+		for (let i = 0; i < record.task.length; ++i) {
+			this.validatorErrors.push([]);
+		}
+		this.record = record;
 	}
 
 	/**
@@ -806,71 +650,37 @@ export default class SchedulerForm extends Vue {
 	 */
 	private saveTask(): void {
 		this.$store.commit('spinner/SHOW');
+		const record = SchedulerRecord.prepareRecord(this.timeSpecSelected, JSON.parse(JSON.stringify(this.record)));
+		record.newTaskId = this.taskId;
+		if (this.taskId && record.taskId != this.taskId) {
+			record.taskId = this.taskId;
+		}
 		if (this.$route.path === '/config/daemon/scheduler/add') {
 			if (this.useRest) {
-				SchedulerService.addTaskREST(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit())
+				SchedulerService.addTaskREST(record)
 					.then(() => this.successfulSave())
 					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.addFailedRest'));
 			} else {
-				SchedulerService.addTask(this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit(), new DaemonMessageOptions(
-					null, 30000, 'config.daemon.scheduler.messages.processError'))
-					.then((msgId: string) => this.storeId(msgId));
+				SchedulerService.addTask(record, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.processError',  () => this.msgId = ''))
+					.then((msgId: string) => this.msgId = msgId);
 			}
 		} else {
 			if (this.useRest) {
-				SchedulerService.editTaskREST(this.id, this.taskId, this.clientId, this.tasks, this.prepareTaskToSubmit())
+				SchedulerService.editTaskREST(record)
 					.then(() => this.successfulSave())
 					.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.editFailedRest'));
 			} else {
-				SchedulerService.removeTask(this.id, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
-					.then((msgId: string) => this.storeId(msgId));
+				SchedulerService.editTask(record, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.processError', () => this.msgId = ''))
+					.then((msgId: string) => this.msgId = msgId);
 			}
 		}
-	}
-
-	/**
-	 * Handles Remove Task response from Daemon API
-	 * @param response Daemon API response
-	 */
-	private handleRemoveTask(response): void {
-		if (response.status !== 0) {
-			this.$toast.error(
-				this.$t('config.daemon.scheduler.messages.deleteFail').toString()
-			);
-			return;
-		}
-		SchedulerService.addTask(
-			this.taskId,
-			this.clientId,
-			this.tasks,
-			this.prepareTaskToSubmit(),
-			new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.processError')
-		).then((msgId: string) => this.storeId(msgId));
-	}
-
-	/**
-	 * Retrieves cron alias from predefined strings
-	 * @param {string} input Cron time string
-	 * @returns {string|undefined} Cron time alias if one exists for received time string
-	 */
-	private getCronAlias(input: string): string|undefined {
-		const aliases = new Map();
-		aliases.set('@reboot', '');
-		aliases.set('@yearly', '0 0 0 1 1 * *');
-		aliases.set('@annually', '0 0 0 1 1 * *');
-		aliases.set('@monthly', '0 0 0 1 * * *');
-		aliases.set('@weekly', '0 0 0 * * 0 *');
-		aliases.set('@daily', '0 0 0 * * * *');
-		aliases.set('@hourly', '0 0 * * * * *');
-		aliases.set('@minutely', '0 * * * * * *');
-		return aliases.get(input);
 	}
 
 	/**
 	 * Handles Add task response from Daemon API
 	 * @param response Daemon API response
 	 */
-	private handleAddTask(response): void {
+	private handleSaveTask(response): void {
 		if (response.status === 0) {
 			this.successfulSave();
 		} else {
@@ -891,12 +701,66 @@ export default class SchedulerForm extends Vue {
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.daemon.scheduler.messages.editSuccess', {task: this.id}).toString()
+				this.$t('config.daemon.scheduler.messages.editSuccess', {task: this.taskId}).toString()
 			);
 		}
 		this.$router.push('/config/daemon/scheduler/');
 	}
 
+	/**
+	 * Adds another scheduler task message object
+	 */
+	private addMessage(): void {
+		this.record.task.push({message: '', messaging: ['']});
+		this.validatorErrors.push([]);
+	}
+
+	/**
+	 * Adds another scheduler task messaging
+	 * @param {number} index Task index
+	 */
+	private addTaskMessaging(index: number): void {
+		(this.record.task[index].messaging as Array<string>).push('');
+	}
+
+	/**
+	 * Removes a scheduler task message object specified by index
+	 * @param {number} index Index of scheduler task message
+	 */
+	private removeMessage(index: number): void {
+		this.record.task.splice(index, 1);
+		this.validatorErrors.splice(index, 1);
+	}
+
+	/**
+	 * Removes a scheduler task messaging specified
+	 * @param {number} tIndex Task index
+	 * @param {number} mIndex Messaging index
+	 */
+	private removeTaskMessaging(tIndex: number, mIndex: number): void {
+		(this.record.task[tIndex].messaging as Array<string>).splice(mIndex, 1);
+	}
+
+	/**
+	 * Converts cron time expression into a human readable message
+	 * @param {string} cronExpression Cron time expression
+	 */
+	private calculateCron(cronExpression: string): void {
+		const cronTime = cronExpression.trim().split(' ');
+		const len = cronTime.length;
+		if (len === 1) {
+			const alias = SchedulerRecord.resolveExpressionAlias((this.record.timeSpec.cronTime as string));
+			if (alias !== undefined) {
+				this.cronMessage = cronstrue.toString(alias);
+			} else {
+				this.cronMessage = '';
+			}
+		} else if (len > 4 && len < 8) {
+			this.cronMessage = cronstrue.toString((this.record.timeSpec.cronTime as string));
+		} else {
+			this.cronMessage = '';
+		}
+	}
 }
 </script>
 
