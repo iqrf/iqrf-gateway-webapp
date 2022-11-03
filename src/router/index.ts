@@ -495,15 +495,9 @@ const routes: Array<RouteConfig> = [
 										},
 									},
 									{
-										path: 'edit/:id',
+										path: 'edit/:taskId',
 										component: SchedulerForm,
-										props: (route) => {
-											const id = Number.parseInt(route.params.id, 10);
-											if (Number.isNaN(id)) {
-												return 0;
-											}
-											return {id};
-										},
+										props: true,
 										meta: {
 											role: UserRole.NORMAL,
 										},

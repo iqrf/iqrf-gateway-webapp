@@ -16,35 +16,10 @@
  */
 
 /**
- * Scheduler record interface
+ * Scheduler task time specification enum
  */
-export interface ISchedulerRecord {
-	clientId: string
-	taskId: string
-	newTaskId?: string
-	description: string
-	task: Array<ISchedulerRecordTask>
-	timeSpec: ISchedulerRecordTimeSpec
-	persist: boolean
-	autoStart: boolean
-	active?: boolean
-}
-
-/**
- * Scheduler record task interface
- */
-export interface ISchedulerRecordTask {
-	message: string|Record<string, any>
-	messaging: Array<string>|string
-}
-
-/**
- * Scheduler record time specification interface
- */
-export interface ISchedulerRecordTimeSpec {
-	cronTime: Array<string>|string
-	exactTime: boolean
-	period: number
-	periodic: boolean
-	startTime: string
+export enum TimeSpecTypes {
+	CRON = 'cron',
+	EXACT = 'exact',
+	PERIODIC = 'periodic',
 }
