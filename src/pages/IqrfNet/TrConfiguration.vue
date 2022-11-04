@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<CCard v-if='loaded !== null'>
+		<CCard>
 			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
 					<CForm>
@@ -27,9 +27,10 @@ limitations under the License.
 									:value.sync='target'
 									:options='targetOptions'
 									:label='$t("iqrfnet.trConfiguration.form.target")'
+									:description='$t("iqrfnet.trConfiguration.messages.targetNote")'
 								/>
 								<ValidationProvider
-									v-if='target === "node"'
+									v-if='target === NetworkTarget.NODE'
 									v-slot='{errors, touched, valid}'
 									rules='integer|required|between:0,239'
 									:custom-messages='{
@@ -48,7 +49,7 @@ limitations under the License.
 										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-								<div v-if='target === "network"'>
+								<div v-if='target === NetworkTarget.NETWORK'>
 									<CButton
 										style='float: right;'
 										color='primary'
@@ -72,24 +73,36 @@ limitations under the License.
 											min='0'
 											max='65535'
 											:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
+											:description='$t("iqrfnet.networkManager.otaUpload.messages.hwpid")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='errors.join(", ")'
+											:disabled='loaded && failed'
 										/>
 									</ValidationProvider>
-									<em>
-										{{ $t('iqrfnet.trConfiguration.messages.targetNote') }}<br>
-										{{ $t('iqrfnet.networkManager.otaUpload.messages.hwpid') }}
-									</em>
 								</div>
 								<CButton
-									v-if='target === "node"'
+									v-if='target === NetworkTarget.NODE'
 									color='primary'
+									:disabled='invalid'
 									@click='enumerate'
 								>
 									{{ $t('forms.read') }}
 								</CButton>
 							</CCol>
 						</CRow><hr>
+					</CForm>
+				</ValidationObserver>
+				<CAlert
+					class='mb-0'
+					color='danger'
+				>
+					{{ $t('iqrfnet.trConfiguration.messages.noConfig') }}
+				</CAlert>
+				<ValidationObserver
+					v-if='loaded && !failed'
+					v-slot='{invalid}'
+				>
+					<CForm>
 						<CRow>
 							<CCol md='6'>
 								<h2>{{ $t('iqrfnet.trConfiguration.form.rf') }}</h2>
@@ -570,6 +583,9 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		NetworkTarget,
+	}),
 })
 
 /**
@@ -680,9 +696,14 @@ export default class TrConfiguration extends Vue {
 	private keyVisible = false;
 
 	/**
-	 * @var {boolean|null} loaded Indicates whether configuration has been loaded
+	 * @var {boolean} loaded Indicates whether configuration loading finished
 	 */
-	private loaded: boolean|null = null;
+	private loaded = false;
+
+	/**
+	 * @var {boolean} failed Indicates whether configuration loading failed
+	 */
+	private failed = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -929,6 +950,7 @@ export default class TrConfiguration extends Vue {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.osReadFailure').toString()
 			);
+			this.loaded = this.failed = true;
 		}
 	}
 
@@ -992,7 +1014,7 @@ export default class TrConfiguration extends Vue {
 				);
 				break;
 		}
-		this.loaded = false;
+		this.loaded = this.failed = true;
 	}
 
 	/**
@@ -1009,6 +1031,7 @@ export default class TrConfiguration extends Vue {
 			this.$t('iqrfnet.trConfiguration.messages.readSuccess').toString()
 		);
 		this.loaded = true;
+		this.failed = false;
 	}
 
 	/**

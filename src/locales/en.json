@@ -2493,7 +2493,7 @@
 				"notMatched": "The following nodes did not match the selected HWPID: {nodes}.",
 				"notResponded": "The following nodes did not respond to the request: {nodes}.",
 				"invalidAddress": "Address {address} is not a valid device address.",
-				"noConfig": "TR configuration could not be read.",
+				"noConfig": "Failed to read device TR configuration.",
 				"modalTitle": "Custom DPA handler issue detected",
 				"modalPrompt": "Custom DPA handler has been enabled in transceiver configuration, but not detected. Do you wish to disable Custom DPA handler? The transceiver will then be restarted.",
 				"disableFailure": "An error has occurred while disabling Custom DPA handler.",
