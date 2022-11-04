@@ -29,7 +29,7 @@ CC_IGNORE=-i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode
 WEBAPP_USER ?= www-data
 WEBAPP_GROUP ?= www-data
 
-.PHONY: build clean coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
+.PHONY: build clean coverage cc fix-cc cs deb-package deps qa install lint phpstan rector reset-db test
 
 build:
 	$(COMPOSER) install --no-dev
@@ -156,8 +156,15 @@ phpstan: deps
 rector: deps
 	NETTE_TESTER_RUNNER=1 vendor/bin/rector process --dry-run
 
+reset-db:
+	rm -f app/config/database.db
+	bin/manager database:create
+	bin/manager migrations:migrate --no-interaction
+	bin/manager doctrine:fixtures:load --append --no-interaction
+	bin/manager iqrf-os:import-patches
+
 run:
-	php7.4 -S [::]:8080 -t www/
+	php -S [::]:8080 -t www/
 
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
