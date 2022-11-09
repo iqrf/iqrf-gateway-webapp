@@ -13,7 +13,7 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 
 Package: iqrf-gateway-webapp
 Architecture: all
-Depends: ${misc:Depends}, iqrf-gateway-daemon, openssl,
+Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-journal-reader, openssl,
  php7.4-common | php8.0-common | php8.1-common,
  php7.4-cli | php8.0-cli | php8.1-cli,
  php7.4-fpm | php8.0-fpm | php8.1-fpm,
