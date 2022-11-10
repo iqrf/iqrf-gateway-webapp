@@ -16,14 +16,16 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
-@@ -35,13 +35,13 @@ iqrfRepository:
+@@ -35,7 +35,7 @@ iqrfRepository:
  	enabled: false
  # iTemp service
  iTemp:
 -	enabled: false
 +	enabled: true
- # Mender client configuration
- mender:
+ # Systemd journald configuration
+ journal:
+ 	enabled: false
+@@ -45,7 +45,7 @@ mender:
  	enabled: false
  # Monitoring service
  monit:
