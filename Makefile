@@ -151,7 +151,7 @@ lint: deps
 	vendor/bin/linter app bin tests
 
 phpstan: deps
-	NETTE_TESTER_RUNNER=1 php7.4 vendor/bin/phpstan analyse -c phpstan.neon
+	NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
 
 rector: deps
 	NETTE_TESTER_RUNNER=1 vendor/bin/rector process --dry-run
