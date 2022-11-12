@@ -187,10 +187,7 @@ class SchedulerController extends BaseController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
-		if (!is_numeric($request->getParameter('taskId'))) {
-			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
-		}
-		$taskId = (int) $request->getParameter('taskId');
+		$taskId = $request->getParameter('taskId');
 		try {
 			$task = (array) $this->manager->load($taskId);
 			return $response->writeJsonBody($task);
@@ -221,10 +218,7 @@ class SchedulerController extends BaseController {
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
-		if (!is_numeric($request->getParameter('taskId'))) {
-			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
-		}
-		$taskId = (int) $request->getParameter('taskId');
+		$taskId = $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
 			return $response->writeBody('Workaround');
@@ -263,10 +257,7 @@ class SchedulerController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
-		if (!is_numeric($request->getParameter('taskId'))) {
-			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
-		}
-		$taskId = (int) $request->getParameter('taskId');
+		$taskId = $request->getParameter('taskId');
 		try {
 			$fileName = $this->manager->getFileName($taskId);
 		} catch (TaskNotFoundException $e) {

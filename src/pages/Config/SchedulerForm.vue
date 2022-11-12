@@ -61,7 +61,8 @@ limitations under the License.
 									<strong>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</strong>
 								</label>
 								<CBadge
-									v-if='cronMessage !== null'
+									v-if='cronMessage.length > 0'
+									class='ml-1'
 									:color='valid ? "info" : "danger"'
 								>
 									{{ cronMessage }}
@@ -71,7 +72,7 @@ limitations under the License.
 									v-model='record.timeSpec.cronTime'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
-									@input='cronMessage = null'
+									@input='cronMessage = ""'
 								/>
 							</ValidationProvider>
 						</div>
@@ -115,8 +116,8 @@ limitations under the License.
 							:label='$t("config.daemon.scheduler.form.task.persistent")'
 						/>
 						<CInputCheckbox
-							:checked.sync='record.autoStart'
-							:label='$t("config.daemon.scheduler.form.task.autoStart")'
+							:checked.sync='record.enabled'
+							:label='$t("config.daemon.scheduler.form.task.enabled")'
 						/>
 						<hr>
 						<div class='messages-header'>
@@ -242,7 +243,6 @@ import {Datetime} from 'vue-datetime';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import cron from 'cron-validate';
-import cronstrue from 'cronstrue';
 import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -328,7 +328,7 @@ export default class SchedulerForm extends Vue {
 			period: 1
 		},
 		persist: true,
-		autoStart: true,
+		enabled: true,
 	};
 
 	/**
@@ -397,46 +397,6 @@ export default class SchedulerForm extends Vue {
 	};
 
 	/**
-	 * @constant cronPreset Cron validate presets
-	 */
-	private cronPreset = {
-		presetId: 'schedulerCron',
-		useSeconds: true,
-		useYears: true,
-		useAliases: true,
-		useBlankDay: true,
-		allowOnlyOneBlankDayField: false,
-		seconds: {
-			minValue: 0,
-			maxValue: 59,
-		},
-		minutes: {
-			minValue: 0,
-			maxValue: 59,
-		},
-		hours: {
-			minValue: 0,
-			maxValue: 23,
-		},
-		daysOfMonth: {
-			minValue: 1,
-			maxValue: 31,
-		},
-		months: {
-			minValue: 1,
-			maxValue: 12,
-		},
-		daysOfWeek: {
-			minValue: 0,
-			maxValue: 6,
-		},
-		years: {
-			minValue: 1970,
-			maxValue: 2099,
-		},
-	};
-
-	/**
 	 * @var {DaemonApiValidator} validator JSON schema validator function
 	 */
 	private validator: DaemonApiValidator;
@@ -478,20 +438,19 @@ export default class SchedulerForm extends Vue {
 		});
 		extend('cron', (cronstring: string) => {
 			if (cronstring[0] === '@') {
-				const cronAlias = SchedulerRecord.resolveExpressionAlias(cronstring);
-				if (cronAlias !== undefined) {
-					this.cronMessage = cronstrue.toString(cronAlias);
-					return true;
+				const expr = SchedulerRecord.resolveExpressionAlias(cronstring);
+				if (expr === undefined) {
+					this.cronMessage = '';
+					return false;
 				}
-				this.cronMessage = '';
-				return false;
+				cronstring = expr;
 			}
-			const cronResult = cron(cronstring, {preset: this.cronPreset});
-			if (cronResult.isValid()) {
-				this.calculateCron(cronstring);
+			const cronObj = cron(cronstring, {preset: SchedulerRecord.cronTraits});
+			if (cronObj.isValid()) {
+				this.cronMessage = SchedulerRecord.expressionToString(cronstring);
 				return true;
 			} else {
-				this.cronMessage = cronResult.getError().join(',');
+				this.cronMessage = cronObj.getError().join(',');
 				return false;
 			}
 		});
@@ -739,27 +698,6 @@ export default class SchedulerForm extends Vue {
 	 */
 	private removeTaskMessaging(tIndex: number, mIndex: number): void {
 		(this.record.task[tIndex].messaging as Array<string>).splice(mIndex, 1);
-	}
-
-	/**
-	 * Converts cron time expression into a human readable message
-	 * @param {string} cronExpression Cron time expression
-	 */
-	private calculateCron(cronExpression: string): void {
-		const cronTime = cronExpression.trim().split(' ');
-		const len = cronTime.length;
-		if (len === 1) {
-			const alias = SchedulerRecord.resolveExpressionAlias((this.record.timeSpec.cronTime as string));
-			if (alias !== undefined) {
-				this.cronMessage = cronstrue.toString(alias);
-			} else {
-				this.cronMessage = '';
-			}
-		} else if (len > 4 && len < 8) {
-			this.cronMessage = cronstrue.toString((this.record.timeSpec.cronTime as string));
-		} else {
-			this.cronMessage = '';
-		}
 	}
 }
 </script>

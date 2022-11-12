@@ -13,15 +13,21 @@
 	"properties": {
 		"taskId": {
 			"$id": "#/properties/taskId",
-			"type": "integer",
-			"title": "Task ID",
-			"example": 2
+			"type": "string",
+			"pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+			"example": "5070cf2c-3d07-415f-a6e3-553d5549917f"
 		},
 		"clientId": {
 			"$id": "#/properties/clientId",
 			"type": "string",
 			"title": "Scheduler messaging instance",
 			"example": "SchedulerMessaging"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"title": "Description",
+			"type": "string",
+			"example": "Example task"
 		},
 		"timeSpec": {
 			"$id": "#/properties/timeSpec",
@@ -38,24 +44,32 @@
 			"properties": {
 				"cronTime": {
 					"$id": "#/properties/timeSpec/cronTime",
-					"type": "array",
 					"title": "CRON time expression with seconds and year",
-					"minItems": 7,
-					"maxItems": 7,
-					"additionalItems": false,
-					"items": {
-						"$id": "#/properties/timeSpec/cronTime/items",
-						"type": "string"
-					},
-					"example": [
-						"0",
-						"*/2",
-						"*",
-						"*",
-						"*",
-						"*",
-						"*"
+					"oneOf": [
+						{
+							"type": "array",
+							"minItems": 7,
+							"maxItems": 7,
+							"additionalItems": false,
+							"items": {
+								"type": "string"
+							},
+							"example": [
+								"0",
+								"*/2",
+								"*",
+								"*",
+								"*",
+								"*",
+								"*"
+							]
+						},
+						{
+							"type": "string",
+							"example": "0 */2 * * * * *"
+						}
 					]
+
 				},
 				"exactTime": {
 					"$id": "#/properties/timeSpec/exactTime",
@@ -108,6 +122,16 @@
 					}
 				}
 			]
+		},
+		"persist": {
+			"$id": "#/properties/persist",
+			"title": "Persistent task",
+			"type": "boolean"
+		},
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"title": "Launch on startup",
+			"type": "boolean"
 		}
 	},
 	"definitions": {
