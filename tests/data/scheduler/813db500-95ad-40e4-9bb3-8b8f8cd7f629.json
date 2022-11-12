@@ -1,5 +1,5 @@
 {
-	"taskId": 1,
+	"taskId": "813db500-95ad-40e4-9bb3-8b8f8cd7f629",
 	"clientId": "SchedulerMessaging",
 	"timeSpec": {
 		"cronTime": ["*/5", "*", "1", "*", "*", "*", "*"],
@@ -8,18 +8,22 @@
 		"period": 0,
 		"startTime": ""
 	},
-	"task": {
+	"task": [{
 		"messaging": "WebsocketMessaging",
 		"message": {
-			"mType": "iqrfRaw",
+			"mType": "iqrfRawHdp",
+			"timeout": 1000,
 			"data": {
-				"msgId": "1",
-				"timeout": 1000,
+				"msgId": "123",
 				"req": {
-					"rData": "00.00.06.03.ff.ff"
-				}
-			},
-			"returnVerbose": true
+					"nAdr": 0,
+					"pNum": 6,
+					"pCmd": 3,
+					"hwpId": 65535,
+					"pData": []
+				},
+				"returnVerbose": true
+			}
 		}
-	}
+	}]
 }

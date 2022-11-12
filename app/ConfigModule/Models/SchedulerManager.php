@@ -71,11 +71,11 @@ class SchedulerManager {
 
 	/**
 	 * Deletes a task
-	 * @param int $id Task ID
+	 * @param string $taskId Task ID
 	 * @throws TaskNotFoundException
 	 */
-	public function delete(int $id): void {
-		$this->fileManager->delete($this->getFileName($id));
+	public function delete(string $taskId): void {
+		$this->fileManager->delete($this->getFileName($taskId));
 	}
 
 	/**
@@ -90,11 +90,11 @@ class SchedulerManager {
 
 	/**
 	 * Returns task file name
-	 * @param int $taskId Task ID
+	 * @param string $taskId Task ID
 	 * @return string File name
 	 * @throws TaskNotFoundException
 	 */
-	public function getFileName(int $taskId): string {
+	public function getFileName(string $taskId): string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$fileName = $file->getBasename('.json');
@@ -112,10 +112,10 @@ class SchedulerManager {
 
 	/**
 	 * Checks if the task exists
-	 * @param int $taskId Task ID
+	 * @param string $taskId Task ID
 	 * @return bool Is task exist?
 	 */
-	public function exist(int $taskId): bool {
+	public function exist(string $taskId): bool {
 		try {
 			$this->getFileName($taskId);
 			return true;
@@ -134,23 +134,21 @@ class SchedulerManager {
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$fileName = $file->getBasename('.json');
 			try {
-				$tasks[] = $this->readFile($fileName);
+				$record = $this->readFile($fileName);
+				if (is_object($record->task)) {
+					$record->task = [$record->task];
+				}
+				$tasks[] = $record;
 			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException $e) {
 				// Do nothing
 			}
 		}
-		usort($tasks, function (array $a, array $b): int {
-			if ($a['id'] === $b['id']) {
-				return 0;
-			}
-			return ($a['id'] < $b['id']) ? -1 : 1;
-		});
 		return $tasks;
 	}
 
 	/**
 	 * Loads the task's configuration
-	 * @param int $id Task ID
+	 * @param string $taskId Task ID
 	 * @return stdClass Array for the form
 	 * @throws InvalidJsonException
 	 * @throws InvalidTaskMessageException
@@ -158,8 +156,8 @@ class SchedulerManager {
 	 * @throws NonexistentJsonSchemaException
 	 * @throws TaskNotFoundException
 	 */
-	public function load(int $id): stdClass {
-		$fileName = $this->getFileName($id);
+	public function load(string $taskId): stdClass {
+		$fileName = $this->getFileName($taskId);
 		return $this->readFile($fileName);
 	}
 

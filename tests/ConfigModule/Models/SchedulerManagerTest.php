@@ -72,10 +72,10 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testDelete(): void {
 		Environment::lock('config_scheduler', TMP_DIR);
-		$fileName = '1';
+		$fileName = '210735a5-91fb-4ba8-90cf-2dc36251d19b';
 		$this->fileManagerTemp->write($fileName, $this->array);
 		Assert::true($this->fileManagerTemp->exists($fileName));
-		$this->managerTemp->delete(1);
+		$this->managerTemp->delete($fileName);
 		Assert::false($this->fileManagerTemp->exists($fileName));
 	}
 
@@ -84,7 +84,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testDeleteNonexistent(): void {
 		Assert::throws(function (): void {
-			$this->manager->delete(-1);
+			$this->manager->delete('nonexistent');
 		}, TaskNotFoundException::class);
 	}
 
@@ -102,7 +102,10 @@ final class SchedulerManagerTest extends TestCase {
 	 * Tests function to get task file name
 	 */
 	public function testGetFileName(): void {
-		Assert::same('1', $this->manager->getFileName(1));
+		Assert::same(
+			'210735a5-91fb-4ba8-90cf-2dc36251d19b',
+			$this->manager->getFileName('210735a5-91fb-4ba8-90cf-2dc36251d19b')
+		);
 	}
 
 	/**
@@ -110,7 +113,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testGetFileNameNonexistent(): void {
 		Assert::throws(function (): void {
-			$this->manager->getFileName(-1);
+			$this->manager->getFileName('nonexistent');
 		}, TaskNotFoundException::class);
 	}
 
@@ -118,8 +121,8 @@ final class SchedulerManagerTest extends TestCase {
 	 * Tests function to check task existence
 	 */
 	public function testExist(): void {
-		Assert::true($this->manager->exist(1));
-		Assert::false($this->manager->exist(-1));
+		Assert::true($this->manager->exist('210735a5-91fb-4ba8-90cf-2dc36251d19b'));
+		Assert::false($this->manager->exist('nonexistent'));
 	}
 
 	/**
@@ -127,8 +130,23 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testList(): void {
 		$expected = [
-			[
-				'id' => 1,
+			(object) [
+				'clientId' => 'SchedulerMessaging',
+				'taskId' => '210735a5-91fb-4ba8-90cf-2dc36251d19b',
+				'task' => [
+					(object) [
+						'messaging' => 'WebsocketMessaging',
+						'message' => (object) [
+							'mType' => 'iqrfRaw',
+							'data' => (object) [
+								'msgId' => '1',
+								'timeout' => 1000,
+								'req' => (object) ['rData' => '00.00.06.03.ff.ff'],
+							],
+							'returnVerbose' => true,
+						],
+					],
+				],
 				'timeSpec' => (object) [
 					'cronTime' => '*/5 * 1 * * * *',
 					'exactTime' => false,
@@ -136,21 +154,37 @@ final class SchedulerManagerTest extends TestCase {
 					'period' => 0,
 					'startTime' => '',
 				],
-				'service' => 'SchedulerMessaging',
-				'messagings' => 'WebsocketMessaging',
-				'mTypes' => 'iqrfRaw',
-			], [
-				'id' => 2,
+			],
+			(object) [
+				'clientId' => 'SchedulerMessaging',
+				'taskId' => '813db500-95ad-40e4-9bb3-8b8f8cd7f629',
+				'task' => [
+					(object) [
+						'messaging' => 'WebsocketMessaging',
+						'message' => (object) [
+							'mType' => 'iqrfRawHdp',
+							'timeout' => 1000,
+							'data' => (object) [
+								'msgId' => '123',
+								'req' => (object) [
+									'nAdr' => 0,
+									'pNum' => 6,
+									'pCmd' => 3,
+									'hwpId' => 65535,
+									'pData' => [],
+								],
+								'returnVerbose' => true,
+							],
+						],
+					],
+				],
 				'timeSpec' => (object) [
-					'cronTime' => '*/5 * 1 * * * *',
+					'cronTime' => ['*/5', '*', '1', '*', '*', '*', '*'],
 					'exactTime' => false,
 					'periodic' => false,
 					'period' => 0,
 					'startTime' => '',
 				],
-				'service' => 'SchedulerMessaging',
-				'messagings' => 'WebsocketMessaging',
-				'mTypes' => 'iqrfRawHdp',
 			],
 		];
 		Assert::equal($expected, $this->manager->list());
@@ -161,8 +195,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testLoad(): void {
 		$expected = $this->array;
-		$expected->timeSpec->cronTime = '*/5 * 1 * * * *';
-		Assert::equal($expected, $this->manager->load(1));
+		Assert::equal($expected, $this->manager->load('210735a5-91fb-4ba8-90cf-2dc36251d19b'));
 	}
 
 	/**
@@ -170,7 +203,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testLoadNonexistent(): void {
 		Assert::throws(function (): void {
-			$this->manager->load(-1);
+			$this->manager->load('nonexistent');
 		}, TaskNotFoundException::class);
 	}
 
@@ -184,7 +217,7 @@ final class SchedulerManagerTest extends TestCase {
 		$config = $expected;
 		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
 		$this->managerTemp->save($config, null);
-		Assert::equal($expected, $this->fileManagerTemp->read('1', false));
+		Assert::equal($expected, $this->fileManagerTemp->read('210735a5-91fb-4ba8-90cf-2dc36251d19b', false));
 	}
 
 	/**
@@ -192,10 +225,10 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->array = (object) [
-			'taskId' => 1,
+			'taskId' => '210735a5-91fb-4ba8-90cf-2dc36251d19b',
 			'clientId' => 'SchedulerMessaging',
 			'timeSpec' => (object) [
-				'cronTime' => ['*/5', '*', '1', '*', '*', '*', '*'],
+				'cronTime' => '*/5 * 1 * * * *',
 				'exactTime' => false,
 				'periodic' => false,
 				'period' => 0,

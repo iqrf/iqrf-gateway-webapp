@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import cronstrue from 'cronstrue';
 
 import {TimeSpecTypes} from '@/enums/Config/Scheduler';
 import {ISchedulerRecord, ISchedulerRecordTask, ISchedulerRecordTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
@@ -24,10 +25,49 @@ import {ISchedulerRecord, ISchedulerRecordTask, ISchedulerRecordTimeSpec} from '
 export default class SchedulerRecord {
 
 	/**
+	 * @constant cronTraits Cron expression traits
+	 */
+	public static cronTraits = {
+		presetId: 'schedulerCron',
+		useSeconds: true,
+		useYears: true,
+		useAliases: true,
+		useBlankDay: true,
+		allowOnlyOneBlankDayField: false,
+		seconds: {
+			minValue: 0,
+			maxValue: 59,
+		},
+		minutes: {
+			minValue: 0,
+			maxValue: 59,
+		},
+		hours: {
+			minValue: 0,
+			maxValue: 23,
+		},
+		daysOfMonth: {
+			minValue: 1,
+			maxValue: 31,
+		},
+		months: {
+			minValue: 1,
+			maxValue: 12,
+		},
+		daysOfWeek: {
+			minValue: 0,
+			maxValue: 6,
+		},
+		years: {
+			minValue: 1970,
+			maxValue: 2099,
+		},
+	};
+
+	/**
 	 * @constant {Map<string, string>} aliases Supported general cron expression aliases
 	 */
 	private static aliases: Map<string, string> = new Map<string, string>([
-		['@reboot', ''],
 		['@yearly', '0 0 0 1 1 * *'],
 		['@annually', '0 0 0 1 1 * *'],
 		['@monthly', '0 0 0 1 * * *'],
@@ -76,6 +116,23 @@ export default class SchedulerRecord {
 	 */
 	static resolveExpressionAlias(alias: string): string|undefined {
 		return this.aliases.get(alias);
+	}
+
+	/**
+	 * Converts cron expression to human-readable string
+	 * @param {string} expression CRON expression
+	 * @returns Human-readable cron expression
+	 */
+	static expressionToString(expression: string): string {
+		const expr = expression.trim().split(' ');
+		if (expr.length === 1) {
+			const alias = SchedulerRecord.resolveExpressionAlias(expr[0]);
+			return (alias === undefined ? '' : cronstrue.toString(alias));
+		} else if (expr.length >= 5 && expr.length <= 7) {
+			return cronstrue.toString((expression));
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -139,7 +196,7 @@ export default class SchedulerRecord {
 			if (this.monthAliases.includes(cron[4])) {
 				cron[4] = (this.monthAliases.indexOf(cron[4]) + 1).toString();
 			}
-			timeSpec.cronTime = cron;
+			timeSpec.cronTime = cron.join(' ');
 		}
 		return timeSpec;
 	}

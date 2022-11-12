@@ -71,10 +71,12 @@ limitations under the License.
 					<template #active='{item}'>
 						<td>
 							<CIcon
+								v-if='item.active !== undefined'
 								:class='item.active ? "text-success" : "text-danger"'
 								:content='item.active ? cilCheckCircle : cilXCircle'
 								size='xl'
 							/>
+							<span v-else>{{ $t('forms.notAvailable') }}</span>
 						</td>
 					</template>
 					<template #timeSpec='{item}'>
@@ -85,6 +87,7 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								v-if='item.active !== undefined'
 								class='mr-1'
 								:color='item.active ? "danger" : "success"'
 								size='sm'
@@ -125,6 +128,7 @@ import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilXCircle} from '@c
 import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
+import SchedulerRecord from '@/helpers/SchedulerRecord';
 
 import SchedulerService from '@/services/SchedulerService';
 
@@ -133,6 +137,7 @@ import {IField} from '@/interfaces/Coreui';
 import {ISchedulerRecord, ISchedulerRecordTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
 
 @Component({
 	components: {
@@ -226,17 +231,37 @@ export default class SchedulerList extends Vue {
 	];
 
 	/**
-	 * Component unsubscribe function
+	 * @var {boolean} lastFetchedRest Indicates whether last task list fetch was done via REST API
+	 */
+	private lastFetchedRest = false;
+
+	/**
+	 * @var {boolean} daemonWatched Indicates whether daemon reconnect is watched
+	 */
+	private daemonWatched = false;
+
+	/**
+	 * Subscribe function callback
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
+
+	/**
+	 * Watch function callback
+	 */
+	private unwatch: CallableFunction = () => {return;};
 
 	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'daemonClient/SOCKET_ONOPEN') { // websocket connection with daemon established
-				this.getTasks();
+			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE') {
+				if (!this.lastFetchedRest) {
+					this.listRest();
+				}
+				if (!this.daemonWatched) {
+					this.setWatch();
+				}
 			} else if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
 				if (mutation.payload.data.msgId != this.msgId) {
 					return;
@@ -269,6 +294,26 @@ export default class SchedulerList extends Vue {
 	beforeDestroy(): void {
 		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.unsubscribe();
+		this.unwatch();
+	}
+
+	/**
+	 * Sets daemon api task fetch
+	 */
+	private setWatch(): void {
+		this.unwatch = this.$store.watch(
+			(state, getter) => getter['daemonClient/isConnected'],
+			(newVal, oldVal) => {
+				if (!oldVal && newVal) {
+					this.loading = true;
+					setTimeout(() => {
+						this.list();
+						this.unwatch();
+					}, 1000);
+				}
+			}
+		);
+		this.daemonWatched = true;
 	}
 
 	/**
@@ -278,21 +323,31 @@ export default class SchedulerList extends Vue {
 		this.loading = true;
 		setTimeout(() => {
 			if (this.$store.getters['daemonClient/isConnected']) {
-				SchedulerService.listTasks(true, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
-					.then((msgId: string) => this.msgId = msgId);
+				this.list();
 			} else {
-				SchedulerService.listTasksREST()
-					.then((response: AxiosResponse) => {
-						this.tasks = response.data;
-						this.loading = false;
-					})
-					.catch((error: AxiosError) => {
-						extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest');
-						this.loading = false;
-					});
+				this.listRest();
 			}
 		}, 1000);
 
+	}
+
+	private list(): void {
+		SchedulerService.listTasks(true, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	private listRest(): void {
+		this.loading = true;
+		this.lastFetchedRest = true;
+		SchedulerService.listTasksREST()
+			.then((response: AxiosResponse) => {
+				this.tasks = response.data;
+				this.loading = false;
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.scheduler.messages.listFailedRest');
+				this.loading = false;
+			});
 	}
 
 	/**
@@ -302,6 +357,8 @@ export default class SchedulerList extends Vue {
 	private handleList(response): void {
 		if (response.status === 0) {
 			this.tasks = response.rsp.tasks;
+			this.lastFetchedRest = false;
+			this.daemonWatched = false;
 		} else {
 			this.$toast.error(
 				this.$t('config.daemon.scheduler.messages.listFailed').toString()
@@ -425,12 +482,11 @@ export default class SchedulerList extends Vue {
 				}
 				return message;
 			}
-			if (item.cronTime.length > 0) { // time specification in cron, conversion from array to string
-				if (typeof item.cronTime === 'string') {
-					return item.cronTime;
-				}
-				return item.cronTime.join(' ').trim();
+			let cron = item.cronTime;
+			if (Array.isArray(cron)) {
+				cron = cron.join(' ');
 			}
+			return SchedulerRecord.expressionToString(cron);
 		} catch (err) {
 			return '';
 		}

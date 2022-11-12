@@ -26,7 +26,7 @@ export interface ISchedulerRecord {
 	task: Array<ISchedulerRecordTask>
 	timeSpec: ISchedulerRecordTimeSpec
 	persist: boolean
-	autoStart: boolean
+	enabled: boolean
 	active?: boolean
 }
 

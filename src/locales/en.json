@@ -216,6 +216,7 @@
 		"retry": "Retry",
 		"start": "Start",
 		"stop": "Stop",
+		"notAvailable": "N/A",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -682,7 +683,7 @@
 						"period": "Period in seconds",
 						"startTime": "Start time",
 						"persistent": "Persistent task",
-						"autoStart": "Start task automatically"
+						"enabled": "Start task automatically"
 					},
 					"messages": {
 						"title": "Messages",
