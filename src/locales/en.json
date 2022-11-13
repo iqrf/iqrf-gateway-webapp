@@ -1183,8 +1183,7 @@
 				"description": "Manage SSH keys.",
 				"add": "Add SSH key(s)",
 				"table": {
-					"title": "Authorized SSH public keys",
-					"add": "Add key",
+					"details": "SSH key details",
 					"id": "ID",
 					"type": "Type",
 					"createdAt": "Date created",
