@@ -93,6 +93,7 @@ limitations under the License.
 					</CForm>
 				</ValidationObserver>
 				<CAlert
+					v-if='loaded && failed'
 					class='mb-0'
 					color='danger'
 				>
@@ -982,6 +983,7 @@ export default class TrConfiguration extends Vue {
 	 * Performs device enumeration
 	 */
 	private enumerate(): void {
+		this.loaded = this.failed = false;
 		this.$store.dispatch('spinner/show', {timeout: 60000});
 		IqrfNetService.enumerateDevice(this.address, 60000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
