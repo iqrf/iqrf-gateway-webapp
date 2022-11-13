@@ -34,7 +34,6 @@ limitations under the License.
 					:loading='loading'
 					:fields='fields'
 					:items='keys'
-					:striped='true'
 					:pagination='true'
 					:items-per-page='20'
 					:column-filter='true'
@@ -51,13 +50,15 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								class='mr-1'
 								color='info'
 								size='sm'
 								:to='"/security/api-key/edit/" + item.id'
 							>
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
+							</CButton>
+							<CButton
 								color='danger'
 								size='sm'
 								@click='showDeleteModal(item)'
