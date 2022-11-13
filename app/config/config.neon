@@ -38,7 +38,7 @@ parameters:
 		# Path to directory with IQRF Gateway Daemon's logs
 		logDir: '/var/log/iqrf-gateway-daemon/'
 		# Path to directory with IQRF Gateway Daemon's JSON schemas
-		schemaDir: '/etc/iqrf-gateway-daemon/cfgSchemas/'
+		schemaDir: '/usr/share/iqrf-gateway-daemon/cfgSchemas/'
 		# URL to IQRF Gateway Daemon's WebSocket server
 		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
