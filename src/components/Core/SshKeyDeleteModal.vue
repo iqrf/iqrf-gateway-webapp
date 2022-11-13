@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software,
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CModal
+		v-show='show'
 		:show.sync='show'
 		color='danger'
 		size='lg'
@@ -24,14 +25,14 @@ limitations under the License.
 	>
 		<template #header>
 			<h5 class='modal-title'>
-				{{ $t('core.security.apiKey.modal.title') }}
+				{{ $t('core.security.ssh.modal.title') }}
 			</h5>
 		</template>
-		{{ $t('core.security.apiKey.modal.prompt', {key: key.id}) }}
+		{{ $t('core.security.ssh.modal.prompt', {id: key.id}) }}
 		<template #footer>
 			<CButton
 				class='mr-1'
-				color='secondary'
+				colors='secondary'
 				@click='hideModal'
 			>
 				{{ $t('forms.cancel') }}
@@ -53,10 +54,10 @@ import ModalBase from '@/components/ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import ApiKeyService from '@/services/ApiKeyService';
+import SshService from '@/services/SshService';
 
 import {AxiosError} from 'axios';
-import {IApiKey} from '@/interfaces/Core/ApiKey';
+import {ISshKey} from '@/interfaces/Core/SshKey';
 
 @Component({
 	components: {
@@ -66,45 +67,40 @@ import {IApiKey} from '@/interfaces/Core/ApiKey';
 })
 
 /**
- * API key delete modal window component
+ * SSH key delete modal window component
  */
-export default class ApiKeyDeleteModal extends ModalBase {
-	/**
-	 * @const {IApiKey} defaultKey Default API key
-	 */
-	private defaultKey: IApiKey = {
-		id: 0,
-		description: '',
-		expiration: ''
-	};
+export default class SshKeyDeleteModal extends ModalBase {
+
+	private key: ISshKey|null = null;
 
 	/**
-	 * @var {IApiKey} key API key to delete
+	 * Removes an existing SSH key
 	 */
-	private key: IApiKey = this.defaultKey;
-
-	/**
-	 * Removes an existing API key
-	 */
-	private remove(): void  {
+	private deleteKey(): void {
+		if (this.key === null) {
+			return;
+		}
+		const key = this.key;
 		this.$store.commit('spinner/SHOW');
-		ApiKeyService.deleteApiKey(this.key.id)
+		SshService.deleteKey(this.key.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: this.key.id}).toString());
+				this.$toast.success(
+					this.$t('core.security.ssh.messages.deleteSuccess', {id: key.id}).toString()
+				);
 				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: this.key.id});
+				extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: key.id});
 			});
 	}
 
 	/**
 	 * Stores key to delete and shows modal window
-	 * @param {IApiKey} key API key to delete
+	 * @param {ISshKey} key SSH key to delete
 	 */
-	public showModal(key: IApiKey): void {
+	public showModal(key: ISshKey): void {
 		this.key = key;
 		this.openModal();
 	}
@@ -113,7 +109,7 @@ export default class ApiKeyDeleteModal extends ModalBase {
 	 * Resets key to delete and hides modal window
 	 */
 	private hideModal(): void {
-		this.key = this.defaultKey;
+		this.key = null;
 		this.closeModal();
 	}
 }

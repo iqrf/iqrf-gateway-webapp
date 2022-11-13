@@ -18,30 +18,25 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('core.security.ssh.title') }}</h1>
 		<CCard>
-			<CCardHeader class='datatable-header'>
-				<div>
-					{{ $t('core.security.ssh.table.title') }}
-				</div>
-				<div>
-					<CButton
-						color='success'
-						to='/security/ssh-key/add/'
-						size='sm'
-					>
-						<CIcon :content='cilPlus' size='sm' />
-						<span class='d-none d-lg-inline'>
-							{{ $t('core.security.ssh.table.add') }}
-						</span>
-					</CButton>
-				</div>
+			<CCardHeader class='border-0'>
+				<CButton
+					class='float-right'
+					color='success'
+					size='sm'
+					to='/security/ssh-key/add/'
+				>
+					<CIcon :content='cilPlus' size='sm' />
+					{{ $t('table.actions.add') }}
+				</CButton>
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
-					:items='keys'
+					:loading='loading'
 					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
+					:items='keys'
 					:pagination='true'
+					:items-per-page='20'
+					:column-filter='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
@@ -55,18 +50,9 @@ limitations under the License.
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
-								color='info'
-								size='sm'
-								@click='item.showDetails = !item.showDetails'
-							>
-								<CIcon :content='cilInfo' size='sm' />
-								<span class='d-none d-lg-inline'>
-									{{ $t('table.actions.details') }}
-								</span>
-							</CButton> <CButton
 								color='danger'
 								size='sm'
-								@click='keyToDelete = item'
+								@click='deleteKey(item)'
 							>
 								<CIcon :content='cilTrash' size='sm' />
 								<span class='d-none d-lg-inline'>
@@ -75,20 +61,36 @@ limitations under the License.
 							</CButton>
 						</td>
 					</template>
+					<template #show_details='{item}'>
+						<td class='py-2'>
+							<CButton
+								color='info'
+								size='sm'
+								@click='item.showDetails = !item.showDetails'
+							>
+								<CIcon :content='cilInfo' />
+							</CButton>
+						</td>
+					</template>
 					<template #details='{item}'>
 						<CCollapse :show='item.showDetails'>
-							<CCardBody class='datatable-collapse'>
-								<table>
-									<tbody>
+							<CCardBody>
+								<div class='datatable-expansion-table'>
+									<table>
+										<caption>
+											<b>{{ $t('core.security.ssh.table.details') }}</b>
+										</caption>
 										<tr>
 											<th>{{ $t('core.security.ssh.table.type') }}</th>
 											<td>{{ item.type }}</td>
 										</tr>
 										<tr>
-											<th>
+											<th style='vertical-align: middle;'>
 												{{ $t('core.security.ssh.table.hash') }}
 											</th>
-											<td>{{ item.hash }}</td>
+											<td style='vertical-align: middle;'>
+												{{ item.hash }}
+											</td>
 											<td>
 												<CButton
 													v-clipboard:copy='item.hash'
@@ -104,10 +106,10 @@ limitations under the License.
 											</td>
 										</tr>
 										<tr>
-											<th>
+											<th style='vertical-align: middle;'>
 												{{ $t('core.security.ssh.table.key') }}
 											</th>
-											<td style='max-width: 60vw;'>
+											<td style='vertical-align: middle;'>
 												{{ item.key }}
 											</td>
 											<td>
@@ -124,40 +126,15 @@ limitations under the License.
 												</CButton>
 											</td>
 										</tr>
-									</tbody>
-								</table>
+									</table>
+								</div>
 							</CCardBody>
 						</CCollapse>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='keyToDelete !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('core.security.ssh.modal.title') }}
-				</h5>
-			</template>
-			<span v-if='keyToDelete !== null'>
-				{{ $t('core.security.ssh.modal.prompt', {id: keyToDelete.id}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='deleteKey(keyToDelete.id)'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='keyToDelete = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+		<SshKeyDeleteModal ref='deleteModal' @deleted='listKeys' />
 	</div>
 </template>
 
@@ -173,6 +150,7 @@ import SshService from '@/services/SshService';
 import {AxiosResponse, AxiosError} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {ISshKey} from '@/interfaces/Core/SshKey';
+import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
 
 @Component({
 	components: {
@@ -200,6 +178,10 @@ import {ISshKey} from '@/interfaces/Core/SshKey';
  * SSH key list component
  */
 export default class SshKeyList extends Vue {
+	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
 
 	/**
 	 * @var {Array<ISshKey>} keys List of authorized SSH public keys
@@ -233,6 +215,13 @@ export default class SshKeyList extends Vue {
 			sorter: false,
 			filter: false,
 		},
+		{
+			key: 'show_details',
+			label: '',
+			_style: 'width: 1%',
+			sorter: false,
+			filter: false,
+		},
 	];
 
 	/**
@@ -246,7 +235,7 @@ export default class SshKeyList extends Vue {
 	 * Retrieves list of authorized SSH public keys
 	 */
 	private listKeys(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return SshService.listKeys()
 			.then((response: AxiosResponse) => {
 				const keys: Array<ISshKey> = response.data;
@@ -254,25 +243,20 @@ export default class SshKeyList extends Vue {
 					keys[i].showDetails = false;
 				}
 				this.keys = response.data;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'core.security.ssh.messages.listFailed');
+				this.loading = false;
+			});
 	}
 
 	/**
-	 * Removes authorized SSH public key
-	 * @param {number} id SSH public key ID
+	 * Opens delete modal with SSH key
+	 * @param {ISshKey} key API key
 	 */
-	private deleteKey(id: number): void {
-		this.keyToDelete = null;
-		this.$store.commit('spinner/SHOW');
-		SshService.deleteKey(id)
-			.then(() => {
-				this.listKeys().then(() => this.$toast.success(
-					this.$t('core.security.ssh.messages.deleteSuccess', {id: id}).toString()
-				));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: id}));
+	private deleteKey(key: ISshKey): void {
+		(this.$refs.deleteModal as SshKeyDeleteModal).showModal(key);
 	}
 
 	/**
