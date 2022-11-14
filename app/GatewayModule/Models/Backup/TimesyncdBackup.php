@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
@@ -61,11 +60,6 @@ class TimesyncdBackup implements IBackupManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * @var bool Indicates whether feature is enabled
-	 */
-	private bool $featureEnabled;
-
-	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
 	private PrivilegedFileManager $fileManager;
@@ -78,16 +72,14 @@ class TimesyncdBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param FeatureManager $featureManager Feature manager
+	 * @param string $path Path to conf
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+	public function __construct(CommandManager $commandManager, string $path, RestoreLogger $restoreLogger) {
 		$this->commandManager = $commandManager;
 		$this->restoreLogger = $restoreLogger;
-		$feature = $featureManager->get('ntp');
-		$this->path = dirname($feature['path']);
-		$this->file = basename($feature['path']);
-		$this->featureEnabled = $feature['enabled'];
+		$this->path = dirname($path);
+		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $this->commandManager);
 	}
 
@@ -97,7 +89,7 @@ class TimesyncdBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
-		if (!$params['system']['time'] || !$this->featureEnabled) {
+		if (!$params['system']['time']) {
 			return;
 		}
 		$zipManager->addFile($this->path . '/' . $this->file, 'timesyncd/timesyncd.conf');
@@ -108,7 +100,7 @@ class TimesyncdBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist('timesyncd/') || !$this->featureEnabled) {
+		if (!$zipManager->exist('timesyncd/')) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring Timesyncd configuration.');
