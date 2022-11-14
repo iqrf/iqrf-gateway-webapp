@@ -27,7 +27,7 @@
  journal:
  	enabled: false
 @@ -49,7 +49,7 @@
- 	enabled: false
+ 	enabled: true
  # Monitoring service
  monit:
 -	enabled: true
