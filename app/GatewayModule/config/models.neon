@@ -24,7 +24,7 @@ services:
 	monitBackup: App\GatewayModule\Models\Backup\MonitBackup
 	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
-	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup
+	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %timesyncd.path%)
 	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%)
 	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%)
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%confDir%)
