@@ -26,7 +26,7 @@
  journal:
  	enabled: false
 @@ -45,7 +45,7 @@ mender:
- 	enabled: false
+ 	enabled: true
  # Monitoring service
  monit:
 -	enabled: true
