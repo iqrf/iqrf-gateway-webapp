@@ -119,7 +119,7 @@ limitations under the License.
 			</ValidationObserver>
 		</CCardBody>
 		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
-			<table class='table'>
+			<table class='table d-block overflow-auto text-nowrap'>
 				<thead>
 					{{ $t(`iqrfnet.standard.light.${responseType === StandardResponses.ENUMERATE ? 'enum' : 'powerInfo'}`) }}
 				</thead>
