@@ -126,7 +126,8 @@ final class ConnectionDetailWifiTest extends TestCase {
 		$this->createIpv4Connection();
 		$this->createIpv6Connection();
 		$this->createWifiConnection();
-		$this->entity = new ConnectionDetail(self::ID, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6, $this->wifi);
+		$this->entity = new ConnectionDetail(self::ID, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6);
+		$this->entity->setWifi($this->wifi);
 	}
 
 	/**
