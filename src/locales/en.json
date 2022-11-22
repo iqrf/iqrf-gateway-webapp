@@ -2807,6 +2807,15 @@
 				"noConnections": "No available GSM connections."
 			}
 		},
+		"serial": {
+			"errors": {
+				"baudRateMissing": "Please select a baud rate."
+			},
+			"form": {
+				"title": "Serial link configuration",
+				"baudRate": "Baud rate"
+			}
+		},
 		"wireguard": {
 			"title": "WireGuard VPN",
 			"description": "VPN management.",

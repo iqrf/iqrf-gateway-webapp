@@ -616,7 +616,70 @@
 					"example": "gsmpassword"
 				}
 			}
-
+		},
+		"serial": {
+			"$id": "#/properties/serial",
+			"title": "Serial link connection",
+			"type": "object",
+			"example": {
+				"baudRate": 57600,
+				"bits": 8,
+				"parity": "",
+				"sendDelay": 0,
+				"stopBits": 1
+			},
+			"required": [
+				"baudRate",
+				"bits",
+				"parity",
+				"sendDelay",
+				"stopBits"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"baudRate": {
+					"$id": "#/properties/serial/properties/baudRate",
+					"title": "Baud rate",
+					"type": "integer",
+					"minimum": 0,
+					"example": 57600
+				},
+				"bits": {
+					"$id": "#/properties/serial/properties/bits",
+					"title": "Byte-width",
+					"type": "integer",
+					"minimum": 0,
+					"example": 8
+				},
+				"parity": {
+					"$id": "#/properties/serial/properties/parity",
+					"title": "Parity",
+					"type": "string",
+					"enum": [
+						"",
+						"E",
+						"o",
+						"n"
+					],
+					"example": ""
+				},
+				"sendDelay": {
+					"$id": "#/properties/serial/properties/sendDelay",
+					"title": "Delay between bytes in microseconds",
+					"type": "integer",
+					"minimum": 0,
+					"example": 0
+				},
+				"stopBits": {
+					"$id": "#/properties/serial/properties/stopBits",
+					"title": "Stop bits",
+					"type": "integer",
+					"enum": [
+						1,
+						2
+					]
+				}
+			}
 		}
 	},
 	"allOf": [
@@ -637,6 +700,26 @@
 					"ipv4",
 					"ipv6",
 					"wifi"
+				]
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"type": {
+						"const": "gsm"
+					}
+				}
+			},
+			"then": {
+				"required": [
+					"name",
+					"uuid",
+					"type",
+					"interface",
+					"ipv4",
+					"ipv6",
+					"gsm"
 				]
 			}
 		}

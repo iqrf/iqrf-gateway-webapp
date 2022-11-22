@@ -127,7 +127,25 @@ limitations under the License.
 								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-
+						<div v-if='connection.serial'>
+							<legend>{{ $t('network.serial.form.title') }}</legend>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								:rules='{
+									required: connection.gsm.password.length > 0
+								}'
+								:custom-messages='{
+									required: $t("network.serial.errors.baudRateMissing"),
+								}'
+							>
+								<CInput
+									v-model.number='connection.serial.baudRate'
+									:label='$t("network.serial.form.baudRate")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+						</div>
 						<CButton
 							color='primary'
 							type='submit'

@@ -30,7 +30,7 @@ export interface NetworkConnection {
 }
 
 /**
- * Network interface interace
+ * Network interface interface
  */
 export interface NetworkInterface {
 	connectionName: string
@@ -57,6 +57,8 @@ export interface IConnection {
 	ipv6: IConnectionIPv6
 	wifi?: IConnectionWifi
 	gsm?: IConnectionGSM
+
+	serial?: IConnectionSerial
 }
 
 export interface IConnectionAutoConnect {
@@ -108,6 +110,14 @@ export interface IConnectionGSM {
 	username: string
 	password: string
 	pin: string
+}
+
+export interface IConnectionSerial {
+	baudRate: number
+	bits: number
+	parity: string
+	sendDelay: number
+	stopBits: number
 }
 
 export interface IConnectionWifi {
