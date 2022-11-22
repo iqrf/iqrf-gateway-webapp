@@ -164,10 +164,16 @@ limitations under the License.
 					{{ $t('forms.close') }}
 				</CButton>
 				<CButton
+					color='info'
+					@click='exportList'
+				>
+					{{ $t('forms.export') }}
+				</CButton>
+				<CButton
 					color='danger'
 					@click='clearData'
 				>
-					Clear all
+					{{ $t('forms.clear') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -185,6 +191,7 @@ import {between, integer, regex, required} from 'vee-validate/dist/rules';
 
 import {IAtnwMidErrorList, IAtnwMidList} from '@/interfaces/DaemonApi/Iqmesh/Autonetwork';
 import {IField} from '@/interfaces/Coreui';
+import {saveAs} from 'file-saver';
 
 /**
  * Autonetwork MID list modal window component
@@ -212,8 +219,14 @@ export default class MidList extends ModalBase {
 	 */
 	@Prop({type: Boolean, default: null}) activatorDisabled!: boolean;
 
+	/**
+	 * @property {Array<IAtnwMidList>} _list Valid MID list records
+	 */
 	@PropSync('list',{type: Array, default: []}) _list!: Array<IAtnwMidList>;
 
+	/**
+	 * @property {Array<IAtnwMidErrorList>} _invalid!: Invalid MID list records
+	 */
 	@PropSync('invalid', {type: Array, default: []}) _invalid!: Array<IAtnwMidErrorList>;
 
 	/**
@@ -321,6 +334,18 @@ export default class MidList extends ModalBase {
 	 */
 	private removeFromList(idx: number): void {
 		this._list.splice(idx, 1);
+	}
+
+	/**
+	 * Exports MID list
+	 */
+	private exportList(): void {
+		const content = this._list.map((entry: IAtnwMidList) => {
+			delete entry.showEdit;
+			return Object.values(entry).toString();
+		}).join('\n');
+		const blob = new Blob([content], {type: 'text/csv;encoding:utf-8'});
+		saveAs(blob, 'midList.csv');
 	}
 
 	/**
