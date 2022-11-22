@@ -179,6 +179,7 @@
 		"cancel": "Cancel",
 		"edit": "Edit",
 		"delete": "Delete",
+		"clear": "Clear",
 		"indicateCoordinator": "Indicate coordinator",
 		"pingNodes": "Ping nodes",
 		"restartNodes": "Restart nodes",
