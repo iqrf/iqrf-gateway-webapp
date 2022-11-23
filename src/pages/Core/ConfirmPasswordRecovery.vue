@@ -39,21 +39,12 @@ limitations under the License.
 							required: $t("core.sign.in.messages.password"),
 						}'
 					>
-						<CInput
+						<PasswordInput
 							v-model='password'
-							:type='passwordVisible ? "text" : "password"'
-							:label='$t("forms.fields.password")'
+							:label='$t("forms.fields.password").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-						>
-							<template #append-content>
-								<span @click='passwordVisible = !passwordVisible'>
-									<FontAwesomeIcon
-										:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-									/>
-								</span>
-							</template>
-						</CInput>
+						/>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -69,13 +60,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {CButton, CCard, CCardBody, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {User, UserRole} from '@/services/AuthenticationService';
@@ -86,9 +77,11 @@ import UserService from '@/services/UserService';
 		CButton,
 		CCard,
 		CCardBody,
+		CElementCover,
 		CForm,
 		CInput,
-		FontAwesomeIcon,
+		CSpinner,
+		PasswordInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,

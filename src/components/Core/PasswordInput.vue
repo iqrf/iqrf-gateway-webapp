@@ -1,13 +1,18 @@
 <template>
 	<CInput
 		v-model='password'
+		v-bind='$attrs'
 		:type='visible ? "text" : "password"'
 		:label='label'
 		:is-valid='isValid'
 		:invalid-feedback='invalidFeedback'
 		v-on='$listeners'
 	>
+		<template #prepend-content>
+			<slot name='prepend-content' />
+		</template>
 		<template #append-content>
+			<slot name='append-content' />
 			<span @click='visible = !visible'>
 				<FontAwesomeIcon
 					:icon='(visible ? ["far", "eye-slash"] : ["far", "eye"])'

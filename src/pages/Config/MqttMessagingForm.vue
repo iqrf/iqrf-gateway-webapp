@@ -274,19 +274,10 @@ limitations under the License.
 								/>
 							</CCol>
 							<CCol md='6'>
-								<CInput
+								<PasswordInput
 									v-model='configuration.PrivateKeyPassword'
-									:type='passwordVisible ? "text" : "password"'
-									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
-								>
-									<template #append-content>
-										<span @click='passwordVisible = !passwordVisible'>
-											<FontAwesomeIcon
-												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-											/>
-										</span>
-									</template>
-								</CInput>
+									:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword").toString()'
+								/>
 							</CCol>
 							<CCol md='6'>
 								<CInput
@@ -318,11 +309,12 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
@@ -337,12 +329,14 @@ import {IMqttInstance} from '@/interfaces/Config/Messaging';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCol,
 		CForm,
 		CInput,
 		CInputCheckbox,
+		CRow,
 		CSelect,
 		CSwitch,
-		FontAwesomeIcon,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -389,11 +383,6 @@ export default class MqttMessagingForm extends Vue {
 		EnableServerCertAuth: false,
 		acceptAsyncMsg: false,
 	};
-
-	/**
-	 * @var {bool} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
 
 	/**
 	 * @property {string} instance MQTT messaging component instance name

@@ -30,7 +30,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.clientId'
-								:label='$t("forms.fields.clientId")'
+								:label='$t("forms.fields.clientId").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -44,7 +44,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.topicRequest'
-								:label='$t("forms.fields.requestTopic")'
+								:label='$t("forms.fields.requestTopic").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -58,7 +58,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.topicResponse'
-								:label='$t("forms.fields.responseTopic")'
+								:label='$t("forms.fields.responseTopic").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -72,7 +72,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.username'
-								:label='$t("forms.fields.username")'
+								:label='$t("forms.fields.username").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -84,21 +84,12 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<PasswordInput
 								v-model='config.password'
-								:type='passwordVisible ? "text" : "password"'
-								:label='$t("forms.fields.password")'
+								:label='$t("forms.fields.password").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
-							>
-								<template #append-content>
-									<span @click='passwordVisible = !passwordVisible'>
-										<FontAwesomeIcon
-											:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-										/>
-									</span>
-								</template>
-							</CInput>
+							/>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -124,10 +115,11 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
 import ServiceService from '@/services/ServiceService';
 
@@ -141,7 +133,7 @@ import {IHexioCloud} from '@/interfaces/Clouds';
 		CCardBody,
 		CForm,
 		CInput,
-		FontAwesomeIcon,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -170,11 +162,6 @@ export default class HexioCreator extends Vue {
 		username: '',
 		password: ''
 	};
-
-	/**
-	 * @var {bool} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
 
 	/**
 	 * Vue lifecycle hook created

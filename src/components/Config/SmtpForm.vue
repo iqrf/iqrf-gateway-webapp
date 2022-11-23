@@ -50,7 +50,7 @@ limitations under the License.
 							>
 								<CInput
 									v-model='configuration.host'
-									:label='$t("config.smtp.form.host")'
+									:label='$t("config.smtp.form.host").toString()'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
 								/>
@@ -64,7 +64,7 @@ limitations under the License.
 							>
 								<CInput
 									v-model.number='configuration.port'
-									:label='$t("config.smtp.form.port")'
+									:label='$t("config.smtp.form.port").toString()'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
 								/>
@@ -72,7 +72,7 @@ limitations under the License.
 							<CSelect
 								:value.sync='configuration.secure'
 								:options='protocols'
-								:label='$t("config.smtp.form.security")'
+								:label='$t("config.smtp.form.security").toString()'
 							/>
 						</CCol>
 						<CCol md='6'>
@@ -85,7 +85,7 @@ limitations under the License.
 							>
 								<CInput
 									v-model='configuration.username'
-									:label='$t("forms.fields.username")'
+									:label='$t("forms.fields.username").toString()'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
 								/>
@@ -97,21 +97,12 @@ limitations under the License.
 									required: $t("config.smtp.errors.passwordMissing"),
 								}'
 							>
-								<CInput
+								<PasswordInput
 									v-model='configuration.password'
-									:type='passwordVisible ? "text" : "password"'
-									:label='$t("forms.fields.password")'
+									:label='$t("forms.fields.password").toString()'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
-								>
-									<template #append-content>
-										<span @click='passwordVisible = !passwordVisible'>
-											<FontAwesomeIcon
-												:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-											/>
-										</span>
-									</template>
-								</CInput>
+								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -122,7 +113,7 @@ limitations under the License.
 							>
 								<CInput
 									v-model='configuration.from'
-									:label='$t("config.smtp.form.from")'
+									:label='$t("config.smtp.form.from").toString()'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='errors.join(", ")'
 								/>
@@ -155,13 +146,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {CButton, CCol, CElementCover, CForm, CInput, CRow, CSelect, CSpinner, CSwitch} from '@coreui/vue/src';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {SmtpSecurity} from '@/enums/Config/Smtp';
@@ -173,12 +165,16 @@ import {ISmtp} from '@/interfaces/Config/Smtp';
 
 @Component({
 	components: {
+		CButton,
 		CCol,
+		CElementCover,
 		CForm,
 		CInput,
 		CRow,
 		CSelect,
-		FontAwesomeIcon,
+		CSpinner,
+		CSwitch,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -229,11 +225,6 @@ export default class SmtpForm extends Vue {
 			value: SmtpSecurity.TLS,
 		},
 	];
-
-	/**
-	 * @var {bool} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
 
 	/**
 	 * Initializes validation rules

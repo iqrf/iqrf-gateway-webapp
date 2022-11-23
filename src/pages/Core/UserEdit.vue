@@ -80,10 +80,9 @@ limitations under the License.
 							:options='languages'
 						/>
 					</ValidationProvider>
-					<CInput
+					<PasswordInput
 						v-model='password'
-						:label='$t("core.user.newPassword")'
-						type='password'
+						:label='$t("core.user.newPassword").toString()'
 						autocomplete='new-password'
 					/>
 					<CButton
@@ -102,15 +101,18 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {email, required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
+import {IOption} from '@/interfaces/Coreui';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {email, required} from 'vee-validate/dist/rules';
+
 import {UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {
@@ -119,6 +121,7 @@ import {IOption} from '@/interfaces/Coreui';
 		CForm,
 		CInput,
 		CSelect,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

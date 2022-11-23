@@ -30,7 +30,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.rootTopic'
-								:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
+								:label='$t("cloud.intelimentsInteliGlue.form.rootTopic").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -49,7 +49,7 @@ limitations under the License.
 								type='number'
 								min='0'
 								max='65535'
-								:label='$t("cloud.intelimentsInteliGlue.form.assignedPort")'
+								:label='$t("cloud.intelimentsInteliGlue.form.assignedPort").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -63,7 +63,7 @@ limitations under the License.
 						>
 							<CInput
 								v-model='config.clientId'
-								:label='$t("forms.fields.clientId")'
+								:label='$t("forms.fields.clientId").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -75,21 +75,12 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<PasswordInput
 								v-model='config.password'
-								:type='passwordVisible ? "text" : "password"'
-								:label='$t("forms.fields.password")'
+								:label='$t("forms.fields.password").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
-							>
-								<template #append-content>
-									<span @click='passwordVisible = !passwordVisible'>
-										<FontAwesomeIcon
-											:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-										/>
-									</span>
-								</template>
-							</CInput>
+							/>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -115,9 +106,10 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
 import {between, integer, required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import CloudService from '@/services/CloudService';
 import ServiceService from '@/services/ServiceService';
@@ -132,7 +124,7 @@ import {IInteliGlueCloud} from '@/interfaces/Clouds';
 		CCardBody,
 		CForm,
 		CInput,
-		FontAwesomeIcon,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -159,11 +151,6 @@ export default class InteliGlueCreator extends Vue {
 		clientId: '',
 		password: ''
 	};
-
-	/**
-	 * @var {bool} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
 
 	/**
 	 * Vue lifecycle hook created

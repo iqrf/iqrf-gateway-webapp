@@ -41,7 +41,7 @@ limitations under the License.
 							<CInput
 								id='username'
 								v-model='username'
-								:label='$t("forms.fields.username")'
+								:label='$t("forms.fields.username").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -56,7 +56,7 @@ limitations under the License.
 							<CInput
 								id='email'
 								v-model='email'
-								:label='$t("forms.fields.email")'
+								:label='$t("forms.fields.email").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -68,13 +68,12 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<PasswordInput
 								id='password'
 								v-model='password'
-								:label='$t("forms.fields.password")'
+								:label='$t("forms.fields.password").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
-								type='password'
 							/>
 						</ValidationProvider>
 						<CButton color='primary' type='submit' :disabled='invalid'>
@@ -89,24 +88,30 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {
+	CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner
+} from '@coreui/vue/src';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import UserService from '@/services/UserService';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {sleep} from '@/helpers/sleep';
 import {UserCredentials, UserRole} from '@/services/AuthenticationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
+		CSpinner,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
