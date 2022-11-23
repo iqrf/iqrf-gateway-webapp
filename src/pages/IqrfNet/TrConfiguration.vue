@@ -303,26 +303,17 @@ limitations under the License.
 										maxlen: $t("iqrfnet.trConfiguration.security.errors.passwordLen"),
 									}'
 								>
-									<CInput
+									<PasswordInput
 										v-if='securityPassword'
 										v-model='config.accessPassword'
-										:type='passwordVisible ? "text" : "password"'
-										:label='$t("iqrfnet.trConfiguration.security.form.value")'
+										:label='$t("iqrfnet.trConfiguration.security.form.value").toString()'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='passwordVisible = !passwordVisible'>
-												<FontAwesomeIcon
-													:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+									/>
 								</ValidationProvider>
 								<CInputCheckbox
 									:checked.sync='securityKey'
-									:label='$t("iqrfnet.trConfiguration.security.form.userKey")'
+									:label='$t("iqrfnet.trConfiguration.security.form.userKey").toString()'
 								/>
 								<ValidationProvider
 									v-slot='{valid, touched, errors}'
@@ -332,22 +323,13 @@ limitations under the License.
 										maxlen: $t("iqrfnet.trConfiguration.security.errors.keyLen"),
 									}'
 								>
-									<CInput
+									<PasswordInput
 										v-if='securityKey'
 										v-model='config.securityUserKey'
-										:type='keyVisible ? "text" : "password"'
-										:label='$t("iqrfnet.trConfiguration.security.form.value")'
+										:label='$t("iqrfnet.trConfiguration.security.form.value").toString()'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='keyVisible = !keyVisible'>
-												<FontAwesomeIcon
-													:icon='(keyVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+									/>
 								</ValidationProvider>
 								<p>
 									<em v-if='securityPassword || securityKey'>
@@ -542,7 +524,7 @@ import {
 	CSelect,
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import ProductModal from '@/components/IqrfNet/TrConfiguration/ProductModal.vue';
 
 import {
@@ -579,7 +561,7 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 		CModal,
 		CRow,
 		CSelect,
-		FontAwesomeIcon,
+		PasswordInput,
 		ProductModal,
 		ValidationObserver,
 		ValidationProvider,
@@ -682,19 +664,9 @@ export default class TrConfiguration extends Vue {
 	private securityPassword = false;
 
 	/**
-	 * @var {boolean} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
-
-	/**
 	 * @var {boolean} securityKey Controls user key field availability
 	 */
 	private securityKey = false;
-
-	/**
-	 * @var {boolean} keyVisible Controls visibility of key field
-	 */
-	private keyVisible = false;
 
 	/**
 	 * @var {boolean} loaded Indicates whether configuration loading finished

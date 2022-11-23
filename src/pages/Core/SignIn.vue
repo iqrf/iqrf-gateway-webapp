@@ -33,8 +33,8 @@ limitations under the License.
 							<CInput
 								id='username'
 								v-model='username'
-								:label='$t("forms.fields.username")'
-								:placeholder='$t("forms.fields.username")'
+								:label='$t("forms.fields.username").toString()'
+								:placeholder='$t("forms.fields.username").toString()'
 								autocomplete='username'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
@@ -51,12 +51,11 @@ limitations under the License.
 								required: $t("core.sign.in.messages.password")
 							}'
 						>
-							<CInput
+							<PasswordInput
 								id='password'
 								v-model='password'
-								:label='$t("forms.fields.password")'
-								:placeholder='$t("forms.fields.password")'
-								type='password'
+								:label='$t("forms.fields.password").toString()'
+								:placeholder='$t("forms.fields.password").toString()'
 								autocomplete='password'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
@@ -64,7 +63,7 @@ limitations under the License.
 								<template #prepend-content>
 									<CIcon :content='cilLockLocked' />
 								</template>
-							</CInput>
+							</PasswordInput>
 						</ValidationProvider>
 						<div style='display: flex; justify-content: space-between;'>
 							<CButton color='primary' type='submit' :disabled='invalid'>
@@ -85,16 +84,22 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
+import {CButton, CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
-import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {UserCredentials} from '@/services/AuthenticationService';
-import {sleep} from '@/helpers/sleep';
+
+import {required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
+
+import {sleep} from '@/helpers/sleep';
+
+import {UserCredentials} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
+		CButton,
 		CContainer,
 		CCard,
 		CCardBody,
@@ -104,6 +109,7 @@ import TheWizard from '@/components/TheWizard.vue';
 		CInput,
 		CLink,
 		CRow,
+		PasswordInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,
