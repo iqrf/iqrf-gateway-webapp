@@ -26,6 +26,7 @@ use Grifart\Enum\Enum;
 /**
  * Interface type enum
  * @method static InterfaceTypes BOND()
+ * @method static InterfaceTypes BLUETOOTH()
  * @method static InterfaceTypes BRIDGE()
  * @method static InterfaceTypes DUMMY()
  * @method static InterfaceTypes ETHERNET()
@@ -47,6 +48,11 @@ final class InterfaceTypes extends Enum {
 	 * Bond master interface
 	 */
 	private const BOND = 'bond';
+
+	/**
+	 * Bluetooth interface
+	 */
+	private const BLUETOOTH = 'bt';
 
 	/**
 	 * Bridge master interface

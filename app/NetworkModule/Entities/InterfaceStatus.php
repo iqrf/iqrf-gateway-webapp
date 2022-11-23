@@ -114,7 +114,7 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @return InterfaceStatus Network interface
 	 */
 	public static function nmCliDeserialize(string $string): self {
-		$array = explode(':', $string);
+		$array = preg_split('~(?<!\\\)' . preg_quote(':', '~') . '~', $string);
 		$type = InterfaceTypes::fromScalar($array[1]);
 		$state = InterfaceStates::fromNmCli($array[2]);
 		return new self($array[0], $type, $state, $array[3]);
