@@ -30,7 +30,7 @@ limitations under the License.
 						<CInput
 							id='username'
 							v-model='user.username'
-							:label='$t("forms.fields.username")'
+							:label='$t("forms.fields.username").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
 						/>
@@ -42,13 +42,12 @@ limitations under the License.
 							required: $t("forms.errors.password"),
 						}'
 					>
-						<CInput
+						<PasswordInput
 							id='password'
 							v-model='user.password'
-							:label='$t("forms.fields.password")'
+							:label='$t("forms.fields.password").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-							type='password'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -61,7 +60,7 @@ limitations under the License.
 						<CInput
 							id='email'
 							v-model='user.email'
-							:label='$t("forms.fields.email")'
+							:label='$t("forms.fields.email").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
 						/>
@@ -75,10 +74,10 @@ limitations under the License.
 					>
 						<CSelect
 							:value.sync='user.role'
-							:label='$t("core.user.role")'
+							:label='$t("core.user.role").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.role")'
+							:placeholder='$t("core.user.errors.role").toString()'
 							:options='roles'
 						/>
 					</ValidationProvider>
@@ -91,10 +90,10 @@ limitations under the License.
 					>
 						<CSelect
 							:value.sync='user.language'
-							:label='$t("core.user.language")'
+							:label='$t("core.user.language").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.language")'
+							:placeholder='$t("core.user.errors.language").toString()'
 							:options='languages'
 						/>
 					</ValidationProvider>
@@ -114,19 +113,18 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {email, required} from 'vee-validate/dist/rules';
-import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import {AxiosError} from 'axios';
 import isFQDN from 'is-fqdn';
 import punycode from 'punycode/';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {email, required} from 'vee-validate/dist/rules';
 
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {IOption} from '@/interfaces/Coreui';
 import {IUser} from '@/interfaces/Core/User';
+import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
@@ -135,6 +133,7 @@ import {IUser} from '@/interfaces/Core/User';
 		CForm,
 		CInput,
 		CSelect,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -181,7 +180,7 @@ export default class UserAdd extends Vue {
 			const encoded = punycode.toASCII(addr);
 			if (!email.validate(encoded)) {
 				return false;
-			} 
+			}
 			const domain = encoded.split('@');
 			if (domain.length === 1) {
 				return false;

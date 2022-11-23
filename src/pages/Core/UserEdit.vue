@@ -80,10 +80,9 @@ limitations under the License.
 							:options='languages'
 						/>
 					</ValidationProvider>
-					<CInput
+					<PasswordInput
 						v-model='password'
-						:label='$t("core.user.newPassword")'
-						type='password'
+						:label='$t("core.user.newPassword").toString()'
 						autocomplete='new-password'
 					/>
 					<CButton
@@ -102,19 +101,18 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {email, required} from 'vee-validate/dist/rules';
-import {UserLanguage, UserRole} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
-
+import {AxiosError, AxiosResponse} from 'axios';
 import isFQDN from 'is-fqdn';
 import punycode from 'punycode/';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {email, required} from 'vee-validate/dist/rules';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {IOption} from '@/interfaces/Coreui';
 import {IUser} from '@/interfaces/Core/User';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
@@ -123,6 +121,7 @@ import {IUser} from '@/interfaces/Core/User';
 		CForm,
 		CInput,
 		CSelect,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -178,7 +177,7 @@ export default class UserEdit extends Vue {
 			const encoded = punycode.toASCII(addr);
 			if (!email.validate(encoded)) {
 				return false;
-			} 
+			}
 			const domain = encoded.split('@');
 			if (domain.length === 1) {
 				return false;

@@ -35,12 +35,11 @@ limitations under the License.
 							required: $t("core.user.errors.oldPassword"),
 						}'
 					>
-						<CInput
+						<PasswordInput
 							v-model='oldPassword'
-							:label='$t("core.profile.form.oldPassword")'
+							:label='$t("core.profile.form.oldPassword").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-							type='password'
 							autocomplete='current-password'
 						/>
 					</ValidationProvider>
@@ -53,12 +52,11 @@ limitations under the License.
 							required: $t("core.user.errors.newPassword"),
 						}'
 					>
-						<CInput
+						<PasswordInput
 							v-model='newPassword'
-							:label='$t("core.profile.form.newPassword")'
+							:label='$t("core.profile.form.newPassword").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-							type='password'
 							autocomplete='new-password'
 						/>
 					</ValidationProvider>
@@ -80,6 +78,8 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 // Module properties
 import {cilInfo} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
@@ -99,6 +99,7 @@ import {AxiosError} from 'axios';
 		CCardHeader,
 		CForm,
 		CIcon,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

@@ -45,21 +45,12 @@ limitations under the License.
 							required: $t("forms.errors.password"),
 						}'
 					>
-						<CInput
+						<PasswordInput
 							v-model='password'
-							:type='visibility'
-							:label='$t("forms.fields.password")'
+							:label='$t("forms.fields.password").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
-						>
-							<template #append-content>
-								<span @click='visibility = (visibility === "password" ? "text" : "password")'>
-									<FontAwesomeIcon
-										:icon='(visibility === "password" ? ["far", "eye"] : ["far", "eye-slash"])'
-									/>
-								</span>
-							</template>
-						</CInput>
+						/>
 					</ValidationProvider>
 					<CButton
 						color='primary'
@@ -82,8 +73,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -94,15 +84,19 @@ import {GatewayPasswordFeature} from '@/services/FeatureService';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MetaInfo} from 'vue-meta';
 
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
-		FontAwesomeIcon,
+		CSpinner,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -122,11 +116,6 @@ export default class GatewayUserPassword extends Vue {
 	 * @var {string} password Password
 	 */
 	private password = '';
-
-	/**
-	 * @var {string} visibility Form password field visibility type
-	 */
-	private visibility = 'password';
 
 	/**
 	 * @var {string} user Gateway user name
@@ -156,7 +145,7 @@ export default class GatewayUserPassword extends Vue {
 	}
 
 	/**
-	 * Updates gateway user name from features
+	 * Updates gateway username from features
 	 */
 	private updateUser(): void {
 		const feature: GatewayPasswordFeature|undefined = this.$store.getters['features/configuration']('gatewayPass');
@@ -201,7 +190,7 @@ export default class GatewayUserPassword extends Vue {
 	}
 
 	/**
-	 * Advances the install wizard
+	 * Advances the installation wizard
 	 */
 	private nextStep(): void {
 		if (this.$store.getters['features/isEnabled']('ssh')) {

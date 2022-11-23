@@ -40,8 +40,8 @@ limitations under the License.
 						>
 							<CInput
 								id='username'
-								v-model='username'
-								:label='$t("forms.fields.username")'
+								v-model='user.username'
+								:label='$t("forms.fields.username").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -55,8 +55,8 @@ limitations under the License.
 						>
 							<CInput
 								id='email'
-								v-model='email'
-								:label='$t("forms.fields.email")'
+								v-model='user.email'
+								:label='$t("forms.fields.email").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
 							/>
@@ -68,13 +68,12 @@ limitations under the License.
 								required: $t("forms.errors.password"),
 							}'
 						>
-							<CInput
+							<PasswordInput
 								id='password'
-								v-model='password'
-								:label='$t("forms.fields.password")'
+								v-model='user.password'
+								:label='$t("forms.fields.password").toString()'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='errors.join(", ")'
-								type='password'
 							/>
 						</ValidationProvider>
 						<CButton color='primary' type='submit' :disabled='invalid'>
@@ -89,28 +88,31 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import UserService from '@/services/UserService';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {email, required} from 'vee-validate/dist/rules';
-import {sleep} from '@/helpers/sleep';
-import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
-
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
+import {AxiosError, AxiosResponse} from 'axios';
 import isFQDN from 'is-fqdn';
 import punycode from 'punycode/';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {email, required} from 'vee-validate/dist/rules';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {sleep} from '@/helpers/sleep';
 import {IUser} from '@/interfaces/Core/User';
+import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
+		CSpinner,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -147,7 +149,7 @@ export default class InstallCreateUser extends Vue {
 			const encoded = punycode.toASCII(addr);
 			if (!email.validate(encoded)) {
 				return false;
-			} 
+			}
 			const domain = encoded.split('@');
 			if (domain.length === 1) {
 				return false;

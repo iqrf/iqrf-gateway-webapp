@@ -178,21 +178,12 @@ limitations under the License.
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 								>
-									<CInput
+									<PasswordInput
 										v-model='config.mqtt.pw'
-										:type='passwordVisible ? "text" : "password"'
-										:label='$t("forms.fields.password")'
+										:label='$t("forms.fields.password").toString()'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='errors.join(", ")'
-									>
-										<template #append-content>
-											<span @click='passwordVisible = !passwordVisible'>
-												<FontAwesomeIcon
-													:icon='(passwordVisible ? ["far", "eye-slash"] : ["far", "eye"])'
-												/>
-											</span>
-										</template>
-									</CInput>
+									/>
 								</ValidationProvider>
 							</CCol>
 						</CRow>
@@ -250,11 +241,12 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CCol, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CRow, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
 import {between, integer, required} from 'vee-validate/dist/rules';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
@@ -268,13 +260,15 @@ import {NavigationGuardNext, Route} from 'vue-router';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCol,
 		CElementCover,
 		CForm,
 		CIcon,
 		CInput,
 		CInputCheckbox,
+		CRow,
 		CSwitch,
-		FontAwesomeIcon,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -301,11 +295,6 @@ export default class TranslatorConfig extends Vue {
 	 * @constant {string} name Name of translator service
 	 */
 	private name = 'translator';
-
-	/**
-	 * @var {bool} passwordVisible Controls visibility of password field
-	 */
-	private passwordVisible = false;
 
 	/**
 	 * @var {ITranslator|null} config IQRF Gateway Translator service configuration
