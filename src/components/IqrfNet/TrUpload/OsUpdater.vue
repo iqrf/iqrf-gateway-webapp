@@ -78,7 +78,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -98,7 +98,6 @@ import {IOption} from '@/interfaces/Coreui';
 		CCardHeader,
 		CElementCover,
 		CForm,
-		CModal,
 		CSelect,
 		ValidationObserver,
 		ValidationProvider

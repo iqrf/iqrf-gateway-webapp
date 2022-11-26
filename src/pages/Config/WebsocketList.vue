@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
+	<div v-if='isLoggedIn'>
 		<div v-if='isAdmin'>
 			<WebsocketMessagingList />
 			<WebsocketServiceList />
@@ -49,6 +49,10 @@ import {UserRole} from '@/services/AuthenticationService';
  * Daemon WebSocket messaging page component
  */
 export default class WebsocketList extends Vue {
+
+	get isLoggedIn(): boolean {
+		return this.$store.getters['user/isLoggedIn'];
+	}
 
 	/**
 	 * Checks if user is an administrator

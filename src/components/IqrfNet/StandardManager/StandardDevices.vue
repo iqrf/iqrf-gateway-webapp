@@ -114,6 +114,7 @@ limitations under the License.
 					:column-filter='true'
 					:pagination='true'
 					:items-per-page='10'
+					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>

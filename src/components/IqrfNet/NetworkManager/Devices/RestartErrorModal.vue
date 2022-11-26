@@ -51,12 +51,19 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
+import {CBadge, CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
 /**
  * IQMESH Network Restart error result modal window component
  */
-@Component
+@Component({
+	components: {
+		CBadge,
+		CButton,
+		CModal,
+	},
+})
 export default class RestartErrorDialog extends ModalBase {
 	/**
 	 * @var {Array<number>} nodes Nodes that failed to restart

@@ -33,6 +33,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='instances'
 					:column-filter='true'
@@ -76,25 +77,29 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<WebsocketDeleteModal
-								:component-type='WebsocketTypes.MESSAGING'
-								:instance='item'
-								@deleted='getConfig'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<WebsocketDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import WebsocketDeleteModal from '@/components/Config/Messagings/WebsocketDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {WebsocketTypes} from '@/enums/Config/Messagings';
 
@@ -114,12 +119,12 @@ import {IWsMessaging} from '@/interfaces/Config/Messaging';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		WebsocketDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 		WebsocketTypes,
 	}),
 })
@@ -131,7 +136,7 @@ export default class WebsocketMessagingList extends Vue {
 	/**
 	 * @constant {string} componentName Websocket messaging component name
 	 */
-	private componentName = 'iqrf::WebsocketMessaging';
+	private readonly componentName = 'iqrf::WebsocketMessaging';
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -158,6 +163,11 @@ export default class WebsocketMessagingList extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<IWsMessaging>} instances Array of Websocket messaging instances
 	 */
 	private instances: Array<IWsMessaging> = [];
@@ -173,13 +183,16 @@ export default class WebsocketMessagingList extends Vue {
 	 * Retrieves instances of Websocket messaging component
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.listFailed');
 			});
 	}
@@ -190,24 +203,35 @@ export default class WebsocketMessagingList extends Vue {
 	 * @param {boolean} setting new setting
 	 */
 	private changeAccept(instance: IWsMessaging, setting: boolean): void {
-		if (instance.acceptAsyncMsg !== setting) {
-			const conf = {
-				...instance,
-			};
-			conf.acceptAsyncMsg = setting;
-			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, conf)
-				.then(() => {
-					this.getConfig().then(() => {
-						this.$toast.success(
-							this.$t('config.daemon.messagings.websocket.messaging.messages.updateSuccess', {messaging: instance.instance})
-								.toString()
-						);
-					});
-				})
-				.catch((error: AxiosError) => {
-					extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.updateFailed', {messaging: instance.instance});
-				});
+		if (instance.acceptAsyncMsg === setting) {
+			return;
 		}
+		this.loading = true;
+		const conf = {
+			...instance,
+		};
+		conf.acceptAsyncMsg = setting;
+		DaemonConfigurationService.updateInstance(this.componentName, instance.instance, conf)
+			.then(() => {
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.daemon.messagings.websocket.messaging.messages.updateSuccess', {messaging: instance.instance})
+							.toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.updateFailed', {messaging: instance.instance});
+			});
+	}
+
+	/**
+	 * Removes component instance
+	 * @param {string} instance Component instance
+	 */
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as WebsocketDeleteModal).showModal(WebsocketTypes.MESSAGING, instance);
 	}
 }
 </script>

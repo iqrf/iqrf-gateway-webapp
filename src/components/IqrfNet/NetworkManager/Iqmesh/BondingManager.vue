@@ -148,7 +148,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ClearAllModal from '@/components/IqrfNet/NetworkManager/Iqmesh/ClearAllModal.vue';
 import UnbondModal from '@/components/IqrfNet/NetworkManager/Iqmesh/UnbondModal.vue';
@@ -171,7 +171,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CForm,
 		CInput,
 		CInputCheckbox,
-		CModal,
 		CSelect,
 		ClearAllModal,
 		UnbondModal,

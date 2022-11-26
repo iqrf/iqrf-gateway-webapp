@@ -33,6 +33,7 @@ limitations under the License.
 			:column-filter='true'
 			:items-per-page='10'
 			:pagination='true'
+			:striped='true'
 			:sorter='{external: false, resetable: true}'
 		>
 			<template #online='{item}'>
