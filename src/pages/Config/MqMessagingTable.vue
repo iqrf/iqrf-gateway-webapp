@@ -33,6 +33,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:items='instances'
 					:fields='fields'
 					:column-filter='true'
@@ -72,16 +73,20 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<MessagingDeleteModal
-								:messaging-type='MessagingTypes.MQ'
-								:instance='item.instance'
-								@deleted='getInstances'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<MessagingDeleteModal ref='deleteModal' @deleted='getInstances' />
 	</div>
 </template>
 
@@ -97,11 +102,10 @@ import {
 	CDropdown,
 	CDropdownItem,
 	CIcon,
-	CModal
 } from '@coreui/vue/src';
 import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
 
@@ -122,12 +126,12 @@ import {IMqInstance} from '@/interfaces/Config/Messaging';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		MessagingDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 		MessagingTypes,
 	}),
 	metaInfo: {
@@ -174,6 +178,11 @@ export default class MqMessagingTable extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<IMqInstance>} instances Array of MQ messaging component instances
 	 */
 	private instances: Array<IMqInstance> = [];
@@ -182,8 +191,26 @@ export default class MqMessagingTable extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.$store.commit('spinner/SHOW');
 		this.getInstances();
+	}
+
+	/**
+	 * Retrieves instances of MQ messaging component
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private getInstances(): Promise<void> {
+		if (!this.loading) {
+			this.loading = true;
+		}
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.instances = response.data.instances;
+				this.loading = false;
+			})
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed');
+			});
 	}
 
 	/**
@@ -195,11 +222,11 @@ export default class MqMessagingTable extends Vue {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
 		}
+		this.loading = true;
 		const settings = {
 			...instance
 		};
 		settings.acceptAsyncMsg = acceptAsyncMsg;
-		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
 			.then(() => {
 				this.getInstances().then(() => {
@@ -209,20 +236,18 @@ export default class MqMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: settings.instance}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: settings.instance});
+			});
 	}
 
 	/**
-	 * Retrieves instances of MQ messaging component
-	 * @returns {Promise<void>} Empty promise for request chaining
+	 * Removes component instance
+	 * @param {string} instance Component instance
 	 */
-	private getInstances(): Promise<void> {
-		return DaemonConfigurationService.getComponent(this.componentName)
-			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
-				this.instances = response.data.instances;
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.listFailed'));
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as MessagingDeleteModal).showModal(MessagingTypes.MQ, instance);
 	}
 }
 </script>

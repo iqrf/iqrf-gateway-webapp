@@ -15,62 +15,47 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<span>
-		<CButton
-			color='danger'
-			size='sm'
-			@click='openModal'
-		>
-			<CIcon
-				:content='cilTrash'
-				size='sm'
-			/>
-			{{ $t('table.actions.delete') }}
-		</CButton>
-		<CModal
-			:show.sync='show'
-			color='danger'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.messagings.websocket.removeDialog.interfaceTitle') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.messagings.websocket.removeDialog.interfacePrompt', {instance: instance.instanceMessaging}) }}
-			<template #footer>
-				<CButton
-					class='mr-1'
-					color='secondary'
-					@click='closeModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='danger'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+	<CModal
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
+	>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.daemon.messagings.websocket.removeDialog.interfaceTitle') }}
+			</h5>
+		</template>
+		{{ $t('config.daemon.messagings.websocket.removeDialog.interfacePrompt', {instance: messagingInstance}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError} from 'axios';
-import {IWsInterface} from '@/interfaces/Config/Messaging';
 
 /**
  * Websocket interface delete dialog component
@@ -80,15 +65,27 @@ import {IWsInterface} from '@/interfaces/Config/Messaging';
 		CButton,
 		CModal,
 	},
-	data: () => ({
-		cilTrash,
-	}),
 })
 export default class WebsocketInterfaceDeleteModal extends ModalBase {
 	/**
-	 * @property {IWsInterface} instance WebSocket interface instance
+	 * @constant {string} messagingComponent Websocket messaging component
 	 */
-	@Prop({required: true}) instance!: IWsInterface;
+	private readonly messagingComponent = 'iqrf::WebsocketMessaging';
+
+	/**
+	 * @constant {string} serviceComponent Websocket service component
+	 */
+	private readonly serviceComponent = 'shape::WebsocketCppService';
+
+	/**
+	 * @var {string} messagingInstance Websocket messaging instance
+	 */
+	private messagingInstance = '';
+
+	/**
+	 * @var {string} serviceInstance Websocket service instance
+	 */
+	private serviceInstance = '';
 
 	/**
 	 * Removes an existing instance of Websocket interface component
@@ -97,15 +94,15 @@ export default class WebsocketInterfaceDeleteModal extends ModalBase {
 		this.closeModal();
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.instance.messaging.component, this.instance.messaging.instance),
-			DaemonConfigurationService.deleteInstance(this.instance.service.component, this.instance.service.instance),
+			DaemonConfigurationService.deleteInstance(this.messagingComponent, this.messagingInstance),
+			DaemonConfigurationService.deleteInstance(this.serviceComponent, this.serviceInstance),
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'config.daemon.messagings.websocket.removeDialog.interfaceDeleteSuccess',
-						{instance: this.instance.messaging.instance},
+						{instance: this.messagingInstance},
 					).toString()
 				);
 				this.$emit('deleted');
@@ -114,9 +111,29 @@ export default class WebsocketInterfaceDeleteModal extends ModalBase {
 				extendedErrorToast(
 					error,
 					'config.daemon.messagings.websocket.removeDialog.interfaceDeleteFailed',
-					{interface: this.instance.messaging.instance},
+					{interface: this.messagingInstance},
 				);
 			});
+	}
+
+	/**
+	 * Stores messaging and service instances, and shows modal window
+	 * @param {string} messaging Messaging instance
+	 * @param {string} service Service instance
+	 */
+	public showModal(messaging: string, service: string): void {
+		this.messagingInstance = messaging;
+		this.serviceInstance = service;
+		this.openModal();
+	}
+
+	/**
+	 * Resets messaging and service instances, and hides modal window
+	 */
+	private hideModal(): void {
+		this.messagingInstance = '';
+		this.serviceInstance = '';
+		this.closeModal();
 	}
 }
 

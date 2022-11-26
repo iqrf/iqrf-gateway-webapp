@@ -33,6 +33,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='instances'
 					:column-filter='true'
@@ -87,16 +88,20 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<WebsocketDeleteModal
-								:component-type='WebsocketTypes.SERVICE'
-								:instance='item'
-								@deleted='getConfig'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<WebsocketDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
@@ -105,7 +110,7 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import WebsocketDeleteModal from '@/components/Config/Messagings/WebsocketDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
 import {versionHigherEqual} from '@/helpers/versionChecker';
@@ -138,6 +143,7 @@ import {IWsService} from '@/interfaces/Config/Messaging';
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 		WebsocketTypes,
 	}),
 })
@@ -149,7 +155,7 @@ export default class WebsocketServiceList extends Vue {
 	/**
 	 * @constant {string} componentName Websocket service component name
 	 */
-	private componentName = 'shape::WebsocketCppService';
+	private readonly componentName = 'shape::WebsocketCppService';
 
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
@@ -174,6 +180,11 @@ export default class WebsocketServiceList extends Vue {
 			sorter: false,
 		},
 	];
+
+	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
 
 	/**
 	 * @var {Array<WsService>} instances Array of Websocket service instances
@@ -205,13 +216,16 @@ export default class WebsocketServiceList extends Vue {
 	 * Retrieves instances of Websocket service component
 	 */
 	private getConfig(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.getFailed');
 			});
 	}
@@ -246,7 +260,7 @@ export default class WebsocketServiceList extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private edit(service: IWsService, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		const settings = {
 			...service,
 			...newSettings,
@@ -261,8 +275,17 @@ export default class WebsocketServiceList extends Vue {
 				});
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.service.messages.updateFailed', {service: settings.instance});
 			});
+	}
+
+	/**
+	 * Removes component instance
+	 * @param {string} instance Component instance
+	 */
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as WebsocketDeleteModal).showModal(WebsocketTypes.SERVICE, instance);
 	}
 }
 </script>

@@ -31,6 +31,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:items='users'
 					:fields='fields'
 					:column-filter='true'
@@ -89,23 +90,27 @@ limitations under the License.
 						<td class='col-actions'>
 							<CButton
 								v-if='item.email !== null && item.state === "unverified"'
+								class='mr-1'
 								color='warning'
 								size='sm'
 								@click='resendVerification(item.id)'
 							>
 								<CIcon :content='cilReload' size='sm' />
 								{{ $t('core.user.resendVerification') }}
-							</CButton> <CButton
+							</CButton>
+							<CButton
+								class='mr-1'
 								color='info'
 								:to='"/user/edit/" + item.id'
 								size='sm'
 							>
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
+							</CButton>
+							<CButton
 								color='danger'
 								size='sm'
-								@click='confirmDelete(item)'
+								@click='removeUser(item)'
 							>
 								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -115,32 +120,7 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='deleteUser !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('core.user.modal.title') }}
-				</h5>
-			</template>
-			<span v-if='deleteUser !== null'>
-				{{ $t('core.user.modal.prompt', {user: deleteUser.username}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='performDelete'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='deleteUser = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+		<UserDeleteModal ref='deleteModal' @deleted='getUsers' />
 	</div>
 </template>
 
@@ -154,9 +134,9 @@ import {
 	CDataTable,
 	CDropdown,
 	CDropdownItem,
-	CIcon,
-	CModal
+	CIcon
 } from '@coreui/vue/src';
+import UserDeleteModal from '@/components/Core/UserDeleteModal.vue';
 
 import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -180,7 +160,7 @@ import punycode from 'punycode/';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
+		UserDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
@@ -199,14 +179,9 @@ import punycode from 'punycode/';
  */
 export default class UserList extends Vue {
 	/**
-	 * @var {IUser|null} deleteUser User object used in remove modal
-	 */
-	private deleteUser: IUser|null = null;
-
-	/**
 	 * @var {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = [
+	private readonly fields: Array<IField> = [
 		{
 			key: 'username',
 			label: this.$t('forms.fields.username'),
@@ -232,19 +207,24 @@ export default class UserList extends Vue {
 	];
 
 	/**
-	 * @var {Array<User>} users Array of user objects
-	 */
-	private users: Array<IUser> = [];
-
-	/**
 	 * @constant {Array<string>} roles Array of user roles
 	 */
-	private roles = [
+	private readonly roles = [
 		UserRole.ADMIN,
 		UserRole.NORMAL,
 		UserRole.BASICADMIN,
 		UserRole.BASIC,
 	];
+
+	/**
+	 * @var {Array<User>} users Array of user objects
+	 */
+	private users: Array<IUser> = [];
+
+	/**
+	 * @var {boolean} loading Indicates that a request is in progress
+	 */
+	private loading = false;
 
 	/**
 	 * Retrieves list of existing user
@@ -257,13 +237,16 @@ export default class UserList extends Vue {
 	 * Retrieves list of existing users
 	 */
 	private getUsers(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return UserService.list()
 			.then((response: Array<IUser>) => {
-				this.$store.commit('spinner/HIDE');
 				this.users = response;
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'core.user.messages.listFetchFailed');
 				if (error.response?.status === 403) {
 					this.$router.push('/');
@@ -313,12 +296,12 @@ export default class UserList extends Vue {
 		if (user.id === undefined) {
 			return;
 		}
+		this.loading = true;
 		const settings = {
 			...user,
 			...newSettings,
 		};
 		delete settings.id;
-		this.$store.commit('spinner/SHOW');
 		return UserService.edit(user.id, settings)
 			.then(() => {
 				this.getUsers().then(() => {
@@ -333,64 +316,14 @@ export default class UserList extends Vue {
 					}
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username});
+			});
 	}
 
-	/**
-	 * Assigns user object to remove modal variable
-	 */
-	private confirmDelete(user: IUser): void {
-		this.deleteUser = user;
-	}
-
-	/**
-	 * Removes an existing user
-	 */
-	private performDelete(): void {
-		if (this.deleteUser === null) {
-			return;
-		}
-		const user = this.deleteUser;
-		this.deleteUser = null;
-		if (user.id === undefined) {
-			return;
-		}
-		this.$store.commit('spinner/SHOW');
-		UserService.delete(user.id)
-			.then(() => this.handleDeleteSuccess(user))
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: user.username}));
-	}
-
-	/**
-	 * Handles user delete success REST API response
-	 * @param {IUser} user Removed user object
-	 */
-	private async handleDeleteSuccess(user: IUser): Promise<void> {
-		if (user.id === this.$store.getters['user/getId']) {
-			await this.$store.dispatch('user/signOut');
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(
-				this.$t(
-					'core.user.messages.deleteSuccess',
-					{user: user.username}
-				).toString()
-			);
-			if (this.users.length === 1) {
-				await this.$store.dispatch('features/fetch');
-				await this.$router.push('/install/');
-			} else {
-				await this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
-			}
-			return;
-		}
-		this.getUsers().then(() => {
-			this.$toast.success(
-				this.$t(
-					'core.user.messages.deleteSuccess',
-					{user: user.username}
-				).toString()
-			);
-		});
+	private removeUser(user: IUser): void {
+		(this.$refs.deleteModal as UserDeleteModal).showModal(user, this.users.length === 1);
 	}
 
 	/**

@@ -56,6 +56,7 @@ limitations under the License.
 			:column-filter='true'
 			:items-per-page='5'
 			:pagination='true'
+			:striped='true'
 			:sorter='{external: false, resetable: true}'
 		>
 			<template #responded='{item}'>

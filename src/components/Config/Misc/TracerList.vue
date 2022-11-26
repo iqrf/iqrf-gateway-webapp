@@ -30,6 +30,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='instances'
 					:column-filter='true'
@@ -52,24 +53,29 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<TracerDeleteModal
-								:instance='item'
-								@deleted='getConfig'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<TracerDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 import TracerDeleteModal from './TracerDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
@@ -84,12 +90,12 @@ import {IField} from '@/interfaces/Coreui';
 		CCardHeader,
 		CDataTable,
 		CIcon,
-		CModal,
 		TracerDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 	}),
 })
 
@@ -100,12 +106,12 @@ export default class TracerList extends Vue {
 	/**
 	 * @constant {string} componentName Logging service component name
 	 */
-	private componentName = 'shape::TraceFileService';
+	private readonly componentName = 'shape::TraceFileService';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> = [
+	private readonly fields: Array<IField> = [
 		{
 			key: 'instance',
 			label: this.$t('forms.fields.instanceName')
@@ -127,6 +133,11 @@ export default class TracerList extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<unknown>} instances Array of logging service component instances
 	 */
 	private instances: Array<unknown> = [];
@@ -142,14 +153,25 @@ export default class TracerList extends Vue {
 	 * Retrieves configuration of logging service component
 	 */
 	private getConfig(): Promise<void> {
+		this.loading = true;
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				this.instances = response.data.instances;
+				this.loading = false;
 				this.$emit('fetched', {name: 'tracer', success: true});
 			})
 			.catch(() => {
+				this.loading = false;
 				this.$emit('fetched', {name: 'tracer', success: false});
 			});
+	}
+
+	/**
+	 * Removes tracer instance
+	 * @param {string} instance Tracer instance
+	 */
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as TracerDeleteModal).showModal(instance);
 	}
 }
 </script>

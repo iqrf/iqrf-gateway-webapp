@@ -37,6 +37,7 @@ limitations under the License.
 					:pagination='true'
 					:items-per-page='20'
 					:column-filter='true'
+					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
@@ -140,7 +141,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon} from '@coreui/vue/src';
 
 import {cilPlus, cilTrash, cilInfo, cilClipboard} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -161,7 +162,6 @@ import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
 		CCollapse,
 		CDataTable,
 		CIcon,
-		CModal,
 	},
 	data: () => ({
 		cilClipboard,

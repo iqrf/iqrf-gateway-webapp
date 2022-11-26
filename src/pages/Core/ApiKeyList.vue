@@ -37,6 +37,7 @@ limitations under the License.
 					:pagination='true'
 					:items-per-page='20'
 					:column-filter='true'
+					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
