@@ -99,6 +99,7 @@ const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const IqrfRepositoryConfig = () => import(/* webpackChunkName: "config" */'@/pages/Config/IqrfRepositoryConfig.vue');
 const SmtpConfiguration = () => import(/* webpackChunkName: "config" */'@/pages/Config/SmtpConfiguration.vue');
 
+const NetworkBase = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkBase.vue');
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
 const ConnectionForm = () => import(/* webpackChunkName: "network" */ '@/pages/Network/ConnectionForm.vue');
 const EthernetConnections = () => import(/* webpackChunkName: "network" */ '@/pages/Network/EthernetConnections.vue');
@@ -823,11 +824,7 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: '/ip-network',
-				component: {
-					render(c) {
-						return c('router-view');
-					}
-				},
+				component: NetworkBase,
 				children: [
 					{
 						component: NetworkDisambiguation,
