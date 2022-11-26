@@ -30,6 +30,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='instances'
 					:column-filter='true'
@@ -99,24 +100,29 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<MonitorDeleteModal
-								:instance='item'
-								@deleted='getConfig'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.monitor.instance, item.webSocket.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<MonitorDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import MonitorDeleteModal from '@/components/Config/Misc/MonitorDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -136,12 +142,12 @@ import {IWsService} from '@/interfaces/Config/Messaging';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		MonitorDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 	}),
 })
 
@@ -152,20 +158,15 @@ export default class MonitorList extends Vue {
 	/**
 	 * @constant {Record<string, string>} componentNames Names of monitor and websocket components
 	 */
-	private componentNames: Record<string, string> = {
+	private readonly componentNames: Record<string, string> = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService'
 	};
 
 	/**
-	 * @var {Array<IMonitorComponent>} instances Array of monitoring component instances
-	 */
-	private instances: Array<IMonitorComponent> = [];
-
-	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private fields: Array<IField> =  [
+	private readonly fields: Array<IField> =  [
 		{
 			key: 'instance',
 			label: this.$t('forms.fields.instanceName'),
@@ -197,6 +198,16 @@ export default class MonitorList extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
+	 * @var {Array<IMonitorComponent>} instances Array of monitoring component instances
+	 */
+	private instances: Array<IMonitorComponent> = [];
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	mounted(): void {
@@ -208,6 +219,9 @@ export default class MonitorList extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getConfig(): Promise<void> {
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.monitor),
 			DaemonConfigurationService.getComponent(this.componentNames.webSocket),
@@ -236,6 +250,7 @@ export default class MonitorList extends Vue {
 					}
 				}
 				this.instances = instances;
+				this.loading = false;
 				this.$emit('fetched', {name: 'monitor', success: true});
 			})
 			.catch(() => {
@@ -273,7 +288,7 @@ export default class MonitorList extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private changeServiceSetting(service: IWsService, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		const settings = {
 			...service,
 			...newSettings,
@@ -288,9 +303,19 @@ export default class MonitorList extends Vue {
 				});
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.misc.monitor.messages.editFailed', {instance: service.instance});
 			});
 
+	}
+
+	/**
+	 * Removes monitor instance
+	 * @param {string} monitor Monitor instance
+	 * @param {string} service Websocket instance
+	 */
+	private removeInstance(monitor: string, websocket: string): void {
+		(this.$refs.deleteModal as MonitorDeleteModal).showModal(monitor, websocket);
 	}
 }
 </script>

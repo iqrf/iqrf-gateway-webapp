@@ -115,7 +115,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile} from '@coreui/vue/src';
 import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
@@ -142,7 +142,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CForm,
 		CIcon,
 		CInputFile,
-		CModal,
 		TaskDeleteModal,
 		TasksDeleteModal,
 		TaskImportModal,

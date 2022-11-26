@@ -59,7 +59,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import MappingDeleteModal from '@/components/Config/Interfaces/MappingDeleteModal.vue';
 import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vue';
 
@@ -79,7 +79,6 @@ import {IMapping} from '@/interfaces/Config/Mapping';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		MappingDeleteModal,
 		MappingFormModal,
 	},

@@ -33,6 +33,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:fields='fields'
 					:items='instances'
 					:column-filter='true'
@@ -108,29 +109,34 @@ limitations under the License.
 								class='mr-1'
 								color='info'
 								size='sm'
-								:to='"/config/daemon/messagings/websocket/edit/" + item.instanceMessaging'
+								:to='"/config/daemon/messagings/websocket/edit/" + item.messaging.instance'
 							>
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<WebsocketInterfaceDeleteModal
-								:instance='item'
-								@deleted='getConfig'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.messaging.instance, item.service.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<WebsocketInterfaceDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import WebsocketInterfaceDeleteModal from '@/components/Config/Messagings/WebsocketInterfaceDeleteModal.vue';
 
-import {cilPlus, cilPencil} from '@coreui/icons';
+import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -149,12 +155,12 @@ import {IField} from '@/interfaces/Coreui';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		WebsocketInterfaceDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 	}),
 })
 
@@ -165,7 +171,7 @@ export default class WebsocketInterfaceList extends Vue {
 	/**
 	 * @constant {ModalInstance} componentNames Websocket messaging and service component names
 	 */
-	private componentNames: ModalInstance = {
+	private readonly componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	};
@@ -173,7 +179,7 @@ export default class WebsocketInterfaceList extends Vue {
 	/**
 	 * @constant {Array<IField>} fields CoreUI datatable columns
 	 */
-	private fields: Array<IField> = [
+	private readonly fields: Array<IField> = [
 		{
 			key: 'instanceMessaging',
 			label: this.$t('forms.fields.instanceName'),
@@ -206,6 +212,11 @@ export default class WebsocketInterfaceList extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<IWsInterface>} instances Array of websocket interface instances
 	 */
 	private instances: Array<IWsInterface> = [];
@@ -214,7 +225,6 @@ export default class WebsocketInterfaceList extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
 
@@ -222,6 +232,9 @@ export default class WebsocketInterfaceList extends Vue {
 	 * Retrieves instances of Websocket daemon components
 	 */
 	private getConfig(): Promise<void> {
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.messaging),
 			DaemonConfigurationService.getComponent(this.componentNames.service),
@@ -249,9 +262,10 @@ export default class WebsocketInterfaceList extends Vue {
 					}
 				}
 				this.instances = instances;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
+				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.interface.messages.listFailed');
 			});
 	}
@@ -286,7 +300,7 @@ export default class WebsocketInterfaceList extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private editService(service: IWsService, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		const settings = {
 			...service,
 			...newSettings,
@@ -300,11 +314,14 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.messagings.websocket.interface.messages.updateFailed',
-				{interface: settings.instance}
-			));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.updateFailed',
+					{interface: settings.instance}
+				);
+			});
 	}
 
 	/**
@@ -316,7 +333,7 @@ export default class WebsocketInterfaceList extends Vue {
 		if (instance.acceptAsyncMsg === setting) {
 			return;
 		}
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		instance.acceptAsyncMsg = setting;
 		DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)
 			.then(() => {
@@ -327,11 +344,21 @@ export default class WebsocketInterfaceList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'config.daemon.messagings.websocket.interface.messages.updateFailed',
-				{interface: instance.instance}
-			));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(
+					error,
+					'config.daemon.messagings.websocket.interface.messages.updateFailed',
+					{interface: instance.instance}
+				);
+			});
+	}
+
+	/**
+	 * Removes websocket interface instance
+	 */
+	private removeInstance(messaging: string, service: string): void {
+		(this.$refs.deleteModal as WebsocketInterfaceDeleteModal).showModal(messaging, service);
 	}
 }
 </script>

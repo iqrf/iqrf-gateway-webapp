@@ -65,8 +65,7 @@ import {
 	CButtonGroup,
 	CDropdown,
 	CDropdownItem,
-	CIcon,
-	CModal
+	CIcon
 } from '@coreui/vue/src';
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
@@ -89,7 +88,6 @@ import {IOperator} from '@/interfaces/Network/Mobile';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		NetworkOperatorDeleteModal,
 		NetworkOperatorForm,
 	},

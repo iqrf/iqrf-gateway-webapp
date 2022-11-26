@@ -15,62 +15,48 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<span>
-		<CButton
-			color='danger'
-			size='sm'
-			@click='openModal'
-		>
-			<CIcon
-				:content='cilTrash'
-				size='sm'
-			/>
-			{{ $t('table.actions.delete') }}
-		</CButton>
-		<CModal
-			:show.sync='show'
-			color='danger'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.misc.monitor.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: instance.monitor.instance}) }}
-			<template #footer>
-				<CButton
-					class='mr-1'
-					color='secondary'
-					@click='closeModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='danger'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+	<CModal
+		v-show='show'
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
+	>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.daemon.misc.monitor.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: monitorInstance}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError} from 'axios';
-import {IMonitorComponent} from '@/interfaces/Config/Misc';
 
 /**
  * Monitor delete modal component
@@ -80,43 +66,74 @@ import {IMonitorComponent} from '@/interfaces/Config/Misc';
 		CButton,
 		CModal,
 	},
-	data: () => ({
-		cilTrash,
-	}),
 })
 export default class MonitorDeleteModal extends ModalBase {
 	/**
-	 * @property {IMonitorComponent} instance Monitor websocket instance
+	 * @constant {string} monitorComponent Monitor component
 	 */
-	@Prop({required: true}) instance!: IMonitorComponent;
+	private readonly monitorComponent = 'iqrf::MonitorService';
+
+	/**
+	 * @constant {string} websocketComponent Websocket component
+	 */
+	private readonly websocketComponent = 'shape::WebsocketCppService';
+
+	/**
+	 * @var {string} monitorInstance Monitor instance
+	 */
+	private monitorInstance = '';
+
+	/**
+	 * @var {string} websocketInstance Websocket instance
+	 */
+	private websocketInstance = '';
 
 	/**
 	 * Removes instance of the monitoring component
 	 */
 	private remove(): void {
-		this.closeModal();
-		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.instance.monitor.component, this.instance.monitor.instance),
-			DaemonConfigurationService.deleteInstance(this.instance.webSocket.component, this.instance.webSocket.instance),
+			DaemonConfigurationService.deleteInstance(this.monitorComponent, this.monitorInstance),
+			DaemonConfigurationService.deleteInstance(this.websocketComponent, this.websocketInstance),
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'config.daemon.misc.monitor.messages.deleteSuccess',
-						{instance: this.instance.monitor.instance}
+						{instance: this.monitorInstance}
 					).toString()
 				);
+				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(
 					error,
 					'config.daemon.misc.monitor.messages.deleteFailed',
-					{instance: this.instance.monitor.instance},
+					{instance: this.monitorInstance},
 				);
 			});
+	}
+
+	/**
+	 * Stores monitor and websocket instance, and shows modal window
+	 * @param {string} monitor Monitor instance
+	 * @param {string} websocket Websocket instance
+	 */
+	public showModal(monitor: string, websocket: string): void {
+		this.monitorInstance = monitor;
+		this.websocketInstance = websocket;
+		this.openModal();
+	}
+
+	/**
+	 * Resets websocket type and instance, and hides modal window
+	 */
+	private hideModal(): void {
+		this.monitorInstance = '';
+		this.websocketInstance = '';
+		this.closeModal();
 	}
 }
 </script>

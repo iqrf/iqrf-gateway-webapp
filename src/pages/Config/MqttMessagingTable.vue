@@ -33,6 +33,7 @@ limitations under the License.
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
+					:loading='loading'
 					:items='instances'
 					:fields='fields'
 					:column-filter='true'
@@ -89,16 +90,20 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<MessagingDeleteModal
-								:messaging-type='MessagingTypes.MQTT'
-								:instance='item.instance'
-								@deleted='getInstances'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<MessagingDeleteModal ref='deleteModal' @deleted='getInstances' />
 	</div>
 </template>
 
@@ -113,12 +118,11 @@ import {
 	CDataTable,
 	CDropdown,
 	CDropdownItem,
-	CIcon,
-	CModal
+	CIcon
 } from '@coreui/vue/src';
 import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
-import {cilPencil, cilPlus} from '@coreui/icons';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
 
@@ -139,12 +143,12 @@ import {IMqttInstance} from '@/interfaces/Config/Messaging';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		CModal,
 		MessagingDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
 		cilPlus,
+		cilTrash,
 		MessagingTypes,
 	}),
 	metaInfo: {
@@ -204,6 +208,11 @@ export default class MqttMessagingTable extends Vue {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that request is in progress
+	 */
+	private loading = false;
+
+	/**
 	 * @var {Array<IMqttInstance>} instances Array of MQTT messaging component instances
 	 */
 	private instances: Array<IMqttInstance> = [];
@@ -212,7 +221,6 @@ export default class MqttMessagingTable extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
 
@@ -246,7 +254,7 @@ export default class MqttMessagingTable extends Vue {
 	 * @param {Record<string, boolean>} newSettings Settings to update instance with
 	 */
 	private edit(instance: IMqttInstance, newSettings: Record<string, boolean>): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		const settings = {
 			...instance,
 			...newSettings,
@@ -260,7 +268,10 @@ export default class MqttMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.editFailed', {instance: settings.instance}));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.editFailed', {instance: settings.instance});
+			});
 	}
 
 	/**
@@ -268,12 +279,26 @@ export default class MqttMessagingTable extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getInstances(): Promise<void> {
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.listFailed');
+			});
+	}
+
+	/**
+	 * Removes component instance
+	 * @param {string} instance Component instance
+	 */
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as MessagingDeleteModal).showModal(MessagingTypes.MQTT, instance);
 	}
 }
 </script>

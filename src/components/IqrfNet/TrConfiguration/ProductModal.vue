@@ -10,6 +10,7 @@
 			</h5>
 		</template>
 		<CDataTable
+			:loading='loading'
 			:items='products'
 			:fields='fields'
 			:column-filter='true'
@@ -74,14 +75,9 @@ import ModalBase from '@/components/ModalBase.vue';
  */
 export default class ProductModal extends ModalBase {
 	/**
-	 * @var {Array<IProduct>} products Array of products from repository
-	 */
-	private products: Array<IProduct> = [];
-
-	/**
 	 * @constant {Array<IField>} fields Array of coreui data table fields
 	 */
-	private fields: Array<IField> = [
+	private readonly fields: Array<IField> = [
 		{
 			key: 'companyName',
 			label: this.$t('iqrfnet.enumeration.manufacturer').toString(),
@@ -103,16 +99,26 @@ export default class ProductModal extends ModalBase {
 	];
 
 	/**
+	 * @var {boolean} loading Indicates that a request is in progress
+	 */
+	private loading = false;
+
+	/**
+	 * @var {Array<IProduct>} products Array of products from repository
+	 */
+	private products: Array<IProduct> = [];
+
+	/**
 	 * Retrieves products from repository
 	 */
 	private getProducts(): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		ProductService.getAll()
 			.then((response: AxiosResponse) => {
 				this.products = response.data;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch(() => this.loading = false);
 	}
 
 	/**

@@ -32,6 +32,7 @@ limitations under the License.
 			:items='results'
 			:column-filter='true'
 			:items-per-page='10'
+			:striped='true'
 			:sorter='{external: false, resetable: true}'
 		>
 			<template #result='{item}'>
