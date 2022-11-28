@@ -39,6 +39,11 @@ class ConfigurationManager {
 	private string $path;
 
 	/**
+	 * @var array<string, mixed>|null Configuration
+	 */
+	private ?array $config;
+
+	/**
 	 * Returns the configuration schema
 	 * @return Structure Configuration schema
 	 */
@@ -62,9 +67,11 @@ class ConfigurationManager {
 	/**
 	 * Constructor
 	 * @param string $path Path to the configuration file
+	 * @param array<string, mixed>|null $config Configuration
 	 */
-	public function __construct(string $path) {
+	public function __construct(string $path, ?array $config = null) {
 		$this->path = $path;
+		$this->config = $config;
 	}
 
 	/**
@@ -88,11 +95,15 @@ class ConfigurationManager {
 	 * @return array<string, bool|int|string> Mailer configuration
 	 */
 	public function read(): array {
-		try {
-			$content = FileSystem::read($this->path);
-			$configuration = Neon::decode($content) ?? [];
-		} catch (IOException | NeonException $e) {
-			$configuration = [];
+		if ($this->config !== null) {
+			$configuration = $this->config;
+		} else {
+			try {
+				$content = FileSystem::read($this->path);
+				$configuration = Neon::decode($content) ?? [];
+			} catch (IOException | NeonException $e) {
+				$configuration = [];
+			}
 		}
 		return (new Processor())->process($this->getConfigSchema(), $configuration);
 	}

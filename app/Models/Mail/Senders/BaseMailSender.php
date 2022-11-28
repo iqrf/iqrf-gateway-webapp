@@ -32,7 +32,7 @@ abstract class BaseMailSender {
 	/**
 	 * @var MailerFactory Mailer factory
 	 */
-	private MailerFactory $mailerFactory;
+	protected MailerFactory $mailerFactory;
 
 	/**
 	 * @var TemplateFactory Template factory

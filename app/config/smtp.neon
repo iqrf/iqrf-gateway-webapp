@@ -20,4 +20,3 @@ username: root
 password: ''
 secure: null
 from: iqrf-gw@localhost.localdomain
-theme: generic

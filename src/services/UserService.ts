@@ -20,6 +20,8 @@ import UrlBuilder from '@/helpers/urlBuilder';
 import {User, UserInfo} from './AuthenticationService';
 import {IUser} from '@/interfaces/Core/User';
 
+import punycode from 'punycode/';
+
 /**
  * User service
  */
@@ -60,14 +62,17 @@ class UserService {
 	 * @param language Language
 	 * @param role Role
 	 */
-	add(username: string, email: string, password: string, language: string, role: string): Promise<AxiosResponse> {
+	add(user: IUser): Promise<AxiosResponse> {
 		const urlBuilder = new UrlBuilder();
+		if (user.email !== null) {
+			if (user.email.length > 0) {
+				user.email = punycode.toASCII(user.email);
+			} else {
+				user.email = null;
+			}
+		}
 		const body = {
-			username: username,
-			email: email !== '' ? email : null,
-			password: password,
-			language: language,
-			role: role,
+			...user,
 			baseUrl: urlBuilder.getBaseUrl(),
 		};
 		return axios.post('users/', body, {headers: authorizationHeader()});
@@ -86,8 +91,12 @@ class UserService {
 	 * @param id User ID
 	 * @param user User settings
 	 */
-	edit(id: number, user: any): Promise<AxiosResponse> {
+	edit(id: number, user: IUser): Promise<AxiosResponse> {
 		const urlBuilder = new UrlBuilder();
+		delete user.id;
+		if (user.email !== null) {
+			user.email = punycode.toASCII(user.email);
+		}
 		const body = {
 			baseUrl: urlBuilder.getBaseUrl(),
 			...user,

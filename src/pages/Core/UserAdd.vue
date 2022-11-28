@@ -29,7 +29,7 @@ limitations under the License.
 					>
 						<CInput
 							id='username'
-							v-model='username'
+							v-model='user.username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -44,7 +44,7 @@ limitations under the License.
 					>
 						<CInput
 							id='password'
-							v-model='password'
+							v-model='user.password'
 							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -60,7 +60,7 @@ limitations under the License.
 					>
 						<CInput
 							id='email'
-							v-model='email'
+							v-model='user.email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -74,7 +74,7 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							:value.sync='role'
+							:value.sync='user.role'
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -90,7 +90,7 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							:value.sync='language'
+							:value.sync='user.language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -119,11 +119,14 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
 import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import isFQDN from 'is-fqdn';
+import punycode from 'punycode/';
 
 import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
 import {IOption} from '@/interfaces/Coreui';
+import {IUser} from '@/interfaces/Core/User';
 
 @Component({
 	components: {
@@ -144,26 +147,16 @@ import {IOption} from '@/interfaces/Coreui';
  * User manager form to add a new user
  */
 export default class UserAdd extends Vue {
-
 	/**
-	 * @var {string} email User's email
+	 * @var {IUser} user User
 	 */
-	private email = '';
-
-	/**
-	 * @var {string} username User name
-	 */
-	private username = '';
-
-	/**
-	 * @var {string} password User password
-	 */
-	private password = '';
-
-	/**
-	 * @var {UserLanguage} language User's preferred language
-	 */
-	private language: UserLanguage = UserLanguage.ENGLISH;
+	private user: IUser = {
+		username: '',
+		password: '',
+		email: null,
+		language: UserLanguage.ENGLISH,
+		role: UserRole.BASIC,
+	};
 
 	/**
 	 * @constant {Array<IOption>} languages Language options
@@ -176,11 +169,6 @@ export default class UserAdd extends Vue {
 	];
 
 	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.BASIC;
-
-	/**
 	 * @constant {Array<IOption>} roles Array of available user roles
 	 */
 	private roles: Array<IOption> = [];
@@ -189,7 +177,17 @@ export default class UserAdd extends Vue {
 	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
-		extend('email', email);
+		extend('email', (addr: string) => {
+			const encoded = punycode.toASCII(addr);
+			if (!email.validate(encoded)) {
+				return false;
+			} 
+			const domain = encoded.split('@');
+			if (domain.length === 1) {
+				return false;
+			}
+			return isFQDN(domain[1]);
+		});
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
@@ -211,13 +209,13 @@ export default class UserAdd extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.add(this.username, this.email, this.password, this.language, this.role)
+		UserService.add(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'core.user.messages.addSuccess',
-						{username: this.username}
+						{username: this.user.username}
 					).toString()
 				);
 				this.$router.push('/user/');

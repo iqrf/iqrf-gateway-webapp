@@ -28,7 +28,7 @@ limitations under the License.
 						}'
 					>
 						<CInput
-							v-model='username'
+							v-model='user.username'
 							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -42,7 +42,7 @@ limitations under the License.
 						}'
 					>
 						<CInput
-							v-model='email'
+							v-model='user.email'
 							:label='$t("forms.fields.email")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -56,7 +56,7 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							:value.sync='role'
+							:value.sync='user.role'
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -72,7 +72,7 @@ limitations under the License.
 						}'
 					>
 						<CSelect
-							:value.sync='language'
+							:value.sync='user.language'
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -109,8 +109,12 @@ import {email, required} from 'vee-validate/dist/rules';
 import {UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
 
+import isFQDN from 'is-fqdn';
+import punycode from 'punycode/';
+
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/Coreui';
+import {IUser} from '@/interfaces/Core/User';
 
 @Component({
 	components: {
@@ -132,34 +136,29 @@ import {IOption} from '@/interfaces/Coreui';
  */
 export default class UserEdit extends Vue {
 	/**
-	 * @var {string} username User name
+	 * @property {number} userId User id
 	 */
-	private username = '';
+	@Prop({required: true}) userId!: number;
 
 	/**
-	 * @var {string|null} email User's email
+	 * @var {IUser} user User
 	 */
-	private email: string|null = null;
+	private user: IUser = {
+		username: '',
+		email: '',
+		language: UserLanguage.ENGLISH,
+		role: UserRole.BASIC,
+	};
 
 	/**
-	 * @var {UserRole} role User role
-	 */
-	private role: UserRole = UserRole.BASIC;
-
-	/**
-	 * @constant {Array<IOption>} roles Array of available user roles
+	 * @var {Array<IOption>} roles Array of available user roles
 	 */
 	private roles: Array<IOption> = [];
 
 	/**
-	 * @var {UserLanguage} language User's preferred language
-	 */
-	private language: UserLanguage = UserLanguage.ENGLISH;
-
-	/**
 	 * @constant {Array<IOption>} languages Language options
 	 */
-	private languages: Array<IOption> = [
+	private readonly languages: Array<IOption> = [
 		{
 			value: UserLanguage.ENGLISH,
 			label: this.$t('core.user.languages.en'),
@@ -172,15 +171,20 @@ export default class UserEdit extends Vue {
 	private password = '';
 
 	/**
-	 * @property {number} userId User id
-	 */
-	@Prop({required: true}) userId!: number;
-
-	/**
 	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
-		extend('email', email);
+		extend('email', (addr: string) => {
+			const encoded = punycode.toASCII(addr);
+			if (!email.validate(encoded)) {
+				return false;
+			} 
+			const domain = encoded.split('@');
+			if (domain.length === 1) {
+				return false;
+			}
+			return isFQDN(domain[1]);
+		});
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
@@ -211,10 +215,11 @@ export default class UserEdit extends Vue {
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
 			.then((response: AxiosResponse) => {
-				this.username = response.data.username;
-				this.language = response.data.language;
-				this.role = response.data.role;
-				this.email = response.data.email;
+				const user: IUser = response.data;
+				if (user.email !== null) {
+					user.email = punycode.toUnicode(user.email);
+				}
+				this.user = user;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -228,12 +233,7 @@ export default class UserEdit extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		const user = {
-			email: this.email !== '' ? this.email : null,
-			username: this.username,
-			language: this.language,
-			role: this.role
-		};
+		const user: IUser = JSON.parse(JSON.stringify(this.user));
 		if (this.password !== '') {
 			Object.assign(user, {password: this.password});
 		}
@@ -243,13 +243,13 @@ export default class UserEdit extends Vue {
 				this.$toast.success(
 					this.$t(
 						'core.user.messages.editSuccess',
-						{username: this.username}
+						{username: user.username}
 					).toString()
 				);
 				this.$router.push('/user/');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.user.messages.editFailed', {user: this.username});
+				extendedErrorToast(error, 'core.user.messages.editFailed', {user: user.username});
 			});
 	}
 

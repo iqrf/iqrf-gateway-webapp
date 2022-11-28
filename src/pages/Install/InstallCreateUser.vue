@@ -97,9 +97,13 @@ import UserService from '@/services/UserService';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, required} from 'vee-validate/dist/rules';
 import {sleep} from '@/helpers/sleep';
-import {UserCredentials, UserRole} from '@/services/AuthenticationService';
+import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
+
+import isFQDN from 'is-fqdn';
+import punycode from 'punycode/';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IUser} from '@/interfaces/Core/User';
 
 @Component({
 	components: {
@@ -119,31 +123,16 @@ import {AxiosError, AxiosResponse} from 'axios';
  * Create user
  */
 export default class InstallCreateUser extends Vue {
-
 	/**
-	 * Email
+	 * @var {IUser} user User
 	 */
-	private email = '';
-
-	/**
-	 * User name
-	 */
-	private username = '';
-
-	/**
-	 * User password
-	 */
-	private password = '';
-
-	/**
-	 * User language
-	 */
-	private language = 'en';
-
-	/**
-	 * User role
-	 */
-	private role = UserRole.ADMIN;
+	private user: IUser = {
+		username: '',
+		password: '',
+		email: '',
+		language: UserLanguage.ENGLISH,
+		role: UserRole.BASIC,
+	};
 
 	/**
 	 * @var {bool} running Indicates whether axios requests are in progress
@@ -154,7 +143,17 @@ export default class InstallCreateUser extends Vue {
 	 * On component creation event handler
 	 */
 	public created(): void {
-		extend('email', email);
+		extend('email', (addr: string) => {
+			const encoded = punycode.toASCII(addr);
+			if (!email.validate(encoded)) {
+				return false;
+			} 
+			const domain = encoded.split('@');
+			if (domain.length === 1) {
+				return false;
+			}
+			return isFQDN(domain[1]);
+		});
 		extend('required', required);
 	}
 
@@ -163,14 +162,14 @@ export default class InstallCreateUser extends Vue {
 	 */
 	private handleSubmit(): void {
 		this.running = true;
-		UserService.add(this.username, this.email, this.password, this.language, this.role)
+		UserService.add(this.user)
 			.then((response: AxiosResponse) => {
 				if (response.data.emailSent === true) {
 					this.$toast.success(
 						this.$t('core.user.messages.verifyNotice').toString()
 					);
 				}
-				const credentials = new UserCredentials(this.username, this.password);
+				const credentials = new UserCredentials(this.user.username, (this.user.password as string));
 				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {
 						await sleep(500);

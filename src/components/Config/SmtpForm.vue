@@ -24,7 +24,7 @@ limitations under the License.
 			<CSpinner color='primary' />
 		</CElementCover>
 		<ValidationObserver v-slot='{invalid}'>
-			<CForm @submit.prevent='saveConfig'>
+			<CForm>
 				<div class='form-group'>
 					<label>
 						{{ $t('config.smtp.form.enabled') }}
@@ -43,9 +43,10 @@ limitations under the License.
 						<CCol md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required'
+								rules='required|host'
 								:custom-messages='{
 									required: $t("config.smtp.errors.hostMissing"),
+									host: $t("config.smtp.errors.hostInvalid"),
 								}'
 							>
 								<CInput
@@ -115,9 +116,10 @@ limitations under the License.
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
-								rules='required'
+								rules='required|email'
 								:custom-messages='{
-									required: $t("config.smtp.errors.fromMissing"),
+									required: $t("config.smtp.errors.senderMissing"),
+									email: $t("config.smtp.errors.senderInvalid"),
 								}'
 							>
 								<CInput
@@ -131,18 +133,23 @@ limitations under the License.
 					</CRow>
 				</fieldset>
 				<CButton
+					class='mr-1'
 					color='primary'
-					type='submit'
 					:disabled='invalid'
+					@click='saveConfig'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton
-					v-if='hasEmail'
+				</CButton>
+				<CButton
+					v-c-tooltip='!hasEmail ? $t("config.smtp.messages.testDisabled") : ""'
+					class='mr-1'
 					color='info'
+					:disabled='!configuration.enabled || !hasEmail'
 					@click='test'
 				>
 					{{ $t('config.smtp.test') }}
-				</CButton> <CButton
+				</CButton>
+				<CButton
 					v-if='$route.path.includes("/install/smtp")'
 					color='secondary'
 					@click='$emit("done")'
@@ -155,19 +162,22 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CCol, CForm, CInput, CRow, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-import {Component, Vue} from 'vue-property-decorator';
-import {mapGetters} from 'vuex';
 
+import {email, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {mapGetters} from 'vuex';
 import {SmtpSecurity} from '@/enums/Config/Smtp';
+import ip from 'ip-regex';
+import isFQDN from 'is-fqdn';
+import punycode from 'punycode/';
 
 import MailerService from '@/services/MailerService';
 
+import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '@/interfaces/Coreui';
 import {ISmtp} from '@/interfaces/Config/Smtp';
 
@@ -240,16 +250,46 @@ export default class SmtpForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+		extend('host', (addr: string) => {
+			if (ip.v4({exact: true}).test(addr)) {
+				return true;
+			}
+			if (ip.v6({exact: true}).test(addr)) {
+				return true;
+			}
+			const encoded = punycode.toASCII(addr);
+			return encoded === 'localhost' || isFQDN(encoded);
+		});
+		extend('email', (addr: string) => {
+			const encoded = punycode.toASCII(addr);
+			if (!email.validate(encoded)) {
+				return false;
+			} 
+			const domain = encoded.split('@');
+			if (domain.length === 1) {
+				return false;
+			}
+			return isFQDN(domain[1]);
+		});
 	}
 
 	/**
 	 * Retrieves current SMTP configuration
 	 */
 	mounted(): void {
+		this.getConfig();
+	}
+
+	/**
+	 * Retrieves smtp configuration
+	 */
+	private getConfig(): void {
 		this.showBlockingElement();
 		MailerService.getConfig()
 			.then((response: AxiosResponse) => {
-				this.configuration = response.data;
+				const config: ISmtp = response.data;
+				config.from = punycode.toUnicode(config.from);
+				this.configuration = config;
 				this.hideBlockingElement();
 			})
 			.catch((error: AxiosError) => {
@@ -259,11 +299,24 @@ export default class SmtpForm extends Vue {
 	}
 
 	/**
+	 * Removes or converts invalid values
+	 */
+	private prepareConfigToSend(): ISmtp {
+		const config: ISmtp = JSON.parse(JSON.stringify(this.configuration));
+		if (config.clientHost === null) {
+			delete config.clientHost;
+		}
+		config.from = punycode.toASCII(config.from);
+		return config;
+	}
+
+	/**
 	 * Saves SMTP configuration
 	 */
 	private saveConfig(): void {
 		this.showBlockingElement();
-		MailerService.saveConfig(this.configuration)
+		const config = this.prepareConfigToSend();
+		MailerService.saveConfig(config)
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(
@@ -282,7 +335,8 @@ export default class SmtpForm extends Vue {
 	 */
 	private test(): void {
 		this.showBlockingElement();
-		MailerService.testConfig()
+		const config = this.prepareConfigToSend();
+		MailerService.testConfig(config)
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(

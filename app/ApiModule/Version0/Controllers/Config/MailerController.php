@@ -128,9 +128,13 @@ class MailerController extends BaseConfigController {
 		$this->validator->validateRequest('mailer', $request);
 		try {
 			$this->manager->write($request->getJsonBody());
+			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+			$this->configurationTestSender->send($user);
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (SendException $e) {
+			throw new ServerErrorException('Configuration saved successfully, but unable to send test email.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -139,6 +143,12 @@ class MailerController extends BaseConfigController {
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Sends a test e-mail to verify configuration of the mailer
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/MailerConfiguration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -153,9 +163,10 @@ class MailerController extends BaseConfigController {
 	 */
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['mailer']);
+		$this->validator->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
-			$this->configurationTestSender->send($user);
+			$this->configurationTestSender->send($user, $request->getJsonBody());
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
