@@ -1091,12 +1091,15 @@
 			},
 			"errors": {
 				"hostMissing": "Please enter SMTP host.",
+				"hostInvalid": "Invalid SMTP host address.",
 				"portMissing": "Please enter SMTP port.",
 				"usernameMissing": "Please enter SMTP username.",
 				"passwordMissing": "Please enter SMTP password.",
-				"fromMissing": "Please enter sender."
+				"senderMissing": "Please enter sender email.",
+				"senderInvalid": "Invalid e-mail address."
 			},
 			"messages": {
+				"testDisabled": "Your account does not have an e-mail address set up.",
 				"fetchFailed": "Failed to retrieve SMTP configuration: {error}",
 				"saveFailed": "Failed to save SMTP configuration: {error}",
 				"saveSuccess": "SMTP configuration has been successfully saved.",
@@ -1124,7 +1127,7 @@
 			"404": {
 				"title": "Page not found",
 				"header": "Error 404",
-				"message": "'The page you requested could not be found. It is possible that the address is incorrect, or that the page no longer exists. Please use a search engine to find what you are looking for."
+				"message": "The page you requested could not be found. It is possible that the address is incorrect, or that the page no longer exists. Please use a search engine to find what you are looking for."
 			}
 		},
 		"grafana": {

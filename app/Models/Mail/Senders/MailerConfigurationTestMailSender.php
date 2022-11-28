@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\Models\Mail\Senders;
 
 use App\Models\Database\Entities\User;
+use App\Models\Mail\ConfigurationManager;
+use App\Models\Mail\MailerFactory;
 
 /**
  * Mailer configuration test mail sender
@@ -30,8 +32,13 @@ class MailerConfigurationTestMailSender extends BaseMailSender {
 	/**
 	 * Sends test e-mail to check mailer configuration
 	 * @param User $user User
+	 * @param array<string, mixed> $config Configuration
 	 */
-	public function send(User $user): void {
+	public function send(User $user, ?array $config = null): void {
+		if ($config !== null) {
+			$this->configuration = new ConfigurationManager('', $config);
+			$this->mailerFactory = new MailerFactory($this->configuration);
+		}
 		$mail = $this->createMessage('mailerConfigurationTest.latte', [], $user);
 		$this->createMailer()->send($mail);
 	}
