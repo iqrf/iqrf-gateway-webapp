@@ -317,7 +317,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private handleUpdateCacheResponse(response): void {
 		if (response.status === 0) {
-			const updated: boolean = response.status.updated;
+			const updated: boolean = response.rsp.updated;
 			this.$toast.success(
 				this.$t(
 					'config.daemon.misc.iqrfRepository.messages.cacheUpdate' + (updated ? 'Success' : 'NotNeeded')
