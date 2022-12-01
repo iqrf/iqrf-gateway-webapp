@@ -114,7 +114,6 @@ limitations under the License.
 					:column-filter='true'
 					:pagination='true'
 					:items-per-page='10'
-					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
@@ -533,6 +532,7 @@ export default class StandardDevices extends Vue {
 			this.getBinouts();
 		} else {
 			this.$store.dispatch('spinner/hide');
+			this.devices = [];
 		}
 	}
 
