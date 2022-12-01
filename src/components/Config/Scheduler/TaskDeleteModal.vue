@@ -15,52 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<span>
-		<CButton
-			color='danger'
-			size='sm'
-			@click='openModal'
-		>
-			<CIcon :content='cilTrash' size='sm' />
-			{{ $t('table.actions.delete') }}
-		</CButton>
-		<CModal
-			:show.sync='show'
-			color='danger'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('config.daemon.scheduler.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: syncTaskId}) }}
-			<template #footer>
-				<CButton
-					color='secondary'
-					@click='closeModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='danger'
-					@click='removeTask'
-				>
-					{{ $t('table.actions.deleteAll') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+	<CModal
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
+	>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.daemon.scheduler.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: taskId}) }}
+		<template #footer>
+			<CButton
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='removeTask'
+			>
+				{{ $t('table.actions.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, PropSync} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -74,15 +63,12 @@ import {MutationPayload} from 'vuex';
 		CButton,
 		CModal,
 	},
-	data: () => ({
-		cilTrash,
-	}),
 })
 export default class TaskDeleteModal extends ModalBase {
 	/**
-	 * @property {string} syncTaskId Task ID
+	 * @var {string} taskId Scheduler task ID
 	 */
-	@PropSync('taskId') syncTaskId!: string;
+	private taskId = '';
 
 	/**
 	 * @var {string} msgId Daemon API message ID
@@ -128,11 +114,11 @@ export default class TaskDeleteModal extends ModalBase {
 		this.closeModal();
 		if (this.$store.getters['daemonClient/isConnected']) {
 			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeTask(this.syncTaskId, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail', () => this.msgId = ''))
+			SchedulerService.removeTask(this.taskId, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail', () => this.msgId = ''))
 				.then((msgId: string) => this.msgId = msgId);
 		} else {
 			this.$store.commit('spinner/SHOW');
-			SchedulerService.removeTaskREST(this.syncTaskId)
+			SchedulerService.removeTaskREST(this.taskId)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
@@ -140,7 +126,7 @@ export default class TaskDeleteModal extends ModalBase {
 					);
 					this.$emit('deleted');
 				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: this.syncTaskId}));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: this.taskId}));
 		}
 	}
 
@@ -159,6 +145,23 @@ export default class TaskDeleteModal extends ModalBase {
 				this.$t('config.daemon.scheduler.messages.deleteFail').toString()
 			);
 		}
+	}
+
+	/**
+	 * Stores task ID, and shows modal window
+	 * @param {string} taskId Scheduler task ID
+	 */
+	public showModal(taskId: string): void {
+		this.taskId = taskId;
+		this.openModal();
+	}
+
+	/**
+	 * Resets task ID, and hides modal window
+	 */
+	private hideModal(): void {
+		this.taskId = '';
+		this.closeModal();
 	}
 }
 </script>

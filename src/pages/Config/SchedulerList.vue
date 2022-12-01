@@ -105,15 +105,20 @@ limitations under the License.
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
-							<TaskDeleteModal
-								:task-id='item.taskId'
-								@deleted='getTasks'
-							/>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeRecord(item.taskId)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
 						</td>
 					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<TaskDeleteModal ref='deleteModal' @deleted='getTasks' />
 	</div>
 </template>
 
@@ -124,7 +129,7 @@ import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
 
-import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilXCircle} from '@coreui/icons';
+import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilTrash, cilXCircle} from '@coreui/icons';
 import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
@@ -157,6 +162,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		cilCheckCircle,
 		cilPencil,
 		cilPlus,
+		cilTrash,
 		cilXCircle,
 	}),
 	metaInfo: {
@@ -328,7 +334,6 @@ export default class SchedulerList extends Vue {
 				this.listRest();
 			}
 		}, 1000);
-
 	}
 
 	private list(): void {
@@ -434,6 +439,14 @@ export default class SchedulerList extends Vue {
 				this.$t('config.daemon.scheduler.messages.stopFailed').toString()
 			);
 		}
+	}
+
+	/**
+	 * Removes scheduler record
+	 * @param {string} taskId Scheduler task ID
+	 */
+	private removeRecord(taskId: string): void {
+		(this.$refs.deleteModal as TaskDeleteModal).showModal(taskId);
 	}
 
 	/**
