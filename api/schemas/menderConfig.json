@@ -5,74 +5,108 @@
 	"title": "Mender configuration",
 	"examples": [
 		{
-			"InventoryPollIntervalSeconds": 28800,
-			"RetryPollIntervalSeconds": 300,
-			"ServerURL": "localhost",
-			"ServerCertificate": "/etc/site-conf/servert.crt",
-			"TenantToken": "dummy",
-			"UpdatePollIntervalSeconds": 1800
+			"client": {
+				"ServerURL": "localhost",
+				"ServerCertificate": "/etc/site-conf/servert.crt",
+				"TenantToken": "dummy",
+				"InventoryPollIntervalSeconds": 28800,
+				"RetryPollIntervalSeconds": 300,
+				"UpdatePollIntervalSeconds": 1800
+			},
+			"connect": {
+				"FileTransfer": true,
+				"PortForward": true
+			}
 		}
 	],
 	"required": [
-		"InventoryPollIntervalSeconds",
-		"RetryPollIntervalSeconds",
-		"ServerURL",
-		"TenantToken",
-		"UpdatePollIntervalSeconds",
-		"ClientProtocol"
+		"client",
+		"connect"
 	],
+	"additionalProperties": false,
 	"properties": {
-		"InventoryPollIntervalSeconds": {
-			"$id": "#/properties/InventoryPollIntervalSeconds",
-			"type": "integer",
-			"title": "Inventory update interval",
-			"description": "Number of seconds to wait between each inventory update.",
-			"example": 28800
-		},
-		"RetryPollIntervalSeconds": {
-			"$id": "#/properties/RetryPollIntervalSeconds",
-			"type": "integer",
-			"title": "Connection retry interval",
-			"description": "Number of seconds to wait between each attempt to communicate with the server.",
-			"example": 300
-		},
-		"ServerURL": {
-			"$id": "#/properties/ServerURL",
-			"type": "string",
-			"title": "Server URL",
-			"description": "The server URL which is used as the basis for API requests.",
-			"example": "localhost"
-		},
-		"ServerCertificate": {
-			"$id": "#/properties/ServerCertificate",
-			"title": "Path to server certificate",
-			"type": "string",
-			"example": "/etc/site-conf/servert.crt"
-		},
-		"TenantToken": {
-			"$id": "#/properties/TenantToken",
-			"type": "string",
-			"title": "Tenant token",
-			"description": "A token which identifies which tenant a device belongs to.",
-			"example": "dummy"
-		},
-		"UpdatePollIntervalSeconds": {
-			"$id": "#/properties/UpdatePollIntervalSeconds",
-			"type": "integer",
-			"title": "Update check interval",
-			"description": "Number of seconds to wait between each check for a new update.",
-			"example": 1800
-		},
-		"ClientProtocol": {
-			"$id": "#/properties/ClientProtocol",
-			"title": "Client protocol",
-			"type": "string",
-			"enum": [
-				"https",
-				"wss"
+		"client": {
+			"$id": "#/properties/client",
+			"type": "object",
+			"required": [
+				"ServerUrl",
+				"ServerCertificate",
+				"TenantToken",
+				"InventoryPollIntervalSeconds",
+				"RetryPollIntervalSeconds",
+				"UpdatePollIntervalSeconds"
 			],
-			"example": "https"
+			"additionalProperties": false,
+			"properties": {
+				"ServerUrl": {
+					"$id": "#/properties/client/properties/ServerUrl",
+					"title": "Server URL",
+					"description": "The server URL which is used as the basis for API requests.",
+					"type": "string",
+					"example": "localhost"
+				},
+				"ServerCertificate": {
+					"$id": "#/properties/client/properties/ServerCertificate",
+					"title": "Certificate path",
+					"description": "Path to certificate in filesystem.",
+					"type": "string",
+					"example": "/etc/site-conf/servert.crt"
+				},
+				"TenantToken": {
+					"$id": "#/properties/client/properties/TenantToken",
+					"title": "Tenant token",
+					"description": "A token which identifies which tenant a device belongs to.",
+					"type": "string",
+					"example": "dummy"
+				},
+				"InventoryPollIntervalSeconds": {
+					"$id": "#/properties/client/properties/InventoryPollIntervalSeconds",
+					"title": "Inventory update interval",
+					"description": "Number of seconds to wait between each inventory update.",
+					"type": "integer",
+					"minimum": 0,
+					"example": 28800
+				},
+				"RetryPollIntervalSeconds": {
+					"$id": "#/properties/client/properties/RetryPollIntervalSeconds",
+					"title": "Connection retry interval",
+					"description": "Number of seconds to wait between each attempt to communicate with the server.",
+					"type": "integer",
+					"minimum": 0,
+					"example": 300
+				},
+				"UpdatePollIntervalSeconds": {
+					"$id": "#/properties/client/properties/UpdatePollIntervalSeconds",
+					"title": "Update check interval",
+					"description": "Number of seconds to wait between each check for a new update.",
+					"type": "integer",
+					"minimum": 0,
+					"example": 1800
+				}
+			}
+		},
+		"connect": {
+			"$id": "#/properties/connect",
+			"type": "object",
+			"required": [
+				"FileTransfer",
+				"PortForward"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"FileTransfer": {
+					"$id": "#/properties/connect/properties/FileTransfer",
+					"title": "File transfer",
+					"description": "File download and upload feature.",
+					"type": "boolean"
+				},
+				"PortForward": {
+					"$id": "#/properties/connect/properties/PortForward",
+					"title": "Port forwarding",
+					"description": "Port forwarding feature.",
+					"type": "boolean"
+				}
+			}
 		}
-	},
-	"additionalProperties": false
+	}
 }

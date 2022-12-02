@@ -60,6 +60,30 @@ class MenderManager {
 	private const UPLOAD_PATH = '/tmp/';
 
 	/**
+	 * @var array<string, mixed> Default client configuration
+	 */
+	private const DEFAULT_CLIENT_CONFIG = [
+		'ServerUrl' => 'https://hosted.mender.io',
+		'ServerCertificate' => '',
+		'TenantToken' => 'dummy',
+		'InventoryPollIntervalSeconds' => 28800,
+		'RetryPollIntervalSeconds' => 300,
+		'UpdatePollIntervalSeconds' => 1800,
+	];
+
+	/**
+	 * @var array<string, array<string, bool>> Default connect configuration
+	 */
+	private const DEFAULT_CONNECT_CONFIG = [
+		'FileTransfer' => [
+			'disabled' => false,
+		],
+		'PortForward' => [
+			'disabled' => false,
+		],
+	];
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private CommandManager $commandManager;
@@ -78,6 +102,7 @@ class MenderManager {
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
 	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
@@ -87,19 +112,31 @@ class MenderManager {
 
 	/**
 	 * Returns mender configuration
-	 * @return array<string, int|string> current mender configuration
+	 * @return array<string, array<string, mixed>> current mender configuration
 	 * @throws JsonException
 	 */
 	public function getConfig(): array {
-		$clientConfig = $this->getClientConfig();
-		$connectConfig = $this->getConnectConfig();
-		$clientConfig['ClientProtocol'] = $connectConfig['ClientProtocol'] ?? 'https';
-		return $clientConfig;
+		$client = array_replace_recursive(self::DEFAULT_CLIENT_CONFIG, $this->getClientConfig());
+		$connect = array_replace_recursive(self::DEFAULT_CONNECT_CONFIG, $this->getConnectConfig());
+		return [
+			'client' => [
+				'ServerUrl' => $client['ServerUrl'],
+				'ServerCertificate' => $client['ServerCertificate'],
+				'TenantToken' => $client['TenantToken'],
+				'InventoryPollIntervalSeconds' => $client['InventoryPollIntervalSeconds'],
+				'RetryPollIntervalSeconds' => $client['RetryPollIntervalSeconds'],
+				'UpdatePollIntervalSeconds' => $client['UpdatePollIntervalSeconds'],
+			],
+			'connect' => [
+				'FileTransfer' => !$connect['FileTransfer']['disabled'],
+				'PortForward' => !$connect['PortForward']['disabled'],
+			],
+		];
 	}
 
 	/**
 	 * Reads mender-client config file
-	 * @return array<string, int|string> current mender-client configuration
+	 * @return array<string, mixed> current mender-client configuration
 	 * @throws JsonException
 	 */
 	public function getClientConfig(): array {
@@ -108,7 +145,7 @@ class MenderManager {
 
 	/**
 	 * Reads mender-connect config file
-	 * @return array<string, string|array<string, int|bool>> current mender-connect configuration
+	 * @return array<string, mixed> current mender-connect configuration
 	 * @throws JsonException
 	 */
 	public function getConnectConfig(): array {
@@ -117,17 +154,18 @@ class MenderManager {
 
 	/**
 	 * Saves updated mender-client configuration file
-	 * @param array<string, int|string> $newConfig Mender configuration
+	 * @param array<string, array<string, bool|int|string>> $config Mender configuration
 	 * @throws JsonException
 	 */
-	public function saveConfig(array $newConfig): void {
-		$clientConfig = $this->getClientConfig();
-		$connectConfig = $this->getConnectConfig();
-		$connectConfig['ServerURL'] = $newConfig['ServerURL'];
-		$connectConfig['ClientProtocol'] = $newConfig['ClientProtocol'];
-		unset($newConfig['ClientProtocol']);
-		$this->fileManager->write(self::CLIENT_CONF, array_merge($clientConfig, $newConfig), '.conf');
-		$this->fileManager->write(self::CONNECT_CONF, $connectConfig, '.conf');
+	public function saveConfig(array $config): void {
+		$client = $this->getClientConfig();
+		$connect = $this->getConnectConfig();
+		$this->fileManager->write(self::CLIENT_CONF, array_replace_recursive($client, $config['client']), '.conf');
+		$config['connect'] = [
+			'FileTransfer' => ['disabled' => !$config['connect']['FileTransfer']],
+			'PortForward' => ['disabled' => !$config['connect']['PortForward']],
+		];
+		$this->fileManager->write(self::CONNECT_CONF, array_replace_recursive($connect, $config['connect']), '.conf');
 	}
 
 	/**
