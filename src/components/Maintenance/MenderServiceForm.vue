@@ -18,6 +18,7 @@ limitations under the License.
 	<CCard body-wrapper>
 		<ValidationObserver v-slot='{invalid}'>
 			<CForm @submit.prevent='processSubmit'>
+				<h5>{{ $t('maintenance.mender.service.form.connection') }}</h5>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
@@ -26,21 +27,21 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='configuration.ServerURL'
-						:label='$t("maintenance.mender.service.form.server")'
+						v-model='config.client.ServerUrl'
+						:label='$t("maintenance.mender.service.form.client.server")'
 						:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<CInput
-					v-model='configuration.ServerCertificate'
-					:label='$t("maintenance.mender.service.form.cert")'
+					v-model='config.client.ServerCertificate'
+					:label='$t("maintenance.mender.service.form.client.cert")'
 					:disabled='uploadCert'
 				/>
 				<div class='form-group'>
 					<label for='uploadSwitch'>
-						{{ $t('maintenance.mender.service.form.uploadCert') }}
+						{{ $t('maintenance.mender.service.form.client.uploadCert') }}
 					</label><br>
 					<CSwitch
 						ref='uploadSwitch'
@@ -56,15 +57,12 @@ limitations under the License.
 					v-if='uploadCert'
 					ref='formCert'
 					accept='.crt'
-					:label='$t("maintenance.mender.service.form.newCert")'
+					:label='$t("maintenance.mender.service.form.client.newCert")'
 					@input='checkInput'
 					@click='checkInput'
 				/>
-				<CSelect
-					:value.sync='configuration.ClientProtocol'
-					:label='$t("maintenance.mender.service.form.protocol")'
-					:options='protocolOptions'
-				/>
+				<hr>
+				<h5>{{ $t('maintenance.mender.service.form.inventory') }}</h5>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
@@ -73,8 +71,8 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='configuration.TenantToken'
-						:label='$t("maintenance.mender.service.form.tenantToken")'
+						v-model='config.client.TenantToken'
+						:label='$t("maintenance.mender.service.form.client.tenantToken")'
 						:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
@@ -91,10 +89,10 @@ limitations under the License.
 				>
 					<CInput
 						id='inventoryPoll'
-						v-model.number='configuration.InventoryPollIntervalSeconds'
+						v-model.number='config.client.InventoryPollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("maintenance.mender.service.form.inventoryPollInterval")'
+						:label='$t("maintenance.mender.service.form.client.inventoryPollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					>
@@ -116,10 +114,10 @@ limitations under the License.
 				>
 					<CInput
 						id='retryPoll'
-						v-model.number='configuration.RetryPollIntervalSeconds'
+						v-model.number='config.client.RetryPollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("maintenance.mender.service.form.retryPollInterval")'
+						:label='$t("maintenance.mender.service.form.client.retryPollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					>
@@ -140,10 +138,10 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model.number='configuration.UpdatePollIntervalSeconds'
+						v-model.number='config.client.UpdatePollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("maintenance.mender.service.form.updatePollInterval")'
+						:label='$t("maintenance.mender.service.form.client.updatePollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					>
@@ -154,6 +152,16 @@ limitations under the License.
 						</template>
 					</CInput>
 				</ValidationProvider>
+				<hr>
+				<h4>{{ $t('maintenance.mender.service.form.features') }}</h4>
+				<CInputCheckbox
+					:checked.sync='config.connect.FileTransfer'
+					:label='$t("maintenance.mender.service.form.connect.fileTransfer")'
+				/>
+				<CInputCheckbox
+					:checked.sync='config.connect.PortForward'
+					:label='$t("maintenance.mender.service.form.connect.portForward")'
+				/>
 				<CButton
 					color='primary'
 					type='submit'
@@ -168,19 +176,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
+import {CBadge, CButton, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {MenderProtocols} from '@/enums/Maintenance/Mender';
 
 import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IMenderConfig} from '@/interfaces/Maintenance/Mender';
-import {IOption} from '@/interfaces/Coreui';
 import MenderService from '@/services/MenderService';
 
 @Component({
@@ -189,6 +195,7 @@ import MenderService from '@/services/MenderService';
 		CButton,
 		CForm,
 		CInput,
+		CInputCheckbox,
 		CInputFile,
 		CSelect,
 		ValidationObserver,
@@ -209,14 +216,19 @@ export default class MenderForm extends Vue {
 	/**
 	 * @var {IMenderConfig} configuration Mender configuration
 	 */
-	private configuration: IMenderConfig = {
-		ClientProtocol: MenderProtocols.HTTPS,
-		ServerURL: '',
-		ServerCertificate: '',
-		TenantToken: 'dummy',
-		InventoryPollIntervalSeconds: 28800,
-		RetryPollIntervalSeconds: 300,
-		UpdatePollIntervalSeconds: 1800
+	private config: IMenderConfig = {
+		client: {
+			ServerUrl: 'https://hosted.mender.io',
+			ServerCertificate: '',
+			TenantToken: 'dummy',
+			InventoryPollIntervalSeconds: 28800,
+			RetryPollIntervalSeconds: 300,
+			UpdatePollIntervalSeconds: 1800,
+		},
+		connect: {
+			FileTransfer: true,
+			PortForward: true,
+		},
 	};
 
 	/**
@@ -228,20 +240,6 @@ export default class MenderForm extends Vue {
 	 * @var {boolean} inputEmpty Empty status of the cert input
 	 */
 	private inputEmpty = true;
-
-	/**
-	 * @constant {Array<IOption>} protocolOptions Array of CoreUI select mender client protocol options
-	 */
-	private protocolOptions: Array<IOption> = [
-		{
-			label: this.$t('maintenance.mender.service.form.protocols.https').toString(),
-			value: MenderProtocols.HTTPS,
-		},
-		{
-			label: this.$t('maintenance.mender.service.form.protocols.wss').toString(),
-			value: MenderProtocols.WSS,
-		},
-	];
 
 	/**
 	 * Vue lifecycle hook created
@@ -268,10 +266,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Inventory poll interval string
 	 */
 	get inventoryPollTime(): string {
-		if (this.configuration === null) {
-			return '';
-		}
-		return this.periodString(this.configuration.InventoryPollIntervalSeconds);
+		return this.periodString(this.config.client.InventoryPollIntervalSeconds);
 	}
 
 	/**
@@ -279,10 +274,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry poll interval string
 	 */
 	get retryPollTime(): string {
-		if (this.configuration === null) {
-			return '';
-		}
-		return this.periodString(this.configuration.RetryPollIntervalSeconds);
+		return this.periodString(this.config.client.RetryPollIntervalSeconds);
 	}
 
 	/**
@@ -290,10 +282,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry update interval string
 	 */
 	get updatePollTime(): string {
-		if (this.configuration === null) {
-			return '';
-		}
-		return this.periodString(this.configuration.UpdatePollIntervalSeconds);
+		return this.periodString(this.config.client.UpdatePollIntervalSeconds);
 	}
 
 	/**
@@ -322,7 +311,7 @@ export default class MenderForm extends Vue {
 				if (this.uploadCert) {
 					this.uploadCert = false;
 				}
-				this.configuration = response.data;
+				this.config = response.data;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
@@ -348,16 +337,13 @@ export default class MenderForm extends Vue {
 	 * Updates configuration of the Mender feature
 	 */
 	private processSubmit(): void {
-		if (this.configuration === null) {
-			return;
-		}
 		this.$store.commit('spinner/SHOW');
 		if (this.uploadCert) {
 			const formData = new FormData();
 			formData.append('certificate', this.getInputFiles()[0]);
 			MenderService.uploadCertificate(formData)
 				.then((response: AxiosResponse) => {
-					this.configuration.ServerCertificate = response.data;
+					this.config.client.ServerCertificate = response.data;
 					this.saveConfig();
 				})
 				.catch((error: AxiosError) => extendedErrorToast(
@@ -373,7 +359,7 @@ export default class MenderForm extends Vue {
 	 * Saves Mender client configuration
 	 */
 	private saveConfig(): void {
-		const config: IMenderConfig = JSON.parse(JSON.stringify(this.configuration));
+		const config: IMenderConfig = JSON.parse(JSON.stringify(this.config));
 		FeatureConfigService.saveConfig(this.featureName, config)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.service.messages.saveSuccess').toString()

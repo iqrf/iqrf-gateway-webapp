@@ -14,13 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Mender client protocols
- */
-export enum MenderProtocols {
-	HTTPS = 'https',
-	WSS = 'wss'
-}
 
 /**
  * Filesystem mount modes

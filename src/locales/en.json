@@ -3093,22 +3093,26 @@
 				"pageTitle": "Client service",
 				"description": "Manages Mender service and configuration.",
 				"form": {
-					"inventoryPollInterval": "Inventory update interval (seconds)",
-					"retryPollInterval": "Communication retry interval (seconds)",
-					"server": "Server address",
-					"cert": "Path to certificate",
-					"newCert": "Certificate to upload",
-					"uploadCert": "Upload new certificate",
-					"tenantToken": "Tenant token",
-					"updatePollInterval": "Update check interval (seconds)",
+					"connection": "Connection",
+					"inventory": "Inventory",
+					"features": "Enabled features",
+					"client": {
+						"server": "Server address",
+						"cert": "Path to certificate",
+						"newCert": "Certificate to upload",
+						"uploadCert": "Upload new certificate",
+						"tenantToken": "Tenant token",
+						"inventoryPollInterval": "Inventory update interval (seconds)",
+						"retryPollInterval": "Communication retry interval (seconds)",
+						"updatePollInterval": "Update check interval (seconds)"
+					},
+					"connect": {
+						"fileTransfer": "File Transfer",
+						"portForward": "Port Forwarding"
+					},
 					"placeholders": {
 						"server": "https://hosted.mender.io",
 						"tenantToken": "exampleToken"
-					},
-					"protocol": "Protocol",
-					"protocols": {
-						"https": "HTTPS",
-						"wss": "WSS"
 					}
 				},
 				"messages": {

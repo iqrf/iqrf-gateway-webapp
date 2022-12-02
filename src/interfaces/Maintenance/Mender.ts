@@ -14,12 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MenderProtocols, MountModes} from '@/enums/Maintenance/Mender';
+import {MountModes} from '@/enums/Maintenance/Mender';
 
 /**
  * Mender configuration interface
  */
 export interface IMenderConfig {
+	/**
+	 * mender-client configuration
+	 */
+	client: IMenderClientConfig
+
+	/**
+	 * mender-connect configuration
+	 */
+	connect: IMenderConnectConfig
+}
+
+export interface IMenderClientConfig {
+	/**
+	 * Mender service server address
+	 */
+	ServerUrl: string
+
+	/**
+	 * Path to certificate
+	 */
+	ServerCertificate: string
+
+	/**
+	 * Tenant ownership token
+	 */
+	TenantToken: string
+
 	/**
 	 * Inventory poll interval in seconds
 	 */
@@ -31,29 +58,24 @@ export interface IMenderConfig {
 	RetryPollIntervalSeconds: number
 
 	/**
-	 * Server
-	 */
-	ServerURL: string
-
-	/**
-	 * Path to server certificate
-	 */
-	ServerCertificate?: string
-
-	/**
-	 * Tenant token
-	 */
-	TenantToken: string
-
-	/**
 	 * Update poll interval in seconds
 	 */
 	UpdatePollIntervalSeconds: number
+}
+
+/**
+ * Mender connect configuration interface
+ */
+export interface IMenderConnectConfig {
+	/**
+	 * File transfer feature enabled
+	 */
+	FileTransfer: boolean
 
 	/**
-	 * Client protocol
+	 * Port forwarding feature enabled
 	 */
-	ClientProtocol: MenderProtocols
+	PortForward: boolean
 }
 
 /**
