@@ -35,7 +35,7 @@ export interface IMenderClientConfig {
 	/**
 	 * Mender service server address
 	 */
-	ServerUrl: string
+	ServerURL: string
 
 	/**
 	 * Path to certificate

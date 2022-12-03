@@ -29,7 +29,7 @@
 			"$id": "#/properties/client",
 			"type": "object",
 			"required": [
-				"ServerUrl",
+				"ServerURL",
 				"ServerCertificate",
 				"TenantToken",
 				"InventoryPollIntervalSeconds",
@@ -38,8 +38,8 @@
 			],
 			"additionalProperties": false,
 			"properties": {
-				"ServerUrl": {
-					"$id": "#/properties/client/properties/ServerUrl",
+				"ServerURL": {
+					"$id": "#/properties/client/properties/ServerURL",
 					"title": "Server URL",
 					"description": "The server URL which is used as the basis for API requests.",
 					"type": "string",

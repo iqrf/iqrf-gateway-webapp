@@ -63,7 +63,7 @@ class MenderManager {
 	 * @var array<string, mixed> Default client configuration
 	 */
 	private const DEFAULT_CLIENT_CONFIG = [
-		'ServerUrl' => 'https://hosted.mender.io',
+		'ServerURL' => 'https://hosted.mender.io',
 		'ServerCertificate' => '',
 		'TenantToken' => 'dummy',
 		'InventoryPollIntervalSeconds' => 28800,
@@ -120,7 +120,7 @@ class MenderManager {
 		$connect = array_replace_recursive(self::DEFAULT_CONNECT_CONFIG, $this->getConnectConfig());
 		return [
 			'client' => [
-				'ServerUrl' => $client['ServerUrl'],
+				'ServerURL' => $client['ServerURL'],
 				'ServerCertificate' => $client['ServerCertificate'],
 				'TenantToken' => $client['TenantToken'],
 				'InventoryPollIntervalSeconds' => $client['InventoryPollIntervalSeconds'],
