@@ -26,7 +26,7 @@ use App\NetworkModule\Enums\WifiSecurity;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 
 /**
- * WiFI network manager
+ * WiFi network manager
  */
 class WifiManager {
 
@@ -48,7 +48,9 @@ class WifiManager {
 	 * @return array<WifiNetwork> Available WiFi networks
 	 */
 	public function list(): array {
-		$output = $this->commandManager->run('nmcli -t -f in-use,bssid,ssid,mode,chan,rate,signal,bars,security device wifi list --rescan auto', true);
+		$fields = ['IN-USE', 'BSSID', 'SSID', 'MODE', 'CHAN', 'RATE', 'SIGNAL', 'SECURITY'];
+		$command = sprintf('nmcli -t -f %s device wifi list --rescan auto', implode(',', $fields));
+		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}

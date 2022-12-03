@@ -93,62 +93,6 @@ final class WifiNetwork implements JsonSerializable {
 	}
 
 	/**
-	 * Checks if the WiFI network is used
-	 * @return bool Is used?
-	 */
-	public function isUsed(): bool {
-		return $this->inUse;
-	}
-
-	/**
-	 * Returns the network's BSSID (Basic Services Set Identifier)
-	 * @return string BSSID
-	 */
-	public function getBssid(): string {
-		return $this->bssid;
-	}
-
-	/**
-	 * Returns the network's SSID (Service Set Identifier)
-	 * @return string SSID
-	 */
-	public function getSsid(): string {
-		return $this->ssid;
-	}
-
-	/**
-	 * Returns the network's mode
-	 * @return WifiMode Network's mode
-	 */
-	public function getMode(): WifiMode {
-		return $this->mode;
-	}
-
-	/**
-	 * Returns the network's channel
-	 * @return int Network's channel
-	 */
-	public function getChannel(): int {
-		return $this->channel;
-	}
-
-	/**
-	 * Returns the network's speed rate
-	 * @return string Speed rate
-	 */
-	public function getRate(): string {
-		return $this->rate;
-	}
-
-	/**
-	 * Returns the network signal strength
-	 * @return int Signal strength
-	 */
-	public function getSignal(): int {
-		return $this->signal;
-	}
-
-	/**
 	 * Returns the network's security
 	 * @return WifiSecurity Network security
 	 */
@@ -162,7 +106,7 @@ final class WifiNetwork implements JsonSerializable {
 	 * @return WifiNetwork WiFi network
 	 */
 	public static function nmCliDeserialize(string $nmCli): self {
-		$pattern = '#^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'bars\'[^:]*):(?\'security\'[^:]*)$#';
+		$pattern = '#^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'security\'[^:]*)$#';
 		$matches = Strings::match($nmCli, $pattern);
 		$inUse = $matches['inUse'] === '*';
 		$bssid = Strings::replace($matches['bssid'], '#\\\\:#', ':');
