@@ -37,11 +37,6 @@ final class IPv4Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
-	 * @var string nmcli current configuration prefix
-	 */
-	private const NMCLI_CURRENT_PREFIX = 'IP4';
-
-	/**
 	 * @var IPv4Methods Connection method
 	 */
 	private IPv4Methods $method;
@@ -144,15 +139,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 			$dns = array_map(fn (string $address): IPv4 => IPv4::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv4Methods::AUTO()) {
-			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
-			if (array_key_exists('address', $config)) {
-				$currentAddresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), array_values($config['address']));
-			}
-			$currentGateway = array_key_exists('gateway', $config) ? IPv4::factory($config['gateway']) : null;
-			if (array_key_exists('dns', $config)) {
-				$currentDns = array_map(fn (string $address): IPv4 => IPv4::factory($address), array_values($config['dns']));
-			}
-			$current = new IPv4Current($currentAddresses ?? [], $currentGateway, $currentDns ?? []);
+			$current = IPv4Current::nmCliDeserialize($nmCli, $method);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}

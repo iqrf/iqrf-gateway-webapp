@@ -37,11 +37,6 @@ final class IPv6Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv6';
 
 	/**
-	 * @var string nmcli current configuration prefix
-	 */
-	private const NMCLI_CURRENT_PREFIX = 'IP6';
-
-	/**
 	 * @var IPv6Methods Connection method
 	 */
 	private IPv6Methods $method;
@@ -141,17 +136,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 			$dns = array_map(fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
 		}
 		if ($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP()) {
-			$config = NmCliConnection::decode($nmCli, self::NMCLI_CURRENT_PREFIX);
-			$currentAddresses = [];
-			$currentGateway = array_key_exists('gateway', $config) && ($config['gateway'] !== '') ? IPv6::factory($config['gateway']) : null;
-			if (array_key_exists('address', $config)) {
-				$currentAddresses = array_map(fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), array_values($config['address']));
-			}
-			$currentDns = [];
-			if (array_key_exists('dns', $config)) {
-				$currentDns = array_map(fn(string $address): IPv6 => IPv6::factory($address), array_values($config['dns']));
-			}
-			$current = new IPv6Current($method, $currentAddresses, $currentGateway, $currentDns);
+			$current = IPv6Current::nmCliDeserialize($nmCli, $method);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}
