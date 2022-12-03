@@ -1,0 +1,29 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ntp.json",
+	"type": "object",
+	"title": "NTP",
+	"example": {
+		"enabled": false,
+		"path": "/etc/systemd/timesyncd.conf"
+	},
+	"required": [
+		"enabled",
+		"path"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "NTP enablement",
+			"example": false
+		},
+		"path": {
+			"$id": "#/properties/path",
+			"type": "string",
+			"title": "NTP configuration file path",
+			"example": "/etc/systemd/timesyncd.conf"
+		}
+	}
+}

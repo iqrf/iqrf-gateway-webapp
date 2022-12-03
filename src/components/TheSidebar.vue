@@ -232,6 +232,13 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('service.apcupsd.title'),
+								to: '/gateway/service/apcupsd/',
+								feature: 'apcupsd',
+								role: UserRole.NORMAL,
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.power.title'),
 								to: '/gateway/power/',
 								role: UserRole.NORMAL,

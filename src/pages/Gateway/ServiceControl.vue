@@ -98,6 +98,7 @@ import {NavigationGuardNext, Route} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
 
 const whitelisted = [
+	'apcupsd',
 	'iqrf-gateway-controller',
 	'iqrf-gateway-daemon',
 	'iqrf-gateway-translator',
@@ -108,6 +109,7 @@ const whitelisted = [
 ];
 
 const features = {
+	'apcupsd': 'apcupsd',
 	'iqrf-gateway-controller': 'iqrfGatewayController',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',

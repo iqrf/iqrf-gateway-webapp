@@ -58,6 +58,7 @@ class ServicesController extends BaseController {
 	 * @var array<string, string|null> Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
+		'apcupsd' => 'apcupsd',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
