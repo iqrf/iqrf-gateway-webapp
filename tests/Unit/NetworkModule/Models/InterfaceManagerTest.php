@@ -31,6 +31,8 @@ use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
 use App\NetworkModule\Models\InterfaceManager;
+use Nette\Utils\FileSystem;
+use Ramsey\Uuid\Uuid;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -102,14 +104,12 @@ final class InterfaceManagerTest extends CommandTestCase {
 	 * Tests the function to list network interfaces
 	 */
 	public function testList(): void {
-		$output = 'eth0:ethernet:connected:eth0' . PHP_EOL
-			. 'wlan0:wifi:disconnected:' . PHP_EOL
-			. 'lo:loopback:unmanaged:' . PHP_EOL;
-		$this->receiveCommand('nmcli -t device status', true, $output);
+		$output = FileSystem::read(TESTER_DIR . '/data/networkManager/interfaces.txt');
+		$this->receiveCommand('nmcli -t -f all device show', true, $output);
 		$expected = [
-			new InterfaceStatus('eth0', InterfaceTypes::ETHERNET(), InterfaceStates::CONNECTED(), 'eth0'),
-			new InterfaceStatus('wlan0', InterfaceTypes::WIFI(), InterfaceStates::DISCONNECTED(), ''),
-			new InterfaceStatus('lo', InterfaceTypes::LOOPBACK(), InterfaceStates::UNMANAGED(), ''),
+			new InterfaceStatus('eth0', '02:42:A7:2C:5C:98', null, null, InterfaceTypes::ETHERNET(), InterfaceStates::CONNECTED(), Uuid::fromString('38708e8a-d842-38ae-9e66-3718361ac0b7')),
+			new InterfaceStatus('wlan0', '12:42:A7:2C:5C:98', 'ST-Ericsson', null, InterfaceTypes::WIFI(), InterfaceStates::DISCONNECTED(), null),
+			new InterfaceStatus('lo', '00:00:00:00:00:00', null, null, InterfaceTypes::LOOPBACK(), InterfaceStates::UNMANAGED(), null),
 		];
 		Assert::equal($expected, $this->manager->list());
 	}

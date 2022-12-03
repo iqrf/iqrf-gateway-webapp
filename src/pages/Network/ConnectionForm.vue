@@ -17,61 +17,44 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.connection.edit') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='prepareModal'>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("network.connection.errors.name"),
-							}'
-						>
-							<CInput
-								v-model='connection.name'
-								:label='$t("network.connection.name").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("network.connection.errors.interface"),
-							}'
-						>
-							<CSelect
-								:value.sync='ifname'
-								:label='$t("network.connection.interface").toString()'
-								:placeholder='$t("network.connection.errors.interface").toString()'
-								:options='ifnameOptions'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<WiFiConfiguration v-if='connection.type === "802-11-wireless"' v-model='connection' />
-						<CRow>
-							<CCol md='6'>
-								<legend>{{ $t('network.connection.ipv4.title') }}</legend>
-								<IPv4Configuration v-model='connection' />
-							</CCol>
-							<CCol md='6'>
-								<legend>{{ $t('network.connection.ipv6.title') }}</legend>
-								<IPv6Configuration v-model='connection' />
-							</CCol>
-						</CRow>
-						<CButton
-							type='submit'
-							color='primary'
-							:disabled='invalid || !ipv4InSubnet'
-						>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
+		<CCard body-wrapper>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='prepareModal'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("network.connection.errors.name"),
+						}'
+					>
+						<CInput
+							v-model='connection.name'
+							:label='$t("network.connection.name").toString()'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+						/>
+					</ValidationProvider>
+					<InterfaceInput v-if='interfaceType !== null' v-model='connection.interface' :type='interfaceType' />
+					<WiFiConfiguration v-if='connection.type === "802-11-wireless"' v-model='connection' :ap='ap' />
+					<CRow>
+						<CCol md='6'>
+							<legend>{{ $t('network.connection.ipv4.title') }}</legend>
+							<IPv4Configuration v-model='connection' />
+						</CCol>
+						<CCol md='6'>
+							<legend>{{ $t('network.connection.ipv6.title') }}</legend>
+							<IPv6Configuration v-model='connection' />
+						</CCol>
+					</CRow>
+					<CButton
+						type='submit'
+						color='primary'
+						:disabled='invalid || !ipv4InSubnet'
+					>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
 		</CCard>
 		<CModal
 			:show.sync='showModal'
@@ -116,8 +99,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCol, CForm, CInput, CModal, CRow, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {CButton, CCard, CCol, CForm, CInput, CModal, CRow} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -125,46 +107,38 @@ import {ConfigurationMethod} from '@/enums/Network/Ip';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {sleep} from '@/helpers/sleep';
 import {v4 as uuidv4} from 'uuid';
-import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
-import ip from 'ip-regex';
+import {WepKeyType} from '@/enums/Network/WifiSecurity';
 import UrlBuilder from '@/helpers/urlBuilder';
 
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
+import {InterfaceType} from '@/services/NetworkInterfaceService';
 import VersionService from '@/services/VersionService';
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, IConnectionModal, NetworkInterface} from '@/interfaces/Network/Connection';
-import {IOption} from '@/interfaces/Coreui';
-import IPv6Configuration from '@/pages/Network/Connection/IPv6Configuration.vue';
-import IPv4Configuration from '@/pages/Network/Connection/IPv4Configuration.vue';
-import WiFiConfiguration
-	from '@/pages/Network/Connection/WiFiConfiguration.vue';
+import {IConnection, IConnectionModal} from '@/interfaces/Network/Connection';
+import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
+import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
+import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
 import IpAddressHelper from '@/helpers/IpAddressHelper';
+import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
+import {IAccessPoint} from '@/interfaces/Network/Wifi';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
-		CCardBody,
 		CCol,
 		CForm,
 		CInput,
 		CModal,
 		CRow,
-		CSelect,
-		FontAwesomeIcon,
+		InterfaceInput,
 		IPv4Configuration,
 		IPv6Configuration,
 		ValidationObserver,
 		ValidationProvider,
 		WiFiConfiguration,
 	},
-	data: () => ({
-		ConfigurationMethod,
-		WepKeyLen,
-		WepKeyType,
-	}),
 	metaInfo: {
 		title: 'network.connection.edit',
 	}
@@ -198,16 +172,6 @@ export default class ConnectionForm extends Vue {
 	};
 
 	/**
-	 * @var {string} ifname Interface name
-	 */
-	private ifname = '';
-
-	/**
-	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface options
-	 */
-	private ifnameOptions: Array<IOption> = [];
-
-	/**
 	 * @var {Record<string, string|ConfigurationMethod>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
@@ -239,24 +203,24 @@ export default class ConnectionForm extends Vue {
 	@Prop({required: false, default: null}) uuid!: string;
 
 	/**
-	 * @property {string} ssid Network connection name
+	 * @property {string|null} ap Access point metadata in JSON string format
 	 */
-	@Prop({required: false, default: null}) ssid!: string;
+	@Prop({required: false, default: null}) ap!: string|null;
 
 	/**
-	 * @property {string} interfaceName Default interface name
+	 * @property {InterfaceType|null} interfaceType Type of interface
 	 */
-	@Prop({required: false, default: null}) interfaceName!: string;
-
-	/**
-	 * @property {string} wifiModel Wifi mode
-	 */
-	@Prop({required: false, default: null}) wifiMode!: string;
-
-	/**
-	 * @property {string} wifiSecurity Wifi security type
-	 */
-	@Prop({required: false, default: null}) wifiSecurity!: string;
+	get interfaceType(): InterfaceType|null {
+		if (this.$route.path.includes('/ip-network/wireless/')) {
+			return InterfaceType.WIFI;
+		} else if (this.$route.path.includes('/ip-network/ethernet/')) {
+			return InterfaceType.ETHERNET;
+		} else if (this.$route.path.includes('/ip-network/mobile/')) {
+			return InterfaceType.GSM;
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Initializes validation rules
@@ -269,10 +233,51 @@ export default class ConnectionForm extends Vue {
 	 * Fetches connection configuration prop is set
 	 */
 	mounted(): void {
-		if (this.$route.path.includes('/ip-network/wireless/')) {
-			this.getInterfaces(InterfaceType.WIFI);
-		} else if (this.$route.path.includes('/ip-network/ethernet/')) {
-			this.getInterfaces(InterfaceType.ETHERNET);
+		this.$store.commit('spinner/SHOW');
+		if (this.uuid !== null) {
+			this.getConnection();
+		} else {
+			const ap = JSON.parse(this.ap || '{}') as IAccessPoint;
+			this.connection.name = ap.ssid;
+			this.connection.interface = ap.interfaceName ?? '';
+			if (this.interfaceType === InterfaceType.ETHERNET) {
+				this.connection.type = ConnectionType.ETHERNET;
+			} else if (this.interfaceType === InterfaceType.WIFI) {
+				this.connection.type = ConnectionType.WIFI;
+				Object.assign(this.connection, {
+					wifi: {
+						ssid: ap?.ssid,
+						mode: ap?.mode,
+						security: {
+							type: this.getSecurityType(ap!.security),
+							psk: '',
+							leap: {
+								username: '',
+								password: ''
+							},
+							wep: {
+								type: WepKeyType.UNKNOWN,
+								index: 0,
+								keys: ['', '', '', '']
+							}
+						}
+					}
+				});
+				if (ap?.security === 'wpa-eap' && this.connection.wifi !== undefined) {
+					Object.assign(this.connection.wifi?.security, {
+						eap: {
+							phaseOne: '',
+							anonymousIdentity: '',
+							cert: '',
+							phaseTwo: '',
+							identity: '',
+							password: '',
+						}
+					});
+				}
+			}
+			this.storeConnectionData(this.connection);
+			this.$store.commit('spinner/HIDE');
 		}
 	}
 
@@ -288,74 +293,6 @@ export default class ConnectionForm extends Vue {
 		const mask = this.connection.ipv4.addresses[0].mask;
 		const gateway = this.connection.ipv4.gateway;
 		return IpAddressHelper.ipv4SubnetCheck(address, mask, gateway);
-	}
-
-	/**
-	 * Retrieves interfaces of a type
-	 * @param {InterfaceType} iftype Interface type
-	 */
-	private getInterfaces(iftype: InterfaceType): void {
-		this.$store.commit('spinner/SHOW');
-		NetworkInterfaceService.list(iftype)
-			.then((response: AxiosResponse) => {
-				const interfaces: Array<IOption> = [];
-				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
-				});
-				this.ifnameOptions = interfaces;
-				if (this.uuid !== null) {
-					this.getConnection();
-				} else {
-					this.connection.name = this.ssid;
-					this.connection.interface = this.interfaceName;
-					if (iftype === InterfaceType.ETHERNET) {
-						this.connection.type = ConnectionType.ETHERNET;
-					} else if (iftype === InterfaceType.WIFI) {
-						this.connection.type = ConnectionType.WIFI;
-						Object.assign(this.connection, {
-							wifi: {
-								ssid: this.ssid,
-								mode: this.wifiMode,
-								security: {
-									type: this.wifiSecurity,
-									psk: '',
-									leap: {
-										username: '',
-										password: ''
-									},
-									wep: {
-										type: WepKeyType.UNKNOWN,
-										index: 0,
-										keys: ['', '', '', '']
-									}
-								}
-							}
-						});
-						if (this.wifiSecurity === 'wpa-eap' && this.connection.wifi !== undefined) {
-							Object.assign(this.connection.wifi?.security, {
-								eap: {
-									phaseOne: '',
-									anonymousIdentity: '',
-									cert: '',
-									phaseTwo: '',
-									identity: '',
-									password: '',
-								}
-							});
-						}
-					}
-					this.storeConnectionData(this.connection);
-					this.$store.commit('spinner/HIDE');
-				}
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
-				if (iftype === InterfaceType.ETHERNET) {
-					this.$router.push('/ip-network/ethernet');
-				} else if (iftype === InterfaceType.WIFI) {
-					this.$router.push('/ip-network/wireless');
-				}
-			});
 	}
 
 	/**
@@ -383,36 +320,39 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
+	 * Returns security type code from type string
+	 * @param {string} type security type string
+	 * @returns {string} security type code
+	 */
+	private getSecurityType(type: string): string {
+		if (type === 'Open') {
+			return 'open';
+		} else if (type === 'WEP') {
+			return 'wep';
+		} else if (['WPA-Personal', 'WPA2-Personal', 'WPA3-Personal'].includes(type)) {
+			return 'wpa-psk';
+		} else if (['WPA-Enterprise', 'WPA2-Enterprise', 'WPA3-Enterprise'].includes(type)) {
+			return 'wpa-eap';
+		}
+		return '';
+	}
+
+	/**
 	 * Initializes empty arrays for the form and stores configuration
 	 * @param {IConnection} connection Connection details
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
-		if (connection.interface) {
-			this.ifname = connection.interface;
-		}
 		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
 		}
-		if (connection.ipv4.addresses.length === 0) {
-			connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
-		}
-		if (connection.ipv4.dns.length === 0) {
-			connection.ipv4.dns.push({address: ''});
-		}
-		this.originalIPv4.address = connection.ipv4.addresses[0].address;
-		this.originalIPv4.method = connection.ipv4.method;
+		this.originalIPv4.address = connection.ipv4.addresses[0].address ?? '';
+		this.originalIPv4.method = connection.ipv4.method ?? 'auto';
 		// initialize ipv6 configuration objects
-		if ((connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') && connection.ipv6.current) {
+		if (['auto', 'dhcp'].includes(connection.ipv6.method) && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
 			delete connection.ipv6.current;
-		}
-		if (connection.ipv6.addresses.length === 0) {
-			connection.ipv6.addresses.push({address: '', prefix: 64});
-		}
-		if (connection.ipv6.dns.length === 0) {
-			connection.ipv6.dns.push({address: ''});
 		}
 		this.connection = connection;
 	}
@@ -455,7 +395,7 @@ export default class ConnectionForm extends Vue {
 	 */
 	private saveConnection(): void {
 		const connection: IConnection = JSON.parse(JSON.stringify(this.connection));
-		Object.assign(connection, {interface: this.ifname});
+		Object.assign(connection, {interface: connection.interface});
 		if (connection.ipv4.method === 'manual') {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;

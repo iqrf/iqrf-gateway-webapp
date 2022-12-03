@@ -362,12 +362,10 @@ export default class WifiConnections extends Vue {
 	private getInterfaces(): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.WIFI)
-			.then((response: AxiosResponse) => {
-				const interfaces: Array<IOption> = [];
-				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
+			.then((interfaces: Array<NetworkInterface>) => {
+				interfaces.forEach((item: NetworkInterface) => {
+					this.ifNameOptions.push({label: item.name, value: item.name});
 				});
-				this.ifNameOptions = interfaces;
 				this.interfacesLoaded = true;
 				this.$store.commit('spinner/HIDE');
 				if (this.ifNameOptions.length > 0) {

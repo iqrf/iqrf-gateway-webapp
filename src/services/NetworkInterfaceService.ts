@@ -16,6 +16,8 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
+import {IModem} from '@/interfaces/Network/Mobile';
 
 /**
  * Network interface state enum
@@ -42,11 +44,14 @@ export enum InterfaceState {
  */
 export enum InterfaceType {
 	BOND = 'bond',
+	BLUETOOTH = 'bt',
 	BRIDGE = 'bridge',
 	DUMMY = 'dummy',
 	ETHERNET = 'ethernet',
 	GSM = 'gsm',
+	IP_TUNNEL = 'iptunnel',
 	LOOPBACK = 'loopback',
+	PPP = 'ppp',
 	TUN = 'tun',
 	VLAN = 'vlan',
 	WIFI = 'wifi',
@@ -63,12 +68,15 @@ class NetworkInterfaceService {
 	 * Lists available network interfaces
 	 * @param type Network interface type
 	 */
-	public list(type: InterfaceType|null = null): Promise<AxiosResponse> {
+	public list(type: InterfaceType|null = null): Promise<Array<NetworkInterface>> {
 		const config = {headers: authorizationHeader()};
 		if (type !== null) {
 			Object.assign(config, {params: {type: type}});
 		}
-		return axios.get('network/interfaces', config);
+		return axios.get('network/interfaces', config)
+			.then((response: AxiosResponse) => {
+				return response.data as Array<NetworkInterface>;
+			});
 	}
 
 	/**

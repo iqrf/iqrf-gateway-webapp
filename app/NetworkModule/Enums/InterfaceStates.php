@@ -120,7 +120,8 @@ final class InterfaceStates extends Enum {
 	 * @return static Network interface state
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$state = Strings::replace($nmCli, '# \(externally\)#', '');
+		$state = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~')['state'];
+		$state = Strings::replace($state, '# \(externally\)#', '');
 		return self::fromScalar($state);
 	}
 

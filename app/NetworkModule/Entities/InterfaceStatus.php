@@ -22,7 +22,10 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
+use App\NetworkModule\Utils\NmCliConnection;
 use JsonSerializable;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Network interface entity
@@ -35,6 +38,21 @@ final class InterfaceStatus implements JsonSerializable {
 	protected string $name;
 
 	/**
+	 * @var string|null MAC address
+	 */
+	protected ?string $macAddress;
+
+	/**
+	 * @var string|null Manufacturer
+	 */
+	protected ?string $manufacturer;
+
+	/**
+	 * @var string|null Model
+	 */
+	protected ?string $model;
+
+	/**
 	 * @var InterfaceTypes Network interface type
 	 */
 	protected InterfaceTypes $type;
@@ -45,30 +63,28 @@ final class InterfaceStatus implements JsonSerializable {
 	protected InterfaceStates $state;
 
 	/**
-	 * @var string|null Network connection name
+	 * @var UuidInterface|null Network connection UUID
 	 */
-	protected ?string $connectionName;
+	protected ?UuidInterface $connection;
 
 	/**
 	 * Network interface entity constructor
 	 * @param string $name Network interface name
+	 * @param string|null $macAddress MAC address
+	 * @param string|null $manufacturer Manufacturer
+	 * @param string|null $model Model
 	 * @param InterfaceTypes $type Network interface type
 	 * @param InterfaceStates $state Network interface state
-	 * @param string|null $connectionName Network connection name
+	 * @param UuidInterface|null $connection Network connection UUID
 	 */
-	public function __construct(string $name, InterfaceTypes $type, InterfaceStates $state, ?string $connectionName) {
+	public function __construct(string $name, ?string $macAddress, ?string $manufacturer, ?string $model, InterfaceTypes $type, InterfaceStates $state, ?UuidInterface $connection) {
 		$this->name = $name;
+		$this->macAddress = $macAddress === '' ? null : $macAddress;
+		$this->manufacturer = $manufacturer === '' ? null : $manufacturer;
+		$this->model = $model === '' ? null : $model;
 		$this->type = $type;
 		$this->state = $state;
-		$this->connectionName = $connectionName === '' ? null : $connectionName;
-	}
-
-	/**
-	 * Returns the network interface name
-	 * @return string Network interface name
-	 */
-	public function getName(): string {
-		return $this->name;
+		$this->connection = $connection;
 	}
 
 	/**
@@ -80,31 +96,18 @@ final class InterfaceStatus implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the network interface state
-	 * @return InterfaceStates Network interface state
-	 */
-	public function getState(): InterfaceStates {
-		return $this->state;
-	}
-
-	/**
-	 * Returns the network connection name
-	 * @return string|null Network connection name
-	 */
-	public function getConnectionName(): ?string {
-		return $this->connectionName;
-	}
-
-	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array{name: string, type: string, state: string, connectionName: string|null} JSON serialized data
+	 * @return array{name: string, type: string, state: string, connection: string|null} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'name' => $this->name,
+			'macAddress' => $this->macAddress,
+			'manufacturer' => $this->manufacturer,
+			'model' => $this->model,
 			'type' => $this->type->toScalar(),
 			'state' => $this->state->toScalar(),
-			'connectionName' => $this->connectionName,
+			'connection' => $this->connection === null ? null : $this->connection->toString(),
 		];
 	}
 
@@ -114,10 +117,16 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @return InterfaceStatus Network interface
 	 */
 	public static function nmCliDeserialize(string $string): self {
-		$array = preg_split('~(?<!\\\)' . preg_quote(':', '~') . '~', $string);
-		$type = InterfaceTypes::fromScalar($array[1]);
-		$state = InterfaceStates::fromNmCli($array[2]);
-		return new self($array[0], $type, $state, $array[3]);
+		$array = NmCliConnection::decode($string, null);
+		$name = $array['GENERAL']['DEVICE'];
+		$macAddress = $array['GENERAL']['HWADDR'];
+		$manufacturer = $array['GENERAL']['VENDOR'];
+		$model = $array['GENERAL']['PRODUCT'];
+		$type = InterfaceTypes::fromScalar($array['GENERAL']['TYPE']);
+		$state = InterfaceStates::fromNmCli($array['GENERAL']['STATE']);
+		$connection = $array['GENERAL']['CON-UUID'];
+		$connection = $connection === '' ? null : Uuid::fromString($connection);
+		return new self($name, $macAddress, $manufacturer, $model, $type, $state, $connection);
 	}
 
 }

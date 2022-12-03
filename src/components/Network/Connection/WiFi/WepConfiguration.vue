@@ -146,9 +146,9 @@ export default class WepConfiguration extends Vue {
 		});
 		extend('wepKey', (key: string) => {
 			if (this.keyLength === WepKeyLen.BIT64) {
-				return new RegExp(/^(\w{5}|[0-9a-fA-F]{10})$/).test(key);
+				return /^(\w{5}|[0-9a-fA-F]{10})$/.test(key);
 			}
-			return new RegExp(/^(\w{13}|[0-9a-fA-F]{26})$/).test(key);
+			return /^(\w{13}|[0-9a-fA-F]{26})$/.test(key);
 		});
 		extend('wepKeyType', (key: string) => {
 			return key !== WepKeyType.UNKNOWN;

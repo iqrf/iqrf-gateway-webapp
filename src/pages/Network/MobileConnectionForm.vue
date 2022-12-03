@@ -290,12 +290,10 @@ export default class MobileConnectionForm extends Vue {
 	private getInterfaces(): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.GSM)
-			.then((response: AxiosResponse) => {
-				const interfaces: Array<IOption> = [];
-				response.data.forEach((item: NetworkInterface) => {
-					interfaces.push({label: item.name, value: item.name});
+			.then((interfaces: Array<NetworkInterface>) => {
+				interfaces.forEach((item: NetworkInterface) => {
+					this.interfaceOptions.push({label: item.name, value: item.name});
 				});
-				this.interfaceOptions = interfaces;
 				this.$store.commit('spinner/HIDE');
 				if (this.interfaceOptions.length === 0) {
 					this.$toast.error(

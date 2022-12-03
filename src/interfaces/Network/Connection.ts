@@ -34,6 +34,9 @@ export interface NetworkConnection {
  */
 export interface NetworkInterface {
 	connectionName: string
+	macAddress: string|null
+	manufacturer: string|null
+	model: string|null
 	name: string
 	state: string
 	type: string
@@ -57,7 +60,6 @@ export interface IConnection {
 	ipv6: IConnectionIPv6
 	wifi?: IConnectionWifi
 	gsm?: IConnectionGSM
-
 	serial?: IConnectionSerial
 }
 
@@ -102,8 +104,6 @@ export interface IConnectionIPv6Addrs {
 export interface IConnectionIPDns {
 	address: string
 }
-
-
 
 export interface IConnectionGSM {
 	apn: string

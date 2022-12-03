@@ -47,7 +47,7 @@ export default class WpaPskConfiguration extends Vue {
 	protected created(): void {
 		extend('required', required);
 		extend('wpaPsk', (key: string) => {
-			return new RegExp(/^([\u0020-\u007e\u0080-\u00ff]{8,63}|[\da-fA-F]{64})$/).test(key);
+			return /^([\u0020-\u007e\u0080-\u00ff]{8,63}|[\da-fA-F]{64})$/.test(key);
 		});
 	}
 
