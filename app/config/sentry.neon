@@ -1,0 +1,33 @@
+extensions:
+	sentry: Contributte\Sentry\DI\SentryExtension
+
+sentry:
+	enable: %productionMode%
+	integrations: false
+	client:
+		dsn: %sentry.dsn%
+		release: %sentry.release%
+		integrations: [
+			# Sentry
+			Sentry\Integration\EnvironmentIntegration()
+			Sentry\Integration\ErrorListenerIntegration()
+			Sentry\Integration\ExceptionListenerIntegration()
+			Sentry\Integration\FatalErrorListenerIntegration()
+			Sentry\Integration\FrameContextifierIntegration(null)
+			Sentry\Integration\ModulesIntegration()
+			Sentry\Integration\RequestIntegration(null)
+			Sentry\Integration\TransactionIntegration()
+			# Nette
+			Contributte\Sentry\Integration\NetteApplicationIntegration()
+			Contributte\Sentry\Integration\NetteHttpIntegration()
+			Contributte\Sentry\Integration\NetteSecurityIntegration()
+		]
+	logger:
+		captureMessages: true
+		captureLevels:
+			- debug
+			- info
+			- warning
+			- error
+			- exception
+			- critical
