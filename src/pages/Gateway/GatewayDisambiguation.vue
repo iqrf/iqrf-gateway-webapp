@@ -119,6 +119,17 @@ limitations under the License.
 					</p>
 				</CListGroupItem>
 				<CListGroupItem
+					v-if='$store.getters["features/isEnabled"]("apcupsd") && roleIdx <= roles.normal'
+					to='/gateway/service/apcupsd/'
+				>
+					<header class='list-group-item-heading'>
+						{{ $t('service.apcupsd.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('service.apcupsd.description') }}
+					</p>
+				</CListGroupItem>
+				<CListGroupItem
 					v-if='roleIdx <= roles.normal'
 					to='/gateway/power/'
 				>

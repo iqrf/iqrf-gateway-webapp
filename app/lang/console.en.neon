@@ -14,6 +14,7 @@
 # limitations under the License.
 
 features:
+	apcupsd: apcupsd service manager
 	docs: Show documentation
 	gatewayPass: Default gateway user password change
 	grafana: Grafana in the menu

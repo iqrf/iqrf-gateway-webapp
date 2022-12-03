@@ -40,6 +40,9 @@ class FeatureManager {
 	 * Default configuration
 	 */
 	private const DEFAULTS = [
+		'apcupsd' => [
+			'enabled' => false,
+		],
 		'docs' => [
 			'enabled' => true,
 			'url' => 'https://docs.iqrf.org/iqrf-gateway/',
@@ -79,7 +82,6 @@ class FeatureManager {
 		],
 		'ntp' => [
 			'enabled' => false,
-			'utility' => 'timesyncd',
 			'path' => '/etc/systemd/timesyncd.conf',
 		],
 		'remount' => [

@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/monit.json",
+	"type": "object",
+	"title": "Monit",
+	"example": {
+		"enabled": false
+	},
+	"required": [
+		"enabled"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Monit enablement",
+			"example": false
+		}
+	}
+}

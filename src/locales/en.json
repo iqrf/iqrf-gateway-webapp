@@ -2966,6 +2966,18 @@
 			"running": "Running",
 			"stopped": "Stopped"
 		},
+		"apcupsd": {
+			"title": "UPS daemon",
+			"description": "Control UPS daemon service.",
+			"messages": {
+				"disabled": "UPS daemon is disabled.",
+				"disable": "UPS daemon has been disabled.",
+				"enable": "UPS daemon has been enabled.",
+				"start": "UPS daemon has been started.",
+				"stop": "UPS daemon has been stopped.",
+				"restart": "UPS daemon has been restarted."
+			}
+		},
 		"iqrf": {
 			"title": "IQRF services",
 			"description": "Control IQRF Gateway's services."
@@ -2974,6 +2986,7 @@
 			"title": "Controller",
 			"description": "Control IQRF Gateway Controller's service.",
 			"messages": {
+				"disabled": "IQRF Gateway Controller is disabled.",
 				"disable": "IQRF Gateway Controller has been disabled.",
 				"enable": "IQRF Gateway Controller has been enabled.",
 				"start": "IQRF Gateway Controller has been started.",
@@ -2996,6 +3009,7 @@
 			"title": "Translator",
 			"description": "Control IQRF Gateway Translator's service.",
 			"messages": {
+				"disabled": "IQRF Gateway Translator is disabled.",
 				"disable": "IQRF Gateway Translator has been disabled.",
 				"enable": "IQRF Gateway Translator has been enabled.",
 				"start": "IQRF Gateway Translator has been started.",

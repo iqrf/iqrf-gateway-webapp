@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# apcupsd service
+apcupsd:
+	enabled: false
 # Show documentation
 docs:
 	enabled: true
@@ -21,6 +24,7 @@ docs:
 gatewayPass:
 	enabled: false
 	user: root
+# Grafana dashboard
 grafana:
 	enabled: false
 	url: /grafana/
@@ -51,7 +55,6 @@ nodeRed:
 	url: /node-red/
 ntp:
 	enabled: false
-	utility: timesyncd
 	path: /etc/systemd/timesyncd.conf
 # Remount endpoints
 remount:
@@ -67,11 +70,11 @@ supervisord:
 systemdJournal:
 	enabled: false
 	path: /etc/systemd/journald.conf
-# System updater
-updater:
-	enabled: false
 # IQRF TR native upload
 trUpload:
+	enabled: false
+# System updater
+updater:
 	enabled: false
 # Unattended upgrades
 unattendedUpgrades:

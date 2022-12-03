@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -16,7 +16,7 @@
+@@ -19,7 +19,7 @@
  # Show documentation
  docs:
  	enabled: true
@@ -9,7 +9,7 @@
  # Default gateway user password change
  gatewayPass:
  	enabled: false
-@@ -26,7 +26,7 @@
+@@ -30,7 +30,7 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -18,7 +18,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -41,10 +41,10 @@
+@@ -45,10 +45,10 @@
  	enabled: false
  # Monitoring service
  monit:
@@ -31,7 +31,7 @@
  # Node-RED
  nodeRed:
  	enabled: false
-@@ -58,7 +58,7 @@
+@@ -61,7 +61,7 @@
  	enabled: false
  # SSH daemon manager
  ssh:
@@ -40,12 +40,15 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -72,10 +72,10 @@
- 	enabled: false
+@@ -72,13 +72,13 @@
+ 	path: /etc/systemd/journald.conf
  # IQRF TR native upload
  trUpload:
 -	enabled: false
 +	enabled: true
+ # System updater
+ updater:
+ 	enabled: false
  # Unattended upgrades
  unattendedUpgrades:
 -	enabled: false

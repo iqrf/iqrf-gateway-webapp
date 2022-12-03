@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -16,13 +16,13 @@
+@@ -19,14 +19,14 @@
  # Show documentation
  docs:
  	enabled: true
@@ -10,13 +10,14 @@
  gatewayPass:
  	enabled: false
  	user: root
+ # Grafana dashboard
  grafana:
 -	enabled: false
 +	enabled: true
  	url: /grafana/
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
-@@ -35,13 +35,13 @@ iqrfRepository:
+@@ -39,13 +39,13 @@
  	enabled: false
  # iTemp service
  iTemp:

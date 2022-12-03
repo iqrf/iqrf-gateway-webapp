@@ -4,12 +4,23 @@
 	"type": "object",
 	"title": "Optional features configuration",
 	"required": [
+		"apcupsd",
 		"docs",
+		"gatewayPass",
 		"grafana",
+		"iqrfGatewayController",
+		"iqrfGatewayTranslator",
+		"iqrfRepository",
+		"iTemp",
+		"mender",
+		"monit",
 		"networkManager",
 		"nodeRed",
+		"ntp",
+		"remount",
 		"ssh",
 		"supervisord",
+		"systemdJournal",
 		"trUpload",
 		"updater",
 		"unattendedUpgrades",
@@ -17,6 +28,9 @@
 	],
 	"additionalProperties": false,
 	"properties": {
+		"apcupsd": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/apcupsd.json"
+		},
 		"docs": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/docs.json"
 		},
@@ -26,17 +40,44 @@
 		"grafana": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
 		},
+		"iqrfGatewayController": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayController.json"
+		},
+		"iqrfGatewayTranslator": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayTranslator.json"
+		},
+		"iqrfRepository": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfRepository.json"
+		},
+		"iTemp": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iTemp.json"
+		},
+		"mender": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/mender.json"
+		},
+		"monit": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/monit.json"
+		},
 		"networkManager": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/networkManager.json"
 		},
 		"nodeRed": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
 		},
+		"ntp": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ntp.json"
+		},
+		"remount": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/remount.json"
+		},
 		"ssh": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ssh.json"
 		},
 		"supervisord": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/supervisord.json"
+		},
+		"systemdJournal": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/systemdJournal.json"
 		},
 		"trUpload": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/trUpload.json"
