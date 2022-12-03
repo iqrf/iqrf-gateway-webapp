@@ -27,7 +27,7 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='config.client.ServerUrl'
+						v-model='config.client.ServerURL'
 						:label='$t("maintenance.mender.service.form.client.server")'
 						:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
 						:is-valid='touched ? valid : null'
@@ -218,7 +218,7 @@ export default class MenderForm extends Vue {
 	 */
 	private config: IMenderConfig = {
 		client: {
-			ServerUrl: 'https://hosted.mender.io',
+			ServerURL: 'https://hosted.mender.io',
 			ServerCertificate: '',
 			TenantToken: 'dummy',
 			InventoryPollIntervalSeconds: 28800,
