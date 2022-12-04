@@ -352,7 +352,7 @@ export default class SchedulerList extends Vue {
 				mutation.type === 'daemonClient/SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
 			} else if (mutation.type === 'daemonClient/SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
-					if (this.taskIds !== []) {
+					if (this.taskIds.length !== 0) {
 						this.taskIds = [];
 						this.tasks = [];
 					}
