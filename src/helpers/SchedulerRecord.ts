@@ -176,9 +176,7 @@ export default class SchedulerRecord {
 		timeSpec.period = 0;
 		timeSpec.cronTime = Array(7).fill('');
 		if (type === TimeSpecTypes.EXACT) {
-			const date = new Date(startTime);
-			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-			timeSpec.startTime = date.toISOString().split('.')[0];
+			timeSpec.startTime = startTime;
 			timeSpec.exactTime = true;
 		} else if (type === TimeSpecTypes.PERIODIC) {
 			timeSpec.period = period;
