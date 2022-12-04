@@ -76,10 +76,10 @@ class MenderManager {
 	 */
 	private const DEFAULT_CONNECT_CONFIG = [
 		'FileTransfer' => [
-			'disabled' => false,
+			'Disable' => false,
 		],
 		'PortForward' => [
-			'disabled' => false,
+			'Disable' => false,
 		],
 	];
 
@@ -128,8 +128,8 @@ class MenderManager {
 				'UpdatePollIntervalSeconds' => $client['UpdatePollIntervalSeconds'],
 			],
 			'connect' => [
-				'FileTransfer' => !$connect['FileTransfer']['disabled'],
-				'PortForward' => !$connect['PortForward']['disabled'],
+				'FileTransfer' => !$connect['FileTransfer']['Disable'],
+				'PortForward' => !$connect['PortForward']['Disable'],
 			],
 		];
 	}
@@ -162,8 +162,8 @@ class MenderManager {
 		$connect = $this->getConnectConfig();
 		$this->fileManager->write(self::CLIENT_CONF, array_replace_recursive($client, $config['client']), '.conf');
 		$config['connect'] = [
-			'FileTransfer' => ['disabled' => !$config['connect']['FileTransfer']],
-			'PortForward' => ['disabled' => !$config['connect']['PortForward']],
+			'FileTransfer' => ['Disable' => !$config['connect']['FileTransfer']],
+			'PortForward' => ['Disable' => !$config['connect']['PortForward']],
 		];
 		$this->fileManager->write(self::CONNECT_CONF, array_replace_recursive($connect, $config['connect']), '.conf');
 	}
