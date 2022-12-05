@@ -159,7 +159,7 @@ export default class NtpConfig extends Vue {
 		}
 		return GatewayService.getNtp()
 			.then((response: AxiosResponse) => {
-				let pools: Array<string> = response.data;
+				const pools: Array<string> = response.data;
 				if (pools.length === 0) {
 					this.useCustomServers = false;
 				} else {
@@ -176,7 +176,7 @@ export default class NtpConfig extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		let config = this.useCustomServers ? this.pools : [];
+		const config = this.useCustomServers ? this.pools : [];
 		GatewayService.setNtp(config)
 			.then(() => {
 				this.getConfig().then(() => {

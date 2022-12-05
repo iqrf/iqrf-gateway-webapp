@@ -1,3 +1,4 @@
 temp/*
 vendor/*
 www/dist/*
+src/schemas/functions/genericDaemonRequest.js

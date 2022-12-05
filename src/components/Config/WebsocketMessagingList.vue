@@ -222,7 +222,7 @@ export default class WebsocketMessagingList extends Vue {
 	 */
 	private changeAccept(instance: WsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg !== setting) {
-			let conf = {
+			const conf = {
 				...instance,
 			};
 			conf.acceptAsyncMsg = setting;

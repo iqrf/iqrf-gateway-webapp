@@ -356,7 +356,7 @@ export default class WifiConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.WIFI)
 			.then((response: AxiosResponse) => {
-				let interfaces: Array<IOption> = [];
+				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
 					interfaces.push({label: item.name, value: item.name});
 				});
@@ -409,8 +409,8 @@ export default class WifiConnections extends Vue {
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WIFI)
 			.then((response: AxiosResponse) => {
-				let connections: Array<NetworkConnection> = response.data;
-				let apArray: Array<IAccessPointArray> = [];
+				const connections: Array<NetworkConnection> = response.data;
+				const apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
 					ap['showDetails'] = false;
 					const idx = apArray.findIndex(item => item.ssid === ap.ssid);

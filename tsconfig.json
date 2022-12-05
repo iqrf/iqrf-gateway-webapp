@@ -16,5 +16,5 @@
 			"@/*": ["src/*"]
 		}
 	},
-	"exclude": ["cypress"]
+	"exclude": ["cypress/", "cypress.config.ts"]
 }

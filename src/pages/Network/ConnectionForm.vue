@@ -706,7 +706,7 @@ export default class ConnectionForm extends Vue {
 		});
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
-			let binaryMask = maskTokens.map((token: string) => {
+			const binaryMask = maskTokens.map((token: string) => {
 				return parseInt(token).toString(2).padStart(8, '0');
 			}).join('');
 			return new RegExp(/^1{8,32}0{0,24}$/).test(binaryMask);
@@ -749,7 +749,7 @@ export default class ConnectionForm extends Vue {
 	get ipv4Methods(): Array<IOption> {
 		//const methods = ['auto', 'link-local', 'manual', 'shared'];
 		const methods = ['auto', 'manual'];
-		let methodOptions: Array<IOption> = methods.map(
+		const methodOptions: Array<IOption> = methods.map(
 			(method: string) => ({
 				value: method,
 				label: this.$t('network.connection.ipv4.methods.' + method).toString(),
@@ -769,7 +769,7 @@ export default class ConnectionForm extends Vue {
 	get ipv6Methods(): Array<IOption> {
 		//const methods = ['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared'];
 		const methods = ['auto', 'dhcp', 'manual'];
-		let methodOptions: Array<IOption> = methods.map((method: string) =>
+		const methodOptions: Array<IOption> = methods.map((method: string) =>
 			({
 				value: method,
 				label: this.$t('network.connection.ipv6.methods.' + method).toString(),
@@ -833,7 +833,7 @@ export default class ConnectionForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(iftype)
 			.then((response: AxiosResponse) => {
-				let interfaces: Array<IOption> = [];
+				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
 					interfaces.push({label: item.name, value: item.name});
 				});
@@ -989,7 +989,7 @@ export default class ConnectionForm extends Vue {
 	 * Saves changes made to connection
 	 */
 	private saveConnection(): void {
-		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		const connection: IConnection = JSON.parse(JSON.stringify(this.connection));
 		Object.assign(connection, {interface: this.ifname});
 		if (connection.ipv4.method === 'manual') {
 			for (const idx in connection.ipv4.addresses) {

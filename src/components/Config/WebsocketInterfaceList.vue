@@ -256,7 +256,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const messagings = responses[0].data.instances;
 				const services = responses[1].data.instances;
-				let instances: Array<WsInterface> = [];
+				const instances: Array<WsInterface> = [];
 				for (const messaging of messagings) {
 					if (messaging.RequiredInterfaces === undefined ||
 							messaging.RequiredInterfaces.length === 0 ||
@@ -317,7 +317,7 @@ export default class WebsocketInterfaceList extends Vue {
 	 */
 	private editService(service: IWsService, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		let settings = {
+		const settings = {
 			...service,
 			...newSettings,
 		};

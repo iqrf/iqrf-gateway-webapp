@@ -171,7 +171,7 @@ export default class MenderUpdateControl extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.performReboot()
 			.then((response: AxiosResponse) => {
-				let time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
+				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(

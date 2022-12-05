@@ -482,8 +482,8 @@ export default class AutoNetwork extends Vue {
 	 */
 	private runAutonetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
-		let submitData = this.autoNetwork;
-		let stopConditions = {};
+		const submitData = this.autoNetwork;
+		const stopConditions = {};
 		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
 		if (this.useWaves) { // maximum number of waves is enabled
 			stopConditions['waves'] = this.stopConditions.waves;

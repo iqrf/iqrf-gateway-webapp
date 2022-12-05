@@ -193,7 +193,7 @@ export default class IqrfRepositoryConfig extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		let config = this.config;
+		const config = this.config;
 		if (!this.credentials) {
 			config.credentials = {username: null, password: null};
 		}

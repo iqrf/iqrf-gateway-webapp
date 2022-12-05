@@ -341,7 +341,7 @@ export default class WebsocketServiceForm extends Vue {
 	 * @returns {IwsService} WebsocketService configuration
 	 */
 	private buildConfiguration(): IWsService {
-		let configuration: IWsService = {
+		const configuration: IWsService = {
 			component: this.component,
 			instance: this.componentInstance,
 			WebsocketPort: this.WebsocketPort,

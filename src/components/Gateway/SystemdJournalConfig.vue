@@ -324,7 +324,7 @@ export default class SystemdJournaldConfig extends Vue {
 		if (this.config === null) {
 			return;
 		}
-		let config: ISystemdJournal = this.config;
+		const config: ISystemdJournal = this.config;
 		if (!this.sizeRotation) {
 			config.sizeRotation.maxFileSize = 0;
 		}

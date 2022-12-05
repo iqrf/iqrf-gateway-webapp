@@ -288,7 +288,7 @@ export default class MqttMessagingTable extends Vue {
 	 */
 	private edit(instance: IMqttInstance, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		let settings = {
+		const settings = {
 			...instance,
 			...newSettings,
 		};

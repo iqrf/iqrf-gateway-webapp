@@ -252,14 +252,14 @@ export default class DpaUpdater extends Vue {
 	public handleEnumResponse(response: any): void {
 		this.osBuild = response.osRead.osBuild;
 		this.trType = response.osRead.trMcuType.value;
-		let dpaStr: string = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
+		const dpaStr: string = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
 		this.currentDpa = dpaStr.split('.').join('').padStart(4, '0');
 		if (this.osBuild === null) {
 			this.osBuild = '0000';
 		}
 		DpaService.getVersions(this.osBuild)
 			.then((versions) => {
-				let fetchedVersions: Array<DpaVersions> = [];
+				const fetchedVersions: Array<DpaVersions> = [];
 				for (const version of versions) {
 					const dpaVer = Number.parseInt(version.getDpaVersion(false));
 					if (dpaVer < 400) {
@@ -295,7 +295,7 @@ export default class DpaUpdater extends Vue {
 	 * Updates list of DPA version to reflect changes made by upload
 	 */
 	private updateVersions(): void {
-		for (let item of this.versions) {
+		for (const item of this.versions) {
 			if (item.label.endsWith('(Current version)')) {
 				item.label = item.label.slice(0, -18);
 			}

@@ -651,7 +651,7 @@ export default class ControllerConfig extends Vue {
 	 * Updates the configuration of IQRF Gateway Controller
 	 */
 	private save(): void {
-		let config = JSON.parse(JSON.stringify(this.config));
+		const config = JSON.parse(JSON.stringify(this.config));
 		if (!this.useI2cPins) {
 			delete config.powerOff;
 		}

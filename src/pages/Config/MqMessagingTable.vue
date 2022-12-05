@@ -236,7 +236,7 @@ export default class MqMessagingTable extends Vue {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
 		}
-		let settings = {
+		const settings = {
 			...instance
 		};
 		settings.acceptAsyncMsg = acceptAsyncMsg;

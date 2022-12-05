@@ -194,8 +194,8 @@ export default class UserAdd extends Vue {
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
-		let roles: Array<IOption> = [];
-		for (let item of Object.keys(UserRole)) {
+		const roles: Array<IOption> = [];
+		for (const item of Object.keys(UserRole)) {
 			const itemIdx = Object.keys(UserRole).indexOf(item);
 			if (itemIdx >= roleIdx) {
 				roles.push({

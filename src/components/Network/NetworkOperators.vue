@@ -120,7 +120,7 @@ export default class NetworkOperators extends Vue {
 	private getOperators(): Promise<void> {
 		return NetworkOperatorService.getOperators()
 			.then((rsp: AxiosResponse) => {
-				let operators: Array<NetworkOperator> = [];
+				const operators: Array<NetworkOperator> = [];
 				rsp.data.forEach((operator: IOperator) => {
 					operators.push(new NetworkOperator(operator));
 				});

@@ -133,7 +133,7 @@ export default class BackupComponent extends Vue {
 	private backup(): void {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.backup.messages.backup').toString());
-		let params = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
+		const params = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
 		BackupService.backup(params)
 			.then((response: AxiosResponse) => {
 				const fileName = 'iqrf-gateway-backup_' + new Date().toISOString();

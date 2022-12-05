@@ -276,7 +276,7 @@ export default class DaemonMode extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		let configuration = {...this.ideConfiguration};
+		const configuration = {...this.ideConfiguration};
 		configuration.operMode = mode;
 		DaemonConfigurationService.updateInstance(this.ideComponent, configuration.instance, configuration)
 			.then(() => {

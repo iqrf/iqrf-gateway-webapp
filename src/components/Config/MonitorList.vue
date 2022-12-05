@@ -234,7 +234,7 @@ export default class MonitorList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const monitors = responses[0].data.instances;
 				const webSockets = responses[1].data.instances;
-				let instances: Array<unknown> = [];
+				const instances: Array<unknown> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
 							monitor.RequiredInterfaces.length === 0 ||

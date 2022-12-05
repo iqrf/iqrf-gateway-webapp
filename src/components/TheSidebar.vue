@@ -590,7 +590,7 @@ export default class TheSidebar extends Vue {
 	private filterNavMembers(members: Array<NavMember>): Array<NavMember> {
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
-		let filteredMembers: Array<NavMember> = [];
+		const filteredMembers: Array<NavMember> = [];
 		members.forEach((member: NavMember) => {
 			let children, items = false;
 			if (member.role !== undefined) {
@@ -633,7 +633,7 @@ export default class TheSidebar extends Vue {
 	 * @returns {Array<NavMemberItems>} Member items filtered by user role and enabled features
 	 */
 	private filterNavMemberItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
-		let filteredItems: Array<NavMemberItem> = [];
+		const filteredItems: Array<NavMemberItem> = [];
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
 		items.forEach((item: NavMemberItem) => {

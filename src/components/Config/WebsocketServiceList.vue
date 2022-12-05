@@ -278,7 +278,7 @@ export default class WebsocketServiceList extends Vue {
 	 */
 	private edit(service: IWsService, newSettings: Record<string, boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		let settings = {
+		const settings = {
 			...service,
 			...newSettings,
 		};

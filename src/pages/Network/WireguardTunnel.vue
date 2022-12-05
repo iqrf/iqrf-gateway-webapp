@@ -620,7 +620,7 @@ export default class WireguardTunnel extends Vue {
 		this.$store.commit('spinner/SHOW');
 		WireguardService.getTunnel(this.id)
 			.then((response: AxiosResponse) => {
-				let peerStacks: Array<StackType> = [];
+				const peerStacks: Array<StackType> = [];
 				for (const idx in response.data.peers) {
 					if (response.data.peers[idx].allowedIPs.ipv4.length === 0) {
 						response.data.peers[idx].allowedIPs.ipv4.push({address: '', prefix: 24});
@@ -742,7 +742,7 @@ export default class WireguardTunnel extends Vue {
 	 * Creates new Wireguard tunnel
 	 */
 	private saveTunnel(): void {
-		let tunnel = this.tunnel;
+		const tunnel = this.tunnel;
 		this.$store.commit('spinner/SHOW');
 		if (this.stack === StackType.SINGLE_IPV4) {
 			delete tunnel.ipv6;

@@ -249,9 +249,9 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.list(ConnectionType.GSM)
 			.then((response: AxiosResponse) => {
-				let connections: Array<NetworkConnection> = response.data;
-				for (let i in connections) {
-					let idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
+				const connections: Array<NetworkConnection> = response.data;
+				for (const i in connections) {
+					const idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
 					if (idx !== -1) {
 						connections[i]['signal'] = this.modems[idx].signal;
 						connections[i]['rssi'] = this.modems[idx].rssi;

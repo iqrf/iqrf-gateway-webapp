@@ -485,7 +485,7 @@ export default class SchedulerForm extends Vue {
 		extend('min', min_value);
 		extend('required', required);
 		extend('mType', (json) => {
-			let object = JSON.parse(json);
+			const object = JSON.parse(json);
 			return {}.hasOwnProperty.call(object, 'mType');
 		});
 		extend('cron', (cronstring: string) => {
@@ -660,7 +660,7 @@ export default class SchedulerForm extends Vue {
 			);
 			return;
 		}
-		let taskDaemon: ITaskDaemon = response.rsp;
+		const taskDaemon: ITaskDaemon = response.rsp;
 		if (Array.isArray(taskDaemon.timeSpec.cronTime)) {
 			taskDaemon.timeSpec.cronTime = taskDaemon.timeSpec.cronTime.join(' ').trim();
 		}
@@ -762,13 +762,13 @@ export default class SchedulerForm extends Vue {
 	 * @returns {ITaskTimeSpec} Submission ready time specification object
 	 */
 	private prepareTaskToSubmit(): ITaskTimeSpec {
-		let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
+		const timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
 		if (this.timeSpecSelected === TimeSpecTypes.EXACT) { // exact time, reset others
 			timeSpec.cronTime = Array(7).fill('');
 			timeSpec.exactTime = true;
 			timeSpec.periodic = false;
 			timeSpec.period = 0;
-			let date = new Date(timeSpec.startTime);
+			const date = new Date(timeSpec.startTime);
 			date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 			timeSpec.startTime = date.toISOString().split('.')[0];
 		} else if (this.timeSpecSelected === TimeSpecTypes.PERIODIC) { // periodic time, reset others
@@ -852,7 +852,7 @@ export default class SchedulerForm extends Vue {
 	 * @returns {string|undefined} Cron time alias if one exists for received time string
 	 */
 	private getCronAlias(input: string): string|undefined {
-		let aliases = new Map();
+		const aliases = new Map();
 		aliases.set('@reboot', '');
 		aliases.set('@yearly', '0 0 0 1 1 * *');
 		aliases.set('@annually', '0 0 0 1 1 * *');

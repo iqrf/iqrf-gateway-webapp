@@ -200,9 +200,9 @@ export default class OsUpdater extends Vue {
 	 * Updates list of available IQRF OS upgrades for select
 	 */
 	private updateVersions(): void {
-		let versions: Array<IOption> = [];
+		const versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
-			let upgrade: IqrfOsUpgrade = this.upgrades[i];
+			const upgrade: IqrfOsUpgrade = this.upgrades[i];
 			console.warn(upgrade);
 			let label = upgrade.os.version + ' (' + upgrade.os.build;
 			if (upgrade.os.attributes.beta) {
@@ -249,9 +249,9 @@ export default class OsUpdater extends Vue {
 		if (this.osVersion === null) {
 			return;
 		}
-		let upgrade = this.upgrades[this.osVersion];
-		let dpaRaw = upgrade.dpa.version.split('.').join('').padStart(4, '0');
-		let data = {
+		const upgrade = this.upgrades[this.osVersion];
+		const dpaRaw = upgrade.dpa.version.split('.').join('').padStart(4, '0');
+		const data = {
 			fromBuild: this.currentOsBuild,
 			fromVersion: this.currentOsVersion,
 			toVersion: upgrade.osVersion,
@@ -282,13 +282,13 @@ export default class OsUpdater extends Vue {
 	 * @param {IqrfOsUpgradeFiles} responseFiles Files needed to upgrade IQRF OS
 	 */
 	private upload(responseFiles: IqrfOsUpgradeFiles): void {
-		let files: Array<UploadUtilFile> = [];
-		for (let file of responseFiles.os.sort()) {
+		const files: Array<UploadUtilFile> = [];
+		for (const file of responseFiles.os.sort()) {
 			files.push({name: file, type: 'OS'});
 		}
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
-			for (let file of files) {
+			for (const file of files) {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('iqrfnet.trUpload.' + (file.type === 'OS' ? 'osUpload' : 'dpaUpload') + '.messages.trUpload').toString()
 				);

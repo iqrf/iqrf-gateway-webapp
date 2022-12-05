@@ -18,7 +18,7 @@
 
 /// <reference types="cypress" />
 
-const faker = require('faker');
+const {faker} = require('@faker-js/faker');
 
 context('User management', () => {
 
@@ -170,7 +170,7 @@ context('User management', () => {
 			.type(username)
 			.should('have.value', username);
 		cy.get('.card-body tbody tr td')
-			.should('have.length', 3)
+			.should('have.length',  5)
 			.first()
 			.contains(username);
 		cy.get('.card-body tbody tr td.col-actions')

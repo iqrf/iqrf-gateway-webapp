@@ -268,7 +268,7 @@ export default class MobileConnectionForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkInterfaceService.list(InterfaceType.GSM)
 			.then((response: AxiosResponse) => {
-				let interfaces: Array<IOption> = [];
+				const interfaces: Array<IOption> = [];
 				response.data.forEach((item: NetworkInterface) => {
 					interfaces.push({label: item.name, value: item.name});
 				});
@@ -315,7 +315,7 @@ export default class MobileConnectionForm extends Vue {
 	 * Saves connection configuration
 	 */
 	private saveConnection(): void {
-		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		const connection: IConnection = JSON.parse(JSON.stringify(this.connection));
 		if (connection.ipv4.current) {
 			delete connection.ipv4.current;
 		}

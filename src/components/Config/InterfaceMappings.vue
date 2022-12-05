@@ -132,7 +132,7 @@ export default class InterfaceMappings extends Vue {
 	 * @param {Array<IMapping>} mappings Array of mappings from REST API response
 	 */
 	private handleMappingResponse(mappings: Array<IMapping>): void {
-		let filteredMappings: Array<IMapping> = [];
+		const filteredMappings: Array<IMapping> = [];
 		mappings.forEach((mapping: IMapping) => {
 			if (mapping.type !== this.interfaceType) {
 				return;

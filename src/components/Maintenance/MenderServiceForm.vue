@@ -303,7 +303,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Time string
 	 */
 	private mergeArrays(array1: Array<number>, array2: Array<string>): string {
-		let result: Array<string> = [];
+		const result: Array<string> = [];
 		for (let i = 0; i < array1.length; i++) {
 			result.push(array1[i] + array2[i]);
 		}
@@ -340,7 +340,7 @@ export default class MenderForm extends Vue {
 	 * Checks if certificate input is empty
 	 */
 	private checkInput(): void {
-		let files = this.getInputFiles();
+		const files = this.getInputFiles();
 		this.inputEmpty = files.length === 0;
 	}
 
@@ -353,7 +353,7 @@ export default class MenderForm extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		if (this.uploadCert) {
-			let formData = new FormData();
+			const formData = new FormData();
 			formData.append('certificate', this.getInputFiles()[0]);
 			MenderService.uploadCertificate(formData)
 				.then((response: AxiosResponse) => {
@@ -373,7 +373,7 @@ export default class MenderForm extends Vue {
 	 * Saves Mender client configuration
 	 */
 	private saveConfig(): void {
-		let config = JSON.parse(JSON.stringify(this.configuration));
+		const config = JSON.parse(JSON.stringify(this.configuration));
 		FeatureConfigService.saveConfig(this.featureName, config)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.service.messages.saveSuccess').toString()
@@ -386,7 +386,7 @@ export default class MenderForm extends Vue {
 	 */
 	private periodString(seconds: number): string {
 		const duration = Duration.fromMillis(seconds * 1000).shiftTo('days', 'hours', 'minutes', 'seconds').toObject();
-		let nums: Array<number> = [], units: Array<string> = [];
+		const nums: Array<number> = [], units: Array<string> = [];
 		if (duration.days) {
 			nums.push(duration.days);
 			units.push(' days');

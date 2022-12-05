@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import { IOtaUploadParams } from '@/interfaces/otaUpload';
-import {OtaUploadAction} from '@/iqrfNet/otaUploadAction';
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 

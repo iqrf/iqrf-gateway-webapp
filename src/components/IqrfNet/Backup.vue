@@ -307,7 +307,7 @@ export default class Backup extends Vue {
 	 */
 	private backupProgress(response: any): string {
 		let message = this.$t('iqrfnet.networkManager.backup.messages.networkRunning', {progress: response.rsp.progress}).toString();
-		let deviceAddr = response.rsp.devices[0].deviceAddr;
+		const deviceAddr = response.rsp.devices[0].deviceAddr;
 		if (response.status === 0) {
 			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.' + (deviceAddr === 0 ? 'coordinator' : 'node') + 'Success', {deviceAddr: deviceAddr}).toString();
 		} else {

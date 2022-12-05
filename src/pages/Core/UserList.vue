@@ -319,7 +319,7 @@ export default class UserList extends Vue {
 		if (user.id === undefined) {
 			return;
 		}
-		let settings = {
+		const settings = {
 			...user,
 			...newSettings,
 		};

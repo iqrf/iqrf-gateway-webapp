@@ -264,7 +264,7 @@ export default class ComponentList extends Vue {
 				);
 				return;
 			}
-			let conf = {
+			const conf = {
 				...component
 			};
 			conf.enabled = enabled;
