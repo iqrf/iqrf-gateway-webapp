@@ -71,7 +71,6 @@ middleware:
 tracy:
 	bar:
 		- App\CoreModule\Tracy\CommandPanel(@commandStack)
-	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
 	maxDepth: 10
 
@@ -82,4 +81,5 @@ includes:
 	- guzzle.neon
 	- mailer.neon
 	- monolog.neon
+	- sentry.neon
 	- translation.neon

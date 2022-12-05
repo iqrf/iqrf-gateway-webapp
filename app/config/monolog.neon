@@ -16,29 +16,17 @@
 extensions:
 	monolog: Contributte\Monolog\DI\MonologExtension
 
-services:
-	sentryClientBuilder: Sentry\ClientBuilder::create(%sentry%)
-	sentryClient:
-		class: Sentry\ClientInterface
-		factory: @sentryClientBuilder::getClient()
-	sentryHub: Sentry\State\Hub
 monolog:
 	hook:
-		fromTracy: true
-		toTracy: true
+		fromTracy: false
+		toTracy: false
 	channel:
 		default:
-			handlers:
-				- Sentry\Monolog\Handler(@sentryHub, \Monolog\Logger::INFO)
-			processors:
-				- Monolog\Processor\MemoryPeakUsageProcessor()
-				- Monolog\Processor\WebProcessor()
-		restore:
 			handlers:
 				-
 					type: Monolog\Handler\StreamHandler
 					arguments:
-						- %logDir%/iqrf-gateway-webapp/restore.log
+						- %logDir%/iqrf-gateway-webapp/default.log
 						- Monolog\Logger::NOTICE
 	manager:
 		enabled: true

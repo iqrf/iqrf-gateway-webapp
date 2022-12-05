@@ -43,7 +43,7 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 	public function validateRequest(string $schema, ApiRequest $request): void {
 		try {
 			$this->setSchema($schema);
-			$this->validate($request->getJsonBody(false));
+			$this->validate($request->getJsonBodyCopy(false));
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidJsonException $e) {
