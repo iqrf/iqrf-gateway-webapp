@@ -19,7 +19,7 @@ extensions:
 monolog:
 	hook:
 		fromTracy: false
-		toTracy: false
+		toTracy: true
 	channel:
 		default:
 			handlers:
