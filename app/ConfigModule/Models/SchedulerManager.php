@@ -143,6 +143,7 @@ class SchedulerManager {
 				// Do nothing
 			}
 		}
+		usort($tasks, static fn (stdClass $a, stdClass $b): int => strcmp($a->taskId, $b->taskId));
 		return $tasks;
 	}
 
