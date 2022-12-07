@@ -1,10 +1,21 @@
-iqrf-gateway-webapp (2.4.13~alpha~1.gbp6adb97) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.13) stable; urgency=medium
 
-  ** SNAPSHOT build @6adb979b50f5268cadeef3506c3f2bde804f7579 **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.13-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Gateway: fix content type in log file viewer endpoint
+  * Webserver config: allow devrepo.iqrfalliance.org in CSP
+  * Network: add Bluetooth interface type, fix interface parsing
+  * Frontend: fix errors
+  * NPM: update dependencies
+  * Composer: update dependencies, use Contributte\Sentry for error reporting
+  * Maintenance: remove PIXLA management service
+  * Gateway: add apcupsd service control, add missing feature JSON schemas
+  * Monolog: forward errors to Tracy
+  * Sentry: fix logging
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 12 Sep 2022 14:59:24 +0200
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 07 Dec 2022 13:30:00 +0100
 
 iqrf-gateway-webapp (2.4.12) stable; urgency=medium
 
