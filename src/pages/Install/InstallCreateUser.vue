@@ -133,7 +133,7 @@ export default class InstallCreateUser extends Vue {
 		password: '',
 		email: '',
 		language: UserLanguage.ENGLISH,
-		role: UserRole.BASIC,
+		role: UserRole.ADMIN,
 	};
 
 	/**
