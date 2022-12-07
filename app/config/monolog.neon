@@ -16,6 +16,11 @@
 extensions:
 	monolog: Contributte\Monolog\DI\MonologExtension
 
+services:
+	monolog.sentryLogger:
+		factory: App\ApiModule\Version0\Models\SentryPsrLogger
+		autowired: false
+
 monolog:
 	hook:
 		fromTracy: false
@@ -27,6 +32,18 @@ monolog:
 					type: Monolog\Handler\StreamHandler
 					arguments:
 						- %logDir%/iqrf-gateway-webapp/default.log
+						- Monolog\Logger::WARNING
+				-
+					type: Monolog\Handler\PsrHandler
+					arguments:
+						- @monolog.sentryLogger
+						- Monolog\Logger::WARNING
+		restore:
+			handlers:
+				-
+					type: Monolog\Handler\StreamHandler
+					arguments:
+						- %logDir%/iqrf-gateway-webapp/restore.log
 						- Monolog\Logger::NOTICE
 	manager:
 		enabled: true

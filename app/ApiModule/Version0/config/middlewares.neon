@@ -14,9 +14,20 @@
 # limitations under the License.
 
 services:
-	authMiddleware:
+	middleware.auth:
 		factory: App\ApiModule\Version0\Middlewares\AuthenticationMiddleware
-		tags: [middleware: [priority: 10]]
-	corsMiddleware:
+		tags: [middleware: [priority: 250]]
+	middleware.cors:
 		factory: App\ApiModule\Version0\Middlewares\CorsMiddleware
-		tags: [middleware: [priority: 5]]
+		tags: [middleware: [priority: 200]]
+	middlewares.logging:
+		factory: Contributte\Middlewares\LoggingMiddleware
+		arguments: [@monolog.logger.default]
+		tags: [middleware: [priority: 100]]
+	middleware.tryCatch:
+		factory: Contributte\Middlewares\TryCatchMiddleware
+		tags: [middleware: [priority: 1]]
+		setup:
+			- setDebugMode(%debugMode%)
+			- setCatchExceptions(%productionMode%) # used in debug only
+			- setLogger(@monolog.logger.default, Psr\Log\LogLevel::ERROR)
