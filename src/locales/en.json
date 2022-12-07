@@ -3118,7 +3118,7 @@
 				"messages": {
 					"fetchFailed": "Failed to retrieve Mender configuration: {error}",
 					"saveFailed": "Failed to save Mender configuration: {error}",
-					"saveSuccess": "Mender configuration has been successfully saved.",
+					"saveSuccess": "Mender configuration has been successfully saved. Restart the service for changes to take effect.",
 					"serviceStatusFailed": "Failed to retrieve service status: {error}",
 					"serviceFailed": "Failed to change service state: {error}",
 					"certificateFailed": "Failed to upload certificate: {error}",
