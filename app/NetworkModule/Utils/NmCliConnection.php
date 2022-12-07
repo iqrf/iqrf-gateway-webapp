@@ -52,6 +52,7 @@ class NmCliConnection {
 			}
 			if (Strings::contains($section, '[')) {
 				[$section, $idx] = Strings::split($section, '#\[(\d+)\]#');
+				$config[$section] ??= [];
 				$output = &$config[$section][((int) $idx) - 1];
 			} else {
 				$output = &$config[$section];
