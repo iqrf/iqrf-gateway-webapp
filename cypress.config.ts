@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 import {defineConfig} from 'cypress';
-import vitePreprocessor from 'cypress-vite';
 
 export default defineConfig({
 	e2e: {
 		baseUrl: 'http://localhost:8081/',
 		setupNodeEvents(on, config) {
-			on('file:preprocessor', vitePreprocessor());
-
 			/*
 			 * Let's increase the browser window size when running headlessly
 			 * this will produce higher resolution images and videos
