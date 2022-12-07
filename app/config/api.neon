@@ -20,11 +20,14 @@ api:
 	debug: %debugMode%
 	plugins:
 		Apitte\Core\DI\Plugin\CoreDecoratorPlugin:
+		Apitte\Core\DI\Plugin\CoreServicesPlugin:
 		Apitte\Debug\DI\DebugPlugin:
 			debug:
 				panel: %debugMode%
 				negotiation: %debugMode%
 		Apitte\Middlewares\DI\MiddlewaresPlugin:
+			tracy: false
+			autobasepath: true
 		Apitte\OpenApi\DI\OpenApiPlugin:
 			files:
 				- %appDir%/../api/common.neon
