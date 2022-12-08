@@ -32,6 +32,15 @@ limitations under the License.
 							<CIcon :content='cilPlus' size='sm' />
 							{{ $t('table.actions.add') }}
 						</CButton>
+						<CButton
+							class='mr-1'
+							color='info'
+							size='sm'
+							@click='getTasks'
+						>
+							<CIcon :content='cilReload' size='sm' />
+							{{ $t('forms.refresh') }}
+						</CButton>
 						<TaskImportModal
 							class='mr-1'
 							@imported='getTasks'
@@ -42,10 +51,7 @@ limitations under the License.
 							size='sm'
 							@click='exportScheduler'
 						>
-							<CIcon
-								:content='cilArrowBottom'
-								size='sm'
-							/>
+							<CIcon :content='cilArrowBottom' size='sm' />
 							{{ $t('forms.export') }}
 						</CButton>
 						<TasksDeleteModal
@@ -129,7 +135,7 @@ import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
 
-import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilTrash, cilXCircle} from '@coreui/icons';
+import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
 import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
@@ -162,6 +168,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		cilCheckCircle,
 		cilPencil,
 		cilPlus,
+		cilReload,
 		cilTrash,
 		cilXCircle,
 	}),
