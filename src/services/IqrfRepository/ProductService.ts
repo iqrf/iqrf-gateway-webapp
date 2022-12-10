@@ -33,13 +33,14 @@ class ProductService {
 	public async get(hwpid: number): Promise<AxiosResponse> {
 		let baseUrl = 'https://repository.iqrfalliance.org/api';
 		let config = store.getters['repository/configuration'];
-		if (!config) {
+		if (config === null) {
 			await IqrfRepositoryConfigService.get()
 				.then((repositoryConfig: IIqrfRepositoryConfig) => {
 					config = repositoryConfig;
-				});
+				})
+				.catch(() => {return;});
 		}
-		if (!config) {
+		if (config !== null) {
 			baseUrl = config.apiEndpoint;
 		}
 		return axios.get(baseUrl + '/products/' + hwpid);

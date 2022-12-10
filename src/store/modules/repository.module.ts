@@ -33,16 +33,17 @@ const actions: ActionTree<RepositoryState, any> = {
 		return IqrfRepositoryConfigService.get()
 			.then((config: IIqrfRepositoryConfig) => {
 				commit('SET', config);
-			});
+			})
+			.catch(() => {return;});
 	}
 };
 
 const getters: GetterTree<RepositoryState, any> = {
-	configuration: (state: RepositoryState): IIqrfRepositoryConfig|undefined => {
+	configuration: (state: RepositoryState): IIqrfRepositoryConfig|null => {
 		if (state.config) {
 			return state.config;
 		} else {
-			return undefined;
+			return null;
 		}
 	},
 };
