@@ -117,7 +117,7 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @return InterfaceStatus Network interface
 	 */
 	public static function nmCliDeserialize(string $string): self {
-		$array = NmCliConnection::decode($string, null);
+		$array = NmCliConnection::decode($string);
 		$name = $array['GENERAL']['DEVICE'];
 		$macAddress = $array['GENERAL']['HWADDR'];
 		$manufacturer = $array['GENERAL']['VENDOR'];

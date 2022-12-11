@@ -32,10 +32,9 @@ class NmCliConnection {
 	/**
 	 * Decodes nmcli connection configuration
 	 * @param string $data nmcli connection configuration
-	 * @param string|null $prefix nmcli configuration prefix
-	 * @return array<string, string|array<string>> Connection configuration
+	 * @return array<string, array<string|array<string>>> Connection configuration
 	 */
-	public static function decode(string $data, ?string $prefix): array {
+	public static function decode(string $data): array {
 		$config = [];
 		if ($data === '') {
 			return $config;
@@ -47,24 +46,21 @@ class NmCliConnection {
 				continue;
 			}
 			[$section, $key] = explode('.', $temp[0], 2);
-			if ($prefix !== null && $section !== $prefix) {
-				continue;
-			}
 			if (Strings::contains($section, '[')) {
-				[$section, $idx] = Strings::split($section, '#\[(\d+)\]#');
+				[$section, $sectionID] = Strings::split($section, '#\[(\d+)\]#');
 				$config[$section] ??= [];
-				$output = &$config[$section][((int) $idx) - 1];
+				$output = &$config[$section][((int) $sectionID) - 1];
 			} else {
 				$output = &$config[$section];
 			}
 			if (Strings::contains($key, '[')) {
-				[$key, $idx] = Strings::split($key, '#\[(\d+)\]#');
-				$output[$key][((int) $idx) - 1] = $temp[1];
+				[$key, $keyId] = Strings::split($key, '#\[(\d+)\]#');
+				$output[$key][((int) $keyId) - 1] = $temp[1];
 			} else {
 				$output[$key] = $temp[1];
 			}
 		}
-		return $prefix === null ? $config : ($config[$prefix] ?? []);
+		return $config;
 	}
 
 	/**

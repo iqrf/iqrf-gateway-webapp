@@ -91,11 +91,11 @@ final class GSMConnection implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes GSM connection from nmcli connection string
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return GSMConnection GSM connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
 		$username = $array['username'] ?? null;
 		$password = $array['password'] ?? null;
 		$pin = $array['pin'] ?? null;

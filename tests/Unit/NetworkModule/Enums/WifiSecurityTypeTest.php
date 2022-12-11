@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Enums;
 
 use App\NetworkModule\Enums\WifiSecurityType;
+use App\NetworkModule\Utils\NmCliConnection;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -73,6 +74,7 @@ final class WifiSecurityTypeTest extends TestCase {
 	 * @param string $nmCli nmcli configuration string
 	 */
 	public function testNmCliDeserialize(WifiSecurityType $expected, string $nmCli): void {
+		$nmCli = NmCliConnection::decode($nmCli);
 		$actual = WifiSecurityType::nmCliDeserialize($nmCli);
 		Assert::same($expected, $actual);
 	}

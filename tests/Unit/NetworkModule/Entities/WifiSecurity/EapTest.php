@@ -29,6 +29,7 @@ namespace Tests\Unit\NetworkModule\Entities\WifiSecurity;
 use App\NetworkModule\Entities\WifiSecurity\Eap;
 use App\NetworkModule\Enums\EapPhaseOneMethod;
 use App\NetworkModule\Enums\EapPhaseTwoMethod;
+use App\NetworkModule\Utils\NmCliConnection;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
@@ -120,6 +121,7 @@ final class EapTest extends TestCase {
 			'802-1x.ca-cert:/certs/ca.cert' . PHP_EOL .
 			'802-1x.identity:testuser' . PHP_EOL .
 			'802-1x.password:testpass';
+		$nmCli = NmCliConnection::decode($nmCli);
 		Assert::equal($this->entity, Eap::nmCliDeserialize($nmCli));
 	}
 

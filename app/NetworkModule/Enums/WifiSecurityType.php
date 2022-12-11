@@ -65,11 +65,11 @@ final class WifiSecurityType extends Enum {
 
 	/**
 	 * Deserializes WiFi security entity from nmcli connection configuration
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return self WiFi security type entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
-		$conf = NmCliConnection::decode($nmCli, WifiConnectionSecurity::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): self {
+		$conf = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX] ?? [];
 		if ($conf === []) {
 			return self::OPEN();
 		}

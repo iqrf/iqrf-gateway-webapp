@@ -33,6 +33,7 @@ use App\NetworkModule\Entities\WifiSecurity\Wep;
 use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurityType;
+use App\NetworkModule\Utils\NmCliConnection;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
@@ -72,6 +73,7 @@ final class WifiConnectionTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '5c7010a8-88f6-48e6-8ab2-5ad713217831.conf');
+		$configuration = NmCliConnection::decode($configuration);
 		Assert::equal($this->entity, WifiConnection::nmCliDeserialize($configuration));
 	}
 

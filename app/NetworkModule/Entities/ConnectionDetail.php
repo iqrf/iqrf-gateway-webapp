@@ -217,14 +217,14 @@ class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes network connection entity from nmcli configuration
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
 		$interface = $array['interface-name'] ?? '';
 		if ($interface === '') {
-			$general = NmCliConnection::decode($nmCli, 'GENERAL');
+			$general = $nmCli['GENERAL'];
 			if ($general !== []) {
 				$interface = $general['devices'] ?? '';
 			}

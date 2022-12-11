@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv6Methods;
-use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv6;
 use JsonSerializable;
 
@@ -30,7 +29,7 @@ final class IPv6Current implements JsonSerializable {
 	/**
 	 * @var string nmcli configuration prefix
 	 */
-	private const NMCLI_PREFIX = 'IP6';
+	public const NMCLI_PREFIX = 'IP6';
 
 	/**
 	 * @var IPv6Methods Connection method
@@ -68,25 +67,25 @@ final class IPv6Current implements JsonSerializable {
 
 	/**
 	 * Deserializes IPv6 current configuration from nmcli output
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @param IPv6Methods $method IPv6 connection method
 	 * @return static IPv6 current configuration
 	 */
-	public static function nmCliDeserialize(string $nmCli, IPv6Methods $method): self {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli, IPv6Methods $method): self {
+		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
 		if (array_key_exists('GATEWAY', $array) && ($array['GATEWAY'] !== '')) {
 			$gateway = IPv6::factory($array['GATEWAY']);
 		} else {
 			$gateway = null;
 		}
 		if (array_key_exists('ADDRESS', $array)) {
-			$addresses = array_map(fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), array_values($array['ADDRESS']));
+			$addresses = array_map(static fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), $array['ADDRESS']);
 		} else {
 			$addresses = [];
 		}
 		$dns = [];
 		if (array_key_exists('DNS', $array)) {
-			$dns = array_map(fn(string $address): IPv6 => IPv6::factory($address), array_values($array['DNS']));
+			$dns = array_map(static fn(string $address): IPv6 => IPv6::factory($address), $array['DNS']);
 		}
 		return new self($method, $addresses, $gateway, $dns);
 	}
@@ -98,9 +97,9 @@ final class IPv6Current implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
+			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
-			'dns' => array_map(fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
+			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 	}
 

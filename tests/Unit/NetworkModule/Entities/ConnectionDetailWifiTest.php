@@ -44,6 +44,7 @@ use App\NetworkModule\Enums\IPv6Methods;
 use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurityType;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
 use Nette\Utils\FileSystem;
@@ -187,6 +188,7 @@ final class ConnectionDetailWifiTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
+		$nmCli = NmCliConnection::decode($nmCli);
 		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
 	}
 

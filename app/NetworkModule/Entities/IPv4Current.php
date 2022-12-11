@@ -20,8 +20,6 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
-use App\NetworkModule\Enums\IPv4Methods;
-use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use JsonSerializable;
 
@@ -33,7 +31,7 @@ final class IPv4Current implements JsonSerializable {
 	/**
 	 * @var string nmcli current configuration prefix
 	 */
-	private const NMCLI_PREFIX = 'IP4';
+	public const NMCLI_PREFIX = 'IP4';
 
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
@@ -64,18 +62,17 @@ final class IPv4Current implements JsonSerializable {
 
 	/**
 	 * Deserializes IPv4 current configuration from nmcli output
-	 * @param string $nmCli nmcli connection configuration
-	 * @param IPv4Methods $method IPv4 connection method
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return static IPv4 current configuration
 	 */
-	public static function nmCliDeserialize(string $nmCli, IPv4Methods $method): self {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): self {
+		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
 		if (array_key_exists('ADDRESS', $array)) {
-			$addresses = array_map(fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), array_values($array['ADDRESS']));
+			$addresses = array_map(static fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), $array['ADDRESS']);
 		}
 		$gateway = array_key_exists('GATEWAY', $array) ? IPv4::factory($array['GATEWAY']) : null;
 		if (array_key_exists('DNS', $array)) {
-			$dns = array_map(fn (string $address): IPv4 => IPv4::factory($address), array_values($array['DNS']));
+			$dns = array_map(static fn (string $address): IPv4 => IPv4::factory($address), $array['DNS']);
 		}
 		return new self($addresses ?? [], $gateway, $dns ?? []);
 	}
@@ -87,9 +84,9 @@ final class IPv4Current implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return [
 			'method' => 'auto',
-			'addresses' => array_map(fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
+			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
+			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 	}
 

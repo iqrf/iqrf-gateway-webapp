@@ -35,6 +35,7 @@ use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
 use Nette\Utils\FileSystem;
@@ -165,6 +166,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
+		$nmCli = NmCliConnection::decode($nmCli);
 		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
 	}
 

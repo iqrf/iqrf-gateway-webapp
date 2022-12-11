@@ -104,14 +104,17 @@ final class SerialLink implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes Serial link from nmcli connection string
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return SerialLink Serial link entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
 		$baudRate = (int) ($array['baud'] ?? 57600);
 		$bits = (int) ($array['bits'] ?? 8);
-		$parity = (string) ($array['parity'] ?? '');
+		$parity = $array['parity'] ?? '';
+		if (!in_array($parity, ['E', 'o', 'n', ''], true)) {
+			$parity = '';
+		}
 		$sendDelay = (int) ($array['send-delay'] ?? 0);
 		$stopBits = (int) ($array['stopbits'] ?? 1);
 		return new self($baudRate, $bits, $parity, $sendDelay, $stopBits);

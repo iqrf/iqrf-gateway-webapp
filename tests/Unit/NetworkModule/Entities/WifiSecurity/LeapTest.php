@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities\WifiSecurity;
 
 use App\NetworkModule\Entities\WifiSecurity\Leap;
+use App\NetworkModule\Utils\NmCliConnection;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -87,6 +88,7 @@ final class LeapTest extends TestCase {
 	public function testNmCliDeserialize(): void {
 		$nmCli = '802-11-wireless-security.leap-password:pass' . PHP_EOL .
 			'802-11-wireless-security.leap-username:name';
+		$nmCli = NmCliConnection::decode($nmCli);
 		Assert::equal($this->entity, Leap::nmCliDeserialize($nmCli));
 	}
 

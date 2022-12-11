@@ -83,13 +83,6 @@ final class ConnectionTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get network connection name
-	 */
-	public function testGetName(): void {
-		Assert::same(self::NAME, $this->entity->getName());
-	}
-
-	/**
 	 * Tests the function to get network connection UUID
 	 */
 	public function testGetUuid(): void {
@@ -101,13 +94,6 @@ final class ConnectionTest extends TestCase {
 	 */
 	public function testGetType(): void {
 		Assert::same($this->type, $this->entity->getType());
-	}
-
-	/**
-	 * Tests the function to get network interface name
-	 */
-	public function testGetInterfaceName(): void {
-		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
 	}
 
 	/**
