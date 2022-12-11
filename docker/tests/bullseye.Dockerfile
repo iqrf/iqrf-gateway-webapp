@@ -23,13 +23,14 @@ RUN apt-get update \
  && sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list' \
  && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
  && apt-get update \
- && apt-get install --no-install-recommends -y composer debhelper dh-apache2 graphviz nodejs pkg-php-tools \
+ && apt-get install --no-install-recommends -y composer debhelper dh-apache2 nodejs pkg-php-tools \
     php7.3 php7.3-common php7.3-cgi php7.3-cli php7.3-curl php7.3-json php7.3-phpdbg php7.3-mbstring php7.3-sqlite3 php7.3-xml php7.3-zip \
     php7.4 php7.4-common php7.4-cgi php7.4-cli php7.4-curl php7.4-json php7.4-phpdbg php7.4-mbstring php7.4-sqlite3 php7.4-xml php7.4-zip \
     php8.0 php8.0-common php8.0-cgi php8.0-cli php8.0-curl php8.0-phpdbg php8.0-mbstring php8.0-sqlite3 php8.0-xml php8.0-zip \
     php8.1 php8.1-common php8.1-cgi php8.1-cli php8.1-curl php8.1-phpdbg php8.1-mbstring php8.1-sqlite3 php8.1-xml php8.1-zip \
+	php8.2 php8.2-common php8.2-cgi php8.2-cli php8.2-curl php8.2-phpdbg php8.2-mbstring php8.2-sqlite3 php8.2-xml php8.2-zip \
     php php-common php-cgi php-cli php-curl php-json php-phpdbg php-pcov php-mbstring php-sqlite3 php-xml php-zip \
- && pip3 install sphinx-corlab-theme \
+ && npm install -g pnpm npm@~8 \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
