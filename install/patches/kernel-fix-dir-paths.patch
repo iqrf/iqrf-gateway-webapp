@@ -1,11 +1,12 @@
 Fixes directory paths in Kernel.php
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -39,13 +39,13 @@
+@@ -41,13 +41,14 @@
  	 */
  	public static function boot(): Configurator {
  		$configurator = new Configurator();
 -		$configurator->enableTracy(__DIR__ . '/../log');
++		$configurator->setDebugMode(false);
 +		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
  		$configurator->setTimeZone('Europe/Prague');
 -		$tempDir = __DIR__ . '/../temp';
