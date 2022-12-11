@@ -38,6 +38,7 @@ limitations under the License.
 					:items-per-page='20'
 					:pagination='true'
 					:sorter='{external: false, resetable: true}'
+					:loading='loading'
 				>
 					<template #no-items-view='{}'>
 						{{ $t('network.wireguard.tunnels.table.noTunnels') }}
@@ -93,54 +94,21 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<CModal
-			color='danger'
-			:show='tunnelToDelete !== null'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.wireguard.tunnels.modal.title') }}
-				</h5>
-			</template>
-			<span v-if='tunnelToDelete !== null'>
-				{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
-			</span>
-			<template #footer>
-				<CButton
-					color='danger'
-					@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
-				>
-					{{ $t('forms.delete') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='tunnelToDelete = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+		<WireGuardDeleteModal v-model='tunnelToDelete' @deleted='removeTunnel()' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CBadge,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CIcon,
-	CInput
-} from '@coreui/vue/src';
-
 import {cilCheckCircle, cilLink, cilLinkBroken, cilPlus, cilPencil, cilTrash, cilXCircle} from '@coreui/icons';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import WireguardService from '@/services/WireguardService';
-
+import {CBadge, CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CInput} from '@coreui/vue/src';
 import {AxiosError, AxiosResponse} from 'axios';
+
+import WireGuardDeleteModal from '@/components/Network/WireGuardDeleteModal.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {IField} from '@/interfaces/Coreui';
 import {IWG} from '@/interfaces/Network/Wireguard';
+import WireguardService from '@/services/WireguardService';
 
 @Component({
 	components: {
@@ -149,8 +117,10 @@ import {IWG} from '@/interfaces/Network/Wireguard';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CDataTable,
 		CIcon,
 		CInput,
+		WireGuardDeleteModal,
 	},
 	data: () => ({
 		cilCheckCircle,
@@ -170,6 +140,12 @@ import {IWG} from '@/interfaces/Network/Wireguard';
  * WireGuard connections component
  */
 export default class WireguardTunnels extends Vue {
+
+	/**
+	 * @property {boolean} loading - Is the tunnels loading?
+	 */
+	private loading = false;
+
 	/**
 	 * @var {Array<IWG>} tunnels Array of existing tunnels
 	 */
@@ -213,13 +189,16 @@ export default class WireguardTunnels extends Vue {
 	 * Retrieves existing WireGuard tunnels and stores data into table
 	 */
 	private getTunnels(): Promise<void> {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		return WireguardService.listTunnels()
 			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
 				this.tunnels = response.data;
+				this.loading = false;
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.listFailed'));
+			.catch((error: AxiosError) => {
+				this.loading = false;
+				extendedErrorToast(error, 'network.wireguard.tunnels.messages.listFailed');
+			});
 	}
 
 	/**
@@ -229,23 +208,29 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeActiveState(id: number, name: string, state: boolean): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		if (state) {
 			WireguardService.activateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'network.wireguard.tunnels.messages.activateFailed',
-					{tunnel: name}
-				));
+				.catch((error: AxiosError) => {
+					this.loading = false;
+					extendedErrorToast(
+						error,
+						'network.wireguard.tunnels.messages.activateFailed',
+						{tunnel: name}
+					);
+				});
 		} else {
 			WireguardService.deactivateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'network.wireguard.tunnels.messages.deactivateFailed',
-					{tunnel: name}
-				));
+				.catch((error: AxiosError) => {
+					this.loading = false;
+					extendedErrorToast(
+						error,
+						'network.wireguard.tunnels.messages.deactivateFailed',
+						{tunnel: name}
+					);
+				});
 		}
 	}
 
@@ -270,23 +255,29 @@ export default class WireguardTunnels extends Vue {
 	 * @param {boolean} state WireGuard tunnel state
 	 */
 	private changeEnabledState(id: number, name: string, state: boolean): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		if (state) {
 			WireguardService.enableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'network.wireguard.tunnels.messages.enableFailed',
-					{tunnel: name}
-				));
+				.catch((error: AxiosError) => {
+					this.loading = false;
+					extendedErrorToast(
+						error,
+						'network.wireguard.tunnels.messages.enableFailed',
+						{tunnel: name}
+					);
+				});
 		} else {
 			WireguardService.disableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'network.wireguard.tunnels.messages.disableFailed',
-					{tunnel: name}
-				));
+				.catch((error: AxiosError) => {
+					this.loading = false;
+					extendedErrorToast(
+						error,
+						'network.wireguard.tunnels.messages.disableFailed',
+						{tunnel: name}
+					);
+				});
 		}
 	}
 
@@ -305,26 +296,11 @@ export default class WireguardTunnels extends Vue {
 
 	/**
 	 * Removes an existing WireGuard tunnel
-	 * @param {number} id WireGuard tunnel ID
-	 * @param {string} name WireGuard tunnel name
 	 */
-	private removeTunnel(id: number, name: string): void {
+	private removeTunnel(): void {
 		this.tunnelToDelete = null;
-		this.$store.commit('spinner/SHOW');
-		WireguardService.removeTunnel(id)
-			.then(() => {
-				this.getTunnels().then(() => this.$toast.success(
-					this.$t(
-						'network.wireguard.tunnels.messages.deleteSuccess',
-						{tunnel: name}
-					).toString()
-				));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(
-				error,
-				'network.wireguard.tunnels.messages.deleteFailed',
-				{tunnel: name}
-			));
+		this.getTunnels();
 	}
+
 }
 </script>

@@ -18,6 +18,7 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
 import {IWGTunnel} from '@/interfaces/Network/Wireguard';
+import {WireguardStack} from '@/enums/Network/Wireguard';
 
 /**
  * Wireguard VPN service
@@ -59,8 +60,32 @@ class WireguardService {
 	 * Retrieves configuration of existing Wireguard tunnel
 	 * @param {number} id Wireguard tunnel name
 	 */
-	getTunnel(id: number): Promise<AxiosResponse> {
-		return axios.get('network/wireguard/' + id, {headers: authorizationHeader()});
+	getTunnel(id: number): Promise<IWGTunnel> {
+		return axios.get('network/wireguard/' + id, {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				const tunnel = response.data as IWGTunnel;
+				for (const idx in tunnel.peers) {
+					if (tunnel.peers[idx].allowedIPs.ipv4.length === 0) {
+						tunnel.peers[idx].allowedIPs.ipv4.push({address: '', prefix: 24});
+						tunnel.peers[idx].allowedIPs.stack = WireguardStack.IPV4;
+					} else if (tunnel.peers[idx].allowedIPs.ipv6.length === 0) {
+						tunnel.peers[idx].allowedIPs.ipv6.push({address: '', prefix: 64});
+						tunnel.peers[idx].allowedIPs.stack = WireguardStack.IPV6;
+					} else {
+						tunnel.peers[idx].allowedIPs.stack = WireguardStack.DUAL;
+					}
+				}
+				if (tunnel.ipv4 !== undefined && tunnel.ipv6 !== undefined) {
+					tunnel.stack = WireguardStack.DUAL;
+				} else if (tunnel.ipv4 !== undefined && tunnel.ipv6 === undefined) {
+					tunnel.stack = WireguardStack.IPV4;
+					Object.assign(tunnel, {ipv6: {address: '', prefix: 64}});
+				} else {
+					tunnel.stack = WireguardStack.IPV6;
+					Object.assign(tunnel, {ipv4: {address: '', prefix: 24}});
+				}
+				return tunnel;
+			});
 	}
 
 	/**
