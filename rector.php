@@ -29,7 +29,6 @@ use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
-use Rector\Nette\Set\NetteSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
 
@@ -51,11 +50,6 @@ return static function (RectorConfig $rectorConfig): void {
 		DoctrineSetList::DOCTRINE_COMMON_20,
 		DoctrineSetList::DOCTRINE_DBAL_30,
 		DoctrineSetList::DOCTRINE_ORM_29,
-		NetteSetList::NETTE_31,
-		NetteSetList::NETTE_STRICT,
-		NetteSetList::NETTE_CODE_QUALITY,
-		NetteSetList::NETTE_UTILS_CODE_QUALITY,
-		NetteSetList::NETTE_REMOVE_INJECT,
 		SetList::CODE_QUALITY,
 		SetList::CODING_STYLE,
 		SetList::DEAD_CODE,
