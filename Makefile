@@ -45,7 +45,7 @@ cache-purge:
 	rm -rf temp/cache/
 
 coverage: deps
-	vendor/bin/tester -p phpdbg -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests
+	vendor/bin/tester -c ./tests/php-coverage.ini --coverage ./coverage.html --coverage-src ./app ./tests
 
 cc: temp/code-checker
 	php temp/code-checker/code-checker -l --no-progress --strict-types $(CC_IGNORE)
