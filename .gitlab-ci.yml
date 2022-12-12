@@ -19,6 +19,7 @@ stages:
   - build-docker-testing
   - test
   - coding-style
+  - sentry-release
   - build-package
   - deploy-package
   - build-docker
@@ -50,6 +51,12 @@ cache:
   retry: 2
   tags:
     - linux, amd64
+
+.sentry-version_template: &sentry-version_template
+  stage: sentry-release
+  script:
+    - sentry-cli releases new -p iqrf-gateway-webapp -p iqrf-gateway-webapp-frontend ${VERSION}
+    - sentry-cli releases set-commits --auto ${VERSION}
 
 .ssh_template: &ssh_template
   before_script:
@@ -196,6 +203,20 @@ qa:
   script:
     - make qa
   <<: *coding-style_template
+
+sentry-version:
+  before_script:
+    - export VERSION=`jq -r .version version.json`"~${CI_PIPELINE_ID}"
+  except:
+    - tags
+  <<: *sentry-version_template
+
+sentry-version_release:
+  before_script:
+    - export VERSION=`jq -r .version version.json`
+  only:
+    - tags
+  <<: *sentry-version_template
 
 build-package:
   stage: build-package
