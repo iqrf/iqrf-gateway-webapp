@@ -343,11 +343,17 @@ export default class SchedulerList extends Vue {
 		}, 1000);
 	}
 
+	/**
+	 * Retrieves task list via Daemon API
+	 */
 	private list(): void {
 		SchedulerService.listTasks(true, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Retrieves task list via REST API
+	 */
 	private listRest(): void {
 		this.loading = true;
 		this.lastFetchedRest = true;

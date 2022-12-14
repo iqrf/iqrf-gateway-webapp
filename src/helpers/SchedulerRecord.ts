@@ -174,7 +174,7 @@ export default class SchedulerRecord {
 		timeSpec.periodic = timeSpec.exactTime = false;
 		timeSpec.startTime = '';
 		timeSpec.period = 0;
-		timeSpec.cronTime = Array(7).fill('');
+		timeSpec.cronTime = '';
 		if (type === TimeSpecTypes.EXACT) {
 			timeSpec.startTime = startTime;
 			timeSpec.exactTime = true;
