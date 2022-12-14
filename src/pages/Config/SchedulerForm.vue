@@ -610,9 +610,11 @@ export default class SchedulerForm extends Vue {
 	private saveTask(): void {
 		this.$store.commit('spinner/SHOW');
 		const record = SchedulerRecord.prepareRecord(this.timeSpecSelected, JSON.parse(JSON.stringify(this.record)));
-		record.newTaskId = this.taskId;
-		if (this.taskId && record.taskId != this.taskId) {
+		if (this.taskId !== null) {
+			record.newTaskId = record.taskId;
 			record.taskId = this.taskId;
+		} else {
+			delete record.newTaskId;
 		}
 		if (this.$route.path === '/config/daemon/scheduler/add') {
 			if (this.useRest) {
