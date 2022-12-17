@@ -119,7 +119,7 @@ export default class NetworkIssues extends Vue {
 				this.handleInconsistentMids(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceDuplicatedAddresses') {
 				this.handleDuplicatedAddresses(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqmeshNetwork_UselessPrebondedNodes') {
+			} else if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceUselessPrebondedNodes') {
 				this.handlePrebondedNodes(mutation.payload.data);
 			} else {
 				this.$toast.error(
