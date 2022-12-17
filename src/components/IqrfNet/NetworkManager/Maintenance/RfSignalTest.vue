@@ -214,10 +214,14 @@ export default class RfSignalTest extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
 			if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceTestRF') {
 				this.handleTestRf(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}

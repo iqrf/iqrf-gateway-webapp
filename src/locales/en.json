@@ -1518,7 +1518,9 @@
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
 		"messages": {
-			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect..."
+			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect...",
+			"genericError": "An unexpected error has occurred while processing the request.",
+			"genericErrorMessage": "An unexpected error has occurred while processing the request: {error}"
 		},
 		"product": {
 			"title": "Product browser",

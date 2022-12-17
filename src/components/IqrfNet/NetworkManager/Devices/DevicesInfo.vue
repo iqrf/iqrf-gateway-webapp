@@ -202,7 +202,7 @@ export default class DevicesInfo extends Vue {
 					this.handleIndicate(mutation.payload);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$toast.error(
-						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+						this.$t('iqrfnet.messages.genericErrorMessage', {error: mutation.payload.data.rsp.errorStr}).toString()
 					);
 				}
 			}

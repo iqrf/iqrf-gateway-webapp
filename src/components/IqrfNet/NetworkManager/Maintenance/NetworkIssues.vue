@@ -114,12 +114,17 @@ export default class NetworkIssues extends Vue {
 				return;
 			}
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
 			if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceInconsistentMIDsInCoord') {
 				this.handleInconsistentMids(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceDuplicatedAddresses') {
 				this.handleDuplicatedAddresses(mutation.payload.data);
-			} else {
+			} else if (mutation.payload.mType === 'iqmeshNetwork_UselessPrebondedNodes') {
 				this.handlePrebondedNodes(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}
@@ -231,7 +236,6 @@ export default class NetworkIssues extends Vue {
 	 * @param {string} message Toast message
 	 */
 	private handleSuccess(message: string): void {
-		this.$store.dispatch('spinner/hide');
 		this.$toast.success(this.$t(message).toString());
 	}
 
@@ -240,7 +244,6 @@ export default class NetworkIssues extends Vue {
 	 * @param {string} message Toast message
 	 */
 	private handleFailure(message: string): void {
-		this.$store.dispatch('spinner/hide');
 		this.$toast.error(this.$t(message).toString());
 	}
 
@@ -248,7 +251,6 @@ export default class NetworkIssues extends Vue {
 	 * Hides spinner and shows info toast
 	 */
 	private handleInfo(message: string): void {
-		this.$store.dispatch('spinner/hide');
 		this.$toast.info(this.$t(message).toString());
 	}
 }

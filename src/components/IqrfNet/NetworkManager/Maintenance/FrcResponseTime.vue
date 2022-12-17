@@ -124,10 +124,15 @@ export default class FrcResponseTime extends Vue {
 				return;
 			}
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
 			if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceFrcResponseTime') {
 				this.handleGetResponseTime(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedFrc_SetParams') {
 				this.handleSetFrcResponseTime(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}
@@ -159,8 +164,15 @@ export default class FrcResponseTime extends Vue {
 	 * @param response Response
 	 */
 	private handleGetResponseTime(response): void {
-		if (response.status !== 0) {
-			this.$store.dispatch('spinner/hide');
+		if (response.status === 0) {
+			response.rsp.command = this.command;
+			this.result = response.rsp;
+			this.showResult();
+		} else if (response.status === 1003) {
+			this.$toast.info(
+				this.$t('forms.messages.noBondedNodes').toString()
+			);
+		} else {
 			this.$toast.error(
 				this.$t(
 					'iqrfnet.networkManager.maintenance.frcResponseTime.messages.failed',
@@ -168,10 +180,6 @@ export default class FrcResponseTime extends Vue {
 				).toString()
 			);
 		}
-		this.$store.dispatch('spinner/hide');
-		response.rsp.command = this.command;
-		this.result = response.rsp;
-		this.showResult();
 	}
 
 	/**

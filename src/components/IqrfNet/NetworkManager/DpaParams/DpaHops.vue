@@ -211,6 +211,10 @@ export default class DpaHops extends Vue {
 			this.$store.dispatch('spinner/hide');
 			if (mutation.payload.mType === 'iqmeshNetwork_DpaHops') {
 				this.handleHops(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}

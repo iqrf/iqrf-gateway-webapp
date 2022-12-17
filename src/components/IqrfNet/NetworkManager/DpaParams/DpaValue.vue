@@ -119,6 +119,10 @@ export default class DpaValue extends Vue {
 			this.$store.dispatch('spinner/hide');
 			if (mutation.payload.mType === 'iqmeshNetwork_DpaValue') {
 				this.handleValue(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}
