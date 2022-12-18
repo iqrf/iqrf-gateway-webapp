@@ -14,5 +14,6 @@
 # limitations under the License.
 
 services:
+	- App\InstallModule\Models\DependencyManager(%sudo%)
 	- App\InstallModule\Models\PhpModuleManager
 	- App\InstallModule\Models\SudoManager

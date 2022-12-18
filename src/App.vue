@@ -60,10 +60,22 @@ export default class App extends Vue {
 	 * Vue lifecycle hook before created
 	 */
 	async beforeCreate(): Promise<void> {
+		await this.$store.dispatch(
+			'spinner/show',
+			{timeout: null, text: this.$t('install.messages.check').toString()}
+		);
 		await this.$store.dispatch('features/fetch');
 		await InstallationService.check()
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
+				if (check.dependencies.length !== 0) {
+					this.$router.push({
+						name: 'missing-dependency',
+						params: {
+							json: JSON.stringify(check.dependencies),
+						},
+					});
+				}
 				if (!check.phpModules.allExtensionsLoaded) {
 					this.$router.push({
 						name: 'missing-extension',
@@ -93,6 +105,7 @@ export default class App extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
+				this.$store.dispatch('spinner/hide');
 				console.error(error);
 			});
 	}

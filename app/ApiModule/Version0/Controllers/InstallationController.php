@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\InstallModule\Models\DependencyManager;
 use App\InstallModule\Models\PhpModuleManager;
 use App\InstallModule\Models\SudoManager;
 use App\Models\Database\EntityManager;
@@ -38,6 +39,11 @@ use Doctrine\Migrations\DependencyFactory as MigrationsDependencyFactory;
  * @Tag("Installation manager")
  */
 class InstallationController extends BaseController {
+
+	/**
+	 * @var DependencyManager Dependency manager
+	 */
+	private DependencyManager $dependencyManager;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -61,13 +67,15 @@ class InstallationController extends BaseController {
 
 	/**
 	 * Constructor
+	 * @param DependencyManager $dependencyManager Dependency manager
 	 * @param EntityManager $entityManager Database entity manager
 	 * @param MigrationsDependencyFactory $migrationsDependencyFactory Doctrine migrations dependency factory
 	 * @param PhpModuleManager $phpModuleManager Php module manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param SudoManager $sudoManager Sudo manager
 	 */
-	public function __construct(EntityManager $entityManager, MigrationsDependencyFactory $migrationsDependencyFactory, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
+	public function __construct(DependencyManager $dependencyManager, EntityManager $entityManager, MigrationsDependencyFactory $migrationsDependencyFactory, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
+		$this->dependencyManager = $dependencyManager;
 		$this->entityManager = $entityManager;
 		$this->migrationsDependencyFactory = $migrationsDependencyFactory;
 		$this->phpModuleManager = $phpModuleManager;
@@ -100,6 +108,7 @@ class InstallationController extends BaseController {
 		if ($sudo !== []) {
 			$status['sudo'] = $sudo;
 		}
+		$status['dependencies'] = $this->dependencyManager->listMissing();
 		if (!$status['allMigrationsExecuted']) {
 			return $response->writeJsonBody($status);
 		}

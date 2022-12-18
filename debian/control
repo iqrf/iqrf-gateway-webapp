@@ -13,7 +13,8 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 
 Package: iqrf-gateway-webapp
 Architecture: all
-Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-journal-reader, openssl,
+Depends: ${misc:Depends}, apt, gawk, iproute2,
+ iqrf-gateway-daemon, iqrf-journal-reader, net-tools, openssl, passwd,
  php7.4-common | php8.0-common | php8.1-common,
  php7.4-cli | php8.0-cli | php8.1-cli,
  php7.4-fpm | php8.0-fpm | php8.1-fpm,
@@ -23,6 +24,6 @@ Depends: ${misc:Depends}, iqrf-gateway-daemon, iqrf-journal-reader, openssl,
  php7.4-sqlite3 | php8.0-sqlite3 | php8.1-sqlite3,
  php7.4-xml | php8.0-xml | php8.1-xml,
  php7.4-zip | php8.0-zip | php8.1-zip,
- nginx | apache2, sudo, wireguard-tools
+ procps, nginx | apache2, sudo, systemd, systemd-sysv
 Description: Web user interface for IQRF Gateway Daemon
  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.

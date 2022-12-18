@@ -2644,6 +2644,13 @@
 		},
 		"error": {
 			"howToFix": "How to fix it",
+			"missingDependency":{
+				"title": "One or more dependencies are missing",
+				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
+				"details": "Details",
+				"command": "Missing command",
+				"package": "Package"
+			},
 			"missingExtension": {
 				"title": "One or more PHP extensions are missing",
 				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",

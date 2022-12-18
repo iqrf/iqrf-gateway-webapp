@@ -68,9 +68,10 @@ const InstallationWizard = () => import(/* webpackChunkName: "install" */ '@/pag
 const InstallCreateUser = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallCreateUser.vue');
 const InstallRestore = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallRestore.vue');
 const InstallSmtpConfig = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSmtpConfig.vue');
-const GatewayUserPassword = () => import('@/components/Gateway/Services/GatewayUserPassword.vue');
+const GatewayUserPassword = () => import(/* webpackChunkName: "install" */'@/components/Gateway/Services/GatewayUserPassword.vue');
 const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pages/Install/InstallGatewayInfo.vue');
 const InstallSshStatus = () => import(/* webpackChunkName: "install" */'@/pages/Install/InstallSshStatus.vue');
+const MissingDependency = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingDependency.vue');
 const MissingExtension = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingExtension.vue');
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
 const SudoError = () => import(/* webpackChunkName: "install" */ '@/pages/Install/SudoError.vue');
@@ -189,6 +190,12 @@ const routes: Array<RouteConfig> = [
 			{
 				component: MissingMigration,
 				path: 'error/missing-migration',
+			},
+			{
+				name: 'missing-dependency',
+				component: MissingDependency,
+				path: 'error/missing-dependency',
+				props: true,
 			},
 			{
 				name: 'missing-extension',
@@ -1196,7 +1203,11 @@ router.beforeEach((to, _from, next) => {
 	if (!to.path.startsWith('/install/') && (typeof to.name !== 'string' || !whitelist.includes(to.name))) {
 		if (!store.getters['user/isLoggedIn']) {
 			store.dispatch('user/signOut').then(() => {
-				next({path: '/sign/in', query: {redirect: to.path}});
+				let query = {...to.query};
+				if (to.path !== '/' && to.path !== '/sign/in') {
+					query = {...query, redirect: to.path};
+				}
+				next({path: '/sign/in', query: query});
 			});
 			return;
 		}

@@ -23,9 +23,17 @@ import store from '@/store';
  */
 export interface InstallationCheck {
 	allMigrationsExecuted: boolean,
+	dependencies: Array<InstallationCheckDependency>
 	hasUsers?: boolean,
 	phpModules: InstallationCheckPhp,
 	sudo?: InstallationCheckSudo,
+}
+
+export interface InstallationCheckDependency {
+	command: string,
+	critical: boolean,
+	package: string,
+	feature?: string,
 }
 
 /**
@@ -59,8 +67,10 @@ class InstallationService {
 	 * Checks the installation
 	 */
 	public check(): Promise<InstallationCheck> {
-		store.commit('spinner/SHOW');
-		store.commit('spinner/UPDATE_TEXT', i18n.t('install.messages.check').toString());
+		store.dispatch(
+			'spinner/show',
+			{timeout: 0, text: i18n.t('install.messages.check').toString()}
+		);
 		return axios.get('/installation')
 			.then((response: AxiosResponse) => {
 				store.commit('installation/CHECKED');
