@@ -53,7 +53,7 @@ limitations under the License.
 			</CDropdown>
 		</CButtonGroup>
 		<MappingFormModal ref='formModal' @update-mappings='getMappings' />
-		<MappingDeleteConfirmation ref='deleteModal' @delete-mapping='deleteMapping' />
+		<MappingDeleteModal ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
 
