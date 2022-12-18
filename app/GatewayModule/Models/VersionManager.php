@@ -137,6 +137,10 @@ class VersionManager {
 		return $api['response']->data->rsp->version;
 	}
 
+	/**
+	 * Returns IQRF Gateway Setter's version
+	 * @return string|null IQRF Gateway Setter's version
+	 */
 	public function getSetter(): ?string {
 		if (!$this->commandManager->commandExist('iqrf-gateway-setter')) {
 			return null;
@@ -194,13 +198,13 @@ class VersionManager {
 			}
 		}
 		$pipeline = $array['pipeline'] ?? '';
-		if ($pipeline === '') {
-			return $version . ($verbose ? ' (' . $commit . ')' : '');
+		if (
+			$pipeline !== '' &&
+			Strings::match($version, '#^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$#i') !== null
+		) {
+			$version .= '~' . $pipeline;
 		}
-		if (Strings::match($version, '#^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$#i') !== null) {
-			return $version . '~' . $array['pipeline'] . ($verbose ? ' (' . $commit . ')' : '');
-		}
-		return $version . ($verbose ? ' (' . $commit . ')' : '');
+		return $version . ($verbose && $commit !== '' ? ' (' . $commit . ')' : '');
 	}
 
 }

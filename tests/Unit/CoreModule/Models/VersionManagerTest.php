@@ -27,12 +27,13 @@ declare(strict_types = 1);
 namespace Tests\Unit\CoreModule\Models;
 
 use App\CoreModule\Models\VersionManager;
+use App\GatewayModule\Models\VersionManager as GatewayVersionManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
-use Mockery\Mock;
+use Mockery\MockInterface;
 use Nette\Caching\Storages\DevNullStorage;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -52,7 +53,7 @@ final class VersionManagerTest extends CommandTestCase {
 	/**
 	 * @var string Current stable version of the webapp
 	 */
-	private const STABLE_VERSION = '2.0.0';
+	private const STABLE_VERSION = '2.4.0';
 
 	/**
 	 * @var DevNullStorage Cache storage for testing
@@ -60,7 +61,12 @@ final class VersionManagerTest extends CommandTestCase {
 	private DevNullStorage $cacheStorage;
 
 	/**
-	 * @var Mock|VersionManager Version manager
+	 * @var GatewayVersionManager|MockInterface Gateway version manager
+	 */
+	private GatewayVersionManager $gwVersionManager;
+
+	/**
+	 * @var VersionManager|MockInterface Version manager
 	 */
 	private $manager;
 
@@ -68,8 +74,9 @@ final class VersionManagerTest extends CommandTestCase {
 	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateNo(): void {
-		$this->manager->shouldReceive('getInstalledWebapp')
-			->withArgs([false])->andReturn(self::CURRENT_VERSION);
+		$this->gwVersionManager->shouldReceive('getWebapp')
+			->withArgs([false])
+			->andReturn(self::CURRENT_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
 			->withArgs([])->andReturn(self::CURRENT_VERSION);
 		Assert::false($this->manager->availableWebappUpdate());
@@ -79,8 +86,9 @@ final class VersionManagerTest extends CommandTestCase {
 	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateYes(): void {
-		$this->manager->shouldReceive('getInstalledWebapp')
-			->withArgs([false])->andReturn(self::STABLE_VERSION);
+		$this->gwVersionManager->shouldReceive('getWebapp')
+			->withArgs([false])
+			->andReturn(self::STABLE_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
 			->withArgs([])->andReturn(self::CURRENT_VERSION);
 		Assert::true($this->manager->availableWebappUpdate());
@@ -95,7 +103,7 @@ final class VersionManagerTest extends CommandTestCase {
 		]);
 		$handler = HandlerStack::create($responseMock);
 		$client = new Client(['handler' => $handler]);
-		$manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
+		$manager = new VersionManager($this->cacheStorage, $client, $this->gwVersionManager);
 		Assert::same(self::STABLE_VERSION, $manager->getCurrentWebapp());
 	}
 
@@ -109,34 +117,8 @@ final class VersionManagerTest extends CommandTestCase {
 		]);
 		$handler = HandlerStack::create($responseMock);
 		$client = new Client(['handler' => $handler]);
-		$manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
+		$manager = new VersionManager($this->cacheStorage, $client, $this->gwVersionManager);
 		Assert::same(self::STABLE_VERSION, $manager->getCurrentWebapp());
-	}
-
-	/**
-	 * Tests the function to get the installed webapp version
-	 */
-	public function testGetInstalledWebapp(): void {
-		Assert::same(self::CURRENT_VERSION, $this->manager->getInstalledWebapp(false));
-	}
-
-	/**
-	 * Tests the function to get the installed webapp version with git
-	 */
-	public function testGetInstalledWebappGit(): void {
-		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'true');
-		$this->receiveCommand('git rev-parse --verify HEAD', null, 'commit');
-		$expected = 'v' . self::CURRENT_VERSION . ' (commit)';
-		Assert::same($expected, $this->manager->getInstalledWebapp());
-	}
-
-	/**
-	 * Tests the function to get the installed webapp version
-	 */
-	public function testGetInstalledWebappFallback(): void {
-		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'false');
-		$expected = 'v' . self::CURRENT_VERSION;
-		Assert::same($expected, $this->manager->getInstalledWebapp());
 	}
 
 	/**
@@ -146,7 +128,8 @@ final class VersionManagerTest extends CommandTestCase {
 		parent::setUp();
 		$this->cacheStorage = new DevNullStorage();
 		$client = new Client();
-		$this->manager = Mockery::mock(VersionManager::class, [$this->commandManager, $this->cacheStorage, $client])->makePartial();
+		$this->gwVersionManager = Mockery::mock(GatewayVersionManager::class);
+		$this->manager = Mockery::mock(VersionManager::class, [$this->cacheStorage, $client, $this->gwVersionManager])->makePartial();
 	}
 
 }

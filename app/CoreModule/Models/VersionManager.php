@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use App\GatewayModule\Models\VersionManager as GatewayVersionManager;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Nette\Caching\Cache;
@@ -43,26 +44,20 @@ class VersionManager {
 	private ClientInterface $client;
 
 	/**
-	 * @var CommandManager Command manager
+	 * @var GatewayVersionManager Gateway version manager
 	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private JsonFileManager $jsonFileManager;
+	private GatewayVersionManager $versionManager;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
 	 * @param Storage $storage Cache storage
 	 * @param ClientInterface $client HTTP(S) client
+	 * @param GatewayVersionManager $versionManager Gateway version manager
 	 */
-	public function __construct(CommandManager $commandManager, Storage $storage, ClientInterface $client) {
+	public function __construct(Storage $storage, ClientInterface $client, GatewayVersionManager $versionManager) {
 		$this->cache = new Cache($storage, 'version_manager');
 		$this->client = $client;
-		$this->commandManager = $commandManager;
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../', $commandManager);
+		$this->versionManager = $versionManager;
 	}
 
 	/**
@@ -71,32 +66,10 @@ class VersionManager {
 	 * @throws JsonException
 	 */
 	public function availableWebappUpdate(): bool {
-		$installedVersion = $this->getInstalledWebapp(false);
+		$installedVersion = $this->versionManager->getWebapp(false);
 		$currentVersion = $this->getCurrentWebapp();
+		print_r([$installedVersion, $currentVersion]);
 		return version_compare($installedVersion, $currentVersion, '<');
-	}
-
-	/**
-	 * Gets the installed version of the webapp
-	 * @param bool $verbose Is verbose mode enabled?
-	 * @return string Installed version of the webapp
-	 * @throws JsonException
-	 */
-	public function getInstalledWebapp(bool $verbose = true): string {
-		$file = $this->jsonFileManager->read('version');
-		$version = $file['version'];
-		if (!$verbose) {
-			return trim($version, 'v');
-		}
-		if (isset($file['commit']) && $file['commit'] !== '') {
-			return $version . ' (' . $file['commit'] . ')';
-		}
-		$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree')->getStdout();
-		if ($isRepo === 'true') {
-			$commit = $this->commandManager->run('git rev-parse --verify HEAD')->getStdout();
-			return $version . ' (' . $commit . ')';
-		}
-		return $version;
 	}
 
 	/**
