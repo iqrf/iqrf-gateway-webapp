@@ -143,7 +143,7 @@ class UsersController extends BaseController {
 			self::checkScopes($request, ['users:admin', 'users:basic']);
 		}
 		$this->validator->validateRequest('userCreate', $request);
-		$json = $request->getJsonBody();
+		$json = $request->getJsonBodyCopy();
 		if ($this->repository->count([]) !== 0 &&
 			!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
 			self::checkScopes($request, ['users:admin']);
@@ -291,7 +291,7 @@ class UsersController extends BaseController {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->validator->validateRequest('userEdit', $request);
-		$json = $request->getJsonBody();
+		$json = $request->getJsonBodyCopy();
 		if (array_key_exists('username', $json)) {
 			if ($this->manager->checkUsernameUniqueness($json['username'], $id)) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
