@@ -48,6 +48,11 @@ limitations under the License.
 							{{ item.description === null ? 'None' : item.description }}
 						</td>
 					</template>
+					<template #createdAt='{item}'>
+						<td>
+							{{ timeString(item.createdAt) }}
+						</td>
+					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
@@ -142,6 +147,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon} from '@coreui/vue/src';
+import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
 
 import {cilPlus, cilTrash, cilInfo, cilClipboard} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -151,7 +157,7 @@ import SshService from '@/services/SshService';
 import {AxiosResponse, AxiosError} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {ISshKey} from '@/interfaces/Core/SshKey';
-import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
+import {DateTime} from 'luxon';
 
 @Component({
 	components: {
@@ -162,6 +168,7 @@ import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
 		CCollapse,
 		CDataTable,
 		CIcon,
+		SshKeyDeleteModal,
 	},
 	data: () => ({
 		cilClipboard,
@@ -189,9 +196,17 @@ export default class SshKeyList extends Vue {
 	private keys: Array<ISshKey> = [];
 
 	/**
-	 * @var {ISshKey|null} keyToDelete
+	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
 	 */
-	private keyToDelete: ISshKey|null = null;
+	private dateFormat: Record<string, string|boolean> = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour12: false,
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	};
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -280,6 +295,13 @@ export default class SshKeyList extends Vue {
 		this.$toast.success(
 			this.$t(`core.security.ssh.messages.${path}`).toString()
 		);
+	}
+
+	/**
+	 * Converts UTC timestring to locale
+	 */
+	private timeString(timestamp: string): string {
+		return DateTime.fromISO(timestamp).toLocaleString(this.dateFormat);
 	}
 
 }

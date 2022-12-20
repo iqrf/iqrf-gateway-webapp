@@ -22,6 +22,7 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TId;
+use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
@@ -149,7 +150,7 @@ class SshKey implements JsonSerializable {
 			'key' => $this->toString(),
 			'hash' => $this->getHash(),
 			'description' => $this->getDescription(),
-			'createdAt' => $this->getCreatedAt()->format('c'),
+			'createdAt' => $this->getCreatedAt()->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z'),
 		];
 	}
 

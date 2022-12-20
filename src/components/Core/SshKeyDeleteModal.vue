@@ -70,13 +70,27 @@ import {ISshKey} from '@/interfaces/Core/SshKey';
  * SSH key delete modal window component
  */
 export default class SshKeyDeleteModal extends ModalBase {
+	/**
+	 * @constant {ISshKey} defaultKey Default SSH key
+	 */
+	private readonly defaultKey: ISshKey = {
+		id: 0,
+		description: '',
+		type: '',
+		hash: '',
+		key: '',
+		createdAt: '',
+	};
 
-	private key: ISshKey|null = null;
+	/**
+	 * @var {ISshKey} key SSH key to delete
+	 */
+	private key: ISshKey = this.defaultKey;
 
 	/**
 	 * Removes an existing SSH key
 	 */
-	private deleteKey(): void {
+	private remove(): void {
 		if (this.key === null) {
 			return;
 		}
@@ -109,7 +123,7 @@ export default class SshKeyDeleteModal extends ModalBase {
 	 * Resets key to delete and hides modal window
 	 */
 	private hideModal(): void {
-		this.key = null;
+		this.key = this.defaultKey;
 		this.closeModal();
 	}
 }
