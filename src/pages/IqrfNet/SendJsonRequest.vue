@@ -71,24 +71,23 @@ limitations under the License.
 				:value.sync='activeIdx'
 				:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
 				:options='messageOptions'
-				@change='activeMessagePair = messages[activeIdx]'
 			/>
-			<div v-if='activeMessagePair !== null'>
+			<div v-if='messages.length > 0'>
 				<CRow>
 					<CCol md='6'>
 						<JsonMessage
-							:message='activeMessagePair.request'
+							:message='messages[activeIdx].request'
 							type='request'
 							source='sendJson'
 						/>
 					</CCol>
 					<CCol
-						v-if='activeMessagePair.response !== []'
+						v-if='messages[activeIdx].response.length > 0'
 						md='6'
 					>
 						<JsonMessage
-							v-for='rsp of activeMessagePair.response'
-							:key='i = activeMessagePair.response.indexOf(rsp)'
+							v-for='(rsp, i) of messages[activeIdx].response'
+							:key='i'
 							:message='rsp'
 							type='response'
 							source='sendJson'
@@ -161,11 +160,6 @@ export default class SendJsonRequest extends Vue {
 	private msgId: string|null = null;
 
 	/**
-	 * @var {IMessagePair|null} activeMessagePair Currently shown message pair
-	 */
-	private activeMessagePair: IMessagePairRequest|null = null;
-
-	/**
 	 * @var {number} activeIdx Index of active message pair
 	 */
 	private activeIdx = 0;
@@ -217,7 +211,7 @@ export default class SendJsonRequest extends Vue {
 					response: [],
 					label: '[' + new Date().toLocaleString() + ']: ' + mutation.payload.mType + ' (' + mutation.payload.data.msgId + ')',
 				});
-				this.activeMessagePair = this.messages[0];
+				this.activeIdx = 0;
 			}
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
