@@ -720,7 +720,7 @@ export default class StandardDevices extends Vue {
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
-		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress()));
+		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
 		this.$store.dispatch('spinner/show', {timeout: 100000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
