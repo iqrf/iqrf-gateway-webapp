@@ -66,7 +66,6 @@ class DependencyManager {
 			new Dependency('dmesg', true, 'util-linux'),
 			new Dependency('find', true, 'findutils'),
 			new Dependency('free', true, 'procps-ng'),
-			new Dependency('git', false, 'git'),
 			new Dependency('grep', true, 'grep'),
 			new Dependency('hostname', true, 'net-tools'),
 			new Dependency('hostnamectl', true, 'systemd'),

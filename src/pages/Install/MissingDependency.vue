@@ -56,7 +56,7 @@ import {InstallationCheckDependency} from '@/services/InstallationService';
  */
 export default class MissingDependency extends Vue {
 
-	@Prop({type: String, required: true}) private json!: string;
+	@Prop({type: String, default: ''}) private json!: string;
 
 	/**
 	 * @property {InstallationCheckDependency[]} dependencies Missing dependencies
@@ -72,7 +72,7 @@ export default class MissingDependency extends Vue {
 	 * Vue component lifecycle hook - mounted
 	 */
 	protected mounted(): void {
-		this.dependencies = JSON.parse(this.json);
+		this.dependencies = this.json === '' ? [] : JSON.parse(this.json);
 	}
 
 	/**

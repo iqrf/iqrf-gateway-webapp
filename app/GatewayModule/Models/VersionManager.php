@@ -192,8 +192,8 @@ class VersionManager {
 		$version = $array['version'] ?? 'unknown';
 		$commit = $array['commit'] ?? '';
 		if ($verbose && $commit === '') {
-			$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree')->getStdout();
-			if ($isRepo === 'true') {
+			$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree');
+			if ($isRepo->getExitCode() === 0 && $isRepo->getStdout() === 'true') {
 				$commit = $this->commandManager->run('git rev-parse --verify HEAD')->getStdout();
 			}
 		}
