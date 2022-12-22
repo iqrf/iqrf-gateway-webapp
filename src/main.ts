@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === 'production') {
 		integrations: [
 			new BrowserTracing({
 				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-				tracingOrigins: ['localhost', window.location.hostname, /^\//],
+				tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
 			}),
 		],
 		release: release,

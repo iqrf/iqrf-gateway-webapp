@@ -135,7 +135,7 @@ export interface IUserBase {
 	/**
 	 * E-mail address
 	 */
-	email: string;
+	email: string|null;
 
 	/**
 	 * User language
