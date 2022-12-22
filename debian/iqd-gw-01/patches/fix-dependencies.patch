@@ -7,7 +7,7 @@ Adds dependency on IQRF Gateway Uploader
  Architecture: all
 -Depends: ${misc:Depends}, apt, gawk, iproute2,
 - iqrf-gateway-daemon, iqrf-journal-reader, net-tools, openssl, passwd,
-++Depends: ${misc:Depends}, apt, gawk, iproute2,
++Depends: ${misc:Depends}, apt, gawk, iproute2,
 + iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
 + mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
 + openssh-client, openssl, passwd,
