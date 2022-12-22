@@ -53,4 +53,13 @@ const host: ValidationRuleFunction = (host: string) => {
 	return encoded === 'localhost' || isFQDN(encoded);
 };
 
-export {email, host};
+/**
+ * Validates IQRF Gateway Daemon's component instance name
+ * @param {string} name Component instance name to validate
+ * @return {boolean} True if the component instance name is valid
+ */
+const daemonInstanceName = (name: string) => {
+	return /^[^&]+$/.test(name);
+};
+
+export {daemonInstanceName, email, host};

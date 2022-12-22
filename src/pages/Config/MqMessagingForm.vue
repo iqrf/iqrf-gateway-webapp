@@ -89,6 +89,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} f
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {daemonInstanceName} from '@/helpers/validators';
 import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
@@ -164,10 +165,7 @@ export default class MqMessagingForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
-		extend('instance', (item: string) => {
-			const re = RegExp(/^[^&]+$/);
-			return re.test(item);
-		});
+		extend('instance', daemonInstanceName);
 	}
 
 	/**

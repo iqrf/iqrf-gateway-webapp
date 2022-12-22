@@ -165,6 +165,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {daemonInstanceName} from '@/helpers/validators';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
@@ -291,10 +292,7 @@ export default class WebsocketServiceForm extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('instance', (item: string) => {
-			const re = RegExp(/^[^&]+$/);
-			return re.test(item);
-		});
+		extend('instance', daemonInstanceName);
 	}
 
 	/**

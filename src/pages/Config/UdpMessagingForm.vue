@@ -94,6 +94,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {daemonInstanceName} from '@/helpers/validators';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -166,10 +167,7 @@ export default class UdpMessagingForm extends Vue {
 	created(): void {
 		extend('between', between);
 		extend('required', required);
-		extend('instance', (item: string) => {
-			const re = RegExp(/^[^&]+$/);
-			return re.test(item);
-		});
+		extend('instance', daemonInstanceName);
 	}
 
 	/**

@@ -316,6 +316,7 @@ import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {daemonInstanceName} from '@/helpers/validators';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
@@ -443,10 +444,7 @@ export default class MqttMessagingForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
-		extend('instance', (item: string) => {
-			const re = RegExp(/^[^&]+$/);
-			return re.test(item);
-		});
+		extend('instance', daemonInstanceName);
 	}
 
 	/**
