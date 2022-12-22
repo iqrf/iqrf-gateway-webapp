@@ -21,6 +21,8 @@ sentry:
 			Contributte\Sentry\Integration\NetteApplicationIntegration()
 			Contributte\Sentry\Integration\NetteHttpIntegration()
 			Contributte\Sentry\Integration\NetteSecurityIntegration()
+			# Custom
+			App\ApiModule\Version0\Models\SentryUserIntegration()
 		]
 	logger:
 		captureMessages: true
