@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
+import punycode from 'punycode/';
 
 /**
  * User credentials
@@ -186,7 +187,11 @@ class AuthenticationService {
 	login(credentials: UserCredentials): Promise<User> {
 		return axios.post('user/signIn', credentials)
 			.then((response: AxiosResponse): User => {
-				return response.data as User;
+				const user: User = response.data;
+				if (user.email !== null) {
+					user.email = punycode.toUnicode(user.email);
+				}
+				return user;
 			});
 	}
 }

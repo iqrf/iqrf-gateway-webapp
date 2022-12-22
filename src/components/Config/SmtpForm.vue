@@ -155,17 +155,15 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCol, CElementCover, CForm, CInput, CRow, CSelect, CSpinner, CSwitch} from '@coreui/vue/src';
-import {AxiosError, AxiosResponse} from 'axios';
-import ip from 'ip-regex';
-import isFQDN from 'is-fqdn';
-import punycode from 'punycode/';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {email, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
 import {mapGetters} from 'vuex';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {SmtpSecurity} from '@/enums/Config/Smtp';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {email, host} from '@/helpers/validators';
 import {IOption} from '@/interfaces/Coreui';
 import {ISmtp} from '@/interfaces/Config/Smtp';
 import MailerService from '@/services/MailerService';
@@ -238,27 +236,8 @@ export default class SmtpForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
-		extend('host', (addr: string) => {
-			if (ip.v4({exact: true}).test(addr)) {
-				return true;
-			}
-			if (ip.v6({exact: true}).test(addr)) {
-				return true;
-			}
-			const encoded = punycode.toASCII(addr);
-			return encoded === 'localhost' || isFQDN(encoded);
-		});
-		extend('email', (addr: string) => {
-			const encoded = punycode.toASCII(addr);
-			if (!email.validate(encoded)) {
-				return false;
-			}
-			const domain = encoded.split('@');
-			if (domain.length === 1) {
-				return false;
-			}
-			return isFQDN(domain[1]);
-		});
+		extend('host', host);
+		extend('email', email);
 	}
 
 	/**
@@ -274,9 +253,7 @@ export default class SmtpForm extends Vue {
 	private getConfig(): void {
 		this.showBlockingElement();
 		MailerService.getConfig()
-			.then((response: AxiosResponse) => {
-				const config: ISmtp = response.data;
-				config.from = punycode.toUnicode(config.from);
+			.then((config: ISmtp) => {
 				this.configuration = config;
 				this.hideBlockingElement();
 			})
@@ -294,7 +271,6 @@ export default class SmtpForm extends Vue {
 		if (config.clientHost === null) {
 			delete config.clientHost;
 		}
-		config.from = punycode.toASCII(config.from);
 		return config;
 	}
 

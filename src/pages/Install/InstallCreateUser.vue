@@ -90,14 +90,13 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {AxiosError, AxiosResponse} from 'axios';
-import isFQDN from 'is-fqdn';
-import punycode from 'punycode/';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {email, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {sleep} from '@/helpers/sleep';
+import {email} from '@/helpers/validators';
 import {IUser} from '@/interfaces/Core/User';
 import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
@@ -145,17 +144,7 @@ export default class InstallCreateUser extends Vue {
 	 * On component creation event handler
 	 */
 	public created(): void {
-		extend('email', (addr: string) => {
-			const encoded = punycode.toASCII(addr);
-			if (!email.validate(encoded)) {
-				return false;
-			}
-			const domain = encoded.split('@');
-			if (domain.length === 1) {
-				return false;
-			}
-			return isFQDN(domain[1]);
-		});
+		extend('email', email);
 		extend('required', required);
 	}
 

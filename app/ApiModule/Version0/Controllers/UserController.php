@@ -149,7 +149,7 @@ class UserController extends BaseController {
 		}
 		$sendVerification = false;
 		$this->validator->validateRequest('userEdit', $request);
-		$json = $request->getJsonBody();
+		$json = $request->getJsonBodyCopy();
 		if (array_key_exists('username', $json)) {
 			if ($this->manager->checkUsernameUniqueness($json['username'], $user->getId())) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);

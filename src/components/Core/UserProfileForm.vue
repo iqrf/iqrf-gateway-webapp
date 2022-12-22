@@ -84,7 +84,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 // Module properties
-import {email, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
+import {email} from '@/helpers/validators';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
 // Services

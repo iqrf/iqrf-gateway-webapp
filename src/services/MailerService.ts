@@ -17,6 +17,7 @@
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import axios, {AxiosResponse} from 'axios';
 import {ISmtp} from '@/interfaces/Config/Smtp';
+import punycode from 'punycode';
 
 /**
  * SMTP server service
@@ -25,9 +26,15 @@ class MailerService {
 
 	/**
 	 * Retrieves SMTP configuration
+	 * @return {Promise<ISmtp>} SMTP configuration
 	 */
-	getConfig(): Promise<AxiosResponse> {
-		return axios.get('/config/mailer', {headers: authorizationHeader()});
+	getConfig(): Promise<ISmtp> {
+		return axios.get('/config/mailer', {headers: authorizationHeader()})
+			.then((response: AxiosResponse): ISmtp => {
+				const config: ISmtp = response.data;
+				config.from = punycode.toUnicode(config.from);
+				return config;
+			});
 	}
 
 	/**
@@ -35,6 +42,7 @@ class MailerService {
 	 * @param {ISmtp} config SMTP configuration
 	 */
 	saveConfig(config: ISmtp): Promise<AxiosResponse> {
+		config.from = punycode.toASCII(config.from);
 		return axios.put('/config/mailer', config, {headers: authorizationHeader()});
 	}
 

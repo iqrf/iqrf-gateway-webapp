@@ -101,16 +101,15 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {AxiosError, AxiosResponse} from 'axios';
-import isFQDN from 'is-fqdn';
-import punycode from 'punycode/';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {email, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {IOption} from '@/interfaces/Coreui';
 import {IUser} from '@/interfaces/Core/User';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {email} from '@/helpers/validators';
 import {UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
 
@@ -173,17 +172,7 @@ export default class UserEdit extends Vue {
 	 * Initialize validation rules and build user roles
 	 */
 	created(): void {
-		extend('email', (addr: string) => {
-			const encoded = punycode.toASCII(addr);
-			if (!email.validate(encoded)) {
-				return false;
-			}
-			const domain = encoded.split('@');
-			if (domain.length === 1) {
-				return false;
-			}
-			return isFQDN(domain[1]);
-		});
+		extend('email', email);
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
@@ -213,11 +202,7 @@ export default class UserEdit extends Vue {
 	private getUser(): void {
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
-			.then((response: AxiosResponse) => {
-				const user: IUser = response.data;
-				if (user.email !== null) {
-					user.email = punycode.toUnicode(user.email);
-				}
+			.then((user: IUser) => {
 				this.user = user;
 				this.$store.commit('spinner/HIDE');
 			})

@@ -46,7 +46,7 @@ limitations under the License.
 					<template #email='{item}'>
 						<td>
 							<span v-if='item.email !== null'>
-								{{ toUnicodeEmail(item.email) }}
+								{{ item.email }}
 							</span>
 							<CIcon
 								v-else
@@ -147,8 +147,6 @@ import {UserRole} from '@/services/AuthenticationService';
 import {AxiosError} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {IUser} from '@/interfaces/Core/User';
-
-import punycode from 'punycode/';
 
 @Component({
 	components: {
@@ -252,15 +250,6 @@ export default class UserList extends Vue {
 					this.$router.push('/');
 				}
 			});
-	}
-
-	/**
-	 * Converts email string to unicode
-	 * @param {string} email Email to convert
-	 * @returns {string} Unicode email string
-	 */
-	private toUnicodeEmail(email: string): string {
-		return punycode.toUnicode(email);
 	}
 
 	/**

@@ -17,7 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import UrlBuilder from '@/helpers/urlBuilder';
-import {User, UserInfo} from './AuthenticationService';
+import {IUserBase, User, UserInfo} from './AuthenticationService';
 import {IUser} from '@/interfaces/Core/User';
 
 import punycode from 'punycode/';
@@ -26,6 +26,42 @@ import punycode from 'punycode/';
  * User service
  */
 class UserService {
+
+	/**
+	 * Deserializes the user
+	 * @template {IUser|UserInfo|User} T User type
+	 * @param {T} user User to deserialize
+	 * @return {T} Deserialized user
+	 */
+	private deserializeUser<T extends IUser|UserInfo|User>(user: T): T {
+		if (user.email !== null) {
+			user.email = punycode.toUnicode(user.email);
+		}
+		return user;
+	}
+
+	/**
+	 * Serializes the user
+	 * @param {IUser} user User to serialize
+	 * @return {IUser} Serialized user
+	 */
+	private serializeUser(user: IUser): IUser {
+		if (user.email !== null && user.email.length > 0) {
+			user.email = punycode.toASCII(user.email);
+		} else {
+			user.email = null;
+		}
+		return user;
+	}
+
+	/**
+	 * Returns the base URL
+	 * @return {string} Base URL
+	 */
+	private getBaseUrl(): string {
+		const urlBuilder = new UrlBuilder();
+		return urlBuilder.getBaseUrl();
+	}
 
 	/**
 	 * Changes password for a user specified by ID
@@ -56,24 +92,12 @@ class UserService {
 
 	/**
 	 * Adds the new user
-	 * @param username Username
-	 * @param email Email
-	 * @param password Password
-	 * @param language Language
-	 * @param role Role
+	 * @param {IUser} user User
 	 */
 	add(user: IUser): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
-		if (user.email !== null) {
-			if (user.email.length > 0) {
-				user.email = punycode.toASCII(user.email);
-			} else {
-				user.email = null;
-			}
-		}
 		const body = {
-			...user,
-			baseUrl: urlBuilder.getBaseUrl(),
+			...this.serializeUser(user),
+			baseUrl: this.getBaseUrl(),
 		};
 		return axios.post('users/', body, {headers: authorizationHeader()});
 	}
@@ -92,37 +116,34 @@ class UserService {
 	 * @param user User settings
 	 */
 	edit(id: number, user: IUser): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
 		delete user.id;
-		if (user.email !== null) {
-			user.email = punycode.toASCII(user.email);
-		}
 		const body = {
-			baseUrl: urlBuilder.getBaseUrl(),
-			...user,
+			baseUrl: this.getBaseUrl(),
+			...this.serializeUser(user),
 		};
 		return axios.put('users/' + id, body, {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Edits the logged in user
-	 * @param user User settings
+	 * @param {IUserBase} user User settings
 	 */
-	editLoggedIn(user: any): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
+	editLoggedIn(user: IUserBase): Promise<AxiosResponse> {
 		const body = {
-			baseUrl: urlBuilder.getBaseUrl(),
-			...user,
+			baseUrl: this.getBaseUrl(),
+			...this.serializeUser(user),
 		};
 		return axios.put('user/', body, {headers: authorizationHeader()});
 	}
 
 	/**
 	 * Returns the user
-	 * @param id User ID
+	 * @param {number} id User ID
+	 * @returns {Promise<IUser>} User info
 	 */
-	get(id: number): Promise<AxiosResponse> {
-		return axios.get('users/' + id, {headers: authorizationHeader()});
+	get(id: number): Promise<IUser> {
+		return axios.get('users/' + id, {headers: authorizationHeader()})
+			.then((response: AxiosResponse): IUser => this.deserializeUser(response.data as IUser));
 	}
 
 	/**
@@ -130,15 +151,20 @@ class UserService {
 	 */
 	getLoggedIn(): Promise<UserInfo> {
 		return axios.get('user', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as UserInfo));
+			.then((response: AxiosResponse) => this.deserializeUser(response.data as UserInfo));
 	}
 
 	/**
 	 * Lists all users
+	 * @returns {Promise<IUser[]>} List of users
 	 */
 	list(): Promise<Array<IUser>> {
 		return axios.get('users', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as Array<IUser>));
+			.then((response: AxiosResponse) => {
+				const users: Array<IUser> = response.data;
+				users.forEach(user => this.deserializeUser(user));
+				return users;
+			});
 	}
 
 	/**
@@ -146,7 +172,7 @@ class UserService {
 	 */
 	refreshToken(): Promise<User> {
 		return axios.post('user/refreshToken', null, {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as User));
+			.then((response: AxiosResponse) => this.deserializeUser(response.data as User));
 	}
 
 	/**
@@ -155,7 +181,7 @@ class UserService {
 	 */
 	verify(uuid: string): Promise<User> {
 		return axios.get('user/verify/' + uuid)
-			.then((response: AxiosResponse) => (response.data as User));
+			.then((response: AxiosResponse) => this.deserializeUser(response.data as User));
 	}
 
 	/**
@@ -163,9 +189,8 @@ class UserService {
 	 * @param {string} user User name
 	 */
 	requestPasswordRecovery(user: string): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
 		const body = {
-			baseUrl: urlBuilder.getBaseUrl(),
+			baseUrl: this.getBaseUrl(),
 			username: user,
 		};
 		return axios.post('user/password/recovery', body, {headers: authorizationHeader()});
@@ -181,7 +206,7 @@ class UserService {
 			password: password
 		};
 		return axios.post('user/password/recovery/' + uuid, body, {headers: authorizationHeader()})
-			.then((response: AxiosResponse<User>) => (response.data as User));
+			.then((response: AxiosResponse<User>) => this.deserializeUser(response.data as User));
 	}
 
 	/**
@@ -189,9 +214,8 @@ class UserService {
 	 * @param {number} id User ID
 	 */
 	resendVerificationEmail(id: number): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
 		const body = {
-			baseUrl: urlBuilder.getBaseUrl(),
+			baseUrl: this.getBaseUrl(),
 		};
 		return axios.post('users/' + id + '/resendVerification', body, {headers: authorizationHeader()});
 	}
@@ -200,9 +224,8 @@ class UserService {
 	 * Requests a verification email re-send for logged in user
 	 */
 	resendVerificationEmailLoggedIn(): Promise<AxiosResponse> {
-		const urlBuilder = new UrlBuilder();
 		const body = {
-			baseUrl: urlBuilder.getBaseUrl(),
+			baseUrl: this.getBaseUrl(),
 		};
 		return axios.post('user/resendVerification', body, {headers: authorizationHeader()});
 	}
