@@ -14,6 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as Sentry from '@sentry/vue';
+import {AxiosError} from 'axios';
+import jwt_decode, {JwtPayload} from 'jwt-decode';
+import {ActionTree, GetterTree, MutationTree} from 'vuex';
+
 import AuthenticationService, {
 	AccountState,
 	IUserBase,
@@ -22,9 +27,6 @@ import AuthenticationService, {
 	UserRole,
 	UserRoleIndex,
 } from '@/services/AuthenticationService';
-import {ActionTree, GetterTree, MutationTree} from 'vuex';
-import {AxiosError} from 'axios';
-import jwt_decode, {JwtPayload} from 'jwt-decode';
 import UserService from '@/services/UserService';
 
 /**
@@ -69,6 +71,14 @@ const actions: ActionTree<UserState, any> = {
 		return AuthenticationService.login(credentials)
 			.then((user: User) => {
 				dispatch('setJwt', user);
+				const sentryUser: Sentry.User = {
+					username: user.username,
+					ip_address: '{{auto}}',
+				};
+				if (user.email !== null) {
+					sentryUser.email = user.email;
+				}
+				Sentry.setUser(sentryUser);
 			})
 			.catch((error: AxiosError) => {
 				console.error(error);
@@ -76,6 +86,7 @@ const actions: ActionTree<UserState, any> = {
 			});
 	},
 	signOut({commit}) {
+		Sentry.setUser(null);
 		commit('SIGN_OUT');
 	},
 };

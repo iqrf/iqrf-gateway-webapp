@@ -245,6 +245,9 @@ export default class UserEdit extends Vue {
 						{username: user.username}
 					).toString()
 				);
+				if (this.userId === this.$store.getters['user/getId']) {
+					this.$store.dispatch('user/updateInfo');
+				}
 				this.$router.push('/user/');
 			})
 			.catch((error: AxiosError) => {
