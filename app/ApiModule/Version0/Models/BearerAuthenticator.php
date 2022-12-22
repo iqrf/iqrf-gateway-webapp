@@ -75,7 +75,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @param string $key API key
 	 * @return ApiKey|null API key entity
 	 */
-	private function authenticateApp(string $key): ?ApiKey {
+	public function authenticateApp(string $key): ?ApiKey {
 		$repository = $this->entityManager->getApiKeyRepository();
 		$salt = Strings::substring($key, 0, 22);
 		$apiKey = $repository->findOneBySalt($salt);
@@ -88,7 +88,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return User|null User entity
 	 * @throws InvalidArgumentException
 	 */
-	private function authenticateUser(string $jwt): ?User {
+	public function authenticateUser(string $jwt): ?User {
 		$token = $this->configuration->parser()->parse($jwt);
 		if (!$this->isJwtValid($token)) {
 			return null;
@@ -131,7 +131,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @param string $header Authorization header
 	 * @return string|null JWT
 	 */
-	protected function parseAuthorizationHeader(string $header): ?string {
+	public function parseAuthorizationHeader(string $header): ?string {
 		if (!Strings::startsWith($header, 'Bearer')) {
 			return null;
 		}

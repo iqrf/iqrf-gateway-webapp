@@ -79,7 +79,7 @@ class AptGetPackageManager implements IPackageManager {
 			}
 			$packages[] = [
 				'id' => $id,
-				'name' => (string) $name,
+				'name' => $name,
 				'oldVersion' => Strings::trim($oldVersion, '() '),
 				'newVersion' => Strings::trim($newVersion, '() '),
 			];
