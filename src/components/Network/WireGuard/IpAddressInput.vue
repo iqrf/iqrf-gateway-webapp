@@ -52,9 +52,10 @@ limitations under the License.
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 import {CInput} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import ip from 'ip-regex';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+
+import {ipv4, ipv6} from '@/helpers/validators';
 
 /**
  * IP address input
@@ -135,12 +136,8 @@ export default class IpAddressInput extends Vue {
 	 */
 	protected mounted(): void {
 		extend('required', required);
-		extend('ipv4', (address: string) => {
-			return ip.v4({exact: true}).test(address);
-		});
-		extend('ipv6', (address: string) => {
-			return ip.v6({exact: true}).test(address);
-		});
+		extend('ipv4', ipv4);
+		extend('ipv6', ipv6);
 	}
 
 	/**

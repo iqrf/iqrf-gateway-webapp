@@ -42,7 +42,7 @@ const email: ValidationRuleFunction = (addr: string): boolean => {
  * @param host Host to validate
  * @return {boolean} True if the host is valid
  */
-const host: ValidationRuleFunction = (host: string) => {
+const host: ValidationRuleFunction = (host: string): boolean => {
 	if (ip.v4({exact: true}).test(host)) {
 		return true;
 	}
@@ -58,8 +58,26 @@ const host: ValidationRuleFunction = (host: string) => {
  * @param {string} name Component instance name to validate
  * @return {boolean} True if the component instance name is valid
  */
-const daemonInstanceName = (name: string) => {
+const daemonInstanceName: ValidationRuleFunction = (name: string): boolean => {
 	return /^[^&]+$/.test(name);
 };
 
-export {daemonInstanceName, email, host};
+/**
+ * Validates IPv4 address
+ * @param {string} address IPv4 address to validate
+ * @return {boolean} True if the IPv4 address is valid
+ */
+const ipv4: ValidationRuleFunction = (address: string): boolean => {
+	return ip.v4({exact: true}).test(address);
+};
+
+/**
+ * Validates IPv6 address
+ * @param {string} address IPv6 address to validate
+ * @return {boolean} True if the IPv6 address is valid
+ */
+const ipv6: ValidationRuleFunction = (address: string): boolean => {
+	return ip.v6({exact: true}).test(address);
+};
+
+export {daemonInstanceName, email, host, ipv4, ipv6};

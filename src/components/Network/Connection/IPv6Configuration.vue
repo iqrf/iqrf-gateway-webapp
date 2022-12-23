@@ -173,11 +173,11 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import ip from 'ip-regex';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, required} from 'vee-validate/dist/rules';
 
 import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {ipv6} from '@/helpers/validators';
 
 import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
@@ -211,9 +211,7 @@ export default class IPv6Configuration extends Vue {
 	 */
 	protected created(): void {
 		extend('between', between);
-		extend('ipv6', (address: string) => {
-			return ip.v6({exact: true}).test(address);
-		});
+		extend('ipv6', ipv6);
 		extend('required', required);
 	}
 

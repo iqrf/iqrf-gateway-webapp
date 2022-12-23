@@ -257,11 +257,6 @@ export default class GatewayTime extends Vue {
 		this.getTime();
 	}
 
-	get formatTime(): string {
-		const luxonDate = DateTime.fromJSDate(this.datetime, {zone: (this.timezone.value as string)});
-		return luxonDate.toISO();
-	}
-
 	/**
 	 * Retrieves current gateway date, time and timezone
 	 */

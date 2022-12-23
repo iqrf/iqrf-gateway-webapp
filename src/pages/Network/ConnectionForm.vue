@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ $t('network.connection.edit') }}</h1>
+		<h1>{{ pageTitle }}</h1>
 		<CCard body-wrapper>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='prepareModal'>
@@ -34,9 +34,36 @@ limitations under the License.
 							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-					<InterfaceInput v-if='interfaceType !== null' v-model='connection.interface' :type='interfaceType' />
-					<WiFiConfiguration v-if='connection.type === "802-11-wireless"' v-model='connection' :ap='ap' />
-					<CRow>
+					<div v-if='interfaceType !== null && connection.interface !== undefined'>
+						<GsmModemInput
+							v-if='interfaceType === InterfaceType.GSM'
+							v-model='connection.interface'
+							@input='detectSerial'
+						/>
+						<InterfaceInput
+							v-else
+							v-model='connection.interface'
+							:type='interfaceType'
+						/>
+					</div>
+					<div class='form-group'>
+						<label for='autoConnect'>
+							<strong>{{ $t("network.connection.autoConnect") }}</strong>
+						</label><br>
+						<CSwitch
+							id='autoConnect'
+							:checked.sync='connection.autoConnect.enabled'
+							size='lg'
+							shape='pill'
+							color='primary'
+							label-on='ON'
+							label-off='OFF'
+						/>
+					</div>
+					<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
+					<GsmConfiguration v-if='connection.gsm' v-model='connection' />
+					<SerialConfiguration v-if='connection.serial' v-model='connection' />
+					<CRow v-if='interfaceType !== InterfaceType.GSM'>
 						<CCol md='6'>
 							<legend>{{ $t('network.connection.ipv4.title') }}</legend>
 							<IPv4Configuration v-model='connection' />
@@ -55,6 +82,9 @@ limitations under the License.
 					</CButton>
 				</CForm>
 			</ValidationObserver>
+		</CCard>
+		<CCard v-if='interfaceType === InterfaceType.GSM' body-wrapper>
+			<NetworkOperators @apply='updateGsm' />
 		</CCard>
 		<CModal
 			:show.sync='showModal'
@@ -99,7 +129,15 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCol, CForm, CInput, CModal, CRow} from '@coreui/vue/src';
+import {
+	CButton,
+	CCard,
+	CCol,
+	CForm,
+	CInput,
+	CModal,
+	CRow, CSwitch
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -116,12 +154,18 @@ import VersionService from '@/services/VersionService';
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {IConnection, IConnectionModal} from '@/interfaces/Network/Connection';
-import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
+import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
+import GsmConfiguration from '@/components/Network/Connection/GsmConfiguration.vue';
 import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
+import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
 import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
-import IpAddressHelper from '@/helpers/IpAddressHelper';
 import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
 import {IAccessPoint} from '@/interfaces/Network/Wifi';
+import {MetaInfo} from 'vue-meta';
+import IpAddressHelper from '@/helpers/IpAddressHelper';
+import NetworkOperators from '@/components/Network/NetworkOperators.vue';
+import NetworkOperator from '@/entities/NetworkOperator';
+import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
 
 @Component({
 	components: {
@@ -132,16 +176,26 @@ import {IAccessPoint} from '@/interfaces/Network/Wifi';
 		CInput,
 		CModal,
 		CRow,
+		CSwitch,
+		GsmConfiguration,
+		GsmModemInput,
 		InterfaceInput,
 		IPv4Configuration,
 		IPv6Configuration,
+		NetworkOperators,
+		SerialConfiguration,
 		ValidationObserver,
 		ValidationProvider,
 		WiFiConfiguration,
 	},
-	metaInfo: {
-		title: 'network.connection.edit',
-	}
+	data: () => ({
+		InterfaceType,
+	}),
+	metaInfo(): MetaInfo {
+		return {
+			title: (this as ConnectionForm).pageTitle
+		};
+	},
 })
 
 export default class ConnectionForm extends Vue {
@@ -155,6 +209,7 @@ export default class ConnectionForm extends Vue {
 			priority: 0,
 			retries: -1,
 		},
+		interface: '',
 		name: '',
 		type: '',
 		ipv4: {
@@ -223,6 +278,21 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
+	 * Computes page title from URL and interface type
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		let type = '';
+		if (this.connection.type !== undefined) {
+			type = this.$t(`network.interface.types.${this.connection.type}`).toString();
+		}
+		if (this.$route.path.includes('/add')) {
+			return this.$t('network.connection.add', {type: type}).toString();
+		}
+		return this.$t('network.connection.edit', {type: type}).toString();
+	}
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -275,6 +345,11 @@ export default class ConnectionForm extends Vue {
 						}
 					});
 				}
+			} else if (this.interfaceType === InterfaceType.GSM) {
+				this.connection.type = ConnectionType.GSM;
+				Object.assign(this.connection, {
+					gsm: {apn: '', pin: '', username: '', password: ''}
+				});
 			}
 			this.storeConnectionData(this.connection);
 			this.$store.commit('spinner/HIDE');
@@ -286,13 +361,10 @@ export default class ConnectionForm extends Vue {
 	 * @returns {boolean} Are addresses in the same subnet?
 	 */
 	get ipv4InSubnet(): boolean {
-		if (this.connection.ipv4.method === 'auto') {
+		if (this.interfaceType === InterfaceType.GSM) {
 			return true;
 		}
-		const address = this.connection.ipv4.addresses[0].address;
-		const mask = this.connection.ipv4.addresses[0].mask;
-		const gateway = this.connection.ipv4.gateway;
-		return IpAddressHelper.ipv4SubnetCheck(address, mask, gateway);
+		return IpAddressHelper.ipv4ConnectionSubnetCheck(this.connection);
 	}
 
 	/**
@@ -301,11 +373,12 @@ export default class ConnectionForm extends Vue {
 	private getConnection(): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.get(this.uuid)
-			.then((response: AxiosResponse) => {
+			.then((response: IConnection) => {
 				this.$store.commit('spinner/HIDE');
-				this.storeConnectionData(response.data);
+				this.storeConnectionData(response);
 			})
 			.catch((error: AxiosError) => {
+				console.error(error);
 				extendedErrorToast(
 					error,
 					'network.connection.messages.fetchFailed',
@@ -347,7 +420,7 @@ export default class ConnectionForm extends Vue {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
 		}
-		this.originalIPv4.address = connection.ipv4.addresses[0].address ?? '';
+		this.originalIPv4.address = connection.ipv4.addresses[0]?.address ?? '';
 		this.originalIPv4.method = connection.ipv4.method ?? 'auto';
 		// initialize ipv6 configuration objects
 		if (['auto', 'dhcp'].includes(connection.ipv6.method) && connection.ipv6.current) {
@@ -411,6 +484,11 @@ export default class ConnectionForm extends Vue {
 		if (connection.wifi?.bssids !== undefined) {
 			delete connection.wifi.bssids;
 		}
+		if (this.connection.interface !== undefined &&
+				!/tty(AMA|AMC|S)\d+/.test(this.connection.interface) &&
+				this.connection.serial !== undefined) {
+			delete connection.serial;
+		}
 		if (this.showModal) {
 			this.showModal = false;
 		}
@@ -455,6 +533,8 @@ export default class ConnectionForm extends Vue {
 					this.$router.push('/ip-network/ethernet');
 				} else if (this.connection.type === ConnectionType.WIFI) {
 					this.$router.push('/ip-network/wireless');
+				} else if (this.connection.type === ConnectionType.GSM) {
+					this.$router.push('/ip-network/mobile');
 				}
 
 			})
@@ -496,6 +576,31 @@ export default class ConnectionForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.error').toString());
 			});
+	}
+
+	/**
+	 * Updates GSM connection object
+	 * @param {NetworkOperator} operator Network operator
+	 */
+	private updateGsm(operator: NetworkOperator): void {
+		if (this.connection.gsm === undefined) {
+			return;
+		}
+		this.connection.gsm.apn = operator.getApn();
+		this.connection.gsm.username = operator.getUsername();
+		this.connection.gsm.password = operator.getPassword();
+	}
+
+	/**
+	 * Detects need for serial link configuration
+	 */
+	private detectSerial(): void {
+		if (this.connection.interface === undefined) {
+			return;
+		}
+		if (/tty(AMA|AMC|S)\d+/.test(this.connection.interface) && this.connection.serial === undefined) {
+			Object.assign(this.connection, {serial: {baudrate: 115200, databits: 8, parity: 'none', stopbits: 1}});
+		}
 	}
 
 }

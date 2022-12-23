@@ -1,0 +1,94 @@
+{
+	"modem": {
+		"3gpp": {
+			"enabled-locks": [],
+			"eps": {
+				"initial-bearer": {
+					"dbus-path": "--",
+					"settings": {
+						"apn": "--",
+						"ip-type": "--",
+						"password": "--",
+						"user": "--"
+					}
+				},
+				"ue-mode-operation": "csps-2"
+			},
+			"imei": "865167066186454",
+			"operator-code": "23002",
+			"operator-name": "O2.CZ O2-CZ",
+			"pco": "--",
+			"registration-state": "home"
+		},
+		"cdma": {
+			"activation-state": "--",
+			"cdma1x-registration-state": "--",
+			"esn": "--",
+			"evdo-registration-state": "--",
+			"meid": "--",
+			"nid": "--",
+			"sid": "--"
+		},
+		"dbus-path": "/org/freedesktop/ModemManager1/Modem/0",
+		"generic": {
+			"access-technologies": [
+				"lte"
+			],
+			"bearers": [
+				"/org/freedesktop/ModemManager1/Bearer/0"
+			],
+			"carrier-configuration": "--",
+			"carrier-configuration-revision": "--",
+			"current-bands": [],
+			"current-capabilities": [
+				"gsm-umts, lte"
+			],
+			"current-modes": "allowed: 2g, 3g, 4g; preferred: none",
+			"device": "/sys/devices/platform/soc",
+			"device-identifier": "388d04e5d990fb441b76d8e38f49e070639d9edd",
+			"drivers": [
+				"uart-pl011"
+			],
+			"equipment-identifier": "865167066186454",
+			"hardware-revision": "--",
+			"manufacturer": "Quectel",
+			"model": "EG25",
+			"own-numbers": [],
+			"plugin": "quectel",
+			"ports": [
+				"ttyAMA2 (at)"
+			],
+			"power-state": "on",
+			"primary-port": "ttyAMA2",
+			"primary-sim-slot": "--",
+			"revision": "EG25GGBR07A08M2G",
+			"signal-quality": {
+				"recent": "no",
+				"value": "60"
+			},
+			"sim": "/org/freedesktop/ModemManager1/SIM/0",
+			"sim-slots": [],
+			"state": "connected",
+			"state-failed-reason": "--",
+			"supported-bands": [],
+			"supported-capabilities": [
+				"gsm-umts, lte"
+			],
+			"supported-ip-families": [
+				"ipv4",
+				"ipv6",
+				"ipv4v6"
+			],
+			"supported-modes": [
+				"allowed: 2g, 3g, 4g; preferred: none"
+			],
+			"unlock-required": "--",
+			"unlock-retries": [
+				"sim-pin (3)",
+				"sim-puk (10)",
+				"sim-pin2 (3)",
+				"sim-puk2 (10)"
+			]
+		}
+	}
+}

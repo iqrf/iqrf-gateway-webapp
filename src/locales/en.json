@@ -2687,6 +2687,35 @@
 	"network": {
 		"title": "IP network",
 		"description": "IP network management.",
+		"interface": {
+			"title": "Network interfaces",
+			"name": "Name",
+			"manufacturer": "Manufacturer",
+			"model": "Model",
+			"macAddress": "MAC address",
+			"state": "State",
+			"states" : {
+				"connected": "Connected",
+				"connecting": "Connecting",
+				"connecting (checking IP connectivity)": "Checking IP connectivity",
+				"connecting (configuring)": "Configuring",
+				"connecting (getting IP configuration)": "Getting IP configuration",
+				"connecting (prepare)": "Prepare",
+				"connecting (need authentication)": "Need authentication",
+				"connecting (starting secondary connections)": "Starting secondary connections",
+				"connection failed": "Failed",
+				"deactivating": "Deactivating",
+				"disconnected": "Disconnected",
+				"unavailable": "Unavailable",
+				"unmanaged": "Unmanaged",
+				"unknown": "Unknown"
+			},
+			"types": {
+				"802-3-ethernet": "Ethernet",
+				"802-11-wireless": "WiFi",
+				"gsm": "GSM"
+			}
+		},
 		"ethernet": {
 			"title": "Ethernet connections",
 			"description": "Ethernet connections management.",
@@ -2785,6 +2814,22 @@
 			"description": "Mobile connections management.",
 			"add": "Add GSM connection",
 			"edit": "Edit GSM connection",
+			"modems": {
+				"title": "Modems",
+				"interface": "Interface name",
+				"manufacturer": "Manufacturer",
+				"model": "Model",
+				"imei": "IMEI",
+				"state": "State",
+				"states": {
+					"failed": "Failed"
+				},
+				"failedReasons": {
+					"sim-missing": "SIM card missing"
+				},
+				"signal": "Signal strength",
+				"rssi": "RSSI"
+			},
 			"table": {
 				"signal": "Signal strength",
 				"rssi": "RSSI"
@@ -2799,7 +2844,7 @@
 				"interfaceMissing": "Please select a GSM interface.",
 				"apnMissing": "Please enter access point name.",
 				"apnInvalid": "Access point name can only contain lowercase letters, numbers, dashes and dots.",
-				"pinInvalid": "PIN can only contain 4 digits.",
+				"pinInvalid": "PIN can only contain 4-8 digits.",
 				"credentialsMissing": "Please enter both username and password, or leave both fields empty."
 			},
 			"messages": {
@@ -2914,13 +2959,14 @@
 		"connection": {
 			"title": "Available connections",
 			"name": "Name",
-			"edit": "Edit connection",
+			"add": "Add {type} connection",
+			"edit": "Edit {type} connection",
 			"errors": {
 				"name": "Please enter a connection name.",
 				"interface": "Please select an interface."
 			},
 			"interface": "Interface",
-			"autoconnect": "Establish connection automatically",
+			"autoConnect": "Establish connection automatically",
 			"ipv4": {
 				"title": "IPv4 configuration",
 				"method": "Connection method",

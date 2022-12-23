@@ -148,15 +148,14 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {CAlert, CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import ip from 'ip-regex';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
 import {ConfigurationMethod} from '@/enums/Network/Ip';
-
+import IpAddressHelper from '@/helpers/IpAddressHelper';
+import {ipv4} from '@/helpers/validators';
 import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
-import IpAddressHelper from '@/helpers/IpAddressHelper';
 
 /**
  * IPv4 configuration options
@@ -199,9 +198,7 @@ export default class IPv4Configuration extends Vue {
 	 * Initializes validation rules
 	 */
 	protected created(): void {
-		extend('ipv4', (address: string) => {
-			return ip.v4({exact: true}).test(address);
-		});
+		extend('ipv4', ipv4);
 		extend('netmask', (mask: string) => {
 			const maskTokens = mask.split('.');
 			const binaryMask = maskTokens.map((token: string) => {
@@ -244,13 +241,7 @@ export default class IPv4Configuration extends Vue {
 	 * @returns {boolean} Are addresses in the same subnet?
 	 */
 	get ipv4InSubnet(): boolean {
-		if (this.connection.ipv4.method === 'auto') {
-			return true;
-		}
-		const address = this.connection.ipv4.addresses[0].address;
-		const mask = this.connection.ipv4.addresses[0].mask;
-		const gateway = this.connection.ipv4.gateway;
-		return IpAddressHelper.ipv4SubnetCheck(address, mask, gateway);
+		return IpAddressHelper.ipv4ConnectionSubnetCheck(this.connection);
 	}
 
 }

@@ -243,7 +243,8 @@ class ConnectionDetail implements INetworkManagerEntity {
 				break;
 			case ConnectionTypes::GSM():
 				$connection->setGsm(GSMConnection::nmCliDeserialize($nmCli));
-				if (Strings::match($interface, '~^tty(AMA|ACM|S)\d+$~') === null) {
+				if (Strings::match($interface, '~^tty(AMA|ACM|S)\d+$~') !== null &&
+					array_key_exists(SerialLink::NMCLI_PREFIX, $nmCli)) {
 					$connection->setSerial(SerialLink::nmCliDeserialize($nmCli));
 				}
 				break;

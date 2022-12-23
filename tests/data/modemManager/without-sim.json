@@ -1,0 +1,88 @@
+{
+	"modem": {
+		"3gpp": {
+			"enabled-locks": [],
+			"eps": {
+				"initial-bearer": {
+					"dbus-path": "--",
+					"settings": {
+						"apn": "--",
+						"ip-type": "--",
+						"password": "--",
+						"user": "--"
+					}
+				},
+				"ue-mode-operation": "--"
+			},
+			"imei": "--",
+			"operator-code": "--",
+			"operator-name": "--",
+			"pco": "--",
+			"registration-state": "--"
+		},
+		"cdma": {
+			"activation-state": "--",
+			"cdma1x-registration-state": "--",
+			"esn": "--",
+			"evdo-registration-state": "--",
+			"meid": "--",
+			"nid": "--",
+			"sid": "--"
+		},
+		"dbus-path": "/org/freedesktop/ModemManager1/Modem/1",
+		"generic": {
+			"access-technologies": [],
+			"bearers": [],
+			"carrier-configuration": "--",
+			"carrier-configuration-revision": "--",
+			"current-bands": [],
+			"current-capabilities": [
+				"gsm-umts"
+			],
+			"current-modes": "allowed: any; preferred: none",
+			"device": "/sys/devices/platform/scb/fe9c0000.xhci/usb1/1-1/1-1.2",
+			"device-identifier": "d2b11c58289c8eab7a2a597a2a7f281f242db298",
+			"drivers": [
+				"huawei_cdc_ncm",
+				"option1"
+			],
+			"equipment-identifier": "862570024875048",
+			"hardware-revision": "--",
+			"manufacturer": "huawei",
+			"model": "E3131",
+			"own-numbers": [],
+			"plugin": "huawei",
+			"ports": [
+				"ttyUSB0 (at)",
+				"ttyUSB2 (at)",
+				"wwan0 (net)"
+			],
+			"power-state": "on",
+			"primary-port": "ttyUSB2",
+			"revision": "21.318.23.01.55",
+			"signal-quality": {
+				"recent": "no",
+				"value": "0"
+			},
+			"sim": "--",
+			"state": "failed",
+			"state-failed-reason": "sim-missing",
+			"supported-bands": [],
+			"supported-capabilities": [
+				"gsm-umts"
+			],
+			"supported-ip-families": [
+				"ipv4"
+			],
+			"supported-modes": [
+				"allowed: 2g, 3g; preferred: none",
+				"allowed: 2g, 3g; preferred: 2g",
+				"allowed: 2g, 3g; preferred: 3g",
+				"allowed: 2g; preferred: none",
+				"allowed: 3g; preferred: none"
+			],
+			"unlock-required": "--",
+			"unlock-retries": []
+		}
+	}
+}

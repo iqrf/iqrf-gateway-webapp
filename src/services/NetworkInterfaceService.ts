@@ -82,8 +82,11 @@ class NetworkInterfaceService {
 	/**
 	 * Lists available modems
 	 */
-	public listModems(): Promise<AxiosResponse> {
-		return axios.get('network/gsm/modems', {headers: authorizationHeader()});
+	public listModems(): Promise<Array<IModem>> {
+		return axios.get('network/gsm/modems', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				return response.data as Array<IModem>;
+			});
 	}
 
 }

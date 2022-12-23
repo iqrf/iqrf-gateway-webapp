@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import ip from 'ip-regex';
+import {IConnection} from '@/interfaces/Network/Connection';
 
 export default class IpAddressHelper {
 
@@ -26,7 +27,6 @@ export default class IpAddressHelper {
 	public static ipv4ToInt(address: string): number {
 		return address.split('.').reduce((acc, oct) => {return acc * 256 + parseInt(oct, 10);}, 0) >>> 0;
 	}
-
 
 	/**
 	 * Checks if passed IP is in subnet with gateway
@@ -48,6 +48,24 @@ export default class IpAddressHelper {
 		const maskInt = this.ipv4ToInt(mask);
 		const gatewayInt = this.ipv4ToInt(gateway);
 		return ((addressInt & maskInt) === (gatewayInt & maskInt));
+	}
+
+	/**
+	 * Checks if passed IP is in subnet with gateway
+	 * @param {IConnection} connection Connection to check
+	 * @returns {boolean} Is address in the same subnet as gateway?
+	 */
+	public static ipv4ConnectionSubnetCheck(connection: IConnection): boolean {
+		if (connection.ipv4.method === 'auto') {
+			return true;
+		}
+		if (connection.ipv4.addresses.length === 0) {
+			return false;
+		}
+		const address = connection.ipv4.addresses[0].address;
+		const mask = connection.ipv4.addresses[0].mask;
+		const gateway = connection.ipv4.gateway;
+		return IpAddressHelper.ipv4SubnetCheck(address, mask, gateway);
 	}
 
 }

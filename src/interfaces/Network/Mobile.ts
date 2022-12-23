@@ -24,6 +24,12 @@ export interface IModem {
 	 */
 	interface: string
 
+	imei: string
+
+	manufacturer: string|null
+
+	model: string|null
+
 	/**
 	 * Signal strength
 	 */
@@ -32,7 +38,11 @@ export interface IModem {
 	/**
 	 * RSSI
 	 */
-	rssi: number
+	rssi: number|null
+
+	state: string
+
+	failedReason: string
 }
 
 /**

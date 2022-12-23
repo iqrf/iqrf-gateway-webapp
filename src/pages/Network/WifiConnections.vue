@@ -17,149 +17,141 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.wireless.title') }}</h1>
+		<NetworkInterfaces :type='InterfaceType.WIFI' />
 		<CCard>
-			<div v-if='interfacesLoaded && ifNameOptions.length === 0'>
-				<CCardBody>
-					{{ $t('network.wireless.messages.noInterfaces') }}
-				</CCardBody>
-			</div>
-			<div v-else>
-				<CCardHeader class='border-0'>
-					{{ $t('network.wireless.table.accessPoints') }}
-					<CButton
-						style='float: right;'
-						color='primary'
-						size='sm'
-						@click='getAccessPoints'
-					>
-						<CIcon :content='cilReload' size='sm' />
-						{{ $t('forms.refresh') }}
-					</CButton>
-				</CCardHeader>
-				<CCardBody>
-					<CDataTable
-						:fields='tableFields'
-						:items='accessPoints'
-						:column-filter='true'
-						:items-per-page='20'
-						:pagination='true'
-						:sorter='{external: false, resetable: true}'
-					>
-						<template #no-items-view='{}'>
-							{{ $t('network.wireless.table.noAccessPoints') }}
-						</template>
-						<template #ssid='{item}'>
-							<td class='table-ssid'>
-								<div>
-									<CBadge
-										v-if='item.aps[0].inUse'
-										color='success'
-									>
-										{{ $t('network.connection.states.connected') }}
-									</CBadge>
-									{{ item.ssid }}
+			<CCardHeader class='border-0'>
+				{{ $t('network.wireless.table.accessPoints') }}
+				<CButton
+					style='float: right;'
+					color='primary'
+					size='sm'
+					@click='getAccessPoints'
+				>
+					<CIcon :content='cilReload' size='sm' />
+					{{ $t('forms.refresh') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:fields='tableFields'
+					:items='accessPoints'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:loading='loading'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('network.wireless.table.noAccessPoints') }}
+					</template>
+					<template #ssid='{item}'>
+						<td class='table-ssid'>
+							<div>
+								<CBadge
+									v-if='item.aps[0].inUse'
+									color='success'
+								>
+									{{ $t('network.connection.states.connected') }}
+								</CBadge>
+								{{ item.ssid }}
+							</div>
+						</td>
+					</template>
+					<template #security='{item}'>
+						<td>
+							{{ item.aps[0].security }}
+						</td>
+					</template>
+					<template #signal='{item}'>
+						<td>
+							<SignalIndicator :signal='item.aps[0].signal' />
+						</td>
+					</template>
+					<template #interfaceName='{item}'>
+						<td>
+							{{ item.aps[0].interfaceName }}
+						</td>
+					</template>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
+								size='sm'
+								:color='item.aps[0].inUse ? "danger" : "success"'
+								@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0]):
+									item.aps[0].uuid !== undefined ? connect(item.aps[0]):
+									addConnection(item.aps[0])'
+							>
+								<CIcon :content='item.aps[0].inUse ? cilLinkBroken : cilLink' size='sm' />
+								{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
+							</CButton> <CButton
+								v-if='item.aps[0].uuid'
+								size='sm'
+								color='primary'
+								:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
+							>
+								<CIcon :content='cilPencil' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton> <CButton
+								v-if='item.aps[0].uuid'
+								size='sm'
+								color='danger'
+								@click='hostname === "localhost" ? removeConnection(item.aps[0]) : deleteAp = item.aps[0]'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
+					</template>
+					<template #show_details='{item}'>
+						<td class='py-2'>
+							<CButton
+								color='info'
+								size='sm'
+								@click='item.aps[0].showDetails = !item.aps[0].showDetails'
+							>
+								<CIcon :content='cilInfo' />
+							</CButton>
+						</td>
+					</template>
+					<template #details='{item}'>
+						<CCollapse :show='item.aps[0].showDetails'>
+							<CCardBody>
+								<div class='datatable-expansion-table'>
+									<table>
+										<caption>
+											<strong>{{ $t('network.wireless.table.details') }}</strong>
+										</caption>
+										<tr>
+											<th>{{ $t('network.wireless.table.bssid') }}</th>
+											<td>
+												{{ item.aps[0].bssid }}
+											</td>
+										</tr>
+										<tr>
+											<th>{{ $t('network.wireless.table.mode') }}</th>
+											<td>
+												{{ item.aps[0].mode }}
+											</td>
+										</tr>
+										<tr>
+											<th>{{ $t('network.wireless.table.channel') }}</th>
+											<td>
+												{{ item.aps[0].channel }}
+											</td>
+										</tr>
+										<tr>
+											<th>{{ $t('network.wireless.table.rate') }}</th>
+											<td>
+												{{ item.aps[0].rate }}
+											</td>
+										</tr>
+									</table>
 								</div>
-							</td>
-						</template>
-						<template #security='{item}'>
-							<td>
-								{{ item.aps[0].security }}
-							</td>
-						</template>
-						<template #signal='{item}'>
-							<td>
-								<CProgress
-									:value='item.aps[0].signal'
-									:color='signalColor(item.aps[0].signal)'
-								/>
-							</td>
-						</template>
-						<template #interfaceName='{item}'>
-							<td>
-								{{ item.aps[0].interfaceName }}
-							</td>
-						</template>
-						<template #actions='{item}'>
-							<td class='col-actions'>
-								<CButton
-									size='sm'
-									:color='item.aps[0].inUse ? "danger" : "success"'
-									@click='item.aps[0].inUse ? hostname !== "localhost" ? disconnectAp = item.aps[0] : disconnect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
-										item.aps[0].uuid !== undefined ? connect(item.aps[0].uuid, item.aps[0].ssid, item.aps[0].interfaceName):
-										addConnection(item.aps[0])'
-								>
-									<CIcon :content='item.aps[0].inUse ? cilLinkBroken : cilLink' size='sm' />
-									{{ $t(`network.table.${item.aps[0].inUse ? 'dis' : ''}connect`) }}
-								</CButton> <CButton
-									v-if='item.aps[0].uuid'
-									size='sm'
-									color='primary'
-									:to='"/ip-network/wireless/edit/" + item.aps[0].uuid'
-								>
-									<CIcon :content='cilPencil' size='sm' />
-									{{ $t('table.actions.edit') }}
-								</CButton> <CButton
-									v-if='item.aps[0].uuid'
-									size='sm'
-									color='danger'
-									@click='hostname === "localhost" ? removeConnection(item.aps[0].uuid, item.aps[0].ssid) : deleteAp = item.aps[0]'
-								>
-									<CIcon :content='cilTrash' size='sm' />
-									{{ $t('table.actions.delete') }}
-								</CButton>
-							</td>
-						</template>
-						<template #show_details='{item}'>
-							<td class='py-2'>
-								<CButton
-									color='info'
-									size='sm'
-									@click='item.aps[0].showDetails = !item.aps[0].showDetails'
-								>
-									<CIcon :content='cilInfo' />
-								</CButton>
-							</td>
-						</template>
-						<template #details='{item}'>
-							<CCollapse :show='item.aps[0].showDetails'>
-								<CCardBody>
-									<div class='datatable-expansion-table'>
-										<table>
-											<caption>
-												<b>{{ $t('network.wireless.table.details') }}</b>
-											</caption>
-											<tr>
-												<th>{{ $t('network.wireless.table.bssid') }}</th>
-												<td>
-													{{ item.aps[0].bssid }}
-												</td>
-											</tr>
-											<tr>
-												<th>{{ $t('network.wireless.table.mode') }}</th>
-												<td>
-													{{ item.aps[0].mode }}
-												</td>
-											</tr>
-											<tr>
-												<th>{{ $t('network.wireless.table.channel') }}</th>
-												<td>
-													{{ item.aps[0].channel }}
-												</td>
-											</tr>
-											<tr>
-												<th>{{ $t('network.wireless.table.rate') }}</th>
-												<td>
-													{{ item.aps[0].rate }}
-												</td>
-											</tr>
-										</table>
-									</div>
-								</CCardBody>
-							</CCollapse>
-						</template>
-					</CDataTable>
-				</CCardBody>
-			</div>
+							</CCardBody>
+						</CCollapse>
+					</template>
+				</CDataTable>
+			</CCardBody>
 		</CCard>
 		<CModal
 			:show='disconnectAp !== null'
@@ -175,7 +167,7 @@ limitations under the License.
 			<template #footer>
 				<CButton
 					color='warning'
-					@click='disconnect(disconnectAp.uuid, disconnectAp.ssid, disconnectAp.interfaceName)'
+					@click='disconnect(disconnectAp)'
 				>
 					{{ $t('network.table.disconnect') }}
 				</CButton> <CButton
@@ -200,7 +192,7 @@ limitations under the License.
 			<template #footer>
 				<CButton
 					color='warning'
-					@click='removeConnection(deleteAp.uuid, deleteAp.ssid)'
+					@click='removeConnection(deleteAp)'
 				>
 					{{ $t('table.actions.delete') }}
 				</CButton> <CButton
@@ -216,31 +208,47 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal, CProgress, CSelect} from '@coreui/vue/src';
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CCollapse,
+	CDataTable,
+	CIcon,
+	CModal,
+	CSelect
+} from '@coreui/vue/src';
 
 import {cilInfo, cilLink, cilLinkBroken, cilPencil, cilReload, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
+import {InterfaceType} from '@/services/NetworkInterfaceService';
 import VersionService from '@/services/VersionService';
 
-import {AxiosError, AxiosResponse} from 'axios';
-import {IField, IOption} from '@/interfaces/Coreui';
+import {AxiosError} from 'axios';
+import {IField} from '@/interfaces/Coreui';
 import {IAccessPoint, IAccessPointArray} from '@/interfaces/Network/Wifi';
-import {NetworkConnection, NetworkInterface} from '@/interfaces/Network/Connection';
+import {NetworkConnection} from '@/interfaces/Network/Connection';
+import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
+import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 
 @Component({
 	components: {
 		CBadge,
+		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCollapse,
 		CDataTable,
 		CIcon,
 		CModal,
-		CProgress,
 		CSelect,
+		NetworkInterfaces,
+		SignalIndicator,
 	},
 	data: () => ({
 		cilInfo,
@@ -249,6 +257,7 @@ import {NetworkConnection, NetworkInterface} from '@/interfaces/Network/Connecti
 		cilPencil,
 		cilReload,
 		cilTrash,
+		InterfaceType,
 	}),
 	metaInfo: {
 		title: 'network.wireless.title'
@@ -266,14 +275,9 @@ export default class WifiConnections extends Vue {
 	private accessPoints: Array<IAccessPointArray> = [];
 
 	/**
-	 * @var {Array<IOption>} ifnameOptions Array of CoreUI interface select options
+	 * @property {boolean} loading Loading state
 	 */
-	private ifNameOptions: Array<IOption> = [];
-
-	/**
-	 * @var {boolean} interfacesLoaded Indicates whether interfaces have been loaded
-	 */
-	private interfacesLoaded = false;
+	private loading = true;
 
 	/**
 	 * @constant {Array<IField>} tableFields Array of CoreUI data table columns
@@ -340,53 +344,16 @@ export default class WifiConnections extends Vue {
 	 */
 	mounted(): void {
 		this.hostname = window.location.hostname;
-		this.getInterfaces();
-	}
-
-	/**
-	 * Returns color for progress bar depending on signal strength
-	 */
-	private signalColor(signal: number): string {
-		if (signal >= 67) {
-			return 'success';
-		} else if (signal >= 34) {
-			return 'warning';
-		} else {
-			return 'danger';
-		}
-	}
-
-	/**
-	 * Retrieves Wi-Fi interfaces
-	 */
-	private getInterfaces(): void {
-		this.$store.commit('spinner/SHOW');
-		NetworkInterfaceService.list(InterfaceType.WIFI)
-			.then((interfaces: Array<NetworkInterface>) => {
-				interfaces.forEach((item: NetworkInterface) => {
-					this.ifNameOptions.push({label: item.name, value: item.name});
-				});
-				this.interfacesLoaded = true;
-				this.$store.commit('spinner/HIDE');
-				if (this.ifNameOptions.length > 0) {
-					this.getAccessPoints();
-				}
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(
-					error,
-					'network.connection.messages.interfacesFetchFailed'
-				);
-			});
+		this.getAccessPoints();
 	}
 
 	/**
 	 * Retrieves list of available access points
 	 */
 	private getAccessPoints(): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		NetworkConnectionService.listWifiAccessPoints()
-			.then((response: AxiosResponse) => this.findConnections(response.data))
+			.then((response: IAccessPoint[]) => this.findConnections(response))
 			.catch((error: AxiosError) => {
 				if (!this.deletedAp) {
 					extendedErrorToast(
@@ -413,8 +380,7 @@ export default class WifiConnections extends Vue {
 	 */
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WIFI)
-			.then((response: AxiosResponse) => {
-				const connections: Array<NetworkConnection> = response.data;
+			.then((connections: NetworkConnection[]) => {
 				const apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {
 					ap['showDetails'] = false;
@@ -451,55 +417,54 @@ export default class WifiConnections extends Vue {
 					}
 				}
 				this.accessPoints = apArray;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireless.messages.connectionsFailed'));
 	}
 
 	/**
 	 * Connects to Wi-Fi access point
-	 * @param {string} uuid Network connection UUID
-	 * @param {string} name Network connection name
-	 * @param {string} ifname Network interface name
+	 * @param {IAccessPoint} ap Access point to connect to
 	 */
-	private connect(uuid: string, name: string, ifname: string|null): void {
-		if (ifname === undefined && this.ifNameOptions.length === 1) {
-			ifname = this.ifNameOptions[0].label.toString();
+	private connect(ap: IAccessPoint): void {
+		if (ap.uuid === undefined) {
+			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(uuid, ifname)
+		NetworkConnectionService.connect(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.connect.success',
-						{interface: ifname, connection: name}
+						{interface: ap.interfaceName, connection: ap.ssid}
 					).toString());
 				this.getAccessPoints();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
 				'network.connection.messages.connect.failed',
-				{connection: name}
+				{connection: ap.ssid}
 			));
 	}
 
 	/**
 	 * Disconnects from Wi-Fi access point
-	 * @param {string} uuid Network connection UUID
-	 * @param {string} name Network connection name
-	 * @param {string} ifname Network interface name
+	 * @param {IAccessPoint} ap Access point to disconnect from
 	 */
-	private disconnect(uuid: string, name: string, ifname: string): void {
+	private disconnect(ap: IAccessPoint): void {
+		if (ap.uuid === undefined) {
+			return;
+		}
 		this.disconnectAp = null;
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(uuid)
+		NetworkConnectionService.disconnect(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.disconnect.success',
-						{interface: ifname, connection: name}
+						{interface: ap.interfaceName, connection: ap.ssid}
 					).toString());
 				this.getAccessPoints();
 			})
@@ -508,10 +473,10 @@ export default class WifiConnections extends Vue {
 					extendedErrorToast(
 						error,
 						'network.connection.messages.disconnect.failed',
-						{connection: name}
+						{connection: ap.ssid}
 					);
 				} else {
-					this.tryRest(error, name, 'network.connection.messages.disconnect.failed', 'network.wireless.messages.disconnectUnavailable');
+					this.tryRest(error, ap.ssid, 'network.connection.messages.disconnect.failed', 'network.wireless.messages.disconnectUnavailable');
 				}
 			});
 	}
@@ -552,49 +517,28 @@ export default class WifiConnections extends Vue {
 	private addConnection(ap: IAccessPoint) {
 		this.$router.push({
 			name: 'add-wireless-connection',
-			params: {
-				ssid: ap.ssid,
-				interfaceName: ap.interfaceName!,
-				wifiMode: ap.mode,
-				wifiSecurity: this.getSecurityType(ap.security)
-			}
+			params: {ap: JSON.stringify(ap)},
 		});
-	}
-
-	/**
-	 * Returns security type code from type string
-	 * @param {string} type security type string
-	 * @returns {string} security type code
-	 */
-	private getSecurityType(type: string): string {
-		if (type === 'Open') {
-			return 'open';
-		} else if (type === 'WEP') {
-			return 'wep';
-		} else if (['WPA-Personal', 'WPA2-Personal', 'WPA3-Personal'].includes(type)) {
-			return 'wpa-psk';
-		} else if (['WPA-Enterprise', 'WPA2-Enterprise', 'WPA3-Enterprise'].includes(type)) {
-			return 'wpa-eap';
-		}
-		return '';
 	}
 
 
 	/**
 	 * Removes Wi-Fi access point connection
-	 * @param {string} uuid Network connection UUID
-	 * @param {string} name Network connection name
+	 * @param {IAccessPoint} ap Access point to remove
 	 */
-	private removeConnection(uuid: string, name: string): void {
+	private removeConnection(ap: IAccessPoint): void {
+		if (ap.uuid === undefined) {
+			return;
+		}
 		this.deleteAp = null;
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.remove(uuid)
+		NetworkConnectionService.remove(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.removeSuccess',
-						{connection: name}
+						{connection: ap.ssid}
 					).toString()
 				);
 				this.deletedAp = true;
@@ -603,7 +547,7 @@ export default class WifiConnections extends Vue {
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
 				'network.connection.messages.removeFailed',
-				{connection: name}
+				{connection: ap.ssid}
 			));
 	}
 }
