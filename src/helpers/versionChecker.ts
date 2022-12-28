@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import store from '@/store';
-import compareVersions, {CompareOperator} from 'compare-versions';
+import {compare, CompareOperator} from 'compare-versions';
 
 /**
  * Compares the Daemon version against version and operation passed in arguments
@@ -28,7 +28,7 @@ export function versionCompare(version: string, operator: CompareOperator): bool
 	if (daemonVersion === '') {
 		return false;
 	}
-	return compareVersions.compare(daemonVersion, version, operator);
+	return compare(daemonVersion, version, operator);
 
 }
 

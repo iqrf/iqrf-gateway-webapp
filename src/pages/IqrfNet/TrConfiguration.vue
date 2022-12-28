@@ -519,7 +519,7 @@ import ProductModal from '@/components/IqrfNet/ProductModal.vue';
 import {between, integer, max, max_value, min_value, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '@/enums/IqrfNet/network';
 
-import compareVersions, {compare} from 'compare-versions';
+import {compare} from 'compare-versions';
 import IqrfNetService from '@/services/IqrfNetService';
 import OsService from '@/services/DaemonApi/OsService';
 
@@ -545,7 +545,7 @@ import {DaemonClientState} from '@/interfaces/wsClient';
 		ValidationProvider,
 	},
 	methods: {
-		compareVersions: compareVersions.compare,
+		compareVersions: compare,
 	},
 })
 
