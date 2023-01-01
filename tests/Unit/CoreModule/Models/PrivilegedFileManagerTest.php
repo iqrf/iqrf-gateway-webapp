@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\CoreModule\Models;
 
 use App\CoreModule\Models\PrivilegedFileManager;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -52,6 +53,47 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 * @var PrivilegedFileManager Text file manager
 	 */
 	private PrivilegedFileManager $manager;
+
+	/**
+	 * Tests the function to change permissions
+	 */
+	public function testChmod(): void {
+		$this->receiveCommand('chmod 777 \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		Assert::noError(function (): void {
+			$this->manager->chmod(self::FILE_NAME, 0777);
+		});
+	}
+
+	/**
+	 * Tests the function to change owner
+	 */
+	public function testChown(): void {
+		$this->receiveCommand('chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		Assert::noError(function (): void {
+			$this->manager->chown(self::FILE_NAME, 'root', 'root');
+		});
+	}
+
+	/**
+	 * Tests the function to change owner (nonexistent file)
+	 */
+	public function testChownNonexistent(): void {
+		$stderr = 'chown: cannot access \'' . self::CONFIG_PATH . self::FILE_NAME . '\': No such file or directory';
+		$this->receiveCommand('chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, '', $stderr, 1);
+		Assert::throws(function (): void {
+			$this->manager->chown(self::FILE_NAME, 'root', 'root');
+		}, IOException::class, $stderr);
+	}
+
+	/**
+	 * Tests the function to recursively change owner
+	 */
+	public function testChownRecursive(): void {
+		$this->receiveCommand('chown -R \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		Assert::noError(function (): void {
+			$this->manager->chown(self::FILE_NAME, 'root', 'root', true);
+		});
+	}
 
 	/**
 	 * Tests the function to read a text file

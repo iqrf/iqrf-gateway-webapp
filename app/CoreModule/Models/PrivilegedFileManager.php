@@ -50,6 +50,36 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Changes the owner of a file or directory
+	 * @param string|null $path Path to the file or directory
+	 * @param string $user User name
+	 * @param string|null $group Group name
+	 * @param bool $recursive Indicates whether the owner should be changed recursively
+	 */
+	public function chown(?string $path, string $user, ?string $group = null, bool $recursive = false): void {
+		$owner = escapeshellarg($user . ($group !== null ? ':' . $group : ''));
+		$args = $recursive ? '-R ' : '';
+		$command = $this->commandManager->run('chown ' . $args . $owner . ' ' . $this->buildPath($path), true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Changes the permissions of a file or directory
+	 * @param string|null $path Path to the file or directory
+	 * @param int $mode File mode
+	 * @param bool $recursive Indicates whether the mode should be changed recursively
+	 */
+	public function chmod(?string $path, int $mode, bool $recursive = false): void {
+		$args = $recursive ? '-R ' : '';
+		$command = $this->commandManager->run('chmod ' . $args . decoct($mode) . ' ' . $this->buildPath($path), true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+	}
+
+	/**
 	 * Reads the file
 	 * @param string $fileName File name
 	 * @return string File content
@@ -80,7 +110,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return bool Is file exists?
 	 */
 	public function exists(string $fileName): bool {
-		$command = $this->commandManager->run('test -f ' . $this->buildPath($fileName), true);
+		$command = $this->commandManager->run('test -e ' . $this->buildPath($fileName), true);
 		return $command->getExitCode() === 0;
 	}
 
@@ -140,11 +170,11 @@ class PrivilegedFileManager implements IFileManager {
 
 	/**
 	 * Returns path to subdirectory or file, if the path contains spaces, returned string is surrounded in quotation marks
-	 * @param string $name Name of subdirectory or file
+	 * @param string|null $name Name of subdirectory or file
 	 * @return string Path to subdirectory or file
 	 */
-	private function buildPath(string $name): string {
-		return '\'' . $this->directory . '/' . Strings::replace($name, '~\'~', '\\\'') . '\'';
+	private function buildPath(?string $name): string {
+		return escapeshellarg($this->directory . ($name !== null ? '/' . $name : ''));
 	}
 
 }

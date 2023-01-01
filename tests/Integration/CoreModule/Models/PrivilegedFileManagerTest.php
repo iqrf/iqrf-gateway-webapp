@@ -107,7 +107,7 @@ final class PrivilegedFileManagerTest extends TestCase {
 		Assert::false($this->manager->exists('nonsense'));
 		$commands = $this->commandStack->getCommands();
 		Assert::equal(1, count($commands));
-		Assert::equal('test -f \'' . self::CONFIG_PATH . 'nonsense\'', $commands[0]->getCommand());
+		Assert::equal('test -e \'' . self::CONFIG_PATH . 'nonsense\'', $commands[0]->getCommand());
 		Assert::equal(1, $commands[0]->getExitCode());
 		Assert::equal('', $commands[0]->getStderr());
 		Assert::equal('', $commands[0]->getStdout());
@@ -120,7 +120,7 @@ final class PrivilegedFileManagerTest extends TestCase {
 		Assert::true($this->manager->exists(self::FILE_NAME));
 		$commands = $this->commandStack->getCommands();
 		Assert::equal(1, count($commands));
-		Assert::equal('test -f \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', $commands[0]->getCommand());
+		Assert::equal('test -e \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', $commands[0]->getCommand());
 		Assert::equal(0, $commands[0]->getExitCode());
 		Assert::equal('', $commands[0]->getStderr());
 		Assert::equal('', $commands[0]->getStdout());
