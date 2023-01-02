@@ -74,6 +74,7 @@ class DependencyManager {
 			new Dependency('iqrf-gateway-controller', true, 'iqrf-gateway-controller', 'iqrfGatewayController'),
 			new Dependency('iqrf-gateway-setter', true, 'iqrf-gateway-setter', 'iqrfGatewaySetter'),
 			new Dependency('iqrf-gateway-uploader', true, 'iqrf-gateway-uploader', 'iqrfGatewayUploader'),
+			new Dependency('iqrf-journal-reader', true, 'iqrf-journal-reader'),
 			new Dependency('journalctl', true, 'systemd'),
 			new Dependency('lsusb', false, 'usbutils'),
 			new Dependency('mender', false, 'mender-client', 'mender'),

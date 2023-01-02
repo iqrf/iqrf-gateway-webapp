@@ -52,6 +52,9 @@ class JournalReaderManager {
 	 * @return array<string, string|array<int, string>> Journal records and cursors
 	 */
 	public function getRecords(int $count, ?string $cursor = null): array {
+		if (!$this->commandManager->commandExist(self::READER)) {
+			throw new JournalReaderInternalException('IQRF Journal Reader is not installed.');
+		}
 		$command = sprintf('%s -j -n %d', self::READER, $count);
 		if ($cursor !== null) {
 			$command = sprintf('%s -e "%s"', $command, $cursor);
