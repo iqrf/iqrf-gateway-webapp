@@ -34,7 +34,6 @@ use App\GatewayModule\Exceptions\JournalReaderInternalException;
 use App\GatewayModule\Models\JournalReaderManager;
 use Nette\Utils\Json;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
