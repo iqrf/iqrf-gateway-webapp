@@ -50,6 +50,11 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	private const DATA_DIR = TESTER_DIR . '/data/journal/';
 
 	/**
+	 * IQRF Journal Reader invocation command
+	 */
+	private const READER_COMMAND = 'iqrf-journal-reader';
+
+	/**
 	 * Commands
 	 */
 	private const COMMANDS = [
@@ -86,10 +91,8 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	public function testGetRecordsCursorLess(): void {
 		$raw = $this->fileManager->read('cursorless');
 		$parsed = $this->fileManager->read('cursorless_parsed');
-		$command = new Command(self::COMMANDS['cursorless'], Json::encode($raw), '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['cursorless'], true])
-			->andReturn($command);
+		$this->receiveCommandExist(self::READER_COMMAND, true);
+		$this->receiveCommand(self::COMMANDS['cursorless'], true, Json::encode($raw), '');
 		Assert::equal($parsed, $this->journalManager->getRecords(10));
 	}
 
@@ -99,25 +102,28 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	public function testGetRecordsCursor(): void {
 		$raw = $this->fileManager->read('cursor');
 		$parsed = $this->fileManager->read('cursor_parsed');
-		$command = new Command(self::COMMANDS['cursor'], Json::encode($raw), '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['cursor'], true])
-			->andReturn($command);
+		$this->receiveCommandExist(self::READER_COMMAND, true);
+		$this->receiveCommand(self::COMMANDS['cursor'], true, Json::encode($raw), '');
 		Assert::equal($parsed, $this->journalManager->getRecords(10, 's=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6'));
+	}
+
+	/**
+	 * Tests the function to get journal records without the journal reader utility installed
+	 */
+	public function testGetRecordsReaderMissing(): void {
+		$this->receiveCommandExist(self::READER_COMMAND, false);
+		Assert::exception(function (): void {
+			$this->journalManager->getRecords(10);
+		}, JournalReaderInternalException::class, 'IQRF Journal Reader is not installed.');
 	}
 
 	/**
 	 * Tests the function to get journal records with invalid cursor
 	 */
 	public function testGetRecordsError(): void {
-		$invalidCursorCommand = new Command(self::COMMANDS['invalidCursor'], '', 'Invalid cursor format: invalid', 1);
-		$internalErrorCommand = new Command(self::COMMANDS['internalError'], '', 'Failed to get record cursor: Cannot assign requested address', 2);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['invalidCursor'], true])
-			->andReturn($invalidCursorCommand);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['internalError'], true])
-			->andReturn($internalErrorCommand);
+		$this->receiveCommandExist(self::READER_COMMAND, true);
+		$this->receiveCommand(self::COMMANDS['invalidCursor'], true, '', 'Invalid cursor format: invalid', 1);
+		$this->receiveCommand(self::COMMANDS['internalError'], true, '', 'Failed to get record cursor: Cannot assign requested address', 2);
 		Assert::exception(function (): void {
 			$this->journalManager->getRecords(10, 'invalid');
 		}, JournalReaderArgumentException::class, 'Invalid cursor format: invalid');
