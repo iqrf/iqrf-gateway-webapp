@@ -34,6 +34,9 @@ limitations under the License.
 				<template #model='{item}'>
 					<td>{{ item.model }}</td>
 				</template>
+				<template #macAddress='{item}'>
+					<td>{{ item.macAddress }}</td>
+				</template>
 				<template #state='{item}'>
 					<td>
 						<CBadge :color='stateColor(item.state)'>

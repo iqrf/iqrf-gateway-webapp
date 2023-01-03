@@ -3078,6 +3078,7 @@
 				"connectionFetchFailed": "Failed to retrieve list of connections: {error}",
 				"fetchFailed": "Failed to retrieve connection {connection}: {error}",
 				"createFailed": "Failed to create connection {connection}.",
+				"noConnections": "No available ethernet connections.",
 				"add": {
 					"failed": "Failed to create new connection: {error}",
 					"success": "Network connection {connection} has been created."
