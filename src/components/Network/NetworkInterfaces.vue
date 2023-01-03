@@ -58,7 +58,9 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import {IField} from '@/interfaces/Coreui';
 import {NetworkInterface} from '@/interfaces/Network/Connection';
-import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
+import {InterfaceState} from '@/enums/Network/InterfaceState';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 /**
  * Network interface list
@@ -130,9 +132,9 @@ export default class NetworkInterfaces extends Vue {
 
 	/**
 	 * Returns badge color based on interface state
-	 * @param state Interface state
+	 * @param {InterfaceState} state Interface state
 	 */
-	private stateColor(state: string): string {
+	private stateColor(state: InterfaceState): string {
 		const match = state.match(/^(?<state>\w+)( (.*))?$/);
 		switch (match?.groups?.state) {
 			case 'connected':

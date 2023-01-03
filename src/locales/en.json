@@ -2822,10 +2822,27 @@
 				"imei": "IMEI",
 				"state": "State",
 				"states": {
-					"failed": "Failed"
+					"failed": "Modem is unusable",
+					"unknown": "Unknown",
+					"initializing": "Initializing",
+					"locked": "Locked",
+					"disabled": "Disabled",
+					"disabling": "Disabling",
+					"enabling": "Enabling",
+					"enabled": "Enabled",
+					"searching": "Searching network",
+					"registered": "Registered to network",
+					"disconnecting": "Disconnecting",
+					"connecting": "Connecting",
+					"connected": "Connected"
 				},
 				"failedReasons": {
-					"sim-missing": "SIM card missing"
+					"esim-without-profiles": "eSIM without profiles",
+					"none": "No error",
+					"sim-error": "SIM card unusable",
+					"sim-missing": "SIM card missing",
+					"unknown": "Unknown error",
+					"unknown-capabilities": "Unknown capabilities"
 				},
 				"signal": "Signal strength",
 				"rssi": "RSSI"

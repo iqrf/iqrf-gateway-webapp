@@ -15,49 +15,11 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
+
+import {InterfaceType} from '@/enums/Network/InterfaceType';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {NetworkInterface} from '@/interfaces/Network/Connection';
 import {IModem} from '@/interfaces/Network/Mobile';
-
-/**
- * Network interface state enum
- */
-export enum InterfaceState {
-	CONNECTED = 'connected',
-	CONNECTING = 'connecting',
-	CONFIGURING = 'connecting (configuring)',
-	DEACTIVATING = 'deactivating',
-	DISCONNECTED = 'disconnected',
-	FAILED = 'connection failed',
-	IP_CONFIG = 'connecting (getting IP configuration)',
-	IP_CHECK = 'connecting (checking IP connectivity)',
-	NEED_AUTH = 'connecting (need authentication)',
-	PREPARE = 'connecting (prepare)',
-	SECONDARIES = 'connecting (starting secondary connections)',
-	UNAVAILABLE = 'unavailable',
-	UNMANAGED = 'unmanaged',
-	UNKNOWN = 'unknown',
-}
-
-/**
- * Network interface type enum
- */
-export enum InterfaceType {
-	BOND = 'bond',
-	BLUETOOTH = 'bt',
-	BRIDGE = 'bridge',
-	DUMMY = 'dummy',
-	ETHERNET = 'ethernet',
-	GSM = 'gsm',
-	IP_TUNNEL = 'iptunnel',
-	LOOPBACK = 'loopback',
-	PPP = 'ppp',
-	TUN = 'tun',
-	VLAN = 'vlan',
-	WIFI = 'wifi',
-	WIFI_P2P = 'wifi-p2p',
-	WIREGUARD = 'wireguard',
-}
 
 /**
  * Network interface service

@@ -15,25 +15,11 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
+
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {IConnection, NetworkConnection} from '@/interfaces/Network/Connection';
 import {IAccessPoint} from '@/interfaces/Network/Wifi';
-
-export enum ConnectionType {
-	BLUETOOTH = 'bluetooth',
-	BRIDGE = 'bridge',
-	DUMMY = 'dummy',
-	ETHERNET = '802-3-ethernet',
-	GSM = 'gsm',
-	INFINIBAND = 'infiniband',
-	TUN = 'tun',
-	VLAN = 'vlan',
-	VPN = 'vpn',
-	WIFI = '802-11-wireless',
-	WIMAX = 'wimax',
-	WIREGUARD = 'wireguard',
-	WPAN = 'wpan',
-}
 
 /**
  * Network connection service

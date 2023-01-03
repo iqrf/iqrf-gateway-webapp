@@ -112,19 +112,31 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-
 import {cilLink, cilLinkBroken, cilPencil} from '@coreui/icons';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import {InterfaceType} from '@/services/NetworkInterfaceService';
-import VersionService from '@/services/VersionService';
-
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CDataTable,
+	CIcon,
+	CModal,
+} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+
+import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
+
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
+
 import {IField} from '@/interfaces/Coreui';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
-import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
+
+import NetworkConnectionService from '@/services/NetworkConnectionService';
+import VersionService from '@/services/VersionService';
 
 @Component({
 	components: {
@@ -142,7 +154,7 @@ import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 		cilLink,
 		cilLinkBroken,
 		cilPencil,
-		InterfaceType,
+		InterfaceType: ConnectionType,
 	}),
 	metaInfo: {
 		title: 'network.ethernet.title',
@@ -206,7 +218,7 @@ export default class EthernetConnections extends Vue {
 	 */
 	private getConnections(): void {
 		this.loading = true;
-		NetworkConnectionService.list(ConnectionType.ETHERNET)
+		NetworkConnectionService.list(ConnectionType.Ethernet)
 			.then((connections: NetworkConnection[]) => {
 				this.connections = connections;
 				this.loading = false;

@@ -99,13 +99,14 @@ import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
+import NetworkConnectionService from '@/services/NetworkConnectionService';
 
 import {AxiosError} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
 import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 
 @Component({
 	components: {

@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {ConfigurationMethod} from '@/enums/Network/Ip';
 import {IWifiSecurity} from './Wifi';
+import {InterfaceState} from '@/enums/Network/InterfaceState';
 
 /**
  * Network connection interface
@@ -38,7 +40,7 @@ export interface NetworkInterface {
 	manufacturer: string|null
 	model: string|null
 	name: string
-	state: string
+	state: InterfaceState
 	type: string
 }
 
@@ -54,7 +56,7 @@ export interface IConnection {
 	autoConnect: IConnectionAutoConnect
 	name: string
 	uuid?: string
-	type?: string
+	type?: ConnectionType|null
 	interface?: string
 	ipv4: IConnectionIPv4
 	ipv6: IConnectionIPv6

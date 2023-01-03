@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+import {ModemFailedReason} from '@/enums/Network/ModemFailedReason';
+import {ModemState} from '@/enums/Network/ModemState';
+
 /**
  * Modem interface
  */
@@ -40,9 +43,9 @@ export interface IModem {
 	 */
 	rssi: number|null
 
-	state: string
+	state: ModemState
 
-	failedReason: string
+	failedReason: ModemFailedReason|null
 }
 
 /**

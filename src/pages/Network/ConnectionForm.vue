@@ -128,7 +128,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
 	CCard,
@@ -136,36 +136,41 @@ import {
 	CForm,
 	CInput,
 	CModal,
-	CRow, CSwitch
+	CRow,
+	CSwitch
 } from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
 import {required} from 'vee-validate/dist/rules';
-import {ConfigurationMethod} from '@/enums/Network/Ip';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {sleep} from '@/helpers/sleep';
+import {MetaInfo} from 'vue-meta';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {v4 as uuidv4} from 'uuid';
-import {WepKeyType} from '@/enums/Network/WifiSecurity';
-import UrlBuilder from '@/helpers/urlBuilder';
 
-import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import {InterfaceType} from '@/services/NetworkInterfaceService';
-import VersionService from '@/services/VersionService';
-
-import axios, {AxiosError, AxiosResponse} from 'axios';
-import {IConnection, IConnectionModal} from '@/interfaces/Network/Connection';
-import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
 import GsmConfiguration from '@/components/Network/Connection/GsmConfiguration.vue';
+import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
+import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
 import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
 import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
-import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
-import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
-import {IAccessPoint} from '@/interfaces/Network/Wifi';
-import {MetaInfo} from 'vue-meta';
-import IpAddressHelper from '@/helpers/IpAddressHelper';
-import NetworkOperators from '@/components/Network/NetworkOperators.vue';
-import NetworkOperator from '@/entities/NetworkOperator';
 import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
+import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
+import NetworkOperators from '@/components/Network/NetworkOperators.vue';
+
+import NetworkOperator from '@/entities/NetworkOperator';
+
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
+import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {WepKeyType} from '@/enums/Network/WifiSecurity';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
+import IpAddressHelper from '@/helpers/IpAddressHelper';
+import {sleep} from '@/helpers/sleep';
+import UrlBuilder from '@/helpers/urlBuilder';
+
+import {IConnection, IConnectionModal} from '@/interfaces/Network/Connection';
+import {IAccessPoint} from '@/interfaces/Network/Wifi';
+
+import NetworkConnectionService from '@/services/NetworkConnectionService';
+import VersionService from '@/services/VersionService';
 
 @Component({
 	components: {
@@ -211,7 +216,7 @@ export default class ConnectionForm extends Vue {
 		},
 		interface: '',
 		name: '',
-		type: '',
+		type: null,
 		ipv4: {
 			addresses: [],
 			dns: [],
@@ -311,9 +316,9 @@ export default class ConnectionForm extends Vue {
 			this.connection.name = ap.ssid;
 			this.connection.interface = ap.interfaceName ?? '';
 			if (this.interfaceType === InterfaceType.ETHERNET) {
-				this.connection.type = ConnectionType.ETHERNET;
+				this.connection.type = ConnectionType.Ethernet;
 			} else if (this.interfaceType === InterfaceType.WIFI) {
-				this.connection.type = ConnectionType.WIFI;
+				this.connection.type = ConnectionType.WiFi;
 				Object.assign(this.connection, {
 					wifi: {
 						ssid: ap?.ssid,
@@ -384,10 +389,12 @@ export default class ConnectionForm extends Vue {
 					'network.connection.messages.fetchFailed',
 					{connection: this.uuid}
 				);
-				if (this.connection.type === ConnectionType.ETHERNET) {
+				if (this.connection.type === ConnectionType.Ethernet) {
 					this.$router.push('/ip-network/ethernet');
-				} else if (this.connection.type === ConnectionType.WIFI) {
+				} else if (this.connection.type === ConnectionType.WiFi) {
 					this.$router.push('/ip-network/wireless');
+				} else if (this.connection.type === ConnectionType.GSM) {
+					this.$router.push('/ip-network/mobile');
 				}
 			});
 	}
@@ -529,9 +536,9 @@ export default class ConnectionForm extends Vue {
 					message = this.$t('network.connection.messages.edit.success', {connection: name}).toString();
 				}
 				this.$toast.success(message);
-				if (this.connection.type === ConnectionType.ETHERNET) {
+				if (this.connection.type === ConnectionType.Ethernet) {
 					this.$router.push('/ip-network/ethernet');
-				} else if (this.connection.type === ConnectionType.WIFI) {
+				} else if (this.connection.type === ConnectionType.WiFi) {
 					this.$router.push('/ip-network/wireless');
 				} else if (this.connection.type === ConnectionType.GSM) {
 					this.$router.push('/ip-network/mobile');

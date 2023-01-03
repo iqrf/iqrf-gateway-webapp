@@ -207,6 +207,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {
 	CBadge,
@@ -220,20 +221,22 @@ import {
 	CModal,
 	CSelect
 } from '@coreui/vue/src';
-
 import {cilInfo, cilLink, cilLinkBroken, cilPencil, cilReload, cilTrash} from '@coreui/icons';
-import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import {InterfaceType} from '@/services/NetworkInterfaceService';
-import VersionService from '@/services/VersionService';
-
-import {AxiosError} from 'axios';
-import {IField} from '@/interfaces/Coreui';
-import {IAccessPoint, IAccessPointArray} from '@/interfaces/Network/Wifi';
-import {NetworkConnection} from '@/interfaces/Network/Connection';
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
+
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
+
+import {IField} from '@/interfaces/Coreui';
+import {NetworkConnection} from '@/interfaces/Network/Connection';
+import {IAccessPoint, IAccessPointArray} from '@/interfaces/Network/Wifi';
+
+import NetworkConnectionService from '@/services/NetworkConnectionService';
+import VersionService from '@/services/VersionService';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
 
 @Component({
 	components: {
@@ -379,7 +382,7 @@ export default class WifiConnections extends Vue {
 	 * @param {Array<IAccessPoint>} accessPoints Array of available access points
 	 */
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
-		return NetworkConnectionService.list(ConnectionType.WIFI)
+		return NetworkConnectionService.list(ConnectionType.WiFi)
 			.then((connections: NetworkConnection[]) => {
 				const apArray: Array<IAccessPointArray> = [];
 				for (const ap of accessPoints) {

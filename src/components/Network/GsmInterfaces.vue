@@ -40,10 +40,12 @@ limitations under the License.
 				</template>
 				<template #state='{item}'>
 					<td>
-						{{ $t(`network.mobile.modems.states.${item.state}`) }}
-						<span v-if='item.state === "failed"'>
-							({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
-						</span>
+						<CBadge :color='stateColor(item.state)'>
+							{{ $t(`network.mobile.modems.states.${item.state}`) }}
+							<span v-if='item.state === "failed"'>
+								({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
+							</span>
+						</CBadge>
 					</td>
 				</template>
 			</CDataTable>
@@ -52,19 +54,27 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {IField} from '@/interfaces/Coreui';
-
+import {
+	CBadge,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CDataTable
+} from '@coreui/vue/src';
 import {Component, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CDataTable} from '@coreui/vue/src';
+
+import SignalIndicator from '@/components/Network/SignalIndicator.vue';
+import {ModemState} from '@/enums/Network/ModemState';
+import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
-import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 
 /**
  * GSM modem interface list
  */
 @Component({
 	components: {
+		CBadge,
 		CCard,
 		CCardHeader,
 		CCardBody,
@@ -118,12 +128,35 @@ export default class GsmInterfaces extends Vue {
 	 */
 	private loading = true;
 
+	/**
+	 * Retrieves modems
+	 */
 	protected mounted(): void {
 		NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;
 				this.loading = false;
 			});
+	}
+
+	/**
+	 * Returns badge color for modem state
+	 * @param {ModemState} state Modem state
+	 */
+	private stateColor(state: ModemState): string {
+		switch (state) {
+			case ModemState.failed:
+				return 'danger';
+			case ModemState.locked:
+			case ModemState.unknown:
+				return 'warning';
+			case ModemState.connected:
+				return 'success';
+			case ModemState.registered:
+				return 'info';
+			default:
+				return 'secondary';
+		}
 	}
 
 }

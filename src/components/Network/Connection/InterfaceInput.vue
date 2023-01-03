@@ -34,16 +34,17 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {AxiosError} from 'axios';
 import {CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
-
-import {NetworkInterface} from '@/interfaces/Network/Connection';
-import {IOption} from '@/interfaces/Coreui';
 import {required} from 'vee-validate/dist/rules';
-import NetworkInterfaceService, {InterfaceType} from '@/services/NetworkInterfaceService';
-import {AxiosError} from 'axios';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
+import {IOption} from '@/interfaces/Coreui';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 /**
  * Network interface select field
