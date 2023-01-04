@@ -75,8 +75,7 @@ export default class App extends Vue {
 							json: JSON.stringify(check.dependencies),
 						},
 					});
-				}
-				if (!check.phpModules.allExtensionsLoaded) {
+				} else if (!check.phpModules.allExtensionsLoaded) {
 					this.$router.push({
 						name: 'missing-extension',
 						params: {
