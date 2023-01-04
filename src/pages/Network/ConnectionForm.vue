@@ -231,6 +231,8 @@ export default class ConnectionForm extends Vue {
 		}
 	};
 
+	private backupConfig: IConnection|null = null;
+
 	/**
 	 * @var {Record<string, string|ConfigurationMethod>} originalIPv4 IPv4 address and method before change
 	 */
@@ -434,6 +436,7 @@ export default class ConnectionForm extends Vue {
 			connection.ipv6 = connection.ipv6.current;
 			delete connection.ipv6.current;
 		}
+		this.backupConfig = JSON.parse(JSON.stringify(connection));
 		this.connection = connection;
 	}
 
@@ -471,11 +474,11 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
-	 * Saves changes made to connection
+	 * Alters connection JSON for submission
+	 * @param {IConnection} connection Connection to prepare
+	 * @returns {IConnection} Connection prepared for submission
 	 */
-	private saveConnection(): void {
-		const connection: IConnection = JSON.parse(JSON.stringify(this.connection));
-		Object.assign(connection, {interface: connection.interface});
+	private prepareConnectionToSave(connection: IConnection): IConnection {
 		if (connection.ipv4.method === 'manual') {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
@@ -496,6 +499,16 @@ export default class ConnectionForm extends Vue {
 				this.connection.serial !== undefined) {
 			delete connection.serial;
 		}
+		return connection;
+	}
+
+	/**
+	 * Saves changes made to connection
+	 */
+	private saveConnection(): void {
+		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
+		Object.assign(connection, {interface: connection.interface});
+		connection = this.prepareConnectionToSave(connection);
 		if (this.showModal) {
 			this.showModal = false;
 		}
@@ -505,9 +518,8 @@ export default class ConnectionForm extends Vue {
 		if (connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
-				.then((response: AxiosResponse) => this.connect(response.data, connection.name))
-				.catch(async (error: AxiosError) => {
-					await NetworkConnectionService.remove((connection.uuid as string));
+				.then((response: AxiosResponse) => this.connect(response.data, connection.name, true))
+				.catch((error: AxiosError) => {
 					extendedErrorToast(
 						error,
 						'network.connection.messages.add.failed'
@@ -527,8 +539,9 @@ export default class ConnectionForm extends Vue {
 	/**
 	 * @param {string} uuid Connection UUID
 	 * @param {string} name Connection name
+	 * @param {boolean} added Connection added before connecting
 	 */
-	private connect(uuid: string, name: string): void {
+	private connect(uuid: string, name: string, added = false): void {
 		NetworkConnectionService.connect(uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
@@ -548,8 +561,15 @@ export default class ConnectionForm extends Vue {
 				}
 
 			})
-			.catch((error: AxiosError) => {
+			.catch(async (error: AxiosError) => {
 				if (!this.handleIPChanged) {
+					if (added) {
+						await NetworkConnectionService.remove(uuid);
+					} else {
+						if (this.backupConfig !== null) {
+							await NetworkConnectionService.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
+						}
+					}
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;
 				}
