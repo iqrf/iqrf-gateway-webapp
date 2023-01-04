@@ -22,7 +22,9 @@ namespace App\ApiModule\Version0\Models;
 
 use App\GatewayModule\Models\CertificateManager;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha256;
+use Lcobucci\JWT\Signer\Ecdsa\Sha256 as EcdsaSha256;
+use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha384;
+use Lcobucci\JWT\Signer\Ecdsa\Sha512 as EcdsaSha512;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
 use Throwable;
@@ -64,7 +66,19 @@ class JwtConfigurator {
 					$signer = new RsaSha256();
 					break;
 				case OPENSSL_KEYTYPE_EC:
-					$signer = EcdsaSha256::create();
+					switch ($parsedKey->getDetail('curve_name')) {
+						case 'prime256v1':
+							$signer = new EcdsaSha256();
+							break;
+						case 'secp384r1':
+							$signer = new EcdsaSha384();
+							break;
+						case 'secp521r1':
+							$signer = new EcdsaSha512();
+							break;
+						default:
+							return Configuration::forUnsecuredSigner();
+					}
 					break;
 				default:
 					return Configuration::forUnsecuredSigner();

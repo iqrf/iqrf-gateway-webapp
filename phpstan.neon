@@ -46,3 +46,4 @@ parameters:
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
+		- '#Call to deprecated method forUnsecuredSigner\(\) of class Lcobucci\\JWT\\Configuration\:\s*Deprecated since v4.3#'
