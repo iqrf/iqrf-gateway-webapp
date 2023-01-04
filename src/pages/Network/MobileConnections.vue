@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('network.mobile.title') }}</h1>
 		<GsmInterfaces />
 		<CCard>
-			<CCardHeader class='border-0 datatable-header'>
+			<CCardHeader class='datatable-header'>
 				{{ $t('network.connection.title') }}
 				<CButton
 					color='success'
@@ -41,7 +41,7 @@ limitations under the License.
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
-						{{ $t('network.connection.messages.noConnections') }}
+						{{ $t('network.mobile.messages.noConnections') }}
 					</template>
 					<template #interfaceName='{item}'>
 						<td>

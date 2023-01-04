@@ -480,11 +480,11 @@ export default class ConnectionForm extends Vue {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
 			}
-		} else if (connection.ipv4.method === 'auto') {
+		} else if (['auto', 'shared'].includes(connection.ipv4.method)) {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}
-		if (connection.ipv6.method === 'auto' || connection.ipv6.method === 'dhcp') {
+		if (['auto', 'dhcp', 'shared'].includes(connection.ipv6.method)) {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
@@ -506,10 +506,13 @@ export default class ConnectionForm extends Vue {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
 				.then((response: AxiosResponse) => this.connect(response.data, connection.name))
-				.catch((error: AxiosError) => extendedErrorToast(
-					error,
-					'network.connection.messages.add.failed'
-				));
+				.catch(async (error: AxiosError) => {
+					await NetworkConnectionService.remove((connection.uuid as string));
+					extendedErrorToast(
+						error,
+						'network.connection.messages.add.failed'
+					);
+				});
 		} else {
 			NetworkConnectionService.edit(this.uuid, connection)
 				.then(() => this.connect(this.uuid, connection.name))

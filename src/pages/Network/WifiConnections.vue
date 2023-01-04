@@ -19,10 +19,9 @@ limitations under the License.
 		<h1>{{ $t('network.wireless.title') }}</h1>
 		<NetworkInterfaces :type='InterfaceType.WIFI' />
 		<CCard>
-			<CCardHeader class='border-0'>
+			<CCardHeader class='datatable-header'>
 				{{ $t('network.wireless.table.accessPoints') }}
 				<CButton
-					style='float: right;'
 					color='primary'
 					size='sm'
 					@click='getAccessPoints'
@@ -52,6 +51,12 @@ limitations under the License.
 									color='success'
 								>
 									{{ $t('network.connection.states.connected') }}
+								</CBadge>
+								<CBadge
+									v-if='item.ssid.length === 0'
+									color='secondary'
+								>
+									{{ $t('network.wireless.table.hidden') }}
 								</CBadge>
 								{{ item.ssid }}
 							</div>

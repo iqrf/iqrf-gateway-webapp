@@ -28,6 +28,9 @@ limitations under the License.
 				:loading='loading'
 				:sorter='{external: false, resetable: true}'
 			>
+				<template #no-items-view='{}'>
+					{{ $t('network.interface.messages.noInterfaces') }}
+				</template>
 				<template #manufacturer='{item}'>
 					<td>{{ item.manufacturer }}</td>
 				</template>

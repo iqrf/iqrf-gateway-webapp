@@ -31,6 +31,7 @@ limitations under the License.
 				:placeholder='$t("network.connection.ipv4.methods.null").toString()'
 				:is-valid='touched ? valid : null'
 				:invalid-feedback='errors.join(", ")'
+				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
 		<div v-if='connection.ipv4.method === ConfigurationMethod.MANUAL'>
@@ -213,6 +214,13 @@ export default class IPv4Configuration extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	protected mounted(): void {
+		this.onMethodChangeStaticFixup();
+	}
+
+	/**
+	 * Populates IPv6 configuration object if empty
+	 */
+	private onMethodChangeStaticFixup(): void {
 		if (this.connection.ipv4.addresses.length === 0) {
 			this.connection.ipv4.addresses.push({address: '', prefix: 32, mask: ''});
 		}

@@ -18,10 +18,9 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('network.wireguard.title') }}</h1>
 		<CCard>
-			<CCardHeader class='border-0'>
+			<CCardHeader class='datatable-header'>
 				{{ $t('network.wireguard.tunnels.title') }}
 				<CButton
-					style='float: right;'
 					color='success'
 					size='sm'
 					to='/ip-network/vpn/add'

@@ -28,6 +28,9 @@ limitations under the License.
 				:loading='loading'
 				:sorter='{external: false, resetable: true}'
 			>
+				<template #no-items-view='{}'>
+					{{ $t('network.mobile.messages.noInterfaces') }}
+				</template>
 				<template #rssi='{item}'>
 					<td>
 						{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}

@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ $t('network.ethernet.title') }}</h1>
 		<NetworkInterfaces :type='InterfaceType.ETHERNET' />
 		<CCard>
-			<CCardHeader class='border-0'>
+			<CCardHeader class='datatable-header'>
 				{{ $t('network.connection.title') }}
 			</CCardHeader>
 			<CCardBody>
@@ -129,6 +129,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 
 import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -154,7 +155,7 @@ import VersionService from '@/services/VersionService';
 		cilLink,
 		cilLinkBroken,
 		cilPencil,
-		InterfaceType: ConnectionType,
+		InterfaceType,
 	}),
 	metaInfo: {
 		title: 'network.ethernet.title',

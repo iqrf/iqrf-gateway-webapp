@@ -152,7 +152,7 @@
 							"prefix": 24
 						},
 						"additionalProperties": false,
-						"oneOf": [
+						"anyOf": [
 							{
 								"required": [
 									"address",
@@ -245,14 +245,14 @@
 			"type": "object",
 			"title": "IPv6 connection",
 			"example": {
+				"method": "manual",
 				"addresses": [
 					{
 						"prefix": 64,
-						"gateway": "fe80::6f0:21ff:fe24:1e53",
 						"address": "2001:470:5bb2::671"
 					}
 				],
-				"method": "manual",
+				"gateway": "fe80::6f0:21ff:fe24:1e53",
 				"dns": [
 					{
 						"address": "2606:4700:4700::1111"
@@ -289,7 +289,6 @@
 					"example": [
 						{
 							"prefix": 64,
-							"gateway": "fe80::6f0:21ff:fe24:1e53",
 							"address": "2001:470:5bb2::671"
 						}
 					],
@@ -301,7 +300,6 @@
 						"examples": [
 							{
 								"prefix": 64,
-								"gateway": "fe80::6f0:21ff:fe24:1e53",
 								"address": "2001:470:5bb2::671"
 							}
 						],

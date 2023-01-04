@@ -30,6 +30,7 @@ limitations under the License.
 				:placeholder='$t("network.connection.ipv6.methods.null").toString()'
 				:is-valid='touched ? valid : null'
 				:invalid-feedback='errors.join(", ")'
+				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
 		<div v-if='connection.ipv6.method === ConfigurationMethod.MANUAL'>
@@ -205,7 +206,6 @@ export default class IPv6Configuration extends Vue {
 	 */
 	@VModel({required: true}) connection!: IConnection;
 
-
 	/**
 	 * Initializes validation rules
 	 */
@@ -216,9 +216,9 @@ export default class IPv6Configuration extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Populates IPv6 configuration object if empty
 	 */
-	protected mounted(): void {
+	protected onMethodChangeStaticFixup(): void {
 		if (this.connection.ipv6.addresses.length === 0) {
 			this.addAddress();
 		}
