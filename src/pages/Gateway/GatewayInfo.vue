@@ -67,7 +67,7 @@ limitations under the License.
 									size='sm'
 									@click='showHostnameModal'
 								>
-									<CIcon :content='icon' size='sm' />
+									<CIcon :content='cilPencil' size='sm' />
 									<span class='d-none d-lg-inline'>
 										{{ $t('forms.edit') }}
 									</span>
@@ -160,6 +160,9 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Informat
 		HostnameChange,
 		ResourceUsage,
 	},
+	data: () => ({
+		cilPencil,
+	}),
 	metaInfo: {
 		title: 'gateway.info.title',
 	},
@@ -178,8 +181,6 @@ export default class GatewayInfo extends Vue {
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false;
-
-	private icon: Array<string> = cilPencil;
 
 	/**
 	 * Computes array of ip address objects from network interfaces

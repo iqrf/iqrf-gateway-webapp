@@ -247,6 +247,8 @@ import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
+import {uuid_v4} from '@/helpers/validators';
+import {mType} from '@/helpers/validationRules/Daemon';
 import {v4 as uuidv4} from 'uuid';
 import SchedulerRecord from '@/helpers/SchedulerRecord';
 import {TimeSpecTypes} from '@/enums/Config/Scheduler';
@@ -419,22 +421,16 @@ export default class SchedulerForm extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
+		extend('integer', integer);
+		extend('min', min_value);
+		extend('required', required);
+		extend('mType', mType);
+		extend('uuidv4', uuid_v4);
 		extend('json', (json) => {
 			return this.validator.validate(json, (errorMessages) => {
 				const index = this.record.task.findIndex((task) => task.message === json);
 				this.validatorErrors[index] = errorMessages;
 			});
-		});
-		extend('uuidv4', (id: string) => {
-			const re = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-			return re.test(id);
-		});
-		extend('integer', integer);
-		extend('min', min_value);
-		extend('required', required);
-		extend('mType', (json) => {
-			const object = JSON.parse(json);
-			return {}.hasOwnProperty.call(object, 'mType');
 		});
 		extend('cron', (cronstring: string) => {
 			if (cronstring[0] === '@') {

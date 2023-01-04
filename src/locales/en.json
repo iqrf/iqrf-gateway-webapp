@@ -1342,8 +1342,7 @@
 			"title": "Change hostname",
 			"errors": {
 				"hostnameMissing": "Please enter hostname.",
-				"hostnameLen": "Hostname should be at most 64 characters long.",
-				"hostnameInvalid": "Hostname should contain letters a-z (case insensitive), digits 0-9 and a hyphen (-). Cannot start with a hyphen."
+				"hostnameInvalid": "Hostname should contain letters a-z (case insensitive), digits 0-9 and a hyphen (-). Cannot start with a hyphen. Cannot be longer than 64 characters."
 			},
 			"messages": {
 				"success": "Hostname configuration has been successfully changed.",
@@ -3228,7 +3227,8 @@
 					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
 					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
 					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-					"server": "Please enter the server address.",
+					"serverMissing": "Please enter the server address.",
+					"serverInvalid": "Invalid server URL.",
 					"tenantToken": "Please enter the tenant token."
 				}
 			},

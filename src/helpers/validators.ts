@@ -54,6 +54,16 @@ const host: ValidationRuleFunction = (host: string): boolean => {
 };
 
 /**
+ * Validates UUID version 4
+ * @param id ID to validate
+ * @returns {boolean} True if ID is UUIDv4 compliant
+ */
+const uuid_v4: ValidationRuleFunction = (id: string): boolean => {
+	const re = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+	return re.test(id);
+};
+
+/**
  * Validates IQRF Gateway Daemon's component instance name
  * @param {string} name Component instance name to validate
  * @return {boolean} True if the component instance name is valid
@@ -80,4 +90,4 @@ const ipv6: ValidationRuleFunction = (address: string): boolean => {
 	return ip.v6({exact: true}).test(address);
 };
 
-export {daemonInstanceName, email, host, ipv4, ipv6};
+export {daemonInstanceName, email, host, ipv4, ipv6, uuid_v4};

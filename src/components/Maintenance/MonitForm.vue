@@ -37,10 +37,10 @@ limitations under the License.
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
-					rules='required|userpass'
+					rules='required|alphanum'
 					:custom-messages='{
 						required: $t("maintenance.monit.errors.username"),
-						userpass: $t("maintenance.monit.errors.usernameInvalid"),
+						alphanum: $t("maintenance.monit.errors.usernameInvalid"),
 					}'
 				>
 					<CInput
@@ -52,10 +52,10 @@ limitations under the License.
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
-					rules='required|userpass'
+					rules='required|alphanum'
 					:custom-messages='{
 						required: $t("maintenance.monit.errors.password"),
-						userpass: $t("maintenance.monit.errors.passwordInvalid"),
+						alphanum: $t("maintenance.monit.errors.passwordInvalid"),
 					}'
 				>
 					<CInput
@@ -84,7 +84,7 @@ import {ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extend} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
+import {required, alpha_num} from 'vee-validate/dist/rules';
 
 import FeatureConfigService from '@/services/FeatureConfigService';
 
@@ -121,10 +121,7 @@ export default class MonitForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
-		extend('userpass', (item: string) => {
-			const re = new RegExp('^[0-9a-z]+$', 'i');
-			return re.test(item);
-		});
+		extend('alphanum', alpha_num);
 	}
 
 	/**
