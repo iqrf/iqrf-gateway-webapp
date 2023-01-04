@@ -152,7 +152,7 @@
 							"prefix": 24
 						},
 						"additionalProperties": false,
-						"oneOf": [
+						"anyOf": [
 							{
 								"required": [
 									"address",
@@ -245,14 +245,14 @@
 			"type": "object",
 			"title": "IPv6 connection",
 			"example": {
+				"method": "manual",
 				"addresses": [
 					{
 						"prefix": 64,
-						"gateway": "fe80::6f0:21ff:fe24:1e53",
 						"address": "2001:470:5bb2::671"
 					}
 				],
-				"method": "manual",
+				"gateway": "fe80::6f0:21ff:fe24:1e53",
 				"dns": [
 					{
 						"address": "2606:4700:4700::1111"
@@ -289,7 +289,6 @@
 					"example": [
 						{
 							"prefix": 64,
-							"gateway": "fe80::6f0:21ff:fe24:1e53",
 							"address": "2001:470:5bb2::671"
 						}
 					],
@@ -301,7 +300,6 @@
 						"examples": [
 							{
 								"prefix": 64,
-								"gateway": "fe80::6f0:21ff:fe24:1e53",
 								"address": "2001:470:5bb2::671"
 							}
 						],
@@ -616,7 +614,70 @@
 					"example": "gsmpassword"
 				}
 			}
-
+		},
+		"serial": {
+			"$id": "#/properties/serial",
+			"title": "Serial link connection",
+			"type": "object",
+			"example": {
+				"baudRate": 57600,
+				"bits": 8,
+				"parity": "",
+				"sendDelay": 0,
+				"stopBits": 1
+			},
+			"required": [
+				"baudRate",
+				"bits",
+				"parity",
+				"sendDelay",
+				"stopBits"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"baudRate": {
+					"$id": "#/properties/serial/properties/baudRate",
+					"title": "Baud rate",
+					"type": "integer",
+					"minimum": 0,
+					"example": 57600
+				},
+				"bits": {
+					"$id": "#/properties/serial/properties/bits",
+					"title": "Byte-width",
+					"type": "integer",
+					"minimum": 0,
+					"example": 8
+				},
+				"parity": {
+					"$id": "#/properties/serial/properties/parity",
+					"title": "Parity",
+					"type": "string",
+					"enum": [
+						"",
+						"E",
+						"o",
+						"n"
+					],
+					"example": ""
+				},
+				"sendDelay": {
+					"$id": "#/properties/serial/properties/sendDelay",
+					"title": "Delay between bytes in microseconds",
+					"type": "integer",
+					"minimum": 0,
+					"example": 0
+				},
+				"stopBits": {
+					"$id": "#/properties/serial/properties/stopBits",
+					"title": "Stop bits",
+					"type": "integer",
+					"enum": [
+						1,
+						2
+					]
+				}
+			}
 		}
 	},
 	"allOf": [
@@ -637,6 +698,26 @@
 					"ipv4",
 					"ipv6",
 					"wifi"
+				]
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"type": {
+						"const": "gsm"
+					}
+				}
+			},
+			"then": {
+				"required": [
+					"name",
+					"uuid",
+					"type",
+					"interface",
+					"ipv4",
+					"ipv6",
+					"gsm"
 				]
 			}
 		}

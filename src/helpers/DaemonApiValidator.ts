@@ -67,7 +67,6 @@ export default class DaemonApiValidator {
 			if (this.validator(jsonObject)) {
 				return true;
 			} else {
-				console.warn(this.validator.errors);
 				errors = this.buildViolationString(this.validator.errors);
 				return false;
 			}

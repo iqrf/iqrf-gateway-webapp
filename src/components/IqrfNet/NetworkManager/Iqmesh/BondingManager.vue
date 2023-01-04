@@ -154,6 +154,7 @@ import ClearAllModal from '@/components/IqrfNet/NetworkManager/Iqmesh/ClearAllMo
 import UnbondModal from '@/components/IqrfNet/NetworkManager/Iqmesh/UnbondModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {smartConnectCode} from '@/helpers/validationRules/Iqrfnet';
 import {versionHigherEqual} from '@/helpers/versionChecker';
 
 import {BondingMethod, BondingTarget, BondingTool} from '@/enums/IqrfNet/Bonding';
@@ -288,10 +289,7 @@ export default class BondingManager extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('scCode', (code) => {
-			const regex = RegExp('^[1-9a-km-tv-zA-HJ-NP-Z]{34}$');
-			return regex.test(code);
-		});
+		extend('scCode', smartConnectCode);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;

@@ -12,10 +12,9 @@
 			<CForm @submit.prevent='save'>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
-					rules='hostnamePattern|maxLen:64|required'
+					rules='hostnamePattern|required'
 					:custom-messages='{
 						hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
-						maxLen: $t("gateway.hostname.errors.hostnameLen"),
 						required: $t("gateway.hostname.errors.hostnameMissing"),
 					}'
 				>
@@ -51,7 +50,8 @@ import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {max, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
+import {machineHostname} from '@/helpers/validationRules/Gateway';
 
 import GatewayService from '@/services/GatewayService';
 
@@ -91,11 +91,7 @@ export default class HostnameChange extends Vue {
 	 * Initializes validation rules
 	 */
 	created(): void {
-		extend('hostnamePattern', (hostname: string) => {
-			const re = new RegExp('^[0-9a-zA-Z][0-9a-zA-Z\\-]{0,63}$');
-			return re.test(hostname);
-		});
-		extend('maxLen', max);
+		extend('hostnamePattern', machineHostname);
 		extend('required', required);
 	}
 

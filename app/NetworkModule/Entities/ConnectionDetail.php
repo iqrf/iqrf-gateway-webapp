@@ -23,6 +23,7 @@ namespace App\NetworkModule\Entities;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Utils\NmCliConnection;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -75,12 +76,17 @@ class ConnectionDetail implements INetworkManagerEntity {
 	/**
 	 * @var WifiConnection|null WiFi network connection entity
 	 */
-	private ?WifiConnection $wifi;
+	private ?WifiConnection $wifi = null;
 
 	/**
 	 * @var GSMConnection|null GSM network connection entity
 	 */
-	private ?GSMConnection $gsm;
+	private ?GSMConnection $gsm = null;
+
+	/**
+	 * @var SerialLink|null Serial link entity
+	 */
+	private ?SerialLink $serial = null;
 
 	/**
 	 * Network connection entity constructor
@@ -91,10 +97,8 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @param AutoConnect $autoConnect Automatic connection entity
 	 * @param IPv4Connection $ipv4 IPv4 network connection entity
 	 * @param IPv6Connection $ipv6 IPv6 network connection entity
-	 * @param WifiConnection|null $wifi WiFi network connection entity
-	 * @param GSMConnection|null $gsm GSM network connection entity
 	 */
-	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, string $interface, AutoConnect $autoConnect, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null, ?GSMConnection $gsm = null) {
+	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, string $interface, AutoConnect $autoConnect, IPv4Connection $ipv4, IPv6Connection $ipv6) {
 		$this->name = $name;
 		$this->uuid = $uuid;
 		$this->type = $type;
@@ -102,8 +106,6 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$this->autoConnect = $autoConnect;
 		$this->ipv4 = $ipv4;
 		$this->ipv6 = $ipv6;
-		$this->wifi = $wifi;
-		$this->gsm = $gsm;
 	}
 
 	/**
@@ -139,6 +141,30 @@ class ConnectionDetail implements INetworkManagerEntity {
 	}
 
 	/**
+	 * Sets the GSM connection entity
+	 * @param GSMConnection|null $gsm GSM connection entity
+	 */
+	public function setGsm(?GSMConnection $gsm): void {
+		$this->gsm = $gsm;
+	}
+
+	/**
+	 * Sets the Serial link entity
+	 * @param SerialLink|null $serial Serial link entity
+	 */
+	public function setSerial(?SerialLink $serial): void {
+		$this->serial = $serial;
+	}
+
+	/**
+	 * Sets the Wi-Fi connection entity
+	 * @param WifiConnection|null $wifi Wi-Fi connection entity
+	 */
+	public function setWifi(?WifiConnection $wifi): void {
+		$this->wifi = $wifi;
+	}
+
+	/**
 	 * Deserializes network connection entity from JSON
 	 * @param stdClass|ArrayHash $json Network connection configuration form values
 	 */
@@ -148,15 +174,19 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$ipv4 = IPv4Connection::jsonDeserialize($json->ipv4);
 		$ipv6 = IPv6Connection::jsonDeserialize($json->ipv6);
 		$type = ConnectionTypes::fromScalar($json->type);
-		$wifi = null;
-		$gsm = null;
-		if ($type->equals(ConnectionTypes::WIFI())) {
-			$wifi = WifiConnection::jsonDeserialize($json->wifi);
+		$connection = new self($json->name, $uuid, $type, $json->interface, $autoConnect, $ipv4, $ipv6);
+		switch ($type) {
+			case ConnectionTypes::WIFI():
+				$connection->setWifi(WifiConnection::jsonDeserialize($json->wifi));
+				break;
+			case ConnectionTypes::GSM():
+				$connection->setGsm(GSMConnection::jsonDeserialize($json->gsm));
+				if (Strings::match($json->interface, '~^tty(AMA|ACM|S)\d+$~') !== null) {
+					$connection->setSerial(SerialLink::jsonDeserialize($json->serial));
+				}
+				break;
 		}
-		if ($type->equals(ConnectionTypes::GSM())) {
-			$gsm = GSMConnection::jsonDeserialize($json->gsm);
-		}
-		return new self($json->name, $uuid, $type, $json->interface, $autoConnect, $ipv4, $ipv6, $wifi, $gsm);
+		return $connection;
 	}
 
 	/**
@@ -179,30 +209,47 @@ class ConnectionDetail implements INetworkManagerEntity {
 		if ($this->gsm !== null) {
 			$json['gsm'] = $this->gsm->jsonSerialize();
 		}
+		if ($this->serial !== null) {
+			$json['serial'] = $this->serial->jsonSerialize();
+		}
 		return $json;
 	}
 
 	/**
 	 * Deserializes network connection entity from nmcli configuration
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
-		if ($array['interface-name'] === '') {
-			$general = NmCliConnection::decode($nmCli, 'GENERAL');
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
+		$interface = $array['interface-name'] ?? '';
+		if ($interface === '') {
+			$general = $nmCli['GENERAL'];
 			if ($general !== []) {
-				$array['interface-name'] = $general['devices'] ?? '';
+				$interface = $general['devices'] ?? '';
 			}
 		}
+		$name = $array['id'] ?? '';
 		$autoConnect = AutoConnect::nmCliDeserialize($nmCli);
 		$uuid = Uuid::fromString($array['uuid']);
 		$type = ConnectionTypes::fromScalar($array['type']);
+		$interface = $array['interface-name'];
 		$ipv4 = IPv4Connection::nmCliDeserialize($nmCli);
 		$ipv6 = IPv6Connection::nmCliDeserialize($nmCli);
-		$wifi = $type === ConnectionTypes::WIFI() ? WifiConnection::nmCliDeserialize($nmCli) : null;
-		$gsm = $type === ConnectionTypes::GSM() ? GSMConnection::nmCliDeserialize($nmCli) : null;
-		return new self($array['id'], $uuid, $type, $array['interface-name'], $autoConnect, $ipv4, $ipv6, $wifi, $gsm);
+		$connection = new self($name, $uuid, $type, $interface, $autoConnect, $ipv4, $ipv6);
+		switch ($type) {
+			case ConnectionTypes::WIFI():
+				$connection->setWifi(WifiConnection::nmCliDeserialize($nmCli));
+				break;
+			case ConnectionTypes::GSM():
+				$connection->setGsm(GSMConnection::nmCliDeserialize($nmCli));
+				if (Strings::match($interface, '~^tty(AMA|ACM|S)\d+$~') !== null &&
+					array_key_exists(SerialLink::NMCLI_PREFIX, $nmCli)) {
+					$connection->setSerial(SerialLink::nmCliDeserialize($nmCli));
+				}
+				break;
+		}
+		return $connection;
 	}
 
 	/**
@@ -219,11 +266,16 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$nmcli .= $this->autoConnect->nmCliSerialize();
 		$nmcli .= $this->ipv4->nmCliSerialize();
 		$nmcli .= $this->ipv6->nmCliSerialize();
-		if ($this->type->equals(ConnectionTypes::WIFI())) {
-			$nmcli .= $this->wifi->nmCliSerialize();
-		}
-		if ($this->type->equals(ConnectionTypes::GSM())) {
-			$nmcli .= $this->gsm->nmCliSerialize();
+		switch ($this->type) {
+			case ConnectionTypes::WIFI():
+				$nmcli .= $this->wifi->nmCliSerialize();
+				break;
+			case ConnectionTypes::GSM():
+				$nmcli .= $this->gsm->nmCliSerialize();
+				if ($this->serial !== null) {
+					$nmcli .= $this->serial->nmCliSerialize();
+				}
+				break;
 		}
 		return $nmcli;
 	}

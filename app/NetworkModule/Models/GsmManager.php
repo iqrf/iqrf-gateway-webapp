@@ -72,12 +72,10 @@ class GsmManager {
 		$this->checkCommand($output);
 		$modem = Json::decode($output->getStdout());
 		$command = sprintf('mmcli -m %s --signal-setup=300', $path);
-		$output = $this->commandManager->run($command, true);
-		$this->checkCommand($output);
+		$this->commandManager->run($command, true);
 		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
 		$output = $this->commandManager->run($command, true);
-		$this->checkCommand($output);
-		$rssi = Json::decode($output->getStdout());
+		$rssi = $output->getExitCode() === 0 ? Json::decode($output->getStdout()) : null;
 		return Modem::fromMmcliJson($modem, $rssi);
 	}
 

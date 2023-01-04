@@ -65,14 +65,6 @@ final class Connection implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the network connection name
-	 * @return string Network connection name
-	 */
-	public function getName(): string {
-		return $this->name;
-	}
-
-	/**
 	 * Returns the network connection UUID
 	 * @return UuidInterface Network connection UUID
 	 */
@@ -86,14 +78,6 @@ final class Connection implements JsonSerializable {
 	 */
 	public function getType(): ConnectionTypes {
 		return $this->type;
-	}
-
-	/**
-	 * Returns the network interface name
-	 * @return string|null Network interface name
-	 */
-	public function getInterfaceName(): ?string {
-		return $this->interfaceName;
 	}
 
 	/**

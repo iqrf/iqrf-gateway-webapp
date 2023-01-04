@@ -40,6 +40,11 @@ class MonitManager {
 	private const CONF_FILE = 'monitrc';
 
 	/**
+	 * @var string Server and credentials pattern
+	 */
+	private const PATTERN = '/^set\smmonit\shttps?:\/\/(?\'user\'\w+):(?\'password\'\w+)@(?\'endpoint\'.+)$/';
+
+	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
 	 */
@@ -55,9 +60,8 @@ class MonitManager {
 	public function getConfig(): array {
 		$configArray = explode(PHP_EOL, $this->readConfig());
 		$configArray = array_filter($configArray, fn (string $item): bool => !Strings::startsWith($item, '#'));
-		$pattern = '#^(set\smmonit\shttps?:\/\/)(\w+)(\:)(\w+)(@)([0-9a-zA-Z\-\_\.\/]+)$#';
 		foreach ($configArray as $item) {
-			$matches = Strings::match($item, $pattern);
+			$matches = Strings::match($item, self::PATTERN);
 			if ($matches !== null) {
 				break;
 			}
@@ -66,9 +70,9 @@ class MonitManager {
 			throw new MonitConfigErrorException('Monit configuration file contains invalid content.');
 		}
 		return [
-			'endpoint' => $matches[6],
-			'username' => $matches[2],
-			'password' => $matches[4],
+			'endpoint' => $matches['endpoint'],
+			'username' => $matches['user'],
+			'password' => $matches['password'],
 		];
 	}
 
@@ -79,10 +83,9 @@ class MonitManager {
 	 */
 	public function saveConfig(array $newConfig): void {
 		$configArray = explode(PHP_EOL, $this->readConfig());
-		$pattern = '/^set\smmonit\shttps?:\/\/\w+\:\w+@[0-9a-zA-Z\-\_\.\/]+$/';
 		$idx = -1;
 		foreach ($configArray as $key => $val) {
-			$matches = Strings::match($val, $pattern);
+			$matches = Strings::match($val, self::PATTERN);
 			if ($matches !== null) {
 				$idx = $key;
 				break;

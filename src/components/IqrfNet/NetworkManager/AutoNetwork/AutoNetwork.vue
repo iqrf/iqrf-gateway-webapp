@@ -346,6 +346,7 @@ import AutoNetworkResultModal from '@/components/IqrfNet/NetworkManager/AutoNetw
 import MidListModal from '@/components/IqrfNet/NetworkManager/AutoNetwork/MidListModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {hwpidFilter} from '@/helpers/validationRules/Iqrfnet';
 import {StopConditionNode} from '@/enums/IqrfNet/Autonetwork';
 import IqrfNetService from '@/services/IqrfNetService';
 
@@ -508,7 +509,6 @@ export default class AutoNetwork extends Vue {
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
-
 	/**
 	 * Initializes validation rules and websocket mutation handling
 	 */
@@ -516,10 +516,7 @@ export default class AutoNetwork extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('hwpidFilter', (val) => {
-			const regex = RegExp('^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])( (6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9]))*$');
-			return regex.test(val);
-		});
+		extend('hwpidFilter', hwpidFilter);
 		extend('addressSpace', (val: string) => {
 			const regex = RegExp('^(,?(([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d)|(<([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d);([1-9]|[1-9]\\d|1\\d{2}|2[0-3]\\d)>)))+$');
 			const passed = regex.test(val);

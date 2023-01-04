@@ -95,11 +95,11 @@ final class WifiConnection implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes WiFI connection entity from nmcli connection configuration
-	 * @param string $nmCli nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return WifiConnection WiFi connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
 		$mode = WifiMode::fromScalar($array['mode']);
 		$bssids = explode(',', $array['seen-bssids']);
 		try {

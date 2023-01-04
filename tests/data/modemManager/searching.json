@@ -1,0 +1,83 @@
+{
+	"modem": {
+		"3gpp": {
+			"enabled-locks": [],
+			"eps": {
+				"initial-bearer": {
+					"dbus-path": "--",
+					"settings": {
+						"apn": "--",
+						"ip-type": "--",
+						"password": "--",
+						"user": "--"
+					}
+				},
+				"ue-mode-operation": "csps-2"
+			},
+			"imei": "860536043724634",
+			"operator-code": "--",
+			"operator-name": "--",
+			"pco": "--",
+			"registration-state": "searching"
+		},
+		"cdma": {
+			"activation-state": "--",
+			"cdma1x-registration-state": "--",
+			"esn": "--",
+			"evdo-registration-state": "--",
+			"meid": "--",
+			"nid": "--",
+			"sid": "--"
+		},
+		"dbus-path": "/org/freedesktop/ModemManager1/Modem/2",
+		"generic": {
+			"access-technologies": [],
+			"bearers": [],
+			"carrier-configuration": "--",
+			"carrier-configuration-revision": "--",
+			"current-bands": [],
+			"current-capabilities": [
+				"gsm-umts, lte"
+			],
+			"current-modes": "allowed: 2g, 3g, 4g; preferred: none",
+			"device": "/sys/devices/platform/soc",
+			"device-identifier": "917415c8eb957e8144471d5be5cd609b2d3491c1",
+			"drivers": [
+				"uart-pl011"
+			],
+			"equipment-identifier": "860536043724634",
+			"hardware-revision": "--",
+			"manufacturer": "Quectel",
+			"model": "BG96",
+			"own-numbers": [],
+			"plugin": "quectel",
+			"ports": [
+				"ttyAMA0 (at)"
+			],
+			"power-state": "on",
+			"primary-port": "ttyAMA0",
+			"revision": "BG96MAR02A07M1G",
+			"signal-quality": {
+				"recent": "no",
+				"value": "0"
+			},
+			"sim": "/org/freedesktop/ModemManager1/SIM/1",
+			"state": "searching",
+			"state-failed-reason": "--",
+			"supported-bands": [],
+			"supported-capabilities": [
+				"gsm-umts, lte"
+			],
+			"supported-ip-families": [
+				"ipv4",
+				"ipv6",
+				"ipv4v6"
+			],
+			"supported-modes": [
+				"allowed: 2g, 3g, 4g; preferred: none"
+			],
+			"unlock-required": "--",
+			"unlock-retries": []
+		}
+	}
+}

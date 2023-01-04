@@ -27,7 +27,11 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\Modem;
+use App\NetworkModule\Enums\ModemFailedReason;
+use App\NetworkModule\Enums\ModemState;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -41,12 +45,27 @@ final class ModemTest extends TestCase {
 	/**
 	 * @var string Network interface
 	 */
-	private const NETWORK_INTERFACE = 'cdc-wdm0';
+	private const NETWORK_INTERFACE = 'ttyAMA2';
+
+	/**
+	 * @var string Modem IMEI
+	 */
+	private const IMEI = '865167066186454';
+
+	/**
+	 * @var string Modem manufacturer
+	 */
+	private const MANUFACTURER = 'Quectel';
+
+	/**
+	 * @var string Modem model
+	 */
+	private const MODEL = 'EG25';
 
 	/**
 	 * @var int Signal strength
 	 */
-	private const SIGNAL = 75;
+	private const SIGNAL = 60;
 
 	/**
 	 * @var float RSSI
@@ -59,26 +78,29 @@ final class ModemTest extends TestCase {
 	private Modem $entity;
 
 	/**
+	 * @var ModemState Modem state
+	 */
+	private ModemState $state;
+
+	/**
+	 * @var ModemFailedReason|null Modem failed reason
+	 */
+	private ?ModemFailedReason $failedReason = null;
+
+	/**
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new Modem(self::NETWORK_INTERFACE, self::SIGNAL, self::RSSI);
+		$this->state = ModemState::CONNECTED();
+		$this->entity = new Modem(self::NETWORK_INTERFACE, self::IMEI, self::MANUFACTURER, self::MODEL, $this->state, $this->failedReason, self::SIGNAL);
+		$this->entity->setRssi(self::RSSI);
 	}
 
 	/**
 	 * Tests the function to create a new Modem entity from mmcli JSON object
 	 */
 	public function testFromMmcliJson(): void {
-		$modem = ArrayHash::from([
-			'modem' => [
-				'generic' => [
-					'primary-port' => self::NETWORK_INTERFACE,
-					'signal-quality' => [
-						'value' => self::SIGNAL,
-					],
-				],
-			],
-		], true);
+		$modem = Json::decode(FileSystem::read(TESTER_DIR . '/data/modemManager/connected.json'));
 		$rssi = ArrayHash::from([
 			'modem' => [
 				'signal' => [
@@ -97,6 +119,11 @@ final class ModemTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$expected = [
 			'interface' => self::NETWORK_INTERFACE,
+			'imei' => self::IMEI,
+			'manufacturer' => self::MANUFACTURER,
+			'model' => self::MODEL,
+			'state' => $this->state->toScalar(),
+			'failedReason' => $this->failedReason,
 			'signal' => self::SIGNAL,
 			'rssi' => self::RSSI,
 		];

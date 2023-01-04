@@ -29,6 +29,7 @@ namespace Tests\Unit\NetworkModule\Entities;
 use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
 use App\NetworkModule\Enums\IPv4Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
@@ -125,6 +126,7 @@ final class IPv4ConnectionTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
+		$configuration = NmCliConnection::decode($configuration);
 		Assert::equal($this->entity, IPv4Connection::nmCliDeserialize($configuration));
 	}
 

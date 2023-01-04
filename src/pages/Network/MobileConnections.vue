@@ -17,84 +17,65 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
+		<GsmInterfaces />
 		<CCard>
-			<div v-if='interfacesLoaded && noInterfaces'>
-				<CCardBody>
-					{{ $t('network.mobile.messages.noInterfaces') }}
-				</CCardBody>
-			</div>
-			<div v-else>
-				<CCardHeader class='border-0 datatable-header'>
-					{{ $t('network.connection.title') }}
-					<CButton
-						color='success'
-						size='sm'
-						to='/ip-network/mobile/add'
-					>
-						<CIcon :content='cilPlus' size='sm' />
-						Add connection
-					</CButton>
-				</CCardHeader>
-				<CCardBody>
-					<CDataTable
-						:fields='fields'
-						:items='connections'
-						:column-filter='true'
-						:items-per-page='20'
-						:pagination='true'
-						:sorter='{external: false, resetable: true}'
-					>
-						<template #no-items-view='{}'>
-							{{ $t('network.mobile.messages.noConnections') }}
-						</template>
-						<template #interfaceName='{item}'>
-							<td>
-								{{ item.interfaceName }}
-							</td>
-						</template>
-						<template #signal='{item}'>
-							<td>
-								<CProgress
-									v-if='item.signal !== undefined'
-									:value='item.signal'
-									:color='signalColor(item.signal)'
-								/>
-							</td>
-						</template>
-						<template #rssi='{item}'>
-							<td>
-								{{ item.rssi }} dBm
-							</td>
-						</template>
-						<template #actions='{item}'>
-							<td class='col-actions'>
-								<CButton
-									size='sm'
-									:color='item.interfaceName === null ? "success" : "danger"'
-									@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
-								>
-									<CIcon :content='item.interfaceName === null ? cilLink : cilLinkBroken' size='sm' />
-									{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
-								</CButton> <CButton
-									size='sm'
-									color='primary'
-									:to='"/ip-network/mobile/edit/" + item.uuid'
-								>
-									<CIcon :content='cilPencil' size='sm' />
-									{{ $t('table.actions.edit') }}
-								</CButton> <CButton
-									size='sm'
-									color='danger'
-									@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
-								>
-									<CIcon :content='cilTrash' size='sm' />
-									{{ $t('table.actions.delete') }}
-								</CButton>
-							</td>
-						</template>
-					</CDataTable>
-				</CCardBody>
-			</div>
+			<CCardHeader class='datatable-header'>
+				{{ $t('network.connection.title') }}
+				<CButton
+					color='success'
+					size='sm'
+					to='/ip-network/mobile/add'
+				>
+					<CIcon :content='cilPlus' size='sm' />
+					{{ $t('table.actions.add') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:fields='fields'
+					:items='connections'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:loading='loading'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('network.mobile.messages.noConnections') }}
+					</template>
+					<template #interfaceName='{item}'>
+						<td>
+							{{ item.interfaceName }}
+						</td>
+					</template>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
+								size='sm'
+								:color='item.interfaceName === null ? "success" : "danger"'
+								@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
+							>
+								<CIcon :content='item.interfaceName === null ? cilLink : cilLinkBroken' size='sm' />
+								{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
+							</CButton> <CButton
+								size='sm'
+								color='primary'
+								:to='"/ip-network/mobile/edit/" + item.uuid'
+							>
+								<CIcon :content='cilPencil' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton> <CButton
+								size='sm'
+								color='danger'
+								@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
+					</template>
+				</CDataTable>
+			</CCardBody>
 		</CCard>
 		<CCard body-wrapper>
 			<NetworkOperators />
@@ -104,28 +85,40 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CProgress} from '@coreui/vue/src';
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CDataTable,
+	CIcon,
+	CProgress
+} from '@coreui/vue/src';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import NetworkConnectionService, {ConnectionType} from '@/services/NetworkConnectionService';
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
+import NetworkConnectionService from '@/services/NetworkConnectionService';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
+import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 
 @Component({
 	components: {
 		CBadge,
+		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CDataTable,
 		CIcon,
 		CProgress,
+		GsmInterfaces,
 		NetworkOperators,
 	},
 	data: () => ({
@@ -144,16 +137,6 @@ import {NetworkConnection} from '@/interfaces/Network/Connection';
  * Mobile connections page
  */
 export default class MobileConnections extends Vue {
-
-	/**
-	 * @var {boolean} interfacesLoaded Indicates that interfaces have been loaded
-	 */
-	private interfacesLoaded = false;
-
-	/**
-	 * @var {boolean} noInterfaces Indicates that no GSM interfaces were found
-	 */
-	private noInterfaces = false;
 
 	/**
 	 * @var {Array<NetworkConnections>} connections Existing mobile connections
@@ -180,18 +163,6 @@ export default class MobileConnections extends Vue {
 			sorter: false,
 		},
 		{
-			key: 'signal',
-			label: this.$t('network.mobile.table.signal'),
-			filter: false,
-			sorter: false,
-		},
-		{
-			key: 'rssi',
-			label: this.$t('network.mobile.table.rssi'),
-			filter: false,
-			sorter: false,
-		},
-		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
 			filter: false,
@@ -200,53 +171,24 @@ export default class MobileConnections extends Vue {
 	];
 
 	/**
+	 * @property {boolean} loading Loading state
+	 */
+	private loading = true;
+
+	/**
 	 * Builds connections table
 	 */
 	mounted(): void {
-		this.getModems();
-	}
-
-	/**
-	 * Returns color for progress bar depending on signal strength
-	 */
-	private signalColor(signal: number): string {
-		if (signal >= 67) {
-			return 'success';
-		} else if (signal >= 34) {
-			return 'warning';
-		} else {
-			return 'danger';
-		}
-	}
-
-	/**
-	 * Retrieves GSM interfaces
-	 */
-	private getModems(): void {
-		this.noInterfaces = false;
-		this.$store.commit('spinner/SHOW');
-		NetworkInterfaceService.listModems()
-			.then((response: AxiosResponse) => {
-				this.interfacesLoaded = true;
-				this.$store.commit('spinner/HIDE');
-				if (response.data.length > 0) {
-					this.modems = response.data;
-					this.getConnections();
-				} else {
-					this.noInterfaces = true;
-				}
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed'));
+		this.getConnections();
 	}
 
 	/**
 	 * Retrieves GSM connections
 	 */
 	private getConnections(): void {
-		this.$store.commit('spinner/SHOW');
+		this.loading = true;
 		NetworkConnectionService.list(ConnectionType.GSM)
-			.then((response: AxiosResponse) => {
-				const connections: Array<NetworkConnection> = response.data;
+			.then((connections: NetworkConnection[]) => {
 				for (const i in connections) {
 					const idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
 					if (idx !== -1) {
@@ -255,7 +197,7 @@ export default class MobileConnections extends Vue {
 					}
 				}
 				this.connections = connections;
-				this.$store.commit('spinner/HIDE');
+				this.loading = false;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.connectionFetchFailed'));
 	}
@@ -275,7 +217,7 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name}
 					).toString()
 				);
-				this.getModems();
+				this.getConnections();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -303,7 +245,7 @@ export default class MobileConnections extends Vue {
 							{interface: connection.interfaceName, connection: connection.name}
 						).toString()
 					);
-					this.getModems();
+					this.getConnections();
 				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
@@ -321,14 +263,13 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.remove(connection.uuid)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.removeSuccess',
 						{connection: connection.name},
 					).toString()
 				);
-				this.getModems();
+				this.getConnections();
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');

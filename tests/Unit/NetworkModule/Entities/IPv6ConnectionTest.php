@@ -29,6 +29,7 @@ namespace Tests\Unit\NetworkModule\Entities;
 use App\NetworkModule\Entities\IPv6Address;
 use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv6;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
@@ -123,6 +124,7 @@ final class IPv6ConnectionTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
+		$configuration = NmCliConnection::decode($configuration);
 		Assert::equal($this->entity, IPv6Connection::nmCliDeserialize($configuration));
 	}
 

@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\GSMConnection;
+use App\NetworkModule\Utils\NmCliConnection;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
@@ -117,6 +118,7 @@ final class GSMConnectionTest extends TestCase {
 	 */
 	public function testNmCliDeserialize(): void {
 		$connection = FileSystem::read(self::NM_DATA . 'db948952-8f91-47c8-89fa-cda6cc9bc55a.conf');
+		$connection = NmCliConnection::decode($connection);
 		Assert::equal($this->entity, GSMConnection::nmCliDeserialize($connection));
 	}
 

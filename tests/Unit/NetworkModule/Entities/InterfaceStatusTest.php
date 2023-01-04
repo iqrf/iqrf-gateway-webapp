@@ -29,6 +29,8 @@ namespace Tests\Unit\NetworkModule\Entities;
 use App\NetworkModule\Entities\InterfaceStatus;
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -40,14 +42,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InterfaceStatusTest extends TestCase {
 
 	/**
-	 * @var string Network connection name
+	 * @var string Network connection UUID
 	 */
-	private const CONNECTION = 'eth0';
+	private const CONNECTION = 'f61b25c9-66d7-400e-add0-d2a30c57b65c';
 
 	/**
 	 * @var string Network interface name
 	 */
 	private const NAME = 'eth0';
+
+	/**
+	 * @var string Network interface MAC address
+	 */
+	private const MAC_ADDRESS = '00:00:00:00:00:00';
+
+	/**
+	 * @var string Network interface manufacturer
+	 */
+	private const MANUFACTURER = 'Manufacturer';
+
+	/**
+	 * @var string Network interface model
+	 */
+	private const MODEL = 'Model';
 
 	/**
 	 * @var InterfaceTypes Network interface type
@@ -65,27 +82,34 @@ final class InterfaceStatusTest extends TestCase {
 	private InterfaceStatus $entity;
 
 	/**
+	 * @var UuidInterface Network connection UUID
+	 */
+	private UuidInterface $connection;
+
+	/**
 	 * Sets up the test environment
 	 */
 	public function __construct() {
 		$this->type = InterfaceTypes::ETHERNET();
 		$this->state = InterfaceStates::CONNECTED();
-		$this->entity = new InterfaceStatus(self::NAME, $this->type, $this->state, self::CONNECTION);
+		$this->connection = Uuid::fromString(self::CONNECTION);
+		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, $this->type, $this->state, $this->connection);
 	}
 
 	/**
 	 * Tests the function to deserialize network interface entity from a nmcli row
 	 */
 	public function testNmCliDeserialize(): void {
-		$string = 'eth0:ethernet:connected:eth0';
+		$string = 'GENERAL.DEVICE:eth0
+GENERAL.TYPE:ethernet
+GENERAL.VENDOR:Manufacturer
+GENERAL.PRODUCT:Model
+GENERAL.HWADDR:00:00:00:00:00:00
+GENERAL.MTU:1500
+GENERAL.STATE:100 (connected)
+GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
+';
 		Assert::equal($this->entity, InterfaceStatus::nmCliDeserialize($string));
-	}
-
-	/**
-	 * Tests the function to get network interface name
-	 */
-	public function testGetName(): void {
-		Assert::same(self::NAME, $this->entity->getName());
 	}
 
 	/**
@@ -96,28 +120,17 @@ final class InterfaceStatusTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get network interface state
-	 */
-	public function testGetState(): void {
-		Assert::same($this->state, $this->entity->getState());
-	}
-
-	/**
-	 * Tests the function to get network connection name
-	 */
-	public function testGetConnectionName(): void {
-		Assert::same(self::CONNECTION, $this->entity->getConnectionName());
-	}
-
-	/**
 	 * Tests the function to serialize network interface status entity into JSON
 	 */
 	public function testJsonSerialize(): void {
 		$expected = [
 			'name' => self::NAME,
+			'macAddress' => self::MAC_ADDRESS,
+			'manufacturer' => self::MANUFACTURER,
+			'model' => self::MODEL,
 			'type' => $this->type->toScalar(),
 			'state' => $this->state->toScalar(),
-			'connectionName' => self::CONNECTION,
+			'connection' => self::CONNECTION,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

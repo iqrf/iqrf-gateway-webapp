@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import {WireguardStack} from '@/enums/Network/Wireguard';
+
 /**
  * Wireguard VPN list entry interface
  */
@@ -36,6 +38,7 @@ export interface IWGTunnel {
 	ipv4?: IWGTunnelIP
 	ipv6?: IWGTunnelIP
 	peers: Array<IWGPeer>
+	stack?: WireguardStack
 }
 
 /**
@@ -64,6 +67,7 @@ export interface IWGPeer {
 export interface IWGAllowedIPs {
 	ipv4: Array<IWGAllowedIP>
 	ipv6: Array<IWGAllowedIP>
+	stack?: WireguardStack
 }
 
 /**

@@ -21,17 +21,18 @@ limitations under the License.
 				<h5>{{ $t('maintenance.mender.service.form.connection') }}</h5>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
-					rules='required'
+					rules='required|serverUrl'
 					:custom-messages='{
-						required: $t("maintenance.mender.service.errors.server"),
+						required: $t("maintenance.mender.service.errors.serverMissing"),
+						serverUrl: $t("maintenance.mender.service.errors.serverInvalid")
 					}'
 				>
 					<CInput
 						v-model='config.client.ServerURL'
 						:label='$t("maintenance.mender.service.form.client.server")'
-						:placeholder='$t("maintenance.mender.service.form.placeholders.server")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
+						@change='serverUrlFixup'
 					/>
 				</ValidationProvider>
 				<CInput
@@ -182,6 +183,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {menderServerUrl} from '@/helpers/validationRules/Maintenance';
 
 import FeatureConfigService from '@/services/FeatureConfigService';
 
@@ -248,10 +250,7 @@ export default class MenderForm extends Vue {
 		extend('integer', integer);
 		extend('required', required);
 		extend('min', min_value);
-		extend('addr', (addr) => {
-			const regex = RegExp('(http|https):\\/\\/.*');
-			return regex.test(addr);
-		});
+		extend('serverUrl', menderServerUrl);
 	}
 
 	/**
@@ -390,6 +389,13 @@ export default class MenderForm extends Vue {
 			units.push(' seconds');
 		}
 		return this.mergeArrays(nums, units);
+	}
+
+	private serverUrlFixup(): void {
+		const server = this.config.client.ServerURL;
+		if (!/^https?:\/\//i.test(server)) {
+			this.config.client.ServerURL = `https://${server}`;
+		}
 	}
 }
 </script>

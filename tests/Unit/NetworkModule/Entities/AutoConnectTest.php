@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\AutoConnect;
+use App\NetworkModule\Utils\NmCliConnection;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -94,6 +95,7 @@ final class AutoConnectTest extends TestCase {
 		$nmCli = 'connection.autoconnect:yes' . PHP_EOL .
 			'connection.autoconnect-priority:0' . PHP_EOL .
 			'connection.autoconnect-retries:-1';
+		$nmCli = NmCliConnection::decode($nmCli);
 		Assert::equal($this->entity, AutoConnect::nmCliDeserialize($nmCli));
 	}
 

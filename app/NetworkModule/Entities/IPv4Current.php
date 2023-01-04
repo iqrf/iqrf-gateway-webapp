@@ -29,6 +29,11 @@ use JsonSerializable;
 final class IPv4Current implements JsonSerializable {
 
 	/**
+	 * @var string nmcli current configuration prefix
+	 */
+	public const NMCLI_PREFIX = 'IP4';
+
+	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
 	private array $addresses = [];
@@ -56,15 +61,32 @@ final class IPv4Current implements JsonSerializable {
 	}
 
 	/**
+	 * Deserializes IPv4 current configuration from nmcli output
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
+	 * @return static IPv4 current configuration
+	 */
+	public static function nmCliDeserialize(array $nmCli): self {
+		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
+		if (array_key_exists('ADDRESS', $array)) {
+			$addresses = array_map(static fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), $array['ADDRESS']);
+		}
+		$gateway = array_key_exists('GATEWAY', $array) ? IPv4::factory($array['GATEWAY']) : null;
+		if (array_key_exists('DNS', $array)) {
+			$dns = array_map(static fn (string $address): IPv4 => IPv4::factory($address), $array['DNS']);
+		}
+		return new self($addresses ?? [], $gateway, $dns ?? []);
+	}
+
+	/**
 	 * Serializes current IPv4 configuration entity to JSON
 	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>} IPv4 current configuration
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'method' => 'auto',
-			'addresses' => array_map(fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
+			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
+			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 	}
 

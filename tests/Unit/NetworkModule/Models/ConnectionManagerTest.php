@@ -53,6 +53,14 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class ConnectionManagerTest extends CommandTestCase {
 
+	private const COMMANDS = [
+		'delete' => 'nmcli -t connection delete ',
+		'down' => 'nmcli -t connection down ',
+		'get' => 'nmcli -t -s connection show ',
+		'list' => 'nmcli -t -f NAME,UUID,TYPE,DEVICE connection show',
+		'up' => 'nmcli -t connection up ',
+	];
+
 	/**
 	 * @var string NetworkManager data directory
 	 */
@@ -117,7 +125,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to delete network connection
 	 */
 	public function testDelete(): void {
-		$command = 'nmcli -t connection delete ' . self::UUID;
+		$command = self::COMMANDS['delete'] . self::UUID;
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->delete(Uuid::fromString(self::UUID));
@@ -128,7 +136,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to delete network connection (nonexistent connection)
 	 */
 	public function testDeleteNonexistent(): void {
-		$command = 'nmcli -t connection delete ' . self::UUID;
+		$command = self::COMMANDS['delete'] . self::UUID;
 		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.' .
 			PHP_EOL . 'Error: cannot delete unknown connection(s): \'' . self::UUID . '\'.';
 		$this->receiveCommand($command, true, '', $stderr, 10);
@@ -138,12 +146,33 @@ final class ConnectionManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to deactivate network connection
+	 */
+	public function testDown(): void {
+		$command = self::COMMANDS['down'] . self::UUID;
+		$this->receiveCommand($command, true);
+		Assert::noError(function (): void {
+			$this->manager->down(Uuid::fromString(self::UUID));
+		});
+	}
+
+	public function testDownNonexistent(): void {
+		$command = self::COMMANDS['down'] . self::UUID;
+		$stderr = 'Error: \'' . self::UUID . '\' is not an active connection.' .
+			PHP_EOL . 'Error: no active connection provided.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function (): void {
+			$this->manager->down(Uuid::fromString(self::UUID));
+		}, NonexistentConnectionException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to get detailed network connection entity
 	 */
 	public function testGet(): void {
 		$output = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		$expected = $this->createDetailedConnection();
-		$command = 'nmcli -t -s connection show ' . self::UUID;
+		$command = self::COMMANDS['get'] . self::UUID;
 		$this->receiveCommand($command, true, $output);
 		Assert::equal($expected, $this->manager->get(Uuid::fromString(self::UUID)));
 	}
@@ -152,7 +181,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to get detailed network connection entity (nonexistent connection)
 	 */
 	public function testGetNonexistent(): void {
-		$command = 'nmcli -t -s connection show ' . self::UUID;
+		$command = self::COMMANDS['get'] . self::UUID;
 		$stderr = 'Error: ' . self::UUID . ' - no such connection profile.';
 		$this->receiveCommand($command, true, '', $stderr, 10);
 		Assert::throws(function (): void {
@@ -166,7 +195,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	public function testList(): void {
 		$output = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0' . PHP_EOL
 			. 'wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless:' . PHP_EOL;
-		$this->receiveCommand('nmcli -t connection show', true, $output);
+		$this->receiveCommand(self::COMMANDS['list'], true, $output);
 		$expected = [
 			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET(), 'eth0'),
 			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI(), ''),
@@ -178,7 +207,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to list network connections (empty list)
 	 */
 	public function testListEmpty(): void {
-		$this->receiveCommand('nmcli -t connection show', true, '');
+		$this->receiveCommand(self::COMMANDS['list'], true, '');
 		$expected = [];
 		Assert::equal($expected, $this->manager->list());
 	}
@@ -205,10 +234,22 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUp(): void {
 		$connection = $this->createDetailedConnection();
-		$command = 'nmcli -t connection up ' . self::UUID;
+		$command = self::COMMANDS['up'] . self::UUID;
 		$this->receiveCommand($command, true);
 		Assert::noError(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
+		});
+	}
+
+	/**
+	 * Tests the function to activate a connection on the specific interface
+	 */
+	public function testUpInterface(): void {
+		$connection = $this->createDetailedConnection();
+		$command = self::COMMANDS['up'] . self::UUID . ' ifname eth0';
+		$this->receiveCommand($command, true);
+		Assert::noError(function () use ($connection): void {
+			$this->manager->up($connection->getUuid(), 'eth0');
 		});
 	}
 
@@ -217,7 +258,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUpNonexistent(): void {
 		$connection = $this->createDetailedConnection();
-		$command = 'nmcli -t connection up ' . self::UUID;
+		$command = self::COMMANDS['up'] . self::UUID;
 		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.';
 		$this->receiveCommand($command, true, '', $stderr, 10);
 		Assert::throws(function () use ($connection): void {

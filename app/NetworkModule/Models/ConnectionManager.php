@@ -26,6 +26,7 @@ use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
+use App\NetworkModule\Utils\NmCliConnection;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -84,7 +85,8 @@ class ConnectionManager {
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
 		}
-		return ConnectionDetail::nmCliDeserialize($output->getStdout());
+		$nmcli = NmCliConnection::decode($output->getStdout());
+		return ConnectionDetail::nmCliDeserialize($nmcli);
 	}
 
 	/**
@@ -93,7 +95,9 @@ class ConnectionManager {
 	 * @return array<Connection> Network connections
 	 */
 	public function list(?ConnectionTypes $type = null): array {
-		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();
+		$fields = ['NAME', 'UUID', 'TYPE', 'DEVICE'];
+		$command = sprintf('nmcli -t -f %s connection show', implode(',', $fields));
+		$output = $this->commandManager->run($command, true)->getStdout();
 		if ($output === '') {
 			return [];
 		}

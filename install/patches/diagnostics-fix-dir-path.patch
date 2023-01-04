@@ -1,7 +1,7 @@
 Fixes webapp log directory path in DiagnosticsManager.php
 --- a/app/GatewayModule/Models/DiagnosticsManager.php
 +++ b/app/GatewayModule/Models/DiagnosticsManager.php
-@@ -241,7 +241,7 @@ class DiagnosticsManager {
+@@ -240,7 +240,7 @@
  	 * Adds logs of IQRF Gateway Webapp
  	 */
  	public function addWebappLog(): void {

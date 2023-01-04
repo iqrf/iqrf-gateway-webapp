@@ -5,9 +5,14 @@
 	"title": "Modem list",
 	"examples": [
 		{
-			"interface": "cdc-wdm0",
-			"signal": 87,
-			"rssi": -55
+			"interface": "ttyUSB4",
+			"imei": "490154203237518",
+			"manufacturer": "huawei",
+			"model": "E3131",
+			"state": "registered",
+			"failedReason": null,
+			"signal": 80,
+			"rssi": -63
 		}
 	],
 	"additionalItems": false,
@@ -18,6 +23,11 @@
 		"description": "Information about a LTE Modem.",
 		"required": [
 			"interface",
+			"imei",
+			"manufacturer",
+			"model",
+			"state",
+			"failedReason",
 			"signal",
 			"rssi"
 		],
@@ -30,6 +40,71 @@
 				"description": "Network interface used by the LTE modem.",
 				"example": "cdc-wdm0"
 			},
+			"imei": {
+				"$id": "#/items/properties/imei",
+				"title": "Modem IMEI",
+				"type": "string",
+				"description": "IMEI of the LTE modem.",
+				"example": "490154203237518"
+			},
+			"manufacturer": {
+				"$id": "#/items/properties/manufacturer",
+				"title": "Modem manufacturer",
+				"type": "string",
+				"description": "Manufacturer of the LTE modem.",
+				"example": "huawei"
+			},
+			"model": {
+				"$id": "#/items/properties/model",
+				"title": "Modem model",
+				"type": "string",
+				"description": "Model of the LTE modem.",
+				"example": "E3131"
+			},
+			"state": {
+				"$id": "#/items/properties/state",
+				"title": "Modem state",
+				"type": "string",
+				"enum": [
+					"failed",
+					"unknown",
+					"initializing",
+					"locked",
+					"disabled",
+					"disabling",
+					"enabling",
+					"enabled",
+					"searching",
+					"registered",
+					"disconnecting",
+					"connecting",
+					"connected"
+				],
+				"description": "State of the LTE modem.",
+				"example": "registered"
+			},
+			"failedReason": {
+				"$id": "#/items/properties/failedReason",
+				"title": "Modem failed reason",
+				"oneOf": [
+					{
+						"type": "null"
+					},
+					{
+						"type": "string",
+						"enum": [
+							"esim-without-profiles",
+							"none",
+							"sim-error",
+							"sim-missing",
+							"unknown",
+							"unknown-capabilities"
+						]
+					}
+				],
+				"description": "Reason why the modem failed to connect.",
+				"example": null
+			},
 			"signal": {
 				"$id": "#/items/properties/signal",
 				"title": "Modem signal",
@@ -37,14 +112,14 @@
 				"type": "integer",
 				"minimum": 0,
 				"maximum": 100,
-				"example": 87
+				"example": 80
 			},
 			"rssi": {
 				"$id": "#/items/properties/rssi",
 				"title": "RSSI",
 				"description": "RSSI dBm",
 				"type": "integer",
-				"example": -55
+				"example": -63
 			}
 		}
 	}

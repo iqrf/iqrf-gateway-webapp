@@ -78,11 +78,11 @@ class AutoConnect implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes the automatic connecting entity from nmcli configuration
-	 * @param string $nmCli nmcli configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return self Automatic connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, ConnectionDetail::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[ConnectionDetail::NMCLI_PREFIX];
 		$enabled = $array['autoconnect'] === 'yes';
 		$priority = (int) $array['autoconnect-priority'];
 		$retries = (int) $array['autoconnect-retries'];

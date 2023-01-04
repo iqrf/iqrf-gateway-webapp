@@ -114,12 +114,6 @@ export default class Restore extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('file', (file: File|null) => {
-			if (!file) {
-				return false;
-			}
-			return file.name.endsWith('.iqrfbkp');
-		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONERROR' ||
 				mutation.type === 'daemonClient/SOCKET_ONCLOSE') {

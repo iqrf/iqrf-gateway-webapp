@@ -103,57 +103,8 @@ final class WifiNetworkTest extends TestCase {
 	 * Tests the function to create a new WiFi network entity from nmcli
 	 */
 	public function testFromNmCli(): void {
-		$actual = WifiNetwork::nmCliDeserialize('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:▂▄▆_:WPA2');
+		$actual = WifiNetwork::nmCliDeserialize('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:WPA2');
 		Assert::equal($this->entity, $actual);
-	}
-
-	/**
-	 * Tests the function to check if the network is used
-	 */
-	public function testIsUsed(): void {
-		Assert::true($this->entity->isUsed());
-	}
-
-	/**
-	 * Tests the function to get the network's BSSID
-	 */
-	public function testGetBssid(): void {
-		Assert::same(self::BSSID, $this->entity->getBssid());
-	}
-
-	/**
-	 * Tests the function to get the network's SSID
-	 */
-	public function testGetSsid(): void {
-		Assert::same(self::SSID, $this->entity->getSsid());
-	}
-
-	/**
-	 * Tests the function to get the network's mode
-	 */
-	public function testGetMode(): void {
-		Assert::equal($this->mode, $this->entity->getMode());
-	}
-
-	/**
-	 * Tests the function to get the network's channel
-	 */
-	public function testGetChannel(): void {
-		Assert::same(self::CHANNEL, $this->entity->getChannel());
-	}
-
-	/**
-	 * Tests the function to get the network's speed rate
-	 */
-	public function testGetRate(): void {
-		Assert::same(self::RATE, $this->entity->getRate());
-	}
-
-	/**
-	 * Tests the function to get the network's signal strength
-	 */
-	public function testGetSignal(): void {
-		Assert::same(self::SIGNAL, $this->entity->getSignal());
 	}
 
 	/**

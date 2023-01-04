@@ -10,16 +10,22 @@
 		"title": "Network interface",
 		"example": {
 			"type": "ethernet",
+			"macAddress": "00:00:00:00:00:00",
+			"manufacturer": "Intel Corporation",
+			"model": "I211 Gigabit Network Connection",
 			"name": "eno1",
 			"state": "connected",
-			"connectionName": "Wired connection 1"
+			"connection": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716"
 		},
 		"additionalProperties": false,
 		"required": [
 			"name",
+			"macAddress",
+			"manufacturer",
+			"model",
 			"type",
 			"state",
-			"connectionName"
+			"connection"
 		],
 		"properties": {
 			"name": {
@@ -28,20 +34,42 @@
 				"title": "Interface name",
 				"example": "eno1"
 			},
+			"macAddress": {
+				"$id": "#/items/properties/macAddress",
+				"type": "string",
+				"title": "MAC address",
+				"example": "00:00:00:00:00:00"
+			},
+			"manufacturer": {
+				"$id": "#/items/properties/manufacturer",
+				"type": "string",
+				"title": "Manufacturer",
+				"example": "Intel Corporation"
+			},
+			"model": {
+				"$id": "#/items/properties/model",
+				"type": "string",
+				"title": "Model",
+				"example": "I211 Gigabit Network Connection"
+			},
 			"type": {
 				"$id": "#/items/properties/type",
 				"type": "string",
 				"enum": [
 					"bond",
+					"bt",
 					"bridge",
 					"dummy",
 					"ethernet",
 					"gsm",
+					"iptunnel",
 					"loopback",
+					"ppp",
 					"tun",
 					"vlan",
 					"wifi",
-					"wifi-p2p"
+					"wifi-p2p",
+					"wireguard"
 				],
 				"title": "Interface type",
 				"example": "ethernet"
@@ -51,20 +79,30 @@
 				"type": "string",
 				"enum": [
 					"connected",
+					"connecting",
+					"connecting (checking IP connectivity)",
+					"connecting (configuring)",
+					"connecting (getting IP configuration)",
+					"connecting (need authentication)",
+					"connecting (prepare)",
+					"connecting (starting secondary connections)",
+					"connection failed",
+					"deactivating",
 					"disconnected",
 					"unavailable",
+					"unknown",
 					"unmanaged"
 				],
 				"example": "connected"
 			},
-			"connectionName": {
-				"$id": "#/items/properties/connectionName",
+			"connection": {
+				"$id": "#/items/properties/connection",
 				"oneOf": [
 					{"type": "null"},
 					{"type": "string"}
 				],
-				"title": "Connection name",
-				"example": "Wired connection 1"
+				"title": "Connection UUID",
+				"example": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716"
 			}
 		}
 	}

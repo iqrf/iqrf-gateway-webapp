@@ -117,11 +117,11 @@ class Eap implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes EAP entity from nmcli configuration
-	 * @param string $nmCli nmcli configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return INetworkManagerEntity EAP entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
 		return new self(
 			EapPhaseOneMethod::fromScalar($array['eap']),
 			EapPhaseTwoMethod::fromScalar($array['phase2-auth']),
