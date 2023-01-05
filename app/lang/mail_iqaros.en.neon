@@ -13,17 +13,17 @@ footer:
 
 emailVerification:
 	title: Email address verification
-	body: 'to finalize creation of your account at IQAROS system %hostname% (%gwId%), you need to verify your e-mail address by clicking the link below.'
+	body: 'to finalize creation of your account at IQAROS system %id%, you need to verify your e-mail address by clicking the link below.'
 
 mailerConfigurationTest:
 	title: Mailer configuration test
-	body: 'if you have received this email, the SMTP configuration at IQAROS system %hostname% (%gwId%) is correct.'
+	body: 'if you have received this email, the SMTP configuration at IQAROS system %id% is correct.'
 
 passwordRecovery:
 	title: Password recovery
-	body: 'a password reset was requested for your account at IQAROS system %hostname% (%gwId%). To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'
+	body: 'a password reset was requested for your account at IQAROS system %id%. To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'
 
 passwordChangeConfirmation:
 	title: Password changed
-	body: 'the password for your account at IQAROS system %hostname% (%gwId%) has been successfully changed. If you made this change, you can safely ignore this email. If you did not make this change, please'
+	body: 'the password for your account at IQAROS system %id% has been successfully changed. If you made this change, you can safely ignore this email. If you did not make this change, please'
 	bodyLink: 'recover your account'
