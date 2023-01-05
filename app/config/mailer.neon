@@ -18,4 +18,5 @@ services:
 	- App\Models\Mail\MailerFactory
 	- App\Models\Mail\Senders\EmailVerificationMailSender
 	- App\Models\Mail\Senders\MailerConfigurationTestMailSender
+	- App\Models\Mail\Senders\PasswordChangeConfirmationMailSender
 	- App\Models\Mail\Senders\PasswordRecoveryMailSender

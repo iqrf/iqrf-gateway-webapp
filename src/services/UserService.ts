@@ -85,7 +85,8 @@ class UserService {
 	changePasswordLoggedIn(oldPassword: string, newPassword: string): Promise<AxiosResponse> {
 		const body = {
 			old: oldPassword,
-			new: newPassword
+			new: newPassword,
+			baseUrl: this.getBaseUrl(),
 		};
 		return axios.put('user/password', body, {headers: authorizationHeader()});
 	}

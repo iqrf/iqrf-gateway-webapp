@@ -219,7 +219,7 @@ class UserController extends BaseController {
 			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 		}
 		$this->validator->validateRequest('passwordChange', $request);
-		$body = $request->getJsonBody();
+		$body = $request->getJsonBodyCopy();
 		if (!$user->verifyPassword($body['old'])) {
 			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -230,6 +230,11 @@ class UserController extends BaseController {
 		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
+		try {
+			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
+		} catch (SendException $e) {
+			// ignore
+		}
 		return $response->writeBody('Workaround');
 	}
 
@@ -310,9 +315,9 @@ class UserController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UserToken'
 	 *      '404':
-	 *          description: Psaaword recovery not found
+	 *          description: Password recovery not found
 	 *      '410':
-	 *          description: Psaaword recovery request is expired
+	 *          description: Password recovery request is expired
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="integer", description="Password recovery request UUID")
@@ -323,7 +328,7 @@ class UserController extends BaseController {
 	 */
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecovery', $request);
-		$body = $request->getJsonBody();
+		$body = $request->getJsonBodyCopy();
 		$recoveryRequest = $this->entityManager->getPasswordRecoveryRepository()->findOneByUuid($request->getParameter('uuid'));
 		if ($recoveryRequest === null) {
 			throw new ClientErrorException('Password recovery request not found', ApiResponse::S404_NOT_FOUND);
@@ -344,6 +349,11 @@ class UserController extends BaseController {
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->createToken($user);
+		try {
+			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
+		} catch (SendException $e) {
+			// ignore
+		}
 		return $response->writeJsonBody($json);
 	}
 

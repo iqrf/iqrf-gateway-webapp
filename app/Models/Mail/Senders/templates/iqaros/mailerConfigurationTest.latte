@@ -24,10 +24,10 @@
 	</p>
 
 	<p>
-		{_mail_iqaros.mailerConfigurationTest.body}
+		{_mail_iqaros.mailerConfigurationTest.body, [gwId => $gatewayInfo->getId(), hostname => $gatewayInfo->getHostname()]|breakLines}
 	</p>
 
 	<p>
-		{_mail_iqaros.footer, [gwId => $gatewayInfo->getId()]|breakLines}
+		{_mail_iqaros.footer|breakLines}
 	</p>
 {/block}

@@ -26,6 +26,7 @@ use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\EmailVerificationMailSender;
+use App\Models\Mail\Senders\PasswordChangeConfirmationMailSender;
 use Nette\Mail\SendException;
 
 /**
@@ -49,14 +50,21 @@ class UserManager {
 	private EmailVerificationMailSender $emailVerificationSender;
 
 	/**
+	 * @var PasswordChangeConfirmationMailSender Password change confirmation mail sender
+	 */
+	private PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param EmailVerificationMailSender $emailVerificationSender Email verification sender
+	 * @param PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender Password change confirmation sender
 	 */
-	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $emailVerificationSender) {
+	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $emailVerificationSender, PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
 		$this->emailVerificationSender = $emailVerificationSender;
+		$this->passwordChangeConfirmationSender = $passwordChangeConfirmationSender;
 	}
 
 	/**
@@ -109,6 +117,22 @@ class UserManager {
 			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
 		}
 		$this->emailVerificationSender->send($verification, $baseUrl);
+	}
+
+	/**
+	 * Send password change confirmation e-mail
+	 * @param ApiRequest $request API request
+	 * @param User $user User
+	 * @throws SendException
+	 */
+	public function sendPasswordChangeConfirmationEmail(ApiRequest $request, User $user): void {
+		$body = $request->getJsonBodyCopy();
+		if (array_key_exists('baseUrl', $body)) {
+			$baseUrl = trim($body['baseUrl'], '/');
+		} else {
+			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
+		}
+		$this->passwordChangeConfirmationSender->send($user, $baseUrl);
 	}
 
 }

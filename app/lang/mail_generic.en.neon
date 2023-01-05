@@ -1,20 +1,26 @@
 title: 'IQRF Gateway'
 
-greeting: 'Dear %username%,'
+greeting: 'Hello %username%,'
 
 footer:
 	'''
-		Best regards,
-		IQRF Gateway %hostname%
+		Thanks,
+		The IQRF Gateway Team
 	'''
 
 emailVerification:
 	title: Email address verification
-	body: 'in order to complete your user profile at IQRF Gateway %hostname%, you need to verify your e-mail address by clicking on the link bellow.'
+	body: 'to finalize creation of your account at IQRF Gateway %hostname% (%gwId%), you need to verify your e-mail address by clicking the link below.'
 
 mailerConfigurationTest:
 	title: Mailer configuration test
-	body: 'if you have received this email, the SMTP configuration is correct.'
+	body: 'if you have received this email, the SMTP configuration at IQRF Gateway %hostname% (%gwId%) is correct.'
+
 passwordRecovery:
 	title: Password recovery
-	body: 'a password reset was requested for your account from IQRF Gateway %hostname%. To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'
+	body: 'a password reset was requested for your account at IQRF Gateway %hostname% (%gwId%). To reset your password, click the link below. Please note that this link will expire in 24 hours. If you did not issue a password reset request, you may ignore this email.'
+
+passwordChangeConfirmation:
+	title: Password changed
+	body: 'the password for your account at IQRF Gateway %hostname% (%gwId%) has been successfully changed. If you made this change, you can safely ignore this email. If you did not make this change, please'
+	bodyLink: 'recover your account'

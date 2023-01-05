@@ -1,4 +1,6 @@
-{**
+<?php
+
+/**
  * Copyright 2017-2021 IQRF Tech s.r.o.
  * Copyright 2019-2021 MICRORISC s.r.o.
  *
@@ -13,21 +15,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *}
-{varType App\Models\Database\Entities\User $user}
-{varType App\GatewayModule\Models\InfoManager $gatewayInfo}
-{layout '@layout.latte'}
-{block title}{_mail_generic.mailerConfigurationTest.title}{/block}
-{block body}
-	<p>
-		{_mail_generic.greeting, [username => $user->getUserName()]|breakLines}
-	</p>
+ */
+declare(strict_types = 1);
 
-	<p>
-		{_mail_generic.mailerConfigurationTest.body, [gwId => $gatewayInfo->getId(), hostname => $gatewayInfo->getHostname()]|breakLines}
-	</p>
+namespace App\Models\Mail\Senders;
 
-	<p>
-		{_mail_generic.footer|breakLines}
-	</p>
-{/block}
+use App\Models\Database\Entities\User;
+
+/**
+ * Password change confirmation mail sender
+ */
+class PasswordChangeConfirmationMailSender extends BaseMailSender {
+
+	/**
+	 * Sends password change confirmation e-mail
+	 * @param User $user User account
+	 * @param string $baseUrl Base URL
+	 */
+	public function send(User $user, string $baseUrl = ''): void {
+		$params = [
+			'url' => $baseUrl . '/account/recovery/',
+		];
+		$mail = $this->createMessage('passwordChangeConfirmation.latte', $params, $user);
+		$this->createMailer()->send($mail);
+	}
+
+}

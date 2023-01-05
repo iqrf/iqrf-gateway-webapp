@@ -25,11 +25,11 @@
 	</p>
 
 	<p>
-		{_mail_generic.emailVerification.body, [hostname => $gatewayInfo->getHostname()]|breakLines}<br>
+		{_mail_generic.emailVerification.body, [gwId => $gatewayInfo->getId(), hostname => $gatewayInfo->getHostname()]|breakLines}<br>
 		<a href="{$url}">{$url}</a>
 	</p>
 
 	<p>
-		{_mail_generic.footer, [hostname => $gatewayInfo->getHostname()]|breakLines}
+		{_mail_generic.footer|breakLines}
 	</p>
 {/block}
