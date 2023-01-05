@@ -1,10 +1,417 @@
-iqrf-gateway-webapp (2.5.0~alpha~1.gbp935e32) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @935e322ac4754c2f2a1295f1f162119cec16c845 **
+  [ Roman Ondráček ]
+  * Prepare for version 2.5.0-alpha
+  * Composer: update dependencies
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * Makefile: include nginx configuration in install job
+  * phpstan: ignore false missing method error
 
- -- Roman Ondráček <roman@romanondracek.cz>  Sun, 19 Dec 2021 21:00:00 +0100
+  [ Roman Ondráček ]
+  * Doctrine: fix PHPStan issues
+
+  [ Karel Hanák ]
+  * api: added I2C pins to controller configuration jsonschema
+
+  [ Roman Ondráček ]
+  * Docker: add missing sockets PHP extension to backend image
+
+  [ Karel Hanák ]
+  * debian package: updated feature patch for iqd-gw-01
+  * fontawesome: force latest packages
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * StyleLint: fix configuration, fix coding style
+
+  [ Karel Hanák ]
+  * DiagnosticsManager: added syslog
+  * refactor password input icon visibility logic
+
+  [ Roman Ondráček ]
+  * Makefile: remove unused configuration directory
+  * Kernel: fix path to IQRF Repository configuration file
+  * Config: fix IQRF Repository configuration manager, add missing tests for it
+
+  [ Karel Hanák ]
+  * DiagnosticsManager: fixed webapp log dir path
+  * Sidebar: hide entries for iqaros role
+  * MobileConnectionForm: removed operator select
+  * Gateway: backup and restore feature base, controller, manager, frontend components and services
+  * Gateway backup: simplified api request and schema, updated interfaces and localization, backend refactor
+  * BackupController and BackupManager: fixed coding style
+  * BackupManager: close archive on error, fixed features
+  * BackupManager: fixed database file backup and restore
+  * BackupManager: fixed daemon directories ownership
+  * BackupManager: use tmp to store data on fs before replacing old files; ZipManager: added recursive path creation for addFile
+  * Gateway backup: refactor into classes, use PrivilegedFileManager
+  * NetworkManagerBackup: fixed NM restore
+  * DaemonBackup: added IqrfInfo to backup archive, fixed inclusin of certificates
+  * GatewayBackup: updated backup classes, simplified BackupManager, reworked PrivilegedFileManager list files
+  * Gateway backup: include services, move auxiliary information to classes
+  * GatewayBackup: configure select daemon components according to gwid
+  * GatewayBackup: fixed errors in DaemonBackup and auxiliary BackupUtil; ZipArchiveManager: fixed folder creation
+  * ZipArchiveManager: fixed code for phpstan
+  * GatewayBackup: reboot gateway on restore, updated frontend localization
+  * GatewayBackup: fixed journal and ntp backup and restoration, removed old migration component
+  * GatewayBackup: unify ntp and journal configuration
+  * GatewayBackup: update daemon backup, fix permissions; PrivilegedFileManager: updated listFiles, added listDirectories
+  * PrivilegedFileManager: added handling for files containing whitespaces
+  * PrivilegedFileManager: run commands to list directories and files with sudo
+  * Gateway backup: added ssh service, timezone, fixed ntp and journal restore, daemon error handling
+  * ZipArchiveManager: removed debug prints; BackupManager: fixed image version check; extended restore request timeout
+  * GatewayBackup: pass managers through DI
+  * GatewayBackup: use DI to pass backup classes
+  * GatewayBackup: moved to maintenance, added restore logging, updated frontend
+  * GatewayBackup: restore SSH keys, updated frontend
+  * GatewayBackup: added feature check before backup and restore, fixed codestyle, fixed frontend translations and disambiguation entries
+  * GatewayBackup: updated ntp to timesync, split backup and restore to separate components, added restore to installation wizard
+  * WebappBackup: fixed dir path
+  * RestoreComponent: redirect to root
+  * MonitBackup: fixed restore condition; fixed spinner for restore in install wizard
+
+  [ Roman Ondráček ]
+  * Core: add basic tests for privileged file manager
+
+  [ Karel Hanák ]
+  * router: fixed webpack chunk for installer restore component
+  * GatewayBackup: use Nette utilities instead of base functions for better readability
+  * GatewayBackup: refactoring backup managers, removed migration controller and manager
+  * BackupManager: fixed enabled services whitelist
+  * GatewayBackup: added abstract class for backup and restore of IQRF software
+  * IqrfSoftwareBackup: use class member command manager
+  * DaemonBackup: fixed db restore path
+  * DaemonBackup: update owner of cache dir
+  * iqaros: updated features patch
+  * Core: added user profile page, user edit component, password change component
+
+  [ Roman Ondráček ]
+  * Gateway: refactor TLS certificate manager
+  * Database: refactor user entity
+
+  [ Karel Hanák ]
+  * fixed coding style and linter errors, unused variables
+
+  [ Roman Ondráček ]
+  * Docker: fix frontend Dockerfile
+  * OpenAPI: fix specification
+
+  [ Karel Hanák ]
+  * api: added missing gateway backup specification
+
+  [ Roman Ondráček ]
+  * Core: fix redundant navigation to current location in sign in form
+
+  [ Karel Hanák ]
+  * Core: updated user roles, UserAdd form refactor, User entity roles, Sidebar filtration by role and special case
+  * updated disambiguations roles, fixed router and sidebar, refactoring of old error handling and special cases for former power user, localization update
+  * UserList: simplified datatable columns, removed user ID
+
+  [ Roman Ondráček ]
+  * Core: add support for security scopes
+  * Docker: fix API testing container
+
+  [ Karel Hanák ]
+  * frontend: password change for specific user and logged in user
+
+  [ Roman Ondráček ]
+  * Add scope guards
+  * Core: admins can change passwords of other users
+
+  [ Karel Hanák ]
+  * removed Daemon Components from sidebar, disambiguation and router
+  * db: added user role update migration
+  * fixed coding style in migration file
+  * GatewayBackup: compare image version up to minor version
+  * iqrf os: added new os change plugins
+  * iqaros: disable node-red feature for sidebar
+  * Makefile: install configuration under webapp user
+
+  [ Roman Ondráček ]
+  * Makefile: fix configuration directory ownership
+  * NPM: fix FontAwesome
+
+  [ Karel Hanák ]
+  * do not allow admin role change for single admin user; update sidebar and disambiguation on current user role change
+  * User: fixed role selection for admin roles, fixed email change error handling
+  * include hwpid version and hex values in gateway information and device enumeration
+  * DevicesInfo: inform user of enumeration option
+
+  [ Roman Ondráček ]
+  * Doctrine: register fixtures into DI
+
+  [ Karel Hanák ]
+  * added controller pin configuration db entity, mapping and controller config fixtures, added and updated frontend components
+  * debian: load fixtures in postinst
+  * Controller configuration: split manager into config and pin managers, fixed pin config form conditional inputs
+  * Interfaces: refactor and fixed ui errors
+  * Mapping: separate delete confirmation modal
+  * ControllerConfig: disable I2C pins correctly
+  * removed main daemon configuration from sidebar and router
+  * changed ip network url, fixed installation check
+  * MappingForm: fixed mapping ids and indexes
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * NPM: update dependencies
+  * Config: fix path to the scheduler task list in redirect
+  * Stylelint: fix coding style
+
+  [ Karel Hanák ]
+  * UserController: persist email verification until user is removed
+  * UserController: check verification link expiration
+  * MappingForm: fixed baudrate binding
+  * IqrfSpi & IqrfUart: fixed interface pin checkbox on load
+  * composer: use doctrine persistence 2.5.x
+  * EntityManager: updated phpdoc type hints
+  * GatewayInfo: added setter version if installed; setter version tests
+  * GatewayInfo: include setter version in installation wizard
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+
+  [ Karel Hanák ]
+  * webSocketClient module: fixed daemon version parsing
+  * custom websocket module, dropped vue-native-socket
+  * WebSocketClientText: updated ws server
+  * DaemonMode and ConnectionForm: fixed not assignable errors
+  * added network operators database entity, operator options for mobile connections
+  * GSM connection: removed number entry
+  * MobileConnections: fixed nested validation observer
+  * MobileConnections: added network operator entity, fixed GSM form filling from existing operators
+  * Modem: include rssi
+  * OperatorController: fixed operator edit api endpoint annotation
+
+  [ Roman Ondráček ]
+  * Sentry: update frontend integration
+  * Sentry: fix frontend integration
+  * TypeScript: add alias for root source directory
+  * NPM: update dependencies
+  * Config: fix error message for full daemon queue in task list
+
+  [ Karel Hanák ]
+  * use Ajv json schema to validate messages
+  * Backup: fixed unhandled error when session expired
+  * PowerControl: fixed unhandled axios errors
+  * DeviceEnumeration: updated api response handler
+  * SystemdJournalManager: fixed invalid time rotation property, use privileged file manager
+  * DaemonMode: fixed incorrect startup mode
+  * updated generic daemon request schema for json request validation
+
+  [ Roman Ondráček ]
+  * Drop support for PHP 7.3
+
+  [ Karel Hanák ]
+  * GatewayInfoUtil: rework and tests
+
+  [ Roman Ondráček ]
+  * Gateway: refactor IQRF software backup models
+  * Backend: Add missing type hints
+  * Backend: updating PHPDoc comments, refactoring
+  * Doctrine: fix user verification entity bidirectional mapping
+  * GitLab CI: add check for Doctrine ORM mapping
+  * Backend: add patch for contributte/psr7-http-message
+  * Debian packaging: fix patch adding dependency on IQRF Gateway Uploader
+  * Backend: remove unused code, refactor IPv4 and IPv6 connection entities, fix typos
+  * Cloud: refactor controllers
+  * Tests: refactor test for TaskTimeManager
+  * Service: remove default service name
+  * Gateway: refactor updater manager and its test
+  * Network: refactor tests for enums
+
+  [ Karel Hanák ]
+  * Cloud controllers: fixed cloud messaging creation
+  * User: initialize verifications collection before accessing
+  * UsersController: get request body copy to allow future use of the request object
+  * ApiKey: fixed check for unitialized key property
+  * DiagnosticsManager: get all available journal records
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies and fix patching
+
+  [ Karel Hanák ]
+  * Makefile: added psr7-http-message patch to install target
+  * Revert "Makefile: added psr7-http-message patch to install target"
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * removed JsonMngMetaDataApi component support
+  * frontend: fixed eslint errors
+
+  [ Roman Ondráček ]
+  * Frontend: fix ESLint errors, remove unused code, improve coding style
+  * Frontend: remove unused i18n strings, fix i18n
+  * IQRF net: fix coordinator upload
+
+  [ Karel Hanák ]
+  * i18n: fixed missing key errors
+  * removed wg metapackage dependency
+  * NetworkModule: added PPP interface type
+  * phpstan: fix jwtconfigurator non-empty-string error
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * Debian packaging: add PHP 8.0 and 8.1 support
+  * Gateway: fix content type in log file viewer endpoint
+  * Cypress: update to version 10
+  * GitLab CI: add pnpm cache
+  * Maintenance: remove PIXLA management service
+  * Config: fix daemon configuration directory paths
+  * Composer: update dependencies
+  * NPM: update dependencies
+  * Frontend: refactor disambiguations
+  * Gateway: add information about the operating system
+  * Composer: fix apitte
+  * Makefile: add target for reset DB
+  * NPM: update dependencies
+  * Debian packaging: fix JSON PHP extension dependency
+  * Webserver config: allow devrepo.iqrfalliance.org in CSP
+  * Gateway: add apcupsd service control, add missing feature JSON schemas
+  * NPM: update dependencies
+  * Composer: update dependencies, Sentry: remove unnecessary integrations
+  * Sentry: fix logging
+  * NPM: update dependencies
+  * Docker: add PHP 8.2 and pnpm in the testing image
+  * Composer: update dependencies, add PHP 8.2 support
+  * GitLab CI: report releases to Sentry
+  * GitLab CI: use PCOV for backend coverage report
+
+  [ Karel Hanák ]
+  * gateway time rework
+  * move plugin code to separate files
+  * Daemon mode rework, iqrf repository cache update
+  * added session expiration modal window and jwt refresh option
+  * config: updated source structure and separated modal code
+  * Gateway: updated services forms, project structure
+  * datepicker styles general import, updated SshKeyForm
+  * IqrfNet: updated TrConfig, TrUpload and Standards
+  * dropped support for LegacyApi and NativeUpload services
+  * debian package: fixed iqaros theme patch
+  * iqrfnet: networkmanager update wip
+  * NPM: updated dependencies
+  * styles: fixed errors reporeted by stylelint
+  * StandardManager: updated standard devices table
+  * Network: updated frontend components
+  * Maintenance: updated frontend components
+  * IQRF OS patches: update importing and validation
+  * frontend: updated use of icons
+  * config: updated messaging forms
+  * ApiKey: separated delete modal
+  * frontend: updated enums and interfaces
+  * Wireguard: added error handling for duplicate tunnel name
+  * journal: use journal reader to get records, load records in batches
+  * TrSeries enum: simplified value resolution
+  * SensorManager: fixed button click events
+  * Misc config: removed ota upload component configuration
+  * fixed iqrf repository config fetch
+  * TrUpload: error handling for unavailable C
+  * trconfig: updated loading, descriptions
+  * debian package: added journal reader dependency
+  * config: updated path to daemon configuration schemas
+  * TrConfig: fixed config load error alert
+  * security: unified ssh and api keys
+  * GatewayBackup: fixed timesync backup
+  * debian package: enabled mender feature in patches
+  * StandardManager: fixed displayed result tables for standards
+  * Autonetwork: export midlist
+  * frontend: unified data tables and modal window components
+  * fixtures: added controller and daemon pin configuration for IQD-GW-04
+
+  [ Roman Ondráček ]
+  * Core: add page for error 403
+
+  [ Karel Hanák ]
+  * STMP: fixed configuration test, added validation for host and sender; User: refactor adding and editing
+  * StandardDevices: clear table items if no nodes are retrieved
+  * IqrfRepository: fixed cache update toast message
+  * Mender: updated configuration backend and frontend
+  * Mender: fixed server url fetching and storing
+
+  [ Roman Ondráček ]
+  * Use new password input field
+  * Network: add missing optional feature guard
+  * Network: add Bluetooth interface type, fix interface parsing
+
+  [ Karel Hanák ]
+  * MenderManager: fixed feature enabled status fetching and storing
+  * Mender: updated configuration save success toast
+  * Installation wizard: fixed initial user role
+  * scheduler rework
+  * Scheduler: updated form and table, reworked and separated logic from components
+  * Scheduler: fixed task delete modal
+  * SchedulerRecord: use UTC time
+  * Scheduler manager: sort tasks by ID
+  * SchedulerList: added tasks refresh button
+  * added error handling for repository configuration fetch failure
+  * Scheduler: send crontime as string instead of array
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+
+  [ Karel Hanák ]
+  * SchedulerForm: fixed task edit taskId
+  * IqrfNet: error handling for messageError
+  * IqrfNet: fixed prebonded nodes message type
+
+  [ Roman Ondráček ]
+  * Backend: refactor version managers
+  * Install: add check for missing dependencies (fixes #307)
+  * Config: fix interface mapping deletion modal
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * StandardDevices: fixed frc ping node selection
+
+  [ Roman Ondráček ]
+  * Install: remove git from dependencies, fix invalid JSON error
+
+  [ Karel Hanák ]
+  * SendJsonRequest: fixed selection and updating of active message pair
+  * SSH keys: use UTC time, display local time, fixed key delete modal
+  * debian package: fixed iqd-gw-01 and iqaros dependencies patches
+
+  [ Roman Ondráček ]
+  * Sentry: add user info to reports from frontend
+  * Sentry: add user info to reports from backend
+  * User management: fix IDN e-mail address support
+  * Config: move daemon component instance validator to validator helper
+  * NPM: update dependencies
+  * Composer: update dependencies
+  * Core: add chown and chmod to priviledged file manager
+
+  [ Karel Hanák ]
+  * added journal reader to dependency manager, check for existence of journal reader command
+  * updated journal reader manager tests
+  * JournalReaderManagerTest: removed unused import
+
+  [ Roman Ondráček ]
+  * Frontend: fix installation check redirects
+  * API: fix JWT configurator
+  * Network: add serial link configuration for GSM connection
+  * Network: refactor connection configuration form
+  * Network: refactor WiFi configuration form
+  * Network: move nmcli deserialization of current IP configuration into the entity
+  * Network: improve network interface status
+  * Network: remove unused column from WiFi network list
+  * Network: fix nmcli parsing
+  * Installation: update patches
+  * Network: refactor WireGuard frontend
+  * Network: optimize nmcli parsing
+  * Network: add interface status, fix modem manager
+  * Network: add missing translations and enums
+
+  [ Karel Hanák ]
+  * Network: added missing translation, fixed unavailable mac address displaying
+  * Network: fixed minor bugs in connection forms and lists
+  * separated validators and fixed minor bugs in forms
+  * ConnectionForm: delete or edit incorrect connection configuration on save failure
+  * added password change confirmation email, updated texts of emails
+  * display GWID in emails conditionally
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 05 Jan 2023 20:08:32 +0100
 
 iqrf-gateway-webapp (2.4.0) testing; urgency=medium
 
