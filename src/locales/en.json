@@ -664,6 +664,7 @@
 				"add": "Add task",
 				"edit": "Edit task",
 				"table": {
+					"title": "Tasks",
 					"active": "Active",
 					"time": "Time",
 					"service": "Service",

@@ -20,45 +20,44 @@ limitations under the License.
 			{{ $t('config.daemon.scheduler.title') }}
 		</h1>
 		<CCard>
-			<CCardHeader class='border-0'>
-				<div class='float-right'>
-					<CButtonToolbar>
-						<CButton
-							class='mr-1'
-							color='success'
-							size='sm'
-							to='/config/daemon/scheduler/add'
-						>
-							<CIcon :content='cilPlus' size='sm' />
-							{{ $t('table.actions.add') }}
-						</CButton>
-						<CButton
-							class='mr-1'
-							color='info'
-							size='sm'
-							@click='getTasks'
-						>
-							<CIcon :content='cilReload' size='sm' />
-							{{ $t('forms.refresh') }}
-						</CButton>
-						<TaskImportModal
-							class='mr-1'
-							@imported='getTasks'
-						/>
-						<CButton
-							class='mr-1'
-							color='secondary'
-							size='sm'
-							@click='exportScheduler'
-						>
-							<CIcon :content='cilArrowBottom' size='sm' />
-							{{ $t('forms.export') }}
-						</CButton>
-						<TasksDeleteModal
-							@deleted='getTasks'
-						/>
-					</CButtonToolbar>
-				</div>
+			<CCardHeader class='datatable-header'>
+				{{ $t('config.daemon.scheduler.table.title') }}
+				<CButtonToolbar>
+					<CButton
+						class='mr-1'
+						color='success'
+						size='sm'
+						to='/config/daemon/scheduler/add'
+					>
+						<CIcon :content='cilPlus' size='sm' />
+						{{ $t('table.actions.add') }}
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='info'
+						size='sm'
+						@click='getTasks'
+					>
+						<CIcon :content='cilReload' size='sm' />
+						{{ $t('forms.refresh') }}
+					</CButton>
+					<TaskImportModal
+						class='mr-1'
+						@imported='getTasks'
+					/>
+					<CButton
+						class='mr-1'
+						color='secondary'
+						size='sm'
+						@click='exportScheduler'
+					>
+						<CIcon :content='cilArrowBottom' size='sm' />
+						{{ $t('forms.export') }}
+					</CButton>
+					<TasksDeleteModal
+						@deleted='getTasks'
+					/>
+				</CButtonToolbar>
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
