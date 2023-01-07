@@ -35,7 +35,7 @@ limitations under the License.
 		<div v-show='loaded && !failed'>
 			<HexUpload />
 			<DpaUpdater ref='dpaUpdater' />
-			<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />
+			<!--<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />-->
 		</div>
 	</div>
 </template>
@@ -113,7 +113,6 @@ export default class TrUpload extends Vue {
 	private unwatch: CallableFunction = () => {return;};
 
 	/**
-	 * Vue lifecycle hook created
 	 * Initializes validation rules and websocket callbacks
 	 */
 	created(): void {
@@ -178,7 +177,7 @@ export default class TrUpload extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
 			(this.$refs.dpaUpdater as DpaUpdater).handleEnumResponse(response.data.rsp);
-			(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
+			//(this.$refs.osUpdater as OsUpdater).handleEnumResponse(response.data.rsp);
 		} else {
 			this.failed = true;
 			this.$toast.error(
