@@ -34,9 +34,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardFooter, CCardHeader, CDataTable} from '@coreui/vue/src';
 import {InstallationCheckDependency} from '@/services/InstallationService';
+import { Route } from '@sentry/vue/types/router';
 
 @Component({
 	components: {
@@ -73,6 +74,16 @@ export default class MissingDependency extends Vue {
 	 */
 	protected mounted(): void {
 		this.dependencies = this.json === '' ? [] : JSON.parse(this.json);
+	}
+
+	@Watch('$route', {immediate: true, deep: true})
+	private onDependenciesChange(route: Route): void {
+		console.warn(route);
+		console.warn(typeof route.params);
+		console.warn(route.params);
+		if ('json' in route.params) {
+			this.dependencies = JSON.parse(JSON.stringify(route.params.json));
+		}
 	}
 
 	/**

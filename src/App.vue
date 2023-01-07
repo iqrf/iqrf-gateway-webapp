@@ -69,12 +69,16 @@ export default class App extends Vue {
 			.then((check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
-					this.$router.push({
-						name: 'missing-dependency',
-						params: {
-							json: JSON.stringify(check.dependencies),
-						},
-					});
+					if (this.$route.name === 'missing-dependency') {
+						Object.assign(this.$route.params, {json: check.dependencies});
+					} else {
+						this.$router.push({
+							name: 'missing-dependency',
+							params: {
+								json: JSON.stringify(check.dependencies),
+							},
+						});
+					}
 				} else if (!check.phpModules.allExtensionsLoaded) {
 					this.$router.push({
 						name: 'missing-extension',
