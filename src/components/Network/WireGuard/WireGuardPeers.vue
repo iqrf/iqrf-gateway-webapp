@@ -144,6 +144,7 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 import {CButton, CCol, CInput, CRow} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {wgBase64Key} from '@/helpers/validationRules/Network';
 
 import {WireguardStack} from '@/enums/Network/Wireguard';
 import {IWGTunnel} from '@/interfaces/Network/Wireguard';
@@ -181,9 +182,7 @@ export default class WireGuardPeers extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('base64Key', (key: string) => {
-			return RegExp('^[0-9a-zA-Z+/]{43}=$').test(key);
-		});
+		extend('base64Key', wgBase64Key);
 	}
 
 	/**

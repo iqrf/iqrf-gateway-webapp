@@ -153,8 +153,11 @@ import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
 import {ConfigurationMethod} from '@/enums/Network/Ip';
+
 import IpAddressHelper from '@/helpers/IpAddressHelper';
 import {ipv4} from '@/helpers/validators';
+import {subnetMask} from '@/helpers/validationRules/Network';
+
 import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
 
@@ -200,13 +203,7 @@ export default class IPv4Configuration extends Vue {
 	 */
 	protected created(): void {
 		extend('ipv4', ipv4);
-		extend('netmask', (mask: string) => {
-			const maskTokens = mask.split('.');
-			const binaryMask = maskTokens.map((token: string) => {
-				return parseInt(token).toString(2).padStart(8, '0');
-			}).join('');
-			return new RegExp(/^1{8,32}0{0,24}$/).test(binaryMask);
-		});
+		extend('netmask', subnetMask);
 		extend('required', required);
 	}
 

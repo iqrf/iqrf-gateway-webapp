@@ -171,6 +171,7 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {wgBase64Key} from '@/helpers/validationRules/Network';
 import {MetaInfo} from 'vue-meta';
 
 import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefixInput.vue';
@@ -279,9 +280,7 @@ export default class WireguardTunnel extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('base64Key', (key: string) => {
-			return RegExp('^[0-9a-zA-Z+/]{43}=$').test(key);
-		});
+		extend('base64Key', wgBase64Key);
 	}
 
 	/**

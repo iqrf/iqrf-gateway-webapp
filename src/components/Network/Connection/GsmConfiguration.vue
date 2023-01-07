@@ -94,6 +94,8 @@ import {CCol, CInput, CRow} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
+import {apn, pin} from '@/helpers/validationRules/Network';
+
 import {IConnection} from '@/interfaces/Network/Connection';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
@@ -121,12 +123,8 @@ export default class GsmConfiguration extends Vue {
 	 */
 	protected created(): void {
 		extend('required', required);
-		extend('apn', (apn: string) => {
-			return /^[a-z0-9.-]+$/.test(apn);
-		});
-		extend('pin', (pin: string) => {
-			return /^\d{4,8}$/.test(pin);
-		});
+		extend('apn', apn);
+		extend('pin', pin);
 	}
 
 }
