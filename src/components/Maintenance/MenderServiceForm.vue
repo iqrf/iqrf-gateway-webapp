@@ -154,7 +154,7 @@ limitations under the License.
 					</CInput>
 				</ValidationProvider>
 				<hr>
-				<h4>{{ $t('maintenance.mender.service.form.features') }}</h4>
+				<h5>{{ $t('maintenance.mender.service.form.features') }}</h5>
 				<CInputCheckbox
 					:checked.sync='config.connect.FileTransfer'
 					:label='$t("maintenance.mender.service.form.connect.fileTransfer")'
