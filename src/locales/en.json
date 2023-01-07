@@ -1036,7 +1036,7 @@
 					"greenLed": "Green LED pin",
 					"redLed": "Red LED pin",
 					"button": "Button pin",
-					"useI2c": "Use I2C pins",
+					"useI2c": "Use hardware WDT pins",
 					"sck": "I2C clock pin",
 					"sda": "I2C data pin"
 				},
@@ -1393,6 +1393,7 @@
 		},
 		"datetime": {
 			"title": "Location & Time",
+			"description": "Set date and time, timezone and configure NTP.",
 			"status": "Gateway date and time",
 			"form": {
 				"title": "Location & Time settings",
