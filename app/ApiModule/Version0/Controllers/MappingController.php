@@ -124,9 +124,26 @@ class MappingController extends BaseController {
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBody(false);
 		if ($json->type === Mapping::TYPE_UART) {
-			$mapping = new Mapping($json->type, $json->name, $json->IqrfInterface, $json->busEnableGpioPin, $json->pgmSwitchGpioPin, $json->powerEnableGpioPin, $json->baudRate);
+			$mapping = new Mapping(
+				$json->type,
+				$json->name,
+				$json->deviceType,
+				$json->IqrfInterface,
+				$json->busEnableGpioPin,
+				$json->pgmSwitchGpioPin,
+				$json->powerEnableGpioPin,
+				$json->baudRate
+			);
 		} else {
-			$mapping = new Mapping($json->type, $json->name, $json->IqrfInterface, $json->busEnableGpioPin, $json->pgmSwitchGpioPin, $json->powerEnableGpioPin);
+			$mapping = new Mapping(
+				$json->type,
+				$json->name,
+				$json->deviceType,
+				$json->IqrfInterface,
+				$json->busEnableGpioPin,
+				$json->pgmSwitchGpioPin,
+				$json->powerEnableGpioPin
+			);
 		}
 		if (property_exists($json, 'i2cEnableGpioPin')) {
 			$mapping->setI2cPin($json->i2cEnableGpioPin);
@@ -239,6 +256,7 @@ class MappingController extends BaseController {
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBody(false);
 		$mapping->setName($json->name);
+		$mapping->setDeviceType($json->deviceType);
 		$mapping->setInterface($json->IqrfInterface);
 		$mapping->setBusPin($json->busEnableGpioPin);
 		$mapping->setPgmPin($json->pgmSwitchGpioPin);

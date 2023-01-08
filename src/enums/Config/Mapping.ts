@@ -22,3 +22,11 @@ export enum MappingType {
 	SPI = 'spi',
 	UART = 'uart',
 }
+
+/**
+ * Mapping device type
+ */
+export enum MappingDeviceType {
+	ADAPTER = 'adapter',
+	BOARD = 'board',
+}

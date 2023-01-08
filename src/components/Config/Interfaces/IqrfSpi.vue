@@ -227,7 +227,7 @@ import {
 	CForm,
 	CInput,
 	CInputCheckbox,
-	CRow
+	CRow,
 } from '@coreui/vue/src';
 import InterfaceMappings from '@/components/Config/Interfaces/InterfaceMappings.vue';
 import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';

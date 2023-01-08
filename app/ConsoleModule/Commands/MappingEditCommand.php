@@ -25,7 +25,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -43,16 +42,17 @@ class MappingEditCommand extends MappingCommand {
 	 * Configures the mapping edit command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Adds a new mapping');
+		$this->setDescription('Edits an existing mapping profile');
 		$definitions = [
 			new InputOption('mapping-id', ['i'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 			new InputOption('type', ['t'], InputOption::VALUE_REQUIRED, 'Mapping type'),
 			new InputOption('name', ['N'], InputOption::VALUE_REQUIRED, 'Mapping name'),
-			new InputOption('interface', ['I'], InputOption::VALUE_REQUIRED, 'Mapping device name'),
-			new InputOption('bus-pin', ['b'], InputOption::VALUE_REQUIRED, 'Mapping bus enable pin number'),
-			new InputOption('pgm-pin', ['p'], InputOption::VALUE_REQUIRED, 'Mapping programming mode switch pin number'),
-			new InputOption('power-pin', ['P'], InputOption::VALUE_REQUIRED, 'Mapping power enable pin number'),
-			new InputOption('baud-rate', ['r'], InputOption::VALUE_OPTIONAL, 'Mapping UART baud rate'),
+			new InputOption('device-type', ['d'], InputOption::VALUE_REQUIRED, 'Device type'),
+			new InputOption('interface', ['I'], InputOption::VALUE_REQUIRED, 'Device name'),
+			new InputOption('bus-pin', ['b'], InputOption::VALUE_REQUIRED, 'Bus enable pin number'),
+			new InputOption('pgm-pin', ['p'], InputOption::VALUE_REQUIRED, 'Programming mode switch pin number'),
+			new InputOption('power-pin', ['P'], InputOption::VALUE_REQUIRED, 'Power enable pin number'),
+			new InputOption('baud-rate', ['r'], InputOption::VALUE_OPTIONAL, 'UART baud rate'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
@@ -65,62 +65,32 @@ class MappingEditCommand extends MappingCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$style->title('Edit mapping');
+		$style->title('Edit mapping profile');
 		$mapping = $this->askId($input, $output);
-		$style->warning('Mapping selected to edit: ' . $mapping->getName() . ' (' . $mapping->getType() . ')');
+		$style->warning('Mapping profile selected to edit: ' . $mapping->getName() . ' (' . $mapping->getType() . ')');
 		$oldName = $mapping->getName();
 		$name = $this->askName($input, $output);
-		$type = $this->askExistingType($mapping, $input, $output);
+		$type = $this->askType($input, $output, $mapping->getType());
+		$deviceType = $this->askDeviceType($input, $output, $mapping->getDeviceType());
 		$interface = $this->askInterface($input, $output);
 		$busPin = $this->askBusPin($input, $output);
 		$pgmPin = $this->askPgmPin($input, $output);
 		$powerPin = $this->askPowerPin($input, $output);
 		$mapping->setName($name);
 		$mapping->setType($type);
+		$mapping->setDeviceType($deviceType);
 		$mapping->setInterface($interface);
 		$mapping->setBusPin($busPin);
 		$mapping->setPgmPin($pgmPin);
 		$mapping->setPowerPin($powerPin);
 		if ($type === Mapping::TYPE_UART) {
-			$baudRate = $this->askExistingBaudRate($mapping, $input, $output);
+			$baudRate = $this->askBaudRate($input, $output, $mapping->getBaudRate() ?? Mapping::BAUD_RATE_DEFAULT);
 			$mapping->setBaudRate($baudRate);
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();
-		$style->success('Mapping "' . $oldName . '" has been edited.');
+		$style->success('Mapping profile ' . $oldName . ' has been edited.');
 		return 0;
-	}
-
-	/**
-	 * Asks for the existing mapping type
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return string Mapping type
-	 */
-	private function askExistingType(Mapping $mapping, InputInterface $input, OutputInterface $output): string {
-		$type = $input->getOption('type');
-		while ($type === null || !in_array($type, Mapping::TYPES, true)) {
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select mapping type: ', Mapping::TYPES, $mapping->getType());
-			$type = $helper->ask($input, $output, $question);
-		}
-		return $type;
-	}
-
-	/**
-	 * Asks for the existing mapping UART baud rate
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return int Mapping UART baud rate
-	 */
-	protected function askExistingBaudRate(Mapping $mapping, InputInterface $input, OutputInterface $output): int {
-		$baudRate = $input->getOption('baud-rate');
-		while ($baudRate === null || !ctype_digit($baudRate)) {
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, $mapping->getBaudRate());
-			$baudRate = $helper->ask($input, $output, $question);
-		}
-		return (int) $baudRate;
 	}
 
 }

@@ -46,8 +46,12 @@ limitations under the License.
 				<CSelect
 					:value.sync='mapping.type'
 					:label='$t("config.daemon.interfaces.interfaceMapping.form.type")'
-					:options='typeOptions'
-					:placeholder='$t("config.daemon.interfaces.interfaceMapping.errors.typeSelect")'
+					:options='mappingTypeOptions'
+				/>
+				<CSelect
+					:value.sync='mapping.deviceType'
+					:label='$t("config.daemon.interfaces.interfaceMapping.form.deviceType")'
+					:options='deviceTypeOptions'
 				/>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
@@ -207,7 +211,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
-import {MappingType} from '@/enums/Config/Mapping';
+import {MappingDeviceType, MappingType} from '@/enums/Config/Mapping';
 
 import MappingService from '@/services/MappingService';
 
@@ -224,7 +228,7 @@ import {IOption} from '@/interfaces/Coreui';
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
 })
 
 /**
@@ -246,7 +250,8 @@ export default class MappingFormModal extends Vue {
 	 */
 	private defaultMapping: IMapping = {
 		name: '',
-		type: null,
+		type: MappingType.SPI,
+		deviceType: MappingDeviceType.ADAPTER,
 		IqrfInterface: '',
 		powerEnableGpioPin: 0,
 		pgmSwitchGpioPin: 0,
@@ -268,18 +273,28 @@ export default class MappingFormModal extends Vue {
 	private useAdditionalPins = false;
 
 	/**
-	 * @constant {Array<IOption>} typeOptions Array of CoreUI select options for mapping type
+	 * Computes mapping type options
+	 * @return {Array<IOption>} Mapping type options
 	 */
-	private typeOptions: Array<IOption> = [
-		{
-			value: 'spi',
-			label: this.$t('config.daemon.interfaces.types.spi').toString()
-		},
-		{
-			value: 'uart',
-			label: this.$t('config.daemon.interfaces.types.uart').toString()
-		}
-	];
+	get mappingTypeOptions(): Array<IOption> {
+		const types: Array<MappingType> = [MappingType.SPI, MappingType.UART];
+		return types.map((item: MappingType): IOption => ({
+			label: this.$t(`config.daemon.interfaces.types.${item}`).toString(),
+			value: item,
+		}));
+	}
+
+	/**
+	 * Computes device type options
+	 * @return {Array<IOption>} Device type options
+	 */
+	get deviceTypeOptions(): Array<IOption> {
+		const types: Array<MappingDeviceType> = [MappingDeviceType.ADAPTER, MappingDeviceType.BOARD];
+		return types.map((item: MappingDeviceType): IOption => ({
+			label: this.$t(`config.daemon.interfaces.interfaceMapping.form.deviceTypes.${item}`).toString(),
+			value: item,
+		}));
+	}
 
 	/**
 	 * Computes title of mapping modal
@@ -310,7 +325,7 @@ export default class MappingFormModal extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('integer', integer);
@@ -386,6 +401,5 @@ export default class MappingFormModal extends Vue {
 		this.mapping = this.defaultMapping;
 		this.useAdditionalPins = false;
 	}
-
 }
 </script>

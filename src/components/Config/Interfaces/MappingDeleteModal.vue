@@ -67,9 +67,9 @@ export default class MappingDeleteModal extends Vue {
 	private show = false;
 
 	/**
-	 * @var {number} idx Mapping index
+	 * @var {number} id Mapping ID
 	 */
-	private idx = 0;
+	private id = 0;
 
 	/**
 	 * @var {string} name Mapping name
@@ -79,8 +79,8 @@ export default class MappingDeleteModal extends Vue {
 	/**
 	 * Stores mapping metadata and renders the modal window
 	 */
-	public activateModal(idx: number, name: string): void {
-		this.idx = idx;
+	public activateModal(id: number, name: string): void {
+		this.id = id;
 		this.name = name;
 		this.show = true;
 	}
@@ -90,7 +90,7 @@ export default class MappingDeleteModal extends Vue {
 	 */
 	private deleteMapping(): void {
 		this.deactivateModal();
-		this.$emit('delete-mapping', this.idx);
+		this.$emit('delete-mapping', this.id);
 	}
 
 	/**

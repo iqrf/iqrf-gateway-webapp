@@ -387,6 +387,7 @@
 					}
 				},
 				"interfaceMapping": {
+					"adapters": "Adapters",
 					"boards": "Boards",
 					"interfaces": "Interfaces",
 					"add": "Add mapping",
@@ -400,14 +401,19 @@
 					"form": {
 						"type": "Mapping type",
 						"name": "Mapping name",
-						"interface": "Mapping device name",
+						"deviceType": "Device type",
+						"deviceTypes": {
+							"adapter": "Adapter",
+							"board": "Board"
+						},
+						"interface": "Device interface",
 						"powerPin": "Power enable GPIO pin",
 						"busPin": "Bus enable GPIO pin",
 						"pgmPin": "Programming mode switch GPIO pin",
 						"useAdditionalPins": "Use communication interface pins",
-						"i2cPin": "I2C interface enable GPIO pin *",
-						"spiPin": "SPI interface enable GPIO pin *",
-						"uartPin": "UART interface enable GPIO pin *",
+						"i2cPin": "I2C interface enable GPIO pin",
+						"spiPin": "SPI interface enable GPIO pin",
+						"uartPin": "UART interface enable GPIO pin",
 						"baudRate": "UART baud rate"
 					},
 					"errors": {
