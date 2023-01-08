@@ -61,6 +61,21 @@ class Mapping implements JsonSerializable {
 	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
+	 * @var string Device type: Adapter
+	 */
+	public const DEVICE_ADAPTER = 'adapter';
+
+	/**
+	 * @var string Device type: Board
+	 */
+	public const DEVICE_BOARD = 'board';
+
+	/**
+	 * @var array<string> Supported device types
+	 */
+	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
+
+	/**
 	 * @var string Mapping type
 	 * @ORM\Column(type="string", length=255)
 	 */
@@ -71,6 +86,12 @@ class Mapping implements JsonSerializable {
 	 * @ORM\Column(type="string", length=255)
 	 */
 	private string $name;
+
+	/**
+	 * @var string Device type
+	 * @ORM\Column(type="string", length=255)
+	 */
+	private string $deviceType;
 
 	/**
 	 * @var string Device name
@@ -124,6 +145,7 @@ class Mapping implements JsonSerializable {
 	 * Constructor
 	 * @param string $type Mapping type
 	 * @param string $name Mapping name
+	 * @param string $deviceType Device type
 	 * @param string $iqrfInterface Mapping device name
 	 * @param int $busEnableGpioPin Mapping bus enable pin
 	 * @param int $pgmSwitchGpioPin Mapping programming mode switch pin
@@ -133,9 +155,10 @@ class Mapping implements JsonSerializable {
 	 * @param int|null $spiEnableGpioPin Mapping SPI interface enable pin
 	 * @param int|null $uartEnableGpioPin Mapping UART interface enable pin
 	 */
-	public function __construct(string $type, string $name, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null, ?int $i2cEnableGpioPin = null, ?int $spiEnableGpioPin = null, ?int $uartEnableGpioPin = null) {
+	public function __construct(string $type, string $name, string $deviceType, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null, ?int $i2cEnableGpioPin = null, ?int $spiEnableGpioPin = null, ?int $uartEnableGpioPin = null) {
 		$this->type = $type;
 		$this->name = $name;
+		$this->deviceType = $deviceType;
 		$this->iqrfInterface = $iqrfInterface;
 		$this->busEnableGpioPin = $busEnableGpioPin;
 		$this->pgmSwitchGpioPin = $pgmSwitchGpioPin;
@@ -143,7 +166,7 @@ class Mapping implements JsonSerializable {
 		$this->baudRate = $baudRate;
 		$this->i2cEnableGpioPin = $i2cEnableGpioPin;
 		$this->spiEnableGpioPin = $spiEnableGpioPin;
-		$this->uartEnableGpioPin = $uartEnableGpioPin;
+		$this->uartEnableGpioPin = $uartEnableGpioPin;	
 	}
 
 	/**
@@ -182,6 +205,25 @@ class Mapping implements JsonSerializable {
 	 */
 	public function setName(string $name): void {
 		$this->name = $name;
+	}
+
+	/**
+	 * Returns device type
+	 * @return string Device type
+	 */
+	public function getDeviceType(): string {
+		return $this->deviceType;
+	}
+
+	/**
+	 * Set device type
+	 * @param string $deviceType Device type
+	 */
+	public function setDeviceType(string $deviceType): void {
+		if (!in_array($deviceType, self::DEVICE_TYPES, true)) {
+			return;
+		}
+		$this->deviceType = $deviceType;
 	}
 
 	/**
@@ -321,6 +363,7 @@ class Mapping implements JsonSerializable {
 			'id' => $this->getId(),
 			'type' => $this->getType(),
 			'name' => $this->getName(),
+			'deviceType' => $this->getDeviceType(),
 			'IqrfInterface' => $this->getInterface(),
 			'busEnableGpioPin' => $this->getBusPin(),
 			'pgmSwitchGpioPin' => $this->getPgmPin(),
