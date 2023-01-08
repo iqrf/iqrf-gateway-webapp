@@ -166,7 +166,7 @@ class Mapping implements JsonSerializable {
 		$this->baudRate = $baudRate;
 		$this->i2cEnableGpioPin = $i2cEnableGpioPin;
 		$this->spiEnableGpioPin = $spiEnableGpioPin;
-		$this->uartEnableGpioPin = $uartEnableGpioPin;	
+		$this->uartEnableGpioPin = $uartEnableGpioPin;
 	}
 
 	/**
