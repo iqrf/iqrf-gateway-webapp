@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Nette\IOException;
 use Nette\Utils\Arrays;
 use Nette\Utils\Finder;
@@ -39,9 +39,9 @@ class GenericManager {
 	private string $component;
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var string|null File name (without .json)
@@ -55,10 +55,10 @@ class GenericManager {
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param FileManager $fileManager JSON file manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(JsonFileManager $fileManager, ComponentSchemaManager $schemaManager) {
+	public function __construct(FileManager $fileManager, ComponentSchemaManager $schemaManager) {
 		$this->fileManager = $fileManager;
 		$this->schemaManager = $schemaManager;
 	}
@@ -72,7 +72,7 @@ class GenericManager {
 		if ($fileName === null) {
 			return;
 		}
-		$this->fileManager->delete($fileName);
+		$this->fileManager->delete($fileName . '.json');
 	}
 
 	/**
@@ -101,7 +101,7 @@ class GenericManager {
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
 			try {
-				$json = $this->fileManager->read($fileName);
+				$json = $this->fileManager->readJson($fileName . '.json');
 			} catch (IOException | JsonException $e) {
 				continue;
 			}
@@ -163,7 +163,7 @@ class GenericManager {
 					unset($configuration['RequiredInterfaces'][$id]);
 					continue;
 				}
-				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
+				$instanceName = $this->fileManager->readJson($instanceFileName . '.json')['instance'];
 				unset($configuration['RequiredInterfaces'][$id]['target']);
 				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
 			}
@@ -177,11 +177,11 @@ class GenericManager {
 	 * @return string|null Instance file name
 	 */
 	public function getInstanceByProperty(string $type, $value): ?string {
-		$dir = $this->fileManager->getDirectory();
+		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
 			try {
-				$json = $this->fileManager->read($fileName);
+				$json = $this->fileManager->readJson($fileName . '.json');
 			} catch (IOException | JsonException $e) {
 				continue;
 			}
@@ -206,7 +206,7 @@ class GenericManager {
 		if ($fileName === null) {
 			$fileName = $this->fileName;
 		}
-		$configuration = $this->fileManager->read($fileName);
+		$configuration = $this->fileManager->readJson($fileName . '.json');
 		$this->fixRequiredInterfaces($configuration);
 		return $configuration;
 	}
@@ -229,7 +229,7 @@ class GenericManager {
 		$configuration = Arrays::mergeTree($component, $array);
 		$json = Json::encode($configuration);
 		$this->schemaManager->validate(Json::decode($json));
-		$this->fileManager->write($fileName, $configuration);
+		$this->fileManager->writeJson($fileName . '.json', $configuration);
 	}
 
 	/**

@@ -20,7 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway Translator configuration manager
@@ -28,38 +29,40 @@ use App\CoreModule\Models\JsonFileManager;
 class TranslatorConfigManager {
 
 	/**
-	 * @var JsonFileManager $fileManager JSON file manager
+	 * @var FileManager $fileManager File manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var string JSON file containing translator configuration
 	 */
-	private const FILE_NAME = 'config';
+	private const FILE_NAME = 'config.json';
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param FileManager $fileManager File manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(FileManager $fileManager) {
 		$this->fileManager = $fileManager;
 	}
 
 	/**
 	 * Read JSON configuration file and convert it to array
 	 * @return array<string, array<string, int|string>>
+	 * @throws JsonException
 	 */
 	public function getConfig(): array {
-		return $this->fileManager->read(self::FILE_NAME);
+		return $this->fileManager->readJson(self::FILE_NAME);
 	}
 
 	/**
 	 * Saves the updated translator configuration
 	 * @param array<string, array<string, int|string>> $newConfig translator configuration
+	 * @throws JsonException
 	 */
 	public function saveConfig(array $newConfig): void {
-		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME);
-		$this->fileManager->write(self::FILE_NAME, array_merge($oldConfig, $newConfig));
+		$oldConfig = (array) $this->fileManager->readJson(self::FILE_NAME);
+		$this->fileManager->writeJson(self::FILE_NAME, array_merge($oldConfig, $newConfig));
 	}
 
 }

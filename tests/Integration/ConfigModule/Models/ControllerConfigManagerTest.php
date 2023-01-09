@@ -29,7 +29,7 @@ namespace Tests\Integration\ConfigModule\Models;
 use App\ConfigModule\Models\ControllerConfigManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -139,8 +139,8 @@ final class ControllerConfigManagerTest extends TestCase {
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$fileManager = new JsonFileManager(self::CONF_DIR, $commandManager);
-		$fileManagerTemp = new JsonFileManager(self::TEMP_CONF_DIR, $commandManager);
+		$fileManager = new FileManager(self::CONF_DIR, $commandManager);
+		$fileManagerTemp = new FileManager(self::TEMP_CONF_DIR, $commandManager);
 		$this->manager = new ControllerConfigManager($fileManager);
 		$this->managerTemp = new ControllerConfigManager($fileManagerTemp);
 	}

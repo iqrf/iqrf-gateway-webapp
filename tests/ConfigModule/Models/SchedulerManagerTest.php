@@ -33,7 +33,7 @@ use App\ConfigModule\Models\SchedulerSchemaManager;
 use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Mockery;
 use stdClass;
 use Tester\Assert;
@@ -48,9 +48,9 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerManagerTest extends TestCase {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	private JsonFileManager $fileManagerTemp;
+	private FileManager $fileManagerTemp;
 
 	/**
 	 * @var SchedulerManager Scheduler's task configuration manager
@@ -68,14 +68,19 @@ final class SchedulerManagerTest extends TestCase {
 	private stdClass $array;
 
 	/**
+	 * @var string TASK_UUID Task UUID
+	 */
+	private const TASK_UUID = '210735a5-91fb-4ba8-90cf-2dc36251d19b';
+
+	/**
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete(): void {
 		Environment::lock('config_scheduler', TMP_DIR);
-		$fileName = '210735a5-91fb-4ba8-90cf-2dc36251d19b';
-		$this->fileManagerTemp->write($fileName, $this->array);
+		$fileName = self::TASK_UUID . '.json';
+		$this->fileManagerTemp->writeJson($fileName, $this->array);
 		Assert::true($this->fileManagerTemp->exists($fileName));
-		$this->managerTemp->delete($fileName);
+		$this->managerTemp->delete(self::TASK_UUID);
 		Assert::false($this->fileManagerTemp->exists($fileName));
 	}
 
@@ -103,8 +108,8 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testGetFileName(): void {
 		Assert::same(
-			'210735a5-91fb-4ba8-90cf-2dc36251d19b',
-			$this->manager->getFileName('210735a5-91fb-4ba8-90cf-2dc36251d19b')
+			self::TASK_UUID . '.json',
+			$this->manager->getFileName(self::TASK_UUID)
 		);
 	}
 
@@ -121,7 +126,7 @@ final class SchedulerManagerTest extends TestCase {
 	 * Tests function to check task existence
 	 */
 	public function testExist(): void {
-		Assert::true($this->manager->exist('210735a5-91fb-4ba8-90cf-2dc36251d19b'));
+		Assert::true($this->manager->exist(self::TASK_UUID));
 		Assert::false($this->manager->exist('nonexistent'));
 	}
 
@@ -132,7 +137,7 @@ final class SchedulerManagerTest extends TestCase {
 		$expected = [
 			(object) [
 				'clientId' => 'SchedulerMessaging',
-				'taskId' => '210735a5-91fb-4ba8-90cf-2dc36251d19b',
+				'taskId' => self::TASK_UUID,
 				'task' => [
 					(object) [
 						'messaging' => 'WebsocketMessaging',
@@ -195,7 +200,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function testLoad(): void {
 		$expected = $this->array;
-		Assert::equal($expected, $this->manager->load('210735a5-91fb-4ba8-90cf-2dc36251d19b'));
+		Assert::equal($expected, $this->manager->load(self::TASK_UUID));
 	}
 
 	/**
@@ -217,7 +222,7 @@ final class SchedulerManagerTest extends TestCase {
 		$config = $expected;
 		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
 		$this->managerTemp->save($config, null);
-		Assert::equal($expected, $this->fileManagerTemp->read('210735a5-91fb-4ba8-90cf-2dc36251d19b', false));
+		Assert::equal($expected, $this->fileManagerTemp->readJson('210735a5-91fb-4ba8-90cf-2dc36251d19b.json', false));
 	}
 
 	/**
@@ -225,7 +230,7 @@ final class SchedulerManagerTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->array = (object) [
-			'taskId' => '210735a5-91fb-4ba8-90cf-2dc36251d19b',
+			'taskId' => self::TASK_UUID,
 			'clientId' => 'SchedulerMessaging',
 			'timeSpec' => (object) [
 				'cronTime' => '*/5 * 1 * * * *',
@@ -259,7 +264,7 @@ final class SchedulerManagerTest extends TestCase {
 		$configTempPath = TMP_DIR . '/configuration/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/', $commandManager);
+		$this->fileManagerTemp = new FileManager($configTempPath . 'scheduler/', $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($configPath);
 		$mainConfigManagerTemp = Mockery::mock(MainManager::class);

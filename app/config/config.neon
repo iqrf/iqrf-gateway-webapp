@@ -17,42 +17,69 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
-	# timesyncd configuration
-	timesyncd:
-		# path to conf file
-		path: '/etc/systemd/timesyncd.conf'
-	# Controller configuration
-	controller:
-		# Path to directory containing IQRF Gateway Controller's configuration
-		configDir: '/etc/iqrf-gateway-controller/'
+	# Paths
+	paths:
+		# APT paths
+		apt:
+			# Path to a directory containing APT configuration
+			configDir: '/etc/apt/apt.conf.d/'
+		# IQRF Gateway Controller paths
+		iqrfGatewayController:
+			# Path to directory containing IQRF Gateway Controller's configuration
+			configDir: '/etc/iqrf-gateway-controller/'
+		# IQRF Gateway Daemon paths
+		iqrfGatewayDaemon:
+			# Path to directory with IQRF Gateway Daemon's JSON API schemas
+			apiSchemaDir: '/usr/share/iqrf-gateway-daemon/apiSchemas/'
+			# Path to directory with certificates for IQRF Gateway Daemon
+			certDir: '/etc/iqrf-gateway-daemon/certs/'
+			# Path to directory with IQRF Gateway Daemon's configuration files
+			configDir: '/etc/iqrf-gateway-daemon/'
+			# Path to directory with IQRF Gateway Daemon's logs
+			logDir: '/var/log/iqrf-gateway-daemon/'
+			# Path to directory with IQRF Gateway Daemon's JSON schemas
+			schemaDir: '/usr/share/iqrf-gateway-daemon/cfgSchemas/'
+		# IQRF Gateway Translator paths
+		iqrfGatewayTranslator:
+			# Path to directory containing IQRF Gateway Translator configuration
+			configDir: '/etc/iqrf-gateway-translator/'
+		# IQRF Gateway Uploader paths
+		iqrfGatewayUploader:
+			# Path to directory containing IQRF Gateway Uploader configuration
+			configDir: '/etc/iqrf-gateway-uploader/'
+		# IQRF Gateway Webapp paths
+		iqrfGatewayWebapp:
+			# Path to directory containing IQRF Gateway Webapp configuration
+			configDir: '%confDir%'
+			# Path to IQRF Gateway Webapp database
+			database: '%appDir%/config/database.db'
+			# Path to directory containing IQRF Gateway Webapp logs
+			logDir: '%appDir%/../log/'
+			#
+		# Mender paths
+		mender:
+			# Path to directory containing Mender configuration
+			configDir: '/etc/mender/'
+		# Monit paths
+		monit:
+			# Path to directory containing Monit configuration
+			configDir: '/etc/monit/'
+		# Network manager paths
+		networkManager:
+			# Path to directory containing Network Manager configuration
+			configDir: '/etc/NetworkManager/'
+		# timesyncd paths
+		timesyncd:
+			# Path to a timesyncd configuration file
+			config: '/etc/systemd/timesyncd.conf'
 	# Daemon configuration
 	daemon:
-		# Path to directory with IQRF Gateway Daemon's JSON API schemas
-		apiSchemaDir: '/usr/share/iqrf-gateway-daemon/apiSchemas/'
-		# Path to a directory with IQRF Gateway Daemon's cached files
-		cacheDir: '/var/cache/iqrf-gateway-daemon/'
-		# Path to directory with certificates for IQRF Gateway Daemon
-		certDir: '/etc/iqrf-gateway-daemon/certs/'
-		# Path to directory with IQRF Gateway Daemon's configuration files
-		configDir: '/etc/iqrf-gateway-daemon/'
-		# Path to directory with IQRF Gateway Daemon's logs
-		logDir: '/var/log/iqrf-gateway-daemon/'
-		# Path to directory with IQRF Gateway Daemon's JSON schemas
-		schemaDir: '/usr/share/iqrf-gateway-daemon/cfgSchemas/'
 		# URL to IQRF Gateway Daemon's WebSocket server
 		wsServer: 'ws://localhost:1338'
-	# Sentry configuration
 	logDir: '/var/log/'
+	# Sentry configuration
 	sentry:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
-	# Translator configuration
-	translator:
-		# Path to directory containing IQRF Gateway Translator configuration
-		configDir: '/etc/iqrf-gateway-translator/'
-	# Uploader configuration
-	uploader:
-		# Path to directory containing IQRF Gateway Uploader configuration
-		configDir: '/etc/iqrf-gateway-uploader/'
 
 extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension

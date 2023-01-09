@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
@@ -47,19 +46,9 @@ class NetworkManagerBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to NetworkManager configuration directory
-	 */
-	private const CONF_PATH = '/etc/NetworkManager/';
-
-	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
 	private bool $featureEnabled;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
@@ -73,13 +62,12 @@ class NetworkManagerBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		$this->fileManager = $fileManager;
 		$this->restoreLogger = $restoreLogger;
 		$this->featureEnabled = $featureManager->get('networkManager')['enabled'];
 	}
@@ -93,15 +81,10 @@ class NetworkManagerBackup implements IBackupManager {
 		if (!$params['system']['network'] || !$this->featureEnabled) {
 			return;
 		}
-		if (file_exists(self::CONF_PATH)) {
-			$zipManager->addFile(self::CONF_PATH . 'NetworkManager.conf', 'nm/NetworkManager.conf');
-			$zipManager->addEmptyFolder('nm/system-connections');
-			$files = $this->fileManager->listFiles();
-			foreach ($files as $file) {
-				if (Strings::contains($file, DIRECTORY_SEPARATOR . 'system-connections' . DIRECTORY_SEPARATOR)) {
-					$name = basename($file);
-					$zipManager->addFileFromText('nm/system-connections/' . $name, $this->fileManager->read('system-connections/' . $name));
-				}
+		if ($this->fileManager->exists('')) {
+			$zipManager->addFile($this->fileManager->getBasePath() . 'NetworkManager.conf', 'nm/NetworkManager.conf');
+			foreach ($this->fileManager->listFiles('system-connections') as $connectionFile) {
+				$zipManager->addFileFromText('nm/system-connections/' . $connectionFile, $this->fileManager->read('system-connections/' . $connectionFile));
 			}
 		}
 	}
@@ -133,10 +116,12 @@ class NetworkManagerBackup implements IBackupManager {
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
-		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'NetworkManager.conf', true);
-		$this->commandManager->run('chmod 0644 ' . self::CONF_PATH . 'NetworkManager.conf', true);
-		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'system-connections/*', true);
-		$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . 'system-connections/*', true);
+		$this->fileManager->chown('NetworkManager.conf', 'root', 'root');
+		$this->fileManager->chmod('NetworkManager.conf', 0644);
+		foreach ($this->fileManager->listFiles('system-connections') as $connectionFile) {
+			$this->fileManager->chown($connectionFile, 'root', 'root');
+			$this->fileManager->chmod($connectionFile, 0600);
+		}
 	}
 
 	/**

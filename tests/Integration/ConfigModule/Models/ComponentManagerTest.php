@@ -40,9 +40,9 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string File name
 	 */
-	private const FILE_NAME = 'config';
+	private const FILE_NAME = 'config.json';
 
 	/**
 	 * @var ComponentManager Component configuration manager
@@ -133,7 +133,7 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 		$this->copyFile(self::FILE_NAME);
 		$expected['components'][6]['enabled'] = false;
 		$this->managerTemp->save($array, 6);
-		Assert::equal($expected, $this->fileManagerTemp->read(self::FILE_NAME));
+		Assert::equal($expected, $this->fileManagerTemp->readJson(self::FILE_NAME));
 	}
 
 	/**

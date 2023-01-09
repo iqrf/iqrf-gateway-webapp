@@ -28,7 +28,7 @@ namespace Tests\Unit\GatewayModule\Models;
 
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
 use App\GatewayModule\Models\JournalReaderManager;
@@ -64,9 +64,9 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var JsonFileManager $fileManager JSON file manager
+	 * @var FileManager $fileManager JSON file manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var JournalReaderManager $journalManager Journal manager
@@ -80,7 +80,7 @@ final class JournalReaderManagerTest extends CommandTestCase {
 		parent::setUp();
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(true, $commandStack);
-		$this->fileManager = new JsonFileManager(self::DATA_DIR, $commandManager);
+		$this->fileManager = new FileManager(self::DATA_DIR, $commandManager);
 		$this->journalManager = new JournalReaderManager($this->commandManager);
 	}
 
@@ -88,8 +88,8 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	 * Tests the function to get journal records without a cursor
 	 */
 	public function testGetRecordsCursorLess(): void {
-		$raw = $this->fileManager->read('cursorless');
-		$parsed = $this->fileManager->read('cursorless_parsed');
+		$raw = $this->fileManager->readJson('cursorless.json');
+		$parsed = $this->fileManager->readJson('cursorless_parsed.json');
 		$this->receiveCommandExist(self::READER_COMMAND, true);
 		$this->receiveCommand(self::COMMANDS['cursorless'], true, Json::encode($raw), '');
 		Assert::equal($parsed, $this->journalManager->getRecords(10));
@@ -99,8 +99,8 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	 * Tests the function to get journal records with a cursor
 	 */
 	public function testGetRecordsCursor(): void {
-		$raw = $this->fileManager->read('cursor');
-		$parsed = $this->fileManager->read('cursor_parsed');
+		$raw = $this->fileManager->readJson('cursor.json');
+		$parsed = $this->fileManager->readJson('cursor_parsed.json');
 		$this->receiveCommandExist(self::READER_COMMAND, true);
 		$this->receiveCommand(self::COMMANDS['cursor'], true, Json::encode($raw), '');
 		Assert::equal($parsed, $this->journalManager->getRecords(10, 's=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6'));

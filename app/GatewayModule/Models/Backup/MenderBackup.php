@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
@@ -48,19 +47,9 @@ class MenderBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to Mender configuration directory
-	 */
-	private const CONF_PATH = '/etc/mender/';
-
-	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
 	private bool $featureEnabled;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
@@ -74,13 +63,12 @@ class MenderBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param FeatureManager $featureManager FeatureManager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		$this->fileManager = $fileManager;
 		$this->restoreLogger = $restoreLogger;
 		$this->featureEnabled = $featureManager->get('mender')['enabled'];
 	}
@@ -94,9 +82,10 @@ class MenderBackup implements IBackupManager {
 		if (!$params['software']['mender'] || !$this->featureEnabled) {
 			return;
 		}
-		if (file_exists(self::CONF_PATH)) {
-			$zipManager->addFile(self::CONF_PATH . 'mender.conf', 'mender/mender.conf');
-			$zipManager->addFile(self::CONF_PATH . 'mender-connect.conf', 'mender/mender-connect.conf');
+		$path = $this->fileManager->getBasePath();
+		if ($this->fileManager->exists('')) {
+			$zipManager->addFile($path . 'mender.conf', 'mender/mender.conf');
+			$zipManager->addFile($path . 'mender-connect.conf', 'mender/mender-connect.conf');
 		}
 	}
 
@@ -122,8 +111,8 @@ class MenderBackup implements IBackupManager {
 	 */
 	private function fixPrivileges(): void {
 		foreach (self::WHITELIST as $file) {
-			$this->commandManager->run('chown root:root ' . self::CONF_PATH . $file, true);
-			$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . $file, true);
+			$this->fileManager->chown($file, 'root', 'root');
+			$this->fileManager->chmod($file, 0600);
 		}
 	}
 

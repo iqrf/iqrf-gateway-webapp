@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -31,20 +31,20 @@ use Nette\Utils\Strings;
 class MainManager {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string File name
 	 */
-	private string $fileName = 'config';
+	private string $fileName = 'config.json';
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param FileManager $fileManager JSON file manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(FileManager $fileManager) {
 		$this->fileManager = $fileManager;
 	}
 
@@ -80,7 +80,7 @@ class MainManager {
 	 * @throws JsonException
 	 */
 	public function load(): array {
-		return $this->fileManager->read($this->fileName);
+		return $this->fileManager->readJson($this->fileName);
 	}
 
 	/**
@@ -89,8 +89,8 @@ class MainManager {
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
-		$json = (array) $this->fileManager->read($this->fileName);
-		$this->fileManager->write($this->fileName, array_merge($json, $array));
+		$json = (array) $this->fileManager->readJson($this->fileName);
+		$this->fileManager->writeJson($this->fileName, array_merge($json, $array));
 	}
 
 }

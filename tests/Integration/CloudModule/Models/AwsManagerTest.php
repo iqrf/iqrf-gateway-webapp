@@ -95,7 +95,7 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 		$manager->shouldReceive('checkCertificate')->andReturn(null);
 		$manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
 		$manager->createMqttInterface($this->formValues);
-		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Aws'));
+		Assert::same($mqtt, $this->fileManager->readJson('iqrf__MqttMessaging_Aws.json'));
 	}
 
 	/**

@@ -15,7 +15,7 @@
 
 services:
 	apiSchemaManager:
-		factory: App\IqrfNetModule\Models\ApiSchemaManager(%daemon.apiSchemaDir%)
+		factory: App\IqrfNetModule\Models\ApiSchemaManager(%paths.iqrfGatewayDaemon.apiSchemaDir%)
 		autowired: self
 	- App\IqrfNetModule\Models\DpaManager
 	- App\IqrfNetModule\Models\EnumerationManager

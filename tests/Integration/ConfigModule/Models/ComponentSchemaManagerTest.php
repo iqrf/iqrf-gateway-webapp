@@ -31,7 +31,7 @@ use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -58,9 +58,9 @@ final class ComponentSchemaManagerTest extends TestCase {
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
 	/**
-	 * @var JsonFileManager JSON File manager
+	 * @var FileManager JSON File manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var ComponentSchemaManager Component JSON schema manager
@@ -91,7 +91,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	public function testValidateInvalid(): void {
 		$this->manager->setSchema(self::COMPONENT_NAME);
 		Assert::exception(function (): void {
-			$json = (object) $this->fileManager->read('iqrf__MqMessaging');
+			$json = (object) $this->fileManager->readJson('iqrf__MqMessaging.json');
 			$this->manager->validate($json);
 		}, InvalidJsonException::class);
 	}
@@ -102,7 +102,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	public function testValidateValid(): void {
 		Assert::noError(function (): void {
 			$this->manager->setSchema(self::COMPONENT_NAME);
-			$json = (object) $this->fileManager->read('iqrf__MqttMessaging');
+			$json = (object) $this->fileManager->readJson('iqrf__MqttMessaging.json');
 			$this->manager->validate($json);
 		});
 	}
@@ -113,7 +113,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new JsonFileManager(self::FILE_PATH, $commandManager);
+		$this->fileManager = new FileManager(self::FILE_PATH, $commandManager);
 		$this->manager = new ComponentSchemaManager(self::SCHEMA_PATH, $commandManager);
 	}
 

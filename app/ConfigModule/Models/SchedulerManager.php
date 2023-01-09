@@ -25,7 +25,7 @@ use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -37,9 +37,9 @@ use stdClass;
 class SchedulerManager {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var SchedulerSchemaManager Scheduler JSON schema manager
@@ -65,7 +65,7 @@ class SchedulerManager {
 			$commandManager->run('chmod 777 ' . $cacheDir, true);
 		}
 		$path = $cacheDir . 'scheduler/';
-		$this->fileManager = new JsonFileManager($path, $commandManager);
+		$this->fileManager = new FileManager($path, $commandManager);
 		$this->schemaManager = $schemaManager;
 	}
 
@@ -84,7 +84,7 @@ class SchedulerManager {
 	public function deleteAll(): void {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			$this->fileManager->delete($file->getBasename('.json'));
+			$this->fileManager->delete($file->getBasename());
 		}
 	}
 
@@ -97,9 +97,9 @@ class SchedulerManager {
 	public function getFileName(string $taskId): string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			$fileName = $file->getBasename('.json');
+			$fileName = $file->getBasename();
 			try {
-				$task = $this->fileManager->read($fileName);
+				$task = $this->fileManager->readJson($fileName);
 				if ($task['taskId'] === $taskId) {
 					return $fileName;
 				}
@@ -132,7 +132,7 @@ class SchedulerManager {
 		$tasks = [];
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
-			$fileName = $file->getBasename('.json');
+			$fileName = $file->getBasename();
 			try {
 				$record = $this->readFile($fileName);
 				if (is_object($record->task)) {
@@ -173,7 +173,7 @@ class SchedulerManager {
 	 * @throws TaskNotFoundException
 	 */
 	private function readFile(string $fileName): stdClass {
-		$config = $this->fileManager->read($fileName, false);
+		$config = $this->fileManager->readJson($fileName, false);
 		$this->schemaManager->validate($config);
 		return $config;
 	}
@@ -202,7 +202,7 @@ class SchedulerManager {
 			$config->timeSpec->period = 0;
 		}
 		$this->schemaManager->validate($config);
-		$this->fileManager->write($fileName, $config);
+		$this->fileManager->writeJson($fileName . '.json', $config);
 	}
 
 }

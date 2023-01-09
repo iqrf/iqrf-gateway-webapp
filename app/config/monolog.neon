@@ -31,7 +31,7 @@ monolog:
 				-
 					type: Monolog\Handler\StreamHandler
 					arguments:
-						- %logDir%/iqrf-gateway-webapp/default.log
+						- %logDir%/default.log
 						- Monolog\Logger::WARNING
 				-
 					type: Monolog\Handler\PsrHandler
@@ -43,7 +43,7 @@ monolog:
 				-
 					type: Monolog\Handler\StreamHandler
 					arguments:
-						- %logDir%/iqrf-gateway-webapp/restore.log
+						- %logDir%/restore.log
 						- Monolog\Logger::NOTICE
 	manager:
 		enabled: true

@@ -24,7 +24,7 @@ use Apitte\Core\Http\ApiRequest;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use JsonSchema\Validator;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -32,7 +32,7 @@ use stdClass;
 /**
  * API JSON schema validator
  */
-class JsonSchemaValidator extends JsonFileManager {
+class JsonSchemaValidator extends FileManager {
 
 	/**
 	 * Constructor
@@ -51,7 +51,8 @@ class JsonSchemaValidator extends JsonFileManager {
 	 * @throws JsonException
 	 */
 	public function validate(string $schema, ApiRequest $request): void {
-		if (!parent::exists($schema)) {
+		$fileName = $schema . '.json';
+		if (!parent::exists($fileName)) {
 			$message = 'Non-existing JSON schema ' . $schema . '.';
 			throw new NonexistentJsonSchemaException($message);
 		}
@@ -61,7 +62,7 @@ class JsonSchemaValidator extends JsonFileManager {
 			throw new InvalidJsonException($message);
 		}
 		$validator = new Validator();
-		$validator->validate($json, parent::read($schema));
+		$validator->validate($json, parent::readJson($fileName));
 		if (!$validator->isValid()) {
 			$message = 'JSON does not validate. JSON schema: ' . $schema . ' Violations:';
 			foreach ($validator->getErrors() as $error) {

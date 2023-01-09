@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
@@ -46,19 +45,9 @@ class MonitBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to Monit configuration directory
-	 */
-	private const CONF_PATH = '/etc/monit/';
-
-	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
 	private bool $featureEnabled;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
@@ -72,13 +61,12 @@ class MonitBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
+	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		$this->fileManager = $fileManager;
 		$this->restoreLogger = $restoreLogger;
 		$this->featureEnabled = $featureManager->get('monit')['enabled'];
 	}
@@ -92,9 +80,7 @@ class MonitBackup implements IBackupManager {
 		if (!$params['software']['monit'] || !$this->featureEnabled) {
 			return;
 		}
-		$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
-		if (file_exists(self::CONF_PATH)) {
-			$zipManager->addEmptyFolder('monit');
+		if ($this->fileManager->exists('')) {
 			$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
 		}
 	}
@@ -118,8 +104,8 @@ class MonitBackup implements IBackupManager {
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
-		$this->commandManager->run('chown root:root ' . self::CONF_PATH . 'monitrc', true);
-		$this->commandManager->run('chmod 0600 ' . self::CONF_PATH . 'monitrc', true);
+		$this->fileManager->chown('monitrc', 'root', 'root');
+		$this->fileManager->chmod('monitrc', 0600);
 	}
 
 	/**

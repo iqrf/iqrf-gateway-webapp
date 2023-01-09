@@ -24,7 +24,7 @@ use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -48,9 +48,9 @@ abstract class CloudIntegrationTestCase extends TestCase {
 	protected GenericManager $configManager;
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	protected JsonFileManager $fileManager;
+	protected FileManager $fileManager;
 
 	/**
 	 * Sets up the test environment
@@ -61,7 +61,7 @@ abstract class CloudIntegrationTestCase extends TestCase {
 		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new JsonFileManager($configPath, $commandManager);
+		$this->fileManager = new FileManager($configPath, $commandManager);
 		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 	}

@@ -30,7 +30,7 @@ use stdClass;
 /**
  * Tool for reading and validating JSON schemas
  */
-class JsonSchemaManager extends JsonFileManager {
+class JsonSchemaManager extends FileManager {
 
 	/**
 	 * @var string JSON schema file name
@@ -39,15 +39,15 @@ class JsonSchemaManager extends JsonFileManager {
 
 	/**
 	 * Sets the JSON schema file name
-	 * @param string $fileName JSON schema file name
+	 * @param string $schema JSON schema file name
 	 * @throws NonexistentJsonSchemaException
 	 */
-	public function setSchema(string $fileName): void {
-		if (!parent::exists($fileName)) {
-			$message = 'Non-existing JSON schema ' . $fileName . '.';
+	public function setSchema(string $schema): void {
+		if (!parent::exists($schema . '.json')) {
+			$message = 'Non-existing JSON schema ' . $schema . '.';
 			throw new NonexistentJsonSchemaException($message);
 		}
-		$this->schema = $fileName;
+		$this->schema = $schema;
 	}
 
 	/**
@@ -62,7 +62,7 @@ class JsonSchemaManager extends JsonFileManager {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);
 		}
-		$schema = parent::read($this->schema);
+		$schema = parent::readJson($this->schema . '.json');
 		$validator = new Validator();
 		$checkMode = null;
 		if ($tryFix) {
