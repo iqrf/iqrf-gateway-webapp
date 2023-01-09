@@ -63,7 +63,7 @@ class MappingListCommand extends MappingCommand {
 				$mapping->getBaudRate(),
 				$mapping->getI2cPin(),
 				$mapping->getSpiPin(),
-				$mapping->getUartPin()
+				$mapping->getUartPin(),
 			];
 		}
 		$style = new SymfonyStyle($input, $output);

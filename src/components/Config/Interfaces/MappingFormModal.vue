@@ -383,7 +383,7 @@ export default class MappingFormModal extends Vue {
 	 */
 	public activateModal(mapping: IMapping|null): void {
 		if (mapping !== null) {
-			this.mapping = mapping;
+			this.mapping = {...mapping};
 			this.id = (mapping.id as number);
 			if (mapping.uartEnableGpioPin !== undefined && mapping.spiEnableGpioPin !== undefined) {
 				this.useAdditionalPins = true;

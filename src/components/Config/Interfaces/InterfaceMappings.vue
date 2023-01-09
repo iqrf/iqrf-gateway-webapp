@@ -22,6 +22,7 @@ limitations under the License.
 		>
 			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.adapters")'>
 				<InterfaceMappingGroup
+					class='my-1'
 					:mappings='adapterMappings'
 					@set-mapping='setMapping'
 					@delete-mapping='deleteMapping'
@@ -29,25 +30,13 @@ limitations under the License.
 			</CTab>
 			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.boards")'>
 				<InterfaceMappingGroup
+					class='my-1'
 					:mappings='boardMappings'
 					@set-mapping='setMapping'
 					@delete-mapping='deleteMapping'
 				/>
 			</CTab>
 		</CTabs>
-		<hr>
-		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.adapters') }}</h4>
-		<InterfaceMappingGroup
-			:mappings='adapterMappings'
-			@set-mapping='setMapping'
-			@delete-mapping='deleteMapping'
-		/>
-		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</h4>
-		<InterfaceMappingGroup
-			:mappings='boardMappings'
-			@set-mapping='setMapping'
-			@delete-mapping='deleteMapping'
-		/>
 	</div>
 </template>
 

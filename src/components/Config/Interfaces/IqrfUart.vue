@@ -218,14 +218,8 @@ limitations under the License.
 		</CCardBody>
 		<CCardFooter>
 			<h4>{{ $t('config.daemon.interfaces.iqrfUart.mappings' ) }}</h4><hr>
-			<CRow>
-				<CCol lg='6'>
-					<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
-				</CCol>
-				<CCol lg='6'>
-					<InterfacePorts interface-type='uart' @update-port='updatePort' />
-				</CCol>
-			</CRow>
+			<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
+			<InterfacePorts interface-type='uart' @update-port='updatePort' />
 		</CCardFooter>
 	</CCard>
 </template>

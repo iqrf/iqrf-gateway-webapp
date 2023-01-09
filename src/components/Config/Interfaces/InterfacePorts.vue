@@ -15,18 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div v-if='ports !== []'>
-		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.interfaces') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
-				v-for='port of ports'
-				:key='port'
-				color='primary'
-				@click='setPort(port)'
-			>
-				{{ port }}
-			</CButton>
-		</CButtonGroup>
+	<div v-if='ports.length > 0'>
+		<CTabs :active-tab='0'>
+			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.interfaces")'>
+				<CButtonGroup class='my-1 flex-wrap'>
+					<CButton
+						v-for='port of ports'
+						:key='port'
+						color='primary'
+						@click='setPort(port)'
+					>
+						{{ port }}
+					</CButton>
+				</CButtonGroup>
+			</CTab>
+		</CTabs>
 	</div>
 </template>
 
