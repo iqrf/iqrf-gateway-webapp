@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * IQRF interface base interface
  */
@@ -22,7 +23,7 @@ interface IIqrfBase {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Instance name
 	 */
@@ -42,12 +43,12 @@ interface IIqrfComBase extends IIqrfBase {
 	 * Power enable GPIO pin
 	 */
 	powerEnableGpioPin: number
-	
+
 	/**
 	 * Programming mode switch GPIO pin
 	 */
 	pgmSwitchGpioPin?: number
-	
+
 	/**
 	 * Bus enable GPIO pin
 	 */
@@ -92,7 +93,7 @@ export interface IIqrfUart extends IIqrfComBase {
 	 * Serial port baud rate
 	 */
 	baudRate: number
-	
+
 	/**
 	 * Should UART component instance reset?
 	 */

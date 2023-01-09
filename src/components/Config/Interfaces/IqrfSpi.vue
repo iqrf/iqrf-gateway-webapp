@@ -202,14 +202,8 @@ limitations under the License.
 		</CCardBody>
 		<CCardFooter>
 			<h4>{{ $t('config.daemon.interfaces.iqrfSpi.mappings' ) }}</h4><hr>
-			<CRow>
-				<CCol md='6'>
-					<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
-				</CCol>
-				<CCol md='6'>
-					<InterfacePorts interface-type='spi' @update-port='updatePort' />
-				</CCol>
-			</CRow>
+			<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
+			<InterfacePorts interface-type='spi' @update-port='updatePort' />
 		</CCardFooter>
 	</CCard>
 </template>
@@ -227,7 +221,7 @@ import {
 	CForm,
 	CInput,
 	CInputCheckbox,
-	CRow
+	CRow,
 } from '@coreui/vue/src';
 import InterfaceMappings from '@/components/Config/Interfaces/InterfaceMappings.vue';
 import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';

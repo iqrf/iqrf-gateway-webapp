@@ -50,7 +50,7 @@ class MappingTest extends TestCase {
 	/**
 	 * @var string Mapping type
 	 */
-	private const TYPE = 'uart';
+	private const TYPE = Mapping::TYPE_UART;
 
 	/**
 	 * @var string Mapping name
@@ -61,6 +61,11 @@ class MappingTest extends TestCase {
 	 * @var string Mapping device name
 	 */
 	private const INTERFACE = '/dev/ttyS0';
+
+	/**
+	 * @var string Device type
+	 */
+	private const DEVICE_TYPE = Mapping::DEVICE_BOARD;
 
 	/**
 	 * @var int Mapping bus enable pin number
@@ -102,8 +107,8 @@ class MappingTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->mapping = new Mapping(self::TYPE, self::NAME, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE);
-		$this->mappingGw = new Mapping(self::TYPE, self::NAME, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE, self::I2C_PIN, self::SPI_PIN, self::UART_PIN);
+		$this->mapping = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE);
+		$this->mappingGw = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE, self::I2C_PIN, self::SPI_PIN, self::UART_PIN);
 	}
 
 	/**
@@ -136,6 +141,30 @@ class MappingTest extends TestCase {
 		$expected = '/dev/ttyS1';
 		$this->mapping->setInterface($expected);
 		Assert::same($expected, $this->mapping->getInterface());
+	}
+
+	/**
+	 * Tests the function to get device type
+	 */
+	public function testGetDeviceType(): void {
+		Assert::same(self::DEVICE_TYPE, $this->mapping->getDeviceType());
+	}
+
+	/**
+	 * Tests the function set device type
+	 */
+	public function testSetDeviceType(): void {
+		$expected = Mapping::DEVICE_ADAPTER;
+		$this->mapping->setDeviceType($expected);
+		Assert::same($expected, $this->mapping->getDeviceType());
+	}
+
+	/**
+	 * Tests the function set unsupported device type
+	 */
+	public function testSetDeviceTypeUnsupported(): void {
+		$this->mapping->setDeviceType('unknown');
+		Assert::same(self::DEVICE_TYPE, $this->mapping->getDeviceType());
 	}
 
 	/**
@@ -320,6 +349,7 @@ class MappingTest extends TestCase {
 			'id' => null,
 			'type' => self::TYPE,
 			'name' => self::NAME,
+			'deviceType' => self::DEVICE_TYPE,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,
@@ -337,6 +367,7 @@ class MappingTest extends TestCase {
 			'id' => null,
 			'type' => 'spi',
 			'name' => self::NAME,
+			'deviceType' => self::DEVICE_TYPE,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,
@@ -354,6 +385,7 @@ class MappingTest extends TestCase {
 			'id' => null,
 			'type' => self::TYPE,
 			'name' => self::NAME,
+			'deviceType' => self::DEVICE_TYPE,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,

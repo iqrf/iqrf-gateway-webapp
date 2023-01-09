@@ -16,56 +16,37 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
-				color='success'
-				size='sm'
-				@click='showFormModal()'
-			>
-				<CIcon :content='cilPlus' />
-			</CButton>
-			<CDropdown
-				v-for='(mapping, i) of mappings'
-				:key='i'
-				:toggler-text='mapping.name'
-				color='primary'
-				placement='top-start'
-			>
-				<CDropdownItem
-					@click='setMapping(i)'
-				>
-					<CIcon :content='cilCopy' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showFormModal(mapping)'
-				>
-					<CIcon :content='cilPencil' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showDeleteModal(i, mapping.name)'
-				>
-					<CIcon :content='cilTrash' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CButtonGroup>
-		<MappingFormModal ref='formModal' @update-mappings='getMappings' />
-		<MappingDeleteModal ref='deleteModal' @delete-mapping='deleteMapping' />
+		<CTabs
+			variant='tabs'
+			:active-tab='activeTab'
+		>
+			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.adapters")'>
+				<InterfaceMappingGroup
+					class='my-1'
+					:mappings='adapterMappings'
+					@set-mapping='setMapping'
+					@delete-mapping='deleteMapping'
+				/>
+			</CTab>
+			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.boards")'>
+				<InterfaceMappingGroup
+					class='my-1'
+					:mappings='boardMappings'
+					@set-mapping='setMapping'
+					@delete-mapping='deleteMapping'
+				/>
+			</CTab>
+		</CTabs>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
-import MappingDeleteModal from '@/components/Config/Interfaces/MappingDeleteModal.vue';
-import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vue';
+import InterfaceMappingGroup from '@/components/Config/Interfaces/InterfaceMappingGroup.vue';
 
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MappingType} from '@/enums/Config/Mapping';
+import {MappingDeviceType, MappingType} from '@/enums/Config/Mapping';
 
 import MappingService from '@/services/MappingService';
 
@@ -79,15 +60,8 @@ import {IMapping} from '@/interfaces/Config/Mapping';
 		CDropdown,
 		CDropdownItem,
 		CIcon,
-		MappingDeleteModal,
-		MappingFormModal,
+		InterfaceMappingGroup,
 	},
-	data: () => ({
-		cilCopy,
-		cilPencil,
-		cilPlus,
-		cilTrash,
-	}),
 })
 
 /**
@@ -103,6 +77,27 @@ export default class InterfaceMappings extends Vue {
 	 * @property {MappingType} interfaceType Communication interface type
 	 */
 	@Prop({required: true}) interfaceType!: MappingType;
+
+	/**
+	 * @var {number} activeTab Currently selected tab
+	 */
+	private activeTab = 0;
+
+	/**
+	 * Computes adapter mapping options
+	 * @return {Array<IMapping>} Adapter mappings
+	 */
+	get adapterMappings(): Array<IMapping> {
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === MappingDeviceType.ADAPTER);
+	}
+
+	/**
+	 * Computes board mapping options
+	 * @return {Array<IMapping>} Board mappings
+	 */
+	get boardMappings(): Array<IMapping> {
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === MappingDeviceType.BOARD);
+	}
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -126,11 +121,14 @@ export default class InterfaceMappings extends Vue {
 
 	/**
 	 * Removes a mapping from mappings database
-	 * @param {number} index Mapping index
+	 * @param {number} id Mapping profile ID
 	 */
-	private deleteMapping(index: number): void {
-		const id = (this.mappings[index].id as number);
-		const name = this.mappings[index].name;
+	private deleteMapping(id: number): void {
+		const mapping = this.mappings.find((mapping: IMapping) => mapping.id === id);
+		if (mapping === undefined) {
+			return;
+		}
+		const name = mapping.name;
 		this.$store.commit('spinner/SHOW');
 		MappingService.removeMapping(id)
 			.then(() => {
@@ -147,29 +145,14 @@ export default class InterfaceMappings extends Vue {
 	}
 
 	/**
-	 * Invokes mapping add or edit form
-	 * @param {IMapping|null} mapping Mapping
-	 */
-	private showFormModal(mapping: IMapping|null = null): void {
-		(this.$refs.formModal as MappingFormModal).activateModal(mapping);
-	}
-
-	/**
-	 * Shows mapping delete modal
-	 * @param {number} idx Mapping index
-	 * @param {string} name Mapping name
-	 */
-	private showDeleteModal(idx: number, name: string): void {
-		(this.$refs.deleteModal as MappingDeleteModal).activateModal(idx, name);
-	}
-
-	/**
 	 * Emits selected mapping to parent component to update form fields
-	 * @param {number} index Mapping index
+	 * @param {number} id Mapping profile ID
 	 */
-	private setMapping(index: number): void {
-		const mapping = this.mappings[index];
-		this.$emit('update-mapping', mapping);
+	private setMapping(id: number): void {
+		const mapping = this.mappings.find((mapping: IMapping) => mapping.id === id);
+		if (mapping !== undefined) {
+			this.$emit('update-mapping', mapping);
+		}
 	}
 }
 </script>

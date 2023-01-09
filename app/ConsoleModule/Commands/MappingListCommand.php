@@ -51,11 +51,24 @@ class MappingListCommand extends MappingCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$mappings = [];
 		foreach ($this->repository->findAll() as $mapping) {
-			$mappings[] = [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate(), $mapping->getI2cPin(), $mapping->getSpiPin(), $mapping->getUartPin()];
+			$mappings[] = [
+				$mapping->getId(),
+				$mapping->getType(),
+				$mapping->getName(),
+				$mapping->getDeviceType(),
+				$mapping->getInterface(),
+				$mapping->getBusPin(),
+				$mapping->getPgmPin(),
+				$mapping->getPowerPin(),
+				$mapping->getBaudRate(),
+				$mapping->getI2cPin(),
+				$mapping->getSpiPin(),
+				$mapping->getUartPin(),
+			];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List mappings (* IQRF Gateway only)');
-		$style->table(['ID', 'Type', 'Name', 'Interface', 'Bus pin', 'Pgm pin', 'Power pin', 'Baud rate', 'I2C pin*', 'SPI pin*', 'UART pin*'], $mappings);
+		$style->table(['ID', 'Type', 'Name', 'Device type', 'Interface', 'Bus pin', 'Pgm pin', 'Power pin', 'Baud rate', 'I2C pin*', 'SPI pin*', 'UART pin*'], $mappings);
 		return 0;
 	}
 

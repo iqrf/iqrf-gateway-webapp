@@ -9,6 +9,7 @@
 			"id": 2,
 			"type": "uart",
 			"name": "Raspberry Pi",
+			"deviceType": "board",
 			"IqrfInterface": "/dev/ttyS0",
 			"busEnableGpioPin": 7,
 			"pgmSwitchGpioPin": 22,
@@ -19,6 +20,7 @@
 			"id": 6,
 			"type": "spi",
 			"name": "IQD-GW-02A",
+			"deviceType": "board",
 			"IqrfInterface": "/dev/spidev1.0",
 			"busEnableGpioPin": -1,
 			"pgmSwitchGpioPin": 3,
@@ -32,6 +34,7 @@
 		"id",
 		"type",
 		"name",
+		"deviceType",
 		"IqrfInterface",
 		"busEnableGpioPin",
 		"pgmSwitchGpioPin",
@@ -56,6 +59,13 @@
 			"type": "string",
 			"title": "Mapping name",
 			"example": "Raspberry Pi"
+		},
+		"deviceType": {
+			"$id": "#/properties/deviceType",
+			"type": "string",
+			"title": "Device type",
+			"enum": ["adapter", "board"],
+			"example": "board"
 		},
 		"IqrfInterface": {
 			"$id": "#/properties/IqrfInterface",

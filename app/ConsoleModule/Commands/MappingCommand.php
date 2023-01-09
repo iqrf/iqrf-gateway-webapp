@@ -49,13 +49,14 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * Asks for the mapping type
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @param string $current Default or current mapping type
 	 * @return string Mapping type
 	 */
-	protected function askType(InputInterface $input, OutputInterface $output): string {
+	protected function askType(InputInterface $input, OutputInterface $output, string $current = Mapping::TYPE_SPI): string {
 		$type = $input->getOption('type');
 		while ($type === null || !in_array($type, Mapping::TYPES, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select mapping type: ', Mapping::TYPES, Mapping::TYPE_SPI);
+			$question = new ChoiceQuestion('Please select mapping type: ', Mapping::TYPES, $current);
 			$type = $helper->ask($input, $output, $question);
 		}
 		return $type;
@@ -78,6 +79,23 @@ abstract class MappingCommand extends EntityManagerCommand {
 	}
 
 	/**
+	 * Asks for device type
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @param string $current Default or current device type
+	 * @return string Device type
+	 */
+	protected function askDeviceType(InputInterface $input, OutputInterface $output, string $current = Mapping::DEVICE_BOARD): string {
+		$type = $input->getOption('device-type');
+		while ($type === null || !in_array($type, Mapping::DEVICE_TYPES, true)) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please selecte device type: ', Mapping::DEVICE_TYPES, $current);
+			$type = $helper->ask($input, $output, $question);
+		}
+		return $type;
+	}
+
+	/**
 	 * Asks for the mapping device name
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
@@ -87,7 +105,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		$interface = $input->getOption('interface');
 		while ($interface === null) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the mapping device name: ');
+			$question = new Question('Please enter the mapping device interface: ');
 			$interface = $helper->ask($input, $output, $question);
 		}
 		return $interface;
@@ -150,11 +168,11 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @return int Mapping UART baud rate
 	 */
-	protected function askBaudRate(InputInterface $input, OutputInterface $output): int {
+	protected function askBaudRate(InputInterface $input, OutputInterface $output, int $current = Mapping::BAUD_RATE_DEFAULT): int {
 		$baudRate = $input->getOption('baud-rate');
 		while ($baudRate === null || !ctype_digit($baudRate)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, Mapping::BAUD_RATE_DEFAULT);
+			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, $current);
 			$baudRate = $helper->ask($input, $output, $question);
 		}
 		return (int) $baudRate;

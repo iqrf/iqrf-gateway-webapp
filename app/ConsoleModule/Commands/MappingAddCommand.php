@@ -42,15 +42,16 @@ class MappingAddCommand extends MappingCommand {
 	 * Configures the mapping add command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Adds a new mapping');
+		$this->setDescription('Adds a new mapping profile');
 		$definitions = [
 			new InputOption('type', ['t'], InputOption::VALUE_REQUIRED, 'Mapping type'),
 			new InputOption('name', ['N'], InputOption::VALUE_REQUIRED, 'Mapping name'),
-			new InputOption('interface', ['I'], InputOption::VALUE_REQUIRED, 'Mapping device name'),
-			new InputOption('bus-pin', ['b'], InputOption::VALUE_REQUIRED, 'Mapping bus enable pin number'),
-			new InputOption('pgm-pin', ['p'], InputOption::VALUE_REQUIRED, 'Mapping programming mode switch pin number'),
-			new InputOption('power-pin', ['P'], InputOption::VALUE_REQUIRED, 'Mapping power enable pin number'),
-			new InputOption('baud-rate', ['r'], InputOption::VALUE_OPTIONAL, 'Mapping UART baud rate'),
+			new InputOption('device-type', ['d'], InputOption::VALUE_REQUIRED, 'Device type'),
+			new InputOption('interface', ['I'], InputOption::VALUE_REQUIRED, 'Device interface'),
+			new InputOption('bus-pin', ['b'], InputOption::VALUE_REQUIRED, 'Bus enable pin number'),
+			new InputOption('pgm-pin', ['p'], InputOption::VALUE_REQUIRED, 'Programming mode switch pin number'),
+			new InputOption('power-pin', ['P'], InputOption::VALUE_REQUIRED, 'Power enable pin number'),
+			new InputOption('baud-rate', ['r'], InputOption::VALUE_OPTIONAL, 'UART baud rate'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
@@ -63,22 +64,22 @@ class MappingAddCommand extends MappingCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$style->title('Add a new mapping');
+		$style->title('Add a new mapping profile');
 		$type = $this->askType($input, $output);
 		$name = $this->askName($input, $output);
+		$deviceType = $this->askDeviceType($input, $output);
 		$interface = $this->askInterface($input, $output);
 		$busPin = $this->askBusPin($input, $output);
 		$pgmPin = $this->askPgmPin($input, $output);
 		$powerPin = $this->askPowerPin($input, $output);
-		if ($type === 'uart') {
+		$mapping = new Mapping($type, $name, $deviceType, $interface, $busPin, $pgmPin, $powerPin);
+		if ($type === Mapping::TYPE_UART) {
 			$baudRate = $this->askBaudRate($input, $output);
-			$mapping = new Mapping($type, $name, $interface, $busPin, $pgmPin, $powerPin, $baudRate);
-		} else {
-			$mapping = new Mapping($type, $name, $interface, $busPin, $pgmPin, $powerPin);
+			$mapping->setBaudRate($baudRate);
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();
-		$style->success('Mapping ' . $mapping->getName() . ' has been added!');
+		$style->success('Mapping profile ' . $mapping->getName() . ' has been added!');
 		return 0;
 	}
 
