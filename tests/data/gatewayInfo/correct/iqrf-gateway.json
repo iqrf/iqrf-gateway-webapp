@@ -2,7 +2,6 @@
 	"gwProduct": "IQD-GW-02A",
 	"gwManufacturer": "MICRORISC s.r.o.",
 	"gwId": "0123456789ABCDEF",
-	"gwToken": "iqube-0123456789abcdef",
 	"gwHost": "iqube-0123456789abcdef.local",
 	"gwImage": "iqube-armbian-v1.4.0",
 	"gwInterface": "spi"

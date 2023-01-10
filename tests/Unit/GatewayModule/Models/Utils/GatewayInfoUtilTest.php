@@ -68,16 +68,6 @@ final class GatewayInfoUtilTest extends TestCase {
 	private const DEFAULT_GW_ID = 'FFFFFFFFFFFFFFFF';
 
 	/**
-	 * @var string Gateway token
-	 */
-	private const GW_TOKEN = 'iqube-0123456789abcdef';
-
-	/**
-	 * @var string Default gateway token
-	 */
-	private const DEFAULT_GW_TOKEN = 'iqube-ffffffffffffffff';
-
-	/**
 	 * @var string Gateway host
 	 */
 	private const GW_HOST = 'iqube-0123456789abcdef.local';
@@ -114,7 +104,6 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwProduct' => self::GW_PRODUCT,
 		'gwManufacturer' => self::DEFAULT_GW_MANUFACTURER,
 		'gwId' => self::GW_ID,
-		'gwToken' => self::GW_TOKEN,
 		'gwHost' => self::GW_HOST,
 		'gwImage' => self::GW_IMAGE,
 		'gwInterface' => self::GW_INTERFACE,
@@ -127,7 +116,6 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwProduct' => self::GW_PRODUCT,
 		'gwManufacturer' => self::DEFAULT_GW_MANUFACTURER,
 		'gwId' => self::GW_ID,
-		'gwToken' => self::DEFAULT_GW_TOKEN,
 		'gwHost' => self::GW_HOST,
 		'gwImage' => self::DEFAULT_GW_IMAGE,
 		'gwInterface' => self::GW_INTERFACE,
@@ -140,7 +128,6 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwProduct' => self::DEFAULT_GW_PRODUCT,
 		'gwManufacturer' => self::DEFAULT_GW_MANUFACTURER,
 		'gwId' => self::DEFAULT_GW_ID,
-		'gwToken' => self::DEFAULT_GW_TOKEN,
 		'gwHost' => self::DEFAULT_GW_HOST,
 		'gwImage' => self::DEFAULT_GW_IMAGE,
 		'gwInterface' => self::DEFAULT_GW_INTERFACE,
@@ -195,15 +182,6 @@ final class GatewayInfoUtilTest extends TestCase {
 		Assert::same(self::GW_ID, $this->gwInfo->getId());
 		Assert::same(self::GW_ID, $this->incompleteGwInfo->getId());
 		Assert::same(self::DEFAULT_GW_ID, $this->defaultGwInfo->getId());
-	}
-
-	/**
-	 * Tests the function to get token
-	 */
-	public function testGetToken(): void {
-		Assert::same(self::GW_TOKEN, $this->gwInfo->getToken());
-		Assert::same(self::DEFAULT_GW_TOKEN, $this->incompleteGwInfo->getToken());
-		Assert::same(self::DEFAULT_GW_TOKEN, $this->defaultGwInfo->getToken());
 	}
 
 	/**

@@ -74,11 +74,6 @@ class GatewayFileBackup implements IBackupManager {
 	private string $gwId;
 
 	/**
-	 * @var string Gateway token
-	 */
-	private string $gwToken;
-
-	/**
 	 * @var RestoreLogger Restore logger
 	 */
 	private RestoreLogger $restoreLogger;
@@ -89,7 +84,6 @@ class GatewayFileBackup implements IBackupManager {
 	 */
 	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
 		$this->gwId = Strings::lower($gwInfo->getId());
-		$this->gwToken = $gwInfo->getToken();
 		$this->restoreLogger = $restoreLogger;
 	}
 
@@ -129,7 +123,7 @@ class GatewayFileBackup implements IBackupManager {
 		if (file_exists(self::SPLITTER_PATH)) {
 			$this->restoreLogger->log('Restoring IQRF Gateway Daemon Splitter component configuration.');
 			$config = Json::decode(FileSystem::read(self::SPLITTER_PATH), Json::FORCE_ARRAY);
-			$config['insId'] = $this->gwToken;
+			$config['insId'] = $this->gwId;
 			FileSystem::write(self::SPLITTER_PATH, Json::encode($config));
 		}
 	}
