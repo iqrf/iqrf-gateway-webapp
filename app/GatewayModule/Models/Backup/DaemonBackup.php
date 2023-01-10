@@ -86,10 +86,7 @@ class DaemonBackup implements IBackupManager {
 			return;
 		}
 		foreach ($this->fileManager->listFiles() as $file) {
-			$name = substr($file, strlen($dir));
-			if (strlen($name) > 0) {
-				$zipManager->addFileFromText('daemon/' . $name, $this->fileManager->read($name));
-			}
+			$zipManager->addFileFromText('daemon/' . $file, $this->fileManager->read($file));
 		}
 		$zipManager->addFolder($this->daemonDirectories->getCacheDir() . 'scheduler', 'daemon/scheduler');
 		if ($zipManager->exist('daemon/scheduler/schema/')) {
