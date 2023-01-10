@@ -1,0 +1,12 @@
+Fixes webapp log directory path in config
+--- a/app/config/config.neon
++++ b/app/config/config.neon
+@@ -54,7 +54,7 @@ parameters:
+ 			# Path to IQRF Gateway Webapp database
+ 			database: '%appDir%/config/database.db'
+ 			# Path to directory containing IQRF Gateway Webapp logs
+-			logDir: '%appDir%/../log/'
++			logDir: '%logDir%/iqrf-gateway-webapp/'
+ 			#
+ 		# Mender paths
+ 		mender:

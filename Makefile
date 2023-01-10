@@ -145,6 +145,7 @@ install:
 	# Patch files
 	patch $(DATA_DIR)/app/Kernel.php install/patches/kernel-fix-dir-paths.patch
 	patch $(CONFIG_DIR)/config.neon install/patches/nettrine-fix-db-path.patch
+	patch $(CONFIG_DIR)/config.neon install/patches/config-fix-log-path.patch
 	patch $(DATA_DIR)/app/GatewayModule/Models/DiagnosticsManager.php install/patches/diagnostics-fix-dir-path.patch
 
 lint: deps
