@@ -183,7 +183,11 @@ class PrivilegedFileManager implements IFileManager {
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
-		return explode(PHP_EOL, $command->getStdout());
+		$output = $command->getStdout();
+		if ($output === '') {
+			return [];
+		}
+		return explode(PHP_EOL, $output);
 	}
 
 	/**
@@ -200,7 +204,7 @@ class PrivilegedFileManager implements IFileManager {
 		if ($output === '') {
 			return [];
 		}
-		return explode(PHP_EOL, $command->getStdout());
+		return explode(PHP_EOL, $output);
 	}
 
 	/**
