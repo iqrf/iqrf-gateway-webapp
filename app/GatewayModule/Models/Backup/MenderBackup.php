@@ -82,10 +82,9 @@ class MenderBackup implements IBackupManager {
 		if (!$params['software']['mender'] || !$this->featureEnabled) {
 			return;
 		}
-		$path = $this->fileManager->getBasePath();
 		if ($this->fileManager->exists('')) {
-			$zipManager->addFile($path . 'mender.conf', 'mender/mender.conf');
-			$zipManager->addFile($path . 'mender-connect.conf', 'mender/mender-connect.conf');
+			$zipManager->addFileFromText('mender/mender.conf', $this->fileManager->read('mender.conf'));
+			$zipManager->addFileFromText('mender/mender-connect.conf', $this->fileManager->read('mender-connect.conf'));
 		}
 	}
 
