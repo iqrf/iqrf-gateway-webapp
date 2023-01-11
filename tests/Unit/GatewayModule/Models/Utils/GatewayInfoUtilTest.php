@@ -95,7 +95,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	/**
 	 * @var string Default gateway interface
 	 */
-	private const DEFAULT_GW_INTERFACE = 'uart';
+	private const DEFAULT_GW_INTERFACE = 'unknown';
 
 	/**
 	 * @var array<string, string> Gateway information
