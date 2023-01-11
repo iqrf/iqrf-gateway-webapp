@@ -46,7 +46,7 @@ class GatewayInfoUtil {
 			'gwId' => Expect::string('FFFFFFFFFFFFFFFF'),
 			'gwHost' => Expect::string('iqube-ffffffffffffffff.local'),
 			'gwImage' => Expect::string('iqube-os-vX.Y.Z'),
-			'gwInterface' => Expect::string('uart'),
+			'gwInterface' => Expect::string('unknown'),
 		])->castTo('array');
 	}
 
