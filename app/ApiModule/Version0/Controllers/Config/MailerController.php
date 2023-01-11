@@ -129,7 +129,9 @@ class MailerController extends BaseConfigController {
 		try {
 			$this->manager->write($request->getJsonBody());
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-			$this->configurationTestSender->send($user);
+			if ($user->getEmail() !== null) {
+				$this->configurationTestSender->send($user);
+			}
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
