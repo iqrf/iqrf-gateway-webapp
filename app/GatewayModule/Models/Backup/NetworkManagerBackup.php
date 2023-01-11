@@ -82,7 +82,7 @@ class NetworkManagerBackup implements IBackupManager {
 			return;
 		}
 		if ($this->fileManager->exists('')) {
-			$zipManager->addFile($this->fileManager->getBasePath() . 'NetworkManager.conf', 'nm/NetworkManager.conf');
+			$zipManager->addFile($this->fileManager->getBasePath() . '/NetworkManager.conf', 'nm/NetworkManager.conf');
 			foreach ($this->fileManager->listFiles('system-connections') as $connectionFile) {
 				$zipManager->addFileFromText('nm/system-connections/' . $connectionFile, $this->fileManager->read('system-connections/' . $connectionFile));
 			}
