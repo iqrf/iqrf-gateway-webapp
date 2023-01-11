@@ -37,6 +37,7 @@
 		"contributte/translation": "^v1.1.0",
 		"cweagans/composer-patches": "^1.7.3",
 		"darsyn/ip": "^4.1.0",
+		"doctrine/dbal": "3.4.6",
 		"egulias/email-validator": "^3.2.5",
 		"grifart/enum": "^0.2.1",
 		"guzzlehttp/guzzle": "^7.5.0",
