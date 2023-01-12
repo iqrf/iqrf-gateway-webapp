@@ -6,6 +6,7 @@
 	"type": "object",
 	"required": [
 		"name",
+		"deviceType",
 		"greenLed",
 		"redLed",
 		"button"
@@ -25,6 +26,13 @@
 			"description": "Pin configuration name",
 			"type": "string",
 			"example": "IQD-GW-02"
+		},
+		"deviceType": {
+			"$id": "#/properties/deviceType",
+			"type": "string",
+			"title": "Device type",
+			"enum": ["adapter", "board"],
+			"example": "board"
 		},
 		"greenLed": {
 			"$id": "#/properties/greenLed",

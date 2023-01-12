@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {MappingDeviceType, MappingType} from '@/enums/Config/Mapping';
+import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
 
 /**
  * Mapping interface
@@ -39,7 +39,7 @@ export interface IMapping {
     /**
      * Device type
      */
-    deviceType: MappingDeviceType
+    deviceType: ConfigDeviceType
 
 	/**
      * Device name

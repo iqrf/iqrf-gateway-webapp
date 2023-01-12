@@ -211,7 +211,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
-import {MappingDeviceType, MappingType} from '@/enums/Config/Mapping';
+import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
 
 import MappingService from '@/services/MappingService';
 
@@ -251,7 +251,7 @@ export default class MappingFormModal extends Vue {
 	private defaultMapping: IMapping = {
 		name: '',
 		type: MappingType.SPI,
-		deviceType: MappingDeviceType.ADAPTER,
+		deviceType: ConfigDeviceType.ADAPTER,
 		IqrfInterface: '',
 		powerEnableGpioPin: 0,
 		pgmSwitchGpioPin: 0,
@@ -289,8 +289,8 @@ export default class MappingFormModal extends Vue {
 	 * @return {Array<IOption>} Device type options
 	 */
 	get deviceTypeOptions(): Array<IOption> {
-		const types: Array<MappingDeviceType> = [MappingDeviceType.ADAPTER, MappingDeviceType.BOARD];
-		return types.map((item: MappingDeviceType): IOption => ({
+		const types: Array<ConfigDeviceType> = [ConfigDeviceType.ADAPTER, ConfigDeviceType.BOARD];
+		return types.map((item: ConfigDeviceType): IOption => ({
 			label: this.$t(`config.daemon.interfaces.interfaceMapping.form.deviceTypes.${item}`).toString(),
 			value: item,
 		}));

@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\ConfigModule\Enums\DeviceTypes;
 use App\Models\Database\Entities\ControllerPinConfiguration;
 use Tester\Assert;
 use Tester\TestCase;
@@ -68,6 +69,11 @@ class ControllerPinConfigurationTest extends TestCase {
 	private const SDA_PIN = 4;
 
 	/**
+	 * @var DeviceTypes Device type
+	 */
+	private DeviceTypes $deviceType;
+
+	/**
 	 * @var ControllerPinConfiguration Configuration profile entity
 	 */
 	private ControllerPinConfiguration $entity;
@@ -77,7 +83,16 @@ class ControllerPinConfigurationTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new ControllerPinConfiguration(self::NAME, self::GREEN_LED_PIN, self::RED_LED_PIN, self::BUTTON_PIN, self::SCK_PIN, self::SDA_PIN);
+		$this->deviceType = DeviceTypes::BOARD();
+		$this->entity = new ControllerPinConfiguration(
+			self::NAME,
+			$this->deviceType,
+			self::GREEN_LED_PIN,
+			self::RED_LED_PIN,
+			self::BUTTON_PIN,
+			self::SCK_PIN,
+			self::SDA_PIN
+		);
 	}
 
 	/**
@@ -94,6 +109,22 @@ class ControllerPinConfigurationTest extends TestCase {
 		$expected = 'Test profile 1';
 		$this->entity->setName($expected);
 		Assert::same($expected, $this->entity->getName());
+	}
+
+	/**
+	 * Tests the function to return device type
+	 */
+	public function testGetDeviceType(): void {
+		Assert::same($this->deviceType, $this->entity->getDeviceType());
+	}
+
+	/**
+	 * Tests the function to set device type
+	 */
+	public function testSetDeviceType(): void {
+		$expected = DeviceTypes::ADAPTER();
+		$this->entity->setDeviceType($expected);
+		Assert::same($expected, $this->entity->getDeviceType());
 	}
 
 	/**
@@ -190,6 +221,23 @@ class ControllerPinConfigurationTest extends TestCase {
 	public function testSetSdaNullPin(): void {
 		$this->entity->setSdaPin();
 		Assert::null($this->entity->getSdaPin());
+	}
+
+	/**
+	 * Tests the function to serialize entity to JSON
+	 */
+	public function testJsonSerialize(): void {
+		$expected = [
+			'id' => null,
+			'name' => self::NAME,
+			'deviceType' => $this->deviceType->toScalar(),
+			'greenLed' => self::GREEN_LED_PIN,
+			'redLed' => self::RED_LED_PIN,
+			'button' => self::BUTTON_PIN,
+			'sck' => self::SCK_PIN,
+			'sda' => self::SDA_PIN,
+		];
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }

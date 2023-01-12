@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\ConfigModule\Enums\DeviceTypes;
 use App\ConfigModule\Exceptions\ControllerPinConfigNotFoundException;
 use App\Models\Database\Entities\ControllerPinConfiguration;
 use App\Models\Database\EntityManager;
@@ -74,7 +75,13 @@ class ControllerPinConfigManager {
 	 * @return ControllerPinConfiguration New DB entity
 	 */
 	public function addPinConfig(stdClass $json): ControllerPinConfiguration {
-		$profile = new ControllerPinConfiguration($json->name, $json->greenLed, $json->redLed, $json->button);
+		$profile = new ControllerPinConfiguration(
+			$json->name,
+			DeviceTypes::fromScalar($json->deviceType),
+			$json->greenLed,
+			$json->redLed,
+			$json->button
+		);
 		if (property_exists($json, 'sck')) {
 			$profile->setSckPin($json->sck);
 		}
@@ -95,6 +102,7 @@ class ControllerPinConfigManager {
 	public function editPinConfig(int $id, stdClass $json): void {
 		$profile = $this->findPinConfig($id);
 		$profile->setName($json->name);
+		$profile->setDeviceType(DeviceTypes::fromScalar($json->deviceType));
 		$profile->setGreenLedPin($json->greenLed);
 		$profile->setRedLedPin($json->redLed);
 		$profile->setButtonPin($json->button);

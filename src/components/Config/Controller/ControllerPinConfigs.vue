@@ -17,54 +17,40 @@ limitations under the License.
 <template>
 	<div>
 		<h4>{{ $t('config.controller.pins.profiles') }}</h4>
-		<CButtonGroup class='flex-wrap'>
-			<CButton
-				color='success'
-				size='sm'
-				@click='showFormModal()'
-			>
-				<CIcon :content='cilPlus' />
-			</CButton>
-			<CDropdown
-				v-for='(profile, i) of profiles'
-				:key='i'
-				:toggler-text='profile.name'
-				color='primary'
-				placement='top-start'
-			>
-				<CDropdownItem
-					@click='setPinConfigProfile(i)'
-				>
-					<CIcon :content='cilCopy' />
-					{{ $t('config.controller.pins.actions.set') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showFormModal(profile)'
-				>
-					<CIcon :content='cilPencil' />
-					{{ $t('config.controller.pins.actions.edit') }}
-				</CDropdownItem>
-				<CDropdownItem
-					@click='showDeleteModal(i, profile.name)'
-				>
-					<CIcon :content='cilTrash' />
-					{{ $t('config.controller.pins.actions.delete') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CButtonGroup>
-		<ControllerPinConfigDeleteModal ref='deleteModal' @delete-profile='deletePinConfigProfile' />
-		<ControllerPinConfigForm ref='formModal' @save-profile='savePinConfigProfile' />
+		<CTabs
+			variant='tabs'
+			:active-tab='activeTab'
+		>
+			<CTab :title='$t("config.controller.pins.adapters")'>
+				<ControllerPinConfigGroup
+					class='my-1'
+					:profiles='adapterProfiles'
+					@set-profile='setProfile'
+					@delete-profile='deleteProfile'
+					@refresh-profiles='listConfigs'
+				/>
+			</CTab>
+			<CTab :title='$t("config.controller.pins.boards")'>
+				<ControllerPinConfigGroup
+					class='my-1'
+					:profiles='boardProfiles'
+					@set-profile='setProfile'
+					@delete-profile='deleteProfile'
+					@refresh-profiles='listConfigs'
+				/>
+			</CTab>
+		</CTabs>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
-import ControllerPinConfigDeleteModal from './ControllerPinConfigDeleteModal.vue';
-import ControllerPinConfigForm from './ControllerPinConfigForm.vue';
+import {CTab, CTabs} from '@coreui/vue/src';
+import ControllerPinConfigGroup from '@/components/Config/Controller/ControllerPinConfigGroup.vue';
 
 import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
 
 import ControllerPinConfigService from '@/services/ControllerPinConfigService';
 
@@ -73,13 +59,9 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 @Component({
 	components: {
-		CButton,
-		CButtonGroup,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
-		ControllerPinConfigDeleteModal,
-		ControllerPinConfigForm,
+		CTab,
+		CTabs,
+		ControllerPinConfigGroup,
 	},
 	data: () => ({
 		cilCopy,
@@ -94,9 +76,30 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
  */
 export default class ControllerPinConfigs extends Vue {
 	/**
+	 * @var {number} activeTab Currently selected tab
+	 */
+	private activeTab = 0;
+
+	/**
 	 * @var {Array<IControllerPinConfig>} profiles Controller pin configuration profiles
 	 */
 	private profiles: Array<IControllerPinConfig> = [];
+
+	/**
+	 * Computes adapter controller profile options
+	 * @return {Array<IControllerPinConfig>} Adapter controller profile options
+	 */
+	get adapterProfiles(): Array<IControllerPinConfig> {
+		return this.profiles.filter((profile: IControllerPinConfig): boolean => profile.deviceType === ConfigDeviceType.ADAPTER);
+	}
+
+	/**
+	 * Computes board controller profile options
+	 * @return {Array<IControllerPinConfig>} Board controller profile options
+	 */
+	get boardProfiles(): Array<IControllerPinConfig> {
+		return this.profiles.filter((profile: IControllerPinConfig): boolean => profile.deviceType === ConfigDeviceType.BOARD);
+	}
 
 	/**
 	 * Initializes pin configurations component
@@ -115,95 +118,15 @@ export default class ControllerPinConfigs extends Vue {
 	}
 
 	/**
-	 * Emites pin config update event
-	 * @param {number} idx Index of pin config profile
-	 */
-	private setPinConfigProfile(idx: number): void {
-		this.$emit('update-pin-config', this.profiles[idx]);
-	}
-
-	/**
-	 * Passes configuration profile to form modal and activates the modal
-	 * @param {IControllerPinConfig|null} profile Configuration profile
-	 */
-	private showFormModal(profile: IControllerPinConfig|null = null): void {
-		const config = JSON.parse(JSON.stringify(profile));
-		(this.$refs.formModal as ControllerPinConfigForm).activateModal(config);
-	}
-
-	/**
-	 * Saves configuration profile
-	 * @param {IControllerPinConfig} profile Configuration profile
-	 */
-	private savePinConfigProfile(profile: IControllerPinConfig): void {
-		const id = profile.id;
-		delete profile.id;
-		if (id === -1 || id === undefined) {
-			this.addPinConfigProfile(profile);
-		} else {
-			this.editPinConfigProfile(id, profile);
-		}
-	}
-
-	/**
-	 * Adds a new configuration profile
-	 * @param {IControllerPinConfig} profile Configuration profile
-	 */
-	private addPinConfigProfile(profile: IControllerPinConfig): void {
-		const name = profile.name;
-		this.$store.commit('spinner/SHOW');
-		ControllerPinConfigService.add(profile)
-			.then(() => {
-				this.listConfigs().then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.controller.pins.messages.addSuccess', {profile: name}).toString()
-					);
-				});
-			})
-			.catch((err: AxiosError) => {
-				extendedErrorToast(err, 'config.controller.pins.messages.addFailed', {profile: name});
-			});
-	}
-
-	/**
-	 * Edits an existing configuration profile
-	 * @param {number} id Profile ID
-	 * @param {IControllerPinConfig} profile Configuration profile
-	 */
-	private editPinConfigProfile(id: number, profile: IControllerPinConfig): void {
-		const name = profile.name;
-		this.$store.commit('spinner/SHOW');
-		ControllerPinConfigService.edit(id, profile)
-			.then(() => {
-				this.listConfigs().then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.controller.pins.messages.editSuccess', {profile: name}).toString()
-					);
-				});
-			})
-			.catch((err: AxiosError) => {
-				extendedErrorToast(err, 'config.controller.pins.messages.editFailed', {profile: name});
-			});
-	}
-
-	/**
-	 * Passes configuration profile to delete modal and activates the modal
-	 * @param {number} idx Profile index
-	 * @param {string} name Profile name
-	 */
-	private showDeleteModal(idx: number, name: string): void {
-		(this.$refs.deleteModal as ControllerPinConfigDeleteModal).activateModal(idx, name);
-	}
-
-	/**
 	 * Delete configuration profile
-	 * @param {number} idx Profile index
+	 * @param {number} id Config profile ID
 	 */
-	private deletePinConfigProfile(idx: number): void {
-		const id = (this.profiles[idx].id as number);
-		const name = this.profiles[idx].name;
+	private deleteProfile(id: number): void {
+		const profile = this.profiles.find((profile: IControllerPinConfig) => profile.id === id);
+		if (profile === undefined) {
+			return;
+		}
+		const name = profile.name;
 		this.$store.commit('spinner/SHOW');
 		ControllerPinConfigService.delete(id)
 			.then(() => {
@@ -217,6 +140,17 @@ export default class ControllerPinConfigs extends Vue {
 			.catch((err: AxiosError) => {
 				extendedErrorToast(err, 'config.controller.pins.messages.deleteFailed', {profile: name});
 			});
+	}
+
+	/**
+	 * Emites pin config update event
+	 * @param {number} id Config profile ID
+	 */
+	private setProfile(id: number): void {
+		const profile = this.profiles.find((profile: IControllerPinConfig) => profile.id === id);
+		if (profile !== undefined) {
+			this.$emit('update-pin-config', profile);
+		}
 	}
 }
 </script>

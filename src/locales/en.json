@@ -1032,6 +1032,8 @@
 				"profiles": "Pin configuration profiles",
 				"add": "Add controller pin configuration profile",
 				"edit": "Edit controller pin configuration profile",
+				"adapters": "Adapters",
+				"boards": "Boards",
 				"actions": {
 					"set": "Set pin profile",
 					"edit": "Edit pin profile",
@@ -1039,6 +1041,11 @@
 				},
 				"form": {
 					"name": "Profile name",
+					"deviceType": "Device type",
+					"deviceTypes": {
+						"adapter": "Adapter",
+						"board": "Board"
+					},
 					"greenLed": "Green LED pin",
 					"redLed": "Red LED pin",
 					"button": "Button pin",
@@ -1058,10 +1065,8 @@
 					"listFailed": "Failed to retrieve list of available pin configuration profiles: {error}",
 					"deleteFailed": "Failed to delete controller pin configuration profile {profile}: {error}",
 					"deleteSuccess": "Controller pin configuration profile {profile} successfully deleted.",
-					"addFailed": "Failed to create new controller pin configuration profile {profile}: {error}",
-					"addSuccess": "Controller pin configuration profile {profile} successfully created.",
-					"editFailed": "Failed to edit controller pin configuration profile {profile}: {error}",
-					"editSuccess": "Controller pin configuration profile {profile} successfully edited."
+					"saveFailed": "Failed to save controller pin configuration profile {profile}: {error}",
+					"saveSuccess": "Controller pin configuration profile {profile} successfully saved."
 				}
 			},
 			"deleteModal": {

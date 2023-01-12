@@ -67,22 +67,22 @@ export default class ControllerPinConfigDeleteModal extends Vue {
 	private show = false;
 
 	/**
-	 * @var {number} idx Controller pin configuration profile index
+	 * @var {number} idx Controller profile ID
 	 */
-	private idx = 0;
+	private id = 0;
 
 	/**
-	 * @var {string} name Controller pin configuration profile name
+	 * @var {string} name Controller profile name
 	 */
 	private name = '';
 
 	/**
 	 * Stores controller pin configuration profile metadata and renders the modal window
-	 * @param {number} idx Profile index
+	 * @param {number} id Profile ID
 	 * @param {string} name Profile name
 	 */
-	public activateModal(idx: number, name: string): void {
-		this.idx = idx;
+	public activateModal(id: number, name: string): void {
+		this.id = id;
 		this.name = name;
 		this.show = true;
 	}
@@ -92,7 +92,7 @@ export default class ControllerPinConfigDeleteModal extends Vue {
 	 */
 	private deleteProfile(): void {
 		this.deactivateModal();
-		this.$emit('delete-profile', this.idx);
+		this.$emit('delete-profile', this.id);
 	}
 
 	/**

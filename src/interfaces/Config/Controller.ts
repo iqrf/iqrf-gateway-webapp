@@ -14,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
+
 /**
  * IQRF GW Controller configuration interface
  */
@@ -282,6 +285,11 @@ export interface IControllerPinConfig {
 	 * Profile name
 	 */
 	name: string
+
+	/**
+	 * Device type
+	 */
+	deviceType: ConfigDeviceType
 
 	/**
 	 * Green LED pin number

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {MappingType} from '@/enums/Config/Mapping';
+import {MappingType} from '@/enums/Config/ConfigurationProfiles';
 
 import axios, {AxiosResponse} from 'axios';
 import {IMapping} from '@/interfaces/Config/Mapping';

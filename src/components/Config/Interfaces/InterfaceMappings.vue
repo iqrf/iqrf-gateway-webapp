@@ -42,11 +42,11 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
+import {CTab, CTabs} from '@coreui/vue/src';
 import InterfaceMappingGroup from '@/components/Config/Interfaces/InterfaceMappingGroup.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MappingDeviceType, MappingType} from '@/enums/Config/Mapping';
+import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
 
 import MappingService from '@/services/MappingService';
 
@@ -55,11 +55,8 @@ import {IMapping} from '@/interfaces/Config/Mapping';
 
 @Component({
 	components: {
-		CButton,
-		CButtonGroup,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
+		CTab,
+		CTabs,
 		InterfaceMappingGroup,
 	},
 })
@@ -88,7 +85,7 @@ export default class InterfaceMappings extends Vue {
 	 * @return {Array<IMapping>} Adapter mappings
 	 */
 	get adapterMappings(): Array<IMapping> {
-		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === MappingDeviceType.ADAPTER);
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.ADAPTER);
 	}
 
 	/**
@@ -96,7 +93,7 @@ export default class InterfaceMappings extends Vue {
 	 * @return {Array<IMapping>} Board mappings
 	 */
 	get boardMappings(): Array<IMapping> {
-		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === MappingDeviceType.BOARD);
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.BOARD);
 	}
 
 	/**

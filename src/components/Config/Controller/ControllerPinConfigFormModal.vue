@@ -43,6 +43,11 @@ limitations under the License.
 						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
+				<CSelect
+					:value.sync='profile.deviceType'
+					:label='$t("config.controller.pins.form.deviceType")'
+					:options='deviceTypeOptions'
+				/>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
@@ -160,9 +165,15 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
 
+import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
+import ControllerPinConfigService from '@/services/ControllerPinConfigService';
+
+import {AxiosError} from 'axios';
 import {IControllerPinConfig} from '@/interfaces/Config/Controller';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {
@@ -178,7 +189,7 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 /**
  * Controller pin configuration form modal window component
  */
-export default class ControllerPinConfigForm extends Vue {
+export default class ControllerPinConfigFormModal extends Vue {
 	/**
 	 * @var {boolean} show Controls whether modal window is rendered
 	 */
@@ -199,6 +210,7 @@ export default class ControllerPinConfigForm extends Vue {
 	 */
 	private defaultProfile: IControllerPinConfig = {
 		name: '',
+		deviceType: ConfigDeviceType.ADAPTER,
 		greenLed: 0,
 		redLed: 0,
 		button: 0,
@@ -212,11 +224,15 @@ export default class ControllerPinConfigForm extends Vue {
 	private profile: IControllerPinConfig = this.defaultProfile;
 
 	/**
-	 * Initializes validation rules
+	 * Computes device type options
+	 * @return {Array<IOption>} Device type options
 	 */
-	created(): void {
-		extend('integer', integer);
-		extend('required', required);
+	get deviceTypeOptions(): Array<IOption> {
+		const types: Array<ConfigDeviceType> = [ConfigDeviceType.ADAPTER, ConfigDeviceType.BOARD];
+		return types.map((item: ConfigDeviceType): IOption => ({
+			label: this.$t(`config.controller.pins.form.deviceTypes.${item}`).toString(),
+			value: item,
+		}));
 	}
 
 	/**
@@ -236,31 +252,69 @@ export default class ControllerPinConfigForm extends Vue {
 	}
 
 	/**
+	 * Initializes validation rules
+	 */
+	created(): void {
+		extend('integer', integer);
+		extend('required', required);
+	}
+
+	/**
+	 * Saves configuration profile
+	 */
+	private saveProfile(): void {
+		const profile = {...this.profile};
+		if (!this.useI2c) {
+			delete profile.sck;
+			delete profile.sda;
+		}
+		const id = profile.id;
+		delete profile.id;
+		this.$store.commit('spinner/SHOW');
+		if (id === -1 || id === undefined) {
+			ControllerPinConfigService.add(profile)
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
+		} else {
+			ControllerPinConfigService.edit(this.id, profile)
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
+		}
+	}
+
+	/**
+	 * Handles REST API success
+	 */
+	private handleSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(
+			this.$t('config.controller.pins.messages.saveSuccess', {profile: this.profile.name}).toString()
+		);
+		this.deactivateModal();
+		this.$emit('update-profiles');
+	}
+
+	/**
+	 * Handles REST API error
+	 * @param {AxiosError} err Error response
+	 */
+	private handleFailure(err: AxiosError): void {
+		extendedErrorToast(err, 'config.controller.pins.messages.saveFailed', {profile: this.profile.name});
+	}
+
+	/**
 	 * Stores controller pin configuration profile and renders the modal window
 	 * @param {IControllerPinConfig|null} profile Controller pin configuration profile
 	 */
 	public activateModal(profile: IControllerPinConfig|null = null): void {
 		if (profile !== null) {
-			this.profile = profile;
+			this.profile = {...profile};
 			this.id = (profile.id as number);
 			if (profile.sck !== undefined && profile.sda !== undefined) {
 				this.useI2c = true;
 			}
 		}
 		this.show = true;
-	}
-
-	/**
-	 * Emits controller pin configuration profile and closes the modal window
-	 */
-	private saveProfile(): void {
-		const profile = JSON.parse(JSON.stringify(this.profile));
-		if (!this.useI2c) {
-			delete profile.sck;
-			delete profile.sda;
-		}
-		this.$emit('save-profile', profile);
-		this.deactivateModal();
 	}
 
 	/**

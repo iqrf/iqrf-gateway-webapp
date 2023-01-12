@@ -24,9 +24,9 @@ export enum MappingType {
 }
 
 /**
- * Mapping device type
+ * Configuration device type
  */
-export enum MappingDeviceType {
+export enum ConfigDeviceType {
 	ADAPTER = 'adapter',
 	BOARD = 'board',
 }

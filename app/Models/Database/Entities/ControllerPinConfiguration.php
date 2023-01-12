@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\ConfigModule\Enums\DeviceTypes;
 use App\Models\Database\Attributes\TId;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -34,10 +35,31 @@ class ControllerPinConfiguration implements JsonSerializable {
 	use TId;
 
 	/**
+	 * @var string Device type: Adapter
+	 */
+	public const DEVICE_ADAPTER = 'adapter';
+
+	/**
+	 * @var string Device type: Board
+	 */
+	public const DEVICE_BOARD = 'board';
+
+	/**
+	 * @var array<string> Supported device types
+	 */
+	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
+
+	/**
 	 * @var string Controller pins name
 	 * @ORM\Column(type="string", length=255)
 	 */
 	private string $name;
+
+	/**
+	 * @var string Device type
+	 * @ORM\Column(type="string", length=255)
+	 */
+	private string $deviceType;
 
 	/**
 	 * @var int Green LED pin
@@ -72,14 +94,16 @@ class ControllerPinConfiguration implements JsonSerializable {
 	/**
 	 * Constructor
 	 * @param string $name Controller pins name
+	 * @param DeviceTypes $deviceType Device type
 	 * @param int $greenLed Green LED pin
 	 * @param int $redLed Red LED pin
 	 * @param int $button Button pin
 	 * @param int|null $sck SCK pin
 	 * @param int|null $sda SDA pin
 	 */
-	public function __construct(string $name, int $greenLed, int $redLed, int $button, ?int $sck = null, ?int $sda = null) {
+	public function __construct(string $name, DeviceTypes $deviceType, int $greenLed, int $redLed, int $button, ?int $sck = null, ?int $sda = null) {
 		$this->name = $name;
+		$this->deviceType = $deviceType->toScalar();
 		$this->greenLed = $greenLed;
 		$this->redLed = $redLed;
 		$this->button = $button;
@@ -101,6 +125,22 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 */
 	public function setName(string $name): void {
 		$this->name = $name;
+	}
+
+	/**
+	 * Returns device type
+	 * @return DeviceTypes Device type
+	 */
+	public function getDeviceType(): DeviceTypes {
+		return DeviceTypes::fromScalar($this->deviceType);
+	}
+
+	/**
+	 * Sets device type
+	 * @param DeviceTypes $deviceType Device type
+	 */
+	public function setDeviceType(DeviceTypes $deviceType): void {
+		$this->deviceType = $deviceType->toScalar();
 	}
 
 	/**
@@ -185,12 +225,13 @@ class ControllerPinConfiguration implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized controller pins
-	 * @return array{id: int|null, name: string, greenLed: int, redLed: int, button: int, sck?: int, sda?: int} JSON serialized controller pins
+	 * @return array{id: int|null, name: string, deviceType: string, greenLed: int, redLed: int, button: int, sck?: int, sda?: int} JSON serialized controller pins
 	 */
 	public function jsonSerialize(): array {
 		$array = [
 			'id' => $this->getId(),
 			'name' => $this->name,
+			'deviceType' => $this->deviceType,
 			'greenLed' => $this->greenLed,
 			'redLed' => $this->redLed,
 			'button' => $this->button,

@@ -78,6 +78,8 @@ export default class MappingDeleteModal extends Vue {
 
 	/**
 	 * Stores mapping metadata and renders the modal window
+	 * @param {number} id Mapping ID
+	 * @param {string} name Mapping name
 	 */
 	public activateModal(id: number, name: string): void {
 		this.id = id;
