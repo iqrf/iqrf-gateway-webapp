@@ -22,6 +22,8 @@ namespace App\CoreModule\Models;
 
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
@@ -94,6 +96,21 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Reads the JSON file and decode it to array
+	 * @param string $fileName File name
+	 * @param bool $forceArray Force object to array conversion
+	 * @return mixed Decoded JSON data
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function readJson(string $fileName, bool $forceArray = true) {
+		$file = $this->read($fileName);
+		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
+		return Json::decode($file, $flags);
+	}
+
+
+	/**
 	 * Deletes the file
 	 * @param string $fileName File name
 	 * @throws IOException
@@ -136,6 +153,18 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Encodes the JSON from array and write into the JSON file
+	 * @param string $fileName File name
+	 * @param mixed $content JSON data to encode
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function writeJson(string $fileName, $content): void {
+		$json = Json::encode($content, Json::PRETTY);
+		$this->write($fileName, $json);
+	}
+
+	/**
 	 * Copies file to a destination
 	 * @param string $destination Destination path
 	 * @param string $fileName Source file path
@@ -146,26 +175,44 @@ class PrivilegedFileManager implements IFileManager {
 
 	/**
 	 * Returns list of subdirectories in directory
+	 * @param string|null $subdirectory Relative path to subdirectory
 	 * @return array<int, string> List of directories
 	 */
-	public function listDirectories(): array {
-		$command = $this->commandManager->run('find ' . $this->directory . ' -type d', true);
+	public function listDirectories(?string $subdirectory = null): array {
+		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . ' -mindepth 1 -type d -printf \'%P\n\'', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
-		return explode(PHP_EOL, $command->getStdout());
+		$output = $command->getStdout();
+		if ($output === '') {
+			return [];
+		}
+		return explode(PHP_EOL, $output);
 	}
 
 	/**
 	 * Returns list of files in directory
+	 * @param string|null $subdirectory Relative path to subdirectory
 	 * @return array<int, string> List of files
 	 */
-	public function listFiles(): array {
-		$command = $this->commandManager->run('find ' . $this->directory . ' -type f', true);
+	public function listFiles(?string $subdirectory = null): array {
+		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . ' -type f -printf \'%P\n\'', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
-		return explode(PHP_EOL, $command->getStdout());
+		$output = $command->getStdout();
+		if ($output === '') {
+			return [];
+		}
+		return explode(PHP_EOL, $output);
+	}
+
+	/**
+	 * Returns Base directory path
+	 * @return string Base directory path
+	 */
+	public function getBasePath(): string {
+		return $this->directory;
 	}
 
 	/**

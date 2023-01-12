@@ -82,7 +82,7 @@ final class AzureManagerTest extends CloudIntegrationTestCase {
 		$array = ['connectionString' => self::CONNECTION_STRING];
 		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 		$this->manager->createMqttInterface($array);
-		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Azure'));
+		Assert::same($mqtt, $this->fileManager->readJson('iqrf__MqttMessaging_Azure.json'));
 	}
 
 	/**

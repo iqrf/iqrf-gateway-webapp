@@ -67,6 +67,7 @@ class BackupManager {
 	 * @var array<string> Services to include in backup
 	 */
 	private const SERVICES = [
+		'apcupsd',
 		'ssh',
 	];
 
@@ -337,8 +338,10 @@ class BackupManager {
 	 * @throws JsonException
 	 */
 	private function checkImage(): void {
-		if (!$this->zipManager->exist('gateway/')) {
-			return;
+		$archiveGwFile = $this->zipManager->exist('gateway/');
+		$fsGwFile = file_exists('/etc/iqrf-gateway.json');
+		if ($archiveGwFile !== $fsGwFile) {
+			throw new InvalidBackupContentException('Incompatible backup archive and target gateway.');
 		}
 		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
 		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc\d+))?$/';

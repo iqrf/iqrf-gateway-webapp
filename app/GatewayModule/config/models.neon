@@ -15,19 +15,22 @@
 
 services:
 	- App\GatewayModule\Models\Backup\RestoreLogger
-	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%controller.configDir%)
+	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%paths.iqrfGatewayController.configDir%)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
 	hostBackup: App\GatewayModule\Models\Backup\HostBackup
 	journalBackup: App\GatewayModule\Models\Backup\JournalBackup
-	menderBackup: App\GatewayModule\Models\Backup\MenderBackup
-	monitBackup: App\GatewayModule\Models\Backup\MonitBackup
-	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup
+	menderBackup: App\GatewayModule\Models\Backup\MenderBackup(@mender.fileManager)
+	monitBackup: App\GatewayModule\Models\Backup\MonitBackup(@monit.fileManager)
+	networkManager.fileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.networkManager.configDir%)
+		autowired: false
+	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup(@networkManager.fileManager)
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
-	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %timesyncd.path%)
-	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%translator.configDir%)
-	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%uploader.configDir%)
-	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%confDir%)
+	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %paths.timesyncd.config%)
+	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%paths.iqrfGatewayTranslator.configDir%)
+	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%paths.iqrfGatewayUploader.configDir%)
+	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%paths.iqrfGatewayWebapp%)
 	- App\GatewayModule\Models\BackupManager([
 		@controllerBackup,
 		@daemonBackup,
@@ -44,10 +47,10 @@ services:
 		@gatewayFileBackup
 	])
 	certificateFileManager:
-		factory: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.iqrfGatewayDaemon.certDir%/core)
 		autowired: false
 	certificateManager: App\GatewayModule\Models\CertificateManager(@certificateFileManager)
-	- App\GatewayModule\Models\DaemonDirectories(%daemon.configDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\DaemonDirectories(%paths.iqrfGatewayDaemon.configDir%, %paths.iqrfGatewayDaemon.logDir%)
 	- App\GatewayModule\Models\DiagnosticsManager
 	etc.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/')
@@ -56,15 +59,12 @@ services:
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\JournalConfigManager
 	- App\GatewayModule\Models\JournalReaderManager
-	- App\GatewayModule\Models\LogManager(%logDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\LogManager(%logDir%, %paths.iqrfGatewayDaemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SshManager
-	- App\GatewayModule\Models\TimeManager(@commandManager, %timesyncd.path%)
+	- App\GatewayModule\Models\TimeManager(@commandManager, %paths.timesyncd.config%)
 	- App\GatewayModule\Models\UpdaterManager
-	etc.jsonFileManager:
-		factory: App\CoreModule\Models\JsonFileManager('/etc/')
-		autowired: false
 	- App\GatewayModule\Models\Utils\GatewayInfoUtil('/etc/iqrf-gateway.json')
 	- App\GatewayModule\Models\VersionManager

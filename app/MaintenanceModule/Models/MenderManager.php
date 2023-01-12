@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\PrivilegedFileManager;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
@@ -47,12 +47,12 @@ class MenderManager {
 	/**
 	 * @var string JSON file containing mender-client configuration
 	 */
-	private const CLIENT_CONF = 'mender';
+	private const CLIENT_CONF = 'mender.conf';
 
 	/**
 	 * @var string JSON file containing mender-connect configuration
 	 */
-	private const CONNECT_CONF = 'mender-connect';
+	private const CONNECT_CONF = 'mender-connect.conf';
 
 	/**
 	 * @var string Path to upload artifact file to
@@ -89,9 +89,9 @@ class MenderManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * @var JsonFileManager $fileManager JSON file manager
+	 * @var PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	private JsonFileManager $fileManager;
+	private PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var ServiceManager $serviceManager Service manager
@@ -101,10 +101,10 @@ class MenderManager {
 	/**
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager, PrivilegedFileManager $fileManager, ServiceManager $serviceManager) {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
 		$this->serviceManager = $serviceManager;
@@ -140,7 +140,7 @@ class MenderManager {
 	 * @throws JsonException
 	 */
 	public function getClientConfig(): array {
-		return $this->fileManager->read(self::CLIENT_CONF, true, '.conf');
+		return $this->fileManager->readJson(self::CLIENT_CONF);
 	}
 
 	/**
@@ -149,7 +149,7 @@ class MenderManager {
 	 * @throws JsonException
 	 */
 	public function getConnectConfig(): array {
-		return $this->fileManager->read(self::CONNECT_CONF, true, '.conf');
+		return $this->fileManager->readJson(self::CONNECT_CONF);
 	}
 
 	/**
@@ -160,12 +160,12 @@ class MenderManager {
 	public function saveConfig(array $config): void {
 		$client = $this->getClientConfig();
 		$connect = $this->getConnectConfig();
-		$this->fileManager->write(self::CLIENT_CONF, array_replace_recursive($client, $config['client']), '.conf');
+		$this->fileManager->writeJson(self::CLIENT_CONF, array_replace_recursive($client, $config['client']));
 		$config['connect'] = [
 			'FileTransfer' => ['Disable' => !$config['connect']['FileTransfer']],
 			'PortForward' => ['Disable' => !$config['connect']['PortForward']],
 		];
-		$this->fileManager->write(self::CONNECT_CONF, array_replace_recursive($connect, $config['connect']), '.conf');
+		$this->fileManager->writeJson(self::CONNECT_CONF, array_replace_recursive($connect, $config['connect']));
 	}
 
 	/**

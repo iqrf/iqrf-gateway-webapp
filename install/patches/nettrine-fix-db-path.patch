@@ -1,12 +1,12 @@
 Fixes SQLite DB path
---- a/app/config/doctrine.neon
-+++ b/app/config/doctrine.neon
-@@ -31,7 +31,7 @@
- nettrine.dbal:
- 	connection:
- 		driver: pdo_sqlite
--		path: %appDir%/config/database.db
-+		path: /var/lib/iqrf-gateway-webapp/database.db
- 		types:
- 			ip: Darsyn\IP\Doctrine\MultiType
- 			uuid: Ramsey\Uuid\Doctrine\UuidType
+--- a/app/config/config.neon
++++ b/app/config/config.neon
+@@ -52,7 +52,7 @@
+ 			# Path to directory containing IQRF Gateway Webapp configuration
+ 			configDir: '%confDir%'
+ 			# Path to IQRF Gateway Webapp database
+-			database: '%appDir%/config/database.db'
++			database: '/var/lib/iqrf-gateway-webapp/database.db'
+ 			# Path to directory containing IQRF Gateway Webapp logs
+ 			logDir: '%appDir%/../log/'
+ 			#

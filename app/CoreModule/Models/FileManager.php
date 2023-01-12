@@ -22,6 +22,8 @@ namespace App\CoreModule\Models;
 
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for reading and writing text files
@@ -99,6 +101,20 @@ class FileManager implements IFileManager {
 	}
 
 	/**
+	 * Reads the JSON file and decode it to array
+	 * @param string $fileName File name
+	 * @param bool $forceArray Force object to array conversion
+	 * @return mixed Decoded JSON data
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function readJson(string $fileName, bool $forceArray = true) {
+		$file = $this->read($fileName);
+		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
+		return Json::decode($file, $flags);
+	}
+
+	/**
 	 * Writes into the file
 	 * @param string $fileName File name
 	 * @param mixed $content File content
@@ -112,6 +128,26 @@ class FileManager implements IFileManager {
 			$this->fixPermissions($fileName);
 			FileSystem::write($path, $content, null);
 		}
+	}
+
+	/**
+	 * Encodes the JSON from array and write into the JSON file
+	 * @param string $fileName File name
+	 * @param mixed $content JSON data to encode
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function writeJson(string $fileName, $content): void {
+		$json = Json::encode($content, Json::PRETTY);
+		$this->write($fileName, $json);
+	}
+
+	/**
+	 * Returns Base directory path
+	 * @return string Base directory path
+	 */
+	public function getBasePath(): string {
+		return $this->directory;
 	}
 
 	/**

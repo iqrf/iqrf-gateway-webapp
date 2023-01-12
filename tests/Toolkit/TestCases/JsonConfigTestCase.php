@@ -23,7 +23,7 @@ namespace Tests\Toolkit\TestCases;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Mockery;
 use Nette\Utils\JsonException;
 use Tester\Environment;
@@ -35,14 +35,14 @@ use Tester\TestCase;
 abstract class JsonConfigTestCase extends TestCase {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	protected JsonFileManager $fileManager;
+	protected FileManager $fileManager;
 
 	/**
-	 * @var JsonFileManager JSON temporary file manager
+	 * @var FileManager JSON temporary file manager
 	 */
-	protected JsonFileManager $fileManagerTemp;
+	protected FileManager $fileManagerTemp;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
@@ -55,8 +55,8 @@ abstract class JsonConfigTestCase extends TestCase {
 	 */
 	protected function copyFile(string $fileName): void {
 		try {
-			$content = $this->fileManager->read($fileName);
-			$this->fileManagerTemp->write($fileName, $content);
+			$content = $this->fileManager->readJson($fileName);
+			$this->fileManagerTemp->writeJson($fileName, $content);
 		} catch (JsonException $e) {
 			Environment::skip('JSON Exception: ' . $e->getMessage());
 		}
@@ -69,7 +69,7 @@ abstract class JsonConfigTestCase extends TestCase {
 	 */
 	protected function readFile(string $fileName): array {
 		try {
-			return $this->fileManager->read($fileName);
+			return $this->fileManager->readJson($fileName);
 		} catch (JsonException $e) {
 			Environment::skip('JSON Exception: ' . $e->getMessage());
 			return [];
@@ -83,7 +83,7 @@ abstract class JsonConfigTestCase extends TestCase {
 	 * @throws JsonException
 	 */
 	protected function readTempFile(string $fileName): array {
-		return $this->fileManagerTemp->read($fileName);
+		return $this->fileManagerTemp->readJson($fileName);
 	}
 
 	/**
@@ -95,8 +95,8 @@ abstract class JsonConfigTestCase extends TestCase {
 		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new JsonFileManager($configPath, $commandManager);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath, $commandManager);
+		$this->fileManager = new FileManager($configPath, $commandManager);
+		$this->fileManagerTemp = new FileManager($configTempPath, $commandManager);
 		$this->schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 	}
 

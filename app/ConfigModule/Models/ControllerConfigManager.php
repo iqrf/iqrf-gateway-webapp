@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 
 /**
  * IQRF Gateway Controller configuration manager
@@ -28,20 +28,20 @@ use App\CoreModule\Models\JsonFileManager;
 class ControllerConfigManager {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager File manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
 	 * @var string JSON file containing Controller configuration
 	 */
-	private const FILE_NAME = 'config';
+	private const FILE_NAME = 'config.json';
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param FileManager $fileManager File manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(FileManager $fileManager) {
 		$this->fileManager = $fileManager;
 	}
 
@@ -50,7 +50,7 @@ class ControllerConfigManager {
 	 * @return array<string, array<array<string, bool|int|string>>|string>
 	 */
 	public function getConfig(): array {
-		return $this->fileManager->read(self::FILE_NAME);
+		return $this->fileManager->readJson(self::FILE_NAME);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class ControllerConfigManager {
 	 * @param array<string, array<string, array<string, array<string, bool|int>|bool|int>|bool|int|string>> $newConfig Controller configuration
 	 */
 	public function saveConfig(array $newConfig): void {
-		$this->fileManager->write(self::FILE_NAME, $newConfig);
+		$this->fileManager->writeJson(self::FILE_NAME, $newConfig);
 	}
 
 }

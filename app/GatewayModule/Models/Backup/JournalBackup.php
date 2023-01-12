@@ -122,8 +122,8 @@ class JournalBackup implements IBackupManager {
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
-		$this->commandManager->run('chown root:root ' . $this->path . '/' . $this->file, true);
-		$this->commandManager->run('chmod 0644 ' . $this->path . '/' . $this->file, true);
+		$this->fileManager->chown($this->file, 'root', 'root');
+		$this->fileManager->chmod($this->file, 0644);
 	}
 
 	/**

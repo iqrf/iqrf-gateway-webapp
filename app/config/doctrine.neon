@@ -31,7 +31,7 @@ nettrine.annotations:
 nettrine.dbal:
 	connection:
 		driver: pdo_sqlite
-		path: %appDir%/config/database.db
+		path: %paths.iqrfGatewayWebapp.database%
 		types:
 			ip: Darsyn\IP\Doctrine\MultiType
 			uuid: Ramsey\Uuid\Doctrine\UuidType

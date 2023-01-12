@@ -44,10 +44,9 @@ class GatewayInfoUtil {
 			'gwProduct' => Expect::string('IQD-GW-0X'),
 			'gwManufacturer' => Expect::string('MICRORISC s.r.o.'),
 			'gwId' => Expect::string('FFFFFFFFFFFFFFFF'),
-			'gwToken' => Expect::string('iqube-ffffffffffffffff'),
 			'gwHost' => Expect::string('iqube-ffffffffffffffff.local'),
 			'gwImage' => Expect::string('iqube-os-vX.Y.Z'),
-			'gwInterface' => Expect::string('uart'),
+			'gwInterface' => Expect::string('unknown'),
 		])->castTo('array');
 	}
 
@@ -81,14 +80,6 @@ class GatewayInfoUtil {
 	 */
 	public function getId(): string {
 		return $this->read()['gwId'];
-	}
-
-	/**
-	 * Returns gateway token
-	 * @return string Gateway token
-	 */
-	public function getToken(): string {
-		return $this->read()['gwToken'];
 	}
 
 	/**

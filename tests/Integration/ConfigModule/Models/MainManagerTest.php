@@ -27,7 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Mockery;
 use Nette\IOException;
 use Tester\Assert;
@@ -42,9 +42,9 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MainManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string File name
 	 */
-	private const FILE_NAME = 'config';
+	private const FILE_NAME = 'config.json';
 
 	/**
 	 * @var MainManager Main configuration manager
@@ -55,8 +55,8 @@ final class MainManagerTest extends JsonConfigTestCase {
 	 * Tests the function to get cache directory (failure)
 	 */
 	public function testGetCacheDirFailure(): void {
-		$fileManager = Mockery::mock(JsonFileManager::class);
-		$fileManager->shouldReceive('read')
+		$fileManager = Mockery::mock(FileManager::class);
+		$fileManager->shouldReceive('readJson')
 			->withArgs([self::FILE_NAME])
 			->andThrows(IOException::class);
 		$manager = new MainManager($fileManager);
@@ -76,8 +76,8 @@ final class MainManagerTest extends JsonConfigTestCase {
 	 * Tests the function to get data directory (failure)
 	 */
 	public function testGetDataDirFailure(): void {
-		$fileManager = Mockery::mock(JsonFileManager::class);
-		$fileManager->shouldReceive('read')
+		$fileManager = Mockery::mock(FileManager::class);
+		$fileManager->shouldReceive('readJson')
 			->withArgs([self::FILE_NAME])
 			->andThrows(IOException::class);
 		$manager = new MainManager($fileManager);

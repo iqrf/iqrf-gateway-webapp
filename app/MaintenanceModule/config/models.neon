@@ -15,10 +15,10 @@
 
 services:
 	mender.fileManager:
-		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.mender.configDir%)
 		autowired: false
 	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandManager, @mender.fileManager)
 	monit.fileManager:
-		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/monit')
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.monit.configDir%)
 		autowired: false
 	monit.manager: App\MaintenanceModule\Models\MonitManager(@monit.fileManager)

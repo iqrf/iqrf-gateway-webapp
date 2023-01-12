@@ -16,7 +16,6 @@
 services:
 	commandManager: App\CoreModule\Models\CommandManager(%sudo%)
 	featureManager: App\CoreModule\Models\FeatureManager(%confDir%/features.neon)
-	- App\CoreModule\Models\FileManager(%daemon.configDir%)
-	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
+	daemonFileManager: App\CoreModule\Models\FileManager(%paths.iqrfGatewayDaemon.configDir%)
 	- App\CoreModule\Models\UserManager
 	- App\CoreModule\Models\VersionManager

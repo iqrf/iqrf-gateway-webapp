@@ -15,15 +15,15 @@
 
 services:
 	apt.fileManager:
-		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/apt/apt.conf.d')
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.apt.configDir%)
 		autowired: false
 	- App\ConfigModule\Models\AptManager(@apt.fileManager)
 	- App\ConfigModule\Models\ComponentManager
 	componentSchemaManager:
-		factory: App\ConfigModule\Models\ComponentSchemaManager(%daemon.schemaDir%)
+		factory: App\ConfigModule\Models\ComponentSchemaManager(%paths.iqrfGatewayDaemon.schemaDir%)
 		autowired: self
 	controller.fileManager:
-		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-controller')
+		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayController.configDir%)
 		autowired: false
 	controller.manager: App\ConfigModule\Models\ControllerConfigManager(@controller.fileManager)
 	- App\ConfigModule\Models\ControllerPinConfigManager
@@ -38,6 +38,6 @@ services:
 		autowired: self
 	- App\ConfigModule\Models\TaskTimeManager
 	translator.fileManager:
-		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-translator')
+		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayTranslator.configDir%)
 		autowired: false
 	translator.manager: App\ConfigModule\Models\TranslatorConfigManager(@translator.fileManager)

@@ -2,7 +2,6 @@
 	"gwProduct": "IQD-GW-0X",
 	"gwManufacturer": "MICRORISC s.r.o.",
 	"gwId": "FFFFFFFFFFFFFFFF",
-	"gwToken": "iqube-ffffffffffffffff",
 	"gwHost": "iqube-ffffffffffffffff.local",
 	"gwImage": "iqube,
 	"gwInterface": "uart"

@@ -14,8 +14,8 @@
 # limitations under the License.
 
 services:
-	- App\CloudModule\Models\AwsManager(%daemon.certDir%)
+	- App\CloudModule\Models\AwsManager(%paths.iqrfGatewayDaemon.certDir%)
 	- App\CloudModule\Models\AzureManager
-	- App\CloudModule\Models\HexioManager(%daemon.certDir%)
-	- App\CloudModule\Models\IbmCloudManager(%daemon.certDir%)
-	- App\CloudModule\Models\InteliGlueManager(%daemon.certDir%)
+	- App\CloudModule\Models\HexioManager(%paths.iqrfGatewayDaemon.certDir%)
+	- App\CloudModule\Models\IbmCloudManager(%paths.iqrfGatewayDaemon.certDir%)
+	- App\CloudModule\Models\InteliGlueManager(%paths.iqrfGatewayDaemon.certDir%)

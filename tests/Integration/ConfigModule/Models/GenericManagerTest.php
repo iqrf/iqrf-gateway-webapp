@@ -44,7 +44,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string File name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 
@@ -64,10 +64,10 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	public function testDeleteFile(): void {
 		Environment::lock('config_mqtt', TMP_DIR);
 		$this->managerTemp->setComponent(self::COMPONENT);
-		$this->copyFile(self::FILE_NAME);
-		Assert::true($this->fileManagerTemp->exists(self::FILE_NAME));
+		$this->copyFile(self::FILE_NAME . '.json');
+		Assert::true($this->fileManagerTemp->exists(self::FILE_NAME . '.json'));
 		$this->managerTemp->deleteFile(self::FILE_NAME);
-		Assert::false($this->fileManagerTemp->exists(self::FILE_NAME));
+		Assert::false($this->fileManagerTemp->exists(self::FILE_NAME . '.json'));
 	}
 
 	/**
@@ -84,7 +84,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 * Tests the function to fix a required instance in the configuration
 	 */
 	public function testFixRequiredInterfaces(): void {
-		$expected = $this->readFile('iqrf__WebsocketMessaging');
+		$expected = $this->readFile('iqrf__WebsocketMessaging.json');
 		$configuration = $expected;
 		$expected['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketCppService';
 		unset($expected['RequiredInterfaces'][0]['target']['WebsocketPort']);
@@ -97,7 +97,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 */
 	public function testGenerateFileName(): void {
 		$this->manager->setComponent(self::COMPONENT);
-		$array = $this->readFile(self::FILE_NAME);
+		$array = $this->readFile(self::FILE_NAME . '.json');
 		Assert::equal('iqrf__MqttMessaging__MqttMessaging', $this->manager->generateFileName($array));
 	}
 
@@ -142,7 +142,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 */
 	public function testLoadInstanceExisting(): void {
 		$this->manager->setComponent(self::COMPONENT);
-		$expected = $this->readFile(self::FILE_NAME);
+		$expected = $this->readFile(self::FILE_NAME . '.json');
 		Assert::equal($expected, $this->manager->loadInstance('MqttMessaging'));
 	}
 
@@ -160,7 +160,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 */
 	public function testList(): void {
 		$this->manager->setComponent(self::COMPONENT);
-		$expected = [$this->readFile(self::FILE_NAME)];
+		$expected = [$this->readFile(self::FILE_NAME . '.json')];
 		Assert::equal($expected, $this->manager->list());
 	}
 
@@ -193,11 +193,11 @@ final class GenericManagerTest extends JsonConfigTestCase {
 			'EnableServerCertAuth' => true,
 			'acceptAsyncMsg' => true,
 		];
-		$expected = $this->readFile(self::FILE_NAME);
-		$this->copyFile(self::FILE_NAME);
+		$expected = $this->readFile(self::FILE_NAME . '.json');
+		$this->copyFile(self::FILE_NAME . '.json');
 		$expected['acceptAsyncMsg'] = true;
 		$this->managerTemp->save($array);
-		Assert::equal($expected, $this->fileManagerTemp->read(self::FILE_NAME));
+		Assert::equal($expected, $this->fileManagerTemp->readJson(self::FILE_NAME . '.json'));
 	}
 
 	/**

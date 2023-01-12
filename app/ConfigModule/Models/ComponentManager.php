@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
+use App\CoreModule\Models\FileManager;
 use Nette\IOException;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
@@ -31,20 +31,20 @@ use Nette\Utils\JsonException;
 class ComponentManager implements IConfigManager {
 
 	/**
-	 * @var JsonFileManager JSON file manager
+	 * @var FileManager JSON file manager
 	 */
-	private JsonFileManager $fileManager;
+	private FileManager $fileManager;
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string File name
 	 */
-	private string $fileName = 'config';
+	private string $fileName = 'config.json';
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param FileManager $fileManager JSON file manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(FileManager $fileManager) {
 		$this->fileManager = $fileManager;
 	}
 
@@ -55,9 +55,9 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function add(array $array): void {
-		$json = $this->fileManager->read($this->fileName);
+		$json = $this->fileManager->readJson($this->fileName);
 		$json['components'][] = $array;
-		$this->fileManager->write($this->fileName, $json);
+		$this->fileManager->writeJson($this->fileName, $json);
 	}
 
 	/**
@@ -67,10 +67,10 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
-		$json = $this->fileManager->read($this->fileName);
+		$json = $this->fileManager->readJson($this->fileName);
 		unset($json['components'][$id]);
 		$json['components'] = array_values($json['components']);
-		$this->fileManager->write($this->fileName, $json);
+		$this->fileManager->writeJson($this->fileName, $json);
 	}
 
 	/**
@@ -80,7 +80,7 @@ class ComponentManager implements IConfigManager {
 	 */
 	public function getId(string $name): ?int {
 		try {
-			$json = $this->fileManager->read($this->fileName);
+			$json = $this->fileManager->readJson($this->fileName);
 		} catch (JsonException $e) {
 			return null;
 		}
@@ -96,7 +96,7 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
-		$json = $this->fileManager->read($this->fileName)['components'];
+		$json = $this->fileManager->readJson($this->fileName)['components'];
 		if (array_key_exists($id, $json)) {
 			return $json[$id];
 		}
@@ -110,9 +110,9 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function list(): array {
-		$json = $this->fileManager->read($this->fileName)['components'];
+		$json = $this->fileManager->readJson($this->fileName)['components'];
 		return array_map(
-			fn (int $id, array $component): array => Arrays::mergeTree(['id' => $id], $component),
+			static fn (int $id, array $component): array => Arrays::mergeTree(['id' => $id], $component),
 			array_keys($json),
 			$json
 		);
@@ -126,9 +126,9 @@ class ComponentManager implements IConfigManager {
 	 * @throws JsonException
 	 */
 	public function save(array $components, int $id): void {
-		$json = $this->fileManager->read($this->fileName);
+		$json = $this->fileManager->readJson($this->fileName);
 		$json['components'][$id] = $components;
-		$this->fileManager->write($this->fileName, $json);
+		$this->fileManager->writeJson($this->fileName, $json);
 	}
 
 }

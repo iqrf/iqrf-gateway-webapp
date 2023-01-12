@@ -85,7 +85,7 @@ final class InteliGlueManagerTest extends CloudIntegrationTestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$this->manager->createMqttInterface(self::VALUES);
-		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_InteliGlue'));
+		Assert::same($mqtt, $this->fileManager->readJson('iqrf__MqttMessaging_InteliGlue.json'));
 	}
 
 	/**

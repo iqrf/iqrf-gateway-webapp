@@ -29,7 +29,9 @@ namespace Tests\Integration\CoreModule\Models;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -44,6 +46,11 @@ final class FileManagerTest extends TestCase {
 	 * @var string File name
 	 */
 	private const FILE_NAME = 'config.json';
+
+	/**
+	 * @var string File name of nonexistent file
+	 */
+	private const FILE_NAME_NONEXISTENT = 'nonexistent.json';
 
 	/**
 	 * @var string Directory with configuration files
@@ -66,10 +73,10 @@ final class FileManagerTest extends TestCase {
 	private FileManager $managerTest;
 
 	/**
-	 * Tests the function to get a directory with files
+	 * Tests the function to get a base path
 	 */
-	public function testGetDirectory(): void {
-		Assert::same(self::CONFIG_PATH, $this->manager->getDirectory());
+	public function testGetBasePath(): void {
+		Assert::same(self::CONFIG_PATH, $this->manager->getBasePath());
 	}
 
 	/**
@@ -84,10 +91,19 @@ final class FileManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to delete a file (nonexistent)
+	 */
+	public function testDeleteNonexistent(): void {
+		Assert::noError(function (): void {
+			$this->manager->delete(self::FILE_NAME_NONEXISTENT);
+		});
+	}
+
+	/**
 	 * Tests the function to check if the file exists (the file is not exist)
 	 */
 	public function testExistsFail(): void {
-		Assert::false($this->manager->exists('nonsense'));
+		Assert::false($this->manager->exists(self::FILE_NAME_NONEXISTENT));
 	}
 
 	/**
@@ -106,6 +122,29 @@ final class FileManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to read a text file (nonexistent)
+	 */
+	public function testReadNonexistent(): void {
+		if (PHP_MAJOR_VERSION >= 8) {
+			$message = 'Unable to read file \'' . self::CONFIG_PATH . 'nonexistent.json\'. Failed to open stream: No such file or directory';
+		} else {
+			$message = 'Unable to read file \'' . self::CONFIG_PATH . 'nonexistent.json\'. failed to open stream: No such file or directory';
+		}
+		Assert::throws(function (): void {
+			$this->manager->read(self::FILE_NAME_NONEXISTENT);
+		}, IOException::class, $message);
+	}
+
+	/**
+	 * Tests the function to read a JSON file
+	 */
+	public function testReadJson(): void {
+		$text = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME);
+		$expected = Json::decode($text, Json::FORCE_ARRAY);
+		Assert::equal($expected, $this->manager->readJson(self::FILE_NAME));
+	}
+
+	/**
 	 * Tests the function to write a text file
 	 */
 	public function testWrite(): void {
@@ -113,6 +152,16 @@ final class FileManagerTest extends TestCase {
 		$expected = $this->manager->read(self::FILE_NAME);
 		$this->managerTest->write($fileName, $expected);
 		Assert::equal($expected, $this->managerTest->read($fileName));
+	}
+
+	/**
+	 * Tests the function to write a JSON file
+	 */
+	public function testWriteJson(): void {
+		$fileName = 'config-test.json';
+		$expected = $this->manager->readJson(self::FILE_NAME);
+		$this->managerTest->writeJson($fileName, $expected);
+		Assert::equal($expected, $this->managerTest->readJson($fileName));
 	}
 
 	/**
