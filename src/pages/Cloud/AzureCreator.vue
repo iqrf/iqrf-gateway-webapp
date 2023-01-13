@@ -17,27 +17,35 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.msAzure.form.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
-					color='primary'
-					size='sm'
-					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
-				>
-					<CIcon :content='cilFile' size='sm' />
-					{{ $t('cloud.guides.pdf') }}
-				</CButton> <CButton
-					color='danger'
-					size='sm'
-					href='https://youtu.be/SIBoTrYwR2g'
-				>
-					<CIcon :content='cibYoutube' size='sm' />
-					{{ $t('cloud.guides.video') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+		<v-card>
+			<v-card-title>
+				<v-item-group>
+					<v-btn
+						color='primary'
+						small
+						href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
+						target='_blank'
+					>
+						<v-icon small>
+							mdi-file-document
+						</v-icon>
+						{{ $t('cloud.guides.pdf') }}
+					</v-btn> <v-btn
+						color='error'
+						small
+						href='https://youtu.be/SIBoTrYwR2g'
+						target='_blank'
+					>
+						<v-icon small>
+							mdi-youtube
+						</v-icon>
+						{{ $t('cloud.guides.video') }}
+					</v-btn>
+				</v-item-group>
+			</v-card-title>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<v-form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -45,39 +53,39 @@ limitations under the License.
 								required: $t("cloud.msAzure.errors.connectionString"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
+							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
-							color='secondary'
+						</v-btn>
+						<v-btn
+							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
@@ -87,19 +95,9 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
-	data: () => ({
-		cibYoutube,
-		cilFile,
-	}),
 	metaInfo: {
 		title: 'cloud.msAzure.form.title',
 	},

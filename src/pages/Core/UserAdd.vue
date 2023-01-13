@@ -17,121 +17,117 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.user.add') }}</h1>
-		<CCard body-wrapper>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveUser'>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("forms.errors.username"),
-						}'
-					>
-						<CInput
-							id='username'
-							v-model='user.username'
-							:label='$t("forms.fields.username").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("forms.errors.password"),
-						}'
-					>
-						<PasswordInput
-							id='password'
-							v-model='user.password'
-							:label='$t("forms.fields.password").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='email'
-						:custom-messages='{
-							email: $t("forms.errors.emailFormat"),
-						}'
-					>
-						<CInput
-							id='email'
-							v-model='user.email'
-							:label='$t("forms.fields.email").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("core.user.errors.role"),
-						}'
-					>
-						<CSelect
-							:value.sync='user.role'
-							:label='$t("core.user.role").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.role").toString()'
-							:options='roles'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{valid, touched, errors}'
-						rules='required'
-						:custom-messages='{
-							required: $t("core.user.errors.language"),
-						}'
-					>
-						<CSelect
-							:value.sync='user.language'
-							:label='$t("core.user.language").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-							:placeholder='$t("core.user.errors.language").toString()'
-							:options='languages'
-						/>
-					</ValidationProvider>
-					<CButton
-						color='primary'
-						type='submit'
-						:disabled='invalid'
-					>
-						{{ $t('forms.add') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form @submit.prevent='saveUser'>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("forms.errors.username"),
+							}'
+						>
+							<v-text-field
+								id='username'
+								v-model='user.username'
+								:label='$t("forms.fields.username")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("forms.errors.password"),
+							}'
+						>
+							<PasswordInput
+								id='password'
+								v-model='user.password'
+								:label='$t("forms.fields.password").toString()'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='email'
+							:custom-messages='{
+								email: $t("forms.errors.emailFormat"),
+							}'
+						>
+							<v-text-field
+								id='email'
+								v-model='user.email'
+								:label='$t("forms.fields.email")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("core.user.errors.role"),
+							}'
+						>
+							<v-select
+								v-model='user.role'
+								:label='$t("core.user.role")'
+								:items='roles'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{valid, touched, errors}'
+							rules='required'
+							:custom-messages='{
+								required: $t("core.user.errors.language"),
+							}'
+						>
+							<v-select
+								v-model='user.language'
+								:label='$t("core.user.language")'
+								:items='languages'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-btn
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
+							{{ $t('forms.add') }}
+						</v-btn>
+					</v-form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
-import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email} from '@/helpers/validators';
-import {IOption} from '@/interfaces/Coreui';
-import {IUser} from '@/interfaces/Core/User';
+import {required} from 'vee-validate/dist/rules';
+
 import {UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
 
+import {AxiosError} from 'axios';
+import {ISelectItem} from '@/interfaces/Vuetify';
+import {IUser} from '@/interfaces/Core/User';
+
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CForm,
-		CInput,
-		CSelect,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
@@ -157,19 +153,19 @@ export default class UserAdd extends Vue {
 	};
 
 	/**
-	 * @constant {Array<IOption>} languages Language options
+	 * @constant {Array<ISelectItem>} languages Language options
 	 */
-	private languages: Array<IOption> = [
+	private readonly languages: Array<ISelectItem> = [
 		{
 			value: UserLanguage.ENGLISH,
-			label: this.$t('core.user.languages.en'),
+			text: this.$t('core.user.languages.en'),
 		},
 	];
 
 	/**
-	 * @constant {Array<IOption>} roles Array of available user roles
+	 * @constant {Array<ISelectItem>} roles Array of available user roles
 	 */
-	private roles: Array<IOption> = [];
+	private roles: Array<ISelectItem> = [];
 
 	/**
 	 * Initialize validation rules and build user roles
@@ -179,13 +175,13 @@ export default class UserAdd extends Vue {
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
-		const roles: Array<IOption> = [];
+		const roles: Array<ISelectItem> = [];
 		for (const item of Object.keys(UserRole)) {
 			const itemIdx = Object.keys(UserRole).indexOf(item);
 			if (itemIdx >= roleIdx) {
 				roles.push({
 					value: UserRole[item],
-					label: this.$t(`core.user.roles.${UserRole[item]}`),
+					text: this.$t(`core.user.roles.${UserRole[item]}`),
 				});
 			}
 		}

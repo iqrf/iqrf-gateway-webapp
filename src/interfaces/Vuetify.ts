@@ -18,29 +18,7 @@ import VueI18n from 'vue-i18n';
 import {FileFormat} from '@/iqrfNet/fileFormat';
 import {SecurityFormat} from '@/iqrfNet/securityFormat';
 
-/**
- * Coreui DataTable field interface
- */
-export interface IField {
-	key: string
-	label: VueI18n.TranslateResult
-	_style?: string|Array<string>|object
-	filter?: boolean
-	sorter?: boolean
-}
-
-/**
- * Coreui select component option interface
- */
-export interface IOption {
+export interface ISelectItem {
+	text: string|VueI18n.TranslateResult
 	value: FileFormat|SecurityFormat|string|number|boolean|null
-	label: VueI18n.TranslateResult|string
-	props?: IProps
-}
-
-/**
- * Coreui shared properties
- */
-export interface IProps {
-	description: string
 }

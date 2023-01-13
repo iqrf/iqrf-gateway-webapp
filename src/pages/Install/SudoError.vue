@@ -15,11 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader color='danger' class='text-white'>
+	<v-card>
+		<v-card-title
+			color='error'
+			class='text-white'
+		>
 			{{ $t('install.error.sudo.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<span v-if='!exists'>
 				{{ $t('install.error.sudo.missing') }}
 			</span>
@@ -27,8 +30,7 @@ limitations under the License.
 			<span v-if='!userSudo'>
 				{{ $t('install.error.sudo.invalid') }}
 			</span>
-		</CCardBody>
-		<CCardFooter>
+			<v-divider class='my-2' />
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<div v-if='!exists'>
 				<br>
@@ -48,13 +50,13 @@ limitations under the License.
 					:readonly='true'
 				/>
 			</div>
-		</CCardFooter>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardFooter, CCardHeader} from '@coreui/vue/src';
+
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -64,10 +66,6 @@ import 'prismjs/themes/prism.css';
 
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
 		PrismEditor,
 	},
 	metaInfo: {

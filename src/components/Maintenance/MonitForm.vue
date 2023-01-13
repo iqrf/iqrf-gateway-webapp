@@ -15,72 +15,74 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard body-wrapper>
-		<ValidationObserver
-			v-if='configuration !== null'
-			v-slot='{invalid}'
-		>
-			<CForm @submit.prevent='saveConfig'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("maintenance.monit.errors.endpoint"),
-					}'
-				>
-					<CInput
-						v-model='configuration.endpoint'
-						:label='$t("maintenance.monit.form.endpoint")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required|alphanum'
-					:custom-messages='{
-						required: $t("maintenance.monit.errors.username"),
-						alphanum: $t("maintenance.monit.errors.usernameInvalid"),
-					}'
-				>
-					<CInput
-						v-model='configuration.username'
-						:label='$t("maintenance.monit.form.username")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required|alphanum'
-					:custom-messages='{
-						required: $t("maintenance.monit.errors.password"),
-						alphanum: $t("maintenance.monit.errors.passwordInvalid"),
-					}'
-				>
-					<CInput
-						v-model='configuration.password'
-						:label='$t("maintenance.monit.form.password")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<CButton
-					color='primary'
-					type='submit'
-					:disabled='invalid'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
-			</CForm>
-		</ValidationObserver>
-	</CCard>
+	<v-card>
+		<v-card-text>
+			<ValidationObserver
+				v-if='configuration !== null'
+				v-slot='{invalid}'
+			>
+				<v-form @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.endpoint"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.endpoint'
+							:label='$t("maintenance.monit.form.endpoint")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required|alphanum'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.username"),
+							alphanum: $t("maintenance.monit.errors.usernameInvalid"),
+						}'
+					>
+						<v-text-field
+							v-model='configuration.username'
+							:label='$t("maintenance.monit.form.username")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required|alphanum'
+						:custom-messages='{
+							required: $t("maintenance.monit.errors.password"),
+							alphanum: $t("maintenance.monit.errors.passwordInvalid"),
+						}'
+					>
+						<PasswordInput
+							v-model='configuration.password'
+							:label='$t("maintenance.monit.form.password")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-btn
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput} from '@coreui/vue/src';
 import {ValidationObserver, ValidationProvider} from 'vee-validate';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {extend} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -93,9 +95,7 @@ import {IMonitConfig} from '@/interfaces/Maintenance/Monit';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},

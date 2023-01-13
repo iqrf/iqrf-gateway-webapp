@@ -17,156 +17,152 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.user.title') }}</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					color='success'
-					to='/user/add/'
-					size='sm'
-					class='float-right'
-				>
-					<CIcon :content='cilPlus' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
+		<v-card>
+			<v-card-text>
+				<v-data-table
 					:loading='loading'
+					:headers='headers'
 					:items='users'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{external: false, resetable: true}'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #email='{item}'>
-						<td>
-							<span v-if='item.email !== null'>
-								{{ item.email }}
-							</span>
-							<CIcon
-								v-else
-								class='text-danger'
-								size='xl'
-								:content='cilXCircle'
-							/>
-						</td>
-					</template>
-					<template #role='{item}'>
-						<td>
-							<CDropdown
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
 								color='success'
-								:toggler-text='$t(`core.user.roles.${item.role}`)'
-								size='sm'
+								to='/user/add/'
+								small
 							>
-								<CDropdownItem
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+						</v-toolbar>
+					</template>
+					<template #[`item.email`]='{item}'>
+						<span v-if='item.email !== null'>
+							{{ item.email }}
+						</span>
+						<v-icon
+							v-else
+							color='error'
+						>
+							mdi-close-circle-outline
+						</v-icon>
+					</template>
+					<template #[`item.role`]='{item}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
+								<v-btn
+									color='success'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`core.user.roles.${item.role}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
 									v-for='role of roles'
 									:key='role'
+									dense
 									@click='changeRole(item, role)'
 								>
 									{{ $t(`core.user.roles.${role}`) }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</template>
-					<template #language='{item}'>
-						<td>
-							<CDropdown
-								color='success'
-								:toggler-text='$t(`core.user.languages.${item.language}`)'
-								size='sm'
-							>
-								<CDropdownItem @click='changeLanguage(item, "en")'>
+					<template #[`item.language`]='{item}'>
+						<v-menu offset-y>
+							<template #activator='{attrs, on}'>
+								<v-btn
+									color='success'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`core.user.languages.${item.language}`) }}
+									<v-icon>mdi-menu-down</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='changeLanguage(item, "en")'
+								>
 									{{ $t('core.user.languages.en') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								v-if='item.email !== null && item.state === "unverified"'
-								class='mr-1'
-								color='warning'
-								size='sm'
-								@click='resendVerification(item.id)'
-							>
-								<CIcon :content='cilReload' size='sm' />
-								{{ $t('core.user.resendVerification') }}
-							</CButton>
-							<CButton
-								class='mr-1'
-								color='info'
-								:to='"/user/edit/" + item.id'
-								size='sm'
-							>
-								<CIcon :content='cilPencil' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
-								color='danger'
-								size='sm'
-								@click='removeUser(item)'
-							>
-								<CIcon :content='cilTrash' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							v-if='item.email !== null && item.state === "unverified"'
+							class='mr-1'
+							color='warning'
+							small
+							@click='resendVerification(item.id)'
+						>
+							<v-icon small>
+								mdi-reload
+							</v-icon>
+							{{ $t('core.user.resendVerification') }}
+						</v-btn>
+						<v-btn
+							class='mr-1'
+							color='info'
+							:to='"/user/edit/" + item.id'
+							small
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-btn
+							class='mr-1'
+							color='error'
+							small
+							@click='deleteUser(item)'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<UserDeleteModal ref='deleteModal' @deleted='getUsers' />
+				</v-data-table>
+			</v-card-text>
+		</v-card>
+		<UserDeleteModal
+			v-model='userDeleteModel'
+			:only-user='users.length === 1'
+			@deleted='getUsers'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CDropdown,
-	CDropdownItem,
-	CIcon
-} from '@coreui/vue/src';
 import UserDeleteModal from '@/components/Core/UserDeleteModal.vue';
 
-import {cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import UserService from '@/services/UserService';
 
 import {UserRole} from '@/services/AuthenticationService';
 
 import {AxiosError} from 'axios';
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {IUser} from '@/interfaces/Core/User';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CDropdown,
-		CDropdownItem,
-		CIcon,
 		UserDeleteModal,
 	},
-	data: () => ({
-		cilPencil,
-		cilPlus,
-		cilReload,
-		cilTrash,
-		cilXCircle,
-	}),
 	metaInfo: {
 		title: 'core.user.title',
 	},
@@ -177,30 +173,46 @@ import {IUser} from '@/interfaces/Core/User';
  */
 export default class UserList extends Vue {
 	/**
-	 * @var {Array<IField>} fields Array of CoreUI data table columns
+	 * @var {boolean} loading Indicates that a request is in progress
 	 */
-	private readonly fields: Array<IField> = [
+	private loading = false;
+
+	/**
+	 * @var {Array<User>} users Array of user objects
+	 */
+	private users: Array<IUser> = [];
+
+	/**
+	 * @var {IUser|null} userDeleteModel User to delete
+	 */
+	private userDeleteModel: IUser|null = null;
+
+	/**
+	 * @var {Array<DataTableHeader>} headers Data table headers
+	 */
+	private readonly headers: Array<DataTableHeader> = [
 		{
-			key: 'username',
-			label: this.$t('forms.fields.username'),
+			value: 'username',
+			text: this.$t('forms.fields.username').toString(),
 		},
 		{
-			key: 'email',
-			label: this.$t('forms.fields.email'),
+			value: 'email',
+			text: this.$t('forms.fields.email').toString(),
 		},
 		{
-			key: 'role',
-			label: this.$t('core.user.role'),
+			value: 'role',
+			text: this.$t('core.user.role').toString(),
 		},
 		{
-			key: 'language',
-			label: this.$t('core.user.language'),
+			value: 'language',
+			text: this.$t('core.user.language').toString(),
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
 
@@ -213,16 +225,6 @@ export default class UserList extends Vue {
 		UserRole.BASICADMIN,
 		UserRole.BASIC,
 	];
-
-	/**
-	 * @var {Array<User>} users Array of user objects
-	 */
-	private users: Array<IUser> = [];
-
-	/**
-	 * @var {boolean} loading Indicates that a request is in progress
-	 */
-	private loading = false;
 
 	/**
 	 * Retrieves list of existing user
@@ -311,10 +313,6 @@ export default class UserList extends Vue {
 			});
 	}
 
-	private removeUser(user: IUser): void {
-		(this.$refs.deleteModal as UserDeleteModal).showModal(user, this.users.length === 1);
-	}
-
 	/**
 	 * Requests a new verification email
 	 * @param {number} userId User ID
@@ -329,6 +327,14 @@ export default class UserList extends Vue {
 				);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.resendFailed'));
+	}
+
+	/**
+	 * Opens user delete modal
+	 * @param {IUser} user User
+	 */
+	private deleteUser(user: IUser): void {
+		this.userDeleteModel = user;
 	}
 }
 </script>

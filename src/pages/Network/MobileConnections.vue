@@ -17,123 +17,111 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<GsmInterfaces ref='interfaces' />
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				{{ $t('network.connection.title') }}
-				<CButton
-					color='success'
-					size='sm'
-					to='/ip-network/mobile/add'
-				>
-					<CIcon :content='cilPlus' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='fields'
-					:items='connections'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
+		<GsmInterfaces
+			ref='interfaces'
+			class='mb-5'
+		/>
+		<v-card class='mb-5'>
+			<v-card-text>
+				<v-data-table
 					:loading='loading'
-					:sorter='{external: false, resetable: true}'
+					:headers='headers'
+					:items='connections'
+					:no-data-text='$t("network.mobile.messages.noConnections")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('network.mobile.messages.noConnections') }}
-					</template>
-					<template #interfaceName='{item}'>
-						<td>
-							{{ item.interfaceName }}
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								size='sm'
-								:color='item.interfaceName === null ? "success" : "danger"'
-								@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
+					<template #top>
+						<v-toolbar dense flat>
+							<h5>{{ $t('network.connection.title') }}</h5>
+							<v-spacer />
+							<v-btn
+								class='mr-1'
+								color='success'
+								small
+								to='/ip-network/mobile/add'
 							>
-								<CIcon :content='item.interfaceName === null ? cilLink : cilLinkBroken' size='sm' />
-								{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
-							</CButton> <CButton
-								size='sm'
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+							</v-btn>
+							<v-btn
 								color='primary'
-								:to='"/ip-network/mobile/edit/" + item.uuid'
+								small
+								@click='getConnections'
 							>
-								<CIcon :content='cilPencil' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton> <CButton
-								size='sm'
-								color='danger'
-								@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
-							>
-								<CIcon :content='cilTrash' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+								<v-icon small>
+									mdi-refresh
+								</v-icon>
+							</v-btn>
+						</v-toolbar>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CCard body-wrapper>
-			<NetworkOperators />
-		</CCard>
+					<template #[`item.interfaceName`]='{item}'>
+						{{ item.interfaceName }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							:color='item.interfaceName === null ? "success" : "error"'
+							class='mr-1'
+							small
+							@click='item.interfaceName === null ? connect(item) : disconnect(item, false)'
+						>
+							<v-icon small>
+								{{ item.interfaceName === null ? 'mdi-link-plus' : 'mdi-link-off' }}
+							</v-icon>
+							{{ $t(`network.table.${item.interfaceName === null ? '' : 'dis'}connect`) }}
+						</v-btn>
+						<v-btn
+							class='mr-1'
+							small
+							color='primary'
+							:to='"/ip-network/mobile/edit/" + item.uuid'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-btn
+							color='error'
+							small
+							@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
+		<v-card>
+			<v-card-text>
+				<NetworkOperators />
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Ref, Vue} from 'vue-property-decorator';
-import {
-	CBadge,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-	CProgress
-} from '@coreui/vue/src';
+import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
-import {
-	cilLink,
-	cilLinkBroken,
-	cilPencil,
-	cilPlus,
-	cilTrash
-} from '@coreui/icons';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {extendedErrorToast} from '@/helpers/errorToast';
+
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 
 import {AxiosError} from 'axios';
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {IModem} from '@/interfaces/Network/Mobile';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
-import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
-import {ConnectionType} from '@/enums/Network/ConnectionType';
 
 @Component({
 	components: {
-		CBadge,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
-		CProgress,
 		GsmInterfaces,
 		NetworkOperators,
 	},
-	data: () => ({
-		cilLink,
-		cilLinkBroken,
-		cilPencil,
-		cilPlus,
-		cilTrash,
-	}),
 	metaInfo: {
 		title: 'network.mobile.title',
 	},
@@ -146,8 +134,13 @@ export default class MobileConnections extends Vue {
 
 	/**
 	 * @property {GsmInterfaces} interfaces - GSM interfaces component
-   */
+	 */
 	@Ref('interfaces') readonly interfaces!: GsmInterfaces;
+
+	/**
+	 * @property {boolean} loading Loading state
+	 */
+	private loading = true;
 
 	/**
 	 * @var {Array<NetworkConnections>} connections Existing mobile connections
@@ -160,31 +153,27 @@ export default class MobileConnections extends Vue {
 	private modems: Array<IModem> = [];
 
 	/**
-	 * @constant {Array<IField>} fields GSM connections table fields
+	 * @constant {Array<DataTableHeader>} fields GSM connections table fields
 	 */
-	private fields: Array<IField> = [
+	private readonly headers: Array<DataTableHeader> = [
 		{
-			key: 'name',
-			label: this.$t('network.connection.name'),
+			value: 'name',
+			text: this.$t('network.connection.name').toString(),
 		},
 		{
-			key: 'interfaceName',
-			label: this.$t('network.connection.interface'),
-			filter: false,
-			sorter: false,
+			value: 'interfaceName',
+			text: this.$t('network.connection.interface').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
+			align: 'end',
 		},
 	];
-
-	/**
-	 * @property {boolean} loading Loading state
-	 */
-	private loading = true;
 
 	/**
 	 * Builds connections table

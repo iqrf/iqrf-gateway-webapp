@@ -17,29 +17,34 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.standard.title') }}</h1>
-		<CCard>
-			<CTabs variant='tabs'>
-				<CTab :title='$t("iqrfnet.standard.sensor.title")'>
+		<v-card class='mb-5'>
+			<v-tabs v-model='activeTab' :show-arrows='true'>
+				<v-tab>{{ $t('iqrfnet.standard.sensor.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.binaryOutput.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.light.title') }}</v-tab>
+				<v-tab>{{ $t('iqrfnet.standard.dali.title') }}</v-tab>
+			</v-tabs>
+			<v-tabs-items v-model='activeTab'>
+				<v-tab-item :transition='false'>
 					<SensorManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.binaryOutput.title")'>
+				</v-tab-item>
+				<v-tab-item :transition='false'>
 					<BinaryOutputManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.light.title")'>
+				</v-tab-item>
+				<v-tab-item :transition='false'>
 					<LightManager />
-				</CTab>
-				<CTab :title='$t("iqrfnet.standard.dali.title")'>
+				</v-tab-item>
+				<v-tab-item :transition='false'>
 					<DaliManager />
-				</CTab>
-			</CTabs>
-		</CCard>
+				</v-tab-item>
+			</v-tabs-items>
+		</v-card>
 		<StandardDevices />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CTab, CTabs} from '@coreui/vue/src';
 import BinaryOutputManager from '@/components/IqrfNet/StandardManager/BinaryOutputManager.vue';
 import DaliManager from '@/components/IqrfNet/StandardManager/DaliManager.vue';
 import LightManager from '@/components/IqrfNet/StandardManager/LightManager.vue';
@@ -48,8 +53,6 @@ import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevice
 
 @Component({
 	components: {
-		CTab,
-		CTabs,
 		BinaryOutputManager,
 		DaliManager,
 		LightManager,
@@ -64,5 +67,11 @@ import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevice
 /**
  * Standard manager page component
  */
-export default class StandardManager extends Vue {}
+export default class StandardManager extends Vue {
+
+	/**
+	 * @const {number} activeTab Default active tab
+	 */
+	private activeTab = 0;
+}
 </script>

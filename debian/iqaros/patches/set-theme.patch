@@ -2,18 +2,18 @@ Set theme for the IQAROS
 --- a/.env
 +++ b/.env
 @@ -1,3 +1,3 @@
- VUE_APP_BASE_URL=/system/
- VUE_APP_CYPRESS_ENABLED=0
--VUE_APP_THEME=generic
-+VUE_APP_THEME=iqaros
+ VITE_BASE_URL=/system/
+ VITE_CYPRESS_ENABLED=0
+-VITE_THEME=generic
++VITE_THEME=iqaros
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -21,7 +21,7 @@ import router from './router';
  import ThemeManager from './helpers/themeManager';
  import App from '@/App.vue';
- 
--import './css/themes/generic.scss';
-+import './css/themes/iqaros.scss';
- import './css/app.scss';
+
+-import './styles/themes/generic.scss';
++import './styles/themes/iqaros.scss';
+ import './styles/app.scss';
  import 'vue-datetime/dist/vue-datetime.css';
  import 'vue-select/dist/vue-select.css';

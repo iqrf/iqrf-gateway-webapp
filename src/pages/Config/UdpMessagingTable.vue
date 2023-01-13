@@ -16,98 +16,95 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>
-			{{ $t('config.daemon.messagings.udp.title') }}
-		</h1>
-		<CCard>
-			<CCardHeader class='border-0'>
-				<CButton
-					color='success'
-					to='/config/daemon/messagings/udp/add'
-					size='sm'
-					class='float-right'
-				>
-					<CIcon :content='cilPlus' size='sm' />
-					{{ $t('table.actions.add') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
+		<h1>{{ $t('config.daemon.messagings.udp.title') }}</h1>
+		<v-card>
+			<v-card-text>
+				<v-data-table
 					:loading='loading'
+					:headers='headers'
 					:items='instances'
-					:fields='fields'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{ external: false, resetable: true }'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
+					<template #top>
+						<v-toolbar dense flat>
+							<v-spacer />
+							<v-btn
 								class='mr-1'
-								color='info'
-								:to='"/config/daemon/messagings/udp/edit/" + item.instance'
-								size='sm'
+								color='success'
+								small
+								to='/config/daemon/messagings/udp/add'
 							>
-								<CIcon :content='cilPencil' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
-								color='danger'
-								size='sm'
-								@click='removeInstance(item.instance)'
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+							</v-btn>
+							<v-btn
+								color='primary'
+								small
+								@click='getInstances'
 							>
-								<CIcon :content='cilTrash' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+								<v-icon small>
+									mdi-refresh
+								</v-icon>
+							</v-btn>
+						</v-toolbar>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<MessagingDeleteModal ref='deleteModal' @deleted='getInstances' />
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							class='mr-1'
+							color='info'
+							small
+							:to='"/config/daemon/messagings/udp/edit/" + item.instance'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-btn
+							color='error'
+							small
+							@click='messagingDeleteModel = item.instance'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
+		<MessagingDeleteModal
+			v-model='messagingDeleteModel'
+			:messaging-type='MessagingTypes.UDP'
+			@deleted='getInstances'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CButtonClose, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
-
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {IUdpInstance} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
-		CButton,
-		CButtonClose,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
 		MessagingDeleteModal,
 	},
 	data: () => ({
-		cilPencil,
-		cilPlus,
-		cilTrash,
 		MessagingTypes,
 	}),
 	metaInfo: {
-		title: 'config.daemon.messagings.udp.title'
-	}
+		title: 'config.daemon.messagings.udp.title',
+	},
 })
 
 /**
@@ -115,43 +112,49 @@ import {IUdpInstance} from '@/interfaces/Config/Messaging';
  */
 export default class UdpMessagingTable extends Vue {
 	/**
+	 * @var {boolean} loading Loading visibility
+	 */
+	private loading = false;
+
+	/**
 	 * @constant {string} componentName UDP messaging component name
 	 */
 	private componentName = 'iqrf::UdpMessaging';
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
-	 */
-	private fields: Array<IField> = [
-		{
-			key: 'instance',
-			label: this.$t('forms.fields.instanceName'),
-		},
-		{
-			key: 'RemotePort',
-			label: this.$t('config.daemon.messagings.udp.form.RemotePort'),
-		},
-		{
-			key: 'LocalPort',
-			label: this.$t('config.daemon.messagings.udp.form.LocalPort'),
-		},
-		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
-		},
-	];
-
-	/**
-	 * @var {boolean} loading Indicates that request is in progress
-	 */
-	private loading = false;
-
-	/**
 	 * @var {Array<IUdpInstance>} instances Array of UDP messaging component instances
 	 */
 	private instances: Array<IUdpInstance> = [];
+
+	/**
+	 * @var {string|null} messagingDeleteModel Messaging to delete
+	 */
+	private messagingDeleteModel: string|null = null;
+
+	/**
+	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
+	 */
+	private headers: Array<DataTableHeader> = [
+		{
+			value: 'instance',
+			text: this.$t('forms.fields.instanceName').toString(),
+		},
+		{
+			value: 'RemotePort',
+			text: this.$t('config.daemon.messagings.udp.form.RemotePort').toString(),
+		},
+		{
+			value: 'LocalPort',
+			text: this.$t('config.daemon.messagings.udp.form.LocalPort').toString(),
+		},
+		{
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
+		},
+	];
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -175,14 +178,6 @@ export default class UdpMessagingTable extends Vue {
 				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.udp.messages.listFailed');
 			});
-	}
-
-	/**
-	 * Removes component instance
-	 * @param {string} instance Component instance
-	 */
-	private removeInstance(instance: string): void {
-		(this.$refs.deleteModal as MessagingDeleteModal).showModal(MessagingTypes.UDP, instance);
 	}
 }
 </script>

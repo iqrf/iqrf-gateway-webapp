@@ -15,34 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div class='progress position-relative'>
-		<div
-			:class='`progress-bar bg-${color}`'
-			role='progressbar'
-			:style='`width: ${signal}%`'
-			:aria-valuenow='signal'
-			aria-valuemin='0'
-			aria-valuemax='100'
-		>
-			<span class='progress-bar-text'>
-				{{ signal }}%
-			</span>
-		</div>
-	</div>
+	<v-progress-linear
+		v-if='signal !== undefined'
+		:value='signal'
+		:color='color'
+		height='1.5em'
+		rounded
+	>
+		<span>{{ Math.ceil(signal) }}%</span>
+	</v-progress-linear>
 </template>
 
 <script lang='ts'>
-import {CProgress} from '@coreui/vue/src';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
 /**
  * Signal strength indicator
  */
-@Component({
-	components: {
-		CProgress,
-	},
-})
+@Component
 export default class SignalIndicator extends Vue {
 
 	/**
@@ -59,7 +49,7 @@ export default class SignalIndicator extends Vue {
 		} else if (this.signal >= 34) {
 			return 'warning';
 		} else {
-			return 'danger';
+			return 'error';
 		}
 	}
 
@@ -67,12 +57,7 @@ export default class SignalIndicator extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.progress-bar-text {
-	position: absolute;
-	width: 100%;
-	text-align: center;
-	font-weight: bold;
-	color: black;
+span {
+	color: white;
 }
-
 </style>

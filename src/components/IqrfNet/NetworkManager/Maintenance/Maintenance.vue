@@ -17,7 +17,9 @@ limitations under the License.
 <template>
 	<div>
 		<FrcResponseTime />
+		<v-divider />
 		<RfSignalTest ref='rfSignal' />
+		<v-divider />
 		<NetworkIssues />
 	</div>
 </template>
@@ -29,7 +31,7 @@ import NetworkIssues from './NetworkIssues.vue';
 import RfSignalTest from './RfSignalTest.vue';
 
 /**
- * IQMESH Network DPA params component
+ * IQMESH Network maintenance card
  */
 @Component({
 	components: {

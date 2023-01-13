@@ -23,25 +23,23 @@ limitations under the License.
 				required: $t("network.connection.ipv6.errors.method"),
 			}'
 		>
-			<CSelect
-				:value.sync='connection.ipv6.method'
-				:disabled='disabled'
+			<v-select
+				v-model='connection.ipv6.method'
 				:label='$t("network.connection.ipv6.method").toString()'
-				:options='methods'
+				:items='methods'
 				:placeholder='$t("network.connection.ipv6.methods.null").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
+				:disabled='disabled'
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
 		<div v-if='connection.ipv6.method === Ipv6Method.MANUAL'>
-			<hr>
-			<CRow
+			<v-row
 				v-for='(address, index) in connection.ipv6.addresses'
 				:key='index'
-				form
 			>
-				<CCol sm='12' lg='8'>
+				<v-col cols='12' lg='8'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
@@ -53,34 +51,40 @@ limitations under the License.
 							ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model='address.address'
 							:disabled='disabled'
 							:label='$t("network.connection.ipv6.address").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						>
-							<template #prepend-content>
-								<span
-									class='text-success'
+							<template #prepend>
+								<v-btn
+									color='success'
+									small
 									@click='addAddress'
 								>
-									<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
-								</span>
+									<v-icon small>
+										mdi-plus
+									</v-icon>
+								</v-btn>
 							</template>
-							<template #append-content>
-								<span
+							<template #append-outer>
+								<v-btn
 									v-if='connection.ipv6.addresses.length > 1'
-									class='text-danger'
+									color='error'
+									small
 									@click='deleteAddress(index)'
 								>
-									<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
-								</span>
+									<v-icon small>
+										mdi-delete
+									</v-icon>
+								</v-btn>
 							</template>
-						</CInput>
+						</v-text-field>
 					</ValidationProvider>
-				</CCol>
-				<CCol sm='12' lg='4'>
+				</v-col>
+				<v-col cols='12' lg='4'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
@@ -96,19 +100,19 @@ limitations under the License.
 							between: $t("network.connection.ipv6.errors.prefixInvalid"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address.prefix'
 							:disabled='disabled'
 							type='number'
 							min='48'
 							max='128'
 							:label='$t("network.connection.ipv6.prefix").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-				</CCol>
-			</CRow>
+				</v-col>
+			</v-row>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
@@ -120,14 +124,15 @@ limitations under the License.
 					ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='connection.ipv6.gateway'
 					:disabled='disabled'
 					:label='$t("network.connection.ipv6.gateway").toString()'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
-			</ValidationProvider><hr>
+			</ValidationProvider>
+			<v-divider class='mb-2' />
 			<div
 				v-for='(address, index) in connection.ipv6.dns'
 				:key='index+"a"'
@@ -143,31 +148,37 @@ limitations under the License.
 						ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 					}'
 				>
-					<CInput
+					<v-text-field
 						v-model='address.address'
 						:disabled='disabled'
 						:label='$t("network.connection.ipv6.dns.address").toString()'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
+						:success='touched ? valid : null'
+						:error-messages='errors'
 					>
-						<template #prepend-content>
-							<span
-								class='text-success'
+						<template #prepend>
+							<v-btn
+								class='success'
+								small
 								@click='addDns'
 							>
-								<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
-							</span>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+							</v-btn>
 						</template>
-						<template #append-content>
-							<span
+						<template #append-outer>
+							<v-btn
 								v-if='connection.ipv6.dns.length > 1'
-								class='text-danger'
+								color='error'
+								small
 								@click='deleteDns(index)'
 							>
-								<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
-							</span>
+								<v-icon small>
+									mdi-delete
+								</v-icon>
+							</v-btn>
 						</template>
-					</CInput>
+					</v-text-field>
 				</ValidationProvider>
 			</div>
 		</div>
@@ -175,30 +186,22 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
-
-import {CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {Component, VModel, Prop, Vue} from 'vue-property-decorator';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, required} from 'vee-validate/dist/rules';
 
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {Ipv6Method} from '@/enums/Network/Ip';
 import {ipv6} from '@/helpers/validators';
 
-import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
-import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * IPv6 configuration options
  */
 @Component({
 	components: {
-		CCol,
-		CInput,
-		CRow,
-		CSelect,
-		FontAwesomeIcon,
 		ValidationProvider,
 	},
 	data: () => ({
@@ -239,11 +242,11 @@ export default class IPv6Configuration extends Vue {
 	}
 
 	/**
-	 * Computes array of CoreUI select options for IPv6 configuration method
-	 * @returns {Array<IOption>} Configuration method options
+	 * Computes array of select options for IPv6 configuration method
+	 * @returns {Array<ISelectItem>} Configuration method options
 	 */
-	get methods(): Array<IOption> {
-		let methods: Array<string>;
+	get methods(): Array<ISelectItem> {
+		let methods: Array<Ipv6Method>;
 		// let methods = ['auto', 'dhcp', 'disabled', 'ignore', 'link-local', 'manual', 'shared'];
 		if (this.connection.type == ConnectionType.GSM) {
 			methods = [Ipv6Method.AUTO, Ipv6Method.DISABLED];
@@ -253,7 +256,7 @@ export default class IPv6Configuration extends Vue {
 		return methods.map((method: string) =>
 			({
 				value: method,
-				label: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
+				text: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
 			})
 		);
 	}

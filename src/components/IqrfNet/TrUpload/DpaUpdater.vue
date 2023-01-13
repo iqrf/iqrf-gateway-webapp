@@ -16,91 +16,66 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>{{ $t('iqrfnet.trUpload.dpaUpload.title') }}</CCardHeader>
-			<CCardBody>
-				<CElementCover
+		<v-card>
+			<v-card-title>{{ $t('iqrfnet.trUpload.dpaUpload.title') }}</v-card-title>
+			<v-card-text>
+				<v-overlay
 					v-if='loadFailed'
-					style='z-index: 1;'
-					:opacity='0.85'
+					absolute
+					:opacity='0.65'
 				>
 					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFailure') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
-						<fieldset :disabled='loadFailed'>
-							<div v-if='versions.length > 0'>
-								<ValidationProvider
-									v-slot='{valid, touched, errors}'
-									rules='required'
-									:custom-messages='{
-										required: $t("iqrfnet.trUpload.dpaUpload.errors.version"),
-									}'
-								>
-									<CSelect
-										:value.sync='version'
-										:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-										:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
-										:options='versions'
-									/>
-								</ValidationProvider>
-								<CButton
-									color='primary'
-									:disabled='invalid'
-									@click='compareUploadedVersion'
-								>
-									{{ $t('forms.upload') }}
-								</CButton>
-							</div>
-							<CAlert
-								v-if='versions.length === 0 && currentDpa.length > 0'
-								color='warning'
+					<v-form>
+						<div v-if='versions.length > 0'>
+							<ValidationProvider
+								v-slot='{valid, touched, errors}'
+								rules='required'
+								:custom-messages='{
+									required: $t("iqrfnet.trUpload.dpaUpload.errors.version"),
+								}'
 							>
-								{{ $t('iqrfnet.trUpload.dpaUpload.messages.noUpgrades') }}
-							</CAlert>
-						</fieldset>
-					</CForm>
+								<v-select
+									v-model='version'
+									:items='versions'
+									:label='$t("iqrfnet.trUpload.dpaUpload.form.version")'
+									:success='touched ? valid : null'
+									:invalid-feedback='errors'
+									:placeholder='$t("iqrfnet.trUpload.dpaUpload.errors.version")'
+								/>
+							</ValidationProvider>
+							<v-btn
+								color='primary'
+								:disabled='invalid'
+								@click='compareUploadedVersion'
+							>
+								{{ $t('forms.upload') }}
+							</v-btn>
+						</div>
+						<v-alert
+							v-if='versions.length === 0 && currentDpa.length > 0'
+							type='warning'
+							text
+						>
+							{{ $t('iqrfnet.trUpload.dpaUpload.messages.noUpgrades') }}
+						</v-alert>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CModal
-			:show.sync='showModal'
-			color='warning'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.trUpload.dpaUpload.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.trUpload.dpaUpload.modal.prompt', {version: prettyVersion(currentDpa)}) }}
-			<template #footer>
-				<CButton
-					class='mr-1'
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='warning'
-					@click='uploadDpa'
-				>
-					{{ $t('forms.upload') }}
-				</CButton>
-			</template>
-		</CModal>
+			</v-card-text>
+		</v-card>
+		<DpaUpdateConfirmationModal
+			v-model='showModal'
+			:current-dpa='currentDpa'
+			@upload='getDpaFile'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import DpaUpdateConfirmationModal from '@/components/IqrfNet/TrUpload/DpaUpdateConfirmationModal.vue';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
@@ -113,23 +88,16 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {MutationPayload} from 'vuex';
 
 interface DpaVersions {
-	label: string
+	text: string
 	value: string
 }
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CModal,
-		CSelect,
+		DpaUpdateConfirmationModal,
 		ValidationObserver,
 		ValidationProvider,
-	}
+	},
 })
 
 /**
@@ -162,7 +130,7 @@ export default class DpaUpdater extends Vue {
 	private msgId: string|null = null;
 
 	/**
-	 * @var {string|null} osBuild IQRF OS build
+	 * @var {string} osBuild IQRF OS build
 	 */
 	private osBuild = '0000';
 
@@ -224,21 +192,6 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
-	 * Converts DPA version string to pretty version
-	 * @param {string} version DPA version string
-	 * @returns {string} DPA version pretty string
-	 */
-	prettyVersion(version: string): string {
-		if (version.length === 0) {
-			return version;
-		}
-		if (version.startsWith('0')) {
-			return version.charAt(1) + '.' + version.substring(2, 4);
-		}
-		return version.substring(0, 2) + '.' + version.substring(2, 4);
-	}
-
-	/**
 	 * Performs device enumeration
 	 */
 	private getDeviceEnumeration(): void {
@@ -262,22 +215,22 @@ export default class DpaUpdater extends Vue {
 					if (dpaVer < 400) {
 						fetchedVersions.push({
 							value: version.getDpaVersion(false) + '-' + RFMode.LP,
-							label: version.getDpaVersion(true) + ', ' + RFMode.LP + ' RF mode'
+							text: version.getDpaVersion(true) + ', ' + RFMode.LP + ' RF mode'
 						});
 						fetchedVersions.push({
 							value: version.getDpaVersion(false) + '-' + RFMode.STD,
-							label: version.getDpaVersion(true) + ', ' + RFMode.STD + ' RF mode'
+							text: version.getDpaVersion(true) + ', ' + RFMode.STD + ' RF mode'
 						});
 					} else {
 						fetchedVersions.push({
 							value: version.getDpaVersion(false),
-							label: version.getDpaVersion(true),
+							text: version.getDpaVersion(true),
 						});
 					}
 				}
 				fetchedVersions.forEach(item => {
 					if (this.currentDpa === item.value) {
-						Object.assign(item, {label: item.label + ' (Current version)'});
+						Object.assign(item, {text: item.text + ' (Current version)'});
 					}
 				});
 				fetchedVersions.sort();
@@ -286,7 +239,7 @@ export default class DpaUpdater extends Vue {
 				this.getDeviceEnumeration();
 			})
 			.catch(() => {
-				this.loadFailed = true;
+				this.$emit('loaded', {name: 'DPA', success: false});
 			});
 	}
 
@@ -295,11 +248,11 @@ export default class DpaUpdater extends Vue {
 	 */
 	private updateVersions(): void {
 		for (const item of this.versions) {
-			if (item.label.endsWith('(Current version)')) {
-				item.label = item.label.slice(0, -18);
+			if (item.text.endsWith('(Current version)')) {
+				item.text = item.text.slice(0, -18);
 			}
 			if (item.value === this.version) {
-				item.label += ' (Current version)';
+				item.text += ' (Current version)';
 			}
 		}
 		this.currentDpa = this.version;
@@ -317,14 +270,6 @@ export default class DpaUpdater extends Vue {
 		} else {
 			this.getDpaFile();
 		}
-	}
-
-	/**
-	 * Uploads DPA file to device
-	 */
-	private uploadDpa(): void {
-		this.showModal = false;
-		this.getDpaFile();
 	}
 
 	/**
@@ -348,7 +293,6 @@ export default class DpaUpdater extends Vue {
 		} else {
 			Object.assign(request, {'dpa': this.version});
 		}
-
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.trUpload.dpaUpload.messages.gatewayUpload').toString()

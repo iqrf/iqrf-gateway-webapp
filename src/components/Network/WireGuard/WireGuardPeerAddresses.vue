@@ -16,12 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CRow
+		<v-row
 			v-for='(ip, ipIndex) of addresses'
 			:key='ipIndex + "_" + version'
-			form
 		>
-			<CCol sm='12' lg='6'>
+			<v-col cols='12' lg='6'>
 				<IpAddressInput
 					v-model='ip.address'
 					:version='version'
@@ -30,17 +29,16 @@ limitations under the License.
 					@add='add()'
 					@remove='remove(ipIndex)'
 				/>
-			</CCol>
-			<CCol sm='12' lg='6'>
+			</v-col>
+			<v-col cols='12' lg='6'>
 				<IpAddressPrefixInput v-model='ip.prefix' :version='version' />
-			</CCol>
-		</CRow>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
-import {CCol, CRow} from '@coreui/vue/src';
 
 import {IWGAllowedIP} from '@/interfaces/Network/Wireguard';
 import IpAddressInput from '@/components/Network/WireGuard/IpAddressInput.vue';
@@ -51,8 +49,6 @@ import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefix
  */
 @Component({
 	components: {
-		CCol,
-		CRow,
 		IpAddressInput,
 		IpAddressPrefixInput,
 	},

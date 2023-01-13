@@ -1,41 +1,48 @@
 <template>
-	<CCardBody class='border-0 card-margin-bottom'>
-		<CAlert
-			v-if='cursor === null && log.length === 0'
-			class='mb-0'
-			color='warning'
-		>
-			{{ $t('gateway.log.journal.notLoaded') }}
-		</CAlert>
-		<CAlert
-			v-else-if='log.length === 0'
-			class='mb-0'
-			color='info'
-		>
-			{{ $t('gateway.log.journal.noRecords') }}
-		</CAlert>
-		<CAlert
-			v-else-if='loading'
-			class='mb-0'
-			color='info'
-		>
-			{{ $t('gateway.log.journal.loading') }}
-		</CAlert>
-		<CAlert
-			v-else-if='oldestRecords'
-			class='mb-0'
-			color='info'
-		>
-			{{ $t('gateway.log.journal.noOlderRecords') }}
-		</CAlert>
-		<pre v-if='log.length > 0' ref='journal' class='log card-margin-bottom' @scroll='scrollUpdate'>{{ log }}</pre>
-	</CCardBody>
+	<v-card>
+		<v-card-text>
+			<v-alert
+				v-if='cursor === null && log.length === 0'
+				class='mb-0'
+				type='warning'
+				text
+			>
+				{{ $t('gateway.log.journal.notLoaded') }}
+			</v-alert>
+			<v-alert
+				v-else-if='log.length === 0'
+				class='mb-0'
+				type='info'
+				text
+			>
+				{{ $t('gateway.log.journal.noRecords') }}
+			</v-alert>
+			<v-alert
+				v-else-if='loading'
+				class='mb-0'
+				type='info'
+				text
+			>
+				{{ $t('gateway.log.journal.loading') }}
+			</v-alert>
+			<v-alert
+				v-else-if='oldestRecords'
+				class='mb-0'
+				type='info'
+				text
+			>
+				{{ $t('gateway.log.journal.noOlderRecords') }}
+			</v-alert>
+			<pre v-if='log.length > 0' ref='journal' v-scroll.self='scrollUpdate' class='log'>{{ log }}</pre>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {Scroll} from 'vuetify/lib/directives';
 
 import JournalService from '@/services/JournalService';
 
@@ -46,7 +53,9 @@ import {IJournalData} from '@/interfaces/Gateway/Journal';
  * Journal viewer component
  */
 @Component({
-
+	directives: {
+		Scroll,
+	},
 })
 export default class JournalViewer extends Vue {
 	/**

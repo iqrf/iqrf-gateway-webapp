@@ -15,91 +15,89 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		color='danger'
-		size='lg'
-		:show.sync='show'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('config.controller.deleteModal.title') }}
-			</h5>
-		</template>
-		{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}
-		<template #footer>
-			<CButton
-				class='mr-1'
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='deleteProfile'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card v-if='profile !== null'>
+			<v-card-title>{{ $t('config.controller.deleteModal.title') }}</v-card-title>
+			<v-card-text>{{ $t('config.controller.deleteModal.prompt', {profile: profile.name}) }}</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+import {extendedErrorToast} from '@/helpers/errorToast';
+
+import ControllerPinConfigService from '@/services/ControllerPinConfigService';
+
+import {AxiosError} from 'axios';
+import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 /**
  * Controller pin configuration delete modal window component
  */
+@Component
 export default class ControllerPinConfigDeleteModal extends Vue {
-	/**
-	 * @var {boolean} show Controls whether modal window is rendered
-	 */
-	private show = false;
 
 	/**
-	 * @var {number} idx Controller profile ID
+	 * @property {IControllerPinConfig|null} profile Profile to delete
 	 */
-	private id = 0;
+	@VModel({required: true, default: null}) profile!: IControllerPinConfig|null;
 
 	/**
-	 * @var {string} name Controller profile name
+	 * Computes modal display condition
 	 */
-	private name = '';
-
-	/**
-	 * Stores controller pin configuration profile metadata and renders the modal window
-	 * @param {number} id Profile ID
-	 * @param {string} name Profile name
-	 */
-	public activateModal(id: number, name: string): void {
-		this.id = id;
-		this.name = name;
-		this.show = true;
+	get showModal(): boolean {
+		return this.profile !== null;
 	}
 
 	/**
-	 * Emits event to delete controller pin configuration profile
+	 * Removes configuration profile
 	 */
-	private deleteProfile(): void {
-		this.deactivateModal();
-		this.$emit('delete-profile', this.id);
+	private remove(): void {
+		if (this.profile === null || this.profile.id === undefined) {
+			return;
+		}
+		const name = this.profile.name;
+		this.$store.commit('spinner/SHOW');
+		ControllerPinConfigService.delete(this.profile.id)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('config.controller.pins.messages.deleteSuccess', {profile: name}).toString()
+				);
+				this.hideModal();
+				this.$emit('deleted');
+			})
+			.catch((err: AxiosError) => {
+				extendedErrorToast(err, 'config.controller.pins.messages.deleteFailed', {profile: name});
+			});
 	}
 
 	/**
-	 * Clears controller pin configuration profile metadata and closes the modal window
+	 * Hides modal window
 	 */
-	private deactivateModal(): void {
-		this.show = false;
+	private hideModal(): void {
+		this.profile = null;
 	}
 }
 </script>

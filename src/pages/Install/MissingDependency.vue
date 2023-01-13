@@ -15,37 +15,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader color='danger' class='text-white'>
+	<v-card>
+		<v-card-title
+			color='danger'
+			class='text-white'
+		>
 			{{ $t('install.error.missingDependency.title') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			{{ $t('install.error.missingDependency.description', {dependencies: packages}) }}
-		</CCardBody>
-		<CCardFooter>
-			<h4>{{ $t('install.error.missingDependency.details') }}</h4>
-			<CDataTable
+			<v-divider class='my-2' />
+			<v-data-table
+				:headers='headers'
 				:items='dependencies'
-				:fields='fields'
-				:striped='true'
 			/>
-		</CCardFooter>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardFooter, CCardHeader, CDataTable} from '@coreui/vue/src';
 import {InstallationCheckDependency} from '@/services/InstallationService';
+import {DataTableHeader} from 'vuetify';
 
 @Component({
-	components: {
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CDataTable,
-	},
 	metaInfo: {
 		title: 'install.error.missingDependency.title'
 	},
@@ -63,9 +56,12 @@ export default class MissingDependency extends Vue {
 	 */
 	private dependencies: InstallationCheckDependency[] = [];
 
-	private fields = [
-		{key: 'command', label: this.$t('install.error.missingDependency.command')},
-		{key: 'package', label: this.$t('install.error.missingDependency.package')},
+	/**
+	 * @constant {DataTableHeader[]}
+	 */
+	private headers: DataTableHeader[] = [
+		{value: 'command', text: this.$t('install.error.missingDependency.command').toString()},
+		{value: 'package', text: this.$t('install.error.missingDependency.package').toString()},
 	];
 
 	/**

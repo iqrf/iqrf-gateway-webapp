@@ -17,7 +17,9 @@ limitations under the License.
 <template>
 	<div>
 		<DpaValue />
+		<v-divider />
 		<DpaHops />
+		<v-divider />
 		<FrcParams />
 	</div>
 </template>

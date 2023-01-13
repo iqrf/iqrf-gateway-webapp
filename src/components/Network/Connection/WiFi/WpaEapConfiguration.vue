@@ -1,21 +1,37 @@
+<!--
+Copyright 2017-2023 IQRF Tech s.r.o.
+Copyright 2019-2023 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
-	<div class='form-group'>
-		<CSelect
-			:value.sync='connection.wifi.security.eap.phaseOneMethod'
-			:options='authOneOptions'
+	<div>
+		<v-select
+			v-model='connection.wifi.security.eap.phaseOneMethod'
+			:items='authOneOptions'
 			:label='$t("network.wireless.form.authPhaseOne").toString()'
 		/>
-		<CInput
+		<v-text-field
 			v-model='connection.wifi.security.eap.anonymousIdentity'
 			:label='$t("network.wireless.form.anonymousIdentity").toString()'
 		/>
-		<CInput
+		<v-text-field
 			v-model='connection.wifi.security.eap.cert'
 			:label='$t("network.wireless.form.caCert").toString()'
 		/>
-		<CSelect
-			:value.sync='connection.wifi.security.eap.phaseTwoMethod'
-			:options='authTwoOptions'
+		<v-select
+			v-model='connection.wifi.security.eap.phaseTwoMethod'
+			:items='authTwoOptions'
 			:label='$t("network.wireless.form.authPhaseTwo").toString()'
 		/>
 		<ValidationProvider
@@ -25,11 +41,11 @@
 				required: $t("forms.errors.username"),
 			}'
 		>
-			<CInput
+			<v-text-field
 				v-model='connection.wifi.security.eap.identity'
 				:label='$t("network.wireless.form.username").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 			/>
 		</ValidationProvider>
 		<ValidationProvider
@@ -42,8 +58,8 @@
 			<PasswordInput
 				v-model='connection.wifi.security.eap.password'
 				:label='$t("network.wireless.form.password").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 			/>
 		</ValidationProvider>
 	</div>
@@ -51,24 +67,19 @@
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CInput, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-
-import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * WPA-EAP configuration options
  */
 @Component({
 	components: {
-		CInput,
-		CSelect,
-		FontAwesomeIcon,
 		PasswordInput,
 		ValidationProvider,
 	},
@@ -81,21 +92,21 @@ export default class WpaEapConfiguration extends Vue {
 	@VModel({required: true}) connection!: IConnection;
 
 	/**
-	 * @constant {Array<IOption>} authOneOptions CoreUI EAP phase one authentication options
+	 * @constant {Array<ISelectItem>} authOneOptions EAP phase one authentication options
 	 */
-	private authOneOptions: Array<IOption> = [
+	private readonly authOneOptions: Array<ISelectItem> = [
 		{
-			label: this.$t('network.wireless.form.phaseOneAlgorithm.peap'),
+			text: this.$t('network.wireless.form.phaseOneAlgorithm.peap'),
 			value: 'peap'
 		},
 	];
 
 	/**
-	 * @constant {Array<IOption>} authTwoOptions CoreUI EAP phase two authentication options
+	 * @constant {Array<ISelectItem>} authTwoOptions EAP phase two authentication options
 	 */
-	private authTwoOptions: Array<IOption> = [
+	private readonly authTwoOptions: Array<ISelectItem> = [
 		{
-			label: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2'),
+			text: this.$t('network.wireless.form.phaseTwoAlgorithm.mschapv2'),
 			value: 'mschapv2'
 		},
 	];

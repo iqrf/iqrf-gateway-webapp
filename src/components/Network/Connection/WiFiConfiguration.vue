@@ -15,14 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CRow>
-		<CCol>
-			<legend>{{ $t('network.wireless.form.title') }}</legend>
-			<div class='form-group'>
-				<strong>
-					<span>{{ $t('network.wireless.form.security') }}</span>
-				</strong> {{ $t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`) }}
-			</div>
+	<v-row>
+		<v-col>
+			<h6>{{ $t('network.wireless.form.title') }}</h6>
+			<v-text-field
+				:label='$t("network.wireless.form.security")'
+				:value='$t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`)'
+				disabled
+				readonly
+			/>
 			<LeapConfiguration
 				v-if='connection.wifi.security.type === "ieee8021x"'
 				v-model='connection'
@@ -39,16 +40,14 @@ limitations under the License.
 				v-if='connection.wifi.security.type === "wpa-psk"'
 				v-model='connection'
 			/>
-		</CCol>
-	</CRow>
+		</v-col>
+	</v-row>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CCol, CRow} from '@coreui/vue/src';
-
-import PasswordInput from '@/components/Core/PasswordInput.vue';
 import LeapConfiguration from '@/components/Network/Connection/WiFi/LeapConfiguration.vue';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import WepConfiguration from '@/components/Network/Connection/WiFi/WepConfiguration.vue';
 import WpaEapConfiguration from '@/components/Network/Connection/WiFi/WpaEapConfiguration.vue';
 import WpaPskConfiguration from '@/components/Network/Connection/WiFi/WpaPskConfiguration.vue';
@@ -60,8 +59,6 @@ import {IConnection} from '@/interfaces/Network/Connection';
  */
 @Component({
 	components: {
-		CCol,
-		CRow,
 		LeapConfiguration,
 		PasswordInput,
 		WepConfiguration,

@@ -15,106 +15,97 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
-			<CElementCover
+	<v-card :loading='loading'>
+		<v-card-text v-if='!loading'>
+			<v-overlay
 				v-if='loadFailed'
-				style='z-index: 1;'
-				:opacity='0.85'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('config.daemon.messages.failedElement') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<fieldset :disabled='loadFailed'>
-						<ValidationProvider
-							v-if='isAdmin'
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.misc.iqrfRepository.errors.instance")
-							}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{required: $t("config.daemon.misc.iqrfRepository.errors.urlRepo")}'
-						>
-							<CInput
-								v-model='configuration.urlRepo'
-								:label='$t("config.daemon.misc.iqrfRepository.form.urlRepo")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<div class='form-group'>
-							<label for='checkEnableSwitch'>
-								{{ $t("config.daemon.misc.iqrfRepository.form.enableCheck") }}
-							</label><br>
-							<CSwitch
-								id='checkEnableSwitch'
-								color='primary'
-								size='lg'
-								shape='pill'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='checkEnabled'
-							/>
-						</div>
-						<ValidationProvider
-							v-if='checkEnabled'
-							v-slot='{errors, touched, valid}'
-							rules='integer|required|min:0'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
-								min: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
-							}'
-						>
-							<CInput
-								v-model.number='configuration.checkPeriodInMinutes'
-								type='number'
-								min='0'
-								:label='$t("config.daemon.misc.iqrfRepository.form.checkPeriod")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.downloadIfRepoCacheEmpty'
-							:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
+				<v-form>
+					<ValidationProvider
+						v-if='isAdmin'
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{
+							required: $t("config.daemon.misc.iqrfRepository.errors.instance")
+						}'
+					>
+						<v-text-field
+							v-model='configuration.instance'
+							:label='$t("forms.fields.instanceName")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
-						<CButton
-							class='mr-1'
-							color='primary'
-							:disabled='invalid'
-							@click='saveConfig'
-						>
-							{{ $t('forms.save') }}
-						</CButton>
-						<CButton
-							color='primary'
-							@click='updateCache'
-						>
-							{{ $t('config.daemon.misc.iqrfRepository.cacheUpdate') }}
-						</CButton>
-					</fieldset>
-				</CForm>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{required: $t("config.daemon.misc.iqrfRepository.errors.urlRepo")}'
+					>
+						<v-text-field
+							v-model='configuration.urlRepo'
+							:label='$t("config.daemon.misc.iqrfRepository.form.urlRepo")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-switch
+						v-model='checkEnabled'
+						:label='$t("config.daemon.misc.iqrfRepository.form.enableCheck")'
+						color='primary'
+						inset
+						dense
+					/>
+					<ValidationProvider
+						v-if='checkEnabled'
+						v-slot='{errors, touched, valid}'
+						rules='integer|required|min:0'
+						:custom-messages='{
+							integer: $t("forms.errors.integer"),
+							required: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
+							min: $t("config.daemon.misc.iqrfRepository.errors.checkPeriod"),
+						}'
+					>
+						<v-text-field
+							v-model.number='configuration.checkPeriodInMinutes'
+							type='number'
+							min='0'
+							:label='$t("config.daemon.misc.iqrfRepository.form.checkPeriod")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-checkbox
+						v-model='configuration.downloadIfRepoCacheEmpty'
+						:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
+						dense
+					/>
+					<v-btn
+						class='mr-1'
+						color='primary'
+						:disabled='invalid'
+						@click='saveConfig'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+					<v-btn
+						color='primary'
+						@click='updateCache'
+					>
+						{{ $t('config.daemon.misc.iqrfRepository.cacheUpdate') }}
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
@@ -134,15 +125,6 @@ import {MutationPayload} from 'vuex';
  */
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -185,6 +167,11 @@ export default class IqrfRepository extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
@@ -217,12 +204,14 @@ export default class IqrfRepository extends Vue {
 				this.handleUpdateCacheResponse(mutation.payload.data);
 			}
 		});
+
 	}
 
 	/**
-	 * Retrieves iqrf repository configuration
+	 * Retrieves user role and iqrf repository configuration
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.getConfig();
 	}
 
@@ -243,11 +232,15 @@ export default class IqrfRepository extends Vue {
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
 				}
-				this.$emit('fetched', {name: 'iqrfRepository', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'iqrfRepository', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'iqrfRepository'})
+						.toString()
+				);
 			});
 	}
 
@@ -287,6 +280,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.iqrfRepository.messages.saveSuccess').toString()
 			);
@@ -317,7 +311,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private handleUpdateCacheResponse(response): void {
 		if (response.status === 0) {
-			const updated: boolean = response.rsp.updated;
+			const updated: boolean = response.status.updated;
 			this.$toast.success(
 				this.$t(
 					'config.daemon.misc.iqrfRepository.messages.cacheUpdate' + (updated ? 'Success' : 'NotNeeded')

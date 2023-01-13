@@ -15,42 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		v-show='show'
-		:show.sync='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('config.daemon.misc.monitor.modal.title') }}
-			</h5>
-		</template>
-		{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: monitorInstance}) }}
-		<template #footer>
-			<CButton
-				class='mr-1'
-				color='secondary'
-				@click='hideModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='remove'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>
+				<h5>{{ $t('config.daemon.misc.monitor.modal.title') }}</h5>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('config.daemon.misc.monitor.modal.prompt', {instance: _monitorInstance}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, VModel, PropSync, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -61,13 +58,24 @@ import {AxiosError} from 'axios';
 /**
  * Monitor delete modal component
  */
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
-export default class MonitorDeleteModal extends ModalBase {
+@Component
+export default class MonitorDeleteModal extends Vue {
+
+	/**
+	 * @property {boolean} show Controls modal visilibity
+	 */
+	@VModel({required: true}) show!: boolean;
+
+	/**
+	 * @property {string} _monitorInstance Monitor instance to delete
+	 */
+	@PropSync('monitorInstance', {required: true, default: ''}) _monitorInstance!: string;
+
+	/**
+	 * @property {string} _websocketInstance Websocket instance to delete
+	 */
+	@PropSync('websocketInstance', {required: true, default: ''}) _websocketInstance!: string;
+
 	/**
 	 * @constant {string} monitorComponent Monitor component
 	 */
@@ -79,29 +87,19 @@ export default class MonitorDeleteModal extends ModalBase {
 	private readonly websocketComponent = 'shape::WebsocketCppService';
 
 	/**
-	 * @var {string} monitorInstance Monitor instance
-	 */
-	private monitorInstance = '';
-
-	/**
-	 * @var {string} websocketInstance Websocket instance
-	 */
-	private websocketInstance = '';
-
-	/**
 	 * Removes instance of the monitoring component
 	 */
 	private remove(): void {
 		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.monitorComponent, this.monitorInstance),
-			DaemonConfigurationService.deleteInstance(this.websocketComponent, this.websocketInstance),
+			DaemonConfigurationService.deleteInstance(this.monitorComponent, this._monitorInstance),
+			DaemonConfigurationService.deleteInstance(this.websocketComponent, this._websocketInstance),
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'config.daemon.misc.monitor.messages.deleteSuccess',
-						{instance: this.monitorInstance}
+						{instance: this._monitorInstance}
 					).toString()
 				);
 				this.hideModal();
@@ -111,29 +109,18 @@ export default class MonitorDeleteModal extends ModalBase {
 				extendedErrorToast(
 					error,
 					'config.daemon.misc.monitor.messages.deleteFailed',
-					{instance: this.monitorInstance},
+					{instance: this._monitorInstance},
 				);
 			});
 	}
 
 	/**
-	 * Stores monitor and websocket instance, and shows modal window
-	 * @param {string} monitor Monitor instance
-	 * @param {string} websocket Websocket instance
-	 */
-	public showModal(monitor: string, websocket: string): void {
-		this.monitorInstance = monitor;
-		this.websocketInstance = websocket;
-		this.openModal();
-	}
-
-	/**
-	 * Resets websocket type and instance, and hides modal window
+	 * Hides modal window
 	 */
 	private hideModal(): void {
-		this.monitorInstance = '';
-		this.websocketInstance = '';
-		this.closeModal();
+		this._monitorInstance = '';
+		this._websocketInstance = '';
+		this.show = false;
 	}
 }
 </script>

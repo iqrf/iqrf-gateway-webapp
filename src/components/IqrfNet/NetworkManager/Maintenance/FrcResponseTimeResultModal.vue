@@ -15,125 +15,120 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		color='primary'
-		size='lg'
-		:show.sync='show'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.title') }}
-			</h5>
-		</template>
-		<table class='modal-table'>
-			<tr>
-				<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.command') }}</th>
-				<td>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.commands.' + commandLabel) }}</td>
-			</tr>
-			<tr>
-				<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.inaccessibleNodes') }}</th>
-				<td>{{ result.inaccessibleNodes }}</td>
-			</tr>
-			<tr>
-				<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.unhandledNodes') }}</th>
-				<td>{{ result.unhandledNodes }}</td>
-			</tr>
-			<tr>
-				<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.current') }}</th>
-				<td>{{ result.currentResponseTime }}</td>
-			</tr>
-			<tr>
-				<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.recommended') }}</th>
-				<td>{{ result.recommendedResponseTime }}</td>
-			</tr>
-		</table><hr>
-		<CDataTable
-			v-if='result !== null'
-			:fields='fields'
-			:items='result.nodes'
-			:column-filter='true'
-			:items-per-page='5'
-			:pagination='true'
-			:striped='true'
-			:sorter='{external: false, resetable: true}'
-		>
-			<template #responded='{item}'>
-				<td>
-					<CIcon
-						size='lg'
-						:class='item.responded ? "text-success" : "text-danger"'
-						:content='item.responded ? cilCheckCircle : cilXCircle'
-					/>
-				</td>
-			</template>
-			<template #handled='{item}'>
-				<td>
-					<CIcon
-						v-if='item.responded'
-						size='lg'
-						:class='item.handled ? "text-success" : "text-danger"'
-						:content='item.handled ? cilCheckCircle : cilXCircle'
-					/>
-					<span v-else>
-						{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.notAvailable') }}
-					</span>
-				</td>
-			</template>
-			<template #responseTime='{item}'>
-				<td>
-					{{ item.responded && item.handled ? item.responseTime : $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.notAvailable') }}
-				</td>
-			</template>
-		</CDataTable>
-		<hr v-if='!sameResponseTime'>
-		<span v-if='!sameResponseTime'>
-			{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.prompt') }}
-		</span>
-		<template #footer>
-			<CButton
-				v-if='!sameResponseTime'
+		<template #activator='{attrs, on}'>
+			<v-btn
 				color='primary'
-				@click='setFrcResponseTime'
+				:disabled='defaultState'
+				v-bind='attrs'
+				v-on='on'
+				@click='openModal'
 			>
-				{{ $t('forms.set') }}
-			</CButton> <CButton
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.close') }}
-			</CButton>
+				{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.showResult') }}
+			</v-btn>
 		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.title') }}</v-card-title>
+			<v-card-text>
+				<v-simple-table>
+					<tr>
+						<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.command') }}</th>
+						<td>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.commands.' + commandLabel) }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.inaccessibleNodes') }}</th>
+						<td>{{ result.inaccessibleNodes }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.unhandledNodes') }}</th>
+						<td>{{ result.unhandledNodes }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.current') }}</th>
+						<td>{{ result.currentResponseTime }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.recommended') }}</th>
+						<td>{{ result.recommendedResponseTime }}</td>
+					</tr>
+				</v-simple-table>
+				<v-divider class='my-4' />
+				<v-data-table
+					:headers='headers'
+					:items='result.nodes'
+				>
+					<template #[`item.responded`]='{item}'>
+						<v-icon :color='item.responded ? "success" : "error"'>
+							{{ item.responded ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+						</v-icon>
+					</template>
+					<template #[`item.handled`]='{item}'>
+						<v-icon
+							v-if='item.responded'
+							:color='item.handled ? "success" : "error"'
+						>
+							{{ item.handled ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+						</v-icon>
+						<span v-else>
+							{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.notAvailable') }}
+						</span>
+					</template>
+					<template #responseTime='{item}'>
+						<td>
+							{{ item.responded && item.handled ? item.responseTime : $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.notAvailable') }}
+						</td>
+					</template>
+				</v-data-table>
+				<div v-if='!sameResponseTime'>
+					<v-divider class='my-4' />
+					{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.prompt') }}<br>
+					<v-btn
+						class='mt-2'
+						color='primary'
+						@click='setFrcResponseTime'
+					>
+						{{ $t('forms.set') }}
+					</v-btn>
+				</div>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					class='mr-1'
+					@click='closeModal'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-
-import {cilCheckCircle, cilXCircle} from '@coreui/icons';
-import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
-
-import {IFrcResponseTimeResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
-import {IField} from '@/interfaces/Coreui';
 import ModalBase from '@/components/ModalBase.vue';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-	data: () => ({
-		cilCheckCircle,
-		cilXCircle,
-	}),
-})
+import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
+
+import {DataTableHeader} from 'vuetify';
+import {IFrcResponseTimeResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
 
 /**
  * Maintenance FRC Response Time result component
  */
+@Component
 export default class FrcResponseTimeResultModal extends ModalBase {
+
+	/**
+	 * @var {boolean} defaultState Default state
+	 */
+	private defaultState = true;
+
 	/**
 	 * @var {IFrcResponseTimeResult} result Maintenance FRC Response Time result
 	 */
@@ -147,30 +142,6 @@ export default class FrcResponseTimeResultModal extends ModalBase {
 	};
 
 	/**
-	 * @var {Array<IOption>} fields FRC response times table fields
-	 */
-	private fields: Array<IField> = [
-		{
-			label: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.address'),
-			key: 'deviceAddr',
-		},
-		{
-			label: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.responded'),
-			key: 'responded',
-			filter: false,
-		},
-		{
-			label: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.handled'),
-			key: 'handled',
-			filter: false,
-		},
-		{
-			label: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.responseTime'),
-			key: 'responseTime',
-		},
-	];
-
-	/**
 	 * @var {string} commandLabel FRC command label for translation
 	 */
 	private commandLabel = FrcCommands[144].toLowerCase();
@@ -181,6 +152,34 @@ export default class FrcResponseTimeResultModal extends ModalBase {
 	get sameResponseTime(): boolean {
 		return this.result.currentResponseTime === this.result.recommendedResponseTime;
 	}
+
+	/**
+	 * @var {Array<DataTableHeader>} headers FRC response times table fields
+	 */
+	private readonly headers: Array<DataTableHeader> = [
+		{
+			value: 'deviceAddr',
+			text: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.address').toString(),
+			width: '25%'
+		},
+		{
+			value: 'responded',
+			text: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.responded').toString(),
+			filterable: false,
+			width: '25%'
+		},
+		{
+			value: 'handled',
+			text: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.handled').toString(),
+			filterable: false,
+			width: '25%'
+		},
+		{
+			value: 'responseTime',
+			text: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.modal.fields.responseTime').toString(),
+			width: '25%'
+		},
+	];
 
 	/**
 	 * Stores FRC Response Time result and renders the modal window
@@ -243,3 +242,18 @@ export default class FrcResponseTimeResultModal extends ModalBase {
 	}
 }
 </script>
+
+<style scoped>
+table {
+	width: 100%;
+}
+
+th {
+	text-align: left;
+}
+
+td {
+	text-align: right;
+}
+
+</style>

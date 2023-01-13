@@ -15,36 +15,36 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('service.systemd-journald.config.title') }}
-		</CCardHeader>
-		<CCardBody>
-			<CElementCover
+		</v-card-title>
+		<v-card-text>
+			<v-overlay
 				v-if='failed'
-				style='z-index: 1;'
-				:opacity='0.85'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('service.systemd-journald.config.messages.fetchFailed') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver
 				v-if='config !== null'
 				v-slot='{invalid}'
 			>
-				<CForm @submit.prevent='saveConfig'>
-					<CInputCheckbox
-						:checked.sync='config.forwardToSyslog'
-						:label='$t("service.systemd-journald.config.form.forwardToSyslog").toString()'
+				<v-form @submit.prevent='saveConfig'>
+					<v-checkbox
+						v-model='config.forwardToSyslog'
+						:label='$t("service.systemd-journald.config.form.forwardToSyslog")'
 					/>
-					<CRow form>
-						<CCol sm='12' lg='4'>
-							<CSelect
-								:value.sync='config.persistence'
-								:label='$t("service.systemd-journald.config.form.storage").toString()'
-								:options='storageOptions'
+					<v-row>
+						<v-col cols='12' md='4'>
+							<v-select
+								v-model='config.persistence'
+								:label='$t("service.systemd-journald.config.form.storage")'
+								:items='storageOptions'
 							/>
-						</CCol>
-						<CCol sm='12' lg='4'>
+						</v-col>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer|min:0'
@@ -54,18 +54,19 @@ limitations under the License.
 									min: $t("service.systemd-journald.config.errors.maxDiskInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='config.maxDiskSize'
 									type='number'
 									min='0'
-									:label='$t("service.systemd-journald.config.form.maxDisk").toString()'
-									:description='$t("service.systemd-journald.config.form.defaultNote")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ").toString()'
+									:label='$t("service.systemd-journald.config.form.maxDisk")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:hint='$t("service.systemd-journald.config.form.defaultNote")'
+									persistent-hint
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol sm='12' lg='4'>
+						</v-col>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|integer|min:1'
@@ -75,112 +76,101 @@ limitations under the License.
 									min: $t("service.systemd-journald.config.errors.maxFilesInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='config.maxFiles'
 									type='number'
 									min='1'
-									:label='$t("service.systemd-journald.config.form.maxFiles").toString()'
-									:description='$t("service.systemd-journald.config.form.maxFilesNote")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ").toString()'
+									:label='$t("service.systemd-journald.config.form.maxFiles")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:hint='$t("service.systemd-journald.config.form.maxFilesNote")'
+									persistent-hint
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<div class='form-group'>
-						<label>
-							<strong>{{ $t('service.systemd-journald.config.form.sizeRotation') }}</strong>
-						</label><br>
-						<CSwitch
-							:checked.sync='sizeRotation'
-							color='primary'
-							shape='pill'
-							size='lg'
-							label-on='ON'
-							label-off='OFF'
-						/>
-					</div>
-					<CRow v-if='sizeRotation'>
-						<CCol sm='12' lg='4'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|integer|min:0'
-								:custom-messages='{
-									required: $t("service.systemd-journald.config.errors.maxFileSize"),
-									integer: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
-									min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
-								}'
-							>
-								<CInput
-									v-model.number='config.sizeRotation.maxFileSize'
-									type='number'
-									min='0'
-									:label='$t("service.systemd-journald.config.form.maxFileSize").toString()'
-									:description='$t("service.systemd-journald.config.form.defaultNote")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ").toString()'
-								/>
-							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<div class='form-group'>
-						<label>
-							<strong>{{ $t('service.systemd-journald.config.form.timeRotation') }}</strong>
-						</label><br>
-						<CSwitch
-							:checked.sync='timeRotation'
-							color='primary'
-							shape='pill'
-							size='lg'
-							label-on='ON'
-							label-off='OFF'
-						/>
-					</div>
-					<CRow v-if='timeRotation'>
-						<CCol sm='12' lg='4'>
-							<CSelect
-								:value.sync='config.timeRotation.unit'
-								:label='$t("service.systemd-journald.config.form.unit").toString()'
-								:options='unitOptions'
+						</v-col>
+					</v-row>
+					<v-switch
+						v-model='sizeRotation'
+						:label='$t("service.systemd-journald.config.form.sizeRotation")'
+						color='primary'
+						inset
+						dense
+					/>
+					<div v-if='sizeRotation'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|integer|min:0'
+							:custom-messages='{
+								required: $t("service.systemd-journald.config.errors.maxFileSize"),
+								integer: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
+								min: $t("service.systemd-journald.config.errors.maxFileSizeInvalid"),
+							}'
+						>
+							<v-text-field
+								v-model.number='config.sizeRotation.maxFileSize'
+								type='number'
+								min='0'
+								:label='$t("service.systemd-journald.config.form.maxFileSize")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:hint='$t("service.systemd-journald.config.form.defaultNote")'
+								persistent-hint
 							/>
-						</CCol>
-						<CCol sm='12' lg='4'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|integer|min:1'
-								:custom-messages='{
-									required: $t("service.systemd-journald.config.errors.count"),
-									integer: $t("service.systemd-journald.config.errors.countInvalid"),
-									min: $t("service.systemd-journald.config.errors.countInvalid"),
-								}'
-							>
-								<CInput
-									v-model.number='config.timeRotation.count'
-									type='number'
-									min='1'
-									:label='$t("service.systemd-journald.config.form.count").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ").toString()'
+						</ValidationProvider>
+					</div>
+					<v-switch
+						v-model='timeRotation'
+						:label='$t("service.systemd-journald.config.form.timeRotation")'
+						color='primary'
+						inset
+						dense
+					/>
+					<div v-if='timeRotation'>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<v-select
+									v-model='config.timeRotation.unit'
+									:label='$t("service.systemd-journald.config.form.unit")'
+									:items='unitOptions'
 								/>
-							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CButton
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|integer|min:1'
+									:custom-messages='{
+										required: $t("service.systemd-journald.config.errors.count"),
+										integer: $t("service.systemd-journald.config.errors.countInvalid"),
+										min: $t("service.systemd-journald.config.errors.countInvalid"),
+									}'
+								>
+									<v-text-field
+										v-model.number='config.timeRotation.count'
+										type='number'
+										min='1'
+										:label='$t("service.systemd-journald.config.form.count")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
+					</div>
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Persistence, TimeUnit} from '@/enums/Gateway/Journal';
@@ -190,21 +180,11 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import JournalService from '@/services/JournalService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
 import {IJournal} from '@/interfaces/Gateway/Journal';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -231,49 +211,49 @@ export default class JournaldConfig extends Vue {
 	private timeRotation = false;
 
 	/**
-	 * @constant {Array<IOption>} storageOptions Array of CoreUI select storage method options
+	 * @constant {Array<ISelectItem>} storageOptions Storage select method options
 	 */
-	private storageOptions: Array<IOption> = [
+	private storageOptions: ISelectItem[] = [
 		{
-			label: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
+			text: this.$t('service.systemd-journald.config.form.storageMethods.volatile').toString(),
 			value: Persistence.VOLATILE,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
+			text: this.$t('service.systemd-journald.config.form.storageMethods.persistent').toString(),
 			value: Persistence.PERSISTENT,
 		},
 	];
 
 	/**
-	 * @constant {Array<IOption>} unitOptions Array of CoreUI select unit options
+	 * @constant {Array<ISelectItem>} unitOptions Unit select options
 	 */
-	private unitOptions: Array<IOption> = [
+	private unitOptions: ISelectItem[] = [
 		{
-			label: this.$t('service.systemd-journald.config.form.units.seconds').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.seconds').toString(),
 			value: TimeUnit.SECONDS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.minutes').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.minutes').toString(),
 			value: TimeUnit.MINUTES,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.hours').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.hours').toString(),
 			value: TimeUnit.HOURS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.days').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.days').toString(),
 			value: TimeUnit.DAYS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.weeks').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.weeks').toString(),
 			value: TimeUnit.WEEKS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.months').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.months').toString(),
 			value: TimeUnit.MONTHS,
 		},
 		{
-			label: this.$t('service.systemd-journald.config.form.units.years').toString(),
+			text: this.$t('service.systemd-journald.config.form.units.years').toString(),
 			value: TimeUnit.YEAR,
 		},
 	];

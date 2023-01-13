@@ -1,33 +1,41 @@
+<!--
+Copyright 2017-2023 IQRF Tech s.r.o.
+Copyright 2019-2023 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('maintenance.mender.update.log.title') }}
-		</CCardHeader>
-		<CCardBody>
-			<CAlert
+		</v-card-title>
+		<v-card-text>
+			<v-alert
 				v-if='log.length === 0'
-				class='card-margin-bottom'
-				color='info'
+				type='info'
+				text
 			>
 				{{ $t('maintenance.mender.update.log.noLog') }}
-			</CAlert>
+			</v-alert>
 			<pre class='log card-margin-bottom'>{{ log }}</pre>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CAlert, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
-@Component({
-	components: {
-		CAlert,
-		CCard,
-		CCardBody,
-		CCardHeader,
-	}
-})
+@Component({})
 
 /**
  * Mender execution log card

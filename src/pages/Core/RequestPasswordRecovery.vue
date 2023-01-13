@@ -15,24 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='p-4'>
-		<h1 class='text-center'>
-			{{ $t('account.recovery.title') }}
-		</h1>
-		<CCardBody>
-			<CElementCover
+	<v-card class='p-4'>
+		<v-card-title>{{ $t('account.recovery.title') }}</v-card-title>
+		<v-card-text>
+			<v-overlay
 				v-if='requestInProgress'
-				:opacity='0.75'
-				style='z-index: 10000;'
+				:opacity='0.65'
+				absolute
 			>
-				<CSpinner color='primary' />
-			</CElementCover>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
 			<div v-if='!sent'>
 				<p>
 					{{ $t('account.recovery.requestPrompt') }}
 				</p>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='requestRecovery'>
+					<form @submit.prevent='requestRecovery'>
 						<ValidationProvider
 							v-slot='{valid, touched, errors}'
 							rules='required'
@@ -40,34 +38,33 @@ limitations under the License.
 								required: $t("core.sign.in.messages.username"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='user'
 								:label='$t("forms.fields.username")'
 								autocomplete='username'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
 							color='primary'
 							type='submit'
 							:disabled='invalid'
 						>
 							{{ $t('account.recovery.sendEmail') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
 			</div>
 			<p v-else class='text-center'>
 				{{ $t('account.recovery.messages.sendSuccess') }}
 			</p>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import TheWizard from '@/components/TheWizard.vue';
 
@@ -79,11 +76,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider

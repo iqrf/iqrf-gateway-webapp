@@ -1,5 +1,5 @@
 <template>
-	<div class='form-group'>
+	<div>
 		<ValidationProvider
 			v-slot='{errors, touched, valid}'
 			rules='required|wepKeyType'
@@ -8,19 +8,19 @@
 				wepKeyType: $t("network.wireless.errors.wepKeyType"),
 			}'
 		>
-			<CSelect
-				:value.sync='connection.wifi.security.wep.type'
-				:options='keyOptions'
+			<v-select
+				v-model='connection.wifi.security.wep.type'
+				:items='keyOptions'
 				:label='$t("network.wireless.form.wep.type").toString()'
 				:placeholder='$t("network.wireless.errors.wepKeyType").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 			/>
 		</ValidationProvider>
-		<CSelect
+		<v-select
 			v-if='connection.wifi.security.wep.type === WepKeyType.KEY'
-			:value.sync='keyLength'
-			:options='keyLengthOptions'
+			v-model='keyLength'
+			:items='keyLengthOptions'
 			:label='$t("network.wireless.form.wep.length").toString()'
 		/>
 		<ValidationProvider
@@ -33,14 +33,14 @@
 				wepIndex: $t("network.wireless.errors.wepIndexKeyMissing"),
 			}'
 		>
-			<CInput
+			<v-text-field
 				v-model.number='connection.wifi.security.wep.index'
 				type='number'
 				min='0'
 				max='3'
 				:label='$t("network.wireless.form.wep.index").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 			/>
 		</ValidationProvider>
 		<ValidationProvider
@@ -59,8 +59,8 @@
 			<PasswordInput
 				v-model='connection.wifi.security.wep.keys[index]'
 				:label='$t("network.wireless.form.wep.keyNum", {index: index}).toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 			/>
 		</ValidationProvider>
 	</div>
@@ -68,24 +68,20 @@
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
-import {between, integer, required} from 'vee-validate/dist/rules';
-
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
+import {between, integer, required} from 'vee-validate/dist/rules';
 import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
 
-import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * WEP configuration options
  */
 @Component({
 	components: {
-		CInput,
-		CSelect,
 		PasswordInput,
 		ValidationProvider,
 	},
@@ -102,15 +98,15 @@ export default class WepConfiguration extends Vue {
 	@VModel({required: true}) connection!: IConnection;
 
 	/**
-	 * @constant {Array<IOption>} keyOptions CoreUI wep key type select options
+	 * @constant {Array<ISelectItem>} keyOptions Wep key type select options
 	 */
-	private keyOptions: Array<IOption> = [
+	private readonly keyOptions: Array<ISelectItem> = [
 		{
-			label: this.$t('network.wireless.form.wep.types.key'),
+			text: this.$t('network.wireless.form.wep.types.key'),
 			value: WepKeyType.KEY
 		},
 		{
-			label: this.$t('network.wireless.form.wep.types.passphrase'),
+			text: this.$t('network.wireless.form.wep.types.passphrase'),
 			value: WepKeyType.PASSPHRASE
 		},
 	];
@@ -121,15 +117,15 @@ export default class WepConfiguration extends Vue {
 	private keyLength = WepKeyLen.BIT64;
 
 	/**
-	 * @constant {Array<IOption>} keyLengthOptions CoreUI wep key length select options
+	 * @constant {Array<ISelectItem>} keyLengthOptions Wep key length select options
 	 */
-	private keyLengthOptions: Array<IOption> = [
+	private readonly keyLengthOptions: Array<ISelectItem> = [
 		{
-			label: this.$t('network.wireless.form.wep.lengths.64bit'),
+			text: this.$t('network.wireless.form.wep.lengths.64bit'),
 			value: WepKeyLen.BIT64,
 		},
 		{
-			label: this.$t('network.wireless.form.wep.lengths.128bit'),
+			text: this.$t('network.wireless.form.wep.lengths.128bit'),
 			value: WepKeyLen.BIT128,
 		},
 	];

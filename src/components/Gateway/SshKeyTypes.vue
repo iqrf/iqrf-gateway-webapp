@@ -1,7 +1,8 @@
 <template>
-	<CAlert
+	<v-alert
 		v-if='fetched !== null'
 		:color='fetched ? "primary" : "danger"'
+		text
 	>
 		<span v-if='fetched'>
 			<span v-if='types.length === 0'>
@@ -22,22 +23,17 @@
 		<span v-else>
 			{{ $t('core.security.ssh.messages.typeListFailed') }}
 		</span>
-	</CAlert>
+	</v-alert>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert} from '@coreui/vue/src';
 
 import SshService from '@/services/SshService';
 
 import {AxiosResponse} from 'axios';
 
-@Component({
-	components: {
-		CAlert,
-	},
-})
+@Component({})
 
 /**
  * SSH key types list component

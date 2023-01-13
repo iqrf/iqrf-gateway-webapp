@@ -15,19 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
-			<h4>{{ $t('iqrfnet.networkManager.backupRestore.backup.title') }}</h4><br>
+	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.backupRestore.backup.title') }}</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<CSelect
-						:value.sync='target'
+				<v-form @submit.prevent='backupDevice'>
+					<v-select
+						v-model='target'
 						:label='$t("iqrfnet.networkManager.backupRestore.backup.form.target")'
-						:options='selectOptions'
+						:items='selectOptions'
 						:placeholder='$t("iqrfnet.networkManager.backupRestore.backup.form.messages.select")'
 					/>
 					<ValidationProvider
-						v-if='target === NetworkTarget.NODE'
+						v-if='target === "node"'
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
 						:custom-messages='{
@@ -36,60 +36,51 @@ limitations under the License.
 							required: $t("iqrfnet.networkManager.backupRestore.backup.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("forms.fields.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
+						type='submit'
 						color='primary'
 						:disabled='invalid'
-						@click='backupDevice'
 					>
 						{{ $t('forms.backup') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {NetworkTarget} from '@/enums/IqrfNet/network';
 import {saveAs} from 'file-saver';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqrfNetService from '@/services/IqrfNetService';
 import VersionService from '@/services/VersionService';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {AxiosResponse} from 'axios';
 import {IBackupData} from '@/interfaces/DaemonApi/Iqmesh/Backup';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
-	data: () => ({
-		NetworkTarget,
-	}),
 })
 
 /**
@@ -117,20 +108,20 @@ export default class Backup extends Vue {
 	private offlineDevices: Array<number> = [];
 
 	/**
-	 * @var {Array<unknown>} selectOptions CoreUI form select options
+	 * @var {Array<ISelectItem>} selectOptions Network target select options
 	 */
-	private selectOptions: Array<IOption> = [
+	private selectOptions: Array<ISelectItem> = [
 		{
 			value: NetworkTarget.COORDINATOR,
-			label: this.$t('forms.fields.coordinator').toString(),
+			text: this.$t('forms.fields.coordinator').toString(),
 		},
 		{
 			value: NetworkTarget.NODE,
-			label: this.$t('iqrfnet.networkManager.backupRestore.backup.form.node').toString(),
+			text: this.$t('iqrfnet.networkManager.backupRestore.backup.form.node').toString(),
 		},
 		{
 			value: NetworkTarget.NETWORK,
-			label: this.$t('iqrfnet.networkManager.backupRestore.backup.form.network').toString(),
+			text: this.$t('iqrfnet.networkManager.backupRestore.backup.form.network').toString(),
 		}
 	];
 

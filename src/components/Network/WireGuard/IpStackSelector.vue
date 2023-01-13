@@ -15,27 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CSelect
-		:value.sync='stack'
-		:options='stackOptions'
+	<v-select
+		v-model='stack'
 		:label='$t("network.wireguard.tunnels.form.stack").toString()'
+		:items='stackOptions'
 	/>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CSelect} from '@coreui/vue/src';
 import {WireguardStack} from '@/enums/Network/Wireguard';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * IP stack selector
  */
-@Component({
-	components: {
-		CSelect,
-	},
-})
+@Component
 export default class IpStackSelector extends Vue {
 
 	/**
@@ -44,19 +39,19 @@ export default class IpStackSelector extends Vue {
 	@VModel({required: true}) stack!: WireguardStack;
 
 	/**
-	 * @constant {Array<IOption>} stackOptions Array of CoreUI select stack options
+	 * @constant {Array<IOption>} stackOptions Stack select options
 	 */
-	private stackOptions: Array<IOption> = [
+	private readonly stackOptions: Array<ISelectItem> = [
 		{
-			label: this.$t('network.wireguard.tunnels.form.stackTypes.ipv4'),
+			text: this.$t('network.wireguard.tunnels.form.stackTypes.ipv4'),
 			value: WireguardStack.IPV4
 		},
 		{
-			label: this.$t('network.wireguard.tunnels.form.stackTypes.ipv6'),
+			text: this.$t('network.wireguard.tunnels.form.stackTypes.ipv6'),
 			value: WireguardStack.IPV6
 		},
 		{
-			label: this.$t('network.wireguard.tunnels.form.stackTypes.both'),
+			text: this.$t('network.wireguard.tunnels.form.stackTypes.both'),
 			value: WireguardStack.DUAL
 		},
 	];

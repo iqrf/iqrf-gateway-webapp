@@ -15,204 +15,187 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<span>
-		<CButton
-			color='primary'
-			size='sm'
-			:disabled='activatorDisabled'
-			@click='openModal'
-		>
-			{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.manual') }}
-		</CButton>
-		<CModal
-			v-if='show'
-			:show.sync='show'
-			color='primary'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.networkManager.autoNetwork.midModal.title') }}
-				</h5>
-			</template>
-			<CDataTable
-				:fields='headers'
-				:items='list'
-				:pagination='true'
-				:items-per-page='5'
-				:column-filter='true'
-				:striped='true'
-				:sorter='{external: false, resetable: true}'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
+	>
+		<template #activator='{attrs, on}'>
+			<v-btn
+				color='primary'
+				small
+				:disabled='activatorDisabled'
+				v-bind='attrs'
+				v-on='on'
+				@click='openModal'
 			>
-				<template #no-items-view>
-					{{ $t('iqrfnet.networkManager.autoNetwork.midModal.table.noItems') }}
-				</template>
-				<template #deviceMID='{item}'>
-					<td class='col-2'>
-						{{ item.deviceMID }}
-					</td>
-				</template>
-				<template #deviceAddr='{item}'>
-					<td class='col-4'>
+				{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.manual') }}
+			</v-btn>
+		</template>
+		<v-card>
+			<v-card-title>
+				{{ $t('iqrfnet.networkManager.autoNetwork.midModal.title') }}
+			</v-card-title>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
+					:items='list'
+					mobile-breakpoint='0'
+					:no-data-text='$t("iqrfnet.networkManager.autoNetwork.midModal.table.noItems")'
+				>
+					<template #[`item.deviceAddr`]='{item}'>
 						{{ item.deviceAddr ? item.deviceAddr : $t('iqrfnet.networkManager.autoNetwork.midModal.table.unspecified') }}
-					</td>
-				</template>
-				<template #note='{item}'>
-					<td>
+					</template>
+					<template #[`item.note`]='{item}'>
 						{{ item.note ? item.note.split(';').join(', ') : $t('iqrfnet.networkManager.autoNetwork.midModal.table.unspecified') }}
-					</td>
-				</template>
-				<template #actions='{item}'>
-					<td class='col-actions'>
-						<CButton
-							color='danger'
-							size='sm'
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							color='error'
+							small
 							@click='removeFromList(list.indexOf(item))'
 						>
-							<CIcon :content='cilTrash' size='sm' />
-						</CButton>
-					</td>
-				</template>
-			</CDataTable><hr>
-			<ValidationObserver v-slot='{invalid}' ref='form'>
-				<CForm>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						:rules='{
-							duplicateMid: true,
-							regex: /^[0-9a-fA-F]{8}$/,
-							required: true,
-						}'
-						:custom-messages='{
-							duplicateMid: "iqrfnet.networkManager.autoNetwork.midModal.errors.duplicateMid",
-							regex: "iqrfnet.networkManager.autoNetwork.midModal.errors.mid",
-							required: "iqrfnet.networkManager.autoNetwork.midModal.errors.mid",
-						}'
-					>
-						<CInput
-							v-model='mid'
-							:label='$t("iqrfnet.networkManager.autoNetwork.midModal.table.deviceMID")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						:rules='{
-							between: useAddress ? {min:1, max:239} : false,
-							duplicateAddr: useAddress,
-							integer: useAddress,
-							required: useAddress,
-						}'
-						:custom-messages='{
-							between: "iqrfnet.networkManager.autoNetwork.midModal.errors.address",
-							duplicateAddr: "iqrfnet.networkManager.autoNetwork.midModal.errors.duplicateAddr",
-							integer: "iqrfnet.networkManager.autoNetwork.midModal.errors.address",
-							required: "iqrfnet.networkManager.autoNetwork.midModal.errors.address",
-						}'
-					>
-						<CInput
-							v-model.number='address'
-							:label='$t("iqrfnet.networkManager.autoNetwork.midModal.table.deviceAddr")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							:disabled='!useAddress'
-						>
-							<template #prepend-content>
-								<CInputCheckbox :checked.sync='useAddress' />
-							</template>
-						</CInput>
-					</ValidationProvider>
-					<div style='display: flex; justify-content: flex-end;'>
-						<CButton
-							color='success'
-							:disabled='invalid'
-							@click='addToList'
-						>
-							{{ $t('iqrfnet.networkManager.autoNetwork.midModal.add') }}
-						</CButton>
-					</div>
-				</CForm><hr>
-			</ValidationObserver>
-			<div v-if='invalid.length > 0'>
-				<CDataTable
-					:fields='invalidHeaders'
-					:items='invalid'
-					:pagination='true'
-					:items-per-page='5'
-					:column-filter='true'
-					:sorter='{external: false, resetable: true}'
-				>
-					<template #line='{item}'>
-						<td class='col-2'>
-							{{ item.line }}
-						</td>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+						</v-btn>
 					</template>
-				</CDataTable><hr>
-			</div>
-			<div class='text-muted'>
-				<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule1') }}</small><br>
-				<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule2') }}</small><br>
-				<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule3') }}</small>
-			</div>
-			<template #footer>
-				<CButton
-					color='secondary'
+				</v-data-table>
+				<v-divider class='mb-2' />
+				<ValidationObserver v-slot='{invalid}' ref='form'>
+					<v-form>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										duplicateMid: true,
+										regex: /^[0-9a-fA-F]{8}$/,
+										required: true,
+									}'
+									:custom-messages='{
+										duplicateMid: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.duplicateMid"),
+										regex: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.mid"),
+										required: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.mid"),
+									}'
+								>
+									<v-text-field
+										v-model='mid'
+										:label='$t("iqrfnet.networkManager.autoNetwork.midModal.table.deviceMID")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										between: useAddress ? {min:1, max:239} : false,
+										duplicateAddr: useAddress,
+										integer: useAddress,
+										required: useAddress,
+									}'
+									:custom-messages='{
+										between: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.address"),
+										duplicateAddr: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.duplicateAddr"),
+										integer: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.address"),
+										required: $t("iqrfnet.networkManager.autoNetwork.midModal.errors.address"),
+									}'
+								>
+									<v-text-field
+										v-model.number='address'
+										:label='$t("iqrfnet.networkManager.autoNetwork.midModal.table.deviceAddr")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
+										:disabled='!useAddress'
+									>
+										<template #prepend>
+											<v-checkbox
+												v-model='useAddress'
+												color='primary'
+											/>
+										</template>
+										<template #append-outer>
+											<v-btn
+												color='success'
+												small
+												:disabled='invalid'
+												@click='addToList'
+											>
+												<v-icon small>
+													mdi-plus
+												</v-icon>
+											</v-btn>
+										</template>
+									</v-text-field>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
+					</v-form>
+				</ValidationObserver>
+				<v-divider />
+				<div class='text-muted'>
+					<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule1') }}</small><br>
+					<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule2') }}</small><br>
+					<small>{{ $t('iqrfnet.networkManager.autoNetwork.notes.midRule3') }}</small>
+				</div>
+				<v-divider />
+				<v-data-table
+					v-if='invalid.length > 0'
+					:headers='invalidHeaders'
+					:items='invalid'
+					mobile-breakpoint='0'
+				>
+					<template #[`item.line`]='{item}'>
+						{{ item.line }}
+					</template>
+				</v-data-table>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
 					@click='closeModal'
 				>
 					{{ $t('forms.close') }}
-				</CButton>
-				<CButton
+				</v-btn>
+				<v-btn
 					color='info'
 					@click='exportList'
 				>
 					{{ $t('forms.export') }}
-				</CButton>
-				<CButton
-					color='danger'
+				</v-btn>
+				<v-btn
+					color='error'
 					@click='clearData'
 				>
 					{{ $t('forms.clear') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, PropSync} from 'vue-property-decorator';
-import {CButton, CCol, CDataTable, CIcon, CInput, CInputCheckbox, CModal, CRow} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilTrash} from '@coreui/icons';
 import {between, integer, regex, required} from 'vee-validate/dist/rules';
+import {saveAs} from 'file-saver';
 
 import {IAtnwMidErrorList, IAtnwMidList} from '@/interfaces/DaemonApi/Iqmesh/Autonetwork';
-import {IField} from '@/interfaces/Coreui';
-import {saveAs} from 'file-saver';
+import {DataTableHeader} from 'vuetify';
 
 /**
  * Autonetwork MID list modal window component
  */
 @Component({
 	components: {
-		CButton,
-		CCol,
-		CDataTable,
-		CIcon,
-		CInput,
-		CInputCheckbox,
-		CModal,
-		CRow,
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data: () => ({
-		cilTrash,
-	}),
 })
 export default class MidList extends ModalBase {
 	/**
@@ -246,44 +229,45 @@ export default class MidList extends ModalBase {
 	private address = 1;
 
 	/**
-	 * @constant {Array<IField>} headers MID list table headers
+	 * @constant {Array<DataTableHeader>} headers MID list table headers
 	 */
-	private headers: Array<IField> = [
+	private headers: Array<DataTableHeader> = [
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.deviceMID'),
-			key: 'deviceMID',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.deviceMID').toString(),
+			value: 'deviceMID',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.deviceAddr'),
-			key: 'deviceAddr',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.deviceAddr').toString(),
+			value: 'deviceAddr',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.note'),
-			key: 'note',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.table.note').toString(),
+			value: 'note',
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			sorter: false,
-			filter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			sortable: false,
+			filterable: false,
+			align: 'end',
 		},
 	];
 
 	/**
-	 * @constant {Array<IField>} invalidHeaders MID invalid list table headers
+	 * @constant {Array<DataTableHeader>} invalidHeaders MID invalid list table headers
 	 */
-	private invalidHeaders: Array<IField> = [
+	private invalidHeaders: Array<DataTableHeader> = [
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.line'),
-			key: 'line',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.line').toString(),
+			value: 'line',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.content'),
-			key: 'content',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.content').toString(),
+			value: 'content',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.error'),
-			key: 'error',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.midModal.invalid.error').toString(),
+			value: 'error',
 		},
 	];
 

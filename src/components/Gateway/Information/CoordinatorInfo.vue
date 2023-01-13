@@ -16,7 +16,10 @@ limitations under the License.
 -->
 <template>
 	<span v-if='requestRunning'>
-		<CSpinner color='info' class='cinfo-spinner' />
+		<v-progress-circular
+			color='info'
+			indeterminate
+		/>
 	</span>
 	<span v-else>
 		<span v-if='hasData'>
@@ -44,17 +47,14 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {MutationPayload} from 'vuex';
+
 import IqrfNetService from '@/services/IqrfNetService';
-import {CSpinner} from '@coreui/vue/src';
+
 import {DaemonClientState} from '@/interfaces/wsClient';
+import {MutationPayload} from 'vuex';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/DaemonApi/Dpa';
 
-@Component({
-	components: {
-		CSpinner,
-	},
-})
+@Component({})
 
 /**
  * Coordinator information block component for gateway information
@@ -140,7 +140,7 @@ export default class CoordinatorInfo extends Vue {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -178,10 +178,3 @@ export default class CoordinatorInfo extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.cinfo-spinner {
-	width: 2rem;
-	height: 2rem;
-}
-</style>

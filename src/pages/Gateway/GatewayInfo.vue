@@ -17,9 +17,9 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.info.title') }}</h1>
-		<CCard body-wrapper>
-			<div class='table-responsive'>
-				<table v-if='info !== null' class='table table-striped'>
+		<v-card>
+			<v-card-text>
+				<v-simple-table v-if='info !== null' class='table-paddings'>
 					<tbody>
 						<tr>
 							<th>{{ $t('gateway.info.board') }}</th>
@@ -61,17 +61,11 @@ limitations under the License.
 							<th>{{ $t('gateway.info.hostname') }}</th>
 							<td class='hostname'>
 								{{ info.hostname }}
-								<CButton
+								<HostnameChange
 									v-if='$store.getters["user/getRole"] === "admin"'
-									color='primary'
-									size='sm'
-									@click='showHostnameModal'
-								>
-									<CIcon :content='cilPencil' size='sm' />
-									<span class='d-none d-lg-inline'>
-										{{ $t('forms.edit') }}
-									</span>
-								</CButton>
+									ref='hostname'
+									@hostname-changed='getInformation'
+								/>
 							</td>
 						</tr>
 						<tr>
@@ -125,44 +119,37 @@ limitations under the License.
 							</td>
 						</tr>
 					</tbody>
-				</table>
-			</div>
-			<CButton color='primary' @click='downloadDiagnostics()'>
-				{{ $t('gateway.info.diagnostics') }}
-			</CButton>
-		</CCard>
-		<HostnameChange ref='hostname' @hostname-changed='getInformation' />
+				</v-simple-table>
+				<v-btn color='primary' @click='downloadDiagnostics()'>
+					<v-icon>mdi-download</v-icon>
+					{{ $t('gateway.info.diagnostics') }}
+				</v-btn>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
-import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
-import GatewayService from '@/services/GatewayService';
 import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
+import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
 
-import {cilPencil} from '@coreui/icons';
 import {fileDownloader} from '@/helpers/fileDownloader';
+
+import GatewayService from '@/services/GatewayService';
 
 import {AxiosResponse} from 'axios';
 import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CIcon,
 		CoordinatorInfo,
 		DaemonModeInfo,
 		HostnameChange,
 		ResourceUsage,
 	},
-	data: () => ({
-		cilPencil,
-	}),
 	metaInfo: {
 		title: 'gateway.info.title',
 	},
@@ -258,13 +245,6 @@ export default class GatewayInfo extends Vue {
 				file.click();
 			}
 		).catch(() => (this.$store.commit('spinner/HIDE')));
-	}
-
-	/**
-	 * Show hostname change modal
-	 */
-	private showHostnameModal(): void {
-		(this.$refs.hostname as HostnameChange).show();
 	}
 }
 </script>

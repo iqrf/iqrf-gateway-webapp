@@ -16,161 +16,142 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>
-			{{ $t('config.daemon.scheduler.title') }}
-		</h1>
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				{{ $t('config.daemon.scheduler.table.title') }}
-				<CButtonToolbar>
-					<CButton
-						class='mr-1'
-						color='success'
-						size='sm'
-						to='/config/daemon/scheduler/add'
-					>
-						<CIcon :content='cilPlus' size='sm' />
-						{{ $t('table.actions.add') }}
-					</CButton>
-					<CButton
-						class='mr-1'
-						color='info'
-						size='sm'
-						@click='getTasks'
-					>
-						<CIcon :content='cilReload' size='sm' />
-						{{ $t('forms.refresh') }}
-					</CButton>
-					<TaskImportModal
-						class='mr-1'
-						@imported='getTasks'
-					/>
-					<CButton
-						class='mr-1'
-						color='secondary'
-						size='sm'
-						@click='exportScheduler'
-					>
-						<CIcon :content='cilArrowBottom' size='sm' />
-						{{ $t('forms.export') }}
-					</CButton>
-					<TasksDeleteModal
-						@deleted='getTasks'
-					/>
-				</CButtonToolbar>
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
+		<h1>{{ $t('config.daemon.scheduler.title') }}</h1>
+		<v-card>
+			<v-card-text>
+				<v-data-table
 					:loading='loading'
-					:fields='fields'
-					:items.sync='tasks'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
-					:striped='true'
-					:sorter='{external: false, resetable: true}'
+					:headers='headers'
+					:items='tasks'
+					:no-data-text='$t("table.messages.noRecords")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #active='{item}'>
-						<td>
-							<CIcon
-								v-if='item.active !== undefined'
-								:class='item.active ? "text-success" : "text-danger"'
-								:content='item.active ? cilCheckCircle : cilXCircle'
-								size='xl'
+					<template #top>
+						<v-toolbar dense flat>
+							<h5>{{ $t('config.daemon.scheduler.table.title') }}</h5>
+							<v-spacer />
+							<v-btn
+								class='mr-1'
+								color='success'
+								small
+								to='/config/daemon/scheduler/add'
+							>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+								{{ $t('table.actions.add') }}
+							</v-btn>
+							<TaskImportModal
+								@imported='getTasks'
 							/>
-							<span v-else>{{ $t('forms.notAvailable') }}</span>
-						</td>
-					</template>
-					<template #timeSpec='{item}'>
-						<td>
-							{{ timeString(item.timeSpec) }}
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								v-if='item.active !== undefined'
+							<v-btn
 								class='mr-1'
-								:color='item.active ? "danger" : "success"'
-								size='sm'
-								@click='item.active ? stopTask(item.taskId) : startTask(item.taskId)'
+								color='secondary'
+								small
+								@click='exportScheduler'
 							>
-								<CIcon :content='item.active ? cilXCircle : cilCheckCircle' size='sm' />
-								{{ $t(item.active ? 'forms.stop' : 'forms.start') }}
-							</CButton>
-							<CButton
+								<v-icon small>
+									mdi-export
+								</v-icon>
+								{{ $t('forms.export') }}
+							</v-btn>
+							<v-btn
 								class='mr-1'
-								color='info'
-								size='sm'
-								:to='"/config/daemon/scheduler/edit/" + item.taskId'
+								color='primary'
+								small
+								@click='getTasks'
 							>
-								<CIcon :content='cilPencil' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
-								color='danger'
-								size='sm'
-								@click='removeRecord(item.taskId)'
-							>
-								<CIcon :content='cilTrash' size='sm' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-						</td>
+								<v-icon small>
+									mdi-refresh
+								</v-icon>
+								{{ $t('forms.refresh') }}
+							</v-btn>
+							<TasksDeleteModal
+								@deleted='getTasks'
+							/>
+						</v-toolbar>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<TaskDeleteModal ref='deleteModal' @deleted='getTasks' />
+					<template #[`item.active`]='{item}'>
+						<v-icon
+							v-if='item.active !== undefined'
+							:color='item.active ? "success" : "error"'
+						>
+							{{ item.active ? 'mdi-close-circle-outline' : 'mdi-check-circle-outline' }}
+						</v-icon>
+						<span v-else>{{ $t('forms.notAvailable') }}</span>
+					</template>
+					<template #[`item.timeSpec`]='{item}'>
+						{{ timeString(item.timeSpec) }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							v-if='item.active !== undefined'
+							class='mr-1'
+							:color='item.active ? "error" : "success"'
+							small
+							@click='item.active ? stopTask(item.taskId) : startTask(item.taskId)'
+						>
+							<v-icon small>
+								{{ item.active ? 'mdi-close-circle-outline' : 'mdi-check-circle-outline' }}
+							</v-icon>
+							{{ $t(item.active ? 'forms.stop' : 'forms.start') }}
+						</v-btn>
+						<v-btn
+							class='mr-1'
+							color='info'
+							small
+							:to='"/config/daemon/scheduler/edit/" + item.taskId'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+						<v-btn
+							color='error'
+							small
+							@click='recordDeleteModel = item.taskId'
+						>
+							<v-icon small>
+								mdi-delete
+							</v-icon>
+							{{ $t('table.actions.delete') }}
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
+		<TaskDeleteModal
+			v-model='recordDeleteModel'
+			@deleted='getTasks'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile} from '@coreui/vue/src';
 import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
 
-import {cilArrowBottom, cilCheckCircle, cilPencil, cilPlus, cilReload, cilTrash, cilXCircle} from '@coreui/icons';
 import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {fileDownloader} from '@/helpers/fileDownloader';
 import SchedulerRecord from '@/helpers/SchedulerRecord';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {ISchedulerRecord, ISchedulerRecordTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
 import {MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CIcon,
-		CInputFile,
 		TaskDeleteModal,
 		TasksDeleteModal,
 		TaskImportModal,
 	},
-	data: () => ({
-		cilArrowBottom,
-		cilCheckCircle,
-		cilPencil,
-		cilPlus,
-		cilReload,
-		cilTrash,
-		cilXCircle,
-	}),
 	metaInfo: {
 		title: 'config.daemon.scheduler.title',
 	}
@@ -209,40 +190,6 @@ export default class SchedulerList extends Vue {
 	};
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table columns
-	 */
-	private fields: Array<IField> = [
-		{
-			key: 'taskId',
-			label: this.$t('config.daemon.scheduler.form.task.taskId'),
-		},
-		{
-			key: 'description',
-			label: this.$t('config.daemon.scheduler.form.task.description'),
-			filter: false,
-			sorter: false,
-		},
-		{
-			key: 'timeSpec',
-			label: this.$t('config.daemon.scheduler.table.time'),
-			filter: false,
-			sorter: false,
-		},
-		{
-			key: 'active',
-			label: this.$t('config.daemon.scheduler.table.active'),
-			filter: false,
-			sorter: false,
-		},
-		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
-		},
-	];
-
-	/**
 	 * @var {boolean} lastFetchedRest Indicates whether last task list fetch was done via REST API
 	 */
 	private lastFetchedRest = false;
@@ -251,6 +198,46 @@ export default class SchedulerList extends Vue {
 	 * @var {boolean} daemonWatched Indicates whether daemon reconnect is watched
 	 */
 	private daemonWatched = false;
+
+	/**
+	 * @var {ISchedulerRecord|null} recordDeleteModel Record to delete
+	 */
+	private recordDeleteModel: ISchedulerRecord|null = null;
+
+	/**
+	 * @constant {Array<DataTableHeader>} headers Data table headers
+	 */
+	private readonly headers: Array<DataTableHeader> = [
+		{
+			value: 'taskId',
+			text: this.$t('config.daemon.scheduler.form.task.taskId').toString(),
+		},
+		{
+			value: 'description',
+			text: this.$t('config.daemon.scheduler.form.task.description').toString(),
+			filterable: false,
+			sortable: false,
+		},
+		{
+			value: 'timeSpec',
+			text: this.$t('config.daemon.scheduler.table.time').toString(),
+			filterable: false,
+			sortable: false,
+		},
+		{
+			value: 'active',
+			text: this.$t('config.daemon.scheduler.table.active').toString(),
+			filterable: false,
+			sortable: false,
+		},
+		{
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
+			align: 'end',
+		},
+	];
 
 	/**
 	 * Subscribe function callback
@@ -451,14 +438,6 @@ export default class SchedulerList extends Vue {
 				this.$t('config.daemon.scheduler.messages.stopFailed').toString()
 			);
 		}
-	}
-
-	/**
-	 * Removes scheduler record
-	 * @param {string} taskId Scheduler task ID
-	 */
-	private removeRecord(taskId: string): void {
-		(this.$refs.deleteModal as TaskDeleteModal).showModal(taskId);
 	}
 
 	/**

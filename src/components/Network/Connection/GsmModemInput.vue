@@ -22,35 +22,35 @@ limitations under the License.
 			required: $t("network.connection.errors.interface"),
 		}'
 	>
-		<CSelect
-			:value.sync='interface'
+		<v-select
+			v-model='interface'
 			:label='$t("network.connection.interface").toString()'
 			:placeholder='$t("network.connection.errors.interface").toString()'
-			:options='options'
-			:is-valid='touched ? valid : null'
-			:invalid-feedback='errors.join(", ")'
+			:items='options'
+			:success='touched ? valid : null'
+			:error-messages='errors'
 		/>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 
-import {IOption} from '@/interfaces/Coreui';
-import {required} from 'vee-validate/dist/rules';
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
-import {AxiosError} from 'axios';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
+
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
+
+import {AxiosError} from 'axios';
 import {IModem} from '@/interfaces/Network/Mobile';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * GSM modem select field
  */
 @Component({
 	components: {
-		CSelect,
 		ValidationProvider,
 	},
 })
@@ -62,9 +62,9 @@ export default class GsmModemInput extends Vue {
 	@VModel({required: true}) interface!: string;
 
 	/**
-	 * @property {Array<IOption>} options Array of CoreUI interface options
+	 * @property {Array<IOption>} options Interface select options
 	 */
-	private options: Array<IOption> = [];
+	private options: Array<ISelectItem> = [];
 
 	/**
 	 * Initializes validation rules
@@ -81,7 +81,7 @@ export default class GsmModemInput extends Vue {
 					if (item.manufacturer !== null && item.model !== null) {
 						label += ' (' + item.manufacturer + ' ' + item.model + ')';
 					}
-					this.options.push({label: label, value: item.interface});
+					this.options.push({text: label, value: item.interface});
 				});
 			})
 			.catch((error: AxiosError) => {

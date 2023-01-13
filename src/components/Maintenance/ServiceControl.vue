@@ -28,38 +28,37 @@ limitations under the License.
 			{{ $t(`service.states.${service.active ? 'active' : 'inactive'}`) }}
 		</div>
 		<div v-if='service !== null' class='text-end'>
-			<CButton
+			<v-btn
 				v-if='!service.enabled'
 				class='mr-1'
 				color='success'
-				size='sm'
+				small
 				@click='enable'
 			>
 				{{ $t('service.actions.enable') }}
-			</CButton>
-			<CButton
+			</v-btn>
+			<v-btn
 				v-if='service.enabled'
 				class='mr-1'
-				color='danger'
-				size='sm'
+				color='error'
+				small
 				@click='disable'
 			>
 				{{ $t('service.actions.disable') }}
-			</CButton>
-			<CButton
+			</v-btn>
+			<v-btn
 				color='primary'
-				size='sm'
+				small
 				@click='restart'
 			>
 				{{ $t('service.actions.restart') }}
-			</CButton>
+			</v-btn>
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton} from '@coreui/vue/src';
 
 import ServiceService, {ServiceStatus} from '@/services/ServiceService';
 
@@ -69,11 +68,7 @@ import {ErrorResponse} from '@/types';
 /**
  * Service control component
  */
-@Component({
-	components: {
-		CButton,
-	}
-})
+@Component
 export default class ServiceControl extends Vue {
 
 	/**

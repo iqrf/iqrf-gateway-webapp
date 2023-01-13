@@ -17,25 +17,38 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
-		<CAlert
+		<v-alert
 			v-if='loaded && failed'
-			color='danger'
-			class='d-flex justify-content-between align-items-center'
+			color='error'
+			text
+			outlined
 		>
-			{{ $t('iqrfnet.trUpload.messages.coordinatorFailed') }} {{ $t('iqrfnet.trUpload.messages.notAvailable') }}
-			<CButton
-				color='primary'
-				size='sm'
-				@click='enumerateCoordinator'
-			>
-				<CIcon :content='cilReload' />
-				{{ $t('forms.retry') }}
-			</CButton>
-		</CAlert>
+			<v-row align='center'>
+				<v-col class='grow'>
+					{{ $t('iqrfnet.trUpload.messages.coordinatorFailed') }} {{ $t('iqrfnet.trUpload.messages.notAvailable') }}
+				</v-col>
+				<v-col class='shrink'>
+					<v-btn
+						color='primary'
+						small
+						@click='enumerateCoordinator'
+					>
+						<v-icon small>
+							mdi-refresh
+						</v-icon>
+						{{ $t('forms.retry') }}
+					</v-btn>
+				</v-col>
+			</v-row>
+		</v-alert>
 		<div v-show='loaded && !failed'>
-			<HexUpload />
+			<HexUpload class='mb-5' />
 			<DpaUpdater ref='dpaUpdater' />
-			<!--<OsUpdater ref='osUpdater' @os-upload='osInfoUpload' />-->
+			<!--<OsUpdater
+				ref='osUpdater'
+				class='mt-5'
+				@os-upload='osInfoUpload'
+			/>-->
 		</div>
 	</div>
 </template>
@@ -45,8 +58,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import DpaUpdater from '@/components/IqrfNet/TrUpload/DpaUpdater.vue';
 import HexUpload from '@/components/IqrfNet/TrUpload/HexUpload.vue';
 import OsUpdater from '@/components/IqrfNet/TrUpload/OsUpdater.vue';
-
-import {cilReload} from '@coreui/icons';
 
 import IqrfNetService from '@/services/IqrfNetService';
 
@@ -70,9 +81,6 @@ import {NavigationGuardNext, Route} from 'vue-router';
 			}
 		});
 	},
-	data: () => ({
-		cilReload,
-	}),
 	metaInfo: {
 		title: 'iqrfnet.trUpload.title'
 	}

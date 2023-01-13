@@ -16,67 +16,56 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1 v-if='$route.path === "/security/api-key/add"'>
-			{{ $t('core.security.apiKey.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('core.security.apiKey.edit') }}
-		</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveKey'>
+		<h1>{{ pageTitle }}</h1>
+		<v-card>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form>
 						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
+							v-slot='{errors, touched, valid}'
 							rules='required'
 							:custom-messages='{
 								required: $t("core.security.apiKey.errors.description"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='metadata.description'
 								:label='$t("core.security.apiKey.form.description")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div class='form-group'>
-							<CInputCheckbox
-								:checked.sync='useExpiration'
-								:label='$t("core.security.apiKey.form.expiration")'
-								@change='clear'
-							/>
-							<Datetime
-								v-if='useExpiration'
-								v-model='metadata.expiration'
-								type='datetime'
-								:format='dateFormat'
-								:min-datetime='new Date().toISOString()'
-								input-class='form-control'
-								:disabled='!useExpiration'
-							/>
-						</div>
-						<CButton
-							type='submit'
+						<v-checkbox
+							v-model='useExpiration'
+							:label='$t("core.security.apiKey.form.expiration")'
+							dense
+						/>
+						<DateTimePicker
+							:datetime.sync='datetime'
+							:min-date='new Date().toISOString()'
+							:disabled='!useExpiration'
+						/>
+						<v-btn
 							color='primary'
 							:disabled='invalid'
+							@click='save'
 						>
 							{{ submitButton }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 
 import ApiKeyService from '@/services/ApiKeyService';
-import {Datetime} from 'vue-datetime';
+import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
@@ -85,13 +74,7 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		Datetime,
+		DateTimePicker,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -106,18 +89,6 @@ import {MetaInfo} from 'vue-meta';
  * API key manager form to add or edit API key
  */
 export default class ApiKeyForm extends Vue {
-	/**
-	 * @constant {Record<string, string|boolean} dateFormat Date formatting options
-	 */
-	private dateFormat: Record<string, string|boolean> = {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-		hour12: false,
-		hour: 'numeric',
-		minute: 'numeric',
-		second: 'numeric',
-	};
 
 	/**
 	 * @var {Record<string, string>} metadata API key metadata
@@ -131,6 +102,11 @@ export default class ApiKeyForm extends Vue {
 	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
 	 */
 	private useExpiration = false;
+
+	/**
+	 * @var {Date} datetime Datetime object
+	 */
+	private datetime = new Date(0);
 
 	/**
 	 * @property {number} keyId API key id
@@ -156,7 +132,7 @@ export default class ApiKeyForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules and retrieves API key
 	 */
 	created(): void {
 		extend('required', required);
@@ -199,14 +175,21 @@ export default class ApiKeyForm extends Vue {
 	/**
 	 * Creates a new API key or updates metadata of existing API key
 	 */
-	private saveKey(): void {
+	private save(): void {
 		this.$store.commit('spinner/SHOW');
+		const config = JSON.parse(JSON.stringify(this.metadata));
+		if (this.useExpiration) {
+			const luxondate = DateTime.fromJSDate(this.datetime);
+			config.expiration = luxondate.toISO();
+		} else {
+			config.expiration = null;
+		}
 		if (this.keyId !== null) {
-			ApiKeyService.editApiKey(this.keyId, this.metadata)
+			ApiKeyService.editApiKey(this.keyId, config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		} else {
-			ApiKeyService.addApiKey(this.metadata)
+			ApiKeyService.addApiKey(config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		}

@@ -17,27 +17,35 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.ibmCloud.form.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
-					color='primary'
-					size='sm'
-					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'
-				>
-					<CIcon :content='cilFile' size='sm' />
-					{{ $t('cloud.guides.pdf') }}
-				</CButton> <CButton
-					color='danger'
-					size='sm'
-					href='https://youtu.be/xoAReOyrkZ4'
-				>
-					<CIcon :content='cibYoutube' size='sm' />
-					{{ $t('cloud.guides.video') }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+		<v-card>
+			<v-card-title>
+				<v-item-group>
+					<v-btn
+						color='primary'
+						small
+						href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'
+						target='_blank'
+					>
+						<v-icon small>
+							mdi-file-document
+						</v-icon>
+						{{ $t('cloud.guides.pdf') }}
+					</v-btn> <v-btn
+						color='error'
+						small
+						href='https://youtu.be/xoAReOyrkZ4'
+						target='_blank'
+					>
+						<v-icon small>
+							mdi-youtube
+						</v-icon>
+						{{ $t('cloud.guides.video') }}
+					</v-btn>
+				</v-item-group>
+			</v-card-title>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -45,11 +53,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.organizationId"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.organizationId'
 								:label='$t("cloud.ibmCloud.form.organizationId")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -59,11 +67,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.deviceType"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.deviceType'
 								:label='$t("cloud.ibmCloud.form.deviceType")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -73,11 +81,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.deviceId"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.deviceId'
 								:label='$t("cloud.ibmCloud.form.deviceId")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -87,11 +95,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.token"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.token'
 								:label='$t("cloud.ibmCloud.form.token")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -101,39 +109,39 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.eventId"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='config.eventId'
 								:label='$t("cloud.ibmCloud.form.eventId")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton
+						<v-btn
+							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</CButton> <CButton
-							color='secondary'
+						</v-btn>
+						<v-btn
+							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
@@ -144,19 +152,9 @@ import {IIbmCloud} from '@/interfaces/Clouds';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
-	data: () => ({
-		cibYoutube,
-		cilFile,
-	}),
 	metaInfo: {
 		title: 'cloud.ibmCloud.form.title',
 	},

@@ -17,208 +17,228 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.sendPacket.title') }}</h1>
-		<CCard body-wrapper>
-			<CElementCover
-				v-if='!isSocketConnected'
-				style='z-index: 1;'
-				:opacity='0.85'
-			>
-				{{ $t('iqrfnet.messages.socketError') }}
-			</CElementCover>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='handleSubmit'>
-					<CRow>
-						<CCol md='6'>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='nadr|minLen:2|maxLen:2|required'
-								:custom-messages='{
-									nadr: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-									required: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
-								}'
-							>
-								<CInput
-									v-model='packetNadr'
-									maxlength='4'
-									:label='$t("iqrfnet.sendPacket.form.nadr")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									:disabled='addressOverwrite'
-									class='dpa-section'
+		<v-card class='mb-5'>
+			<v-card-text>
+				<v-overlay
+					v-if='!isSocketConnected'
+					:opacity='0.65'
+					absolute
+				>
+					{{ $t('iqrfnet.messages.socketError') }}
+				</v-overlay>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form @submit.prevent='handleSubmit'>
+						<v-row>
+							<v-col cols='12' md='6'>
+								<v-row>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='nadr|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												nadr: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.nadr"),
+											}'
+										>
+											<v-text-field
+												v-model='packetNadr'
+												maxlength='4'
+												:label='$t("iqrfnet.sendPacket.form.nadr")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												:disabled='addressOverwrite'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pnum|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												pnum: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPnum'
+												:label='$t("iqrfnet.sendPacket.form.pnum")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pcmd|minLen:2|maxLen:2|required'
+											:custom-messages='{
+												pcmd: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPcmd'
+												:label='$t("iqrfnet.sendPacket.form.pcmd")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+									<v-col md='3'>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='hwpid|minLen:4|maxLen:4|required'
+											:custom-messages='{
+												hwpid: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												minLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+												required: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
+											}'
+										>
+											<v-text-field
+												v-model='packetHwpid'
+												:label='$t("iqrfnet.sendPacket.form.hwpid")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+								</v-row>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<v-row>
+									<v-col>
+										<ValidationProvider
+											v-slot='{valid, touched, errors}'
+											rules='pdata'
+											:custom-messages='{
+												pdata: $t("iqrfnet.sendPacket.form.messages.invalid.pdata"),
+											}'
+										>
+											<v-text-field
+												v-model='packetPdata'
+												v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
+												:label='$t("iqrfnet.sendPacket.form.pdata")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
+												hide-details='auto'
+											/>
+										</ValidationProvider>
+									</v-col>
+								</v-row>
+							</v-col>
+						</v-row>
+						<v-row>
+							<v-col md='6'>
+								<v-checkbox
+									v-model='addressOverwrite'
+									:label='$t("iqrfnet.sendPacket.form.addressOverwrite")'
+									dense
 								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='pnum|minLen:2|maxLen:2|required'
-								:custom-messages='{
-									pnum: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-									required: $t("iqrfnet.sendPacket.form.messages.invalid.pnum"),
-								}'
-							>
-								<CInput
-									v-model='packetPnum'
-									:label='$t("iqrfnet.sendPacket.form.pnum")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									class='dpa-section'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='pcmd|minLen:2|maxLen:2|required'
-								:custom-messages='{
-									pcmd: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-									required: $t("iqrfnet.sendPacket.form.messages.invalid.pcmd"),
-								}'
-							>
-								<CInput
-									v-model='packetPcmd'
-									:label='$t("iqrfnet.sendPacket.form.pcmd")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									class='dpa-section'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='hwpid|minLen:4|maxLen:4|required'
-								:custom-messages='{
-									hwpid: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-									minLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-									maxLen: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-									required: $t("iqrfnet.sendPacket.form.messages.invalid.hwpid"),
-								}'
-							>
-								<CInput
-									v-model='packetHwpid'
-									:label='$t("iqrfnet.sendPacket.form.hwpid")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									class='dpa-section'
-								/>
-							</ValidationProvider>
-						</CCol>
-						<CCol md='6'>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								rules='pdata'
-								:custom-messages='{
-									pdata: $t("iqrfnet.sendPacket.form.messages.invalid.pdata"),
-								}'
-							>
-								<CInput
-									v-model='packetPdata'
-									v-maska='{mask: generateMask, tokens: {"H": {pattern: /[0-9a-fA-F]/}}}'
-									:label='$t("iqrfnet.sendPacket.form.pdata")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CRow>
-						<CCol md='6'>
-							<CInputCheckbox
-								:checked.sync='addressOverwrite'
-								:label='$t("iqrfnet.sendPacket.form.addressOverwrite")'
-							/>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								:disabled='!addressOverwrite'
-								:rules='addressOverwrite ? "integer|between:0,239|required" : ""'
-								:custom-messages='{
-									between: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
-									integer: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
-									required: $t("iqrfnet.sendPacket.form.messages.missing.address"),
-								}'
-							>
-								<CInput
-									v-model.number='address'
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
 									:disabled='!addressOverwrite'
-									:label='$t("iqrfnet.sendPacket.form.address")'
-									:is-valid='addressOverwrite && touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									type='number'
-									min='0'
-									max='239'
+									:rules='addressOverwrite ? "integer|between:0,239|required" : ""'
+									:custom-messages='{
+										between: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
+										integer: $t("iqrfnet.sendPacket.form.messages.invalid.address"),
+										required: $t("iqrfnet.sendPacket.form.messages.missing.address"),
+									}'
+								>
+									<v-text-field
+										v-model.number='address'
+										:disabled='!addressOverwrite'
+										:label='$t("iqrfnet.sendPacket.form.address")'
+										:success='addressOverwrite && touched ? valid : null'
+										:error-messages='errors'
+										type='number'
+										min='0'
+										max='239'
+									/>
+								</ValidationProvider>
+							</v-col>
+							<v-col md='6'>
+								<v-checkbox
+									v-model='timeoutOverwrite'
+									:label='$t("iqrfnet.sendPacket.form.timeoutOverwrite")'
+									dense
 								/>
-							</ValidationProvider>
-						</CCol>
-						<CCol md='6'>
-							<CInputCheckbox
-								:checked.sync='timeoutOverwrite'
-								:label='$t("iqrfnet.sendPacket.form.timeoutOverwrite")'
-							/>
-							<ValidationProvider
-								v-slot='{valid, touched, errors}'
-								:rules='timeoutOverwrite ? "integer|min:1000|required" : ""'
-								:custom-messages='{
-									integer: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
-									min: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
-									required: $t("iqrfnet.sendPacket.form.messages.missing.timeout"),
-								}'
-							>
-								<CInput
-									v-model.number='timeout'
-									min='1000'
-									:disabled='!timeoutOverwrite'
-									:label='$t("iqrfnet.sendPacket.form.timeout")'
-									:is-valid='timeoutOverwrite && touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									type='number'
-								/>
-							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('forms.send') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCard>
-		<DpaMacros @set-packet='setPacket($event)' />
-		<CCard
+								<ValidationProvider
+									v-slot='{valid, touched, errors}'
+									:rules='timeoutOverwrite ? "integer|min:1000|required" : ""'
+									:custom-messages='{
+										integer: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
+										min: $t("iqrfnet.sendPacket.form.messages.invalid.timeout"),
+										required: $t("iqrfnet.sendPacket.form.messages.missing.timeout"),
+									}'
+								>
+									<v-text-field
+										v-model.number='timeout'
+										min='1000'
+										:disabled='!timeoutOverwrite'
+										:label='$t("iqrfnet.sendPacket.form.timeout")'
+										:success='timeoutOverwrite && touched ? valid : null'
+										:error-messages='errors'
+										type='number'
+									/>
+								</ValidationProvider>
+							</v-col>
+						</v-row>
+						<v-btn color='primary' type='submit' :disabled='invalid'>
+							{{ $t('forms.send') }}
+						</v-btn>
+					</v-form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
+		<DpaMacros class='mb-5' @set-packet='setPacket($event)' />
+		<v-card
 			v-if='messages.length !== 0'
 			body-wrapper
 		>
-			<CSelect
-				:value.sync='activeIdx'
-				:label='$t("iqrfnet.sendPacket.form.activeMessage")'
-				:options='messageOptions'
-				@change='activeMessagePair = messages[activeIdx]'
-			/>
-			<div v-if='activeMessagePair !== null'>
-				<CRow>
-					<CCol md='6'>
-						<JsonMessage
-							:message='activeMessagePair.request'
-							type='request'
-							source='sendDpa'
-						/>
-					</CCol>
-					<CCol md='6'>
-						<JsonMessage
-							v-if='activeMessagePair.response !== undefined'
-							:message='activeMessagePair.response'
-							type='response'
-							source='sendDpa'
-						/>
-					</CCol>
-				</CRow>
-			</div>
-		</CCard>
+			<v-card-text>
+				<v-select
+					v-model='activeIdx'
+					:label='$t("iqrfnet.sendPacket.form.activeMessage")'
+					:items='messageOptions'
+					@change='activeMessagePair = messages[activeIdx]'
+				/>
+				<div v-if='activeMessagePair !== null'>
+					<v-row>
+						<v-col md='6'>
+							<JsonMessage
+								:message='activeMessagePair.request'
+								type='request'
+								source='sendDpa'
+							/>
+						</v-col>
+						<v-col md='6'>
+							<JsonMessage
+								v-if='activeMessagePair.response !== undefined'
+								:message='activeMessagePair.response'
+								type='response'
+								source='sendDpa'
+							/>
+						</v-col>
+					</v-row>
+				</div>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DpaMacros from '@/components/IqrfNet/DpaMacros.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
@@ -229,21 +249,12 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import Packet from '@/iqrfNet/sendPacket';
 
 import {IMessagePairPacket} from '@/interfaces/DaemonApi/Api';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {mapGetters, MutationPayload} from 'vuex';
 import {RawMessage} from '@/interfaces/DaemonApi/Dpa';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
 		DpaMacros,
 		JsonMessage,
 		ValidationObserver,
@@ -338,13 +349,13 @@ export default class SendDpaPacket extends Vue {
 
 	/**
 	 * Generates array of message options to select from to show
-	 * @returns {Array<IOption>} Array of options
+	 * @returns {ISelectItem} Array of options
 	 */
-	get messageOptions(): Array<IOption> {
-		const options: Array<IOption> = [];
+	get messageOptions(): Array<ISelectItem> {
+		const options: Array<ISelectItem> = [];
 		this.messages.forEach((item: IMessagePairPacket) => {
 			options.push({
-				label: item.label,
+				text: item.label,
 				value: this.messages.indexOf(item),
 			});
 		});
@@ -583,10 +594,3 @@ export default class SendDpaPacket extends Vue {
 	}
 }
 </script>
-
-<style lang='scss'>
-.dpa-section {
-	float: left;
-	width: 25%;
-}
-</style>

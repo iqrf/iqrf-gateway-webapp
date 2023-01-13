@@ -15,174 +15,162 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
-			<h4>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</h4><br>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<CSelect
-						v-if='bondTargetAvailable'
-						:value.sync='bondTarget'
-						:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
-						:options='bondTargetOptions'
-					/>
-					<div v-if='bondTarget === "device"'>
-						<CSelect
-							:value.sync='bondMethod'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
-							:options='bondMethodOptions'
+	<div>
+		<v-card flat tile>
+			<v-card-title>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</v-card-title>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form>
+						<v-select
+							v-if='bondTargetAvailable'
+							v-model='bondTarget'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.bondTarget")'
+							:items='bondTargetOptions'
 						/>
-						<div class='form-group'>
-							<label for='addressSwitch'>
-								<strong>
-									{{ $t('iqrfnet.networkManager.bondingManager.form.autoAddress') }}
-								</strong>
-							</label><br>
-							<CSwitch
-								id='addressSwitch'
-								shape='pill'
-								size='lg'
-								color='primary'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='autoAddress'
+						<div v-if='bondTarget === BondingTarget.DEVICE'>
+							<v-select
+								v-model='bondMethod'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
+								:items='bondMethodOptions'
 							/>
-						</div>
-						<ValidationProvider
-							v-if='!autoAddress'
-							v-slot='{errors, touched, valid}'
-							rules='integer|required|between:1,239'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.bondingManager.errors.address"),
-								between: $t("iqrfnet.networkManager.bondingManager.errors.address"),
-							}'
-						>
-							<CInput
-								v-model.number='address'
-								type='number'
-								min='1'
-								max='239'
-								:label='$t("forms.fields.address")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-								:disabled='autoAddress'
+							<v-switch
+								v-model='autoAddress'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.autoAddress")'
+								inset
+								dense
 							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-if='bondMethod === "smartconnect"'
-							v-slot='{errors, valid}'
-							rules='required|scCode'
-							:custom-messages='{
-								required: $t("iqrfnet.networkManager.bondingManager.errors.scCodeMissing"),
-								scCode: $t("iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"),
-							}'
-						>
-							<CInput
-								v-model='scCode'
-								:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
-								:is-valid='valid'
-								:invalid-feedback='errors.join(", ")'
+							<ValidationProvider
+								v-if='!autoAddress'
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:1,239'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.bondingManager.errors.address"),
+									between: $t("iqrfnet.networkManager.bondingManager.errors.address"),
+								}'
+							>
+								<v-text-field
+									v-model.number='address'
+									type='number'
+									min='1'
+									max='239'
+									:label='$t("forms.fields.address")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									:disabled='autoAddress'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-if='bondMethod === BondingMethod.SMARTCONNECT'
+								v-slot='{errors, valid}'
+								rules='required|scCode'
+								:custom-messages='{
+									required: $t("iqrfnet.networkManager.bondingManager.errors.scCodeMissing"),
+									scCode: $t("iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"),
+								}'
+							>
+								<v-text-field
+									v-model='scCode'
+									:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
+									:success='valid'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|between:0,255'
+								:custom-messages='{
+									integer: $t("forms.errors.integer"),
+									required: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
+									between: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
+								}'
+							>
+								<v-text-field
+									v-model.number='bondingRetries'
+									type='number'
+									min='0'
+									max='255'
+									:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+							<v-checkbox
+								v-model='unbondCoordinatorOnly'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
+								dense
 							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='integer|required|between:0,255'
-							:custom-messages='{
-								integer: $t("forms.errors.integer"),
-								required: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
-								between: $t("iqrfnet.networkManager.bondingManager.errors.bondingRetries"),
-							}'
-						>
-							<CInput
-								v-model.number='bondingRetries'
-								type='number'
-								min='0'
-								max='255'
-								:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='unbondCoordinatorOnly'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
-						/>
-						<CButtonToolbar>
-							<CButton
+							<v-btn
 								class='mr-1'
 								color='primary'
 								:disabled='invalid'
-								@click='bond'
+								@click.prevent='bond'
 							>
 								{{ $t('forms.bond') }}
-							</CButton>
+							</v-btn>
 							<UnbondModal
-								class='mr-1'
 								:address='address'
 								:auto-address='autoAddress'
 								@unbond='unbond'
 							/>
-							<ClearAllModal @clear='clearAll' />
-						</CButtonToolbar>
-					</div>
-					<div v-else>
-						<CSelect
-							:value.sync='bondTool'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.toolType")'
-							:options='bondToolOptions'
-						/>
-						<CButton
-							v-if='bondTool === "nfc"'
-							color='primary'
-							@click='bondNfc'
-						>
-							{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
-						</CButton>
-					</div>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+							<ClearAllModal
+								@clear='clearAll'
+							/>
+						</div>
+						<div v-else>
+							<v-select
+								v-model='bondTool'
+								:label='$t("iqrfnet.networkManager.bondingManager.form.toolType")'
+								:items='bondToolOptions'
+							/>
+							<v-btn
+								v-if='bondTool === BondingTool.NFC'
+								color='primary'
+								@click='bondNfc'
+							>
+								{{ $t('iqrfnet.networkManager.bondingManager.form.bondNfcReader') }}
+							</v-btn>
+						</div>
+					</v-form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ClearAllModal from '@/components/IqrfNet/NetworkManager/Iqmesh/ClearAllModal.vue';
 import UnbondModal from '@/components/IqrfNet/NetworkManager/Iqmesh/UnbondModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {smartConnectCode} from '@/helpers/validationRules/Iqrfnet';
-import {versionHigherEqual} from '@/helpers/versionChecker';
 
 import {BondingMethod, BondingTarget, BondingTool} from '@/enums/IqrfNet/Bonding';
 import IqrfNetService from '@/services/IqrfNetService';
 
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-
-@Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		ClearAllModal,
-		UnbondModal,
-		ValidationObserver,
-		ValidationProvider,
-	},
-})
 
 /**
  * Bonding manager card for Network Manager
  */
+@Component({
+	components: {
+		ClearAllModal,
+		UnbondModal,
+		ValidationObserver,
+		ValidationProvider
+	},
+	data: () => ({
+		BondingMethod,
+		BondingTarget,
+		BondingTool,
+	}),
+})
+
 export default class BondingManager extends Vue {
 	/**
 	 * @var {string} msgId Daemon api message id
@@ -205,16 +193,16 @@ export default class BondingManager extends Vue {
 	private bondMethod = BondingMethod.LOCAL;
 
 	/**
-	 * @constant {Array<IOption>} bondMethodOptions Bonding method options for CoreUI select
+	 * @constant {Array<ISelectItem>} bondMethodOptions Bonding method select options
 	 */
-	private bondMethodOptions: Array<IOption> = [
+	private bondMethodOptions: Array<ISelectItem> = [
 		{
 			value: BondingMethod.LOCAL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local').toString(),
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.local').toString(),
 		},
 		{
 			value: BondingMethod.SMARTCONNECT,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart').toString(),
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethods.smart').toString(),
 		}
 	];
 
@@ -229,16 +217,16 @@ export default class BondingManager extends Vue {
 	private bondTargetAvailable = false;
 
 	/**
-	 * @constant {Array<IOption>} bondTargetOptions Bonding target options for coreui select
+	 * @constant {Array<ISelectItem>} bondTargetOptions Bonding target select options
 	 */
-	private bondTargetOptions: Array<IOption> = [
+	private bondTargetOptions: Array<ISelectItem> = [
 		{
 			value: BondingTarget.DEVICE,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device').toString(),
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.device').toString(),
 		},
 		{
 			value: BondingTarget.SERVICETOOL,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service').toString(),
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.bondingTargets.service').toString(),
 		}
 	];
 
@@ -248,12 +236,12 @@ export default class BondingManager extends Vue {
 	private bondTool = BondingTool.NFC;
 
 	/**
-	 * @constant {Array<IOption>} toolOptions Tool options for coreui select
+	 * @constant {Array<ISelectItem>} toolOptions Tool select options
 	 */
-	private bondToolOptions: Array<IOption> = [
+	private bondToolOptions: Array<ISelectItem> = [
 		{
 			value: BondingTool.NFC,
-			label: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc').toString(),
+			text: this.$t('iqrfnet.networkManager.bondingManager.form.toolTypes.nfc').toString(),
 		}
 	];
 
@@ -271,11 +259,6 @@ export default class BondingManager extends Vue {
 	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
 	 */
 	private unbondCoordinatorOnly = false;
-
-	/**
-	 * @var {boolean} daemon236 Indicates that Daemon version is 2.3.6 or higher
-	 */
-	private daemon236 = false;
 
 	/**
 	 * Component unsubscribe function
@@ -315,13 +298,6 @@ export default class BondingManager extends Vue {
 			}
 
 		});
-	}
-
-	/**
-	 * Initializes daemon version for error handling
-	 */
-	mounted(): void {
-		this.daemon236 = versionHigherEqual('2.3.6');
 	}
 
 	/**
@@ -506,20 +482,20 @@ export default class BondingManager extends Vue {
 			return;
 		}
 		if (this.unbondCoordinatorOnly) {
-			if (response.status === 1 || (response.statusStr === 'DPA error: ERROR_FAIL' && !this.daemon236)) {
+			if (response.status === 1) {
 				this.$toast.error(
 					this.$t('forms.messages.noDevice', {address: this.address}).toString()
 				);
 				return;
 			}
 		}
-		if (response.status === -1 || (response.statusStr === 'Transaction error: ERROR_TIMEOUT' && !this.daemon236)) {
+		if (response.status === -1) {
 			this.$toast.error(
 				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
 			);
 			return;
 		}
-		if (response.status === 8 || (response.statusStr === 'DPA error: ERROR_NADR' && !this.daemon236)) {
+		if (response.status === 8) {
 			this.$toast.error(
 				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);

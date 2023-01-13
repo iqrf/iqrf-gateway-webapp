@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-@import './colors/generic';
-@import '~@coreui/coreui/scss/coreui';
+declare module 'vuetify/lib/framework' {
+	import Vuetify from 'vuetify';
+	export default Vuetify;
+}
