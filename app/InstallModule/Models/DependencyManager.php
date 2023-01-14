@@ -71,7 +71,7 @@ class DependencyManager {
 			new Dependency('hostnamectl', true, 'systemd'),
 			new Dependency('chpasswd', true, 'passwd'),
 			new Dependency('ip', true, 'iproute2'),
-			//new Dependency('iqrf-gateway-controller', true, 'iqrf-gateway-controller', 'iqrfGatewayController'),
+			new Dependency('iqrf-gateway-controller', true, 'iqrf-gateway-controller', 'iqrfGatewayController'),
 			new Dependency('iqrf-gateway-setter', true, 'iqrf-gateway-setter', 'iqrfGatewaySetter'),
 			new Dependency('iqrf-gateway-uploader', true, 'iqrf-gateway-uploader', 'iqrfGatewayUploader'),
 			new Dependency('iqrf-journal-reader', true, 'iqrf-journal-reader'),
