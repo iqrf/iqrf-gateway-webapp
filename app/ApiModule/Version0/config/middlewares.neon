@@ -20,10 +20,6 @@ services:
 	middleware.cors:
 		factory: App\ApiModule\Version0\Middlewares\CorsMiddleware
 		tags: [middleware: [priority: 200]]
-	middlewares.logging:
-		factory: Contributte\Middlewares\LoggingMiddleware
-		arguments: [@monolog.logger.default]
-		tags: [middleware: [priority: 100]]
 	middleware.tryCatch:
 		factory: Contributte\Middlewares\TryCatchMiddleware
 		tags: [middleware: [priority: 1]]
