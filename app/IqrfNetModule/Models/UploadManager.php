@@ -121,7 +121,8 @@ class UploadManager {
 		if ($format === null) {
 			$format = $this->recognizeFormat($fileName);
 		}
-		$command = sprintf('%s %s \'%s\'', self::UPLOADER, $format->getUploaderParameter(), ($os ? self::OS_PATH : $this->path) . $fileName);
+		$path = escapeshellarg(($os ? self::OS_PATH : $this->path) . $fileName);
+		$command = sprintf('%s %s %s', self::UPLOADER, $format->getUploaderParameter(), $path);
 		$result = $this->commandManager->run($command, true);
 		if ($result->getExitCode() !== 0) {
 			$this->handleError($result);

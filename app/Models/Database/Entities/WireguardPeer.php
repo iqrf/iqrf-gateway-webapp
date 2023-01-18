@@ -257,21 +257,23 @@ class WireguardPeer implements JsonSerializable {
 	 * Serializes WireGuard peer entity into wg utility command
 	 */
 	public function wgSerialize(): string {
-		$command = 'peer ' . $this->getPublicKey();
+		$args = [];
+		$args['peer'] = $this->getPublicKey();
 		$psk = $this->getPsk();
 		if ($psk !== null && $psk !== '') {
-			$command .= sprintf(' preshared-key %s', $psk);
+			$args['preshared-key'] = $psk;
 		}
-		$command .= sprintf(' endpoint %s:%u', $this->getEndpoint(), $this->getPort());
-		$command .= sprintf(' persistent-keepalive %u', $this->getKeepalive());
-		$command .= sprintf(
-			' allowed-ips %s',
-			implode(
-				',',
-				array_map(fn (WireguardPeerAddress $addr): string => $addr->getAddress()->toString(), $this->getAddresses()->toArray())
-			)
-		);
-		return $command;
+		$args['endpoint'] = sprintf('%s:%u', $this->getEndpoint(), $this->getPort());
+		$args['persistent-keepalive'] = $this->getKeepalive();
+		$args['allowed-ips'] = implode(',', array_map(
+			static fn (WireguardPeerAddress $addr): string => $addr->getAddress()->toString(),
+			$this->getAddresses()->toArray()
+		));
+		return implode(' ', array_map(
+			fn (string $key, string $value): string => sprintf('%s %s', escapeshellarg($key), escapeshellarg($value)),
+			array_keys($args),
+			$args
+		));
 	}
 
 }

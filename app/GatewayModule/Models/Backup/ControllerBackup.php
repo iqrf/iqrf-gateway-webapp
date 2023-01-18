@@ -22,6 +22,7 @@ namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
+use App\CoreModule\Models\FileManager;
 
 /**
  * Controller backup manager
@@ -36,36 +37,14 @@ class ControllerBackup extends IqrfSoftwareBackup {
 	];
 
 	/**
-	 * @var array<string> Service name
-	 */
-	public const SERVICES = [
-		'iqrf-gateway-controller',
-	];
-
-	/**
-	 * @var string ZIP directory
-	 */
-	private const DIR = 'controller';
-
-	/**
-	 * @var string Feature name
-	 */
-	private const FEATURE = 'iqrfGatewayController';
-
-	/**
-	 * @var string Software name
-	 */
-	private const SOFTWARE = 'IQRF Gateway Controller';
-
-	/**
 	 * Constructor
-	 * @param string $path Path to controller configuration directory
+	 * @param FileManager $fileManager File manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		parent::__construct(self::SOFTWARE, self::DIR, self::FEATURE, $path, $commandManager, $featureManager, $restoreLogger);
+	public function __construct(FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		parent::__construct(self::IQRF_GATEWAY_CONTROLLER, $fileManager, $commandManager, $featureManager, $restoreLogger);
 	}
 
 	/**
@@ -73,7 +52,7 @@ class ControllerBackup extends IqrfSoftwareBackup {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return self::SERVICES;
+		return ['iqrf-gateway-controller'];
 	}
 
 }

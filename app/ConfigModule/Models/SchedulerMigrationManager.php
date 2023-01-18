@@ -59,7 +59,7 @@ class SchedulerMigrationManager {
 			if (is_readable($dir) && is_writable($dir)) {
 				continue;
 			}
-			$commandManager->run('chmod 777 ' . $dir, true);
+			$commandManager->run('chmod 777 ' . escapeshellarg($dir), true);
 		}
 		$this->configDirectory = $cacheDir . 'scheduler/';
 		$this->schemaManager = $schemaManager;

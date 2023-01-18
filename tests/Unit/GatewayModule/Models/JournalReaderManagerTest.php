@@ -58,9 +58,9 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	 */
 	private const COMMANDS = [
 		'cursorless' => 'iqrf-journal-reader -j -n 10',
-		'cursor' => 'iqrf-journal-reader -j -n 10 -e "s=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6"',
-		'invalidCursor' => 'iqrf-journal-reader -j -n 10 -e "invalid"',
-		'internalError' => 'iqrf-journal-reader -j -n 10 -e "s=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6"',
+		'cursor' => 'iqrf-journal-reader -j -n 10 -e \'s=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6\'',
+		'invalidCursor' => 'iqrf-journal-reader -j -n 10 -e \'invalid\'',
+		'internalError' => 'iqrf-journal-reader -j -n 10 -e \'s=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6\'',
 	];
 
 	/**

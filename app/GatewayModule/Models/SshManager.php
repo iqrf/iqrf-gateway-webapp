@@ -202,17 +202,17 @@ class SshManager {
 	private function checkSshDirectory(): void {
 		$path = $this->directory . '/' . self::KEYS_FILE;
 		if (!file_exists($this->directory)) {
-			$command = $this->commandManager->run('install -m 755 -d ' . $this->directory, true);
+			$command = $this->commandManager->run('install -m 755 -d ' . escapeshellarg($this->directory), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
 		}
 		if (!file_exists($path)) {
-			$command = $this->commandManager->run('touch ' . $path, true);
+			$command = $this->commandManager->run('touch ' . escapeshellarg($path), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
-			$command = $this->commandManager->run('chmod 644 ' . $path, true);
+			$command = $this->commandManager->run('chmod 644 ' . escapeshellarg($path), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}

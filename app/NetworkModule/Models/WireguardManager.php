@@ -400,7 +400,7 @@ class WireguardManager {
 	 */
 	public function initializeTunnel(WireguardInterface $iface): void {
 		$name = $iface->getName();
-		$output = $this->commandManager->run('ip link add ' . $name . ' type wireguard', true);
+		$output = $this->commandManager->run('ip link add ' . escapeshellarg($name) . ' type wireguard', true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to create new interface: %s.', $output->getStderr()));
 		}
@@ -420,7 +420,7 @@ class WireguardManager {
 		if ($iface->getIpv6() !== null) {
 			$this->setTunnelIp($name, $iface->getIpv6()->toString(), 6);
 		}
-		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . $name, true);
+		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . escapeshellarg($name), true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to set interface MTU: %s.', $output->getStderr()));
 		}
@@ -449,7 +449,7 @@ class WireguardManager {
 	 * @param int $protocol IP address version
 	 */
 	public function setTunnelIp(string $name, string $address, int $protocol): void {
-		$command = sprintf('ip -%u address add %s dev %s', $protocol, $address, $name);
+		$command = sprintf('ip -%u address add %s dev %s', $protocol, $address, escapeshellarg($name));
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to set interface IPv%u address: %s.', $protocol, $output->getStderr()));
@@ -470,7 +470,7 @@ class WireguardManager {
 				}
 			}
 			foreach ($addresses as $addr) {
-				$command = sprintf('ip -6 route add %s dev %s', $addr, $name);
+				$command = sprintf('ip -6 route add %s dev %s', $addr, escapeshellarg($name));
 				$output = $this->commandManager->run($command, true);
 				if ($output->getExitCode() !== 0) {
 					throw new Exception(sprintf('Failed to set IPv6 route: %s.', $output->getStderr()));

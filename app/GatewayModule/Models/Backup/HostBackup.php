@@ -44,11 +44,6 @@ class HostBackup implements IBackupManager {
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
 	private PrivilegedFileManager $fileManager;
@@ -64,7 +59,6 @@ class HostBackup implements IBackupManager {
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
 		$this->restoreLogger = $restoreLogger;
 	}
@@ -104,8 +98,8 @@ class HostBackup implements IBackupManager {
 	 */
 	private function fixPrivileges(): void {
 		foreach (self::WHITELIST as $file) {
-			$this->commandManager->run('chown root:root ' . self::CONF_PATH . $file, true);
-			$this->commandManager->run('chmod 0644 ' . self::CONF_PATH . $file, true);
+			$this->fileManager->chown($file, 'root', 'root');
+			$this->fileManager->chmod($file, 0644);
 		}
 	}
 

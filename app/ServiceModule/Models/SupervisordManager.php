@@ -34,92 +34,79 @@ class SupervisordManager implements IServiceManager {
 	private CommandManager $commandManager;
 
 	/**
-	 * @var string Name of service
-	 */
-	private string $serviceName = 'iqrf-gateway-daemon';
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param string|null $serviceName Service name
 	 */
-	public function __construct(CommandManager $commandManager, ?string $serviceName = null) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		if ($serviceName !== null) {
-			$this->serviceName = $serviceName;
-		}
 	}
 
 	/**
 	 * Disables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function disable(?string $serviceName = null): void {
+	public function disable(string $serviceName): void {
 		throw new NotImplementedException();
 	}
 
 	/**
 	 * Enables the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function enable(?string $serviceName = null): void {
+	public function enable(string $serviceName): void {
 		throw new NotImplementedException();
 	}
 
 	/**
 	 * Checks if the service is active
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function isActive(?string $serviceName = null): bool {
+	public function isActive(string $serviceName): bool {
 		throw new NotImplementedException();
 	}
 
 	/**
 	 * Checks if the service is enabled
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function isEnabled(?string $serviceName = null): bool {
+	public function isEnabled(string $serviceName): bool {
 		throw new NotImplementedException();
 	}
 
 	/**
 	 * Starts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function start(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
-		$cmd = 'supervisorctl start ' . $serviceName;
+	public function start(string $serviceName): void {
+		$cmd = 'supervisorctl start ' . escapeshellarg($serviceName);
 		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Stops the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function stop(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
-		$cmd = 'supervisorctl stop ' . $serviceName;
+	public function stop(string $serviceName): void {
+		$cmd = 'supervisorctl stop ' . escapeshellarg($serviceName);
 		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Restarts the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 */
-	public function restart(?string $serviceName = null): void {
-		$serviceName ??= $this->serviceName;
-		$cmd = 'supervisorctl restart ' . $serviceName;
+	public function restart(string $serviceName): void {
+		$cmd = 'supervisorctl restart ' . escapeshellarg($serviceName);
 		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Returns status of the service
-	 * @param string|null $serviceName Service name
+	 * @param string $serviceName Service name
 	 * @return string Service status
 	 */
-	public function getStatus(?string $serviceName = null): string {
-		$serviceName ??= $this->serviceName;
-		$cmd = 'supervisorctl status ' . $serviceName;
+	public function getStatus(string $serviceName): string {
+		$cmd = 'supervisorctl status ' . escapeshellarg($serviceName);
 		return $this->commandManager->run($cmd, true)->getStdout();
 	}
 

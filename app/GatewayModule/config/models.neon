@@ -15,7 +15,7 @@
 
 services:
 	- App\GatewayModule\Models\Backup\RestoreLogger
-	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(%paths.iqrfGatewayController.configDir%)
+	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(@controller.fileManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
 	hostBackup: App\GatewayModule\Models\Backup\HostBackup
@@ -28,8 +28,11 @@ services:
 	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup(@networkManager.fileManager)
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
 	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %paths.timesyncd.config%)
-	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(%paths.iqrfGatewayTranslator.configDir%)
-	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(%paths.iqrfGatewayUploader.configDir%)
+	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(@translator.fileManager)
+	uploader.fileManager:
+		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayUploader.configDir%)
+		autowired: false
+	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(@uploader.fileManager)
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%paths.iqrfGatewayWebapp%)
 	- App\GatewayModule\Models\BackupManager([
 		@controllerBackup,

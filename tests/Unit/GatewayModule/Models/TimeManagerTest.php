@@ -47,8 +47,8 @@ final class TimeManagerTest extends CommandTestCase {
 		'timestamp' => 'date +%s',
 		'status' => 'timedatectl show',
 		'listTimezones' => 'timedatectl list-timezones',
-		'setTimezone' => 'timedatectl set-timezone UTC',
-		'setTimezoneNonexistent' => 'timedatectl set-timezone Nonexistent/Nonexistent',
+		'setTimezone' => 'timedatectl set-timezone \'UTC\'',
+		'setTimezoneNonexistent' => 'timedatectl set-timezone \'Nonexistent/Nonexistent\'',
 		'setNtp' => 'timedatectl set-ntp true',
 	];
 

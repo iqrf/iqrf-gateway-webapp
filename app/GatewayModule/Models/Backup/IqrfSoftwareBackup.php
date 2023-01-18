@@ -22,8 +22,9 @@ namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
+use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use Nette\Utils\FileSystem;
+use InvalidArgumentException;
 
 /**
  * IQRF Software backup manager
@@ -31,19 +32,38 @@ use Nette\Utils\FileSystem;
 abstract class IqrfSoftwareBackup implements IBackupManager {
 
 	/**
+	 * @var string IQRF Gateway Controller
+	 */
+	protected const IQRF_GATEWAY_CONTROLLER = 'IQRF Gateway Controller';
+
+	/**
+	 * @var string IQRF Gateway Translator
+	 */
+	protected const IQRF_GATEWAY_TRANSLATOR = 'IQRF Gateway Translator';
+
+	/**
+	 * @var string IQRF Gateway Uploader
+	 */
+	protected const IQRF_GATEWAY_UPLOADER = 'IQRF Gateway Uploader';
+
+	/**
+	 * @var array<string> List of whitelisted pieces of software
+	 */
+	private const SOFTWARES = [
+		self::IQRF_GATEWAY_CONTROLLER,
+		self::IQRF_GATEWAY_TRANSLATOR,
+		self::IQRF_GATEWAY_UPLOADER,
+	];
+
+	/**
+	 * @var FileManager File manager
+	 */
+	private FileManager $fileManager;
+
+	/**
 	 * @var string Software name
 	 */
 	private string $software;
-
-	/**
-	 * @var string ZIP archive directory
-	 */
-	private string $dir;
-
-	/**
-	 * @var string Path to configuration directory;
-	 */
-	private string $path;
 
 	/**
 	 * @var bool Indicates whether feature is enabled
@@ -62,16 +82,19 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param string $path Path to controller configuration directory
+	 * @param string $software Software name
+	 * @param FileManager $fileManager File manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $software, string $dir, string $feature, string $path, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+	public function __construct(string $software, FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+		if (!in_array($software, self::SOFTWARES, true)) {
+			throw new InvalidArgumentException('Invalid software name.');
+		}
 		$this->software = $software;
-		$this->dir = $dir;
-		$this->path = $path;
-		$this->featureEnabled = $featureManager->get($feature)['enabled'];
+		$this->fileManager = $fileManager;
+		$this->featureEnabled = $featureManager->get($this->getFeatureName())['enabled'];
 		$this->commandManager = $commandManager;
 		$this->restoreLogger = $restoreLogger;
 	}
@@ -85,8 +108,8 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 		if (!$params['software']['iqrf'] || !$this->featureEnabled) {
 			return;
 		}
-		if (file_exists($this->path)) {
-			$zipManager->addFolder($this->path, $this->dir);
+		if ($this->fileManager->exists('')) {
+			$zipManager->addFolder($this->fileManager->getBasePath(), $this->zipDir());
 		}
 	}
 
@@ -95,28 +118,57 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
-		if (!$zipManager->exist($this->dir . '/') || !$this->featureEnabled) {
+		if (!$zipManager->exist($this->zipDir() . '/') || !$this->featureEnabled) {
 			return;
 		}
 		$this->restoreLogger->log('Restoring ' . $this->software . ' configuration.');
-		$this->recreateDirectories([$this->path]);
-		$zipManager->extract($this->path, $this->dir . '/config.json');
-		$this->commandManager->run('cp -p ' . $this->path . $this->dir . '/config.json ' . $this->path . 'config.json', true);
-		FileSystem::delete($this->path . $this->dir);
+		$this->recreateDirectory();
+		$this->fileManager->write('config.json', $this->fileManager->read($this->zipDir() . '/config.json'));
 	}
 
 	/**
-	 * Returns user and group string of current process
-	 * @param array<int, string> $dirs Array of directory paths
+	 * Recreates directory
 	 */
-	private function recreateDirectories(array $dirs): void {
+	private function recreateDirectory(): void {
 		$user = posix_getpwuid(posix_geteuid());
 		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
-		foreach ($dirs as $dir) {
-			$this->commandManager->run('rm -rf ' . $dir, true);
-			$this->commandManager->run('mkdir ' . $dir, true);
-			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
-			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
+		$path = escapeshellarg($this->fileManager->getBasePath());
+		$this->commandManager->run('rm -rf ' . $path, true);
+		$this->commandManager->run('mkdir ' . $path, true);
+		$this->commandManager->run('chown -R ' . $owner . ' ' . $path, true);
+	}
+
+	/**
+	 * Returns optional feature name
+	 * @return string Optional feature name
+	 */
+	private function getFeatureName(): string {
+		switch ($this->software) {
+			case self::IQRF_GATEWAY_CONTROLLER:
+				return 'iqrfGatewayController';
+			case self::IQRF_GATEWAY_TRANSLATOR:
+				return 'iqrfGatewayTranslator';
+			case self::IQRF_GATEWAY_UPLOADER:
+				return 'trUpload';
+			default:
+				throw new InvalidArgumentException('Invalid software name.');
+		}
+	}
+
+	/**
+	 * Returns to directory path in the ZIP archive
+	 * @return string Directory path in the ZIP archive
+	 */
+	private function zipDir(): string {
+		switch ($this->software) {
+			case self::IQRF_GATEWAY_CONTROLLER:
+				return 'controller';
+			case self::IQRF_GATEWAY_TRANSLATOR:
+				return 'translator';
+			case self::IQRF_GATEWAY_UPLOADER:
+				return 'uploader';
+			default:
+				throw new InvalidArgumentException('Invalid software name.');
 		}
 	}
 

@@ -60,7 +60,7 @@ class CommandManager {
 	 * @return bool Is the command exists?
 	 */
 	public function commandExist(string $cmd): bool {
-		return $this->run('which ' . $cmd)->getExitCode() === 0;
+		return $this->run('which ' . escapeshellarg($cmd))->getExitCode() === 0;
 	}
 
 	/**

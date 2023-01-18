@@ -56,8 +56,8 @@ final class WireguardManagerTest extends CommandTestCase {
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
 		'publicKey' => 'wg pubkey',
-		'tunnelState' => 'wg show wg0',
-		'deleteTunnel' => 'ip link delete dev wg0',
+		'tunnelState' => 'wg show \'wg0\'',
+		'deleteTunnel' => 'ip link delete dev \'wg0\'',
 	];
 
 	/**
