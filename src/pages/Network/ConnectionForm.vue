@@ -61,7 +61,80 @@ limitations under the License.
 						/>
 					</div>
 					<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
-					<GsmConfiguration v-if='connection.gsm' v-model='connection' />
+					<div
+						v-if='connection.gsm'
+						:key='refresh'
+					>
+						<legend>{{ $t('network.mobile.form.title') }}</legend>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required|apn'
+							:custom-messages='{
+								required: $t("network.mobile.errors.apnMissing"),
+								apn: $t("network.mobile.errors.apnInvalid"),
+							}'
+						>
+							<CInput
+								v-model='connection.gsm.apn'
+								:label='$t("network.mobile.form.apn").toString()'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='pin'
+							:custom-messages='{
+								pin: $t("network.mobile.errors.pinInvalid"),
+							}'
+						>
+							<PasswordInput
+								v-model='connection.gsm.pin'
+								:label='$t("network.mobile.form.pin").toString()'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							/>
+						</ValidationProvider>
+						<CRow>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: connection.gsm.password.length > 0
+									}'
+									:custom-messages='{
+										required: $t("network.mobile.errors.credentialsMissing"),
+									}'
+								>
+									<CInput
+										v-model='connection.gsm.username'
+										:label='$t("forms.fields.username").toString()'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: connection.gsm.username.length > 0
+									}'
+									:custom-messages='{
+										required: $t("network.mobile.errors.credentialsMissing"),
+									}'
+								>
+									<PasswordInput
+										v-model='connection.gsm.password'
+										:label='$t("forms.fields.password").toString()'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+								<CCol />
+							</ccol>
+						</CRow>
+					</div>
 					<SerialConfiguration v-if='connection.serial' v-model='connection' />
 					<CRow v-if='interfaceType !== InterfaceType.GSM'>
 						<CCol md='6'>
@@ -145,7 +218,6 @@ import {MetaInfo} from 'vue-meta';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {v4 as uuidv4} from 'uuid';
 
-import GsmConfiguration from '@/components/Network/Connection/GsmConfiguration.vue';
 import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
 import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
 import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
@@ -153,6 +225,7 @@ import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration
 import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
 import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import NetworkOperator from '@/entities/NetworkOperator';
 
@@ -163,6 +236,7 @@ import {WepKeyType} from '@/enums/Network/WifiSecurity';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import IpAddressHelper from '@/helpers/IpAddressHelper';
+import {apn, pin} from '@/helpers/validationRules/Network';
 import {sleep} from '@/helpers/sleep';
 import UrlBuilder from '@/helpers/urlBuilder';
 
@@ -182,7 +256,6 @@ import VersionService from '@/services/VersionService';
 		CModal,
 		CRow,
 		CSwitch,
-		GsmConfiguration,
 		GsmModemInput,
 		InterfaceInput,
 		IPv4Configuration,
@@ -192,6 +265,7 @@ import VersionService from '@/services/VersionService';
 		ValidationObserver,
 		ValidationProvider,
 		WiFiConfiguration,
+		PasswordInput,
 	},
 	data: () => ({
 		InterfaceType,
@@ -260,6 +334,11 @@ export default class ConnectionForm extends Vue {
 	private showModal = false;
 
 	/**
+	 * @var {number} refresh Form refresh
+	 */
+	private refresh = 0;
+
+	/**
 	 * @property {string} uuid Network connection configuration id
 	 */
 	@Prop({required: false, default: null}) uuid!: string;
@@ -304,6 +383,8 @@ export default class ConnectionForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+		extend('apn', apn);
+		extend('pin', pin);
 	}
 
 	/**
@@ -619,6 +700,7 @@ export default class ConnectionForm extends Vue {
 		this.connection.gsm.apn = operator.getApn();
 		this.connection.gsm.username = operator.getUsername();
 		this.connection.gsm.password = operator.getPassword();
+		this.refresh++;
 	}
 
 	/**
