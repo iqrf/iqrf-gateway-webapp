@@ -123,7 +123,7 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring ' . $this->software . ' configuration.');
 		$this->recreateDirectory();
-		$this->fileManager->write('config.json', $this->fileManager->read($this->zipDir() . '/config.json'));
+		$this->fileManager->write('config.json', $zipManager->openFile($this->zipDir() . '/config.json'));
 	}
 
 	/**
