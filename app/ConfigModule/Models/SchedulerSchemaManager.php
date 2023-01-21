@@ -45,11 +45,11 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * @param ApiSchemaManager $apiSchemaManager JSON API JSON schema manager
 	 */
 	public function __construct(MainManager $mainManager, CommandManager $commandManager, ApiSchemaManager $apiSchemaManager) {
-		$cacheDir = $mainManager->getCacheDir();
-		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
-			$commandManager->run('chmod 777 ' . $cacheDir, true);
+		$dataDir = $mainManager->getDataDir();
+		if (!is_readable($dataDir) || !is_writable($dataDir)) {
+			$commandManager->run('chmod 777 ' . $dataDir, true);
 		}
-		$configDir = $cacheDir . 'scheduler/schema/';
+		$configDir = $dataDir . 'schedulerSchemas/';
 		parent::__construct($configDir, $commandManager);
 		$this->apiSchemaManager = $apiSchemaManager;
 	}
