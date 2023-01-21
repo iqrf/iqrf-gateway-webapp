@@ -143,7 +143,7 @@ export default class TaskImportModal extends ModalBase {
 	 * @return {File|null}
 	 */
 	private getFile(): File|null {
-		const input = (this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement;
+		const input = (this.$refs.schedulerInput as CInputFile).$el.children[1] as HTMLInputElement;
 		const filelist = (input.files as FileList);
 		if (filelist.length === 0) {
 			return null;
