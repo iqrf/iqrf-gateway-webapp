@@ -1,10 +1,54 @@
-iqrf-gateway-webapp (2.5.0~rc2~1.gbp64db95) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc2) testing; urgency=medium
 
-  ** SNAPSHOT build @64db950799c3de8b370b5a5e3cfa7559785ef9b1 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc2
+  * SchedulerList: updated table header
+  * Network: updated validation, removed AP filtering for gateways
+  * updated controller hardware wdt pin translation, added missing datetime description translation
+  * MenderServiceForm: fixed font size of enabled features heading
+  * TrUpload: disable OS upload
+  * updated mapping entity, added mapping device type migration, adapters in fixtures
+  * updated mapping entity tests
+  * added mapping device type tabs, updated forms and components; extended console commands
+  * Interface mapping tabs
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Core: refactor file managers and backup/restore manager
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 05 Jan 2023 20:31:26 +0100
+  [ Karel Hanák ]
+  * Makefile: fix patching db path
+  * patch webapp log directory
+  * DaemonBackup: fixed config files backup
+  * GatewayInfoUtil: removed gwToken, updated tests; use GWID as splitter insID
+  * PrivilegedFileManager: return empty array if find returns empty string
+  * PrivilegedFileManager: updated comparison
+  * BackupManager: include apcupsd service
+  * NetworkManagerBackup: fixed conf file backup
+  * MenderBackup: fixed conf file backup
+  * composer: downgrade and fix doctrine dbal
+  * GatewayInfoUtil: changed default interface placeholder value
+  * PrivilegedFileManager: fixed list directories method
+  * updated GatewayInfoUtil tests
+  * MailerController: check if user has email before sending configuration test
+  * BackupManager: prevent restoring gateway from non-gw archive
+  * added controller pin configuration device types
+  * DependencyManager: fixed controller dependency entry
+
+  [ Roman Ondráček ]
+  * API: remove request logging middleware
+
+  [ Karel Hanák ]
+  * GSM configuration form temporary workaround
+  * Scheduler: fixed import modal file input reference
+  * SchedulerSchemaManager: fixed path to scheduler record schema
+
+  [ Roman Ondráček ]
+  * Backend: fix shell argument escaping
+
+  [ Karel Hanák ]
+  * Gateway backup: fixed iqrf software and network manager restore
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 23 Jan 2023 08:38:58 +0100
 
 iqrf-gateway-webapp (2.5.0~rc1) testing; urgency=medium
 
