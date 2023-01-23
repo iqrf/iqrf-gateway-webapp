@@ -91,7 +91,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'daemon_old' => 'v2.1.0',
 		'setter' => 'v1.0.0',
 		'uploader' => 'v1.0.0',
-		'webapp' => 'v2.5.0-rc3',
+		'webapp' => 'v2.5.0-rc4',
 	];
 
 	/**
