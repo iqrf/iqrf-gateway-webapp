@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.0~rc3~1.gbp86a485) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc3) testing; urgency=medium
 
-  ** SNAPSHOT build @86a485a2539eb2343694edd7d4a066a1272659f5 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc3
+  * SchedulerList: relay task fetch from daemon api after import and restart
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 23 Jan 2023 08:48:49 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 23 Jan 2023 10:22:40 +0100
 
 iqrf-gateway-webapp (2.5.0~rc2) testing; urgency=medium
 
