@@ -49,7 +49,7 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function connect(string $name): void {
-		$output = $this->commandManager->run('nmcli -t device connect ' . $name, true);
+		$output = $this->commandManager->run('nmcli -t device connect ' . escapeshellarg($name), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -61,7 +61,7 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function disconnect(string $name): void {
-		$output = $this->commandManager->run('nmcli -t device disconnect ' . $name, true);
+		$output = $this->commandManager->run('nmcli -t device disconnect ' . escapeshellarg($name), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());

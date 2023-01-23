@@ -47,7 +47,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	public function __construct(MainManager $mainManager, CommandManager $commandManager, ApiSchemaManager $apiSchemaManager) {
 		$dataDir = $mainManager->getDataDir();
 		if (!is_readable($dataDir) || !is_writable($dataDir)) {
-			$commandManager->run('chmod 777 ' . $dataDir, true);
+			$commandManager->run('chmod 777 ' . escapeshellarg($dataDir), true);
 		}
 		$configDir = $dataDir . 'schedulerSchemas/';
 		parent::__construct($configDir, $commandManager);

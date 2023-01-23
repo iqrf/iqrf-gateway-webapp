@@ -77,7 +77,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to install packages
 	 */
 	public function testInstall(): void {
-		$command = 'apt-get install -y iqrf-gateway-daemon iqrf-gateway-webapp';
+		$command = 'apt-get install -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
 			$this->manager->install([$this, 'callback'], self::PACKAGES);
@@ -111,7 +111,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to remove packages
 	 */
 	public function testRemove(): void {
-		$command = 'apt-get remove -y iqrf-gateway-daemon iqrf-gateway-webapp';
+		$command = 'apt-get remove -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
 			$this->manager->remove([$this, 'callback'], self::PACKAGES);
@@ -122,7 +122,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to purge packages
 	 */
 	public function testPurge(): void {
-		$command = 'apt-get purge -y iqrf-gateway-daemon iqrf-gateway-webapp';
+		$command = 'apt-get purge -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
 			$this->manager->purge([$this, 'callback'], self::PACKAGES);

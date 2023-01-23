@@ -24,7 +24,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
-use App\GatewayModule\Models\Utils\BackupUtil;
 use Nette\Utils\Strings;
 
 /**
@@ -104,7 +103,7 @@ class DaemonBackup implements IBackupManager {
 			return;
 		}
 		$this->restoreLogger->log('Restoring IQRF Gateway Daemon configuration, scheduler and database.');
-		BackupUtil::recreateDirectories([
+		$this->recreateDirectories([
 			$this->daemonDirectories->getConfigurationDir(),
 			$this->daemonDirectories->getDataDir() . 'DB/',
 		]);
@@ -140,6 +139,21 @@ class DaemonBackup implements IBackupManager {
 		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
 	}
 
+
+	/**
+	 * Returns user and group string of current process
+	 * @param array<int, string> $dirs Array of directory paths
+	 */
+	public function recreateDirectories(array $dirs): void {
+		$user = posix_getpwuid(posix_geteuid());
+		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		foreach ($dirs as $dir) {
+			$this->commandManager->run('rm -rf ' . $dir, true);
+			$this->commandManager->run('mkdir ' . $dir, true);
+			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
+			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
+		}
+	}
 	/**
 	 * Returns service names
 	 * @return array<string> Service names

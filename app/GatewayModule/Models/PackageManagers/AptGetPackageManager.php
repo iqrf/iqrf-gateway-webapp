@@ -51,7 +51,7 @@ class AptGetPackageManager implements IPackageManager {
 	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void {
-		$command = 'apt-get install -y ' . implode(' ', $packages);
+		$command = 'apt-get install -y ' . $this->formatPackages($packages);
 		$this->commandManager->runAsync($callback, $command, true);
 	}
 
@@ -82,7 +82,10 @@ class AptGetPackageManager implements IPackageManager {
 	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void {
-		$command = 'apt-get purge -y ' . implode(' ', $packages);
+		if ($packages === []) {
+			return;
+		}
+		$command = 'apt-get purge -y ' . $this->formatPackages($packages);
 		$this->commandManager->runAsync($callback, $command, true);
 	}
 
@@ -92,7 +95,10 @@ class AptGetPackageManager implements IPackageManager {
 	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void {
-		$command = 'apt-get remove -y ' . implode(' ', $packages);
+		if ($packages === []) {
+			return;
+		}
+		$command = 'apt-get remove -y ' . $this->formatPackages($packages);
 		$this->commandManager->runAsync($callback, $command, true);
 	}
 
@@ -110,6 +116,15 @@ class AptGetPackageManager implements IPackageManager {
 	 */
 	public function upgrade(callable $callback): void {
 		$this->commandManager->runAsync($callback, 'apt-get upgrade -y', true);
+	}
+
+	/**
+	 * Formats array of packages to string
+	 * @param array<string> $packages Array of packages
+	 * @return string List of packages
+	 */
+	private function formatPackages(array $packages): string {
+		return implode(' ', array_map(fn(string $package): string => escapeshellarg($package), $packages));
 	}
 
 }

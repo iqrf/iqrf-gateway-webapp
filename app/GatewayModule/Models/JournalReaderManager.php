@@ -57,7 +57,7 @@ class JournalReaderManager {
 		}
 		$command = sprintf('%s -j -n %d', self::READER, $count);
 		if ($cursor !== null) {
-			$command = sprintf('%s -e "%s"', $command, $cursor);
+			$command = sprintf('%s -e %s', $command, escapeshellarg($cursor));
 		}
 		$result = $this->commandManager->run($command, true);
 		if ($result->getExitCode() === 1) {

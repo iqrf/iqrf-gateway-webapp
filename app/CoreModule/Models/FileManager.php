@@ -155,8 +155,8 @@ class FileManager implements IFileManager {
 	 * @param string $fileName File name
 	 */
 	private function fixPermissions(string $fileName): void {
-		$this->commandManager->run('chmod 777 ' . $this->directory, true);
-		$this->commandManager->run('chmod 666 ' . $this->directory . '/' . $fileName, true);
+		$this->commandManager->run('chmod 777 ' . escapeshellarg($this->directory), true);
+		$this->commandManager->run('chmod 666 ' . escapeshellarg($this->directory . '/' . $fileName), true);
 	}
 
 }

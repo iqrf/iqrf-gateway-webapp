@@ -119,8 +119,8 @@ class NetworkManagerBackup implements IBackupManager {
 		$this->fileManager->chown('NetworkManager.conf', 'root', 'root');
 		$this->fileManager->chmod('NetworkManager.conf', 0644);
 		foreach ($this->fileManager->listFiles('system-connections') as $connectionFile) {
-			$this->fileManager->chown($connectionFile, 'root', 'root');
-			$this->fileManager->chmod($connectionFile, 0600);
+			$this->fileManager->chown('system-connections/' . $connectionFile, 'root', 'root');
+			$this->fileManager->chmod('system-connections/' . $connectionFile, 0600);
 		}
 	}
 

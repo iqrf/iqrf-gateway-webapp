@@ -368,7 +368,7 @@ class BackupManager {
 	 * Cleans up temporary backup directory
 	 */
 	private function cleanup(): void {
-		$this->commandManager->run('rm -rf ' . self::TMP_PATH, true);
+		$this->commandManager->run('rm -rf ' . escapeshellarg(self::TMP_PATH), true);
 	}
 
 }

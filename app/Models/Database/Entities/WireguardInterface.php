@@ -223,15 +223,13 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string JSON serialized WireGuard interface entity
 	 */
 	public function wgSerialize(): string {
-		$command = 'wg set ' . $this->getName();
-		$command .= sprintf(' private-key %s', $this->getPrivateKey());
+		$command = 'wg set ' . escapeshellarg($this->getName());
+		$command .= sprintf(' \'private-key\' %s', escapeshellarg($this->getPrivateKey()));
 		$port = $this->getPort();
 		if ($port !== null) {
-			$command .= sprintf(' listen-port %u', $port);
+			$command .= sprintf(' \'listen-port\' %s', escapeshellarg((string) $port));
 		}
-		foreach ($this->getPeers()->toArray() as $peer) {
-			$command .= sprintf(' %s', $peer->wgSerialize());
-		}
+		$command .= implode('', array_map(static fn (WireguardPeer $peer): string => ' ' . $peer->wgSerialize(), $this->getPeers()->toArray()));
 		return $command;
 	}
 
@@ -240,7 +238,7 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string IP utility interface delete command
 	 */
 	public function ipDelete(): string {
-		return 'ip link delete dev ' . $this->getName();
+		return 'ip link delete dev ' . escapeshellarg($this->getName());
 	}
 
 	/**
@@ -248,7 +246,7 @@ class WireguardInterface implements JsonSerializable {
 	 * @return string WG utility interface status command
 	 */
 	public function wgStatus(): string {
-		return 'wg show ' . $this->getName();
+		return 'wg show ' . escapeshellarg($this->getName());
 	}
 
 }

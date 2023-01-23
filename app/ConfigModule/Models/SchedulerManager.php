@@ -62,7 +62,7 @@ class SchedulerManager {
 		$this->timeManager = $timeManager;
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
-			$commandManager->run('chmod 777 ' . $cacheDir, true);
+			$commandManager->run('chmod 777 ' . escapeshellarg($cacheDir), true);
 		}
 		$path = $cacheDir . 'scheduler/';
 		$this->fileManager = new FileManager($path, $commandManager);
