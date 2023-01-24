@@ -1969,7 +1969,7 @@
 					"eeepromAddress": "Please enter an integer between 768 and 16383 for external EEPROM start address."
 				},
 				"notes": {
-					"network": "Note: Network upload does not include Coordinator device. Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version.",
+					"network": "Note: Network upload does not include Coordinator device. Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version and be online.",
 					"hwpid": "Note: HWPID 65535 includes all devices."
 				},
 				"messages": {
@@ -1985,6 +1985,8 @@
 					"invalidContent": "An error has occurred during file content parsing: {error}",
 					"invalidMemory": "Invalid memory operation: {error}",
 					"compatibilityError": "Compatibility error: {error}",
+					"deviceOfflineError": "One or more devices were offline during the upload process.",
+					"noDevicesError": "There are no devices bonded in the network.",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",
