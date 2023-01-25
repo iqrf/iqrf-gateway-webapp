@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.0~rc4~1.gbp51132a) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc4) testing; urgency=medium
 
-  ** SNAPSHOT build @51132a0ab08a94717c0cab8c7a9454fa603525ad **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc4
+  * OtaUpload: added error handling for empty network and offline devices
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 23 Jan 2023 10:24:46 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 25 Jan 2023 12:22:39 +0100
 
 iqrf-gateway-webapp (2.5.0~rc3) testing; urgency=medium
 
