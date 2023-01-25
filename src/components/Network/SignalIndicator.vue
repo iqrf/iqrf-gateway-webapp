@@ -19,6 +19,7 @@ limitations under the License.
 		v-if='signal !== undefined'
 		:value='signal'
 		:color='color'
+		show-percentage
 	/>
 </template>
 

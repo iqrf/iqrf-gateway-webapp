@@ -17,9 +17,10 @@
 
 import {EapPhaseOneMethod, EapPhaseTwoMethod} from '@/enums/Network/WifiSecurity';
 
-export interface IAccessPointArray {
+export interface IAccessPoints {
 	ssid: string,
 	aps: Array<IAccessPoint>
+	showDetails?: boolean
 }
 
 export interface IAccessPoint {

@@ -16,8 +16,19 @@ limitations under the License.
 -->
 <template>
 	<CCard>
-		<CCardHeader>
+		<CCardHeader class='datatable-header'>
 			{{ $t("network.mobile.modems.title") }}
+			<CButtonToolbar>
+				<CButton
+					color='primary'
+					size='sm'
+					class='float-right'
+					@click='getData'
+				>
+					<CIcon :content='cilReload' size='sm' />
+					{{ $t('forms.refresh') }}
+				</CButton>
+			</CButtonToolbar>
 		</CCardHeader>
 		<CCardBody>
 			<CDataTable
@@ -57,12 +68,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {cilReload} from '@coreui/icons';
 import {
 	CBadge,
+	CButton,
+	CButtonToolbar,
 	CCard,
 	CCardBody,
 	CCardHeader,
-	CDataTable
+	CDataTable,
+	CIcon,
 } from '@coreui/vue/src';
 import {Component, Vue} from 'vue-property-decorator';
 
@@ -78,12 +93,18 @@ import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 @Component({
 	components: {
 		CBadge,
+		CButton,
+		CButtonToolbar,
 		CCard,
 		CCardHeader,
 		CCardBody,
 		CDataTable,
+		CIcon,
 		SignalIndicator,
 	},
+	data: () => ({
+		cilReload,
+	}),
 })
 export default class GsmInterfaces extends Vue {
 
@@ -132,9 +153,17 @@ export default class GsmInterfaces extends Vue {
 	private loading = true;
 
 	/**
-	 * Retrieves modems
+	 * Retrieves modems at page load
 	 */
 	protected mounted(): void {
+		this.getData();
+	}
+
+	/**
+	 * Retrieves modems
+	 */
+	public getData(): void {
+		this.loading = true;
 		NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;

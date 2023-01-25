@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.ethernet.title') }}</h1>
-		<NetworkInterfaces :type='InterfaceType.ETHERNET' />
+		<NetworkInterfaces ref='interfaces' :type='InterfaceType.ETHERNET' />
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				{{ $t('network.connection.title') }}
@@ -124,7 +124,7 @@ import {
 	CModal,
 } from '@coreui/vue/src';
 import {AxiosError} from 'axios';
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 
@@ -163,6 +163,11 @@ import VersionService from '@/services/VersionService';
 })
 
 export default class EthernetConnections extends Vue {
+
+	/**
+	 * @property {NetworkInterfaces} interfaces Network interfaces component
+   */
+	@Ref('interfaces') interfaces!: NetworkInterfaces;
 
 	/**
 	 * @var {Array<NetworkConnection>} connections Array of existing network connections
@@ -242,6 +247,7 @@ export default class EthernetConnections extends Vue {
 						{connection: connection.name}
 					).toString());
 				this.getConnections();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -266,6 +272,7 @@ export default class EthernetConnections extends Vue {
 						{interface: connection.interfaceName, connection: connection.name}
 					).toString());
 				this.getConnections();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => {
 				if (this.hostname === 'localhost') {

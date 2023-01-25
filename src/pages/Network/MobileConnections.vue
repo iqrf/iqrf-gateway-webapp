@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<GsmInterfaces />
+		<GsmInterfaces ref='interfaces' />
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				{{ $t('network.connection.title') }}
@@ -84,7 +84,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 import {
 	CBadge,
 	CButton,
@@ -137,6 +137,11 @@ import {ConnectionType} from '@/enums/Network/ConnectionType';
  * Mobile connections page
  */
 export default class MobileConnections extends Vue {
+
+	/**
+	 * @property {GsmInterfaces} interfaces - GSM interfaces component
+   */
+	@Ref('interfaces') readonly interfaces!: GsmInterfaces;
 
 	/**
 	 * @var {Array<NetworkConnections>} connections Existing mobile connections
@@ -218,6 +223,7 @@ export default class MobileConnections extends Vue {
 					).toString()
 				);
 				this.getConnections();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -246,6 +252,7 @@ export default class MobileConnections extends Vue {
 						).toString()
 					);
 					this.getConnections();
+					this.interfaces.getData();
 				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
@@ -270,6 +277,7 @@ export default class MobileConnections extends Vue {
 					).toString()
 				);
 				this.getConnections();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');

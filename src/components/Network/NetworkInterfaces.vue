@@ -16,8 +16,19 @@ limitations under the License.
 -->
 <template>
 	<CCard>
-		<CCardHeader>
+		<CCardHeader class='datatable-header'>
 			{{ $t("network.interface.title") }}
+			<CButtonToolbar>
+				<CButton
+					color='primary'
+					size='sm'
+					class='float-right'
+					@click='getData'
+				>
+					<CIcon :content='cilReload' size='sm' />
+					{{ $t('forms.refresh') }}
+				</CButton>
+			</CButtonToolbar>
 		</CCardHeader>
 		<CCardBody>
 			<CDataTable
@@ -53,12 +64,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {cilReload} from '@coreui/icons';
 import {
 	CBadge,
+	CButton,
+	CButtonToolbar,
 	CCard,
 	CCardBody,
 	CCardHeader,
-	CDataTable
+	CDataTable,
+	CIcon,
 } from '@coreui/vue/src';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
@@ -74,11 +89,17 @@ import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 @Component({
 	components: {
 		CBadge,
+		CButton,
+		CButtonToolbar,
 		CCard,
 		CCardHeader,
 		CCardBody,
 		CDataTable,
+		CIcon,
 	},
+	data: () => ({
+		cilReload,
+	}),
 })
 export default class NetworkInterfaces extends Vue {
 
@@ -125,9 +146,16 @@ export default class NetworkInterfaces extends Vue {
 	private interfaces: Array<NetworkInterface> = [];
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Retrieves network interfaces at component creation
 	 */
 	protected mounted(): void {
+		this.getData();
+	}
+
+	/**
+	 * Retrieves network interfaces
+	 */
+	public getData(): void {
 		this.loading = true;
 		NetworkInterfaceService.list(this.type)
 			.then((interfaces: Array<NetworkInterface>) => {

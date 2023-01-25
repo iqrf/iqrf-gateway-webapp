@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.wireless.title') }}</h1>
-		<NetworkInterfaces :type='InterfaceType.WIFI' />
+		<NetworkInterfaces ref='interfaces' :type='InterfaceType.WIFI' />
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				{{ $t('network.wireless.table.accessPoints') }}
@@ -112,14 +112,14 @@ limitations under the License.
 							<CButton
 								color='info'
 								size='sm'
-								@click='item.aps[0].showDetails = !item.aps[0].showDetails'
+								@click='item.showDetails = !item.showDetails'
 							>
 								<CIcon :content='cilInfo' />
 							</CButton>
 						</td>
 					</template>
 					<template #details='{item}'>
-						<CCollapse :show='item.aps[0].showDetails'>
+						<CCollapse :show='item.showDetails'>
 							<CCardBody>
 								<div class='datatable-expansion-table'>
 									<table>
@@ -128,26 +128,26 @@ limitations under the License.
 										</caption>
 										<tr>
 											<th>{{ $t('network.wireless.table.bssid') }}</th>
-											<td>
-												{{ item.aps[0].bssid }}
+											<td v-for='ap in item.aps' :key='ap.bssid'>
+												{{ ap.bssid }}
 											</td>
 										</tr>
 										<tr>
 											<th>{{ $t('network.wireless.table.mode') }}</th>
-											<td>
-												{{ item.aps[0].mode }}
+											<td v-for='ap in item.aps' :key='ap.bssid'>
+												{{ ap.mode }}
 											</td>
 										</tr>
 										<tr>
 											<th>{{ $t('network.wireless.table.channel') }}</th>
-											<td>
-												{{ item.aps[0].channel }}
+											<td v-for='ap in item.aps' :key='ap.bssid'>
+												{{ ap.channel }}
 											</td>
 										</tr>
 										<tr>
 											<th>{{ $t('network.wireless.table.rate') }}</th>
-											<td>
-												{{ item.aps[0].rate }}
+											<td v-for='ap in item.aps' :key='ap.bssid'>
+												{{ ap.rate }}
 											</td>
 										</tr>
 									</table>
@@ -213,7 +213,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {AxiosError} from 'axios';
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 import {
 	CBadge,
 	CButton,
@@ -237,7 +237,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 
 import {IField} from '@/interfaces/Coreui';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
-import {IAccessPoint, IAccessPointArray} from '@/interfaces/Network/Wifi';
+import {IAccessPoint, IAccessPoints} from '@/interfaces/Network/Wifi';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 import VersionService from '@/services/VersionService';
@@ -278,9 +278,14 @@ import {InterfaceType} from '@/enums/Network/InterfaceType';
 export default class WifiConnections extends Vue {
 
 	/**
+	 * @property {NetworkInterfaces} interfaces Network interfaces component
+	 */
+	@Ref('interfaces') interfaces!: NetworkInterfaces;
+
+	/**
 	 * @var {Array<IAccessPointArray>} accessPoints Array of available access points
 	 */
-	private accessPoints: Array<IAccessPointArray> = [];
+	private accessPoints: Array<IAccessPoints> = [];
 
 	/**
 	 * @property {boolean} loading Loading state
@@ -389,9 +394,8 @@ export default class WifiConnections extends Vue {
 	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.WiFi)
 			.then((connections: NetworkConnection[]) => {
-				const apArray: Array<IAccessPointArray> = [];
+				const apArray: Array<IAccessPoints> = [];
 				for (const ap of accessPoints) {
-					ap['showDetails'] = false;
 					const idx = apArray.findIndex(item => item.ssid === ap.ssid);
 					if (idx !== -1) {
 						if (ap.inUse) {
@@ -401,13 +405,13 @@ export default class WifiConnections extends Vue {
 						}
 					} else {
 						apArray.push({
+							aps: [ap],
 							ssid: ap.ssid,
-							aps: [ap]
+							showDetails: false,
 						});
 					}
 				}
 				for (const i in apArray) {
-					apArray[i].aps.splice(1);
 					const re = new RegExp('^' + apArray[i].ssid + '(\\s\\d+)?$');
 					const filteredConnections = connections.filter((item: NetworkConnection) => re.test(item.name));
 					if (filteredConnections.length === 0) {
@@ -448,6 +452,7 @@ export default class WifiConnections extends Vue {
 						{interface: ap.interfaceName, connection: ap.ssid}
 					).toString());
 				this.getAccessPoints();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -475,6 +480,7 @@ export default class WifiConnections extends Vue {
 						{interface: ap.interfaceName, connection: ap.ssid}
 					).toString());
 				this.getAccessPoints();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => {
 				if (this.hostname === 'localhost') {
@@ -551,6 +557,7 @@ export default class WifiConnections extends Vue {
 				);
 				this.deletedAp = true;
 				this.getAccessPoints();
+				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
