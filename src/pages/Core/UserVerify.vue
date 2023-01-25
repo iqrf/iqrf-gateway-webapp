@@ -97,6 +97,7 @@ export default class UserVerify extends Vue {
 			.then((user: User) => {
 				this.success = true;
 				this.user = user;
+				this.$store.dispatch('user/setJwt', this.user);
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -117,7 +118,6 @@ export default class UserVerify extends Vue {
 		if (this.user.role === UserRole.BASIC) {
 			location.pathname = '/';
 		}
-		this.$store.dispatch('user/setJwt', this.user);
 		this.$router.push('/');
 	}
 
