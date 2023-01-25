@@ -19,7 +19,7 @@ extensions:
 
 console:
 	name: IQRF Gateway Webapp manager
-	version: 2.5.0-rc4
+	version: 2.5.0-rc5
 	catchExceptions: true
 	autoExit: true
 	url: http://localhost/
