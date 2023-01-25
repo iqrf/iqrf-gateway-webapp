@@ -240,7 +240,11 @@ import {apn, pin} from '@/helpers/validationRules/Network';
 import {sleep} from '@/helpers/sleep';
 import UrlBuilder from '@/helpers/urlBuilder';
 
-import {IConnection, IConnectionModal} from '@/interfaces/Network/Connection';
+import {
+	IConnection,
+	IConnectionModal,
+	IConnectionSerial
+} from '@/interfaces/Network/Connection';
 import {IAccessPoint} from '@/interfaces/Network/Wifi';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
@@ -711,7 +715,8 @@ export default class ConnectionForm extends Vue {
 			return;
 		}
 		if (/tty(AMA|AMC|S)\d+/.test(this.connection.interface) && this.connection.serial === undefined) {
-			Object.assign(this.connection, {serial: {baudrate: 115200, databits: 8, parity: 'none', stopbits: 1}});
+			const serial: IConnectionSerial = {baudRate: 115200, bits: 8, parity: 'n', stopBits: 1, sendDelay: 0};
+			Object.assign(this.connection, {serial: serial});
 		}
 	}
 

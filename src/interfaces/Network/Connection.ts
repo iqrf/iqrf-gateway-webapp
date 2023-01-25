@@ -117,9 +117,9 @@ export interface IConnectionGSM {
 export interface IConnectionSerial {
 	baudRate: number
 	bits: number
-	parity: string
+	parity: ''|'E'|'o'|'n'
 	sendDelay: number
-	stopBits: number
+	stopBits: 1|2
 }
 
 export interface IConnectionWifi {
