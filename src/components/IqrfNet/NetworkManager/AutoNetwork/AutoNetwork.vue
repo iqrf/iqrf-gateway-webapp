@@ -390,7 +390,7 @@ export default class AutoNetwork extends Vue {
 		discoveryBeforeStart: false,
 		discoveryTxPower: 7,
 		skipDiscoveryEachWave: false,
-		unbondUnrespondingNodes: true,
+		unbondUnrespondingNodes: false,
 		skipPrebonding: false,
 	};
 
