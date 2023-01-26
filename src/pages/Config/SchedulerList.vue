@@ -313,7 +313,7 @@ export default class SchedulerList extends Vue {
 	/**
 	 * @var {Array<Task>} tasks Array of scheduler tasks
 	 */
-	private tasks: Array<ITaskRest>|null = null;
+	private tasks: Array<ITaskRest> = [];
 
 	/**
 	 * Component unsubscribe function
