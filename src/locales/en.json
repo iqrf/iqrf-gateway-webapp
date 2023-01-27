@@ -1987,6 +1987,7 @@
 					"compatibilityError": "Compatibility error: {error}",
 					"deviceOfflineError": "One or more devices were offline during the upload process.",
 					"noDevicesError": "There are no devices bonded in the network.",
+					"noHwpidMatch": "No device in network matched specified HWPID.",
 					"uploadRunning": "Uploading data to external EEPROM.",
 					"verifyRunning": "Verifying data in external EEPROM.",
 					"loadRunning": "Loading data from external EEPROM to Flash memory.",

@@ -523,6 +523,9 @@ export default class OtaUpload extends Vue {
 				case 1009:
 					message = this.$t('iqrfnet.networkManager.otaUpload.messages.deviceOfflineError').toString();
 					break;
+				case 1010:
+					message = this.$t('iqrfnet.networkManager.otaUpload.messages.noHwpidMatch').toString();
+					break;
 				case 1002:
 				default:
 					message = this.$t('iqrfnet.networkManager.otaUpload.messages.generalError', {error: response.statusStr}).toString();
