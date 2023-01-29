@@ -19,11 +19,20 @@
 
 set -e
 
+GATEWAY_FILE=/etc/iqrf-gateway.json
+
+fix_gateway_file() {
+	if [ -f "${GATEWAY_FILE}" ] ; then
+		CONTENT=$(cat "${GATEWAY_FILE}")
+		echo "${CONTENT}" | jq --tab 'del(.gwToken)' > "${GATEWAY_FILE}"
+	fi
+}
+
 nginx_default_site() {
 	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	SITE_AVAILABLE_PATH_HTTPS=/etc/nginx/sites-available/iqrf-gateway-webapp-https.localhost
-	if [ -f /etc/iqrf-gateway.json ] ; then
-		image=$(jq -r '.gwImage' /etc/iqrf-gateway.json)
+	if [ -f "${GATEWAY_FILE}" ] ; then
+		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
 		case "$image" in
 			iqaros*|nakit*)
 				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
@@ -118,6 +127,7 @@ webapp_repair_premissions() {
 }
 
 if [ "$1" = "configure" ]; then
+	fix_gateway_file
 	openssl_create_ca
 	if [ -d /etc/nginx/ ] ; then
 		nginx_virtualhost_install
