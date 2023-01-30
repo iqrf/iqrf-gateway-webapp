@@ -16,14 +16,37 @@
  */
 
 /**
- * IP configuration method enum
+ * IPv6 configuration method enum
  */
-export enum ConfigurationMethod {
-	AUTO = 'auto', //both
-	DHCP = 'dhcp', //v6
-	LINK_LOCAL = 'link-local', //both
-	SHARED = 'shared', //both
-	MANUAL = 'manual', //both
-	IGNORE = 'ignore', //v6
-	DISABLED = 'disabled', //both
+export enum Ipv6Method {
+	/// SLAAC
+	AUTO = 'auto',
+	/// DHCPv6 only
+	DHCP = 'dhcp',
+	/// Link-local
+	LINK_LOCAL = 'link-local',
+	/// Shared with other computers
+	SHARED = 'shared',
+	/// Manual configuration
+	MANUAL = 'manual',
+	/// Ignore
+	IGNORE = 'ignore',
+	/// Disabled
+	DISABLED = 'disabled',
+}
+
+/**
+ * IPv4 configuration method enum
+ */
+export enum Ipv4Method {
+	/// DHCPv4
+	AUTO = 'auto',
+	/// Link-local
+	LINK_LOCAL = 'link-local',
+	/// Shared with other computers
+	SHARED = 'shared',
+	/// Manual configuration
+	MANUAL = 'manual',
+	/// Disabled
+	DISABLED = 'disabled',
 }

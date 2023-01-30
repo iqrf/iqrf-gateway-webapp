@@ -33,7 +33,7 @@ limitations under the License.
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
-		<div v-if='connection.ipv6.method === ConfigurationMethod.MANUAL'>
+		<div v-if='connection.ipv6.method === Ipv6Method.MANUAL'>
 			<hr>
 			<CRow
 				v-for='(address, index) in connection.ipv6.addresses'
@@ -44,8 +44,8 @@ limitations under the License.
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
-							required: connection.ipv6.method === ConfigurationMethod.MANUAL,
-							ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+							required: connection.ipv6.method === Ipv6Method.MANUAL,
+							ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 						}'
 						:custom-messages='{
 							required: $t("network.connection.ipv6.errors.address"),
@@ -82,9 +82,9 @@ limitations under the License.
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
-							required: connection.ipv6.method === ConfigurationMethod.MANUAL,
+							required: connection.ipv6.method === Ipv6Method.MANUAL,
 							between: {
-								enabled: connection.ipv6.method === ConfigurationMethod.MANUAL,
+								enabled: connection.ipv6.method === Ipv6Method.MANUAL,
 								min: 48,
 								max: 128,
 							}
@@ -109,8 +109,8 @@ limitations under the License.
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv6.method === ConfigurationMethod.MANUAL,
-					ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+					required: connection.ipv6.method === Ipv6Method.MANUAL,
+					ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv6.errors.gateway"),
@@ -131,8 +131,8 @@ limitations under the License.
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					:rules='{
-						required: connection.ipv6.method === ConfigurationMethod.MANUAL,
-						ipv6: connection.ipv6.method === ConfigurationMethod.MANUAL,
+						required: connection.ipv6.method === Ipv6Method.MANUAL,
+						ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 					}'
 					:custom-messages='{
 						required: $t("network.connection.ipv6.errors.dns"),
@@ -177,11 +177,12 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, required} from 'vee-validate/dist/rules';
 
-import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {Ipv6Method} from '@/enums/Network/Ip';
 import {ipv6} from '@/helpers/validators';
 
 import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 
 /**
  * IPv6 configuration options
@@ -196,7 +197,7 @@ import {IConnection} from '@/interfaces/Network/Connection';
 		ValidationProvider,
 	},
 	data: () => ({
-		ConfigurationMethod,
+		Ipv6Method,
 	}),
 })
 export default class IPv6Configuration extends Vue {
@@ -232,8 +233,13 @@ export default class IPv6Configuration extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get methods(): Array<IOption> {
-		// const methods = ['auto', 'dhcp', 'disabled', 'ignore', 'link-local', 'manual', 'shared'];
-		const methods = ['auto', 'dhcp', 'manual', 'shared'];
+		let methods: Array<string>;
+		// let methods = ['auto', 'dhcp', 'disabled', 'ignore', 'link-local', 'manual', 'shared'];
+		if (this.connection.type == ConnectionType.GSM) {
+			methods = [Ipv6Method.AUTO, Ipv6Method.DISABLED];
+		} else  {
+			methods = [Ipv6Method.AUTO, Ipv6Method.DHCP, Ipv6Method.MANUAL, Ipv6Method.SHARED];
+		}
 		return methods.map((method: string) =>
 			({
 				value: method,

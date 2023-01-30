@@ -16,7 +16,7 @@
  */
 
 import {ConnectionType} from '@/enums/Network/ConnectionType';
-import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {Ipv4Method, Ipv6Method} from '@/enums/Network/Ip';
 import {IWifiSecurity} from './Wifi';
 import {InterfaceState} from '@/enums/Network/InterfaceState';
 
@@ -80,7 +80,7 @@ export interface IConnectionIPv4 {
 	addresses: Array<IConnectionIPv4Addrs>
 	dns: Array<IConnectionIPDns>
 	gateway: string|null
-	method: ConfigurationMethod
+	method: Ipv4Method
 	current?: IConnectionIPv4
 }
 
@@ -88,7 +88,7 @@ export interface IConnectionIPv6 {
 	addresses: Array<IConnectionIPv6Addrs>
 	dns: Array<IConnectionIPDns>
 	gateway: string|null
-	method: ConfigurationMethod
+	method: Ipv6Method
 	current?: IConnectionIPv6
 }
 

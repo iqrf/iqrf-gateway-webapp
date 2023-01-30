@@ -3009,6 +3009,7 @@
 				"methods": {
 					"null": "Please select IPv4 connection method",
 					"auto": "Automatic (DHCP)",
+					"disabled": "Disabled",
 					"manual": "Static",
 					"link-local": "Link-local",
 					"shared": "Shared with other computers"
@@ -3042,6 +3043,7 @@
 				"methods": {
 					"null": "Please select IPv6 connection method",
 					"auto": "Automatic (SLAAC)",
+					"disabled": "Disabled",
 					"dhcp": "Automatic, DHCPv6 only",
 					"ignore": "Ignore",
 					"link-local": "Link-local",
@@ -3093,6 +3095,7 @@
 					"staticToStatic": "IPv4 address changed, web interface is available at {address}",
 					"backendCheck": "Checking availability of web interface..."
 				},
+				"disabledBothIpStacks": "Both IPv4 and IPv6 have been disabled. The gateway is unable to connect to the Internet until at least one of them is enabled.",
 				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
 				"connectionFetchFailed": "Failed to retrieve list of connections: {error}",
 				"fetchFailed": "Failed to retrieve connection {connection}: {error}",

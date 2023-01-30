@@ -136,7 +136,12 @@ limitations under the License.
 						</CRow>
 					</div>
 					<SerialConfiguration v-if='connection.serial' v-model='connection' />
-					<CRow v-if='interfaceType !== InterfaceType.GSM'>
+					<CRow>
+						<CCol md='12'>
+							<CAlert v-if='disabledBothIpStacks' color='danger'>
+								{{ $t("network.connection.messages.disabledBothIpStacks") }}
+							</CAlert>
+						</CCol>
 						<CCol md='6'>
 							<legend>{{ $t('network.connection.ipv4.title') }}</legend>
 							<IPv4Configuration v-model='connection' />
@@ -149,7 +154,7 @@ limitations under the License.
 					<CButton
 						type='submit'
 						color='primary'
-						:disabled='invalid || !ipv4InSubnet'
+						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
 					>
 						{{ $t('forms.save') }}
 					</CButton>
@@ -203,6 +208,7 @@ limitations under the License.
 <script lang='ts'>
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {
+	CAlert,
 	CButton,
 	CCard,
 	CCol,
@@ -231,7 +237,7 @@ import NetworkOperator from '@/entities/NetworkOperator';
 
 import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {InterfaceType} from '@/enums/Network/InterfaceType';
-import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {Ipv4Method, Ipv6Method} from '@/enums/Network/Ip';
 import {WepKeyType} from '@/enums/Network/WifiSecurity';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -252,6 +258,7 @@ import VersionService from '@/services/VersionService';
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCol,
@@ -299,24 +306,24 @@ export default class ConnectionForm extends Vue {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: ConfigurationMethod.AUTO,
+			method: Ipv4Method.AUTO,
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: ConfigurationMethod.AUTO,
+			method: Ipv6Method.AUTO,
 		}
 	};
 
 	private backupConfig: IConnection|null = null;
 
 	/**
-	 * @var {Record<string, string|ConfigurationMethod>} originalIPv4 IPv4 address and method before change
+	 * @var {Record<string, string|Ipv4Method>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
 		address: '',
-		method: ConfigurationMethod.AUTO,
+		method: Ipv4Method.AUTO,
 	};
 
 	/**
@@ -351,6 +358,14 @@ export default class ConnectionForm extends Vue {
 	 * @property {string|null} ap Access point metadata in JSON string format
 	 */
 	@Prop({required: false, default: null}) ap!: string|null;
+
+	/**
+	 * @property {boolean} disabledBothIpStacks Are both IP stacks disabled?
+	 */
+	get disabledBothIpStacks(): boolean {
+		return this.connection.ipv4.method === Ipv4Method.DISABLED
+			&& this.connection.ipv6.method === Ipv6Method.DISABLED;
+	}
 
 	/**
 	 * @property {InterfaceType|null} interfaceType Type of interface
@@ -650,10 +665,8 @@ export default class ConnectionForm extends Vue {
 				if (!this.handleIPChanged) {
 					if (added) {
 						await NetworkConnectionService.remove(uuid);
-					} else {
-						if (this.backupConfig !== null) {
-							await NetworkConnectionService.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
-						}
+					} else if (this.backupConfig !== null) {
+						await NetworkConnectionService.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
 					}
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;

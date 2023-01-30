@@ -34,7 +34,7 @@ limitations under the License.
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
-		<div v-if='connection.ipv4.method === ConfigurationMethod.MANUAL'>
+		<div v-if='connection.ipv4.method === Ipv4Method.MANUAL'>
 			<hr>
 			<CAlert
 				v-if='!ipv4InSubnet'
@@ -45,8 +45,8 @@ limitations under the License.
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.address"),
@@ -63,9 +63,9 @@ limitations under the License.
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
-					netmask: connection.ipv4.method === ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
+					netmask: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.mask"),
@@ -83,8 +83,8 @@ limitations under the License.
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.gateway"),
@@ -106,8 +106,8 @@ limitations under the License.
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					:rules='{
-						required: connection.ipv4.method === ConfigurationMethod.MANUAL,
-						ipv4: connection.ipv4.method === ConfigurationMethod.MANUAL,
+						required: connection.ipv4.method === Ipv4Method.MANUAL,
+						ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 					}'
 					:custom-messages='{
 						required: $t("network.connection.ipv4.errors.dns"),
@@ -152,7 +152,8 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import {ConfigurationMethod} from '@/enums/Network/Ip';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {Ipv4Method} from '@/enums/Network/Ip';
 
 import IpAddressHelper from '@/helpers/IpAddressHelper';
 import {ipv4} from '@/helpers/validators';
@@ -175,7 +176,7 @@ import {IConnection} from '@/interfaces/Network/Connection';
 		ValidationProvider,
 	},
 	data: () => ({
-		ConfigurationMethod,
+		Ipv4Method,
 	}),
 })
 export default class IPv4Configuration extends Vue {
@@ -190,8 +191,13 @@ export default class IPv4Configuration extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get methods(): Array<IOption> {
-		//const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
-		const methods = ['auto', 'manual', 'shared'];
+		let methods: Array<string>;
+		// let methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
+		if (this.connection.type === ConnectionType.GSM) {
+			methods = [Ipv4Method.AUTO, Ipv4Method.DISABLED];
+		} else {
+			methods = [Ipv4Method.AUTO, Ipv4Method.MANUAL, Ipv4Method.SHARED];
+		}
 		return methods.map((method: string) => ({
 			value: method,
 			label: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
