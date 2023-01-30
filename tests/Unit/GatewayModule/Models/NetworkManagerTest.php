@@ -47,8 +47,8 @@ final class NetworkManagerTest extends CommandTestCase {
 	 */
 	private const COMMANDS = [
 		'hostname' => 'hostname -f',
-		'ipAddressesEth0' => 'ip a s eth0 | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'',
-		'ipAddressesWlan0' => 'ip a s wlan0 | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'',
+		'ipAddressesEth0' => 'ip a s \'eth0\' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'',
+		'ipAddressesWlan0' => 'ip a s \'wlan0\' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'',
 		'macAddresses' => 'cat /sys/class/net/eth0/address',
 		'networkAdapters' => 'ls /sys/class/net | awk \'{ print $0 }\'',
 	];

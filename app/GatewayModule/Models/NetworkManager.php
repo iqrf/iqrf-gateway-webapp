@@ -81,7 +81,7 @@ class NetworkManager {
 	public function getIpAddresses(): array {
 		$addresses = [];
 		foreach ($this->listsInterfaces() as $interface) {
-			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'';
+			$cmd = 'ip a s ' . escapeshellarg($interface) . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'';
 			$output = $this->commandManager->run($cmd, true)->getStdout();
 			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
