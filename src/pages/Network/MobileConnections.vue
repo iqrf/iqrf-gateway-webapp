@@ -215,6 +215,8 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.connect(connection.uuid)
 			.then(() => {
+				this.getConnections();
+				this.interfaces.getData();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
@@ -222,8 +224,6 @@ export default class MobileConnections extends Vue {
 						{connection: connection.name}
 					).toString()
 				);
-				this.getConnections();
-				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -241,6 +241,8 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		return NetworkConnectionService.disconnect(connection.uuid)
 			.then(() => {
+				this.getConnections();
+				this.interfaces.getData();
 				this.$store.commit('spinner/HIDE');
 				if (remove) {
 					this.remove(connection);
@@ -251,8 +253,6 @@ export default class MobileConnections extends Vue {
 							{interface: connection.interfaceName, connection: connection.name}
 						).toString()
 					);
-					this.getConnections();
-					this.interfaces.getData();
 				}
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
@@ -270,14 +270,15 @@ export default class MobileConnections extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.remove(connection.uuid)
 			.then(() => {
+				this.getConnections();
+				this.interfaces.getData();
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'network.connection.messages.removeSuccess',
 						{connection: connection.name},
 					).toString()
 				);
-				this.getConnections();
-				this.interfaces.getData();
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');
