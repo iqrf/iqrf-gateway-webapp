@@ -226,10 +226,14 @@ import {v4 as uuidv4} from 'uuid';
 
 import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
 import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
-import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
-import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
-import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
-import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
+import IPv4Configuration
+	from '@/components/Network/Connection/IPv4Configuration.vue';
+import IPv6Configuration
+	from '@/components/Network/Connection/IPv6Configuration.vue';
+import SerialConfiguration
+	from '@/components/Network/Connection/SerialConfiguration.vue';
+import WiFiConfiguration
+	from '@/components/Network/Connection/WiFiConfiguration.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
@@ -525,12 +529,12 @@ export default class ConnectionForm extends Vue {
 	 */
 	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
-		if (connection.ipv4.method === 'auto' && connection.ipv4.current) {
+		if (connection.ipv4.method === Ipv4Method.AUTO && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
 		}
 		this.originalIPv4.address = connection.ipv4.addresses[0]?.address ?? '';
-		this.originalIPv4.method = connection.ipv4.method ?? 'auto';
+		this.originalIPv4.method = connection.ipv4.method ?? Ipv4Method.AUTO;
 		// initialize ipv6 configuration objects
 		if (['auto', 'dhcp'].includes(connection.ipv6.method) && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
@@ -551,10 +555,10 @@ export default class ConnectionForm extends Vue {
 			this.saveConnection();
 			return;
 		}
-		if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'auto') { // ipv4 method not changed from auto
+		if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.AUTO) { // ipv4 method not changed from auto
 			this.saveConnection();
 			return;
-		} else if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'manual') { // ipv4 method changed from auto to static
+		} else if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) { // ipv4 method changed from auto to static
 			if (this.connection.ipv4.addresses[0].address === this.originalIPv4.address) { // auto to static, but IP hasn't changed
 				this.saveConnection();
 				return;
@@ -562,11 +566,11 @@ export default class ConnectionForm extends Vue {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.autoToStatic').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
+		} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticIpChange').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') { // ipv4 method changed from static to auto
+		} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.AUTO) { // ipv4 method changed from static to auto
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticToAuto').toString();
 		}
 		this.handleIPChanged = true;
@@ -579,15 +583,15 @@ export default class ConnectionForm extends Vue {
 	 * @returns {IConnection} Connection prepared for submission
 	 */
 	private prepareConnectionToSave(connection: IConnection): IConnection {
-		if (connection.ipv4.method === 'manual') {
+		if (connection.ipv4.method === Ipv4Method.MANUAL) {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
 			}
-		} else if (['auto', 'shared'].includes(connection.ipv4.method)) {
+		} else if ([Ipv4Method.AUTO, Ipv4Method.DISABLED, Ipv4Method.SHARED].includes(connection.ipv4.method)) {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}
-		if (['auto', 'dhcp', 'shared'].includes(connection.ipv6.method)) {
+		if ([Ipv6Method.AUTO, Ipv6Method.DISABLED, Ipv6Method.DHCP, Ipv6Method.SHARED].includes(connection.ipv6.method)) {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
@@ -671,11 +675,11 @@ export default class ConnectionForm extends Vue {
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;
 				}
-				if (this.originalIPv4.method === 'auto' && this.connection.ipv4.method === 'manual') {
+				if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 					this.tryRest('network.connection.messages.ipChange.autoToStatic');
-				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'manual') {
+				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 					this.tryRest('network.connection.messages.ipChange.staticToStatic');
-				} else if (this.originalIPv4.method === 'manual' && this.connection.ipv4.method === 'auto') {
+				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.AUTO) {
 					this.$store.commit('spinner/HIDE');
 					this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.staticToAuto').toString());
 				}
