@@ -26,6 +26,7 @@ use App\NetworkModule\Entities\Modem;
 use App\NetworkModule\Exceptions\ModemManagerException;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * GSM manager
@@ -43,6 +44,14 @@ class GsmManager {
 	 */
 	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
+	}
+
+	/**
+	 * Scans for GSM modems
+	 */
+	public function scanModems(): void {
+		$output = $this->commandManager->run('mmcli --scan-modems', true);
+		$this->checkCommand($output);
 	}
 
 	/**
@@ -71,12 +80,29 @@ class GsmManager {
 		$output = $this->commandManager->run($command, true);
 		$this->checkCommand($output);
 		$modem = Json::decode($output->getStdout());
-		$command = sprintf('mmcli -m %s --signal-setup=300', $path);
-		$this->commandManager->run($command, true);
+		$rssi = null;
 		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
 		$output = $this->commandManager->run($command, true);
-		$rssi = $output->getExitCode() === 0 ? Json::decode($output->getStdout()) : null;
+		if ($output->getExitCode() === 0) {
+			$rssi = $this->getModemRssi($path);
+		}
 		return Modem::fromMmcliJson($modem, $rssi);
+	}
+
+	/**
+	 * Retrieves modem RSSI
+	 * @param string $path Modem path
+	 * @return stdClass|null Modem RSSI
+	 */
+	private function getModemRssi(string $path): ?stdClass {
+		$command = sprintf('mmcli -m %s --signal-setup=300', $path);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			return null;
+		}
+		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
+		$output = $this->commandManager->run($command, true);
+		return $output->getExitCode() === 0 ? Json::decode($output->getStdout()) : null;
 	}
 
 	private function checkCommand(ICommand $command): void {

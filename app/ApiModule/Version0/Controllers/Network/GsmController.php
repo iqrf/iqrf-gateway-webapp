@@ -82,4 +82,31 @@ class GsmController extends NetworkController {
 		}
 	}
 
+	/**
+	 * @Path("/modems/scan")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Scans for GSM modems
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['network']);
+		try {
+			$this->gsmManager->scanModems();
+			return $response->writeBody('Workaround');
+		} catch (ModemManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
 }

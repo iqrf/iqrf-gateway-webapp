@@ -20,6 +20,15 @@ limitations under the License.
 			{{ $t("network.mobile.modems.title") }}
 			<CButtonToolbar>
 				<CButton
+					color='secondary'
+					size='sm'
+					class='float-right mr-1'
+					@click='scan'
+				>
+					<CIcon :content='cilSearch' size='sm' />
+					{{ $t('forms.scan') }}
+				</CButton>
+				<CButton
 					color='primary'
 					size='sm'
 					class='float-right'
@@ -68,7 +77,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {cilReload} from '@coreui/icons';
+import {cilReload, cilSearch} from '@coreui/icons';
 import {
 	CBadge,
 	CButton,
@@ -104,6 +113,7 @@ import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 	},
 	data: () => ({
 		cilReload,
+		cilSearch,
 	}),
 })
 export default class GsmInterfaces extends Vue {
@@ -167,6 +177,21 @@ export default class GsmInterfaces extends Vue {
 		NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;
+				this.loading = false;
+			});
+	}
+
+	/**
+	 * Scan modems
+	 */
+	public scan(): void {
+		this.loading = true;
+		NetworkInterfaceService.scanModems()
+			.then(async () => {
+				await new Promise((resolve) => setTimeout(resolve, 5_000));
+				this.getData();
+			})
+			.catch(() => {
 				this.loading = false;
 			});
 	}

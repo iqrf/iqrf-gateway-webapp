@@ -58,29 +58,31 @@ class NetworkManager {
 
 	/**
 	 * Returns information about network interfaces
-	 * @return array<int, array<string, array<array<string>>|string|null>> Network interfaces
+	 * @return array<array{name: string, macAddress: string|null, ipAddresses: array<string>|null}> Network interfaces
 	 */
 	public function getInterfaces(): array {
-		$interfaces = [];
-		$ipAddresses = $this->getIpAddresses();
-		$macAddresses = $this->getMacAddresses();
-		foreach ($this->listsInterfaces() as $interface) {
-			$interfaces[] = [
+		$array = [];
+		$interfaces = $this->listsInterfaces();
+		$ipAddresses = $this->getIpAddresses($interfaces);
+		$macAddresses = $this->getMacAddresses($interfaces);
+		foreach ($interfaces as $interface) {
+			$array[] = [
 				'name' => $interface,
 				'macAddress' => $macAddresses[$interface] ?? null,
 				'ipAddresses' => $ipAddresses[$interface] ?? null,
 			];
 		}
-		return $interfaces;
+		return $array;
 	}
 
 	/**
 	 * Returns IPv4 and IPv6 addresses of the gateway
+	 * @param array<string> $interfaces Network interfaces
 	 * @return array<array<string>> IPv4 and IPv6 addresses
 	 */
-	public function getIpAddresses(): array {
+	public function getIpAddresses(array $interfaces): array {
 		$addresses = [];
-		foreach ($this->listsInterfaces() as $interface) {
+		foreach ($interfaces as $interface) {
 			$cmd = 'ip a s ' . escapeshellarg($interface) . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'';
 			$output = $this->commandManager->run($cmd, true)->getStdout();
 			if ($output !== '') {
@@ -101,11 +103,12 @@ class NetworkManager {
 
 	/**
 	 * Returns MAC addresses of the gateway
-	 * @return array<string> MAC addresses array
+	 * @param array<string> $interfaces Network interfaces
+	 * @return array<string|null> MAC addresses array
 	 */
-	public function getMacAddresses(): array {
+	protected function getMacAddresses(array $interfaces): array {
 		$addresses = [];
-		foreach ($this->listsInterfaces() as $interface) {
+		foreach ($interfaces as $interface) {
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
 			$output = $this->commandManager->run($cmd, true)->getStdout();
 			$addresses[$interface] = $output === '' ? null : $output;

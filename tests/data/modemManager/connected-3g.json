@@ -1,0 +1,116 @@
+{
+	"modem":{
+		"3gpp":{
+			"5gnr":{
+				"registration-settings":{
+					"drx-cycle":"--",
+					"mico-mode":"--"
+				}
+			},
+			"enabled-locks":[
+
+			],
+			"eps":{
+				"initial-bearer":{
+					"dbus-path":"--",
+					"settings":{
+						"apn":"--",
+						"ip-type":"--",
+						"password":"--",
+						"user":"--"
+					}
+				},
+				"ue-mode-operation":"--"
+			},
+			"imei":"862570024875048",
+			"operator-code":"--",
+			"operator-name":"--",
+			"packet-service-state":"attached",
+			"pco":"--",
+			"registration-state":"home"
+		},
+		"cdma":{
+			"activation-state":"--",
+			"cdma1x-registration-state":"--",
+			"esn":"--",
+			"evdo-registration-state":"--",
+			"meid":"--",
+			"nid":"--",
+			"sid":"--"
+		},
+		"dbus-path":"/org/freedesktop/ModemManager1/Modem/3",
+		"generic":{
+			"access-technologies":[
+				"edge"
+			],
+			"bearers":[
+				"/org/freedesktop/ModemManager1/Bearer/2"
+			],
+			"carrier-configuration":"--",
+			"carrier-configuration-revision":"--",
+			"current-bands":[
+
+			],
+			"current-capabilities":[
+				"gsm-umts"
+			],
+			"current-modes":"allowed: 2g, 3g; preferred: 3g",
+			"device":"/sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/0000:02:08.0/0000:0c:00.1/usb1/1-2/1-2.4",
+			"device-identifier":"c7a6988c7b75cdddd58a009842dbdde03f58263e",
+			"drivers":[
+				"huawei_cdc_ncm",
+				"option"
+			],
+			"equipment-identifier":"862570024875048",
+			"hardware-revision":"--",
+			"manufacturer":"huawei",
+			"model":"E3131",
+			"own-numbers":[
+
+			],
+			"plugin":"huawei",
+			"ports":[
+				"ttyUSB0 (at)",
+				"ttyUSB2 (at)",
+				"wwx82a94a09842e (net)"
+			],
+			"power-state":"on",
+			"primary-port":"ttyUSB2",
+			"primary-sim-slot":"--",
+			"revision":"21.318.23.01.55",
+			"signal-quality":{
+				"recent":"yes",
+				"value":"74"
+			},
+			"sim":"/org/freedesktop/ModemManager1/SIM/3",
+			"sim-slots":[
+
+			],
+			"state":"connected",
+			"state-failed-reason":"--",
+			"supported-bands":[
+
+			],
+			"supported-capabilities":[
+				"gsm-umts"
+			],
+			"supported-ip-families":[
+				"ipv4"
+			],
+			"supported-modes":[
+				"allowed: 2g, 3g; preferred: none",
+				"allowed: 2g, 3g; preferred: 2g",
+				"allowed: 2g, 3g; preferred: 3g",
+				"allowed: 2g; preferred: none",
+				"allowed: 3g; preferred: none"
+			],
+			"unlock-required":"--",
+			"unlock-retries":[
+				"sim-pin (3)",
+				"sim-puk (10)",
+				"sim-pin2 (3)",
+				"sim-puk2 (10)"
+			]
+		}
+	}
+}

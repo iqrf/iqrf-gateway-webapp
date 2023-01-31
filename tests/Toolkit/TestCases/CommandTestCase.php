@@ -66,7 +66,7 @@ abstract class CommandTestCase extends TestCase {
 		} else {
 			$process->with($command, $needSudo);
 		}
-		$process->andReturn($entity);
+		$process->andReturn($entity)->once();
 	}
 
 	/**

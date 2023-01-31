@@ -51,6 +51,14 @@ class NetworkInterfaceService {
 			});
 	}
 
+	/**
+	 * Scans for available modems
+	 */
+	public scanModems(): Promise<void> {
+		return axios.post('network/gsm/modems/scan', {}, {headers: authorizationHeader()})
+			.then(() => {return;});
+	}
+
 }
 
 export default new NetworkInterfaceService();
