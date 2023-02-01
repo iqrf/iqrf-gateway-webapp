@@ -51,6 +51,7 @@ class MailerService {
 	 * @param {ISmtp} config SMTP configuration
 	 */
 	testConfig(config: ISmtp): Promise<AxiosResponse> {
+		config.from = punycode.toASCII(config.from);
 		return axios.post('/config/mailer/test', config, {headers: authorizationHeader()});
 	}
 }

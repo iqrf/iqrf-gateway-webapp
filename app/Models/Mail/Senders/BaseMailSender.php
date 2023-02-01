@@ -12,6 +12,7 @@ use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use Nette\Localization\Translator;
 use Nette\Mail\FallbackMailer;
+use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 
 /**
@@ -62,9 +63,9 @@ abstract class BaseMailSender {
 
 	/**
 	 * Creates the mailer
-	 * @return FallbackMailer Mailer
+	 * @return Mailer Mailer
 	 */
-	protected function createMailer(): FallbackMailer {
+	protected function createMailer(): Mailer {
 		return $this->mailerFactory->build();
 	}
 
