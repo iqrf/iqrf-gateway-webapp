@@ -1,7 +1,8 @@
 <template>
 	<CInput
-		v-model='password'
 		v-bind='$attrs'
+		:id='id'
+		v-model='password'
 		:type='visible ? "text" : "password"'
 		:label='label'
 		:is-valid='isValid'
@@ -57,6 +58,11 @@ export default class PasswordInput extends Vue {
 	 * @property {string|null} invalidFeedback Error message
    */
 	@Prop({required: false}) invalidFeedback!: string|null;
+
+	/**
+	 * @property {string|null} id Input ID
+	 */
+	@Prop({required: false, default: null}) id!: string|null;
 
 	/**
 	 * @property {boolean} visible Password visible flag
