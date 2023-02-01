@@ -11,7 +11,6 @@ use App\Models\Mail\MailerFactory;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
 use Nette\Localization\Translator;
-use Nette\Mail\FallbackMailer;
 use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 

@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\Models\Mail;
 
-use Nette\Mail\FallbackMailer;
 use Nette\Mail\Mailer;
 use Nette\Mail\SendmailMailer;
 use Nette\Mail\SmtpMailer;
