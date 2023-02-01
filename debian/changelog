@@ -1,10 +1,21 @@
-iqrf-gateway-webapp (2.5.0~rc6~1.gbpf9bab9) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc6) testing; urgency=medium
 
-  ** SNAPSHOT build @f9bab9fbebbbb09ed63251f12f435facf6e06066 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc6
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Network: add IP stack configuration for modems
+  * Network: fix disabled IP stack
+  * Gateway: fix IP address detection
+  * Network: add missing spinner hide after successful connection deletion
+  * Network: add button for modem scanning
+  * Core: fix password field id handling
+  * Mailer: fix factory, add IDN support for testing endpoint
+  * Fix coding style
+  * Composer: update dependencies
+  * NPM: update dependencies
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 30 Jan 2023 13:54:07 +0100
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 01 Feb 2023 15:35:00 +0100
 
 iqrf-gateway-webapp (2.5.0~rc5) testing; urgency=medium
 
