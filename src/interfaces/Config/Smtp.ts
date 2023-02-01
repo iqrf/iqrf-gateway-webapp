@@ -49,7 +49,7 @@ export interface ISmtp {
 	/**
 	 * Security protocol
 	 */
-	secure: SmtpSecurity
+	secure: SmtpSecurity|null
 
 	/**
 	 * Sender

@@ -18,11 +18,40 @@ import {authorizationHeader} from '@/helpers/authorizationHeader';
 import axios, {AxiosResponse} from 'axios';
 import {ISmtp} from '@/interfaces/Config/Smtp';
 import punycode from 'punycode';
+import {SmtpSecurity} from '@/enums/Config/Smtp';
 
 /**
  * SMTP server service
  */
 class MailerService {
+
+	/**
+	 * Deserialize SMTP configuration
+	 * @param {ISmtp} config SMTP configuration to deserialize
+	 * @return {ISmtp} Deserialized SMTP configuration
+	 */
+	private deserializeConfig(config: ISmtp): ISmtp {
+		config.host = punycode.toUnicode(config.host);
+		config.from = punycode.toUnicode(config.from);
+		if (config.secure === null) {
+			config.secure = SmtpSecurity.PLAINTEXT;
+		}
+		return config;
+	}
+
+	/***
+	 * Serializes SMTP configuration
+	 * @param {ISmtp} config SMTP configuration to serialize
+	 * @return {ISmtp} Serialized SMTP configuration
+	 */
+	private serializeConfig(config: ISmtp): ISmtp {
+		config.host = punycode.toASCII(config.host);
+		config.from = punycode.toASCII(config.from);
+		if (config.secure === SmtpSecurity.PLAINTEXT) {
+			config.secure = null;
+		}
+		return config;
+	}
 
 	/**
 	 * Retrieves SMTP configuration
@@ -32,8 +61,7 @@ class MailerService {
 		return axios.get('/config/mailer', {headers: authorizationHeader()})
 			.then((response: AxiosResponse): ISmtp => {
 				const config: ISmtp = response.data;
-				config.from = punycode.toUnicode(config.from);
-				return config;
+				return this.deserializeConfig(config);
 			});
 	}
 
@@ -42,8 +70,7 @@ class MailerService {
 	 * @param {ISmtp} config SMTP configuration
 	 */
 	saveConfig(config: ISmtp): Promise<AxiosResponse> {
-		config.from = punycode.toASCII(config.from);
-		return axios.put('/config/mailer', config, {headers: authorizationHeader()});
+		return axios.put('/config/mailer', this.serializeConfig(config), {headers: authorizationHeader()});
 	}
 
 	/**
@@ -51,8 +78,7 @@ class MailerService {
 	 * @param {ISmtp} config SMTP configuration
 	 */
 	testConfig(config: ISmtp): Promise<AxiosResponse> {
-		config.from = punycode.toASCII(config.from);
-		return axios.post('/config/mailer/test', config, {headers: authorizationHeader()});
+		return axios.post('/config/mailer/test', this.serializeConfig(config), {headers: authorizationHeader()});
 	}
 }
 
