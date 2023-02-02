@@ -19,62 +19,66 @@
 
 set -e
 
+GATEWAY_FILE=/etc/iqrf-gateway.json
+
 nginx_default_site() {
 	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	SITE_AVAILABLE_PATH_HTTPS=/etc/nginx/sites-available/iqrf-gateway-webapp-https.localhost
-	if [ -f /etc/iqrf-gateway.json ] ; then
-		image=$(jq -r '.gwImage' /etc/iqrf-gateway.json)
-		case "$image" in
+	WEBAPP_CONFIG_DIR=/etc/iqrf-gateway-webapp/nginx
+	if [ -f "${GATEWAY_FILE}" ] ; then
+		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
+		case "${image}" in
 			iqaros*|nakit*)
-				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
-				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros.localhost" "${SITE_AVAILABLE_PATH}"
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
 			*)
-				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
-				ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS} ;;
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
 		esac
 	else
-		ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
-		ln -sf /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-https.localhost ${SITE_AVAILABLE_PATH_HTTPS}
+		ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
+		ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}"
 	fi
 }
 
 nginx_virtualhost_install() {
-	if [ -e /etc/nginx/sites-enabled/default ] ; then
-		rm /etc/nginx/sites-enabled/default
+	# nginx virtualhost directories
+	SITES_AVAILABLE=/etc/nginx/sites-available
+	SITES_ENABLED=/etc/nginx/sites-enabled
+	# Default virtualhost path
+	DEFAULT_CONFIG=iqrf-gateway-webapp.localhost
+	# HTTPS redirect virtualhost path
+	HTTPS_CONFIG=iqrf-gateway-webapp-https.localhost
+
+	# Disable default virtualhost
+	if [ -e "${SITES_ENABLED}/default" ] ; then
+		rm "${SITES_ENABLED}/default"
 	fi
-	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	if [ -L ${SITE_AVAILABLE_PATH} ] && [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
-		rm ${SITE_AVAILABLE_PATH}
-		nginx_default_site
-	elif [ -e ${SITE_AVAILABLE_PATH} ] ; then
-		rm ${SITE_AVAILABLE_PATH}
-		nginx_default_site
-	elif [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
+
+	# Remove broken symlinks to virtualhosts and non-symlinked virtualhosts
+	for SITES in ${SITES_AVAILABLE} ${SITES_ENABLED} ; do
+		for CONFIG in ${DEFAULT_CONFIG} ${HTTPS_CONFIG} ; do
+			if [ -L "${SITES}/${CONFIG}" ] && [ ! -e "${SITES}/${CONFIG}" ] ; then
+				rm "${SITES}/${CONFIG}"
+			elif [ ! -L "${SITES}/${CONFIG}" ] && [ -e "${SITES}/${CONFIG}" ] ; then
+				rm "${SITES}/${CONFIG}"
+			fi
+		done
+	done
+
+	# Create symlinks to virtualhosts
+	if [ ! -e "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" ] || [ ! -e "${SITES_AVAILABLE}/${HTTPS_CONFIG}" ] ; then
 		nginx_default_site
 	fi
-	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
-		ln -s ${SITE_AVAILABLE_PATH} /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
+
+	# Enable default virtualhost when no other virtualhost is enabled
+	if [ ! -L "${SITES_ENABLED}/${DEFAULT_CONFIG}" ] && [ ! -L "${SITES_ENABLED}/${HTTPS_CONFIG}" ] ; then
+		ln -s "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" "${SITES_ENABLED}/${DEFAULT_CONFIG}"
 	fi
+
+	# Reload nginx
 	if deb-systemd-invoke is-enabled nginx.service ; then
 		deb-systemd-invoke reload nginx.service
-	fi
-}
-
-openssl_create_ca() {
-	DAEMON_CERT_DIR=/etc/iqrf-gateway-daemon/certs/core
-	WEBAPP_CERT_DIR=/etc/iqrf-gateway-webapp/certs
-	if [ -f "${DAEMON_CERT_DIR}/cert.pem" ] && [ -f "${DAEMON_CERT_DIR}/privkey.pem" ] ; then
-		rm -rf "${WEBAPP_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
-		ln -s "${DAEMON_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/cert.pem"
-		ln -s "${DAEMON_CERT_DIR}/privkey.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
-		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
-	fi
-	if [ ! -f "${WEBAPP_CERT_DIR}/cert.pem" ] || [ ! -f "${WEBAPP_CERT_DIR}/privkey.pem" ] ; then
-		openssl ecparam -name secp384r1 -genkey -param_enc named_curve -out ${WEBAPP_CERT_DIR}/privkey.pem
-    openssl req -new -x509 -sha256 -nodes -days 3650 \
-      -subj "/CN=IQRF Gateway/C=CZ/ST=Hradec Kralove Region/L=Jicin/O=IQRF Tech s.r.o." \
-      -key ${WEBAPP_CERT_DIR}/privkey.pem -out ${WEBAPP_CERT_DIR}/cert.pem
-		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
 	fi
 }
 
@@ -111,20 +115,19 @@ webapp_remove_old_dirs() {
 	fi
 }
 
-webapp_repair_premissions() {
+webapp_repair_permissions() {
 	chown -R www-data:www-data /var/cache/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/lib/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
 }
 
 if [ "$1" = "configure" ]; then
-	openssl_create_ca
 	if [ -d /etc/nginx/ ] ; then
 		nginx_virtualhost_install
 	fi
 	webapp_remove_cache
 	webapp_remove_old_dirs
-	webapp_repair_premissions
+	webapp_repair_permissions
 	webapp_database_migration
 	webapp_database_fixtures
 	webapp_iqrf_os_patches_import
