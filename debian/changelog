@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.5.0~rc8~1.gbpec06ea) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @ec06ea15a2fd8c06873d8f0cdfcc9fdd5c19d797 **
+
+  * UNRELEASED
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 02 Feb 2023 15:25:39 +0100
+
 iqrf-gateway-webapp (2.5.0~rc7) testing; urgency=medium
 
   * Prepare for version 2.5.0-rc7
