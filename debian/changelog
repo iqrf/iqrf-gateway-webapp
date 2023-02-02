@@ -1,10 +1,15 @@
-iqrf-gateway-webapp (2.4.16~alpha~1.gbpecf8f3) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.4.16) stable; urgency=medium
 
-  ** SNAPSHOT build @ecf8f3f83a2efc45607bc731f4828f181118e1cb **
+  [ Karel Hanák ]
+  * Prepare for version 2.4.16
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Debian packaging: fix nginx configuration handling in postinst and portrm scripts
+  * Gateway: fix IP address detection
+  * Composer: update dependencies
+  * NPM: update dependencies
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 26 Jan 2023 11:28:43 +0100
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 02 Feb 2023 15:43:51 +0100
 
 iqrf-gateway-webapp (2.4.15) stable; urgency=medium
 
