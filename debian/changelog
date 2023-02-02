@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.0~rc8~1.gbpec06ea) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc8) testing; urgency=medium
 
-  ** SNAPSHOT build @ec06ea15a2fd8c06873d8f0cdfcc9fdd5c19d797 **
+  * Prepare for version 2.5.0-rc8
+  * GitLab CI: move old stable and testing packages to old subdirectory
+  * Network: retrieve only general information about network interfaces
 
-  * UNRELEASED
-
- -- Roman Ondráček <roman@romanondracek.cz>  Thu, 02 Feb 2023 15:25:39 +0100
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 02 Feb 2023 20:07:10 +0100
 
 iqrf-gateway-webapp (2.5.0~rc7) testing; urgency=medium
 
