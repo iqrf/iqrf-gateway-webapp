@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.5.0~rc10~1.gbp07c1d8) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @07c1d8fc5e43ad67a84653bb127d4b7b92a59314 **
+
+  * UNRELEASED
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 03 Feb 2023 20:41:57 +0100
+
 iqrf-gateway-webapp (2.5.0~rc9) testing; urgency=medium
 
   [ Roman Ondráček ]
