@@ -89,6 +89,24 @@ nginx_virtualhost_install() {
 	fi
 }
 
+openssl_create_ca() {
+	DAEMON_CERT_DIR=/etc/iqrf-gateway-daemon/certs/core
+	WEBAPP_CERT_DIR=/etc/iqrf-gateway-webapp/certs
+	if [ -f "${DAEMON_CERT_DIR}/cert.pem" ] && [ -f "${DAEMON_CERT_DIR}/privkey.pem" ] ; then
+		rm -rf "${WEBAPP_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
+		ln -s "${DAEMON_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/cert.pem"
+		ln -s "${DAEMON_CERT_DIR}/privkey.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
+		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
+	fi
+	if [ ! -f "${WEBAPP_CERT_DIR}/cert.pem" ] || [ ! -f "${WEBAPP_CERT_DIR}/privkey.pem" ] ; then
+		openssl ecparam -name secp384r1 -genkey -param_enc named_curve -out ${WEBAPP_CERT_DIR}/privkey.pem
+    openssl req -new -x509 -sha256 -nodes -days 3650 \
+      -subj "/CN=IQRF Gateway/C=CZ/ST=Hradec Kralove Region/L=Jicin/O=IQRF Tech s.r.o." \
+      -key ${WEBAPP_CERT_DIR}/privkey.pem -out ${WEBAPP_CERT_DIR}/cert.pem
+		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
+	fi
+}
+
 webapp_database_migration() {
 	if [ ! -f /var/lib/iqrf-gateway-webapp/database.db ] && [ -f /usr/share/iqrf-gateway-webapp/app/config/database.db ] ; then
 		mv /usr/share/iqrf-gateway-webapp/app/config/database.db /var/lib/iqrf-gateway-webapp/database.db
@@ -130,6 +148,7 @@ webapp_repair_permissions() {
 
 if [ "$1" = "configure" ]; then
 	fix_gateway_file
+	openssl_create_ca
 	if [ -d /etc/nginx/ ] ; then
 		nginx_virtualhost_install
 	fi
