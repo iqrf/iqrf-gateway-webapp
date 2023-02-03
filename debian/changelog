@@ -1,10 +1,15 @@
-iqrf-gateway-webapp (2.5.0~rc9~1.gbp9694fb) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc9) testing; urgency=medium
 
-  ** SNAPSHOT build @9694fb6828fa6edf021d79f80e8db147e1100eaa **
+  [ Roman Ondráček ]
+  * Prepare for version 2.5.0-rc9
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * updated license headers
 
- -- Roman Ondráček <roman@romanondracek.cz>  Thu, 02 Feb 2023 20:10:16 +0100
+  [ Roman Ondráček ]
+  * Debian packaging: revert removal of symlinks to TLS certificate and private key
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 03 Feb 2023 20:39:06 +0100
 
 iqrf-gateway-webapp (2.5.0~rc8) testing; urgency=medium
 
