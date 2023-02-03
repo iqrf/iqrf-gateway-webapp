@@ -7,8 +7,8 @@
  * @testCase
  */
 /**
- * Copyright 2017-2021 IQRF Tech s.r.o.
- * Copyright 2019-2021 MICRORISC s.r.o.
+ * Copyright 2017-2023 IQRF Tech s.r.o.
+ * Copyright 2019-2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

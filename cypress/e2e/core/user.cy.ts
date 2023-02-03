@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2021 IQRF Tech s.r.o.
- * Copyright 2019-2021 MICRORISC s.r.o.
+ * Copyright 2017-2023 IQRF Tech s.r.o.
+ * Copyright 2019-2023 MICRORISC s.r.o.
  * Copyright 2021 Roman Ondráček <xondra58@stud.fit.vutbr.cz>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
