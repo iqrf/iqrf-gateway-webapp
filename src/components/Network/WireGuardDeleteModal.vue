@@ -80,6 +80,7 @@ export default class WireguardTunnels extends Vue {
 		this.$store.commit('spinner/SHOW');
 		WireguardService.removeTunnel(id)
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
