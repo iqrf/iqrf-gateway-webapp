@@ -123,7 +123,7 @@ class TimeManager {
 	 * @param string $datetime ISO8601 datetime string
 	 */
 	private function setDateTime(string $datetime): void {
-		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), false, 0);
+		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
