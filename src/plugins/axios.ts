@@ -49,7 +49,6 @@ axios.interceptors.response.use(
 						i18n.t('core.sign.out.expired').toString(),
 					);
 				});
-			return;
 		}
 		return Promise.reject(error);
 	}
