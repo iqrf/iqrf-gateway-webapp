@@ -207,6 +207,7 @@ export default class Logs extends Vue {
 				if (error.response === undefined || error.response.status !== 404) {
 					extendedErrorToast(error, 'gateway.log.messages.fetchFailed');
 				} else {
+					this.logs[service].loaded = true;
 					this.$store.commit('spinner/HIDE');
 				}
 			});
