@@ -102,7 +102,7 @@ class WebappBackup implements IBackupManager {
 		$zipManager->addFile($this->paths['configDir'] . '/features.neon', 'webapp/features.neon');
 		$zipManager->addFile($this->paths['configDir'] . '/iqrf-repository.neon', 'webapp/iqrf-repository.neon');
 		$zipManager->addFile($this->paths['configDir'] . '/smtp.neon', 'webapp/smtp.neon');
-		$zipManager->addFile($this->paths['database'] . 'database.db', 'webapp/database.db');
+		$zipManager->addFile($this->paths['database'], 'webapp/database.db');
 		$zipManager->addFolder(self::NGINX_PATH, 'nginx');
 	}
 
