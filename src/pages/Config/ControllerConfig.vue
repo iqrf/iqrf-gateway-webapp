@@ -218,8 +218,8 @@ limitations under the License.
 											rules='required|integer|between:0,3'
 											:custom-messages='{
 												integer: $t("forms.errors.integer"),
-												required: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
-												between: $t("iqrfnet.networkManager.messages.autoNetwork.actionRetries"),
+												required: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
+												between: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
 											}'
 										>
 											<CInput
@@ -227,7 +227,7 @@ limitations under the License.
 												type='number'
 												min='0'
 												max='3'
-												:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.params.actionRetries")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
 											/>
@@ -248,7 +248,7 @@ limitations under the License.
 												type='number'
 												min='0'
 												max='7'
-												:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryTxPower")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
 											/>
@@ -259,18 +259,18 @@ limitations under the License.
 									<CCol md='6'>
 										<CInputCheckbox
 											:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryBeforeStart")'
 										/>
 									</CCol>
 									<CCol md='6'>
 										<CInputCheckbox
 											:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipDiscoveryEachWave")'
 										/>
 									</CCol>
 								</CRow>
 								<h4>
-									{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
+									{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions.title") }}
 								</h4>
 								<CRow>
 									<CCol md='6'>
@@ -279,8 +279,8 @@ limitations under the License.
 											rules='integer|required|between:1,127'
 											:custom-messages='{
 												integer: $t("forms.errors.integer"),
-												required: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
-												between: $t("iqrfnet.networkManager.messages.autoNetwork.emptyWaves"),
+												required: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
+												between: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
 											}'
 										>
 											<CInput
@@ -288,7 +288,7 @@ limitations under the License.
 												type='number'
 												min='1'
 												max='127'
-												:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.emptyWaves")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
 											/>
@@ -300,8 +300,8 @@ limitations under the License.
 											rules='integer|required|between:1,127'
 											:custom-messages='{
 												integer: $t("forms.errors.integer"),
-												required: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
-												between: $t("iqrfnet.networkManager.messages.autoNetwork.waves"),
+												required: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
+												between: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
 											}'
 										>
 											<CInput
@@ -309,7 +309,7 @@ limitations under the License.
 												type='number'
 												min='1'
 												max='127'
-												:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
+												:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.waves")'
 												:is-valid='touched ? valid : null'
 												:invalid-feedback='errors.join(", ")'
 											/>
@@ -320,7 +320,7 @@ limitations under the License.
 									<CCol md='6'>
 										<CInputCheckbox
 											:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
-											:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
+											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.abortOnTooManyNodesFound")'
 										/>
 									</CCol>
 									<CCol md='6'>
