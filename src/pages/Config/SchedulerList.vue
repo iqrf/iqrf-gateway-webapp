@@ -321,7 +321,7 @@ export default class SchedulerList extends Vue {
 					setTimeout(() => {
 						this.list();
 						this.unwatch();
-					}, 5000);
+					}, 10000);
 				}
 			}
 		);
