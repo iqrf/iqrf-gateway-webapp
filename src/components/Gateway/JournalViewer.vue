@@ -1,37 +1,35 @@
 <template>
-	<CCard class='border-0 mb-0'>
-		<CCardBody class='border-0 mb-0'>
-			<CAlert
-				v-if='cursor === null && log.length === 0'
-				class='mb-0'
-				color='warning'
-			>
-				{{ $t('gateway.log.journal.notLoaded') }}
-			</CAlert>
-			<CAlert
-				v-else-if='log.length === 0'
-				class='mb-0'
-				color='info'
-			>
-				{{ $t('gateway.log.journal.noRecords') }}
-			</CAlert>
-			<CAlert
-				v-else-if='loading'
-				class='mb-0'
-				color='info'
-			>
-				{{ $t('gateway.log.journal.loading') }}
-			</CAlert>
-			<CAlert
-				v-else-if='oldestRecords'
-				class='mb-0'
-				color='info'
-			>
-				{{ $t('gateway.log.journal.noOlderRecords') }}
-			</CAlert>
-			<pre ref='journal' class='log' @scroll='scrollUpdate'>{{ log }}</pre>
-		</CCardBody>
-	</CCard>
+	<CCardBody class='border-0 card-margin-bottom'>
+		<CAlert
+			v-if='cursor === null && log.length === 0'
+			class='mb-0'
+			color='warning'
+		>
+			{{ $t('gateway.log.journal.notLoaded') }}
+		</CAlert>
+		<CAlert
+			v-else-if='log.length === 0'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.noRecords') }}
+		</CAlert>
+		<CAlert
+			v-else-if='loading'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.loading') }}
+		</CAlert>
+		<CAlert
+			v-else-if='oldestRecords'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.noOlderRecords') }}
+		</CAlert>
+		<pre v-if='log.length > 0' ref='journal' class='log card-margin-bottom' @scroll='scrollUpdate'>{{ log }}</pre>
+	</CCardBody>
 </template>
 
 <script lang='ts'>
