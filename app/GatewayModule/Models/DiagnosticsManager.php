@@ -98,7 +98,6 @@ class DiagnosticsManager {
 		$this->zipManager = new ZipArchiveManager($path);
 		$this->addConfiguration();
 		$this->addDatabase();
-		$this->addMetadata();
 		$this->addScheduler();
 		$this->addDaemonLog();
 		$this->addDmesg();
@@ -130,13 +129,6 @@ class DiagnosticsManager {
 	 */
 	public function addDatabase(): void {
 		$this->zipManager->addFolder($this->daemonDirectories->getDataDir() . 'DB', 'DB');
-	}
-
-	/**
-	 * Adds IQRF Gateway Daemon's metadata
-	 */
-	public function addMetadata(): void {
-		$this->zipManager->addFolder($this->daemonDirectories->getCacheDir() . 'metaData', 'metaData');
 	}
 
 	/**
