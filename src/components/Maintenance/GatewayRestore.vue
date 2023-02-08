@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
+	<div>
 		<CElementCover
 			v-if='running'
 			:opacity='0.75'
@@ -23,26 +23,24 @@ limitations under the License.
 		>
 			<CSpinner color='primary' />
 		</CElementCover>
-		<CCardBody>
-			<CCardTitle>{{ $t('maintenance.backup.restoreTitle') }}</CCardTitle>
-			<CForm>
-				<CInputFile
-					ref='backupArchive'
-					accept='.zip'
-					:label='$t("maintenance.backup.form.archive")'
-					@click='fileInputEmpty'
-					@input='fileInputEmpty'
-				/>
-				<CButton
-					color='primary'
-					:disabled='inputEmpty'
-					@click.prevent='restore'
-				>
-					{{ $t('maintenance.backup.form.restore') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
-	</CCard>
+		<CCardTitle>{{ $t('maintenance.backup.restoreTitle') }}</CCardTitle>
+		<CForm>
+			<CInputFile
+				ref='backupArchive'
+				accept='.zip'
+				:label='$t("maintenance.backup.form.archive")'
+				@click='fileInputEmpty'
+				@input='fileInputEmpty'
+			/>
+			<CButton
+				color='primary'
+				:disabled='inputEmpty'
+				@click.prevent='restore'
+			>
+				{{ $t('maintenance.backup.form.restore') }}
+			</CButton>
+		</CForm>
+	</div>
 </template>
 
 <script lang='ts'>

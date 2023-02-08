@@ -18,7 +18,11 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('maintenance.backup.title') }}</h1>
 		<GatewayBackup />
-		<GatewayRestore />
+		<CCard>
+			<CCardBody>
+				<GatewayRestore />
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
