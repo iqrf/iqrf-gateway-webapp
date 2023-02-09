@@ -484,12 +484,10 @@
 						"prompt": "Are you sure you want to delete MQTT messaging instance {instance}?"
 					},
 					"messages": {
-						"addFailed": "Failed to create new MQTT messaging instance: {error}",
-						"addSuccess": "MQTT messaging instance {instance} has been added.",
 						"deleteFailed": "Failed to delete MQTT messaging instance {instance}: {error}",
 						"deleteSuccess": "MQTT messaging instance {instance} has been deleted.",
-						"editFailed": "Failed to edit MQTT messaging instance {instance}: {error}",
-						"editSuccess": "MQTT messaging instance {instance} has been edited.",
+						"saveFailed": "Failed to save MQTT messaging instance {instance}: {error}",
+						"saveSuccess": "MQTT messaging instance {instance} has been successfully saved.",
 						"fetchFailed": "Failed to retrieve MQTT messaging instance {instance}: {error}",
 						"listFailed": "Failed to retrieve list of MQTT messaging instances: {error}",
 						"persistence": {

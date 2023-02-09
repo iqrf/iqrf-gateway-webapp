@@ -362,7 +362,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Handles REST API success
 	 */
 	private handleSuccess(): void {
-		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
 			this.$t('config.daemon.messagings.websocket.interface.messages.saveSuccess', {interface: this.instances.service}).toString()
 		);

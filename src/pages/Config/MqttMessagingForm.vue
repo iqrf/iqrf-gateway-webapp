@@ -293,7 +293,6 @@ limitations under the License.
 							</CCol>
 						</CRow>
 						<CButton
-							type='submit'
 							color='primary'
 							:disabled='invalid'
 							@click='saveConfig'
@@ -479,32 +478,31 @@ export default class MqttMessagingForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.editFailed', {instance: this.instance}));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-				.then(() => this.successfulSave())
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.addFailed'));
+				.then(this.handleSuccess)
+				.catch(this.handleFailure);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles REST API success
 	 */
-	private successfulSave(): void {
+	private handleSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/messagings/mqtt/add') {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mqtt.messages.addSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: this.configuration.instance})
-					.toString()
-			);
-		}
-		this.$router.push('/config/daemon/messagings/mqtt/');
+		this.$toast.success(
+			this.$t('config.daemon.messagings.mqtt.messages.saveSuccess', {instance: this.configuration.instance}).toString()
+		);
+		this.$router.push('/config/daemon/messagings/mqtt');
+	}
+
+	/**
+	 * Handles REST API failure
+	 */
+	private handleFailure(error: AxiosError): void {
+		extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.savefailed', {instance: this.configuration.instance});
 	}
 }
 </script>

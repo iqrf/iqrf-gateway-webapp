@@ -380,6 +380,7 @@ export default class WebsocketServiceForm extends Vue {
 	 * Handles REST API success
 	 */
 	private handleSuccess(): void {
+		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
 			this.$t('config.daemon.messagings.websocket.service.messages.saveSuccess', {service: this.componentInstance}).toString()
 		);
