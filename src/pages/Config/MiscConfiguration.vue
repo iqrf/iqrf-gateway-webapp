@@ -139,9 +139,6 @@ export default class MiscConfiguration extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.isAdmin) {
-			this.endpoints.splice(3, 0, 'iqmesh');
-		}
 		if (this.$attrs.tabName !== undefined) {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
