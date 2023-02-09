@@ -1,10 +1,31 @@
-iqrf-gateway-webapp (2.5.0~rc10~1.gbp07c1d8) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc10) testing; urgency=medium
 
-  ** SNAPSHOT build @07c1d8fc5e43ad67a84653bb127d4b7b92a59314 **
+  [ Roman Ondráček ]
+  * Prepare for version 2.5.0-rc10
+  * Debian packaging: enable Node-RED feature in IQAROS package
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * GatewayRestore: shuffled card components to unify layout of installation wizard gateway restore page
+  * DiagnosticsManager: removed metadata from diagnostic archive
+  * TimeManager: set date as sudo
+  * ControllerConfig: fixed autonetwork button action translations
+  * WireguardDeleteModal: hide spinner on successful remove request
+  * WebappBackup: fixed backup of database
+  * Logs: handle existing service and empty logs correctly
+  * JournalViewer: only display log when available, removed margin
+  * Scheduler list: increase reconnect delay
+  * axios: reject promise even status 401 was intercepted
+  * TimeManager: updated timezone fetching
+  * Interface: update mappings when new mapping is create
+  * Messagings: fixed mqtt form default submit, fixed hanging websocket spinner
+  * npm: updated dependencies
+  * TimeManager: removed unused import
+  * JournalViewer: mark not loading when no older records are found
+  * Misc configuration: removed iqmesh services config tab
+  * disallow discovery plugin
+  * composer: downgrade php-http/discovery
 
- -- Roman Ondráček <roman@romanondracek.cz>  Fri, 03 Feb 2023 20:41:57 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 09 Feb 2023 14:59:33 +0100
 
 iqrf-gateway-webapp (2.5.0~rc9) testing; urgency=medium
 
