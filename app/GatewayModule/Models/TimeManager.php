@@ -81,7 +81,8 @@ class TimeManager {
 	 * @return array<string, int|string|bool|array<string>> Time configuration
 	 */
 	public function getTime(): array {
-		$timezone = Strings::trim(FileSystem::read('/etc/timezone'));
+		$command = $this->commandManager->run('timedatectl show -p Timezone | rev | cut -d= -f1 | rev');
+		$timezone = Strings::trim($command->getStdout());
 		$date = new DateTime('now', new DateTimeZone($timezone));
 		$status = $this->getStatus();
 		$timesyncConf = $this->readTimesyncd();
