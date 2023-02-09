@@ -100,6 +100,7 @@ export default class JournalViewer extends Vue {
 			.then((rsp: AxiosResponse) => {
 				const journalData: IJournalData = rsp.data;
 				if (journalData.records.length === 0) {
+					this.loading = false;
 					this.oldestRecords = true;
 					this.allowUpdate = false;
 					return;
@@ -130,7 +131,7 @@ export default class JournalViewer extends Vue {
 	private scrollUpdate(): void {
 		if (!this.allowUpdate) {
 			return;
-		} 
+		}
 		const el = (this.$refs.journal as Element);
 		if (el.scrollTop === 0) {
 			this.lastScrollHeight = el.scrollHeight;
