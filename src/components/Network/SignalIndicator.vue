@@ -15,12 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CProgress
-		v-if='signal !== undefined'
-		:value='signal'
-		:color='color'
-		show-percentage
-	/>
+	<div class='progress position-relative'>
+		<div
+			:class='`progress-bar bg-${color}`'
+			role='progressbar'
+			:style='`width: ${signal}%`'
+			:aria-valuenow='signal'
+			aria-valuemin='0'
+			aria-valuemax='100'
+		>
+			<span class='progress-bar-text'>
+				{{ signal }}%
+			</span>
+		</div>
+	</div>
 </template>
 
 <script lang='ts'>
@@ -57,3 +65,14 @@ export default class SignalIndicator extends Vue {
 
 }
 </script>
+
+<style lang="scss" scoped>
+.progress-bar-text {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+	color: black;
+}
+
+</style>
