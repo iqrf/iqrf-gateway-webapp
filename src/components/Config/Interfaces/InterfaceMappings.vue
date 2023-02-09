@@ -26,6 +26,7 @@ limitations under the License.
 					:mappings='adapterMappings'
 					@set-mapping='setMapping'
 					@delete-mapping='deleteMapping'
+					@refresh-mappings='getMappings'
 				/>
 			</CTab>
 			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.boards")'>
@@ -34,6 +35,7 @@ limitations under the License.
 					:mappings='boardMappings'
 					@set-mapping='setMapping'
 					@delete-mapping='deleteMapping'
+					@refresh-mappings='getMappings'
 				/>
 			</CTab>
 		</CTabs>
