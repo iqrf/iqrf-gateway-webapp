@@ -181,7 +181,7 @@ import {ITime, ITimezone, ITimeSet} from '@/interfaces/Gateway/Time';
 	}),
 	metaInfo: {
 		title: 'gateway.datetime.title'
-	}
+	},
 })
 
 /**

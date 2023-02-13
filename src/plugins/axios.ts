@@ -29,6 +29,30 @@ const urlBuilder: UrlBuilder = new UrlBuilder();
 axios.defaults.baseURL = urlBuilder.getRestApiUrl();
 axios.defaults.timeout = 30000;
 
+axios.interceptors.request.use(async config => {
+	if (!store.getters['user/get']) {
+		return config;
+	}
+	const expiration: number = (store.getters['user/getExpiration'] * 1000);
+	const now = new Date().getTime();
+	if (expiration > now) {
+		return config;
+	}
+	const controller = new AbortController();
+	controller.abort();
+	store.dispatch('user/signOut')
+		.then(async () => {
+			await router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
+			Vue.$toast.warning(
+				i18n.t('core.sign.out.expired').toString(),
+			);
+		});
+	return {
+		...config,
+		signal: controller.signal,
+	};
+});
+
 axios.interceptors.response.use(
 	(response: AxiosResponse) => {
 		return response;

@@ -28,6 +28,10 @@ import {ErrorResponse} from '@/types';
  * @param {Dict<string|number>|undefined} params Partial translations for message placeholders
  */
 export function extendedErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
+	if (error.code && error.code === 'ERR_CANCELLED') {
+		store.commit('spinner/HIDE');
+		return;
+	}
 	const translations = {
 		error: error.response ? (error.response.data as ErrorResponse).message : error.message
 	};
