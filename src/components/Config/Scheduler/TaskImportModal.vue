@@ -36,7 +36,7 @@ limitations under the License.
 					{{ $t('config.daemon.scheduler.import.title') }}
 				</h5>
 			</template>
-			<CForm>
+			<CForm ref='form'>
 				<div class='form-group'>
 					<CInputFile
 						ref='schedulerInput'
@@ -56,7 +56,7 @@ limitations under the License.
 			<template #footer>
 				<CButton
 					color='secondary'
-					@click='closeModal'
+					@click='hideModal'
 				>
 					{{ $t('forms.cancel') }}
 				</CButton>
@@ -69,21 +69,29 @@ limitations under the License.
 				</CButton>
 			</template>
 		</CModal>
+		<TaskImportResultModal
+			ref='resultModal'
+			v-model='handledTasks'
+			@reset='clear'
+			@new-upload='newUpload'
+		/>
 	</span>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
+import {Component, Ref} from 'vue-property-decorator';
 import {CButton, CInputFile, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
+import TaskImportResultModal from '@/components/Config/Scheduler/TaskImportResultModal.vue';
 
+import {BlobReader, TextWriter, ZipReader} from '@zip.js/zip.js';
 import {cilArrowTop} from '@coreui/icons';
-import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import SchedulerService from '@/services/SchedulerService';
-import ServiceService from '@/services/ServiceService';
 
-import {AxiosError} from 'axios';
+import {ISchedulerRecord, ITaskImportResult} from '@/interfaces/DaemonApi/Scheduler';
+import {MutationPayload} from 'vuex';
 
 /**
  * Scheduler task import modal component
@@ -93,12 +101,23 @@ import {AxiosError} from 'axios';
 		CButton,
 		CInputFile,
 		CModal,
+		TaskImportResultModal,
 	},
 	data: () => ({
 		cilArrowTop,
 	})
 })
 export default class TaskImportModal extends ModalBase {
+	/**
+	 * @property {HTMLFormElement} form Form element
+	 */
+	@Ref('form') form!: HTMLFormElement;
+
+	/**
+	 * @property {TaskImportResultModal} resultModal Task import result modal component
+	 */
+	@Ref('resultModal') resultModal!: TaskImportResultModal;
+
 	/**
 	 * @var {boolean} inputEmpty Indicates whether file input is empty or not
 	 */
@@ -110,37 +129,159 @@ export default class TaskImportModal extends ModalBase {
 	private inputTouched = false;
 
 	/**
+	 * @var {Array<string>} msgIds Array of expected response message IDs
+	 */
+	private msgIds: string[] = [];
+
+	/**
+	 * @var {Array<ITaskImportResult>} tasks Tasks to import
+	 */
+	private tasks: ITaskImportResult[] = [];
+
+	/**
+	 * @var {Array<ITaskImportResult>} handledTasks Imported tasks
+	 */
+	private handledTasks: ITaskImportResult[] = [];
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;};
+
+	/**
+	 * Registers mutation handler
+	 */
+	created(): void {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
+				return;
+			}
+			const msgId = mutation.payload.data.msgId;
+			const idx = this.msgIds.findIndex((item: string) => item === msgId);
+			if (idx === -1) {
+				return;
+			}
+			this.msgIds.splice(idx, 1);
+			this.$store.dispatch('daemonClient/removeMessage', msgId);
+			if (mutation.payload.mType === 'mngScheduler_AddTask') {
+				this.handleAddTask(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$toast.error(
+					this.$t('config.daemon.scheduler.messages.processError').toString()
+				);
+			}
+		});
+	}
+
+	/**
+	 * Unregisters mutation handler and clears any pending responses
+	 */
+	beforeDestroy(): void {
+		this.unsubscribe();
+		for (const msgId of this.msgIds) {
+			this.$store.dispatch('daemonClient/removeMessage', msgId);
+		}
+	}
+
+	/**
 	 * Imports scheduler tasks from zip file
 	 */
-	private importScheduler(): void {
+	private async importScheduler(): Promise<void> {
 		const file = this.getFile();
 		if (file === null) {
 			return;
 		}
-		this.$store.commit('spinner/SHOW');
-		SchedulerService.importConfig(file)
-			.then(() => {
-				this.$toast.success(
-					this.$t('config.daemon.scheduler.messages.importSuccess').toString()
+		this.tasks = [];
+		this.handledTasks = [];
+		let records: Array<ISchedulerRecord> = [];
+		if (['application/zip', 'application/x-zip-compressed'].includes(file.type)) {
+			await this.extractZip(file)
+				.then((data: ISchedulerRecord[]) => {
+					records = data;
+				})
+				.catch(() => {
+					this.$toast.error(
+						this.$t('config.daemon.scheduler.import.errors.invalidArchive').toString()
+					);
+				});
+		} else if (file.type === 'application/json') {
+			const content = await file.text();
+			try {
+				const record: ISchedulerRecord = JSON.parse(content);
+				this.tasks.push({
+					clientId: record.clientId,
+					taskId: record.taskId,
+					success: false
+				});
+				records.push(record);
+			} catch (error) {
+				this.$toast.error(
+					this.$t('config.daemon.scheduler.import.errors.invalidJson').toString()
 				);
-				this.closeModal();
-				ServiceService.restart('iqrf-gateway-daemon')
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.info(
-							this.$t('service.iqrf-gateway-daemon.messages.restart')
-								.toString()
-						);
-						this.$emit('imported');
-					})
-					.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.restartFailed'));
-			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.importFailed'));
+				return;
+			}
+		} else {
+			this.$toast.error(
+				this.$t('config.daemon.scheduler.import.errors.invalidFile').toString()
+			);
+			return;
+		}
+		for (const record of records) {
+			SchedulerService.addTask(record, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.processError'))
+				.then((msgId: string) => this.msgIds.push(msgId));
+		}
+	}
+
+	/**
+	 * Extracts contents of zip file and converts them to array of tasks to import
+	 * @param {File} zipFile Zip archive to extract data from
+	 */
+	private async extractZip(zipFile: File): Promise<ISchedulerRecord[]> {
+		const blobReader = new BlobReader(zipFile);
+		const zipReader = new ZipReader(blobReader);
+		const files = await zipReader.getEntries();
+		const records: ISchedulerRecord[] = [];
+		for (const file of files) {
+			const textWriter = new TextWriter();
+			const content = await file.getData(textWriter);
+			const record: ISchedulerRecord = JSON.parse(content);
+			records.push(record);
+			this.tasks.push({
+				clientId: record.clientId,
+				taskId: record.taskId,
+				success: false
+			});
+		}
+		return records;
+	}
+
+	/**
+	 * Handles Daemon API task import response and stores results
+	 * @param response Task import response
+	 */
+	private handleAddTask(response): void {
+		const clientId = response.rsp.clientId;
+		const taskId = response.rsp.taskId;
+		const success = response.status === 0;
+		const idx = this.tasks.findIndex((item: ITaskImportResult) => item.clientId === clientId && item.taskId === taskId);
+		if (idx !== -1) {
+			this.tasks[idx].success = success;
+			if (!success) {
+				this.tasks[idx].error = response.errorStr;
+			}
+			this.handledTasks.push(this.tasks[idx]);
+			this.tasks.splice(idx, 1);
+		}
+		if (this.tasks.length === 0) {
+			this.resultModal.showModal(this.handledTasks);
+			this.closeModal();
+			this.$emit('imported');
+		}
 	}
 
 	/**
 	 * Retrieves file from input if one was selected
-	 * @return {File|null}
+	 * @return {File|null} Uploaded zip archive
 	 */
 	private getFile(): File|null {
 		const input = (this.$refs.schedulerInput as CInputFile).$el.children[1] as HTMLInputElement;
@@ -159,6 +300,43 @@ export default class TaskImportModal extends ModalBase {
 			this.inputTouched = true;
 		}
 		this.inputEmpty = this.getFile() === null;
+	}
+
+	/**
+	 * Remove Daemon API message ID from expected responses
+	 * @param {string} msgId Message ID to remove
+	 */
+	private removeMsgId(msgId: string): void {
+		const idx = this.msgIds.findIndex((item: string) => item === msgId);
+		if (idx === -1) {
+			return;
+		}
+		this.msgIds.splice(idx, 1);
+	}
+
+	/**
+	 * Hides modal and clears form data
+	 */
+	private hideModal(): void {
+		this.closeModal();
+		this.clear();
+	}
+
+	/**
+	 * Clears form data
+	 */
+	private clear(): void {
+		this.form.reset();
+		this.inputEmpty = true;
+		this.inputTouched = false;
+	}
+
+	/**
+	 * Clears form data and shows modal window
+	 */
+	private newUpload(): void {
+		this.clear();
+		this.show = true;
 	}
 }
 </script>

@@ -48,3 +48,10 @@ export interface ISchedulerRecordTimeSpec {
 	periodic: boolean
 	startTime: string
 }
+
+export interface ITaskImportResult {
+	clientId: string
+	taskId: string
+	success: boolean
+	error?: string
+}

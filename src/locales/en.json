@@ -677,6 +677,7 @@
 				},
 				"form": {
 					"task": {
+						"clientId": "Client ID",
 						"taskId": "Task ID",
 						"description": "Description",
 						"timeSpec": "Start time type",
@@ -717,7 +718,18 @@
 					"title": "Import task(s)",
 					"file": "JSON task file or ZIP archive with tasks",
 					"errors": {
-						"fileEmpty": "Please select file to import."
+						"fileEmpty": "Please select file to import.",
+						"invalidFile": "Invalid file, please select a JSON or ZIP archive file.",
+						"invalidArchive": "Failed to import tasks, the archive is invalid or corrupted.",
+						"invalidJson": "Failed to import task, the JSON file is invalid or corrupted."
+					},
+					"result": {
+						"title": "Scheduler import result",
+						"table": {
+							"success": "Import successful",
+							"error": "Reason for failure"
+						},
+						"uploadAgain": "Upload more tasks"
 					}
 				},
 				"modal": {
