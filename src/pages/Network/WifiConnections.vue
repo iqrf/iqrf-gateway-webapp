@@ -443,7 +443,7 @@ export default class WifiConnections extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(ap.uuid)
+		NetworkConnectionService.connect(ap.uuid, ap.interfaceName)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

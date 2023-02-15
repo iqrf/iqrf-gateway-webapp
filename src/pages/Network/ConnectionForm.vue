@@ -646,7 +646,7 @@ export default class ConnectionForm extends Vue {
 	 * @param {boolean} added Connection added before connecting
 	 */
 	private connect(uuid: string, name: string, added = false): void {
-		NetworkConnectionService.connect(uuid)
+		NetworkConnectionService.connect(uuid, this.connection.interface ?? null)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				let message: string;

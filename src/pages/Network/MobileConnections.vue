@@ -213,7 +213,7 @@ export default class MobileConnections extends Vue {
 	 */
 	private connect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(connection.uuid)
+		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
 			.then(() => {
 				this.getConnections();
 				this.interfaces.getData();
