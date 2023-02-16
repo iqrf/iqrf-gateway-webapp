@@ -22,11 +22,11 @@ limitations under the License.
 				<CCard>
 					<CTabs variant='tabs' :active-tab='activeTab'>
 						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
-							<BondingManager @update-devices='updateDevices' />
+							<BondingManager ref='bonding' @update-devices='updateDevices' />
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
-							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
+							<AutoNetwork @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.dpaParams.title")'>
 							<DpaParams />
@@ -45,14 +45,14 @@ limitations under the License.
 				</CCard>
 			</CCol>
 			<CCol lg='6'>
-				<DevicesInfo ref='devs' />
+				<DevicesInfo ref='devices' />
 			</CCol>
 		</CRow>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
 
 import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork/AutoNetwork.vue';
@@ -96,6 +96,21 @@ import {ToastOptions} from 'vue-toast-notification';
 })
 export default class NetworkManager extends Vue {
 	/**
+	 * @property {BondingManager} bondingManager Bonding manager component
+	 */
+	@Ref('bonding') bondingManager!: BondingManager;
+
+	/**
+	 * @property {DevicesInfo} devices Devices info component
+	 */
+	@Ref('devices') devices!: DevicesInfo;
+
+	/**
+	 * @property {Maintenance} maintenance Maintenance component
+	 */
+	@Ref('maintenance') maintenance!: Maintenance;
+
+	/**
 	 * @var {number} activeTab Default active tab
 	 */
 	private activeTab = 0;
@@ -137,11 +152,11 @@ export default class NetworkManager extends Vue {
 	 * Enumerates coordinator device for additional form configuration
 	 */
 	mounted(): void {
-		if (this.$store.getters.isSocketConnected) {
+		if (this.$store.getters['daemonClient/isConnected']) {
 			this.enumerateCoordinator();
 		} else {
 			this.unwatch = this.$store.watch(
-				(_state, getter) => getter.isSocketConnected,
+				(_state, getter) => getter['daemonClient/isConnected'],
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
 						this.enumerateCoordinator();
@@ -195,7 +210,7 @@ export default class NetworkManager extends Vue {
 	 * @param {ToastOptions} message Success toast message passed from other components for devices info grid to show
 	 */
 	private updateDevices(message: ToastOptions): void {
-		(this.$refs.devs as DevicesInfo).getBondedDevices(message);
+		this.devices.getBondedDevices(message);
 	}
 
 	/**
@@ -203,14 +218,14 @@ export default class NetworkManager extends Vue {
 	 * @param {number} rfBand RF Band
 	 */
 	private setRfChannelRules(rfBand: number): void {
-		(this.$refs.maintenance as Maintenance).setRfChannelRules(rfBand);
+		this.maintenance.setRfChannelRules(rfBand);
 	}
 
 	/**
 	 * Enables NFC bonding in bonding manager
 	 */
 	private enableBondNfc(): void {
-		(this.$refs.bonding as BondingManager).enableBondNfc();
+		this.bondingManager.enableBondNfc();
 	}
 }
 </script>
