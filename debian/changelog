@@ -1,10 +1,16 @@
-iqrf-gateway-webapp (2.5.0~rc11~1.gbp847549) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0~rc11) testing; urgency=medium
 
-  ** SNAPSHOT build @8475499957786d9cc48e435c3f076f4d7c18091e **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc11
+  * SignalIndicator: show percentage in the middle of progress bar instead of the filled progress
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Network: use interface name while connecting
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 09 Feb 2023 15:00:49 +0100
+  [ Karel Hanák ]
+  * NetworkManager: refactor component references
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 16 Feb 2023 10:33:57 +0100
 
 iqrf-gateway-webapp (2.5.0~rc10) testing; urgency=medium
 
