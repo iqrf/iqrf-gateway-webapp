@@ -42,7 +42,7 @@ server {
 	}
 
 	location /system {
-		add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org; connect-src 'self' http: https: ws: wss: https://apidocs.iqrf.org https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org https://sentry.iqrf.org; media-src 'none'; object-src 'none'; prefetch-src 'self'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; form-action 'self'; block-all-mixed-content; report-uri https://sentry.iqrf.org/api/2/security/?sentry_key=7cd0252aae6d491b98514b9486cd2771" always;
+		add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org; connect-src 'self' http: https: ws: wss: https://apidocs.iqrf.org https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org https://sentry.iqrf.org; media-src 'none'; object-src 'none'; prefetch-src 'self'; child-src 'none'; frame-src 'none'; worker-src 'blob:'; frame-ancestors 'none'; form-action 'self'; block-all-mixed-content; report-uri https://sentry.iqrf.org/api/2/security/?sentry_key=7cd0252aae6d491b98514b9486cd2771" always;
 		add_header X-Frame-Options "deny" always;
 
 		alias /usr/share/iqrf-gateway-webapp/www/dist;
