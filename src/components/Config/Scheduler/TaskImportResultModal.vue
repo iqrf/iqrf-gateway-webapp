@@ -119,6 +119,7 @@ export default class TaskImportResultModal extends ModalBase {
 	private hideModal(): void {
 		this.closeModal();
 		this.tasks = [];
+		this.$emit('reset');
 	}
 
 	/**
