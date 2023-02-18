@@ -153,6 +153,10 @@ export default class TaskImportModal extends ModalBase {
 	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
+			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE') {
+				this.clearMsgIds();
+				return;
+			}
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -178,9 +182,7 @@ export default class TaskImportModal extends ModalBase {
 	 */
 	beforeDestroy(): void {
 		this.unsubscribe();
-		for (const msgId of this.msgIds) {
-			this.$store.dispatch('daemonClient/removeMessage', msgId);
-		}
+		this.clearMsgIds();
 	}
 
 	/**
@@ -312,6 +314,16 @@ export default class TaskImportModal extends ModalBase {
 			return;
 		}
 		this.msgIds.splice(idx, 1);
+	}
+
+	/**
+	 * Clears all Daemon API message IDs from expected responses
+	 */
+	private clearMsgIds(): void {
+		for (const msgId of this.msgIds) {
+			this.$store.dispatch('daemonClient/removeMessage', msgId);
+		}
+		this.msgIds = [];
 	}
 
 	/**
