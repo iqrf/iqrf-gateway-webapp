@@ -28,8 +28,11 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\RequestAttributes;
+use App\CoreModule\Models\UserManager;
 use App\GatewayModule\Exceptions\HostnameException;
 use App\GatewayModule\Models\HostnameManager;
+use App\Models\Database\Entities\User;
 
 /**
  * Hostname controller
@@ -40,15 +43,22 @@ class HostnameController extends GatewayController {
 	/**
 	 * @var HostnameManager Hostname manager
 	 */
-	private HostnameManager $manager;
+	private HostnameManager $hostnameManager;
+
+	/**
+	 * @var UserManager User manager
+	 */
+	private UserManager $userManager;
 
 	/**
 	 * Constructor
-	 * @param HostnameManager $manager Hostname manager
+	 * @param HostnameManager $hostnameManager Hostname manager
+	 * @param UserManager $userManager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(HostnameManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(HostnameManager $hostnameManager, UserManager $userManager, RestApiSchemaValidator $validator) {
+		$this->hostnameManager = $hostnameManager;
+		$this->userManager = $userManager;
 		parent::__construct($validator);
 	}
 
@@ -66,6 +76,10 @@ class HostnameController extends GatewayController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UserToken'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '500':
@@ -75,11 +89,17 @@ class HostnameController extends GatewayController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('hostname', $request);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$config = $request->getJsonBody(true);
-			$this->manager->setHostname($config['hostname']);
+			$this->hostnameManager->setHostname($config['hostname']);
+			if ($user instanceof User) {
+				$json = $user->jsonSerialize();
+				$json['token'] = $this->userManager->generateToken($user);
+				return $response->writeJsonBody($json);
+			}
 			return $response->writeBody('Workaround');
 		} catch (HostnameException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

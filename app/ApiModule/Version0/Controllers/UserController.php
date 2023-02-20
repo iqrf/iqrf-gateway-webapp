@@ -30,7 +30,6 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
@@ -41,11 +40,8 @@ use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
-use DateTimeImmutable;
-use Lcobucci\JWT\Configuration;
 use Nette\Mail\SendException;
 use Throwable;
-use function gethostname;
 
 /**
  * User manager API controller
@@ -53,11 +49,6 @@ use function gethostname;
  * @Tag("User manager")
  */
 class UserController extends BaseController {
-
-	/**
-	 * @var Configuration JWT configuration
-	 */
-	private Configuration $configuration;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -76,14 +67,12 @@ class UserController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
-		$this->configuration = $configurator->create();
+	public function __construct(EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
 		$this->entityManager = $entityManager;
 		$this->manager = $manager;
 		$this->passwordRecoverySender = $passwordRecoverySender;
@@ -348,7 +337,11 @@ class UserController extends BaseController {
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		try {
+			$json['token'] = $this->manager->generateToken($user);
+		} catch (Throwable $e) {
+			throw new ServerErrorException('Data creation failed.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 		try {
 			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
 		} catch (SendException $e) {
@@ -416,7 +409,11 @@ class UserController extends BaseController {
 			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		try {
+			$json['token'] = $this->manager->generateToken($user);
+		} catch (Throwable $e) {
+			throw new ServerErrorException('Data creation failed.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 		return $response->writeJsonBody($json);
 	}
 
@@ -460,7 +457,11 @@ class UserController extends BaseController {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		try {
+			$json['token'] = $this->manager->generateToken($user);
+		} catch (Throwable $e) {
+			throw new ServerErrorException('Data creation failed.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 		return $response->writeJsonBody($json);
 	}
 
@@ -506,34 +507,12 @@ class UserController extends BaseController {
 		}
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
-		return $response->writeJsonBody($json);
-	}
-
-	/**
-	 * Creates a new JWT token
-	 * @param User $user User
-	 * @return string JWT token
-	 */
-	private function createToken(User $user): string {
 		try {
-			$now = new DateTimeImmutable();
-			$us = $now->format('u');
-			$now = $now->modify('-' . $us . ' usec');
+			$json['token'] = $this->manager->generateToken($user);
 		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException('Data creation failed.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		$hostname = gethostname();
-		$builder = $this->configuration->builder()
-			->issuedAt($now)
-			->expiresAt($now->modify('+90 min'))
-			->withClaim('uid', $user->getId());
-		if ($hostname !== false) {
-			$builder->issuedBy($hostname)->identifiedBy($hostname);
-		}
-		$signer = $this->configuration->signer();
-		$signingKey = $this->configuration->signingKey();
-		return $builder->getToken($signer, $signingKey)->toString();
+		return $response->writeJsonBody($json);
 	}
 
 }

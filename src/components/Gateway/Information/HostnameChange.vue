@@ -56,7 +56,7 @@ import {machineHostname} from '@/helpers/validationRules/Gateway';
 import GatewayService from '@/services/GatewayService';
 
 import {IHostname} from '@/interfaces/Gateway/Information';
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 
 @Component({
@@ -101,7 +101,8 @@ export default class HostnameChange extends Vue {
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.setHostname(this.config)
-			.then(() => {
+			.then(async (rsp: AxiosResponse) => {
+				await this.$store.dispatch('user/setJwt', rsp.data);
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t('gateway.hostname.messages.success').toString()

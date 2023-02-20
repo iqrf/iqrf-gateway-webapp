@@ -20,19 +20,27 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Apitte\Core\Http\ApiRequest;
+use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\EmailVerificationMailSender;
 use App\Models\Mail\Senders\PasswordChangeConfirmationMailSender;
+use DateTimeImmutable;
 use Nette\Mail\SendException;
+use Lcobucci\JWT\Configuration;
+use function gethostname;
 
 /**
  * User manager
  */
 class UserManager {
+
+	/**
+	 * @var Configuration JWT configuration
+	 */
+	private Configuration $configuration;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -56,11 +64,13 @@ class UserManager {
 
 	/**
 	 * Constructor
+	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param EmailVerificationMailSender $emailVerificationSender Email verification sender
 	 * @param PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender Password change confirmation sender
 	 */
-	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $emailVerificationSender, PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, EmailVerificationMailSender $emailVerificationSender, PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender) {
+		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
 		$this->emailVerificationSender = $emailVerificationSender;
@@ -133,6 +143,28 @@ class UserManager {
 			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
 		}
 		$this->passwordChangeConfirmationSender->send($user, $baseUrl);
+	}
+
+	/**
+	 * Creates a new JWT token
+	 * @param User $user User
+	 * @return string JWT token
+	 */
+	public function generateToken(User $user): string {
+		$now = new DateTimeImmutable();
+		$us = $now->format('u');
+		$now = $now->modify('-' . $us . ' usec');
+		$hostname = gethostname();
+		$builder = $this->configuration->builder()
+			->issuedAt($now)
+			->expiresAt($now->modify('+90 min'))
+			->withClaim('uid', $user->getId());
+		if ($hostname !== false) {
+			$builder->issuedBy($hostname)->identifiedBy($hostname);
+		}
+		$signer = $this->configuration->signer();
+		$signingKey = $this->configuration->signingKey();
+		return $builder->getToken($signer, $signingKey)->toString();
 	}
 
 }

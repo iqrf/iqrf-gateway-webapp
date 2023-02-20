@@ -338,7 +338,8 @@ export default class GatewayTime extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		TimeService.setTime(params)
-			.then(() => {
+			.then(async (rsp: AxiosResponse) => {
+				await this.$store.dispatch('user/setJwt', rsp.data);
 				this.getTime().then(() => {
 					this.$toast.success(
 						this.$t('gateway.datetime.messages.timeSetSuccess').toString()
