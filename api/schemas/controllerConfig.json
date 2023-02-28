@@ -39,8 +39,17 @@
 					"syslog": false
 				}
 			},
+			"powerOff": {
+				"sda": -1,
+				"sck": -1
+			},
 			"resetButton": {
-				"api": "autoNetwork"
+				"api": "autoNetwork",
+				"button": 2
+			},
+			"statusLed": {
+				"greenLed": 0,
+				"redLed": 1
 			},
 			"wsServers": {
 				"api": "ws://localhost:1338",
@@ -52,6 +61,7 @@
 		"daemonApi",
 		"factoryReset",
 		"logger",
+		"powerOff",
 		"resetButton",
 		"statusLed",
 		"wsServers"
@@ -230,7 +240,7 @@
 							"minimum": 0,
 							"maximum": 239,
 							"default": 0,
-							"examples": 0
+							"example": 0
 						},
 						"txPower": {
 							"$id": "#/properties/daemonApi/properties/discovery/properties/txPower",
@@ -392,14 +402,14 @@
 			"properties": {
 				"sda": {
 					"$id": "#/properties/powerOff/properties/sda",
-					"type": "number",
+					"type": "integer",
 					"title": "Data pin",
 					"description": "I2C data line pin.",
 					"example": 12
 				},
 				"sck": {
 					"$id": "#/properties/powerOff/properties/sck",
-					"type": "number",
+					"type": "integer",
 					"title": "Clock pin",
 					"description": "I2C clock line pin.",
 					"example": 11

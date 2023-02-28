@@ -7,6 +7,8 @@
 	"required": [
 		"board",
 		"gwId",
+		"gwImage",
+		"os",
 		"versions",
 		"hostname",
 		"uptime",
@@ -28,6 +30,61 @@
 			"title": "IQRF Gateway ID",
 			"example": "02424D1D2D2E7580"
 		},
+		"gwImage": {
+			"$id": "#/properties/gwImage",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Gateway image version",
+			"example": "iqaros-armbian-v1.2.0"
+		},
+		"os": {
+			"$id": "#/properties/os",
+			"type": "object",
+			"title": "Operating system information",
+			"example": {
+				"name": "Armbian 21.11.0-trunk Buster",
+				"homePage": "https://www.debian.org/"
+			},
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"homePage"
+			],
+			"properties": {
+				"name": {
+					"$id": "#/properties/os/properties/name",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "Operating system name",
+					"example": "Armbian 21.11.0-trunk Buster"
+				},
+				"homePage": {
+					"$id": "#/properties/os/properties/homePage",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "Operating system home page",
+					"example": "https://www.debian.org/"
+				}
+			}
+		},
 		"versions": {
 			"$id": "#/properties/versions",
 			"type": "object",
@@ -41,6 +98,8 @@
 			"required": [
 				"controller",
 				"daemon",
+				"setter",
+				"uploader",
 				"webapp"
 			],
 			"properties": {
@@ -62,6 +121,32 @@
 					"type": "string",
 					"title": "IQRF Gateway Daemon version",
 					"example": "v2.3.0"
+				},
+				"setter": {
+					"$id": "#/properties/versions/properties/setter",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "IQRF Gateway Setter version",
+					"example": "v1.0.0"
+				},
+				"uploader": {
+					"$id": "#/properties/versions/properties/uploader",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "IQRF Gateway Uploader version",
+					"example": "v1.0.0"
 				},
 				"webapp": {
 					"$id": "#/properties/versions/properties/webapp",

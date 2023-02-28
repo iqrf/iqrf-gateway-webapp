@@ -36,14 +36,14 @@
 		},
 		"greenLed": {
 			"$id": "#/properties/greenLed",
-			"title": "LEDG pin",
+			"title": "Green LED pin",
 			"description": "Green LED pin number",
 			"type": "integer",
 			"example": 0
 		},
 		"redLed": {
 			"$id": "#/properties/redLed",
-			"title": "LEDR pin",
+			"title": "Red LED pin",
 			"description": "Red LED pin number",
 			"type": "integer",
 			"example": 1
