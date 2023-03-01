@@ -113,6 +113,14 @@ export interface NetworkInterface {
 }
 
 /**
+ * Brief gateway information interface
+ */
+export interface IGatewayBriefInfo {
+	/// Board name
+	board: string
+}
+
+/**
  * GatewayInfo interface
  */
 export interface IGatewayInfo {

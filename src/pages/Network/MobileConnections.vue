@@ -97,7 +97,13 @@ import {
 } from '@coreui/vue/src';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
-import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {
+	cilLink,
+	cilLinkBroken,
+	cilPencil,
+	cilPlus,
+	cilTrash
+} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 
@@ -284,5 +290,6 @@ export default class MobileConnections extends Vue {
 				extendedErrorToast(error, 'network.connection.messages.removeFailed');
 			});
 	}
+
 }
 </script>

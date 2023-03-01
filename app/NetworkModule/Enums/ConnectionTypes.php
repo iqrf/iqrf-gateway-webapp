@@ -32,6 +32,7 @@ use Grifart\Enum\Enum;
  * @method static ConnectionTypes GSM()
  * @method static ConnectionTypes INFINIBAND()
  * @method static ConnectionTypes IP_TUNNEL()
+ * @method static ConnectionTypes LOOPBACK()
  * @method static ConnectionTypes TUN()
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
@@ -78,6 +79,11 @@ final class ConnectionTypes extends Enum {
 	 * @var string IP tunnel connection
 	 */
 	private const IP_TUNNEL = 'ip-tunnel';
+
+	/**
+	 * @var string Loopback connection
+	 */
+	private const LOOPBACK = 'loopback';
 
 	/**
 	 * @var string TUN connection

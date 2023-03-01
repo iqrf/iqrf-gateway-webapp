@@ -2867,7 +2867,8 @@
 			},
 			"table": {
 				"signal": "Signal strength",
-				"rssi": "RSSI"
+				"rssi": "RSSI",
+				"restartModemManager": "Restart Modem"
 			},
 			"form": {
 				"title": "GSM configuration",

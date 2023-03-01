@@ -342,6 +342,19 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to return brief information about the gateway
+	 */
+	public function testGetBrief(): void {
+		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->versionManager])->makePartial();
+		$manager->shouldReceive('getBoard')
+			->andReturn(self::EXPECTED['board']);
+		$expected = [
+			'board' => self::EXPECTED['board'],
+		];
+		Assert::same($expected, $manager->getBrief());
+	}
+
+	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {

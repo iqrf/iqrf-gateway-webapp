@@ -25,6 +25,7 @@ limitations under the License.
 		>
 			<CSelect
 				:value.sync='connection.ipv6.method'
+				:disabled='disabled'
 				:label='$t("network.connection.ipv6.method").toString()'
 				:options='methods'
 				:placeholder='$t("network.connection.ipv6.methods.null").toString()'
@@ -54,6 +55,7 @@ limitations under the License.
 					>
 						<CInput
 							v-model='address.address'
+							:disabled='disabled'
 							:label='$t("network.connection.ipv6.address").toString()'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='errors.join(", ")'
@@ -96,6 +98,7 @@ limitations under the License.
 					>
 						<CInput
 							v-model.number='address.prefix'
+							:disabled='disabled'
 							type='number'
 							min='48'
 							max='128'
@@ -119,6 +122,7 @@ limitations under the License.
 			>
 				<CInput
 					v-model='connection.ipv6.gateway'
+					:disabled='disabled'
 					:label='$t("network.connection.ipv6.gateway").toString()'
 					:is-valid='touched ? valid : null'
 					:invalid-feedback='errors.join(", ")'
@@ -141,6 +145,7 @@ limitations under the License.
 				>
 					<CInput
 						v-model='address.address'
+						:disabled='disabled'
 						:label='$t("network.connection.ipv6.dns.address").toString()'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
@@ -170,7 +175,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
 import {CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -203,9 +208,14 @@ import {ConnectionType} from '@/enums/Network/ConnectionType';
 export default class IPv6Configuration extends Vue {
 
 	/**
-	 * Edited connection.
+	 * @property {IConnection} connection Edited connection.
 	 */
 	@VModel({required: true}) connection!: IConnection;
+
+	/**
+	 * @property {boolean} disabled If true, disables all inputs.
+   */
+	@Prop({type: Boolean, required: true}) disabled!: boolean;
 
 	/**
 	 * Initializes validation rules

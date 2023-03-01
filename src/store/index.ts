@@ -20,6 +20,7 @@ import createPersistentState from 'vuex-persistedstate';
 
 import blocking from './modules/blocking.module';
 import features from './modules/features.module';
+import gateway from './modules/gateway.module';
 import installation from './modules/installation.module';
 import sidebar from './modules/sidebar.module';
 import spinner from './modules/spinner.module';
@@ -35,6 +36,7 @@ const store: Store<any> = new Vuex.Store({
 	modules: {
 		blocking,
 		features,
+		gateway,
 		installation,
 		sidebar,
 		spinner,

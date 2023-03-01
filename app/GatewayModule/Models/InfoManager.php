@@ -97,6 +97,16 @@ class InfoManager {
 	}
 
 	/**
+	 * Returns brief information about the gateway
+	 * @return array{board: string} Brief gateway information
+	 */
+	public function getBrief(): array {
+		return [
+			'board' => $this->getBoard(),
+		];
+	}
+
+	/**
 	 * Gets board's vendor, name and version
 	 * @return string Board's vendor, name and version
 	 */

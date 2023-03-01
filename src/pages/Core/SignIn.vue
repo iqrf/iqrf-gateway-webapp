@@ -167,6 +167,7 @@ export default class SignIn extends Vue {
 					this.$t('core.sign.in.messages.success').toString()
 				);
 				await this.$store.dispatch('repository/get');
+				await this.$store.dispatch('gateway/getInfo');
 			})
 			.catch(() => {
 				this.$toast.error(

@@ -101,6 +101,7 @@ export default class App extends Vue {
 				}
 				if (this.$store.getters['user/isLoggedIn']) {
 					this.$store.dispatch('repository/get');
+					this.$store.dispatch('gateway/getInfo');
 				}
 			})
 			.catch((error: AxiosError) => {

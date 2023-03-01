@@ -64,6 +64,7 @@ class ServicesController extends BaseController {
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
 		'mender-client' => 'mender',
 		'monit' => 'monit',
+		'ModemManager' => 'networkManager',
 		'ssh' => 'ssh',
 		'systemd-journald' => 'journal',
 		'tempgw' => 'iTemp',

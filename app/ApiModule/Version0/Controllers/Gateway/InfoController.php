@@ -72,4 +72,26 @@ class InfoController extends GatewayController {
 		return $response->writeJsonBody($info);
 	}
 
+	/**
+	 * @Path("/brief")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns brief information about the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/GatewayBriefInfo'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$info = $this->infoManager->getBrief();
+		return $response->writeJsonBody($info);
+	}
+
 }

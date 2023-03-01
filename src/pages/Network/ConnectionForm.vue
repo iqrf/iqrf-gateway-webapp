@@ -148,7 +148,7 @@ limitations under the License.
 						</CCol>
 						<CCol md='6'>
 							<legend>{{ $t('network.connection.ipv6.title') }}</legend>
-							<IPv6Configuration v-model='connection' />
+							<IPv6Configuration v-model='connection' :disabled='hasBrokenGsmModem' />
 						</CCol>
 					</CRow>
 					<CButton
@@ -259,6 +259,7 @@ import {IAccessPoint} from '@/interfaces/Network/Wifi';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 import VersionService from '@/services/VersionService';
+import ServiceService from '@/services/ServiceService';
 
 @Component({
 	components: {
@@ -356,7 +357,7 @@ export default class ConnectionForm extends Vue {
 	/**
 	 * @property {string} uuid Network connection configuration id
 	 */
-	@Prop({required: false, default: null}) uuid!: string;
+	@Prop({required: false, default: null}) uuid!: string|null;
 
 	/**
 	 * @property {string|null} ap Access point metadata in JSON string format
@@ -482,6 +483,9 @@ export default class ConnectionForm extends Vue {
 	 * Get connection specified by prop
 	 */
 	private getConnection(): void {
+		if (this.uuid === null) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.get(this.uuid)
 			.then((response: IConnection) => {
@@ -493,7 +497,7 @@ export default class ConnectionForm extends Vue {
 				extendedErrorToast(
 					error,
 					'network.connection.messages.fetchFailed',
-					{connection: this.uuid}
+					{connection: this.uuid!}
 				);
 				if (this.connection.type === ConnectionType.Ethernet) {
 					this.$router.push('/ip-network/ethernet');
@@ -607,6 +611,22 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
+	 * @property {boolean} hasBrokenGsmModem Checks if the used modem is broken to prevent hanging on
+	 */
+	get hasBrokenGsmModem(): boolean {
+		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW-04'
+				&& this.connection.interface === 'ttyAMA2';
+	}
+
+	/**
+	 * Restarts ModemManager service to fix broken modem
+	 */
+	private async restartModemManager(): Promise<void> {
+		await ServiceService.restart('ModemManager');
+		await new Promise(resolve => setTimeout(resolve, 15_000));
+	}
+
+	/**
 	 * Saves changes made to connection
 	 */
 	private saveConnection(): void {
@@ -619,10 +639,15 @@ export default class ConnectionForm extends Vue {
 		this.$store.commit('spinner/SHOW',
 			this.$t('network.connection.messages.submit').toString()
 		);
-		if (connection.uuid === undefined) {
+		if (this.uuid === null || connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
-				.then((response: AxiosResponse) => this.connect(response.data, connection.name, true))
+				.then(async (response: AxiosResponse) => {
+					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
+						await this.restartModemManager();
+					}
+					await this.connect(response.data, connection.name, true);
+				})
 				.catch((error: AxiosError) => {
 					extendedErrorToast(
 						error,
@@ -631,7 +656,12 @@ export default class ConnectionForm extends Vue {
 				});
 		} else {
 			NetworkConnectionService.edit(this.uuid, connection)
-				.then(() => this.connect(this.uuid, connection.name))
+				.then(async () => {
+					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
+						await this.restartModemManager();
+					}
+					await this.connect(this.uuid!, connection.name, false);
+				})
 				.catch((error: AxiosError) => extendedErrorToast(
 					error,
 					'network.connection.messages.edit.failed',
@@ -676,9 +706,9 @@ export default class ConnectionForm extends Vue {
 					return;
 				}
 				if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) {
-					this.tryRest('network.connection.messages.ipChange.autoToStatic');
+					await this.tryRest('network.connection.messages.ipChange.autoToStatic');
 				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.MANUAL) {
-					this.tryRest('network.connection.messages.ipChange.staticToStatic');
+					await this.tryRest('network.connection.messages.ipChange.staticToStatic');
 				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.AUTO) {
 					this.$store.commit('spinner/HIDE');
 					this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.staticToAuto').toString());
@@ -734,6 +764,9 @@ export default class ConnectionForm extends Vue {
 		if (/tty(AMA|AMC|S)\d+/.test(this.connection.interface) && this.connection.serial === undefined) {
 			const serial: IConnectionSerial = {baudRate: 115200, bits: 8, parity: 'n', stopBits: 1, sendDelay: 0};
 			Object.assign(this.connection, {serial: serial});
+		}
+		if (this.hasBrokenGsmModem) {
+			this.connection.ipv6.method = Ipv6Method.DISABLED;
 		}
 	}
 

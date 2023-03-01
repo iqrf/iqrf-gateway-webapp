@@ -98,6 +98,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json
 		GatewayBackup:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayBackup.json
+		GatewayBriefInfo:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayBriefInfo.json
 		GatewayInfo:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
 		GatewayPassword:

@@ -20,6 +20,16 @@ limitations under the License.
 			{{ $t("network.mobile.modems.title") }}
 			<CButtonToolbar>
 				<CButton
+					v-if='hasBrokenGsmModem'
+					color='warning'
+					class='float-right mr-1'
+					size='sm'
+					@click='restartModemManager'
+				>
+					<CIcon :content='cilReload' size='sm' />
+					{{ $t('network.mobile.table.restartModemManager') }}
+				</CButton>
+				<CButton
 					color='secondary'
 					size='sm'
 					class='float-right mr-1'
@@ -95,6 +105,7 @@ import {ModemState} from '@/enums/Network/ModemState';
 import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
+import ServiceService from '@/services/ServiceService';
 
 /**
  * GSM modem interface list
@@ -163,6 +174,14 @@ export default class GsmInterfaces extends Vue {
 	private loading = true;
 
 	/**
+	 * @property {boolean} hasBrokenGsmModem Checks if the used modem is broken to prevent hanging on
+	 */
+	get hasBrokenGsmModem(): boolean {
+		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW-04' &&
+				this.modems.filter((modem: IModem): boolean => modem.interface === 'ttyAMA2').length !== 0;
+	}
+
+	/**
 	 * Retrieves modems at page load
 	 */
 	protected mounted(): void {
@@ -214,6 +233,14 @@ export default class GsmInterfaces extends Vue {
 			default:
 				return 'secondary';
 		}
+	}
+
+	/**
+	 * Restarts ModemManager service to fix broken modem
+	 */
+	private async restartModemManager(): Promise<void> {
+		await ServiceService.restart('ModemManager');
+		await new Promise(resolve => setTimeout(resolve, 15_000));
 	}
 
 }
