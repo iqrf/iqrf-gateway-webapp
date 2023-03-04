@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\CoreModule\Models\UserManager;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * CLI command for user management
@@ -53,13 +55,20 @@ class UserAddCommand extends Command {
 	protected EntityManager $entityManager;
 
 	/**
+	 * @var UserManager User manager
+	 */
+	protected UserManager $userManager;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
+	 * @param UserManager $userManager User manager
 	 */
-	public function __construct(EntityManager $entityManager) {
+	public function __construct(EntityManager $entityManager, UserManager $userManager) {
 		parent::__construct();
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
+		$this->userManager = $userManager;
 	}
 
 	/**
@@ -83,10 +92,15 @@ class UserAddCommand extends Command {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$style = new SymfonyStyle($input, $output);
 		$name = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
 		$role = $this->askRole($input, $output);
 		$lang = $this->askLanguage($input, $output);
+		if ($this->userManager->checkUsernameUniqueness($name)) {
+			$style->error('The specified username is already taken.');
+			return 1;
+		}
 		$user = new User($name, null, $pass, $role, $lang);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();

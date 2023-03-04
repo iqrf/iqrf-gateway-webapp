@@ -158,12 +158,18 @@ class SshManager {
 	 * @throws SshInvalidKeyException
 	 */
 	private function createKeyEntity(array $item): SshKey {
+		$tokens = explode(' ', $item['key'], 3);
+		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
 		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
 		if ($command->getExitCode() !== 0) {
 			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
 		}
-		$tokens = explode(' ', $item['key'], 3);
 		$hash = explode(' ', $command->getStdout())[1];
+		if ($this->sshKeyRepository->findByHash($hash) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
 		$description = $item['description'];
 		return new SshKey($tokens[0], $tokens[1], $hash, $description);
 	}

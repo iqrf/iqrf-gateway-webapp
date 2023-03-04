@@ -30,6 +30,13 @@ use Doctrine\ORM\EntityRepository;
 class SshKeyRepository extends EntityRepository {
 
 	/**
+	 * Finds SSH public key by value
+	 */
+	public function findByKey(string $key): ?SshKey {
+		return $this->findOneBy(['key' => $key]);
+	}
+
+	/**
 	 * Finds SSH public key by hash
 	 * @param string $hash SSH public key hash
 	 * @return SshKey|null SSH public key entity
