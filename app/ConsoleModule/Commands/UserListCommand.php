@@ -21,8 +21,11 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\User;
+use Nette\Utils\Json;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -41,6 +44,10 @@ class UserListCommand extends UserCommand {
 	 */
 	protected function configure(): void {
 		$this->setDescription('Lists webapp\'s users');
+		$definitions = [
+			new InputOption('json-output', ['J', 'json-output'], InputOption::VALUE_NONE, 'Output as JSON.'),
+		];
+		$this->setDefinition(new InputDefinition($definitions));
 	}
 
 	/**
@@ -50,11 +57,17 @@ class UserListCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$header = ['ID', 'Username', 'Email', 'Role', 'Language', 'State'];
-		$table = new Table($output);
-		$table->setHeaders($header);
-		$table->setRows($this->getUsers());
-		$table->render();
+		$json = $input->getOption('json-output');
+		$users = $this->getUsers();
+		if ($json) {
+			$output->writeln(Json::encode($users));
+		} else {
+			$header = ['ID', 'Username', 'Email', 'Role', 'Language', 'State'];
+			$table = new Table($output);
+			$table->setHeaders($header);
+			$table->setRows($users);
+			$table->render();
+		}
 		return 0;
 	}
 
