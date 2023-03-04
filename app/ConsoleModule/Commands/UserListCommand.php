@@ -57,7 +57,7 @@ class UserListCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$json = $input->getOption('json-output');
+		$json = ($input->getOption('json-output') !== false);
 		$users = $this->getUsers();
 		if ($json) {
 			$output->writeln(Json::encode($users));
