@@ -1,10 +1,24 @@
-iqrf-gateway-webapp (2.5.0~rc12~1.gbpe14768) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.0) testing; urgency=medium
 
-  ** SNAPSHOT build @e14768e22d4382195f81e389aecd8a41f534e300 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.0-rc12
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * API: update JSON API schemas
+  * Network: add workaround for internal modem in IQD-GW-04
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 16 Feb 2023 10:36:03 +0100
+  [ Karel Hanák ]
+  * handle user and ssh key creation with duplicate unique properties
+  * UserListCommand: added json output option
+  * UserListCommand: fixed mixed type error
+
+  [ Roman Ondráček ]
+  * Console: fix user management commands
+  * Composer: update dependencies
+  * NPM: update dependencies
+
+ -- Roman Ondráček <mail@romanondracek.cz>  Sun, 05 Mar 2023 17:15:00 +0100
 
 iqrf-gateway-webapp (2.5.0~rc11) testing; urgency=medium
 

@@ -33,6 +33,7 @@ use App\IqrfNetModule\Requests\ApiRequest;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 use Tester\Assert;
 use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\WebSocketTestCase;
@@ -91,7 +92,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'daemon_old' => 'v2.1.0',
 		'setter' => 'v1.0.0',
 		'uploader' => 'v1.0.0',
-		'webapp' => 'v2.5.0-rc12',
+		'webapp' => 'v2.5.0',
 	];
 
 	/**
@@ -320,8 +321,13 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Webapp's version (with GitLab CI pipeline ID)
 	 */
 	public function testGetWebappPipeline(): void {
-		$this->mockWebappJson('', '42');
-		Assert::same(self::VERSIONS['webapp'] . '~42', $this->manager->getWebapp());
+		$version = self::VERSIONS['webapp'];
+		$pipelineId = '42';
+		if (Strings::match($version, '#^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$#i') !== null) {
+			$version .= '~' . $pipelineId;
+		}
+		$this->mockWebappJson('', $pipelineId);
+		Assert::same($version, $this->manager->getWebapp());
 	}
 
 	/**
