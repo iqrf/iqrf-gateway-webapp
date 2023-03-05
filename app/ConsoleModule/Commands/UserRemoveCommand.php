@@ -56,7 +56,9 @@ class UserRemoveCommand extends UserCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
-		$this->confirmAction($input, $output);
+		if ($input->isInteractive() && $this->confirmAction($input, $output) === false) {
+			return 0;
+		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
 		return 0;
@@ -66,13 +68,12 @@ class UserRemoveCommand extends UserCommand {
 	 * Confirms the action
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return bool Confirmation
 	 */
-	private function confirmAction(InputInterface $input, OutputInterface $output): void {
+	private function confirmAction(InputInterface $input, OutputInterface $output): bool {
 		$helper = $this->getHelper('question');
 		$question = new ConfirmationQuestion('Do you really want to remove this user? ', false);
-		if (!$helper->ask($input, $output, $question)) {
-			return;
-		}
+		return $helper->ask($input, $output, $question);
 	}
 
 }

@@ -45,7 +45,7 @@ class UserListCommand extends UserCommand {
 	protected function configure(): void {
 		$this->setDescription('Lists webapp\'s users');
 		$definitions = [
-			new InputOption('json-output', ['J', 'json-output'], InputOption::VALUE_NONE, 'Output as JSON.'),
+			new InputOption('output-json', ['J', 'output-json'], InputOption::VALUE_NONE, 'Output as JSON.'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
@@ -57,7 +57,7 @@ class UserListCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$json = ($input->getOption('json-output') !== false);
+		$json = ($input->getOption('output-json') !== false);
 		$users = $this->getUsers();
 		if ($json) {
 			$output->writeln(Json::encode($users));
