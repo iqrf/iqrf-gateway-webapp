@@ -15,7 +15,7 @@
 		},
 		"email": {
 			"add": "Add e-mail address",
-			"messages":{
+			"messages": {
 				"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
 				"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
 			}
@@ -146,7 +146,7 @@
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
-			"clientId":"Client ID",
+			"clientId": "Client ID",
 			"requestTopic": "Topic for requests",
 			"responseTopic": "Topic for responses",
 			"instanceName": "Name of instance",
@@ -378,7 +378,7 @@
 						"saveSuccess": "UART interface configuration successfully saved."
 					}
 				},
-				"iqrfDpa":{
+				"iqrfDpa": {
 					"title": "IQRF DPA interface",
 					"form": {
 						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
@@ -947,7 +947,7 @@
 				}
 			},
 			"messages": {
-				"configMiscFetch": "Retrieving miscellaneous components configuration...",
+				"configMiscFetch": "Retrieving miscellaneous components configuration…",
 				"configFailed": "An unexpected error has occurred: {error}",
 				"configFetchFailed": "Failed to retrieve configuration for {children}.",
 				"failedElement": "Failed to retrieve component configuration."
@@ -1468,7 +1468,7 @@
 				"notLoaded": "Journal records not loaded.",
 				"noRecords": "No Journal records available.",
 				"noOlderRecords": "No older Journal records available.",
-				"loading": "Loading older Journal records...",
+				"loading": "Loading older Journal records…",
 				"failed": "Failed to load journal records: {error}"
 			}
 		},
@@ -1541,7 +1541,7 @@
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
 		"messages": {
-			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect...",
+			"socketError": "IQRF Gateway Daemon is currently not available. WebSocket connection broken or not established. Attempting reconnect…",
 			"genericError": "An unexpected error has occurred while processing the request.",
 			"genericErrorMessage": "An unexpected error has occurred while processing the request: {error}"
 		},
@@ -1711,9 +1711,9 @@
 						}
 					},
 					"messages": {
-						"coordinatorRunning": "Backing up coordinator device...",
+						"coordinatorRunning": "Backing up coordinator device…",
 						"coordinatorSuccess": "Backup of coordinator device completed.",
-						"nodeRunning": "Backing up node device {deviceAddr}...",
+						"nodeRunning": "Backing up node device {deviceAddr}…",
 						"nodeSuccess": "Backup of node device {deviceAddr} completed.",
 						"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
 						"networkRunning": "Backing up network [{progress} %]",
@@ -1742,7 +1742,7 @@
 						"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
 						"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
 						"invalidDataContent": "Data{device} property of entry {entry} contains non-hexadecimal characters.",
-						"coordinatorRunning": "Restoring coordinator device...",
+						"coordinatorRunning": "Restoring coordinator device…",
 						"coordinatorSuccess": "Coordinator device has been successfully restored.",
 						"readFailed": "Failed to read contents of selected file.",
 						"parsingContent": "Reading and parsing content of selected file.",
@@ -1870,10 +1870,10 @@
 						"user": "User-specified"
 					},
 					"messages": {
-						"get": "Retrieving current DPA value type...",
+						"get": "Retrieving current DPA value type…",
 						"getFailed": "Failed to get current DPA value type: {error}",
 						"getSuccess": "Current DPA value type successfully retrieved.",
-						"set": "Setting DPA value type...",
+						"set": "Setting DPA value type…",
 						"setFailed": "Failed to set DPA value type: {error}",
 						"setSuccess": "DPA value type successfully set.",
 						"timeout": "DPA value request timed out.",
@@ -1894,10 +1894,10 @@
 						"responseHops": "Response hops should be an integer between 1 and 239."
 					},
 					"messages": {
-						"get": "Retrieving DPA hops...",
+						"get": "Retrieving DPA hops…",
 						"getFailed": "Failed to retrieve DPA hops: {error}",
 						"getSuccess": "DPA hops successfully retrieved.",
-						"set": "Setting DPA hops...",
+						"set": "Setting DPA hops…",
 						"setFailed": "Failed to set DPA hops: {error}",
 						"setSuccess": "DPA hops successfully set.",
 						"timeout": "DPA hops request timed out.",
@@ -1924,10 +1924,10 @@
 						"112": "20620 ms"
 					},
 					"messages": {
-						"get": "Retrieving FRC params...",
+						"get": "Retrieving FRC parameters…",
 						"getFailed": "Failed to retrieve FRC params: {error}",
 						"getSuccess": "FRC params successfully retrieved.",
-						"set": "Setting FRC params...",
+						"set": "Setting FRC parameters…",
 						"setFailed": "Failed to set FRC params: {error}",
 						"setSuccess": "FRC params successfully set.",
 						"timeout": "FRC Params request timed out.",
@@ -2054,11 +2054,11 @@
 						"notAvailable": "N/A"
 					},
 					"messages": {
-						"setProgress": "Setting FRC response time...",
+						"setProgress": "Setting FRC response time…",
 						"setTimeout": "Set FRC response time request timed out.",
 						"setFailed": "Failed to set FRC response time.",
 						"setSuccess": "FRC response time successfully set.",
-						"progress": "Checking FRC response time...\nThis process may take several minutes for large networks.",
+						"progress": "Checking FRC response time…\nThis process may take several minutes for large networks.",
 						"timeout": "Request to determine best FRC response time timed out.",
 						"failed": "Failed to determine best FRC response time: {error}"
 					}
@@ -2085,7 +2085,7 @@
 						"counter": "Count"
 					},
 					"messages": {
-						"progress": "Testing RF Signal...\nThis process may take several minutes for large networks.",
+						"progress": "Testing RF Signal…\nThis process may take several minutes for large networks.",
 						"noNodes": "RF Signal test failed, no bonded nodes in network.",
 						"failed": "RF Signal test failed."
 					}
@@ -2099,13 +2099,13 @@
 					},
 					"resolve": "Resolve",
 					"messages": {
-						"inconsistentMids": "Resolving inconsistent MIDs in coordinator...\nThis process may take several minutes for large networks.",
+						"inconsistentMids": "Resolving inconsistent MIDs in coordinator…\nThis process may take several minutes for large networks.",
 						"inconsistentMidsFailed": "Failed to resolve inconsistent MIDs in coordinator.",
 						"inconsistentMidsSuccess": "Inconsistent MIDs in coordinator successfully resolved.",
-						"duplicatedAddresses": "Resolving duplicated addresses...\nThis process may take several minutes for large networks.",
+						"duplicatedAddresses": "Resolving duplicated addresses…\nThis process may take several minutes for large networks.",
 						"duplicatedAddressesFailed": "Failed to resolve duplicated addresses.",
 						"duplicatedAddressesSuccess": "Duplicated addresses successfully resolved.",
-						"prebondedNodes": "Resolving useless prebonded nodes...",
+						"prebondedNodes": "Resolving useless prebonded nodes…",
 						"prebondedNodesFailed": "Failed to resolve useless prebonded nodes.",
 						"prebondedNodesSuccess": "Useless prebonded nodes successfully resolved."
 					},
@@ -2218,7 +2218,7 @@
 				"response": "Copy response to the clipboard"
 			},
 			"copySuccess": {
-				"dpa":{
+				"dpa": {
 					"request": "DPA request has been copied to the clipboard.",
 					"response": "DPA response has been copied to the clipboard."
 				},
@@ -2365,26 +2365,26 @@
 					"device": {
 						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
 						"details": "MID: {mid}\nHWPID: {hwpid}\nHWPID version: {hwpidVer}\nOS build: {os}\nDPA: {dpa}",
-						"fetch": "Retrieving devices in network...",
+						"fetch": "Retrieving devices in network…",
 						"fetchFailed": "Failed to retrieve devices in network.",
 						"fetchTimeout": "Request to receive devices in network timed out."
 					},
 					"binout": {
-						"fetch": "Retrieving devices implementing Binary Output standard...",
+						"fetch": "Retrieving devices implementing Binary Output standard…",
 						"fetchFailed": "Failed to retrieve devices implementing Binary Output standard.",
 						"fetchTimeout": "Request to retrieve Binary Output devices timed out.",
 						"implemented": "Binary outputs implemented: {binouts}",
 						"notImplemented": "Device does not implement the Binary Output standard."
 					},
 					"dali": {
-						"fetch": "Retrieving devices implementing DALI standard...",
+						"fetch": "Retrieving devices implementing DALI standard…",
 						"fetchFailed": "Failed to retrieve devices implementing DALI standard.",
 						"fetchTimeout": "Request to retrieve DALI devices timed out.",
 						"implemented": "Device implements DALI standard.",
 						"notImplemented": "Device does not implement the DALI standard."
 					},
 					"light": {
-						"fetch": "Retrieving devices implementing Light standard...",
+						"fetch": "Retrieving devices implementing Light standard…",
 						"fetchFailed": "Failed to retrieve devices implementing Light standard.",
 						"fetchTimeout": "Request to retrieve Light devices timed out.",
 						"implemented": "Lights implemented: {lights}",
@@ -2392,14 +2392,14 @@
 					},
 					"sensor": {
 						"detail": "Name: {name} [{short}]\nType: {type}\nUnit: {unit}\nFRC commands: {commands}",
-						"fetch": "Retrieving devices implementing Sensor standard...",
+						"fetch": "Retrieving devices implementing Sensor standard…",
 						"fetchFailed": "Failed to retrieve devices implementing Sensor standard.",
 						"fetchTimeout": "Request to retrieve Sensor devices timed out.",
 						"implemented": "Device implements the following sensor types:",
 						"notImplemented": "Device does not implement the Sensor standard."
 					},
 					"ping": {
-						"fetch": "Checking online status of devices...",
+						"fetch": "Checking online status of devices…",
 						"fetchFailed": "Failed to retrieve status of devices."
 					},
 					"resetFailed": "Failed to reset database: {error}",
@@ -2579,10 +2579,10 @@
 				},
 				"messages": {
 					"noUpgrades": "No DPA version upgrade or downgrade available for this OS version.",
-					"gatewayUpload": "Downloading DPA file to gateway...",
+					"gatewayUpload": "Downloading DPA file to gateway…",
 					"gatewayUploadFailed": "Failed to download DPA file to gateway: {error}",
 					"gatewayUploadSuccess": "DPA file successfully downloaded to gateway.",
-					"trUpload": "Uploading DPA file to TR...",
+					"trUpload": "Uploading DPA file to TR…",
 					"trUploadFailed": "Failed to upload DPA file to TR: {error}",
 					"trUploadSuccess": "DPA file successfully uploaded to TR.",
 					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades."
@@ -2591,17 +2591,17 @@
 			"hexUpload": {
 				"title": "Custom DPA handler",
 				"form": {
-					"file":"File to upload"
+					"file": "File to upload"
 				},
 				"errors": {
 					"file": "Please select the file to upload.",
 					"invalidFormat": "The uploaded file is not a .hex file."
 				},
 				"messages": {
-					"gatewayUpload": "Uploading HEX file to gateway...",
+					"gatewayUpload": "Uploading HEX file to gateway…",
 					"gatewayUploadFailed": "Failed to upload HEX file to gateway: {error}",
 					"gatewayUploadSuccess": "Hex file successfully uploaded to gateway.",
-					"trUpload": "Uploading HEX file to TR...",
+					"trUpload": "Uploading HEX file to TR…",
 					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
 					"trUploadSuccess": "Hex file successfully uploaded to TR."
 				}
@@ -2618,7 +2618,7 @@
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
-					"upgrade": "Upgrading OS and DPA...",
+					"upgrade": "Upgrading OS and DPA…",
 					"upgradeFailed": "Failed to upgrade OS and DPA: {error}",
 					"upgradeSuccess": "OS and DPA successfully upgraded."
 				}
@@ -2676,7 +2676,7 @@
 		},
 		"error": {
 			"howToFix": "How to fix it",
-			"missingDependency":{
+			"missingDependency": {
 				"title": "One or more dependencies are missing",
 				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
 				"details": "Details",
@@ -2712,7 +2712,7 @@
 			"button": "Restore gateway"
 		},
 		"messages": {
-			"check": "Running installation check...",
+			"check": "Running installation check…",
 			"finished": "Installation process successfully completed."
 		}
 	},
@@ -2726,7 +2726,7 @@
 			"model": "Model",
 			"macAddress": "MAC address",
 			"state": "State",
-			"states" : {
+			"states": {
 				"connected": "Connected",
 				"connecting": "Connecting",
 				"connecting (checking IP connectivity)": "Checking IP connectivity",
@@ -3105,13 +3105,13 @@
 				"notConnected": "Not connected"
 			},
 			"messages": {
-				"submit": "Saving configuration and attempting to connect...",
+				"submit": "Saving configuration and attempting to connect…",
 				"ipChange": {
 					"error": "Unable to confirm web interface availability.",
 					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",
 					"staticToAuto": "Switching IPv4 method from static to auto resulted in the web interface no longer being available at this address.",
 					"staticToStatic": "IPv4 address changed, web interface is available at {address}",
-					"backendCheck": "Checking availability of web interface..."
+					"backendCheck": "Checking availability of web interface…"
 				},
 				"disabledBothIpStacks": "Both IPv4 and IPv6 have been disabled. The gateway is unable to connect to the Internet until at least one of them is enabled.",
 				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
