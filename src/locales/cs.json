@@ -48,7 +48,8 @@
 				"changeFailed": "Nepodařilo se změnit heslo: {error}",
 				"sendFailed": "Nepodařilo se odeslat e-mail pro obnovení hesla: {error}"
 			},
-			"title": "Obnovení účtu"
+			"title": "Obnovení účtu",
+			"changePassword": "Změna hesla"
 		}
 	},
 	"service": {
