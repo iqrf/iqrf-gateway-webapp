@@ -72,36 +72,6 @@ class BackupManager {
 	];
 
 	/**
-	 * @var array<IBackupManager> Backup managers
-	 */
-	private array $backupManagers = [];
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var GatewayInfoUtil Gateway info manager
-	 */
-	private GatewayInfoUtil $gwInfo;
-
-	/**
-	 * @var PowerManager Power manager
-	 */
-	private PowerManager $powerManager;
-
-	/**
-	 * @var ComponentSchemaManager JSON schema manager
-	 */
-	private ComponentSchemaManager $schemaManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
-
-	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private ZipArchiveManager $zipManager;
@@ -115,13 +85,14 @@ class BackupManager {
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(array $backupManagers, CommandManager $commandManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
-		$this->backupManagers = $backupManagers;
-		$this->commandManager = $commandManager;
-		$this->powerManager = $powerManager;
-		$this->schemaManager = $schemaManager;
-		$this->serviceManager = $serviceManager;
-		$this->gwInfo = $gwInfo;
+	public function __construct(
+		private readonly array $backupManagers,
+		private readonly CommandManager $commandManager,
+		private readonly PowerManager $powerManager,
+		private readonly ComponentSchemaManager $schemaManager,
+		private readonly ServiceManager $serviceManager,
+		private readonly GatewayInfoUtil $gwInfo,
+	) {
 	}
 
 	/**

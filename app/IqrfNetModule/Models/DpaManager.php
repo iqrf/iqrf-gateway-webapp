@@ -32,30 +32,16 @@ use Nette\Utils\Strings;
 class DpaManager {
 
 	/**
-	 * @var FilesManager Files manager
-	 */
-	private FilesManager $filesManager;
-
-	/**
-	 * @var OsAndDpaManager IQRF Repository OS&DPA manager
-	 */
-	private OsAndDpaManager $osDpaManager;
-
-	/**
-	 * @var UploadManager Upload manager
-	 */
-	private UploadManager $uploadManager;
-
-	/**
 	 * Constructor
 	 * @param OsAndDpaManager $osDpaManager IQRF Repository OS&DPA manager
 	 * @param FilesManager $filesManager Files manager
 	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(OsAndDpaManager $osDpaManager, FilesManager $filesManager, UploadManager $uploadManager) {
-		$this->osDpaManager = $osDpaManager;
-		$this->filesManager = $filesManager;
-		$this->uploadManager = $uploadManager;
+	public function __construct(
+		private readonly OsAndDpaManager $osDpaManager,
+		private readonly FilesManager $filesManager,
+		private readonly UploadManager $uploadManager,
+	) {
 	}
 
 	/**

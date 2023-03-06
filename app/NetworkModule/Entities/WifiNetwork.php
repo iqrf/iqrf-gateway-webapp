@@ -31,46 +31,6 @@ use Nette\Utils\Strings;
 final class WifiNetwork implements JsonSerializable {
 
 	/**
-	 * @var bool Is in use?
-	 */
-	private bool $inUse;
-
-	/**
-	 * @var string BSSID (MAC address)
-	 */
-	private string $bssid;
-
-	/**
-	 * @var string SSID
-	 */
-	private string $ssid;
-
-	/**
-	 * @var WifiMode Mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var int Channel
-	 */
-	private int $channel;
-
-	/**
-	 * @var string Speed rate
-	 */
-	private string $rate;
-
-	/**
-	 * @var int Signal strength
-	 */
-	private int $signal;
-
-	/**
-	 * @var WifiSecurity Security
-	 */
-	private WifiSecurity $security;
-
-	/**
 	 * Constructor
 	 * @param bool $inUse Is in use?
 	 * @param string $bssid BSSID
@@ -81,15 +41,16 @@ final class WifiNetwork implements JsonSerializable {
 	 * @param int $signal Signal strength
 	 * @param WifiSecurity $security Security
 	 */
-	public function __construct(bool $inUse, string $bssid, string $ssid, WifiMode $mode, int $channel, string $rate, int $signal, WifiSecurity $security) {
-		$this->inUse = $inUse;
-		$this->bssid = $bssid;
-		$this->ssid = $ssid;
-		$this->mode = $mode;
-		$this->channel = $channel;
-		$this->rate = $rate;
-		$this->signal = $signal;
-		$this->security = $security;
+	public function __construct(
+		private readonly bool $inUse,
+		private readonly string $bssid,
+		private readonly string $ssid,
+		private readonly WifiMode $mode,
+		private readonly int $channel,
+		private readonly string $rate,
+		private readonly int $signal,
+		private readonly WifiSecurity $security,
+	) {
 	}
 
 	/**

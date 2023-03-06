@@ -26,6 +26,7 @@ use Psr\Log\LogLevel;
 use Sentry\Event;
 use Sentry\SentrySdk;
 use Sentry\Severity;
+use Stringable;
 use Throwable;
 
 /**
@@ -57,11 +58,10 @@ class SentryPsrLogger implements LoggerInterface {
 	/**
 	 * Logs with an arbitrary level
 	 * @param mixed $level Log level
-	 * @param string $message Log message
+	 * @param string|Stringable $message Log message
 	 * @param array<mixed> $context Log context
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 	 */
-	public function log($level, $message, array $context = []): void {
+	public function log($level, string|Stringable $message, array $context = []): void {
 		if (array_key_exists('exception', $context) && $context['exception'] instanceof Throwable) {
 			SentrySdk::getCurrentHub()->captureException($context['exception']);
 		} else {

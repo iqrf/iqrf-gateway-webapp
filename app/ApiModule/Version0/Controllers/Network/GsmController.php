@@ -38,17 +38,14 @@ use App\NetworkModule\Models\GsmManager;
 class GsmController extends NetworkController {
 
 	/**
-	 * @var GsmManager GSM manager
-	 */
-	private GsmManager $gsmManager;
-
-	/**
 	 * Constructor
 	 * @param GsmManager $gsmManager GSM manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(GsmManager $gsmManager, RestApiSchemaValidator $validator) {
-		$this->gsmManager = $gsmManager;
+	public function __construct(
+		private readonly GsmManager $gsmManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

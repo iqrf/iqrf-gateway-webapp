@@ -41,17 +41,14 @@ use Nette\Neon\Exception as NeonException;
 class IqrfRepositoryController extends BaseConfigController {
 
 	/**
-	 * @var IqrfRepositoryManager IQRF Repository manager
-	 */
-	private IqrfRepositoryManager $manager;
-
-	/**
 	 * Constructor
 	 * @param IqrfRepositoryManager $manager IQRF Repository manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfRepositoryManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly IqrfRepositoryManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

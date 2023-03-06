@@ -35,23 +35,14 @@ use Traversable;
 class CommandManager {
 
 	/**
-	 * @var bool Is sudo required?
-	 */
-	private bool $sudo;
-
-	/**
-	 * @var CommandStack Command stack
-	 */
-	private CommandStack $stack;
-
-	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
 	 * @param CommandStack $stack Command stack
 	 */
-	public function __construct(bool $sudo, CommandStack $stack) {
-		$this->sudo = $sudo;
-		$this->stack = $stack;
+	public function __construct(
+		private readonly bool $sudo,
+		private readonly CommandStack $stack,
+	) {
 	}
 
 	/**

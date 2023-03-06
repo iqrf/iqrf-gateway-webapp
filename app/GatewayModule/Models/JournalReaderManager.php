@@ -33,23 +33,19 @@ class JournalReaderManager {
 	private const READER = 'iqrf-journal-reader';
 
 	/**
-	 * @var CommandManager $commandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+	) {
 	}
 
 	/**
 	 * Gets number of journal records from end of journal or specified cursor
 	 * @param int $count Number of records to get
 	 * @param string|null $cursor Journal cursor
-	 * @return array<string, string|array<int, string>> Journal records and cursors
+	 * @return array{records: string[], startCursor: mixed, endCursor: mixed}  Journal records and cursors
 	 */
 	public function getRecords(int $count, ?string $cursor = null): array {
 		if (!$this->commandManager->commandExist(self::READER)) {

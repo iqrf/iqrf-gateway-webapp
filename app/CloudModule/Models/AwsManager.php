@@ -42,30 +42,16 @@ class AwsManager implements IManager {
 	private const CA_FILENAME = 'aws-ca.crt';
 
 	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private GenericManager $configManager;
-
-	/**
-	 * @var string Path to the certificates
-	 */
-	private string $certPath;
-
-	/**
-	 * @var ClientInterface HTTP(S) client
-	 */
-	private ClientInterface $client;
-
-	/**
 	 * Constructor
 	 * @param string $certPath Path to the certificates
 	 * @param GenericManager $configManager Generic config manager
 	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, GenericManager $configManager, ClientInterface $client) {
-		$this->certPath = $certPath;
-		$this->client = $client;
-		$this->configManager = $configManager;
+	public function __construct(
+		private string $certPath,
+		private readonly GenericManager $configManager,
+		private readonly ClientInterface $client,
+	) {
 	}
 
 	/**

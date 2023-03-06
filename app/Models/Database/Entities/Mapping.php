@@ -21,16 +21,18 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\MappingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use function in_array;
 
 /**
  * Mapping entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\MappingRepository")
- * @ORM\Table(name="mappings")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: MappingRepository::class)]
+#[ORM\Table(name: 'mappings')]
+#[ORM\HasLifecycleCallbacks]
 class Mapping implements JsonSerializable {
 
 	use TId;
@@ -38,107 +40,107 @@ class Mapping implements JsonSerializable {
 	/**
 	 * @var string Mapping type: SPI
 	 */
-	public const TYPE_SPI = 'spi';
+	final public const TYPE_SPI = 'spi';
 
 	/**
 	 * @var string Mapping type: UART
 	 */
-	public const TYPE_UART = 'uart';
+	final public const TYPE_UART = 'uart';
 
 	/**
 	 * @var array<string> Supported mapping types
 	 */
-	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
+	final public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
 
 	/**
 	 * @var int Default mapping UART baud rate
 	 */
-	public const BAUD_RATE_DEFAULT = 57600;
+	final public const BAUD_RATE_DEFAULT = 57600;
 
 	/**
 	 * @var array<int> Supported mapping UART baud rates
 	 */
-	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+	final public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
 	 * @var string Device type: Adapter
 	 */
-	public const DEVICE_ADAPTER = 'adapter';
+	final public const DEVICE_ADAPTER = 'adapter';
 
 	/**
 	 * @var string Device type: Board
 	 */
-	public const DEVICE_BOARD = 'board';
+	final public const DEVICE_BOARD = 'board';
 
 	/**
 	 * @var array<string> Supported device types
 	 */
-	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
+	final public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
 
 	/**
 	 * @var string Mapping type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $type;
 
 	/**
 	 * @var string Mapping name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $name;
 
 	/**
 	 * @var string Device type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $deviceType;
 
 	/**
 	 * @var string Device name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $iqrfInterface;
 
 	/**
 	 * @var int Bus enable pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $busEnableGpioPin;
 
 	/**
 	 * @var int Programming mode switch pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $pgmSwitchGpioPin;
 
 	/**
 	 * @var int Power enable pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $powerEnableGpioPin;
 
 	/**
 	 * @var int|null UART baud rate
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $baudRate;
 
 	/**
 	 * @var int|null I2C interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $i2cEnableGpioPin;
 
 	/**
 	 * @var int|null SPI interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $spiEnableGpioPin;
 
 	/**
 	 * @var int|null UART interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $uartEnableGpioPin;
 
 	/**

@@ -44,17 +44,14 @@ use Grifart\Enum\MissingValueDeclarationException;
 class InterfacesController extends NetworkController {
 
 	/**
-	 * @var InterfaceManager Network interface manager
-	 */
-	private InterfaceManager $interfaceManager;
-
-	/**
 	 * Constructor
 	 * @param InterfaceManager $manager Network interface manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(InterfaceManager $manager, RestApiSchemaValidator $validator) {
-		$this->interfaceManager = $manager;
+	public function __construct(
+		private readonly InterfaceManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
@@ -102,7 +99,7 @@ class InterfacesController extends NetworkController {
 		} catch (MissingValueDeclarationException $e) {
 			$type = null;
 		}
-		$list = $this->interfaceManager->list($type);
+		$list = $this->manager->list($type);
 		return $response->writeJsonBody($list);
 	}
 
@@ -131,7 +128,7 @@ class InterfacesController extends NetworkController {
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
-			$this->interfaceManager->connect($request->getParameter('name'));
+			$this->manager->connect($request->getParameter('name'));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
@@ -165,7 +162,7 @@ class InterfacesController extends NetworkController {
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
-			$this->interfaceManager->disconnect($request->getParameter('name'));
+			$this->manager->disconnect($request->getParameter('name'));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);

@@ -36,37 +36,18 @@ final class WifiConnection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = '802-11-wireless';
 
 	/**
-	 * @var string SSID
-	 */
-	private string $ssid;
-
-	/**
-	 * @var WifiMode WiFi network mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var array<int, string> Seen BSSIDs
-	 */
-	private array $bssids = [];
-
-	/**
-	 * @var WifiConnectionSecurity|null Wifi connection security entity
-	 */
-	private ?WifiConnectionSecurity $security;
-
-	/**
 	 * Constructor
 	 * @param string $ssid SSID
 	 * @param WifiMode $mode WiFi network mode
 	 * @param array<int, string> $bssids Seen BSSIDs
 	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
-	public function __construct(string $ssid, WifiMode $mode, array $bssids, ?WifiConnectionSecurity $security) {
-		$this->ssid = $ssid;
-		$this->mode = $mode;
-		$this->bssids = $bssids;
-		$this->security = $security;
+	public function __construct(
+		private readonly string $ssid,
+		private readonly WifiMode $mode,
+		private readonly array $bssids,
+		private readonly ?WifiConnectionSecurity $security,
+	) {
 	}
 
 	/**

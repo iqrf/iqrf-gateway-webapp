@@ -38,17 +38,14 @@ use App\NetworkModule\Models\WifiManager;
 class WifiController extends NetworkController {
 
 	/**
-	 * @var WifiManager WiFi network manager
-	 */
-	private WifiManager $wifiManager;
-
-	/**
 	 * Constructor
 	 * @param WifiManager $wifiManager WiFi network manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(WifiManager $wifiManager, RestApiSchemaValidator $validator) {
-		$this->wifiManager = $wifiManager;
+	public function __construct(
+		private readonly WifiManager $wifiManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -32,11 +32,6 @@ use Nette\Utils\FileSystem;
 class FeatureManager {
 
 	/**
-	 * @var string Path to the configuration file
-	 */
-	private string $path;
-
-	/**
 	 * Default configuration
 	 */
 	private const DEFAULTS = [
@@ -112,8 +107,9 @@ class FeatureManager {
 	 * Constructor
 	 * @param string $path Path to the configuration file
 	 */
-	public function __construct(string $path) {
-		$this->path = $path;
+	public function __construct(
+		private readonly string $path,
+	) {
 	}
 
 	/**
@@ -175,7 +171,7 @@ class FeatureManager {
 	 * @throws IOException
 	 */
 	protected function write(array $features): void {
-		$content = Neon::encode($features, Neon::BLOCK);
+		$content = Neon::encode($features, true);
 		FileSystem::write($this->path, $content);
 	}
 

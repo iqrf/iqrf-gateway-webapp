@@ -46,18 +46,15 @@ class IqrfOsPatchImportCommand extends Command {
 	protected static $defaultName = 'iqrf-os:import-patches';
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param string|null $name Command name
 	 */
-	public function __construct(EntityManager $entityManager, ?string $name = null) {
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		?string $name = null,
+	) {
 		parent::__construct($name);
-		$this->entityManager = $entityManager;
 	}
 
 	/**

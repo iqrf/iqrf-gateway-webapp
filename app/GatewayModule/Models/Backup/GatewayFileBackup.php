@@ -34,7 +34,7 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var array<string> Gateway files whitelist
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
 
@@ -71,20 +71,18 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var string Gateway ID
 	 */
-	private string $gwId;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly string $gwId;
 
 	/**
 	 * Constructor
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
+	public function __construct(
+		GatewayInfoUtil $gwInfo,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->gwId = Strings::lower($gwInfo->getId());
-		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**

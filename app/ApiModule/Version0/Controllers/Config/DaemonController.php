@@ -48,31 +48,18 @@ use Nette\Utils\JsonException;
 class DaemonController extends BaseConfigController {
 
 	/**
-	 * @var ComponentManager Component configuration manager
-	 */
-	private ComponentManager $componentManager;
-
-	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private MainManager $mainManager;
-
-	/**
-	 * @var GenericManager Configuration manager
-	 */
-	private GenericManager $manager;
-
-	/**
 	 * Constructor
 	 * @param ComponentManager $componentManager Component configuration manager
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $manager Configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ComponentManager $componentManager, MainManager $mainManager, GenericManager $manager, RestApiSchemaValidator $validator) {
-		$this->componentManager = $componentManager;
-		$this->mainManager = $mainManager;
-		$this->manager = $manager;
+	public function __construct(
+		private readonly ComponentManager $componentManager,
+		private readonly MainManager $mainManager,
+		private readonly GenericManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

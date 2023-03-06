@@ -43,22 +43,19 @@ use App\Models\Database\Repositories\NetworkOperatorRepository;
 class OperatorController extends NetworkController {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var NetworkOperatorRepository Network operator repository
 	 */
-	private NetworkOperatorRepository $repository;
+	private readonly NetworkOperatorRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
 		$this->repository = $this->entityManager->getNetworkOperatorRepository();
 		parent::__construct($validator);
 	}

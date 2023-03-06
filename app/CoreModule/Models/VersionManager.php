@@ -36,17 +36,7 @@ class VersionManager {
 	/**
 	 * @var Cache Cache
 	 */
-	private Cache $cache;
-
-	/**
-	 * @var ClientInterface HTTP(S) client
-	 */
-	private ClientInterface $client;
-
-	/**
-	 * @var GatewayVersionManager Gateway version manager
-	 */
-	private GatewayVersionManager $versionManager;
+	private readonly Cache $cache;
 
 	/**
 	 * Constructor
@@ -54,10 +44,12 @@ class VersionManager {
 	 * @param ClientInterface $client HTTP(S) client
 	 * @param GatewayVersionManager $versionManager Gateway version manager
 	 */
-	public function __construct(Storage $storage, ClientInterface $client, GatewayVersionManager $versionManager) {
+	public function __construct(
+		Storage $storage,
+		private readonly ClientInterface $client,
+		private readonly GatewayVersionManager $versionManager,
+	) {
 		$this->cache = new Cache($storage, 'version_manager');
-		$this->client = $client;
-		$this->versionManager = $versionManager;
 	}
 
 	/**
@@ -79,7 +71,7 @@ class VersionManager {
 	 */
 	public function getCurrentWebapp(): string {
 		$json = $this->cache->load('current', function (&$dependencies): string {
-			$dependencies = [Cache::EXPIRE => '1 hour'];
+			$dependencies = [Cache::Expire => '1 hour'];
 			$repoUrl = 'https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/raw/';
 			try {
 				$url = $repoUrl . 'stable/version.json';

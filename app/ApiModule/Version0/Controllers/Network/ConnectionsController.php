@@ -47,17 +47,14 @@ use Ramsey\Uuid\UuidInterface;
 class ConnectionsController extends NetworkController {
 
 	/**
-	 * @var ConnectionManager Network connection manager
-	 */
-	private ConnectionManager $manager;
-
-	/**
 	 * Constructor
 	 * @param ConnectionManager $manager Network connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConnectionManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly ConnectionManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

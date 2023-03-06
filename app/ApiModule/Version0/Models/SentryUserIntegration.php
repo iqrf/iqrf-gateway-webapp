@@ -25,6 +25,7 @@ use Contributte\Sentry\Integration\BaseIntegration;
 use Nette\DI\Container;
 use Nette\Http\IRequest;
 use Sentry\Event;
+use Sentry\EventHint;
 use Sentry\State\HubInterface;
 use Sentry\UserDataBag;
 
@@ -50,7 +51,7 @@ class SentryUserIntegration extends BaseIntegration {
 		$this->authenticator = $authenticator;
 	}
 
-	public function setup(HubInterface $hub, Event $event): ?Event {
+	public function setup(HubInterface $hub, Event $event, EventHint $hint): ?Event {
 		$httpRequest = $this->context->getByType(IRequest::class, false);
 
 		// There is no http request

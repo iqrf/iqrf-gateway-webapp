@@ -37,17 +37,14 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 class OpenApiController extends BaseController {
 
 	/**
-	 * @var OpenApiSchemaBuilder OpenAPI schema builder
-	 */
-	private OpenApiSchemaBuilder $schemaBuilder;
-
-	/**
 	 * Constructor
 	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(OpenApiSchemaBuilder $schemaBuilder, RestApiSchemaValidator $validator) {
-		$this->schemaBuilder = $schemaBuilder;
+	public function __construct(
+		private readonly OpenApiSchemaBuilder $schemaBuilder,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

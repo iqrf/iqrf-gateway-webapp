@@ -53,24 +53,21 @@ class TimeManager {
 	/**
 	 * @var string Timesyncd configuration file name
 	 */
-	private string $confFile;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
+	private readonly string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager, string $timesyndPath) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		string $timesyndPath,
+	) {
 		$this->confFile = basename($timesyndPath);
 		$this->fileManager = new PrivilegedFileManager(dirname($timesyndPath), $commandManager);
 	}

@@ -42,7 +42,6 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
-use Lcobucci\JWT\Configuration;
 use Nette\Mail\SendException;
 use Throwable;
 use function gethostname;
@@ -55,26 +54,6 @@ use function gethostname;
 class UserController extends BaseController {
 
 	/**
-	 * @var Configuration JWT configuration
-	 */
-	private Configuration $configuration;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var UserManager User manager
-	 */
-	private UserManager $manager;
-
-	/**
-	 * @var PasswordRecoveryMailSender Forgotten password recovery e-mail sender
-	 */
-	private PasswordRecoveryMailSender $passwordRecoverySender;
-
-	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
@@ -82,11 +61,13 @@ class UserController extends BaseController {
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
-		$this->configuration = $configurator->create();
-		$this->entityManager = $entityManager;
-		$this->manager = $manager;
-		$this->passwordRecoverySender = $passwordRecoverySender;
+	public function __construct(
+		private readonly JwtConfigurator $configurator,
+		private readonly EntityManager $entityManager,
+		private readonly UserManager $manager,
+		RestApiSchemaValidator $validator,
+		private readonly PasswordRecoveryMailSender $passwordRecoverySender,
+	) {
 		parent::__construct($validator);
 	}
 
@@ -516,6 +497,7 @@ class UserController extends BaseController {
 	 * @return string JWT token
 	 */
 	private function createToken(User $user): string {
+		$configuration = $this->configurator->create();
 		try {
 			$now = new DateTimeImmutable();
 			$us = $now->format('u');
@@ -524,15 +506,15 @@ class UserController extends BaseController {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 		$hostname = gethostname();
-		$builder = $this->configuration->builder()
+		$builder = $configuration->builder()
 			->issuedAt($now)
 			->expiresAt($now->modify('+90 min'))
 			->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
 			$builder->issuedBy($hostname)->identifiedBy($hostname);
 		}
-		$signer = $this->configuration->signer();
-		$signingKey = $this->configuration->signingKey();
+		$signer = $configuration->signer();
+		$signingKey = $configuration->signingKey();
 		return $builder->getToken($signer, $signingKey)->toString();
 	}
 

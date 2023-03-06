@@ -35,7 +35,7 @@ class ZipArchiveManager {
 	/**
 	 * @var ZipArchive ZIP archive
 	 */
-	private ZipArchive $zip;
+	private readonly ZipArchive $zip;
 
 	/**
 	 * Constructor

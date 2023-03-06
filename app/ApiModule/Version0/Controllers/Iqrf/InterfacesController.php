@@ -36,17 +36,14 @@ use App\ConfigModule\Models\IqrfManager;
 class InterfacesController extends IqrfController {
 
 	/**
-	 * @var IqrfManager IQRF interfaces manager
-	 */
-	private IqrfManager $manager;
-
-	/**
 	 * Constructor
 	 * @param IqrfManager $manager IQRF interfaces manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly IqrfManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

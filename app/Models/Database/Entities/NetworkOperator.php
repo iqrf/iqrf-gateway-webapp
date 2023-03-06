@@ -21,41 +21,43 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\NetworkOperatorRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * Operator entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\NetworkOperatorRepository")
- * @ORM\Table(name="network_operators")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: NetworkOperatorRepository::class)]
+#[ORM\Table(name: 'network_operators')]
+#[ORM\HasLifecycleCallbacks]
 class NetworkOperator implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var string Operator name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $name;
 
 	/**
 	 * @var string APN
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $apn;
 
 	/**
 	 * @var string|null Username
-	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $username;
 
 	/**
 	 * @var string|null Password
-	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $password;
 
 	/**

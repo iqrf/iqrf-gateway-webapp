@@ -39,17 +39,7 @@ class SchedulerManager {
 	/**
 	 * @var FileManager JSON file manager
 	 */
-	private FileManager $fileManager;
-
-	/**
-	 * @var SchedulerSchemaManager Scheduler JSON schema manager
-	 */
-	private SchedulerSchemaManager $schemaManager;
-
-	/**
-	 * @var TaskTimeManager Scheduler's task time specification manager
-	 */
-	private TaskTimeManager $timeManager;
+	private readonly FileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -58,15 +48,18 @@ class SchedulerManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, TaskTimeManager $timeManager, CommandManager $commandManager, SchedulerSchemaManager $schemaManager) {
-		$this->timeManager = $timeManager;
+	public function __construct(
+		MainManager $mainManager,
+		private readonly TaskTimeManager $timeManager,
+		CommandManager $commandManager,
+		private readonly SchedulerSchemaManager $schemaManager,
+	) {
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
 			$commandManager->run('chmod 777 ' . escapeshellarg($cacheDir), true);
 		}
 		$path = $cacheDir . 'scheduler/';
 		$this->fileManager = new FileManager($path, $commandManager);
-		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -143,7 +136,7 @@ class SchedulerManager {
 				// Do nothing
 			}
 		}
-		usort($tasks, static fn (stdClass $a, stdClass $b): int => strcmp($a->taskId, $b->taskId));
+		usort($tasks, static fn (stdClass $a, stdClass $b): int => strcmp((string) $a->taskId, (string) $b->taskId));
 		return $tasks;
 	}
 
@@ -187,7 +180,7 @@ class SchedulerManager {
 	 */
 	public function save(stdClass $config, ?string $fileName): void {
 		if ($fileName === null) {
-			$fileName = strval($config->taskId);
+			$fileName = (string) $config->taskId;
 		}
 		foreach ($config->task as &$task) {
 			if (!isset($task->message->data->timeout)) {

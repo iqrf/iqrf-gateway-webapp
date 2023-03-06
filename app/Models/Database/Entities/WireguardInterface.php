@@ -21,55 +21,57 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * WireGuard interface entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceRepository")
- * @ORM\Table(name="`wireguard_interfaces`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardInterfaceRepository::class)]
+#[ORM\Table(name: 'wireguard_interfaces')]
+#[ORM\HasLifecycleCallbacks]
 class WireguardInterface implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var string Interface name
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $name;
 
 	/**
 	 * @var string Interface private key
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $privateKey;
 
 	/**
 	 * @var int|null Interface listen port
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $port;
 
 	/**
 	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
-	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv4", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
+	#[ORM\OneToMany(mappedBy: 'interface', targetEntity: WireguardInterfaceIpv4::class, cascade: ['persist'], orphanRemoval: true)
 	private ?WireguardInterfaceIpv4 $ipv4 = null;
 
 	/**
 	 * @var WireguardInterfaceIpv6|null Interface IPv6 address
-	 * @ORM\OneToOne(targetEntity="WireguardInterfaceIpv6", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
+	#[ORM\OneToMany(mappedBy: 'interface', targetEntity: WireguardInterfaceIpv6::class, cascade: ['persist'], orphanRemoval: true)]
 	private ?WireguardInterfaceIpv6 $ipv6 = null;
 
 	/**
 	 * @var Collection<int, WireguardPeer> Interface peer IDs
-	 * @ORM\OneToMany(targetEntity="WireguardPeer", mappedBy="interface", cascade={"persist"}, orphanRemoval=true)
 	 */
+	#[ORM\OneToMany(mappedBy: 'interface', targetEntity: WireguardPeer::class, cascade: ['persist'], orphanRemoval: true)]
 	private Collection $peers;
 
 	/**

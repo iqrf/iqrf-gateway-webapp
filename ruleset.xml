@@ -42,6 +42,7 @@ limitations under the License.
 	<rule ref="SlevomatCodingStandard.ControlStructures">
 		<exclude name="SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountBeforeControlStructure"/>
 		<exclude name="SlevomatCodingStandard.ControlStructures.ControlStructureSpacing.IncorrectLinesCountAfterControlStructure"/>
+		<exclude name="SlevomatCodingStandard.ControlStructures.DisallowNullSafeObjectOperator.DisallowedNullSafeObjectOperator"/>
 		<exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed"/>
 		<exclude name="SlevomatCodingStandard.ControlStructures.RequireMultiLineTernaryOperator.MultiLineTernaryOperatorNotUsed"/>
 		<exclude name="SlevomatCodingStandard.ControlStructures.RequireTernaryOperator.TernaryOperatorNotUsed"/>

@@ -23,7 +23,9 @@ namespace App\Models\Database\Entities;
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\ApiKeyRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Nette\Utils\Strings;
@@ -35,10 +37,10 @@ use const PASSWORD_BCRYPT;
 
 /**
  * API key entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\ApiKeyRepository")
- * @ORM\Table(name="`api_keys`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
+#[ORM\Table(name: 'api_keys')]
+#[ORM\HasLifecycleCallbacks]
 class ApiKey implements JsonSerializable {
 
 	use TId;
@@ -50,26 +52,26 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * @var string API key hash
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $hash;
 
 	/**
 	 * @var string API key hash salt
-	 * @ORM\Column(type="string", length=22, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 22, unique: true)]
 	private string $salt;
 
 	/**
 	 * @var string API key description
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $description;
 
 	/**
 	 * @var DateTime|null API key expiration
-	 * @ORM\Column(type="datetime", nullable=true)
 	 */
+	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
 	private ?DateTime $expiration;
 
 	/**
@@ -185,7 +187,7 @@ class ApiKey implements JsonSerializable {
 		$array = [
 			'id' => $this->getId(),
 			'description' => $this->getDescription(),
-			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
+			'expiration' => $this->getExpiration()?->format('c'),
 		];
 		if (isset($this->key)) {
 			$array['key'] = $this->getKey();

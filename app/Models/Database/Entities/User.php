@@ -26,8 +26,10 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
@@ -41,10 +43,10 @@ use const PASSWORD_DEFAULT;
 
 /**
  * User entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserRepository")
- * @ORM\Table(name="`users`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'users')]
+#[ORM\HasLifecycleCallbacks]
 class User implements JsonSerializable {
 
 	use TId;
@@ -52,47 +54,47 @@ class User implements JsonSerializable {
 	/**
 	 * Language: English
 	 */
-	public const LANGUAGE_ENGLISH = 'en';
+	final public const LANGUAGE_ENGLISH = 'en';
 
 	/**
 	 * Default language
 	 */
-	public const LANGUAGE_DEFAULT = self::LANGUAGE_ENGLISH;
+	final public const LANGUAGE_DEFAULT = self::LANGUAGE_ENGLISH;
 
 	/**
 	 * Supported languages
 	 */
-	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
+	final public const LANGUAGES = [self::LANGUAGE_ENGLISH];
 
 	/**
 	 * User role: Admin user
 	 */
-	public const ROLE_ADMIN = 'admin';
+	final public const ROLE_ADMIN = 'admin';
 
 	/**
 	 * User role: Normal user
 	 */
-	public const ROLE_NORMAL = 'normal';
+	final public const ROLE_NORMAL = 'normal';
 
 	/**
 	 * User role: Basic admin user
 	 */
-	public const ROLE_BASICADMIN = 'basicadmin';
+	final public const ROLE_BASICADMIN = 'basicadmin';
 
 	/**
 	 * User role: Basic user
 	 */
-	public const ROLE_BASIC = 'basic';
+	final public const ROLE_BASIC = 'basic';
 
 	/**
 	 * Default user role
 	 */
-	public const ROLE_DEFAULT = self::ROLE_NORMAL;
+	final public const ROLE_DEFAULT = self::ROLE_NORMAL;
 
 	/**
 	 * Supported user roles
 	 */
-	public const ROLES = [
+	final public const ROLES = [
 		self::ROLE_ADMIN,
 		self::ROLE_NORMAL,
 		self::ROLE_BASICADMIN,
@@ -102,27 +104,27 @@ class User implements JsonSerializable {
 	/**
 	 * Account state: unverified e-mail address
 	 */
-	public const STATE_UNVERIFIED = 0;
+	final public const STATE_UNVERIFIED = 0;
 
 	/**
 	 * Account state: verified e-mail address
 	 */
-	public const STATE_VERIFIED = 1;
+	final public const STATE_VERIFIED = 1;
 
 	/**
 	 * Account state: blocked account
 	 */
-	public const STATE_BLOCKED = 2;
+	final public const STATE_BLOCKED = 2;
 
 	/**
 	 * Default account state
 	 */
-	public const STATE_DEFAULT = self::STATE_UNVERIFIED;
+	final public const STATE_DEFAULT = self::STATE_UNVERIFIED;
 
 	/**
 	 * Supported account states
 	 */
-	public const STATES = [
+	final public const STATES = [
 		self::STATE_UNVERIFIED => 'unverified',
 		self::STATE_VERIFIED => 'verified',
 		self::STATE_BLOCKED => 'blocked',
@@ -130,44 +132,44 @@ class User implements JsonSerializable {
 
 	/**
 	 * @var string User name
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $username;
 
 	/**
 	 * @var string|null User's email
-	 * @ORM\Column(type="string", length=255, nullable=true, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
 	private ?string $email = null;
 
 	/**
 	 * @var string Password hash
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $password;
 
 	/**
 	 * @var string User role
-	 * @ORM\Column(type="string", length=15)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 15)]
 	private string $role;
 
 	/**
 	 * @var int Account state
-	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
 	 */
+	#[ORM\Column(type: Types::INTEGER, length: 10, options: ['default' => self::STATE_DEFAULT])]
 	private int $state = self::STATE_DEFAULT;
 
 	/**
 	 * @var string User language
-	 * @ORM\Column(type="string", length=7)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 7)]
 	private string $language = self::LANGUAGE_DEFAULT;
 
 	/**
 	 * @var Collection<int, UserVerification> User verifications
-	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
 	 */
+	#[ORM\OneToMany(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist'], orphanRemoval: true)]
 	private Collection $verifications;
 
 	/**

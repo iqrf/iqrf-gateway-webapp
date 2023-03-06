@@ -37,31 +37,6 @@ final class IPv6Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv6';
 
 	/**
-	 * @var IPv6Methods Connection method
-	 */
-	private IPv6Methods $method;
-
-	/**
-	 * @var array<IPv6Address> IPv6 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv6|null IPv6 gateway address
-	 */
-	private ?IPv6 $gateway;
-
-	/**
-	 * @var array<IPv6> IPv6 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
-	 * @var IPv6Current|null Current IPv6 configuration
-	 */
-	private ?IPv6Current $current;
-
-	/**
 	 * IPv6 connection entity constructor
 	 * @param IPv6Methods $method IPv6 connection method
 	 * @param array<IPv6Address> $addresses IPv6 addresses
@@ -69,12 +44,13 @@ final class IPv6Connection implements INetworkManagerEntity {
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 * @param IPv6Current|null $current Current IPv6 configuration
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns, ?IPv6Current $current) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
-		$this->current = $current;
+	public function __construct(
+		private readonly IPv6Methods $method,
+		private readonly array $addresses,
+		private readonly ?IPv6 $gateway,
+		private readonly array $dns,
+		private readonly ?IPv6Current $current,
+	) {
 	}
 
 	/**
@@ -109,7 +85,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
+			'gateway' => $this->gateway?->getCompactedAddress(),
 			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 		if ($this->current !== null) {

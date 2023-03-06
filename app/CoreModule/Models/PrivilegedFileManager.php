@@ -32,11 +32,6 @@ use Nette\Utils\Strings;
 class PrivilegedFileManager implements IFileManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * @var string Directory path
 	 */
 	private string $directory;
@@ -46,8 +41,10 @@ class PrivilegedFileManager implements IFileManager {
 	 * @param string $directory Directory path
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $directory, CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		string $directory,
+		private readonly CommandManager $commandManager,
+	) {
 		$this->directory = rtrim(Strings::replace($directory, '~\'~', '\\\''), '/');
 	}
 

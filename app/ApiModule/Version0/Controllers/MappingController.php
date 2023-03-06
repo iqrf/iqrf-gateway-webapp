@@ -42,22 +42,19 @@ use App\Models\Database\Repositories\MappingRepository;
 class MappingController extends BaseController {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var MappingRepository Mapping database repository
 	 */
-	private MappingRepository $repository;
+	private readonly MappingRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
 		$this->repository = $this->entityManager->getMappingRepository();
 		parent::__construct($validator);
 	}

@@ -37,16 +37,12 @@ use const OPENSSL_KEYTYPE_RSA;
 class JwtConfigurator {
 
 	/**
-	 * @var CertificateManager TLS certificate manager
-	 */
-	private CertificateManager $certificateManager;
-
-	/**
 	 * Constructor
 	 * @param CertificateManager $certificateManager TLS certificate manager
 	 */
-	public function __construct(CertificateManager $certificateManager) {
-		$this->certificateManager = $certificateManager;
+	public function __construct(
+		private readonly CertificateManager $certificateManager,
+	) {
 	}
 
 	/**

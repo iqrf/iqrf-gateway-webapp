@@ -35,7 +35,7 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	/**
 	 * @var ApiKeyRepository API key database repository
 	 */
-	protected ApiKeyRepository $repository;
+	protected readonly ApiKeyRepository $repository;
 
 	/**
 	 * Constructor

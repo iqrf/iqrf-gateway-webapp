@@ -32,11 +32,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class OpenApiSpecificationCommand extends Command {
 
 	/**
-	 * @var OpenApiSchemaBuilder OpenAPI schema builder
-	 */
-	private OpenApiSchemaBuilder $schemaBuilder;
-
-	/**
 	 * @var string|null Command name
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
 	 */
@@ -46,8 +41,10 @@ class OpenApiSpecificationCommand extends Command {
 	 * Constructior
 	 * @param string|null $name Command name
 	 */
-	public function __construct(OpenApiSchemaBuilder $schemaBuilder, ?string $name = null) {
-		$this->schemaBuilder = $schemaBuilder;
+	public function __construct(
+		private readonly OpenApiSchemaBuilder $schemaBuilder,
+		?string $name = null,
+	) {
 		parent::__construct($name);
 	}
 

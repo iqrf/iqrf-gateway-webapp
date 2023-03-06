@@ -22,16 +22,18 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\SshKeyRepository;
 use DateTimeZone;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Ssh key entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\SshKeyRepository")
- * @ORM\Table(name="`ssh_keys`")
- * @ORM\HasLifecycleCallbacks()
+ * SSH key entity
  */
+#[ORM\Entity(repositoryClass: SshKeyRepository::class)]
+#[ORM\Table(name: 'ssh_keys')]
+#[ORM\HasLifecycleCallbacks]
 class SshKey implements JsonSerializable {
 
 	use TId;
@@ -39,26 +41,26 @@ class SshKey implements JsonSerializable {
 
 	/**
 	 * @var string SSH key type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $type;
 
 	/**
 	 * @var string SSH key
-	 * @ORM\Column(type="string", length=2048, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 2048, unique: true)]
 	private string $key;
 
 	/**
 	 * @var string SSH key hash
-	 * @ORM\Column(type="string", length=64, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 64, unique: true)]
 	private string $hash;
 
 	/**
 	 * @var string|null SSH key description
-	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $description;
 
 	/**

@@ -50,19 +50,9 @@ use Nette\Mail\SendException;
 class UsersController extends BaseController {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var UserRepository User database repository
 	 */
-	private UserRepository $repository;
-
-	/**
-	 * @var UserManager User manager
-	 */
-	private UserManager $manager;
+	private readonly UserRepository $repository;
 
 	/**
 	 * Constructor
@@ -70,10 +60,12 @@ class UsersController extends BaseController {
 	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		private readonly UserManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		$this->repository = $entityManager->getUserRepository();
-		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 

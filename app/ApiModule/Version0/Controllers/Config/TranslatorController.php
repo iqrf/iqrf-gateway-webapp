@@ -41,17 +41,14 @@ use Nette\Utils\JsonException;
 class TranslatorController extends BaseConfigController {
 
 	/**
-	 * @var TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
-	 */
-	private TranslatorConfigManager $manager;
-
-	/**
 	 * Constructor
 	 * @param TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(TranslatorConfigManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly TranslatorConfigManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -48,19 +48,22 @@ class JournalConfigManager {
 	/**
 	 * @var string $confFile Journald conf file name
 	 */
-	private string $confFile;
+	private readonly string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager File manager
 	 */
-	private PrivilegedFileManager $fileManager;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(
+		CommandManager $commandManager,
+		FeatureManager $featureManager,
+	) {
 		$feature = $featureManager->get('journal');
 		$path = $feature['path'];
 		$this->confFile = basename($path);
@@ -177,13 +180,13 @@ class JournalConfigManager {
 			'Journal' => [
 				'ForwardToSyslog' => $newConf->forwardToSyslog ? 'yes' : 'no',
 				'Storage' => $newConf->persistence,
-				'MaxFileSec' => strval($newConf->timeRotation->count) . $newConf->timeRotation->unit,
-				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : strval($newConf->maxDiskSize) . 'M',
-				'SystemMaxFiles' => strval($newConf->maxFiles),
+				'MaxFileSec' => ((string) $newConf->timeRotation->count) . $newConf->timeRotation->unit,
+				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : ((string) $newConf->maxDiskSize) . 'M',
+				'SystemMaxFiles' => (string) $newConf->maxFiles,
 			],
 		];
 		if ($newConf->sizeRotation->maxFileSize !== 0) {
-			$conf['Journal']['SystemMaxFileSize'] = strval($newConf->sizeRotation->maxFileSize) . 'M';
+			$conf['Journal']['SystemMaxFileSize'] = ((string) $newConf->sizeRotation->maxFileSize) . 'M';
 		}
 		$this->fileManager->write($this->confFile, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
 	}

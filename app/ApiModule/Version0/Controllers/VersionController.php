@@ -40,18 +40,15 @@ use Nette\Utils\JsonException;
 class VersionController extends BaseController {
 
 	/**
-	 * @var VersionManager Version manager
-	 */
-	private VersionManager $versionManager;
-
-	/**
 	 * Constructor
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(RestApiSchemaValidator $validator, VersionManager $versionManager) {
+	public function __construct(
+		RestApiSchemaValidator $validator,
+		private readonly VersionManager $versionManager,
+	) {
 		parent::__construct($validator);
-		$this->versionManager = $versionManager;
 	}
 
 	/**

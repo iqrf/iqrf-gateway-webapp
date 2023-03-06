@@ -56,7 +56,7 @@ class UserRemoveCommand extends UserCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
-		if ($input->isInteractive() && $this->confirmAction($input, $output) === false) {
+		if ($input->isInteractive() && !$this->confirmAction($input, $output)) {
 			return 0;
 		}
 		$this->entityManager->remove($user);

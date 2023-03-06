@@ -37,18 +37,15 @@ class DatabaseCreateCommand extends Command {
 	protected static $defaultName = 'database:create';
 
 	/**
-	 * @var ManagerRegistry Doctrine Persistence manager registry
-	 */
-	private ManagerRegistry $managerRegistry;
-
-	/**
 	 * Constructor
 	 * @param ManagerRegistry $managerRegistry Manager registry
 	 * @param string|null $name Command name
 	 */
-	public function __construct(ManagerRegistry $managerRegistry, ?string $name = null) {
+	public function __construct(
+		private readonly ManagerRegistry $managerRegistry,
+		?string $name = null,
+	) {
 		parent::__construct($name);
-		$this->managerRegistry = $managerRegistry;
 	}
 
 	/**

@@ -51,7 +51,7 @@ class Kernel {
 		$configurator->addConfig($confDir . '/config.neon');
 		try {
 			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
-			$configurator->addParameters([
+			$configurator->addStaticParameters([
 				'sentry' => [
 					'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
 				],
@@ -59,7 +59,7 @@ class Kernel {
 		} catch (IOException | JsonException $e) {
 			// Skip Sentry version settings
 		}
-		$configurator->addParameters(['confDir' => $confDir]);
+		$configurator->addStaticParameters(['confDir' => $confDir]);
 		try {
 			$iqrfRepositoryManager = new IqrfRepositoryManager($confDir . '/iqrf-repository.neon');
 			$configurator->addDynamicParameters(['iqrfRepository' => $iqrfRepositoryManager->readConfig()]);

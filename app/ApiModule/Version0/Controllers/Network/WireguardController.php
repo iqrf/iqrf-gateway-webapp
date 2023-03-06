@@ -48,24 +48,16 @@ use App\ServiceModule\Models\ServiceManager;
 class WireguardController extends NetworkController {
 
 	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
-
-	/**
-	 * @var WireguardManager Wireguard VPN manager
-	 */
-	private WireguardManager $wireguardManager;
-
-	/**
 	 * Constructor
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param WireguardManager $wireguardManager Wireguard VPN manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ServiceManager $serviceManager, WireguardManager $wireguardManager, RestApiSchemaValidator $validator) {
-		$this->serviceManager = $serviceManager;
-		$this->wireguardManager = $wireguardManager;
+	public function __construct(
+		private readonly ServiceManager $serviceManager,
+		private readonly WireguardManager $wireguardManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -41,17 +41,14 @@ use Nette\IOException;
 class MonitController extends BaseConfigController {
 
 	/**
-	 * @var MonitManager $manager Monit manager
-	 */
-	private MonitManager $manager;
-
-	/**
 	 * Constructor
 	 * @param MonitManager $manager Monit manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly MonitManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

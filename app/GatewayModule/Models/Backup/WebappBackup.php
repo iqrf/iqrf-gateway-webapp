@@ -34,7 +34,7 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * @var array<string> List of whitelisted webapp files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'database.db',
 		'features.neon',
 		'iqrf-repository.neon',
@@ -44,7 +44,7 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * @var array<string> List of whitelisted nginx files
 	 */
-	public const NGINX_WHITELIST = [
+	final public const NGINX_WHITELIST = [
 		'iqrf-gateway-webapp.localhost',
 		'iqrf-gateway-webapp-https.localhost',
 		'iqrf-gateway-webapp-iqaros.localhost',
@@ -52,29 +52,9 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array{configDir: string, database: string, logDir: string} Paths
-	 */
-	private array $paths;
-
-	/**
 	 * @var string Path to Webapp nginx configuration directory
 	 */
 	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var SshManager SSH manager
-	 */
-	private SshManager $sshManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
 
 	/**
 	 * Constructor
@@ -83,11 +63,12 @@ class WebappBackup implements IBackupManager {
 	 * @param SshManager $sshManager SSH manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(array $paths, CommandManager $commandManager, SshManager $sshManager, RestoreLogger $restoreLogger) {
-		$this->paths = $paths;
-		$this->commandManager = $commandManager;
-		$this->sshManager = $sshManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly array $paths,
+		private readonly CommandManager $commandManager,
+		private readonly SshManager $sshManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 	}
 
 	/**

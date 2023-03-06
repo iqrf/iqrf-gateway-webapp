@@ -28,11 +28,6 @@ use App\CoreModule\Models\FileManager;
 class ControllerConfigManager {
 
 	/**
-	 * @var FileManager File manager
-	 */
-	private FileManager $fileManager;
-
-	/**
 	 * @var string JSON file containing Controller configuration
 	 */
 	private const FILE_NAME = 'config.json';
@@ -41,8 +36,9 @@ class ControllerConfigManager {
 	 * Constructor
 	 * @param FileManager $fileManager File manager
 	 */
-	public function __construct(FileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+	) {
 	}
 
 	/**

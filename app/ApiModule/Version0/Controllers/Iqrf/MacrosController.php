@@ -36,17 +36,14 @@ use Iqrf\IdeMacros\MacroFileParser;
 class MacrosController extends IqrfController {
 
 	/**
-	 * @var MacroFileParser IQRF IDE Macros parser
-	 */
-	private MacroFileParser $macroParser;
-
-	/**
 	 * Constructor
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MacroFileParser $macroParser, RestApiSchemaValidator $validator) {
-		$this->macroParser = $macroParser;
+	public function __construct(
+		private readonly MacroFileParser $macroParser,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

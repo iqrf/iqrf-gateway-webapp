@@ -43,29 +43,19 @@ class SshManager {
 	private const KEYS_FILE = 'authorized_keys';
 
 	/**
-	 * @var CommandManager Command manager
+	 * @var string Path to SSH directory
 	 */
-	private CommandManager $commandManager;
+	private readonly string $directory;
 
 	/**
-	 * @var string|null Path to SSH directory
+	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private ?string $directory = null;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var PrivilegedFileManager|null Privileged file manager
-	 */
-	private ?PrivilegedFileManager $fileManager = null;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * @var SshKeyRepository SSH key repository
 	 */
-	private SshKeyRepository $sshKeyRepository;
+	private readonly SshKeyRepository $sshKeyRepository;
 
 	/**
 	 * Constructor
@@ -73,15 +63,17 @@ class SshManager {
 	 * @param EntityManager $entityManager Entity manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly EntityManager $entityManager,
+		FeatureManager $featureManager,
+	) {
 		$feature = $featureManager->get('gatewayPass');
 		$userInfo = posix_getpwnam($feature['user']);
 		if ($userInfo !== false) {
 			$this->directory = $userInfo['dir'] . '/.ssh';
 			$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
 		}
-		$this->entityManager = $entityManager;
 		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
 	}
 

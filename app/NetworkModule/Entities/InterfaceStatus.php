@@ -33,11 +33,6 @@ use Ramsey\Uuid\UuidInterface;
 final class InterfaceStatus implements JsonSerializable {
 
 	/**
-	 * @var string Network interface name
-	 */
-	protected string $name;
-
-	/**
 	 * @var string|null MAC address
 	 */
 	protected ?string $macAddress;
@@ -53,21 +48,6 @@ final class InterfaceStatus implements JsonSerializable {
 	protected ?string $model;
 
 	/**
-	 * @var InterfaceTypes Network interface type
-	 */
-	protected InterfaceTypes $type;
-
-	/**
-	 * @var InterfaceStates Network interface status
-	 */
-	protected InterfaceStates $state;
-
-	/**
-	 * @var UuidInterface|null Network connection UUID
-	 */
-	protected ?UuidInterface $connection;
-
-	/**
 	 * Network interface entity constructor
 	 * @param string $name Network interface name
 	 * @param string|null $macAddress MAC address
@@ -77,14 +57,19 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @param InterfaceStates $state Network interface state
 	 * @param UuidInterface|null $connection Network connection UUID
 	 */
-	public function __construct(string $name, ?string $macAddress, ?string $manufacturer, ?string $model, InterfaceTypes $type, InterfaceStates $state, ?UuidInterface $connection) {
+	public function __construct(
+		protected string $name,
+		?string $macAddress,
+		?string $manufacturer,
+		?string $model,
+		protected InterfaceTypes $type,
+		protected InterfaceStates $state,
+		protected ?UuidInterface $connection,
+	) {
 		$this->name = $name;
 		$this->macAddress = $macAddress === '' ? null : $macAddress;
 		$this->manufacturer = $manufacturer === '' ? null : $manufacturer;
 		$this->model = $model === '' ? null : $model;
-		$this->type = $type;
-		$this->state = $state;
-		$this->connection = $connection;
 	}
 
 	/**
@@ -107,7 +92,7 @@ final class InterfaceStatus implements JsonSerializable {
 			'model' => $this->model,
 			'type' => $this->type->toScalar(),
 			'state' => $this->state->toScalar(),
-			'connection' => $this->connection === null ? null : $this->connection->toString(),
+			'connection' => $this->connection?->toString(),
 		];
 	}
 

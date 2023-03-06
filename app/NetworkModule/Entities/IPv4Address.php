@@ -28,22 +28,19 @@ use Darsyn\IP\Version\IPv4;
 class IPv4Address {
 
 	/**
-	 * @var IPv4 IPv4 address
-	 */
-	private IPv4 $address;
-
-	/**
 	 * @var int IPv4 address prefix
 	 */
-	private int $prefix;
+	private readonly int $prefix;
 
 	/**
 	 * IPv4 address entity constructor
 	 * @param IPv4 $address IPv4 address
 	 * @param int $prefix IPv4 address prefix
 	 */
-	public function __construct(IPv4 $address, int $prefix) {
-		$this->address = $address;
+	public function __construct(
+		private readonly IPv4 $address,
+		int $prefix,
+	) {
 		if ($prefix <= 32) {
 			$this->prefix = $prefix;
 		}

@@ -22,6 +22,7 @@ use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
@@ -31,15 +32,16 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
+use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
 
 return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->paths([
 		__DIR__ . '/app',
 		__DIR__ . '/bin',
-		__DIR__ . '/tests',
+//		__DIR__ . '/tests',
 	]);
 
-	$rectorConfig->phpVersion(PhpVersion::PHP_74);
+	$rectorConfig->phpVersion(PhpVersion::PHP_81);
 
 	// register a single rule
 	$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
@@ -53,15 +55,14 @@ return static function (RectorConfig $rectorConfig): void {
 		SetList::CODE_QUALITY,
 		SetList::CODING_STYLE,
 		SetList::DEAD_CODE,
-		SetList::PHP_74,
+		SetList::PHP_81,
 		SetList::TYPE_DECLARATION,
-		SetList::TYPE_DECLARATION_STRICT,
 		SymfonySetList::SYMFONY_60,
 		SymfonySetList::SYMFONY_CODE_QUALITY,
-		SymfonySetList::SYMFONY_STRICT,
 	]);
 
 	$rectorConfig->skip([
+		AttributeKeyToClassConstFetchRector::class,
 		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
@@ -69,6 +70,7 @@ return static function (RectorConfig $rectorConfig): void {
 		NewlineBeforeNewAssignSetRector::class,
 		PostIncDecToPreIncDecRector::class,
 		SymplifyQuoteEscapeRector::class,
+		VarConstantCommentRector::class,
 		__DIR__ . '/tests/tmp',
 	]);
 

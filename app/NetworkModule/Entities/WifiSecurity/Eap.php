@@ -37,36 +37,6 @@ class Eap implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = '802-1x';
 
 	/**
-	 * @var EapPhaseOneMethod|null EAP phase one authentication method
-	 */
-	private ?EapPhaseOneMethod $phaseOne;
-
-	/**
-	 * @var EapPhaseTwoMethod|null EAP phase two authentication method
-	 */
-	private ?EapPhaseTwoMethod $phaseTwo;
-
-	/**
-	 * @var string EAP anonymous identity string
-	 */
-	private string $anonymousIdentity;
-
-	/**
-	 * @var string EAP CA certificate
-	 */
-	private string $cert;
-
-	/**
-	 * @var string EAP identity string
-	 */
-	private string $identity;
-
-	/**
-	 * @var string EAP password
-	 */
-	private string $password;
-
-	/**
 	 * Constructor
 	 * @param EapPhaseOneMethod|null $phaseOne EAP phase one authentication method
 	 * @param EapPhaseTwoMethod|null $phaseTwo EAP phase two authentication method
@@ -75,13 +45,14 @@ class Eap implements INetworkManagerEntity {
 	 * @param string $identity EAP identity string
 	 * @param string $password EAP password
 	 */
-	public function __construct(?EapPhaseOneMethod $phaseOne, ?EapPhaseTwoMethod $phaseTwo, string $anonymousIdentity, string $cert, string $identity, string $password) {
-		$this->phaseOne = $phaseOne;
-		$this->phaseTwo = $phaseTwo;
-		$this->anonymousIdentity = $anonymousIdentity;
-		$this->cert = $cert;
-		$this->identity = $identity;
-		$this->password = $password;
+	public function __construct(
+		private readonly ?EapPhaseOneMethod $phaseOne,
+		private readonly ?EapPhaseTwoMethod $phaseTwo,
+		private readonly string $anonymousIdentity,
+		private readonly string $cert,
+		private readonly string $identity,
+		private readonly string $password,
+	) {
 	}
 
 	/**

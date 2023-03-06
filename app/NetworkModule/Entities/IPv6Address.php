@@ -28,23 +28,14 @@ use Darsyn\IP\Version\IPv6;
 class IPv6Address {
 
 	/**
-	 * @var IPv6 IPv6 address
-	 */
-	private IPv6 $address;
-
-	/**
-	 * @var int IPv6 prefix
-	 */
-	private int $prefix;
-
-	/**
 	 * IPv6 address entity constructor
 	 * @param IPv6 $address IPv6 address
 	 * @param int $prefix IPv6 prefix
 	 */
-	public function __construct(IPv6 $address, int $prefix) {
-		$this->address = $address;
-		$this->prefix = $prefix;
+	public function __construct(
+		private readonly IPv6 $address,
+		private readonly int $prefix,
+	) {
 	}
 
 	/**

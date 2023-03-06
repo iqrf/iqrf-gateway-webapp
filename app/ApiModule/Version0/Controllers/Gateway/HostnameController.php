@@ -38,17 +38,14 @@ use App\GatewayModule\Models\HostnameManager;
 class HostnameController extends GatewayController {
 
 	/**
-	 * @var HostnameManager Hostname manager
-	 */
-	private HostnameManager $manager;
-
-	/**
 	 * Constructor
 	 * @param HostnameManager $manager Hostname manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(HostnameManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly HostnameManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -46,24 +46,16 @@ use Nette\Utils\JsonException;
 class ControllerController extends BaseConfigController {
 
 	/**
-	 * @var ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
-	 */
-	private ControllerConfigManager $configManager;
-
-	/**
-	 * @var ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
-	 */
-	private ControllerPinConfigManager $pinManager;
-
-	/**
 	 * Constructor
 	 * @param ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
 	 * @param ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ControllerConfigManager $configManager, ControllerPinConfigManager $pinManager, RestApiSchemaValidator $validator) {
-		$this->configManager = $configManager;
-		$this->pinManager = $pinManager;
+	public function __construct(
+		private readonly ControllerConfigManager $configManager,
+		private readonly ControllerPinConfigManager $pinManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

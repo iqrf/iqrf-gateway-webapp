@@ -34,37 +34,18 @@ final class GSMConnection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'gsm';
 
 	/**
-	 * @var string GSM APN
-	 */
-	private string $apn;
-
-	/**
-	 * @var string|null Username
-	 */
-	private ?string $username;
-
-	/**
-	 * @var string|null Password
-	 */
-	private ?string $password;
-
-	/**
-	 * @var string|null SIM PIN
-	 */
-	private ?string $pin;
-
-	/**
 	 * Constructor
 	 * @param string $apn Access point name
 	 * @param string|null $username Username
 	 * @param string|null $password Password
 	 * @param string|null $pin SIM PIN
 	 */
-	public function __construct(string $apn, ?string $username = null, ?string $password = null, ?string $pin = null) {
-		$this->apn = $apn;
-		$this->username = $username;
-		$this->password = $password;
-		$this->pin = $pin;
+	public function __construct(
+		private readonly string $apn,
+		private readonly ?string $username = null,
+		private readonly ?string $password = null,
+		private readonly ?string $pin = null,
+	) {
 	}
 
 	/**

@@ -22,16 +22,17 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
+use App\Models\Database\Repositories\UserVerificationRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User verification
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserVerificationRepository")
- * @ORM\Table(name="`email_verification`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserVerificationRepository::class)]
+#[ORM\Table(name: 'email_verification')]
+#[ORM\HasLifecycleCallbacks]
 class UserVerification {
 
 	use TUuid;
@@ -39,9 +40,9 @@ class UserVerification {
 
 	/**
 	 * @var User User ID
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="verifications", cascade={"persist"})
-	 * @ORM\JoinColumn(name="user", onDelete="CASCADE")
 	 */
+	#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'verifications')]
+	#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
 	private User $user;
 
 	/**

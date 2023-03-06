@@ -45,17 +45,14 @@ use Nette\IOException;
 class IqrfOsController extends IqrfController {
 
 	/**
-	 * @var IqrfOsManager IQRF OS manager
-	 */
-	private IqrfOsManager $iqrfOsManager;
-
-	/**
 	 * Constructor
 	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfOsManager $iqrfOsManager, RestApiSchemaValidator $validator) {
-		$this->iqrfOsManager = $iqrfOsManager;
+	public function __construct(
+		private readonly IqrfOsManager $iqrfOsManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -38,17 +38,14 @@ use App\NetworkModule\Models\ConnectivityManager;
 class ConnectivityController extends NetworkController {
 
 	/**
-	 * @var ConnectivityManager Network connectivity manager
-	 */
-	private ConnectivityManager $manager;
-
-	/**
 	 * Constructor
 	 * @param ConnectivityManager $manager Network connectivity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConnectivityManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly ConnectivityManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

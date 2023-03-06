@@ -50,24 +50,16 @@ use Nette\Utils\JsonException;
 class SchedulerController extends BaseController {
 
 	/**
-	 * @var SchedulerManager IQRF Gateway Daemon's scheduler manager
-	 */
-	private SchedulerManager $manager;
-
-	/**
-	 * @var SchedulerMigrationManager IQRF Gateway Daemon's scheduler migration manager
-	 */
-	private SchedulerMigrationManager $migrationManager;
-
-	/**
 	 * Constructor
 	 * @param SchedulerManager $manager IQRF Gateway Daemon's scheduler manager
 	 * @param SchedulerMigrationManager $migrationManager IQRF Gateway Daemon's scheduler migration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(SchedulerManager $manager, SchedulerMigrationManager $migrationManager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->migrationManager = $migrationManager;
+	public function __construct(
+		private readonly SchedulerManager $manager,
+		private readonly SchedulerMigrationManager $migrationManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

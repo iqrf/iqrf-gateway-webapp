@@ -22,16 +22,17 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
+use App\Models\Database\Repositories\PasswordRecoveryRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Password recovery
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\PasswordRecoveryRepository")
- * @ORM\Table(name="`password_recovery`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: PasswordRecoveryRepository::class)]
+#[ORM\Table(name: 'password_recovery')]
+#[ORM\HasLifecycleCallbacks]
 class PasswordRecovery {
 
 	use TUuid;
@@ -39,9 +40,9 @@ class PasswordRecovery {
 
 	/**
 	 * @var User User ID
-	 * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
-	 * @ORM\JoinColumn(name="user", onDelete="CASCADE")
 	 */
+	#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+	#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
 	private User $user;
 
 	/**

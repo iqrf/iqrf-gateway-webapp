@@ -39,17 +39,14 @@ use Nette\Utils\FileSystem;
 class DiagnosticsController extends BaseController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
-	 */
-	private DiagnosticsManager $manager;
-
-	/**
 	 * Constructor
 	 * @param DiagnosticsManager $manager Diagnostics manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly DiagnosticsManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

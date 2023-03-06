@@ -39,28 +39,19 @@ class GenericManager {
 	private string $component;
 
 	/**
-	 * @var FileManager JSON file manager
-	 */
-	private FileManager $fileManager;
-
-	/**
 	 * @var string|null File name (without .json)
 	 */
 	private ?string $fileName = null;
-
-	/**
-	 * @var ComponentSchemaManager JSON schema manager
-	 */
-	private ComponentSchemaManager $schemaManager;
 
 	/**
 	 * Constructor
 	 * @param FileManager $fileManager JSON file manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(FileManager $fileManager, ComponentSchemaManager $schemaManager) {
-		$this->fileManager = $fileManager;
-		$this->schemaManager = $schemaManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+		private readonly ComponentSchemaManager $schemaManager,
+	) {
 	}
 
 	/**
@@ -157,7 +148,7 @@ class GenericManager {
 		foreach ($requiredInterfaces as $id => $requiredInterface) {
 			if (!array_key_exists('instance', $requiredInterface['target'])) {
 				$value = reset($requiredInterface['target']);
-				$property = strval(array_key_first($requiredInterface['target']));
+				$property = (string) array_key_first($requiredInterface['target']);
 				$instanceFileName = $this->getInstanceByProperty($property, $value);
 				if ($instanceFileName === null) {
 					unset($configuration['RequiredInterfaces'][$id]);

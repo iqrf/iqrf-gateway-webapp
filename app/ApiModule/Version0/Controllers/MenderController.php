@@ -49,24 +49,16 @@ use Nette\Utils\Strings;
 class MenderController extends BaseController {
 
 	/**
-	 * @var FeatureManager $featureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var MenderManager $manager Mender client configuration manager
-	 */
-	private MenderManager $manager;
-
-	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
-		$this->featureManager = $featureManager;
-		$this->manager = $manager;
+	public function __construct(
+		private readonly FeatureManager $featureManager,
+		private readonly MenderManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

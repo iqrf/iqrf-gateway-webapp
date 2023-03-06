@@ -44,23 +44,14 @@ class AptManager {
 	private const FILE_NAME = '99iqrf-gateway-webapp';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	private IFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
-		$this->fileManager = $fileManager;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly IFileManager $fileManager,
+		private readonly CommandManager $commandManager,
+	) {
 	}
 
 	/**

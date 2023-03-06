@@ -44,22 +44,19 @@ use App\Models\Database\Repositories\ApiKeyRepository;
 class ApiKeyController extends BaseController {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var ApiKeyRepository API key database repository
 	 */
-	private ApiKeyRepository $repository;
+	private readonly ApiKeyRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
 		$this->repository = $entityManager->getApiKeyRepository();
 		parent::__construct($validator);
 	}

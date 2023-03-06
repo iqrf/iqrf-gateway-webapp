@@ -47,17 +47,14 @@ use Nette\Utils\FileSystem;
 class BackupController extends BaseController{
 
 	/**
-	 * @var BackupManager Backup manager
-	 */
-	private BackupManager $manager;
-
-	/**
 	 * Constructor
 	 * @param BackupManager $manager Backup manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(BackupManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly BackupManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

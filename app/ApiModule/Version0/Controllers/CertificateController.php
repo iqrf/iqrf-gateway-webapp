@@ -40,17 +40,14 @@ use App\GatewayModule\Models\CertificateManager;
 class CertificateController extends BaseController {
 
 	/**
-	 * @var CertificateManager TLS certificate manager
-	 */
-	private CertificateManager $manager;
-
-	/**
 	 * Constructor
 	 * @param CertificateManager $manager TLS certificate manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(CertificateManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly CertificateManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

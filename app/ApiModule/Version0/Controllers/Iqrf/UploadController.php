@@ -51,24 +51,16 @@ use Nette\IOException;
 class UploadController extends IqrfController {
 
 	/**
-	 * @var UploadManager Upload manager
-	 */
-	private UploadManager $uploadManager;
-
-	/**
-	 * @var DpaManager DPA manager
-	 */
-	private DpaManager $dpaManager;
-
-	/**
 	 * Constructor
 	 * @param DpaManager $dpaManager IQRF DPA Manager
 	 * @param UploadManager $uploadManager Upload manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DpaManager $dpaManager, UploadManager $uploadManager, RestApiSchemaValidator $validator) {
-		$this->dpaManager = $dpaManager;
-		$this->uploadManager = $uploadManager;
+	public function __construct(
+		private readonly DpaManager $dpaManager,
+		private readonly UploadManager $uploadManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

@@ -33,21 +33,17 @@ use stdClass;
 class ControllerPinConfigManager {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var ControllerPinConfigurationRepository Controller pins repository
 	 */
-	private ControllerPinConfigurationRepository $repository;
+	private readonly ControllerPinConfigurationRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(EntityManager $entityManager) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+	) {
 		$this->repository = $this->entityManager->getRepository(ControllerPinConfiguration::class);
 	}
 

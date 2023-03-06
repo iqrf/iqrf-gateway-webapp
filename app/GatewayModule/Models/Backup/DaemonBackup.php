@@ -34,29 +34,14 @@ class DaemonBackup implements IBackupManager {
 	/**
 	 * @var array<string> Service name
 	 */
-	public const SERVICES = [
+	final public const SERVICES = [
 		'iqrf-gateway-daemon',
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
-	 */
-	private DaemonDirectories $daemonDirectories;
-
-	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -64,11 +49,12 @@ class DaemonBackup implements IBackupManager {
 	 * @param DaemonDirectories $daemonDirectories Daemon directories
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->daemonDirectories = $daemonDirectories;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly DaemonDirectories $daemonDirectories,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->fileManager = new PrivilegedFileManager($daemonDirectories->getConfigurationDir(), $this->commandManager);
-		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**

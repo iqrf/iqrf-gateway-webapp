@@ -37,31 +37,6 @@ final class IPv4Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
-	 * @var IPv4Methods Connection method
-	 */
-	private IPv4Methods $method;
-
-	/**
-	 * @var array<IPv4Address> IPv4 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv4|null IPv4 gateway address
-	 */
-	private ?IPv4 $gateway;
-
-	/**
-	 * @var array<IPv4> IPv4 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
-	 * @var IPv4Current|null Current IPv4 configuration
-	 */
-	private ?IPv4Current $current;
-
-	/**
 	 * IPv4 connection entity constructor
 	 * @param IPv4Methods $method Connection method
 	 * @param array<IPv4Address> $addresses IPv4 addresses
@@ -69,12 +44,13 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @param array<IPv4> $dns DNS servers
 	 * @param IPv4Current|null $current Current configuration
 	 */
-	public function __construct(IPv4Methods $method, array $addresses, ?IPv4 $gateway, array $dns, ?IPv4Current $current) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
-		$this->current = $current;
+	public function __construct(
+		private readonly IPv4Methods $method,
+		private readonly array $addresses,
+		private readonly ?IPv4 $gateway,
+		private readonly array $dns,
+		private readonly ?IPv4Current $current,
+	) {
 	}
 
 	/**
@@ -112,7 +88,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
+			'gateway' => $this->gateway?->getDotAddress(),
 			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 		if ($this->current !== null) {

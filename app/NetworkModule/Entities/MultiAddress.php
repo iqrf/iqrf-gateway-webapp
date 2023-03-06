@@ -25,23 +25,14 @@ use Darsyn\IP\Version\Multi as IP;
 class MultiAddress {
 
 	/**
-	 * @var IP IP address
-	 */
-	private IP $address;
-
-	/**
-	 * @var int IP address prefix
-	 */
-	private int $prefix;
-
-	/**
 	 * Constructor
 	 * @param IP $address IP address
 	 * @param int $prefix IP address prefix
 	 */
-	public function __construct(IP $address, int $prefix) {
-		$this->address = $address;
-		$this->prefix = $prefix;
+	public function __construct(
+		private readonly IP $address,
+		private readonly int $prefix,
+	) {
 	}
 
 	/**

@@ -38,24 +38,9 @@ use stdClass;
 class IqrfOsManager {
 
 	/**
-	 * @var DpaManager DPA manager
-	 */
-	private DpaManager $dpaManager;
-
-	/**
 	 * @var IqrfOsPatchRepository IQRF OS patch database repository
 	 */
-	private IqrfOsPatchRepository $repository;
-
-	/**
-	 * @var OsAndDpaManager IQRF OS and DPA manager
-	 */
-	private OsAndDpaManager $osDpaManager;
-
-	/**
-	 * @var UploadManager Upload manager
-	 */
-	private UploadManager $uploadManager;
+	private readonly IqrfOsPatchRepository $repository;
 
 	/**
 	 * Constructor
@@ -64,11 +49,13 @@ class IqrfOsManager {
 	 * @param OsAndDpaManager $osDpaManager IQRF OS and DPA manager
 	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(DpaManager $dpaManager, EntityManager $entityManager, OsAndDpaManager $osDpaManager, UploadManager $uploadManager) {
-		$this->dpaManager = $dpaManager;
+	public function __construct(
+		private readonly DpaManager $dpaManager,
+		EntityManager $entityManager,
+		private readonly OsAndDpaManager $osDpaManager,
+		private readonly UploadManager $uploadManager,
+	) {
 		$this->repository = $entityManager->getIqrfOsPatchRepository();
-		$this->osDpaManager = $osDpaManager;
-		$this->uploadManager = $uploadManager;
 	}
 
 	/**
@@ -141,9 +128,7 @@ class IqrfOsManager {
 			'fromBuild' => hexdec($params->fromBuild),
 			'toBuild' => hexdec($params->toBuild),
 		]);
-		$osUpgrades = array_map(function (IqrfOsPatch $patch): string {
-			return $patch->getFileName();
-		}, $patches);
+		$osUpgrades = array_map(static fn (IqrfOsPatch $patch): string => $patch->getFileName(), $patches);
 		sort($osUpgrades);
 		return $osUpgrades;
 	}

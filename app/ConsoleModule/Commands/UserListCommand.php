@@ -76,7 +76,7 @@ class UserListCommand extends UserCommand {
 	 * @return array<int, array<string, int|string>> Registered users
 	 */
 	private function getUsers(): array {
-		return array_map(fn (User $user): array => $user->jsonSerialize(), $this->repository->findAll());
+		return array_map(static fn (User $user): array => $user->jsonSerialize(), $this->repository->findAll());
 	}
 
 }

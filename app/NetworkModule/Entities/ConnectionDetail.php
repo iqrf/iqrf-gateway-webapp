@@ -36,42 +36,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	/**
 	 * @var string nmcli configuration prefix
 	 */
-	public const NMCLI_PREFIX = 'connection';
-
-	/**
-	 * @var string Network connection name
-	 */
-	private string $name;
-
-	/**
-	 * @var UuidInterface Network connection UUID
-	 */
-	private UuidInterface $uuid;
-
-	/**
-	 * @var ConnectionTypes Network connection type
-	 */
-	private ConnectionTypes $type;
-
-	/**
-	 * @var string Network interface name
-	 */
-	private string $interfaceName;
-
-	/**
-	 * @var AutoConnect Automatic connection entity
-	 */
-	private AutoConnect $autoConnect;
-
-	/**
-	 * @var IPv4Connection IPv4 network connection entity
-	 */
-	private IPv4Connection $ipv4;
-
-	/**
-	 * @var IPv6Connection IPv6 network connection entity
-	 */
-	private IPv6Connection $ipv6;
+	final public const NMCLI_PREFIX = 'connection';
 
 	/**
 	 * @var WifiConnection|null WiFi network connection entity
@@ -93,19 +58,20 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @param string $name Network connection name
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param ConnectionTypes $type Network connection type
-	 * @param string $interface Network interface name
+	 * @param string $interfaceName Network interface name
 	 * @param AutoConnect $autoConnect Automatic connection entity
 	 * @param IPv4Connection $ipv4 IPv4 network connection entity
 	 * @param IPv6Connection $ipv6 IPv6 network connection entity
 	 */
-	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, string $interface, AutoConnect $autoConnect, IPv4Connection $ipv4, IPv6Connection $ipv6) {
-		$this->name = $name;
-		$this->uuid = $uuid;
-		$this->type = $type;
-		$this->interfaceName = $interface;
-		$this->autoConnect = $autoConnect;
-		$this->ipv4 = $ipv4;
-		$this->ipv6 = $ipv6;
+	public function __construct(
+		private readonly string $name,
+		private readonly UuidInterface $uuid,
+		private readonly ConnectionTypes $type,
+		private readonly string $interfaceName,
+		private readonly AutoConnect $autoConnect,
+		private readonly IPv4Connection $ipv4,
+		private readonly IPv6Connection $ipv6,
+	) {
 	}
 
 	/**
@@ -181,7 +147,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 				break;
 			case ConnectionTypes::GSM():
 				$connection->setGsm(GSMConnection::jsonDeserialize($json->gsm));
-				if (Strings::match($json->interface, '~^tty(AMA|ACM|S)\d+$~') !== null) {
+				if (Strings::match($json->interface, '#^tty(AMA|ACM|S)\d+$#') !== null) {
 					$connection->setSerial(SerialLink::jsonDeserialize($json->serial));
 				}
 				break;
@@ -243,7 +209,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 				break;
 			case ConnectionTypes::GSM():
 				$connection->setGsm(GSMConnection::nmCliDeserialize($nmCli));
-				if (Strings::match($interface, '~^tty(AMA|ACM|S)\d+$~') !== null &&
+				if (Strings::match($interface, '#^tty(AMA|ACM|S)\d+$#') !== null &&
 					array_key_exists(SerialLink::NMCLI_PREFIX, $nmCli)) {
 					$connection->setSerial(SerialLink::nmCliDeserialize($nmCli));
 				}

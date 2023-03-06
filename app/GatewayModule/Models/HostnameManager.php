@@ -42,30 +42,16 @@ class HostnameManager {
 	private const HOSTNAME_FILE = 'hostname';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	private IFileManager $fileManager;
-
-	/**
-	 * @var NetworkManager Network manager
-	 */
-	private NetworkManager $networkManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param IFileManager $fileManager Privileged file manager
 	 * @param NetworkManager $networkManager Network manager
 	 */
-	public function __construct(CommandManager $commandManager, IFileManager $fileManager, NetworkManager $networkManager) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->networkManager = $networkManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly IFileManager $fileManager,
+		private readonly NetworkManager $networkManager,
+	) {
 	}
 
 	/**
@@ -102,7 +88,7 @@ class HostnameManager {
 	 * @param string $newHostname New hostname
 	 */
 	private function replaceHostname(string $oldHostname, string $newHostname): void {
-		$content = $this->fileManager->read(self::HOSTS_FILE);
+		$content = (string) $this->fileManager->read(self::HOSTS_FILE);
 		$ipv4Pattern = '/^.+\s+' . $oldHostname . '(\slocalhost)?$/';
 		$ipv6Pattern = '/^.+\s+' . $oldHostname . '(\slocalhost)?(\sip6-localhost)?(\sip6-loopback)?$/';
 		$lines = explode(PHP_EOL, $content);

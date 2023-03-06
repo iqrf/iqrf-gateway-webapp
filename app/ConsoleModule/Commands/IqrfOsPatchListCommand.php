@@ -37,7 +37,7 @@ class IqrfOsPatchListCommand extends EntityManagerCommand {
 	/**
 	 * @var IqrfOsPatchRepository IQRF OS Patch database repository
 	 */
-	protected IqrfOsPatchRepository $repository;
+	protected readonly IqrfOsPatchRepository $repository;
 
 	/**
 	 * Constructor

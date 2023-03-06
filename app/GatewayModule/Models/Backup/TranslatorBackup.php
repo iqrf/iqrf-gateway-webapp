@@ -32,7 +32,7 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	/**
 	 * @var array<string> List of whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'config.json',
 	];
 
@@ -43,7 +43,12 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+	public function __construct(
+		FileManager $fileManager,
+		CommandManager $commandManager,
+		FeatureManager $featureManager,
+		RestoreLogger $restoreLogger,
+	) {
 		parent::__construct(self::IQRF_GATEWAY_TRANSLATOR, $fileManager, $commandManager, $featureManager, $restoreLogger);
 	}
 

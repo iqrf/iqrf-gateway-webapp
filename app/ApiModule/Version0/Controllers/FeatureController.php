@@ -43,17 +43,14 @@ use Nette\IOException;
 class FeatureController extends BaseController {
 
 	/**
-	 * @var FeatureManager Optional feature manager
-	 */
-	private FeatureManager $manager;
-
-	/**
 	 * Constructor
 	 * @param FeatureManager $manager Optional feature manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly FeatureManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

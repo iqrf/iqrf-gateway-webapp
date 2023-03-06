@@ -45,16 +45,6 @@ use App\ServiceModule\Models\ServiceManager;
 class ServicesController extends BaseController {
 
 	/**
-	 * @var FeatureManager Optional features manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $manager;
-
-	/**
 	 * @var array<string, string|null> Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
@@ -77,9 +67,11 @@ class ServicesController extends BaseController {
 	 * @param FeatureManager $featureManager Optional features manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ServiceManager $manager, FeatureManager $featureManager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		private readonly ServiceManager $manager,
+		private readonly FeatureManager $featureManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

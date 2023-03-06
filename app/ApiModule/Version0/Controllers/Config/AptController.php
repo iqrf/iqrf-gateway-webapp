@@ -42,17 +42,14 @@ use Nette\IOException;
 class AptController extends BaseConfigController {
 
 	/**
-	 * @var AptManager APT manager
-	 */
-	private AptManager $manager;
-
-	/**
 	 * Constructor
 	 * @param AptManager $manager APT manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly AptManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

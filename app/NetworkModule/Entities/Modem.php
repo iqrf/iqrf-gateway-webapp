@@ -30,41 +30,6 @@ use stdClass;
 class Modem {
 
 	/**
-	 * @var string $interface Modem network interface
-	 */
-	private string $interface;
-
-	/**
-	 * @var string $imei Modem IMEI
-	 */
-	private string $imei;
-
-	/**
-	 * @var string $manufacturer Modem manufacturer
-	 */
-	private string $manufacturer;
-
-	/**
-	 * @var string $model Modem model
-	 */
-	private string $model;
-
-	/**
-	 * @var int $signal Signal strength
-	 */
-	private int $signal;
-
-	/**
-	 * @var ModemState $state Modem state
-	 */
-	private ModemState $state;
-
-	/**
-	 * @var ModemFailedReason|null $failedReason Modem failed reason
-	 */
-	private ?ModemFailedReason $failedReason;
-
-	/**
 	 * @var float|null $rssi RSSI
 	 */
 	private ?float $rssi = null;
@@ -79,14 +44,15 @@ class Modem {
 	 * @param ModemFailedReason|null $failedReason Modem failed reason
 	 * @param int $signal Signal strength
 	 */
-	public function __construct(string $interface, string $imei, string $manufacturer, string $model, ModemState $state, ?ModemFailedReason $failedReason, int $signal) {
-		$this->interface = $interface;
-		$this->imei = $imei;
-		$this->manufacturer = $manufacturer;
-		$this->model = $model;
-		$this->state = $state;
-		$this->failedReason = $failedReason;
-		$this->signal = $signal;
+	public function __construct(
+		private readonly string $interface,
+		private readonly string $imei,
+		private readonly string $manufacturer,
+		private readonly string $model,
+		private readonly ModemState $state,
+		private readonly ?ModemFailedReason $failedReason,
+		private readonly int $signal,
+	) {
 	}
 
 	/**
@@ -131,7 +97,7 @@ class Modem {
 			'manufacturer' => $this->manufacturer,
 			'model' => $this->model,
 			'state' => $this->state->toScalar(),
-			'failedReason' => $this->failedReason === null ? null : $this->failedReason->toScalar(),
+			'failedReason' => $this->failedReason?->toScalar(),
 			'signal' => $this->signal,
 			'rssi' => $this->rssi,
 		];

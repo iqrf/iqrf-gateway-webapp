@@ -32,37 +32,18 @@ final class IPv6Current implements JsonSerializable {
 	public const NMCLI_PREFIX = 'IP6';
 
 	/**
-	 * @var IPv6Methods Connection method
-	 */
-	private IPv6Methods $method;
-
-	/**
-	 * @var array<IPv6Address> IPv6 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv6|null IPv6 gateway address
-	 */
-	private ?IPv6 $gateway;
-
-	/**
-	 * @var array<IPv6> IPv6 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
 	 * IPv6 current configuration constructor
 	 * @param IPv6Methods $method IPv6 connection method
 	 * @param array<IPv6Address> $addresses IPv6 addresses
 	 * @param IPv6|null $gateway IPv6 gateway address
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
+	public function __construct(
+		private readonly IPv6Methods $method,
+		private readonly array $addresses,
+		private readonly ?IPv6 $gateway,
+		private readonly array $dns,
+	) {
 	}
 
 	/**
@@ -98,7 +79,7 @@ final class IPv6Current implements JsonSerializable {
 		return [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
+			'gateway' => $this->gateway?->getCompactedAddress(),
 			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 	}

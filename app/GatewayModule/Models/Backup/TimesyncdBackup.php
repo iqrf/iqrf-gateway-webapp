@@ -33,41 +33,31 @@ class TimesyncdBackup implements IBackupManager {
 	/**
 	 * @var array<string> List of whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'timesyncd.conf',
 	];
 
 	/**
 	 * @var array<string> Service name
 	 */
-	public const SERVICES = [
+	final public const SERVICES = [
 		'systemd-timesyncd',
 	];
 
 	/**
 	 * @var string Path to NTP configuration directory
 	 */
-	private string $path;
+	private readonly string $path;
 
 	/**
 	 * @var string File name
 	 */
-	private string $file;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
+	private readonly string $file;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -75,9 +65,11 @@ class TimesyncdBackup implements IBackupManager {
 	 * @param string $path Path to conf
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, string $path, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		string $path,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->path = dirname($path);
 		$this->file = basename($path);
 		$this->fileManager = new PrivilegedFileManager($this->path, $this->commandManager);

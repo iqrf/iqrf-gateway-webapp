@@ -44,24 +44,16 @@ use Nette\Utils\JsonException;
 class MailerController extends BaseConfigController {
 
 	/**
-	 * @var ConfigurationManager Mailer configuration manager
-	 */
-	private ConfigurationManager $manager;
-
-	/**
-	 * @var MailerConfigurationTestMailSender Mailer configuration test mail sender
-	 */
-	private MailerConfigurationTestMailSender $configurationTestSender;
-
-	/**
 	 * Constructor
 	 * @param ConfigurationManager $manager Mailer configuration manager
-	 * @param MailerConfigurationTestMailSender $sender Mailer configuration test mail sender
+	 * @param MailerConfigurationTestMailSender $configurationTestSender Mailer configuration test mail sender
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConfigurationManager $manager, MailerConfigurationTestMailSender $sender, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->configurationTestSender = $sender;
+	public function __construct(
+		private readonly ConfigurationManager $manager,
+		private readonly MailerConfigurationTestMailSender $configurationTestSender,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 

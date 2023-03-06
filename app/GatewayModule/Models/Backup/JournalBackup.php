@@ -34,46 +34,36 @@ class JournalBackup implements IBackupManager {
 	/**
 	 * @var array<string> Whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'journald.conf',
 	];
 
 	/**
 	 * @var array<string> Service name
 	 */
-	public const SERVICES = [
+	final public const SERVICES = [
 		'systemd-journald',
 	];
 
 	/**
 	 * @var string Path to NTP configuration directory
 	 */
-	private string $path;
+	private readonly string $path;
 
 	/**
 	 * @var string File name
 	 */
-	private string $file;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
+	private readonly string $file;
 
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
@@ -81,9 +71,11 @@ class JournalBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$feature = $featureManager->get('journal');
 		$this->path = dirname($feature['path']);
 		$this->file = basename($feature['path']);
