@@ -3,7 +3,7 @@
 @@ -15,7 +15,7 @@
  Architecture: all
  Depends: ${misc:Depends}, apt, gawk, iproute2,
-  iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
+  iqrf-gateway-daemon (>= 2.4), iqrf-gateway-daemon (<< 3.0), iqrf-gateway-uploader, iqrf-journal-reader,
 - mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
 + mender-client, mender-connect, modemmanager, net-tools, network-manager,
   openssh-client, openssl, passwd,
