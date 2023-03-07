@@ -177,7 +177,7 @@ export default class GsmInterfaces extends Vue {
 	 * @property {boolean} hasBrokenGsmModem Checks if the used modem is broken to prevent hanging on
 	 */
 	get hasBrokenGsmModem(): boolean {
-		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW-04' &&
+		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
 				this.modems.filter((modem: IModem): boolean => modem.interface === 'ttyAMA2').length !== 0;
 	}
 
