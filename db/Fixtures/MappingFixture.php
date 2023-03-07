@@ -41,8 +41,8 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 		$records = [
 			new Mapping(Mapping::TYPE_SPI, 'Unipi Iris Zulu', Mapping::DEVICE_BOARD, '/dev/spidev1.0', -1, 510, 511, null, 509, 508, 505),
 			new Mapping(Mapping::TYPE_UART, 'Unipi Iris Zulu', Mapping::DEVICE_BOARD, '/dev/ttymxc3', -1, 510, 511, Mapping::BAUD_RATE_DEFAULT, 509, 508, 505),
-			new Mapping(Mapping::TYPE_SPI, 'IQD-GW-04', Mapping::DEVICE_BOARD, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
-			new Mapping(Mapping::TYPE_UART, 'IQD-GW-04', Mapping::DEVICE_BOARD, '/dev/ttyAMA1', -1, 22, 23, Mapping::BAUD_RATE_DEFAULT, 18, 7, 6),
+			new Mapping(Mapping::TYPE_SPI, 'IQD-GW04', Mapping::DEVICE_BOARD, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
+			new Mapping(Mapping::TYPE_UART, 'IQD-GW04', Mapping::DEVICE_BOARD, '/dev/ttyAMA1', -1, 22, 23, Mapping::BAUD_RATE_DEFAULT, 18, 7, 6),
 			new Mapping(Mapping::TYPE_SPI, 'KON-RASP-01', Mapping::DEVICE_ADAPTER, '/dev/spidev0.0', 7, 22, 23),
 			new Mapping(Mapping::TYPE_UART, 'KON-RASP-01', Mapping::DEVICE_ADAPTER, '/dev/ttyS0', 7, 22, 23, Mapping::BAUD_RATE_DEFAULT),
 			new Mapping(Mapping::TYPE_SPI, 'KONA-RASP-04', Mapping::DEVICE_ADAPTER, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
