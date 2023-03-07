@@ -1,0 +1,24 @@
+Adds dependency on IQRF Gateway Uploader
+--- a/debian/control
++++ b/debian/control
+@@ -13,8 +13,10 @@
+ 
+ Package: iqrf-gateway-webapp
+ Architecture: all
+-Depends: ${misc:Depends}, apt, gawk, iproute2,
+- iqrf-gateway-daemon, iqrf-journal-reader, net-tools, openssl, passwd,
++Depends: ${misc:Depends}, apt, gawk, iproute2,
++ iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
++ mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
++ openssh-client, openssl, passwd,
+  php7.4-common | php8.0-common | php8.1-common,
+  php7.4-cli | php8.0-cli | php8.1-cli,
+  php7.4-fpm | php8.0-fpm | php8.1-fpm,
+@@ -24,6 +26,6 @@
+  php7.4-sqlite3 | php8.0-sqlite3 | php8.1-sqlite3,
+  php7.4-xml | php8.0-xml | php8.1-xml,
+  php7.4-zip | php8.0-zip | php8.1-zip,
+- procps, nginx | apache2, sudo, systemd, systemd-sysv
++ procps, nginx | apache2, sudo, systemd, systemd-sysv, wireguard-tools
+ Description: Web user interface for IQRF Gateway Daemon
+  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.
