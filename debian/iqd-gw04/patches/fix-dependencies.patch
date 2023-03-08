@@ -2,13 +2,13 @@ Adds dependency on IQRF Gateway Uploader
 --- a/debian/control
 +++ b/debian/control
 @@ -13,8 +13,10 @@
- 
+
  Package: iqrf-gateway-webapp
  Architecture: all
 -Depends: ${misc:Depends}, apt, gawk, iproute2,
-- iqrf-gateway-daemon, iqrf-journal-reader, net-tools, openssl, passwd,
+- iqrf-gateway-daemon (>= 2.4), iqrf-gateway-daemon (<< 3.0), iqrf-journal-reader, net-tools, openssl, passwd,
 +Depends: ${misc:Depends}, apt, gawk, iproute2,
-+ iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
++ iqrf-gateway-controller, iqrf-gateway-daemon (>= 2.4), iqrf-gateway-daemon (<< 3.0), iqrf-journal-reader,
 + mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
 + openssh-client, openssl, passwd,
   php7.4-common | php8.0-common | php8.1-common,
