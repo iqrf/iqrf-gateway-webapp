@@ -33,7 +33,7 @@ nginx_remove() {
 	# Remove virtualhosts
 	for SITES in ${SITES_AVAILABLE} ${SITES_ENABLED} ; do
 		for CONFIG in ${DEFAULT_CONFIG} ${HTTPS_CONFIG} ; do
-			if [ -e "${SITES}/${CONFIG}" ] ; then
+			if [ -e "${SITES}/${CONFIG}" ] || [ -h "${SITES}/${CONFIG}" ] ; then
 				rm "${SITES}/${CONFIG}"
 			fi
 		done
