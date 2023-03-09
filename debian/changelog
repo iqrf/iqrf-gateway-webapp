@@ -1,10 +1,13 @@
-iqrf-gateway-webapp (2.5.3~alpha~1.gbpad703f) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.3) stable; urgency=medium
 
-  ** SNAPSHOT build @ad703f09570243b11f475b7782846f5b9c3733fb **
+  [ Roman Ondráček ]
+  * Prepare for version 2.5.3-alpha
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * fixed dependency patches
+  * debian package: fixed nginx configuration removal
 
- -- Roman Ondráček <mail@romanondracek.cz>  Tue, 07 Mar 2023 22:18:46 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 09 Mar 2023 09:20:36 +0100
 
 iqrf-gateway-webapp (2.5.2) stable; urgency=medium
 
