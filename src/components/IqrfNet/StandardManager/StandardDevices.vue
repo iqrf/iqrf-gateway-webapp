@@ -721,6 +721,9 @@ export default class StandardDevices extends Vue {
 	 */
 	private pingDevices(): void {
 		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
+		if (nodes.length === 0) {
+			return;
+		}
 		this.$store.dispatch('spinner/show', {timeout: 100000});
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
