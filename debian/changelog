@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.4~alpha~1.gbpfe0b58) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.4) stable; urgency=medium
 
-  ** SNAPSHOT build @fe0b58215ce89213a658c0c13b429823a53d4c50 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.4-alpha
+  * StandardDevices: do not send ping frc if only coordinator device is available
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 09 Mar 2023 09:24:11 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 12 Mar 2023 10:01:51 +0100
 
 iqrf-gateway-webapp (2.5.3) stable; urgency=medium
 

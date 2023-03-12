@@ -1,6 +1,6 @@
 {
 	"name": "iqrf-gateway-webapp",
-	"version": "2.5.4-alpha",
+	"version": "2.5.4",
 	"repository": {
 		"type": "git",
 		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git"
