@@ -35,12 +35,14 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
 use Nette\Mail\SendException;
+use ValueError;
 
 /**
  * User manager API controller
@@ -103,7 +105,7 @@ class UsersController extends BaseController {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$roles = [];
 		if ($user instanceof User && $user->hasScope('users:basic')) {
-			$roles = [User::ROLE_BASIC, User::ROLE_BASICADMIN];
+			$roles = [UserRole::Basic, UserRole::BasicAdmin];
 		}
 		return $response->writeJsonBody($this->manager->list($roles));
 	}
@@ -145,7 +147,7 @@ class UsersController extends BaseController {
 		$this->validator->validateRequest('userCreate', $request);
 		$json = $request->getJsonBodyCopy();
 		if ($this->repository->count([]) !== 0 &&
-			!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			!in_array($json['role'], [UserRole::Basic->value, UserRole::BasicAdmin->value], true)) {
 			self::checkScopes($request, ['users:admin']);
 		}
 		try {
@@ -156,13 +158,11 @@ class UsersController extends BaseController {
 			if ($email !== null && $this->manager->checkEmailUniqueness($email)) {
 				throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
 			}
-			$user = new User($json['username'], $email, $json['password'], $json['role'], $json['language']);
+			$user = new User($json['username'], $email, $json['password'], UserRole::fromString($json['role']), UserLanguage::from($json['language']));
 			$this->entityManager->persist($user);
 			$this->entityManager->flush();
 		} catch (InvalidEmailAddressException $e) {
 			throw new ClientErrorException('Invalid email address: ' . $e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (InvalidUserLanguageException $e) {
-			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (InvalidUserRoleException $e) {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 		}
@@ -241,7 +241,7 @@ class UsersController extends BaseController {
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+		if (!in_array($user->getRole(), [UserRole::Basic, UserRole::BasicAdmin], true)) {
 			self::checkScopes($request, ['users:admin']);
 		}
 		$this->entityManager->remove($user);
@@ -297,25 +297,25 @@ class UsersController extends BaseController {
 			$user->setUserName($json['username']);
 		}
 		if (array_key_exists('role', $json)) {
-			if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true) &&
-				!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			if (!in_array($user->getRole(), [UserRole::Basic, UserRole::BasicAdmin], true) &&
+				!in_array($json['role'], [UserRole::Basic->value, UserRole::BasicAdmin->value], true)) {
 				self::checkScopes($request, ['users:admin']);
 			}
-			if ($user->getRole() === User::ROLE_ADMIN &&
-				$this->repository->userCountByRole(User::ROLE_ADMIN) === 1 &&
-				$json['role'] !== User::ROLE_ADMIN) {
+			if ($user->getRole() === UserRole::Admin &&
+				$this->repository->userCountByRole(UserRole::Admin) === 1 &&
+				$json['role'] !== UserRole::Admin->value) {
 				throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
 			}
 			try {
-				$user->setRole($json['role']);
+				$user->setRole(UserRole::fromString($json['role']));
 			} catch (InvalidUserRoleException $e) {
 				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
 		if (array_key_exists('language', $json)) {
 			try {
-				$user->setLanguage($json['language']);
-			} catch (InvalidUserLanguageException $e) {
+				$user->setLanguage(UserLanguage::from($json['language']));
+			} catch (ValueError $e) {
 				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}

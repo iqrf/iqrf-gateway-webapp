@@ -24,6 +24,7 @@ use Apitte\Core\Http\ApiRequest;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\EmailVerificationMailSender;
 use App\Models\Mail\Senders\PasswordChangeConfirmationMailSender;
@@ -91,11 +92,11 @@ class UserManager {
 
 	/**
 	 * Lists all users
-	 * @param array<string> $roles User roles to filter
+	 * @param array<UserRole> $roles User roles to filter
 	 * @return array<User> Users
 	 */
 	public function list(array $roles = []): array {
-		$criteria = $roles === [] ? [] : ['role' => $roles];
+		$criteria = $roles === [] ? [] : ['role' => array_map(static fn (UserRole $role) => $role->value, $roles)];
 		return $this->repository->findBy($criteria);
 	}
 
@@ -106,17 +107,20 @@ class UserManager {
 	 * @throws SendException
 	 */
 	public function sendVerificationEmail(ApiRequest $request, User $user): void {
-		$user->clearVerifications();
-		$verification = new UserVerification($user);
-		$this->entityManager->persist($verification);
-		$this->entityManager->flush();
 		$body = $request->getJsonBodyCopy();
 		if (array_key_exists('baseUrl', $body)) {
 			$baseUrl = trim($body['baseUrl'], '/');
 		} else {
 			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
 		}
-		$this->emailVerificationSender->send($verification, $baseUrl);
+		if ($user->verification !== null) {
+			$this->entityManager->remove($user->verification);
+			$this->entityManager->flush();
+		}
+		$user->verification = new UserVerification($user);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		$this->emailVerificationSender->send($user->verification, $baseUrl);
 	}
 
 	/**

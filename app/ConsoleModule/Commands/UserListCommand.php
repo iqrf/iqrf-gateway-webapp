@@ -22,6 +22,7 @@ namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\User;
 use Nette\Utils\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,19 +32,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * CLI command for user management
  */
+#[AsCommand(name: 'user:list', description: 'Lists webapp\'s users')]
 class UserListCommand extends UserCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:list';
 
 	/**
 	 * Configures the user list command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Lists webapp\'s users');
 		$definitions = [
 			new InputOption('output-json', ['J', 'output-json'], InputOption::VALUE_NONE, 'Output as JSON.'),
 		];

@@ -154,6 +154,10 @@ export default class UserEdit extends Vue {
 	 */
 	private readonly languages: Array<ISelectItem> = [
 		{
+			value: UserLanguage.CZECH,
+			text: this.$t('core.user.languages.cs'),
+		},
+		{
 			value: UserLanguage.ENGLISH,
 			text: this.$t('core.user.languages.en'),
 		},

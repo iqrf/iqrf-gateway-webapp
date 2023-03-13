@@ -21,38 +21,40 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Wireguard interface address entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceIpv4Repository")
- * @ORM\Table(name="`wireguard_interface_ipv4s`")
- * @ORM\HasLifecycleCallbacks()
+ * WireGuard interface address entity
  */
+#[ORM\Entity(repositoryClass: WireguardInterfaceIpv4Repository::class)]
+#[ORM\Table(name: 'wireguard_interface_ipv4s')]
+#[ORM\HasLifecycleCallbacks]
 class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var IP Interface address
-	 * @ORM\Column(type="ip")
 	 */
+	#[ORM\Column(type: 'ip')]
 	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $prefix;
 
 	/**
 	 * @var WireguardInterface WireGuard interface
-	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv4")
-	 * @ORM\JoinColumn(name="interface_id")
 	 */
+	#[ORM\OneToOne(inversedBy: 'ipv4', targetEntity: WireguardInterface::class)]
+	#[ORM\JoinColumn(name: 'interface_id')]
 	private WireguardInterface $interface;
 
 	/**
@@ -67,16 +69,16 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard interface IPv4 address
-	 * @return MultiAddress Wireguard interface IPv4 address
+	 * Returns WireGuard interface IPv4 address
+	 * @return MultiAddress WireGuard interface IPv4 address
 	 */
 	public function getAddress(): MultiAddress {
 		return new MultiAddress($this->address, $this->prefix);
 	}
 
 	/**
-	 * Sets new Wireguard interface IPv4 address and prefix
-	 * @param MultiAddress $address Wireguard interface IPv4 address
+	 * Sets new WireGuard interface IPv4 address and prefix
+	 * @param MultiAddress $address WireGuard interface IPv4 address
 	 */
 	public function setAddress(MultiAddress $address): void {
 		$this->address = $address->getAddress();
@@ -84,24 +86,24 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard interface this address belongs to
-	 * @return WireguardInterface Wireguard interface
+	 * Returns WireGuard interface this address belongs to
+	 * @return WireguardInterface WireGuard interface
 	 */
 	public function getInterface(): WireguardInterface {
 		return $this->interface;
 	}
 
 	/**
-	 * Sets Wireguard interface reference
-	 * @param WireguardInterface $interface Wireguard interface
+	 * Sets WireGuard interface reference
+	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function setInterface(WireguardInterface $interface): void {
 		$this->interface = $interface;
 	}
 
 	/**
-	 * Serializes Wireguard interface IPv4 address to JSON
-	 * @return array{id: int|null, address: string, prefix: int} JSON serialized Wireguard interface IPv4 address
+	 * Serializes WireGuard interface IPv4 address to JSON
+	 * @return array{id: int|null, address: string, prefix: int} JSON serialized WireGuard interface IPv4 address
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -112,8 +114,8 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 	}
 
 	/**
-	 * Returns string representation of Wireguard interface IPv4 address
-	 * @return string Wireguard interface IPv4 string
+	 * Returns string representation of WireGuard interface IPv4 address
+	 * @return string WireGuard interface IPv4 string
 	 */
 	public function toString(): string {
 		return $this->getAddress()->toString();

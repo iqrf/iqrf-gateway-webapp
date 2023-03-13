@@ -21,44 +21,46 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Wireguard peer entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardPeerAddressRepository")
- * @ORM\Table(name="`wireguard_peer_addresses`")
- * @ORM\HasLifecycleCallbacks()
+ * WireGuard peer entity
  */
+#[ORM\Entity(repositoryClass: WireguardPeerAddressRepository::class)]
+#[ORM\Table(name: 'wireguard_peer_addresses')]
+#[ORM\HasLifecycleCallbacks]
 class WireguardPeerAddress implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var IP Peer address
-	 * @ORM\Column(type="ip")
 	 */
+	#[ORM\Column(type: 'ip')]
 	private IP $address;
 
 	/**
 	 * @var int Peer address prefix
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $prefix;
 
 	/**
-	 * @var WireguardPeer Wireguard peer
-	 * @ORM\ManyToOne(targetEntity="WireguardPeer", inversedBy="addresses")
-	 * @ORM\JoinColumn(name="peer_id")
+	 * @var WireguardPeer WireGuard peer
 	 */
+	#[ORM\ManyToOne(targetEntity: WireguardPeer::class, inversedBy: 'addresses')]
+	#[ORM\JoinColumn(name: 'peer_id')]
 	private WireguardPeer $peer;
 
 	/**
 	 * Constructor
 	 * @param MultiAddress $address Peer address
-	 * @param WireguardPeer $peer Wireguard peer
+	 * @param WireguardPeer $peer WireGuard peer
 	 */
 	public function __construct(MultiAddress $address, WireguardPeer $peer) {
 		$this->address = $address->getAddress();
@@ -84,24 +86,24 @@ class WireguardPeerAddress implements JsonSerializable {
 	}
 
 	/**
-	 * Returns Wireguard peer
-	 * @return WireguardPeer Wireguard peer
+	 * Returns WireGuard peer
+	 * @return WireguardPeer WireGuard peer
 	 */
 	public function getPeer(): WireguardPeer {
 		return $this->peer;
 	}
 
 	/**
-	 * Sets Wireguard peer
-	 * @param WireguardPeer $peer Wireguard peer
+	 * Sets WireGuard peer
+	 * @param WireguardPeer $peer WireGuard peer
 	 */
 	public function setPeer(WireguardPeer $peer): void {
 		$this->peer = $peer;
 	}
 
 	/**
-	 * Serializes wireguard peer allowed IP into JSON
-	 * @return array{id: int|null, address: string, prefix: int} JSON serialized wireguard peer allowed IPs
+	 * Serializes WireGuard peer allowed IP into JSON
+	 * @return array{id: int|null, address: string, prefix: int} JSON serialized WireGuard peer allowed IPs
 	 */
 	public function jsonSerialize(): array {
 		$address = $this->address->getVersion() === 4 ? $this->address->getDotAddress() : $this->address->getCompactedAddress();

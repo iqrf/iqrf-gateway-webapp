@@ -22,14 +22,16 @@ namespace App\Models\Database\Entities;
 
 use App\ConfigModule\Enums\DeviceTypes;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * Controller pins entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\ControllerPinConfigurationRepository")
- * @ORM\Table(name="`controller_pin_configs`")
  */
+#[ORM\Entity(repositoryClass: ControllerPinConfigurationRepository::class)]
+#[ORM\Table(name: 'controller_pin_configs')]
 class ControllerPinConfiguration implements JsonSerializable {
 
 	use TId;
@@ -51,44 +53,44 @@ class ControllerPinConfiguration implements JsonSerializable {
 
 	/**
 	 * @var string Controller pins name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $name;
 
 	/**
 	 * @var string Device type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $deviceType;
 
 	/**
 	 * @var int Green LED pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $greenLed;
 
 	/**
 	 * @var int Red LED pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $redLed;
 
 	/**
 	 * @var int Button pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $button;
 
 	/**
 	 * @var int|null SCK pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $sck;
 
 	/**
 	 * @var int|null SDA pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $sda;
 
 	/**

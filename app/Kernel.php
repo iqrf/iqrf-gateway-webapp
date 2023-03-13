@@ -72,6 +72,10 @@ class Kernel {
 		foreach (Finder::findFiles('*Module/config/config.neon')->from(__DIR__) as $file) {
 			$configurator->addConfig($file->getRealPath());
 		}
+		if (!defined('EMAIL_VALIDATE_DNS')) {
+			$container = $configurator->createContainer();
+			define('EMAIL_VALIDATE_DNS', $container->parameters['emailValidateDns']);
+		}
 		return $configurator;
 	}
 

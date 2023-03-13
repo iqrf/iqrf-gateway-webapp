@@ -21,62 +21,64 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardPeerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * WireGuard peer entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardPeerRepository")
- * @ORM\Table(name="`wireguard_peers`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardPeerRepository::class)]
+#[ORM\Table(name: 'wireguard_peers')]
+#[ORM\HasLifecycleCallbacks]
 class WireguardPeer implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var string Peer public key
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $publicKey;
 
 	/**
 	 * @var string|null Peer pre-shared key
-	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $psk;
 
 	/**
 	 * @var int Peer keepalive interval
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $keepalive;
 
 	/**
 	 * @var string Peer endpoint
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $endpoint;
 
 	/**
 	 * @var int Peer listen port
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $port;
 
 	/**
 	 * @var WireguardInterface Interface
-	 * @ORM\ManyToOne(targetEntity="WireguardInterface", inversedBy="peers")
-	 * @ORM\JoinColumn(name="interface_id")
 	 */
+	#[ORM\ManyToOne(targetEntity: WireguardInterface::class, inversedBy: 'peers')]
+	#[ORM\JoinColumn(name: 'interface_id')]
 	private WireguardInterface $interface;
 
 	/**
 	 * @var Collection<int, WireguardPeerAddress> Peer allowed IPs
-	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist"}, orphanRemoval=true)
 	 */
+	#[ORM\OneToMany(mappedBy: 'peer', targetEntity: WireguardPeerAddress::class, cascade: ['persist'], orphanRemoval: true)]
 	private Collection $addresses;
 
 	/**

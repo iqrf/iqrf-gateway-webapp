@@ -121,6 +121,10 @@ export default class UserProfileForm extends Vue {
 	 */
 	private languageOptions: Array<ISelectItem> = [
 		{
+			value: UserLanguage.CZECH,
+			text: this.$t('core.user.languages.cs').toString(),
+		},
+		{
 			value: UserLanguage.ENGLISH,
 			text: this.$t('core.user.languages.en').toString(),
 		},

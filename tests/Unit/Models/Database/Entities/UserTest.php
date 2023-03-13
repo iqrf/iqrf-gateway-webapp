@@ -28,9 +28,9 @@ namespace Tests\Unit\Models\Database\Entities;
 
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserLanguageException;
-use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -57,14 +57,14 @@ final class UserTest extends TestCase {
 	private const PASSWORD = 'iqrf';
 
 	/**
-	 * @var string User role
+	 * @var UserRole User role
 	 */
-	private const ROLE = User::ROLE_ADMIN;
+	private const ROLE = UserRole::Admin;
 
 	/**
-	 * @var string User language
+	 * @var UserLanguage User language
 	 */
-	private const LANGUAGE = User::LANGUAGE_ENGLISH;
+	private const LANGUAGE = UserLanguage::English;
 
 	/**
 	 * @var int User account state
@@ -201,38 +201,18 @@ final class UserTest extends TestCase {
 	 * Tests the function to set the user's role
 	 */
 	public function testSetRole(): void {
-		$role = User::ROLE_NORMAL;
+		$role = UserRole::Normal;
 		$this->entity->setRole($role);
 		Assert::same($role, $this->entity->getRole());
-	}
-
-	/**
-	 * Tests the function to set the user's role
-	 */
-	public function testSetRoleInvalid(): void {
-		Assert::exception(function (): void {
-			$this->entity->setRole('invalid');
-		}, InvalidUserRoleException::class);
-		Assert::same(User::ROLE_ADMIN, $this->entity->getRole());
 	}
 
 	/**
 	 * Tests the function to set the user's language
 	 */
 	public function testSetLanguage(): void {
-		$language = User::LANGUAGE_ENGLISH;
+		$language = UserLanguage::English;
 		$this->entity->setLanguage($language);
 		Assert::same($language, $this->entity->getLanguage());
-	}
-
-	/**
-	 * Tests the function to set the user's language
-	 */
-	public function testSetLanguageInvalid(): void {
-		Assert::exception(function (): void {
-			$this->entity->setLanguage('invalid');
-		}, InvalidUserLanguageException::class);
-		Assert::same(User::LANGUAGE_DEFAULT, $this->entity->getLanguage());
 	}
 
 	/**
@@ -251,8 +231,8 @@ final class UserTest extends TestCase {
 			'id' => null,
 			'username' => self::USERNAME,
 			'email' => self::EMAIL,
-			'role' => self::ROLE,
-			'language' => self::LANGUAGE,
+			'role' => self::ROLE->value,
+			'language' => self::LANGUAGE->value,
 			'state' => User::STATES[self::STATE],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());

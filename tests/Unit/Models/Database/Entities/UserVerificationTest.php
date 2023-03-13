@@ -70,7 +70,7 @@ final class UserVerificationTest extends TestCase {
 	 * Tests the function to get the user
 	 */
 	public function testGetUser(): void {
-		Assert::equal($this->user, $this->entity->getUser());
+		Assert::equal($this->user, $this->entity->user);
 	}
 
 	/**

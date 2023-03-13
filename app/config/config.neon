@@ -17,6 +17,8 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# E-mail address DNS validation
+	emailValidateDns: true
 	# Paths
 	paths:
 		# APT paths

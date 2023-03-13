@@ -23,59 +23,38 @@ namespace App\ConsoleModule\Commands;
 use App\CoreModule\Models\UserManager;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\UserRepository;
-use Symfony\Component\Console\Command\Command;
+use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * CLI command for user management
  */
-class UserAddCommand extends Command {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:add';
-
-	/**
-	 * @var UserRepository User database repository
-	 */
-	protected UserRepository $repository;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	protected EntityManager $entityManager;
-
-	/**
-	 * @var UserManager User manager
-	 */
-	protected UserManager $userManager;
+#[AsCommand(name: 'user:add', description: 'Adds webapp\'s user')]
+class UserAddCommand extends UserCommand {
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $userManager User manager
 	 */
-	public function __construct(EntityManager $entityManager, UserManager $userManager) {
-		parent::__construct();
-		$this->entityManager = $entityManager;
-		$this->repository = $entityManager->getUserRepository();
-		$this->userManager = $userManager;
+	public function __construct(
+		EntityManager $entityManager,
+		protected readonly UserManager $userManager,
+	) {
+		parent::__construct($entityManager);
 	}
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Adds webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the new user'),
 			new InputOption('password', ['p', 'pass'], InputOption::VALUE_OPTIONAL, 'New user\'s password'),
@@ -95,8 +74,8 @@ class UserAddCommand extends Command {
 		$style = new SymfonyStyle($input, $output);
 		$name = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
-		$role = $this->askRole($input, $output);
-		$lang = $this->askLanguage($input, $output);
+		$role = $this->askRole($input, $output, UserRole::Default);
+		$lang = $this->askLanguage($input, $output, UserLanguage::Default);
 		if ($this->userManager->checkUsernameUniqueness($name)) {
 			$style->error('The specified username is already taken.');
 			return 1;
@@ -142,38 +121,6 @@ class UserAddCommand extends Command {
 			$password = $helper->ask($input, $output, $question);
 		}
 		return $password;
-	}
-
-	/**
-	 * Asks for the user's role
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return string User's role
-	 */
-	private function askRole(InputInterface $input, OutputInterface $output): string {
-		$role = $input->getOption('role');
-		while ($role === null || !in_array($role, User::ROLES, true)) {
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s role: ', User::ROLES, User::ROLE_DEFAULT);
-			$role = $helper->ask($input, $output, $question);
-		}
-		return $role;
-	}
-
-	/**
-	 * Asks for the user's language
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return string User's language
-	 */
-	private function askLanguage(InputInterface $input, OutputInterface $output): string {
-		$language = $input->getOption('language');
-		while ($language === null || !in_array($language, User::LANGUAGES, true)) {
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s language: ', User::LANGUAGES, User::LANGUAGE_DEFAULT);
-			$language = $helper->ask($input, $output, $question);
-		}
-		return $language;
 	}
 
 }

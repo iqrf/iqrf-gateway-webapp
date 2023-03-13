@@ -23,6 +23,8 @@ includes:
 
 parameters:
 	level: 6
+	bootstrapFiles:
+		- tests/bootstrap.php
 	paths:
 		- app
 		- bin
@@ -50,4 +52,7 @@ parameters:
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			path: app/Models/Mail/ConfigurationManager.php
+		-
+			message: '#Left side of \&\& is always (true|false)\.#'
+			path: app/Models/Database/Entities/User.php
 			count: 1

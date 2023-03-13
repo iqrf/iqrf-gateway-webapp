@@ -36,14 +36,15 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserLanguageException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\UserLanguage;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
 use Nette\Mail\SendException;
 use Throwable;
+use ValueError;
 use function gethostname;
 
 /**
@@ -157,8 +158,8 @@ class UserController extends BaseController {
 		}
 		if (array_key_exists('language', $json)) {
 			try {
-				$user->setLanguage($json['language']);
-			} catch (InvalidUserLanguageException $e) {
+				$user->setLanguage(UserLanguage::from($json['language']));
+			} catch (ValueError $e) {
 				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		}
@@ -491,7 +492,7 @@ class UserController extends BaseController {
 		if ($verification === null) {
 			throw new ClientErrorException('User verification not found', ApiResponse::S404_NOT_FOUND);
 		}
-		$user = $verification->getUser();
+		$user = $verification->user;
 		$state = $user->getState();
 		if ($state === User::STATE_VERIFIED) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);

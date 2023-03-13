@@ -20,14 +20,15 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Exceptions\IncorrectPasswordException;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserLanguageException;
-use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Repositories\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
@@ -41,71 +42,13 @@ use const PASSWORD_DEFAULT;
 
 /**
  * User entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserRepository")
- * @ORM\Table(name="`users`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'users')]
+#[ORM\HasLifecycleCallbacks]
 class User implements JsonSerializable {
 
 	use TId;
-
-	/**
-	 * Language: Czech
-	 */
-	public const LANGUAGE_CZECH = 'cs';
-
-	/**
-	 * Language: English
-	 */
-	public const LANGUAGE_ENGLISH = 'en';
-
-	/**
-	 * Default language
-	 */
-	public const LANGUAGE_DEFAULT = self::LANGUAGE_ENGLISH;
-
-	/**
-	 * Supported languages
-	 */
-	public const LANGUAGES = [
-		self::LANGUAGE_CZECH,
-		self::LANGUAGE_ENGLISH,
-	];
-
-	/**
-	 * User role: Admin user
-	 */
-	public const ROLE_ADMIN = 'admin';
-
-	/**
-	 * User role: Normal user
-	 */
-	public const ROLE_NORMAL = 'normal';
-
-	/**
-	 * User role: Basic admin user
-	 */
-	public const ROLE_BASICADMIN = 'basicadmin';
-
-	/**
-	 * User role: Basic user
-	 */
-	public const ROLE_BASIC = 'basic';
-
-	/**
-	 * Default user role
-	 */
-	public const ROLE_DEFAULT = self::ROLE_NORMAL;
-
-	/**
-	 * Supported user roles
-	 */
-	public const ROLES = [
-		self::ROLE_ADMIN,
-		self::ROLE_NORMAL,
-		self::ROLE_BASICADMIN,
-		self::ROLE_BASIC,
-	];
 
 	/**
 	 * Account state: unverified e-mail address
@@ -138,63 +81,104 @@ class User implements JsonSerializable {
 
 	/**
 	 * @var string User name
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $username;
 
 	/**
 	 * @var string|null User's email
-	 * @ORM\Column(type="string", length=255, nullable=true, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true, nullable: true)]
 	private ?string $email = null;
 
 	/**
-	 * @var string Password hash
-	 * @ORM\Column(type="string", length=255)
+	 * @var string|null Password hash
 	 */
-	private string $password;
+	#[ORM\Column(type: 'string', length: 255, nullable: true)]
+	private ?string $password = null;
 
 	/**
-	 * @var string User role
-	 * @ORM\Column(type="string", length=15)
+	 * @var UserRole User role
 	 */
-	private string $role;
+	#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
+	private UserRole $role;
 
 	/**
 	 * @var int Account state
-	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
 	 */
+	#[ORM\Column(type: Types::INTEGER, length: 10, unique: false, nullable: false, options: ['default' => self::STATE_DEFAULT])]
 	private int $state = self::STATE_DEFAULT;
 
 	/**
-	 * @var string User language
-	 * @ORM\Column(type="string", length=7)
+	 * @var UserLanguage User language
 	 */
-	private string $language = self::LANGUAGE_DEFAULT;
+	#[ORM\Column(type: 'string', length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
+	private UserLanguage $language = UserLanguage::Default;
 
 	/**
-	 * @var Collection<int, UserVerification> User verifications
-	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
+	 * @var UserVerification|null User verification
 	 */
-	private Collection $verifications;
+	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+	public ?UserVerification $verification = null;
+
+	/**
+	 * @var bool Email changed
+	 */
+	private bool $emailChanged;
+
+	/**
+	 * @var bool Password changed
+	 */
+	private bool $passwordChanged;
 
 	/**
 	 * Constructor
 	 * @param string $username User name
 	 * @param string|null $email User's email
 	 * @param string $password User password
-	 * @param string|null $role User role
-	 * @param string|null $language User language
+	 * @param UserRole|null $role User role
+	 * @param UserLanguage|null $language User language
 	 * @param int|null $state Account state
 	 */
-	public function __construct(string $username, ?string $email, string $password, ?string $role = null, ?string $language = null, ?int $state = null) {
+	public function __construct(string $username, ?string $email, string $password, ?UserRole $role = null, ?UserLanguage $language = null, ?int $state = null) {
 		$this->username = $username;
 		$this->setEmail($email);
 		$this->setPassword($password);
-		$this->setRole($role ?? self::ROLE_DEFAULT);
-		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
+		$this->setRole($role ?? UserRole::Default);
+		$this->setLanguage($language ?? UserLanguage::Default);
 		$this->setState($state ?? self::STATE_DEFAULT);
-		$this->verifications = new ArrayCollection();
+		$this->emailChanged = false;
+		$this->passwordChanged = false;
+	}
+
+	/**
+	 * Checks if the user has changed e-mail
+	 * @return bool User has changed e-mail
+	 */
+	public function hasChangedEmail(): bool {
+		return $this->emailChanged;
+	}
+
+	/**
+	 * Checks if the user has changed password
+	 * @return bool User has changed password
+	 */
+	public function hasChangedPassword(): bool {
+		return $this->passwordChanged;
+	}
+
+	/**
+	 * Changes the user's password
+	 * @param string $oldPassword Current password
+	 * @param string $newPassword New password to set
+	 * @throws IncorrectPasswordException Incorrect current password
+	 * @throws InvalidPasswordException Invalid new password
+	 */
+	public function changePassword(string $oldPassword, string $newPassword): void {
+		if (!$this->verifyPassword($oldPassword)) {
+			throw new IncorrectPasswordException('Incorrect current password.');
+		}
+		$this->setPassword($newPassword);
 	}
 
 	/**
@@ -223,17 +207,17 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the user's role
-	 * @return string User's role
+	 * @return UserRole User's role
 	 */
-	public function getRole(): string {
+	public function getRole(): UserRole {
 		return $this->role;
 	}
 
 	/**
 	 * Returns the user's language
-	 * @return string User's language
+	 * @return UserLanguage User's language
 	 */
-	public function getLanguage(): string {
+	public function getLanguage(): UserLanguage {
 		return $this->language;
 	}
 
@@ -243,12 +227,12 @@ class User implements JsonSerializable {
 	 */
 	public function getScopes(): array {
 		$scopes = [];
-		if ($this->role === self::ROLE_BASICADMIN) {
+		if ($this->role === UserRole::BasicAdmin) {
 			$scopes = array_merge($scopes, [
 				'users:basic',
 			]);
 		}
-		if ($this->role === self::ROLE_NORMAL || $this->role === self::ROLE_ADMIN) {
+		if ($this->role === UserRole::Normal || $this->role === UserRole::Admin) {
 			$scopes = array_merge($scopes, [
 				'clouds',
 				'config:controller',
@@ -260,7 +244,7 @@ class User implements JsonSerializable {
 				'iqrf:macros',
 			]);
 		}
-		if ($this->role === self::ROLE_ADMIN) {
+		if ($this->role === UserRole::Admin) {
 			$scopes = array_merge($scopes, [
 				'apiKeys',
 				'iqrf:upload',
@@ -302,21 +286,6 @@ class User implements JsonSerializable {
 	}
 
 	/**
-	 * Returns all e-mail address verification
-	 * @return Collection<int, UserVerification> E-mail address verifications
-	 */
-	public function getVerifications(): Collection {
-		return $this->verifications;
-	}
-
-	/**
-	 * Clears all e-mail address verifications
-	 */
-	public function clearVerifications(): void {
-		$this->verifications->clear();
-	}
-
-	/**
 	 * Sets the user's email
 	 * @param string|null $email User's email
 	 * @throws InvalidEmailAddressException
@@ -328,32 +297,31 @@ class User implements JsonSerializable {
 		if ($email !== null) {
 			$this->validateEmail($email);
 		}
-		if ($this->email !== $email) {
-			if ($this->getState() === self::STATE_VERIFIED) {
-				$this->setState(self::STATE_UNVERIFIED);
-			}
+		if ($this->email !== $email && $this->getState() === self::STATE_VERIFIED) {
+			$this->setState(self::STATE_UNVERIFIED);
+			$this->emailChanged = true;
 		}
 		$this->email = $email;
 	}
+
 	/**
 	 * Sets the user's password
 	 * @param string $password User's password
+	 * @throws InvalidPasswordException Invalid password
 	 */
 	public function setPassword(string $password): void {
 		if ($password === '') {
-			throw new InvalidPasswordException();
+			throw new InvalidPasswordException('Empty new password.');
 		}
+		$this->passwordChanged = !$this->verifyPassword($password);
 		$this->password = password_hash($password, PASSWORD_DEFAULT);
 	}
 
 	/**
 	 * Sets the user role
-	 * @param string $role User role
+	 * @param UserRole $role User role
 	 */
-	public function setRole(string $role): void {
-		if (!in_array($role, self::ROLES, true)) {
-			throw new InvalidUserRoleException();
-		}
+	public function setRole(UserRole $role): void {
 		$this->role = $role;
 	}
 
@@ -371,12 +339,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Sets the user language
-	 * @param string $language User language
+	 * @param UserLanguage $language User language
 	 */
-	public function setLanguage(string $language): void {
-		if (!in_array($language, self::LANGUAGES, true)) {
-			throw new InvalidUserLanguageException();
-		}
+	public function setLanguage(UserLanguage $language): void {
 		$this->language = $language;
 	}
 
@@ -389,7 +354,7 @@ class User implements JsonSerializable {
 		$validationRules = [
 			new RFCValidation(),
 		];
-		if (function_exists('dns_get_record')) {
+		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record')) {
 			$validationRules[] = new DNSCheckValidation();
 		}
 		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
@@ -407,6 +372,9 @@ class User implements JsonSerializable {
 	 * @return bool Is the password correct?
 	 */
 	public function verifyPassword(string $password): bool {
+		if ($this->password === null) {
+			return false;
+		}
 		return password_verify($password, $this->password);
 	}
 
@@ -419,8 +387,8 @@ class User implements JsonSerializable {
 			'id' => $this->id,
 			'username' => $this->username,
 			'email' => $this->email,
-			'role' => $this->role,
-			'language' => $this->language,
+			'role' => $this->role->value,
+			'language' => $this->language->value,
 			'state' => self::STATES[$this->state],
 		];
 	}

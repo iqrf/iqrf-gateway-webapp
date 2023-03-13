@@ -20,8 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,20 +39,16 @@ abstract class UserCommand extends Command {
 	/**
 	 * @var UserRepository User database repository
 	 */
-	protected UserRepository $repository;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	protected EntityManager $entityManager;
+	protected readonly UserRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(EntityManager $entityManager) {
+	public function __construct(
+		protected readonly EntityManager $entityManager,
+	) {
 		parent::__construct();
-		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
 	}
 
@@ -59,7 +58,7 @@ abstract class UserCommand extends Command {
 	 * @param OutputInterface $output Command output
 	 * @return User Information about the user
 	 */
-	protected function askUserName(InputInterface $input, OutputInterface $output): User {
+	protected function findUserByName(InputInterface $input, OutputInterface $output): User {
 		$username = $input->getOption('username');
 		$user = null;
 		if ($username !== null) {
@@ -73,6 +72,47 @@ abstract class UserCommand extends Command {
 			$user = $this->repository->findOneByUserName($username);
 		}
 		return $user;
+	}
+
+	/**
+	 * Asks for the user's language
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @param UserLanguage|null $default Default user's language
+	 * @return UserLanguage User's language
+	 */
+	protected function askLanguage(InputInterface $input, OutputInterface $output, ?UserLanguage $default): UserLanguage {
+		$language = $input->getOption('language');
+		$language = $language !== null ? UserLanguage::tryFrom($language) : null;
+		$languages = array_column(UserLanguage::cases(), 'value');
+		while ($language === null) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $default->value);
+			$language = UserLanguage::tryFrom($helper->ask($input, $output, $question));
+		}
+		return $language;
+	}
+
+	/**
+	 * Asks for the user's role
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @param UserRole|null $default Default user's role
+	 * @return UserRole User's role
+	 * @throws InvalidUserRoleException
+	 */
+	protected function askRole(InputInterface $input, OutputInterface $output, ?UserRole $default): UserRole {
+		$role = $input->getOption('role');
+		if ($role !== null) {
+			return UserRole::fromString($role);
+		}
+		$roles = array_column(UserRole::cases(), 'value');
+		while ($role === null) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $default?->value);
+			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
+		}
+		return $role;
 	}
 
 }

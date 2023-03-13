@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 /**
  * Copyright 2017-2023 IQRF Tech s.r.o.
  * Copyright 2019-2023 MICRORISC s.r.o.
@@ -16,15 +18,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
 
 namespace App\Exceptions;
 
 use UnexpectedValueException;
 
 /**
- * The exception that indicates an invalid user language
+ * The exception that indicates an incorrect password
  */
-class InvalidUserLanguageException extends UnexpectedValueException {
+class IncorrectPasswordException extends UnexpectedValueException {
 
 }

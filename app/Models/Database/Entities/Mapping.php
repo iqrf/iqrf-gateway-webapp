@@ -21,16 +21,18 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\MappingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use function in_array;
 
 /**
  * Mapping entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\MappingRepository")
- * @ORM\Table(name="mappings")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: MappingRepository::class)]
+#[ORM\Table(name: 'mappings')]
+#[ORM\HasLifecycleCallbacks]
 class Mapping implements JsonSerializable {
 
 	use TId;
@@ -77,68 +79,68 @@ class Mapping implements JsonSerializable {
 
 	/**
 	 * @var string Mapping type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $type;
 
 	/**
 	 * @var string Mapping name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $name;
 
 	/**
 	 * @var string Device type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $deviceType;
 
 	/**
 	 * @var string Device name
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $iqrfInterface;
 
 	/**
 	 * @var int Bus enable pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $busEnableGpioPin;
 
 	/**
 	 * @var int Programming mode switch pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $pgmSwitchGpioPin;
 
 	/**
 	 * @var int Power enable pin
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $powerEnableGpioPin;
 
 	/**
 	 * @var int|null UART baud rate
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $baudRate;
 
 	/**
 	 * @var int|null I2C interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $i2cEnableGpioPin;
 
 	/**
 	 * @var int|null SPI interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $spiEnableGpioPin;
 
 	/**
 	 * @var int|null UART interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
 	 */
+	#[ORM\Column(type: Types::INTEGER, nullable: true)]
 	private ?int $uartEnableGpioPin;
 
 	/**

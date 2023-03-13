@@ -21,38 +21,40 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * WireGuard interface address entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceIpv6Repository")
- * @ORM\Table(name="`wireguard_interface_ipv6s`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardInterfaceIpv6Repository::class)]
+#[ORM\Table(name: 'wireguard_interface_ipv6s')]
+#[ORM\HasLifecycleCallbacks]
 class WireguardInterfaceIpv6 implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var IP Interface address
-	 * @ORM\Column(type="ip")
 	 */
+	#[ORM\Column(type: 'ip')]
 	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $prefix;
 
 	/**
 	 * @var WireguardInterface WireGuard interface
-	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv6")
-	 * @ORM\JoinColumn(name="interface_id")
 	 */
+	#[ORM\OneToOne(inversedBy: 'ipv6', targetEntity: WireguardInterface::class)]
+	#[ORM\JoinColumn(name: 'interface_id')]
 	private WireguardInterface $interface;
 
 	/**

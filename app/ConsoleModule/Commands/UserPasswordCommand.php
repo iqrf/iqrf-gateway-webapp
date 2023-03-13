@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,19 +30,13 @@ use Symfony\Component\Console\Question\Question;
 /**
  * CLI command for user management
  */
+#[AsCommand(name: 'user:password', description: 'Changes webapp\'s user\'s password')]
 class UserPasswordCommand extends UserCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:password';
 
 	/**
 	 * Configures the change user's password command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Change webapp\'s user\'s password');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the edited user'),
 			new InputOption('password', ['p', 'pass'], InputOption::VALUE_OPTIONAL, 'New user\'s password'),
@@ -56,7 +51,7 @@ class UserPasswordCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$user = $this->askUserName($input, $output);
+		$user = $this->findUserByName($input, $output);
 		$password = $this->askPassword($input, $output);
 		$user->setPassword($password);
 		$this->entityManager->persist($user);

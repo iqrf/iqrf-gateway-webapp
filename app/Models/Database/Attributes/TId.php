@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Attributes;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,10 +30,10 @@ trait TId {
 
 	/**
 	 * @var int|null ID
-	 * @ORM\Column(type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
 	private ?int $id = null;
 
 	/**

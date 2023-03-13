@@ -21,64 +21,66 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\IqrfOsPatchRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * IQRF OS patch entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\IqrfOsPatchRepository")
- * @ORM\Table(name="`iqrf_os_patches`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: IqrfOsPatchRepository::class)]
+#[ORM\Table(name: 'iqrf_os_patches')]
+#[ORM\HasLifecycleCallbacks]
 class IqrfOsPatch {
 
 	use TId;
 
 	/**
 	 * @var string IQRF TR module type
-	 * @ORM\Column(type="string", length=15)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 15)]
 	private string $moduleType;
 
 	/**
 	 * @var int Current IQRF OS version
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $fromVersion;
 
 	/**
 	 * @var int Current IQRF OS build
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $fromBuild;
 
 	/**
 	 * @var int Next IQRF OS version
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $toVersion;
 
 	/**
 	 * @var int Next IQRF OS build
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $toBuild;
 
 	/**
 	 * @var int Part number
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $part;
 
 	/**
 	 * @var int Total parts
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: Types::INTEGER)]
 	private int $parts;
 
 	/**
 	 * @var string File name
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $fileName;
 
 	/**

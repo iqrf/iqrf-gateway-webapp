@@ -22,50 +22,39 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
+use App\Models\Database\Repositories\UserVerificationRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User verification
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserVerificationRepository")
- * @ORM\Table(name="`email_verification`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserVerificationRepository::class)]
+#[ORM\Table(name: 'email_verification')]
+#[ORM\HasLifecycleCallbacks]
 class UserVerification {
 
 	use TUuid;
 	use TCreatedAt;
 
 	/**
-	 * @var User User ID
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="verifications", cascade={"persist"})
-	 * @ORM\JoinColumn(name="user", onDelete="CASCADE")
-	 */
-	private User $user;
-
-	/**
 	 * Constructor
 	 * @param User $user User
 	 */
-	public function __construct(User $user) {
-		$this->user = $user;
+	public function __construct(
+		#[ORM\OneToOne(inversedBy: 'verification', targetEntity: User::class)]
+		#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
+		public readonly User $user,
+	) {
 	}
 
 	/**
-	 * Returns the user
-	 * @return User User
-	 */
-	public function getUser(): User {
-		return $this->user;
-	}
-
-	/**
-	 * Checks if the password recovery request is expired
-	 * @return bool Is the password recovery request expired?
+	 * Checks if the account verification is expired
+	 * @return bool Is the account verification expired?
 	 */
 	public function isExpired(): bool {
-		$expirationInterval = new DateInterval('P1D');
+		$expirationInterval = new DateInterval('P7D');
 		$expiration = DateTimeImmutable::createFromMutable($this->createdAt)
 			->add($expirationInterval);
 		$now = new DateTimeImmutable();

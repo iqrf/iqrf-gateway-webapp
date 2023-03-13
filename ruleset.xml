@@ -22,6 +22,9 @@ limitations under the License.
 	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman">
 		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine"/>
 	</rule>
+	<rule ref="Generic.NamingConventions.UpperCaseConstantName">
+		<exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase"/>
+	</rule>
 	<rule ref="Generic.WhiteSpace.ScopeIndent">
 		<properties>
 			<property name="indent" value="4"/>

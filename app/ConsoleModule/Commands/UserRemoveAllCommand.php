@@ -20,7 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Enums\UserRole;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,19 +34,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for removal of all users
  */
+#[AsCommand(name: 'user:remove-all', description: 'Removes all webapp users')]
 class UserRemoveAllCommand extends UserCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:remove-all';
 
 	/**
 	 * Configures the user remove all command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Removes all webapp users');
 		$definitions = [
 			new InputOption('role', ['r'], InputOption::VALUE_OPTIONAL, 'Only remove all users with a specific role.'),
 		];
@@ -58,17 +55,14 @@ class UserRemoveAllCommand extends UserCommand {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$users = [];
-		$role = $this->askRole($input, $output);
-		if ($role === null) {
-			$users = $this->repository->findAll();
-		} else {
-			if (!in_array($role, User::ROLES, true)) {
-				$style->error('Role ' . $role . ' does not exist.');
-				return 1;
-			}
-			$users = $this->repository->findBy(['role' => $role]);
+		try {
+			$role = $this->askUsersRole($input, $output);
+		} catch (InvalidUserRoleException $e) {
+			$style->error('Role ' . $input->getOption('role') . ' does not exist.');
+			return 1;
 		}
+		$criteria = $role === null ? [] : ['role' => $role];
+		$users = $this->repository->findBy($criteria);
 		if ($input->isInteractive() && $users !== []) {
 			$helper = $this->getHelper('question');
 			$question = new ConfirmationQuestion(sprintf('Do you really want to remove user(s) %s? (y/N)', $this->usersToString($users)), false);
@@ -118,22 +112,23 @@ class UserRemoveAllCommand extends UserCommand {
 	 * Asks for role to remove users by
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return string|null Role
+	 * @return UserRole|null Role
 	 */
-	private function askRole(InputInterface $input, OutputInterface $output): ?string {
+	protected function askUsersRole(InputInterface $input, OutputInterface $output): ?UserRole {
 		$role = $input->getOption('role');
 		if (!$input->isInteractive()) {
-			return $role;
+			return $role !== null ? UserRole::fromString($role) : null;
 		}
-		while ($role === null || !in_array($role, User::ROLES, true)) {
+		$roles = array_column(UserRole::cases(), 'value');
+		while ($role === null) {
 			$helper = $this->getHelper('question');
 			$question = new ConfirmationQuestion('Do you want to filter removed users by role? (y/N)', false);
 			if (!$helper->ask($input, $output, $question)) {
 				return null;
 			}
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select a role to delete users by: ', User::ROLES);
-			$role = $helper->ask($input, $output, $question);
+			$question = new ChoiceQuestion('Please select a role to delete users by: ', $roles);
+			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
 		}
 		return $role;
 	}

@@ -35,7 +35,7 @@ class EmailVerificationMailSender extends BaseMailSender {
 	 * @throws SendException
 	 */
 	public function send(UserVerification $verification, string $baseUrl = ''): void {
-		$user = $verification->getUser();
+		$user = $verification->user;
 		$params = [
 			'url' => $baseUrl . '/account/verification/' . $verification->getUuid(),
 		];

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,19 +30,13 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * CLI command for user management
  */
+#[AsCommand(name: 'user:remove', description: 'Removes webapp\'s user')]
 class UserRemoveCommand extends UserCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:remove';
 
 	/**
 	 * Configures the user remove command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Removes webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the removed user'),
 		];
@@ -55,8 +50,8 @@ class UserRemoveCommand extends UserCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$user = $this->askUserName($input, $output);
-		if ($input->isInteractive() && $this->confirmAction($input, $output) === false) {
+		$user = $this->findUserByName($input, $output);
+		if ($input->isInteractive() && !$this->confirmAction($input, $output)) {
 			return 0;
 		}
 		$this->entityManager->remove($user);

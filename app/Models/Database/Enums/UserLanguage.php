@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 /**
  * Copyright 2017-2023 IQRF Tech s.r.o.
  * Copyright 2019-2023 MICRORISC s.r.o.
@@ -16,41 +18,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
 
-namespace App\Models\Database\Attributes;
-
-use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+namespace App\Models\Database\Enums;
 
 /**
- * UUID attribute
+ * User language enum
  */
-trait TUuid {
+enum UserLanguage: string {
 
-	/**
-	 * @var UuidInterface|null UUID
-	 */
-	#[ORM\Id]
-	#[ORM\Column(type: 'uuid', unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-	protected ?UuidInterface $uuid = null;
+	/// English language
+	case English = 'en';
 
-	/**
-	 * Returns UUID
-	 * @return UuidInterface|null UUID
-	 */
-	public function getUuid(): ?UuidInterface {
-		return $this->uuid;
-	}
+	/// Czech language
+	case Czech = 'cs';
 
-	/**
-	 * Creates a deep copy
-	 */
-	public function __clone() {
-		$this->uuid = null;
-	}
+	/// Default language
+	public const Default = self::English;
 
 }

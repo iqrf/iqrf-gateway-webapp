@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\User;
+use App\Models\Database\Enums\UserRole;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -49,11 +50,11 @@ class UserRepository extends EntityRepository {
 
 	/**
 	 * Returns count of users of a specific role
-	 * @param string $role User role
+	 * @param UserRole $role User role
 	 * @return int Number of users of a specific role
 	 */
-	public function userCountByRole(string $role): int {
-		return $this->count(['role' => $role]);
+	public function userCountByRole(UserRole $role): int {
+		return $this->count(['role' => $role->value]);
 	}
 
 	/**
