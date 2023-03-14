@@ -20,8 +20,7 @@ stages:
   - test
   - coding-style
   - sentry-release
-  - build-package
-  - deploy-package
+  - jsonnet
   - build-docker
   - deploy-docs
 
@@ -204,6 +203,7 @@ qa:
     - make qa
   <<: *coding-style_template
 
+# Sentry version
 sentry-version:
   before_script:
     - export VERSION=`jq -r .version version.json`"~${CI_PIPELINE_ID}"
@@ -218,159 +218,28 @@ sentry-version_release:
     - tags
   <<: *sentry-version_template
 
-build-package:
-  stage: build-package
-  except:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+# Jsonnet
+jsonnet-build:
+  image: alpine:latest
+  stage: jsonnet
   script:
-    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
+    - apk add -U jsonnet
+    - jsonnet -o .gitlab/packages.yml .gitlab/packages.jsonnet
   artifacts:
     paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
+      - .gitlab/packages.yml
 
-build-package_release:
-  stage: build-package
-  only:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - debuild -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqd-gw-01:
-  stage: build-package
-  except:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqd-gw-01_release:
-  stage: build-package
-  only:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - debuild -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqd-gw04:
-  stage: build-package
-  except:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw04/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw04/patches/ >> debian/patches/series
-    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqd-gw04_release:
-  stage: build-package
-  only:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw04/patches/* debian/patches
-    - ls --format=single-column debian/iqd-gw04/patches/ >> debian/patches/series
-    - debuild -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqaros:
-  stage: build-package
-  except:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
-    - cp debian/iqaros/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
-    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
-
-build-package_iqaros_release:
-  stage: build-package
-  only:
-    - tags
-  before_script:
-    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-  script:
-    - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
-    - cp debian/iqaros/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
-    - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
-    - debuild -b -us -uc -tc
-    - mv ../*.deb .
-    - mv ../*.changes .
-  artifacts:
-    paths:
-      - './*.deb'
-      - './*.changes'
-    expire_in: 2 weeks
+jsonnet-trigger-packages:
+  stage: jsonnet
+  needs:
+    - jsonnet-build
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - artifact: .gitlab/packages.yml
+        job: jsonnet-build
+    strategy: depend
 
 deploy-apidocs:
   stage: deploy-docs
@@ -382,126 +251,9 @@ deploy-apidocs:
   script:
     - composer install --no-progress
     - bin/manager open-api:specification > api.json
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json"
-    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
+    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
     - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
     - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
-  <<: *ssh_template
-
-deploy-package-devel:
-  stage: deploy-package
-  needs:
-    - build-package
-  environment:
-    name: package-devel
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/all/devel
-  only:
-    - master
-  script:
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/all/devel
-  <<: *ssh_template
-
-deploy-package-devel_iqd-gw-01:
-  stage: deploy-package
-  needs:
-    - build-package_iqd-gw-01
-  environment:
-    name: package-devel_iqd-gw-01
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw-01/devel
-  only:
-    - master
-  script:
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
-  <<: *ssh_template
-
-deploy-package-devel_iqd-gw04:
-  stage: deploy-package
-  needs:
-    - build-package_iqd-gw04
-  environment:
-    name: package-devel_iqd-gw04
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw04/devel
-  only:
-    - master
-  script:
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/devel
-  <<: *ssh_template
-
-deploy-package-devel_iqaros:
-  stage: deploy-package
-  needs:
-    - build-package_iqaros
-  environment:
-    name: package-devel_iqaros
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/devel
-  only:
-    - master
-  script:
-    - ssh www-deploy@icinga.iqrf.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/devel
-  <<: *ssh_template
-
-deploy-package-stable:
-  stage: deploy-package
-  needs:
-    - build-package_release
-  environment:
-    name: package-stable
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/all/stable
-  only:
-    - tags
-  script:
-    - '[[ "$CI_COMMIT_TAG" =~ ^.*-(alpha|beta|rc)[0-9]*$ ]] && export STABILITY="testing" || export STABILITY="stable"'
-    - ssh www-deploy@icinga.iqrf.org "mkdir -p /data/nginx/dl/iqrf-gateway-webapp/all/${STABILITY}/old && find /data/nginx/dl/iqrf-gateway-webapp/all/${STABILITY}/ -maxdepth 1 -type f -exec mv {} /data/nginx/dl/iqrf-gateway-webapp/all/${STABILITY}/old \;"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/all/${STABILITY}
-  <<: *ssh_template
-
-deploy-package-stable_iqd-gw-01:
-  stage: deploy-package
-  needs:
-    - build-package_iqd-gw-01_release
-  environment:
-    name: package-stable_iqd-gw-01
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw-01/stable
-  only:
-    - tags
-  script:
-    - '[[ "$CI_COMMIT_TAG" =~ ^.*-(alpha|beta|rc)[0-9]*$ ]] && export STABILITY="testing" || export STABILITY="stable"'
-    - ssh www-deploy@icinga.iqrf.org "mkdir -p /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/${STABILITY}/old && find /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/${STABILITY}/ -maxdepth 1 -type f -exec mv {} /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/${STABILITY}/old \;"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/${STABILITY}
-  <<: *ssh_template
-
-deploy-package-stable_iqd-gw04:
-  stage: deploy-package
-  needs:
-    - build-package_iqd-gw04_release
-  environment:
-    name: package-stable_iqd-gw04
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw04/stable
-  only:
-    - tags
-  script:
-    - '[[ "$CI_COMMIT_TAG" =~ ^.*-(alpha|beta|rc)[0-9]*$ ]] && export STABILITY="testing" || export STABILITY="stable"'
-    - ssh www-deploy@icinga.iqrf.org "mkdir -p /data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/${STABILITY}/old && find /data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/${STABILITY}/ -maxdepth 1 -type f -exec mv {} /data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/${STABILITY}/old \;"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw04/${STABILITY}
-  <<: *ssh_template
-
-deploy-package-stable_iqaros:
-  stage: deploy-package
-  needs:
-    - build-package_iqaros_release
-  environment:
-    name: package-stable_iqaros
-    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/stable
-  only:
-    - tags
-  script:
-    - '[[ "$CI_COMMIT_TAG" =~ ^.*-(alpha|beta|rc)[0-9]*$ ]] && export STABILITY="testing" || export STABILITY="stable"'
-    - ssh www-deploy@icinga.iqrf.org "mkdir -p /data/nginx/dl/iqrf-gateway-webapp/iqaros/${STABILITY}/old && find /data/nginx/dl/iqrf-gateway-webapp/iqaros/${STABILITY}/ -maxdepth 1 -type f -exec mv {} /data/nginx/dl/iqrf-gateway-webapp/iqaros/${STABILITY}/old \;"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@icinga.iqrf.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/${STABILITY}
   <<: *ssh_template
 
 include:
